@@ -1,47 +1,109 @@
-# OpenNext Starter
+# alexmayhew.dev
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+[![CI](https://github.com/LecoMV/alexmayhew.dev/actions/workflows/ci.yml/badge.svg)](https://github.com/LecoMV/alexmayhew.dev/actions/workflows/ci.yml)
+[![E2E Tests](https://github.com/LecoMV/alexmayhew.dev/actions/workflows/e2e.yml/badge.svg)](https://github.com/LecoMV/alexmayhew.dev/actions/workflows/e2e.yml)
+[![codecov](https://codecov.io/gh/LecoMV/alexmayhew.dev/graph/badge.svg)](https://codecov.io/gh/LecoMV/alexmayhew.dev)
 
-## Getting Started
+> Portfolio website for Alex Mayhew - Full-stack web developer
 
-Read the documentation at https://opennext.js.org/cloudflare.
+**Philosophy:** "Atmospheric Engineering" - High-precision digital instruments, tactile and heavy
 
-## Develop
+**Aesthetic:** Neo-Brutalist, anti-AI-generic, handcrafted feel
 
-Run the Next.js development server:
+## Tech Stack
+
+| Layer         | Technology                  |
+| ------------- | --------------------------- |
+| Framework     | Next.js 15 (App Router)     |
+| React         | React 19                    |
+| Styling       | Tailwind CSS 4              |
+| Animation     | Framer Motion               |
+| Smooth Scroll | Lenis                       |
+| Icons         | Lucide React                |
+| Testing       | Vitest + Playwright         |
+| Deployment    | OpenNext → Cloudflare Pages |
+
+## Quick Start
 
 ```bash
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
-# or similar package manager command
+
+# Run tests
+npm run test        # Unit tests (watch mode)
+npm run test:e2e    # E2E tests (all browsers)
+
+# Validate before commit
+npm run validate    # Types + Lint + Tests
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Command                 | Description                  |
+| ----------------------- | ---------------------------- |
+| `npm run dev`           | Start dev server (Turbopack) |
+| `npm run build`         | Production build             |
+| `npm run lint`          | ESLint check                 |
+| `npm run format`        | Format with Prettier         |
+| `npm run typecheck`     | TypeScript check             |
+| `npm run test`          | Unit tests (watch)           |
+| `npm run test:run`      | Unit tests (single run)      |
+| `npm run test:coverage` | Tests with coverage          |
+| `npm run test:e2e`      | E2E tests                    |
+| `npm run test:e2e:ui`   | E2E with Playwright UI       |
+| `npm run validate`      | Full validation              |
 
-## Preview
+## Project Structure
 
-Preview the application locally on the Cloudflare runtime:
+```
+src/
+├── app/              # Next.js App Router pages
+├── components/
+│   ├── ui/           # Atomic UI components
+│   └── providers/    # Context providers
+├── lib/              # Utilities
+└── types/            # TypeScript types
+
+tests/                # Unit tests (Vitest)
+e2e/                  # E2E tests (Playwright)
+.github/              # CI/CD workflows
+```
+
+## Testing
+
+### Coverage Thresholds
+
+- **Branches:** 80%
+- **Functions:** 80%
+- **Lines:** 80%
+- **Statements:** 80%
+
+### Running Tests
 
 ```bash
-npm run preview
-# or similar package manager command
+# Unit tests
+npm run test              # Watch mode
+npm run test:run          # Single run
+npm run test:coverage     # With coverage report
+
+# E2E tests
+npm run test:e2e          # Headless
+npm run test:e2e:headed   # With browser
+npm run test:e2e:ui       # Playwright UI mode
 ```
 
-## Deploy
+## Development Guidelines
 
-Deploy the application to Cloudflare:
+See [CLAUDE.md](./CLAUDE.md) for:
 
-```bash
-npm run deploy
-# or similar package manager command
-```
+- Design system specifications
+- Component patterns
+- Code style rules
+- Forbidden patterns
 
-## Learn More
+## License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Private - All rights reserved

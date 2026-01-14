@@ -1,0 +1,9 @@
+# Default owners for everything in the repo
+* @alexmayhew
+
+# Frontend components
+/src/components/ @alexmayhew
+
+# Configuration files
+*.config.* @alexmayhew
+.github/ @alexmayhew

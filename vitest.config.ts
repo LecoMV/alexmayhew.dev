@@ -12,7 +12,8 @@ export default defineConfig({
 		exclude: ["node_modules", ".next", "e2e"],
 		coverage: {
 			provider: "v8",
-			reporter: ["text", "json", "html"],
+			reporter: ["text", "json", "html", "lcov", "cobertura"],
+			reportsDirectory: "./coverage",
 			exclude: [
 				"node_modules/",
 				".next/",
@@ -21,7 +22,17 @@ export default defineConfig({
 				"**/*.d.ts",
 				"**/*.config.*",
 				"**/types/**",
+				"src/app/layout.tsx",
+				"src/app/fonts.ts",
 			],
+			thresholds: {
+				global: {
+					branches: 80,
+					functions: 80,
+					lines: 80,
+					statements: 80,
+				},
+			},
 		},
 	},
 	resolve: {
