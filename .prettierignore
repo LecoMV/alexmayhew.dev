@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+.open-next/
+out/
+build/
+dist/
+
+# Cache
+.wrangler/
+*.tsbuildinfo
+
+# Generated
+cloudflare-env.d.ts
+next-env.d.ts
+
+# Package manager
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Coverage
+coverage/
+
+# Playwright
+test-results/
+playwright-report/

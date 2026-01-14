@@ -1,0 +1,6 @@
+# Cloudflare Workers Environment Variables
+# Copy this file to .dev.vars for local development
+
+# Add your Cloudflare bindings here
+# MY_KV_NAMESPACE=
+# MY_D1_DATABASE=

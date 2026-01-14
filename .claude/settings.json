@@ -1,0 +1,29 @@
+{
+	"permissions": {
+		"allow": [
+			"Bash(npm run dev)",
+			"Bash(npm run build)",
+			"Bash(npm run lint)",
+			"Bash(npm run preview)",
+			"Bash(npx tsc --noEmit)",
+			"Read(*)",
+			"Write(src/**)",
+			"Write(public/**)",
+			"Edit(src/**)",
+			"Edit(public/**)",
+			"Glob(*)",
+			"Grep(*)"
+		],
+		"deny": [
+			"Bash(rm -rf *)",
+			"Bash(npm run deploy)",
+			"Write(.env*)",
+			"Write(.dev.vars)",
+			"Edit(.env*)",
+			"Edit(.dev.vars)"
+		]
+	},
+	"context": {
+		"include": ["CLAUDE.md", ".context/design-manifesto.md", "package.json", "tsconfig.json"]
+	}
+}
