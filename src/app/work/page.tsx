@@ -12,7 +12,7 @@ const springTransition = {
 	mass: 1,
 };
 
-const categories = ["All", "Web Apps", "E-Commerce", "SaaS", "Open Source"] as const;
+const categories = ["All", "AI/ML", "SaaS", "Web Apps", "Open Source"] as const;
 type Category = (typeof categories)[number];
 
 interface Project {
@@ -28,6 +28,16 @@ interface Project {
 }
 
 const projects: Project[] = [
+	{
+		id: "photokeep-pro",
+		title: "PhotoKeep Pro",
+		description:
+			"Enterprise AI photo restoration platform orchestrating 14+ deep learning models (SUPIR, HAT, CodeFormer, GFPGAN, DDColor) on 49GB VRAM. Built thread-safe GPU memory management with lazy loading and LRU eviction, achieving 99.95% uptime and 28.5dB PSNR quality—beating Magnific AI and Topaz.",
+		category: "AI/ML",
+		tech: ["Python", "FastAPI", "PyTorch", "React", "TypeScript", "Celery", "Redis", "Stripe"],
+		year: "2024",
+		featured: true,
+	},
 	{
 		id: "sovereign-cbam",
 		title: "Sovereign CBAM",
@@ -58,13 +68,13 @@ const projects: Project[] = [
 		year: "2024",
 	},
 	{
-		id: "void-commerce",
-		title: "Void Commerce",
+		id: "donedays",
+		title: "DoneDays",
 		description:
-			"Headless e-commerce platform with sub-100ms response times and edge-deployed product catalog.",
-		category: "E-Commerce",
-		tech: ["Next.js", "Shopify Storefront", "Cloudflare Workers"],
-		year: "2023",
+			"AI-powered productivity platform with autonomous task orchestration. Multi-agent system with intelligent scheduling and adaptive workflows.",
+		category: "AI/ML",
+		tech: ["TypeScript", "Next.js", "LLM Agents", "PostgreSQL"],
+		year: "2024",
 	},
 	{
 		id: "claude-flow",
