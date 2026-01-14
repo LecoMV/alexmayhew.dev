@@ -1,0 +1,69 @@
+# CodeRabbit Configuration
+# https://docs.coderabbit.ai/configuration
+
+language: en-US
+
+reviews:
+  # Enable auto-review on PRs
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - main
+
+  # Review profile - assertive catches more issues
+  profile: assertive
+
+  # Request changes when critical issues found
+  request_changes_workflow: true
+
+  # High-level summary for each PR
+  high_level_summary: true
+  high_level_summary_placeholder: "@coderabbitai summary"
+
+  # Generate poem (fun addition)
+  poem: false
+
+  # Review hints
+  review_status: true
+  collapse_walkthrough: false
+
+  # Path-based configuration
+  path_instructions:
+    - path: "src/components/**"
+      instructions: |
+        Review for:
+        - Accessibility (aria labels, focus states)
+        - Neo-Brutalist design compliance (no shadows, limited border-radius)
+        - Spring animations only (no linear)
+        - Semantic HTML (no div soup)
+
+    - path: "src/app/**"
+      instructions: |
+        Review for:
+        - Server vs Client component usage
+        - Proper metadata exports
+        - Loading/error boundary patterns
+
+    - path: "tests/**"
+      instructions: |
+        Ensure tests are meaningful and cover edge cases.
+        Check for proper mocking and cleanup.
+
+    - path: "e2e/**"
+      instructions: |
+        Review for flaky test patterns.
+        Ensure proper waiting strategies.
+        Check mobile viewport coverage.
+
+chat:
+  # Enable conversational reviews
+  auto_reply: true
+
+# Ignore patterns
+ignore:
+  - "**/*.lock"
+  - "**/node_modules/**"
+  - "**/.next/**"
+  - "**/coverage/**"
+  - "**/*.d.ts"
