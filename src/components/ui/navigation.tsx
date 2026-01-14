@@ -1,0 +1,159 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const navItems = [
+	{ href: "/", label: "Home", code: "00" },
+	{ href: "/work", label: "Work", code: "01" },
+	{ href: "/about", label: "About", code: "02" },
+	{ href: "/contact", label: "Contact", code: "03" },
+];
+
+const springTransition = {
+	type: "spring" as const,
+	stiffness: 100,
+	damping: 20,
+	mass: 1,
+};
+
+export function Navigation() {
+	const pathname = usePathname();
+	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+	return (
+		<header className="fixed top-0 right-0 left-0 z-40">
+			<nav className="mx-auto max-w-[1400px] px-6 py-4 sm:px-12 md:px-24">
+				<div className="bg-gunmetal-glass/20 flex items-center justify-between border border-white/10 px-6 py-4 backdrop-blur-md">
+					{/* Logo / Brand */}
+					<Link href="/" className="group flex items-center gap-3">
+						<div className="border-cyber-lime relative h-8 w-8 border">
+							<div className="bg-cyber-lime absolute top-1 left-1 h-2 w-2" />
+							<div className="bg-cyber-lime/50 absolute right-1 bottom-1 h-2 w-2" />
+						</div>
+						<span className="font-mono text-sm tracking-tight">
+							<span className="text-cyber-lime">alex</span>
+							<span className="text-mist-white">mayhew</span>
+						</span>
+					</Link>
+
+					{/* Desktop Navigation */}
+					<div className="hidden items-center gap-1 md:flex">
+						{navItems.map((item) => {
+							const isActive = pathname === item.href;
+							return (
+								<Link
+									key={item.href}
+									href={item.href}
+									className={cn(
+										"group relative px-4 py-2 font-mono text-xs tracking-wider uppercase transition-colors duration-300",
+										isActive ? "text-cyber-lime" : "text-slate-text hover:text-mist-white"
+									)}
+								>
+									<span className="mr-2 opacity-40">{item.code}</span>
+									{item.label}
+									{isActive && (
+										<motion.div
+											layoutId="nav-indicator"
+											className="bg-cyber-lime absolute right-2 bottom-1 left-2 h-px"
+											transition={springTransition}
+										/>
+									)}
+									{!isActive && (
+										<div className="bg-cyber-lime absolute right-2 bottom-1 left-2 h-px origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
+									)}
+								</Link>
+							);
+						})}
+					</div>
+
+					{/* CTA Button - Desktop */}
+					<div className="hidden md:block">
+						<Link
+							href="/contact"
+							className="group hover:border-cyber-lime relative border border-white/20 px-4 py-2 transition-colors duration-300"
+						>
+							<span className="group-hover:text-cyber-lime font-mono text-xs tracking-tight transition-colors">
+								START_PROJECT()
+							</span>
+							<div className="bg-cyber-lime/5 absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+						</Link>
+					</div>
+
+					{/* Mobile Menu Button */}
+					<button
+						onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+						className="hover:border-cyber-lime border border-white/20 p-2 transition-colors duration-300 md:hidden"
+						aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+					>
+						{mobileMenuOpen ? (
+							<X className="text-cyber-lime h-5 w-5" strokeWidth={1.5} />
+						) : (
+							<Menu className="text-mist-white h-5 w-5" strokeWidth={1.5} />
+						)}
+					</button>
+				</div>
+
+				{/* Mobile Menu */}
+				<AnimatePresence>
+					{mobileMenuOpen && (
+						<motion.div
+							initial={{ opacity: 0, height: 0 }}
+							animate={{ opacity: 1, height: "auto" }}
+							exit={{ opacity: 0, height: 0 }}
+							transition={springTransition}
+							className="overflow-hidden md:hidden"
+						>
+							<div className="bg-gunmetal-glass/40 mt-2 border border-white/10 p-4 backdrop-blur-md">
+								{navItems.map((item, index) => {
+									const isActive = pathname === item.href;
+									return (
+										<motion.div
+											key={item.href}
+											initial={{ opacity: 0, x: -20 }}
+											animate={{ opacity: 1, x: 0 }}
+											transition={{ ...springTransition, delay: index * 0.1 }}
+										>
+											<Link
+												href={item.href}
+												onClick={() => setMobileMenuOpen(false)}
+												className={cn(
+													"flex items-center gap-4 border-b border-white/5 py-4 font-mono text-sm tracking-wider uppercase transition-colors duration-300",
+													isActive ? "text-cyber-lime" : "text-slate-text hover:text-mist-white"
+												)}
+											>
+												<span className="text-xs opacity-40">{item.code}</span>
+												{item.label}
+												{isActive && (
+													<span className="bg-cyber-lime ml-auto h-2 w-2 animate-pulse" />
+												)}
+											</Link>
+										</motion.div>
+									);
+								})}
+								<motion.div
+									initial={{ opacity: 0, y: 10 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ ...springTransition, delay: 0.4 }}
+									className="mt-4"
+								>
+									<Link
+										href="/contact"
+										onClick={() => setMobileMenuOpen(false)}
+										className="hover:border-cyber-lime block border border-white/20 py-3 text-center font-mono text-sm tracking-tight transition-colors duration-300"
+									>
+										<span className="hover:text-cyber-lime">START_PROJECT()</span>
+									</Link>
+								</motion.div>
+							</div>
+						</motion.div>
+					)}
+				</AnimatePresence>
+			</nav>
+		</header>
+	);
+}
