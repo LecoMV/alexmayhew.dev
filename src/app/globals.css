@@ -106,3 +106,30 @@
 .prose p {
 	color: var(--color-slate-text);
 }
+
+/* Override fumadocs list styling - use custom // markers */
+.prose ul,
+.prose ol {
+	list-style: none !important;
+	padding-left: 0 !important;
+	margin-left: 1.5rem !important;
+}
+
+.prose li {
+	position: relative !important;
+	padding-left: 1.5rem !important;
+	color: var(--color-slate-text) !important;
+}
+
+.prose li::marker {
+	content: none !important;
+}
+
+.prose li::before {
+	content: "//" !important;
+	position: absolute !important;
+	left: 0 !important;
+	font-family: var(--font-mono) !important;
+	font-size: 0.875rem !important;
+	color: rgba(204, 243, 129, 0.5) !important;
+}

@@ -1,15 +1,18 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Github, Linkedin, Twitter, Mail } from "lucide-react";
 
 const socialLinks = [
-	{ href: "https://github.com/alexmayhew", icon: Github, label: "GitHub" },
-	{ href: "https://linkedin.com/in/alexmayhew", icon: Linkedin, label: "LinkedIn" },
-	{ href: "https://twitter.com/alexmayhew", icon: Twitter, label: "Twitter" },
-	{ href: "mailto:hello@alexmayhew.dev", icon: Mail, label: "Email" },
+	{ href: "https://github.com/LecoMV", icon: Github, label: "GitHub" },
+	{ href: "https://www.linkedin.com/in/alexmmayhew", icon: Linkedin, label: "LinkedIn" },
+	{ href: "https://x.com/alexmayhewdev", icon: Twitter, label: "X (Twitter)" },
+	{ href: "mailto:alex@alexmayhew.dev", icon: Mail, label: "Email" },
 ];
 
 const footerLinks = [
 	{ href: "/work", label: "Work" },
+	{ href: "/blog", label: "Blog" },
+	{ href: "/docs", label: "Docs" },
 	{ href: "/about", label: "About" },
 	{ href: "/contact", label: "Contact" },
 ];
@@ -28,12 +31,17 @@ export function Footer() {
 					{/* Brand Section */}
 					<div className="md:col-span-5">
 						<Link href="/" className="group inline-flex items-center gap-3">
-							<div className="border-cyber-lime relative h-6 w-6 border">
-								<div className="bg-cyber-lime absolute top-0.5 left-0.5 h-1.5 w-1.5" />
-							</div>
+							<Image
+								src="/favicon.svg"
+								alt="Alex Mayhew"
+								width={48}
+								height={48}
+								className="h-12 w-12"
+							/>
 							<span className="font-mono text-sm tracking-tight">
 								<span className="text-cyber-lime">alex</span>
 								<span className="text-mist-white">mayhew</span>
+								<span className="text-slate-text">.dev</span>
 							</span>
 						</Link>
 						<p className="text-slate-text mt-4 max-w-xs text-sm leading-relaxed">
