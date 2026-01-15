@@ -66,7 +66,7 @@ const stats = [
 
 export default function AboutPage() {
 	return (
-		<main className="min-h-screen px-6 pt-32 pb-24 sm:px-12 md:px-24">
+		<main className="min-h-screen px-6 pt-44 pb-24 sm:px-12 md:px-24">
 			<div className="mx-auto max-w-[1400px]">
 				{/* Header */}
 				<motion.div

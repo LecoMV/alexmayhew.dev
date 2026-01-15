@@ -15,6 +15,7 @@
 /test-results
 /playwright-report
 /playwright/.cache
+.playwright-mcp/
 
 # next.js
 /.next/
@@ -47,9 +48,18 @@ next-env.d.ts
 # OpenNext
 /.open-next
 
+# Fumadocs generated files
+.source/
+
+# Keystatic local storage
+.keystatic/
+
 # wrangler files
 .wrangler
 .dev.vars*
 
 
 !.dev.vars.example
+
+# Logo source files
+.logo-source/

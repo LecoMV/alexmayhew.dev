@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
@@ -10,8 +11,10 @@ import { cn } from "@/lib/utils";
 const navItems = [
 	{ href: "/", label: "Home", code: "00" },
 	{ href: "/work", label: "Work", code: "01" },
-	{ href: "/about", label: "About", code: "02" },
-	{ href: "/contact", label: "Contact", code: "03" },
+	{ href: "/blog", label: "Blog", code: "02" },
+	{ href: "/docs", label: "Docs", code: "03" },
+	{ href: "/about", label: "About", code: "04" },
+	{ href: "/contact", label: "Contact", code: "05" },
 ];
 
 const springTransition = {
@@ -31,18 +34,22 @@ export function Navigation() {
 				<div className="bg-gunmetal-glass/20 flex items-center justify-between border border-white/10 px-6 py-4 backdrop-blur-md">
 					{/* Logo / Brand */}
 					<Link href="/" className="group flex items-center gap-3">
-						<div className="border-cyber-lime relative h-8 w-8 border">
-							<div className="bg-cyber-lime absolute top-1 left-1 h-2 w-2" />
-							<div className="bg-cyber-lime/50 absolute right-1 bottom-1 h-2 w-2" />
-						</div>
-						<span className="font-mono text-sm tracking-tight">
+						<Image
+							src="/favicon.svg"
+							alt="Alex Mayhew"
+							width={80}
+							height={80}
+							className="h-20 w-20"
+						/>
+						<span className="hidden font-mono text-xl tracking-tight sm:inline">
 							<span className="text-cyber-lime">alex</span>
 							<span className="text-mist-white">mayhew</span>
+							<span className="text-slate-text">.dev</span>
 						</span>
 					</Link>
 
 					{/* Desktop Navigation */}
-					<div className="hidden items-center gap-1 md:flex">
+					<div className="hidden items-center gap-2 md:flex">
 						{navItems.map((item) => {
 							const isActive = pathname === item.href;
 							return (
@@ -50,7 +57,7 @@ export function Navigation() {
 									key={item.href}
 									href={item.href}
 									className={cn(
-										"group relative px-4 py-2 font-mono text-xs tracking-wider uppercase transition-colors duration-300",
+										"group relative px-5 py-3 font-mono text-sm tracking-wider uppercase transition-colors duration-300",
 										isActive ? "text-cyber-lime" : "text-slate-text hover:text-mist-white"
 									)}
 								>
@@ -75,9 +82,9 @@ export function Navigation() {
 					<div className="hidden md:block">
 						<Link
 							href="/contact"
-							className="group hover:border-cyber-lime relative border border-white/20 px-4 py-2 transition-colors duration-300"
+							className="group hover:border-cyber-lime relative border border-white/20 px-6 py-3 transition-colors duration-300"
 						>
-							<span className="group-hover:text-cyber-lime font-mono text-xs tracking-tight transition-colors">
+							<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">
 								START_PROJECT()
 							</span>
 							<div className="bg-cyber-lime/5 absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -87,13 +94,13 @@ export function Navigation() {
 					{/* Mobile Menu Button */}
 					<button
 						onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-						className="hover:border-cyber-lime border border-white/20 p-2 transition-colors duration-300 md:hidden"
+						className="hover:border-cyber-lime border border-white/20 p-3 transition-colors duration-300 md:hidden"
 						aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
 					>
 						{mobileMenuOpen ? (
-							<X className="text-cyber-lime h-5 w-5" strokeWidth={1.5} />
+							<X className="text-cyber-lime h-6 w-6" strokeWidth={1.5} />
 						) : (
-							<Menu className="text-mist-white h-5 w-5" strokeWidth={1.5} />
+							<Menu className="text-mist-white h-6 w-6" strokeWidth={1.5} />
 						)}
 					</button>
 				</div>

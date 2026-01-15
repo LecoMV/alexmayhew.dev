@@ -12,6 +12,11 @@ export const metadata: Metadata = {
 		"Atmospheric Engineering. Crafting high-precision digital instruments for the modern web.",
 	keywords: ["web developer", "full-stack", "react", "next.js", "typescript"],
 	authors: [{ name: "Alex Mayhew" }],
+	icons: {
+		icon: "/favicon.svg",
+		shortcut: "/favicon.svg",
+		apple: "/favicon.svg",
+	},
 	openGraph: {
 		title: "Alex Mayhew | Full-Stack Developer",
 		description: "Atmospheric Engineering. High-precision digital instruments for the web.",
@@ -26,7 +31,11 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+		<html
+			lang="en"
+			className={`${inter.variable} ${jetbrainsMono.variable}`}
+			suppressHydrationWarning
+		>
 			<body className="relative min-h-screen overflow-x-hidden">
 				<NoiseOverlay />
 				<SmoothScroll>

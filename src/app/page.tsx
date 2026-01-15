@@ -56,7 +56,7 @@ export default function Home() {
 	return (
 		<>
 			{/* Hero Section */}
-			<main className="flex min-h-screen flex-col justify-center px-6 pt-24 pb-12 sm:px-12 md:px-24">
+			<main className="flex min-h-screen flex-col justify-center px-6 pt-36 pb-12 sm:px-12 md:px-24">
 				<div className="mx-auto grid w-full max-w-[1400px] grid-cols-12 gap-6">
 					{/* Text Content */}
 					<motion.section

@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
 
 @theme {
 	--color-void-navy: #0b0e14;
@@ -10,6 +12,24 @@
 
 	--font-sans: var(--font-sans);
 	--font-mono: var(--font-mono);
+
+	/* Fumadocs variable overrides for void aesthetic */
+	--fd-background: #0b0e14;
+	--fd-foreground: #e2e8f0;
+	--fd-card: #1e293b;
+	--fd-card-foreground: #e2e8f0;
+	--fd-popover: #1e293b;
+	--fd-popover-foreground: #e2e8f0;
+	--fd-primary: #ccf381;
+	--fd-primary-foreground: #0b0e14;
+	--fd-secondary: #1e293b;
+	--fd-secondary-foreground: #e2e8f0;
+	--fd-muted: #1e293b;
+	--fd-muted-foreground: #94a3b8;
+	--fd-accent: #1e293b;
+	--fd-accent-foreground: #ccf381;
+	--fd-border: rgba(255, 255, 255, 0.1);
+	--fd-ring: #ccf381;
 }
 
 @layer base {
@@ -34,4 +54,55 @@
 
 ::-webkit-scrollbar-thumb:hover {
 	background: var(--color-cyber-lime);
+}
+
+/* Fumadocs sidebar styling overrides */
+[data-fumadocs-sidebar] {
+	background: rgba(11, 14, 20, 0.8) !important;
+	backdrop-filter: blur(12px);
+	border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-fumadocs-sidebar] a {
+	font-family: var(--font-mono);
+	font-size: 0.75rem;
+	letter-spacing: 0.025em;
+}
+
+[data-fumadocs-sidebar] a[data-active="true"] {
+	color: var(--color-cyber-lime) !important;
+	background: rgba(30, 41, 59, 0.3) !important;
+}
+
+/* Fumadocs TOC styling overrides */
+[data-fumadocs-toc] a {
+	color: var(--color-slate-text);
+	font-family: var(--font-mono);
+	font-size: 0.75rem;
+	transition: color 0.2s;
+}
+
+[data-fumadocs-toc] a:hover {
+	color: var(--color-cyber-lime);
+}
+
+[data-fumadocs-toc] a[data-active="true"] {
+	color: var(--color-cyber-lime) !important;
+}
+
+/* Fumadocs search dialog styling */
+[data-fumadocs-search] {
+	background: var(--color-gunmetal-glass) !important;
+	border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Fumadocs content styling */
+.prose h1,
+.prose h2,
+.prose h3 {
+	font-family: var(--font-mono);
+}
+
+.prose p {
+	color: var(--color-slate-text);
 }

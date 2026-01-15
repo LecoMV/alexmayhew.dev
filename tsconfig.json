@@ -19,10 +19,11 @@
 			}
 		],
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"fumadocs-mdx:collections/*": ["./.source/*"]
 		},
 		"types": ["./cloudflare-env.d.ts", "node"]
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", ".source/**/*.ts"],
 	"exclude": ["node_modules"]
 }
