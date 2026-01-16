@@ -5,6 +5,8 @@
 	"scripts": {
 		"dev": "next dev --turbopack",
 		"build": "NODE_ENV=production next build",
+		"build:clean": "npm run clean:cache && NODE_ENV=production next build",
+		"clean:cache": "rm -rf .next/cache/webpack node_modules/.cache",
 		"postinstall": "fumadocs-mdx",
 		"start": "next start",
 		"lint": "eslint . --ext .ts,.tsx,.js,.jsx",

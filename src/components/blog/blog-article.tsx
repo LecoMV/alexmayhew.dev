@@ -5,25 +5,8 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Calendar, Tag } from "lucide-react";
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
-
-interface Post {
-	slug: string;
-	data: {
-		title: string;
-		description: string;
-		publishedAt: Date;
-		category: string;
-		tags: string[];
-		image?: string;
-	};
-}
+import { useBlogTheme } from "@/lib/blog-themes";
+import type { Post } from "./types";
 
 interface BlogArticleProps {
 	post: Post;
@@ -31,8 +14,13 @@ interface BlogArticleProps {
 }
 
 export function BlogArticle({ post, children }: BlogArticleProps) {
+	const { theme, springTransition } = useBlogTheme();
+
 	return (
-		<main className="min-h-screen px-6 pt-44 pb-24 sm:px-12 md:px-24">
+		<main
+			className="min-h-screen px-6 pt-44 pb-24 sm:px-12 md:px-24"
+			style={{ backgroundColor: theme.colors.background }}
+		>
 			<div className="mx-auto max-w-[900px]">
 				{/* Back Link */}
 				<motion.div
@@ -42,7 +30,14 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 				>
 					<Link
 						href="/blog"
-						className="text-slate-text hover:text-cyber-lime group mb-8 inline-flex items-center gap-2 font-mono text-sm transition-colors"
+						className="group mb-8 inline-flex items-center gap-2 font-mono text-sm transition-colors"
+						style={{ color: theme.colors.textMuted }}
+						onMouseEnter={(e) => {
+							e.currentTarget.style.color = theme.colors.accent;
+						}}
+						onMouseLeave={(e) => {
+							e.currentTarget.style.color = theme.colors.textMuted;
+						}}
 					>
 						<ArrowLeft
 							className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1"
@@ -59,7 +54,10 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ ...springTransition, delay: 0.1 }}
 				>
-					<div className="text-slate-text mb-4 flex flex-wrap items-center gap-4 font-mono text-xs">
+					<div
+						className="mb-4 flex flex-wrap items-center gap-4 font-mono text-xs"
+						style={{ color: theme.colors.textMuted }}
+					>
 						<span className="flex items-center gap-1">
 							<Calendar className="h-3 w-3" strokeWidth={1.5} />
 							{post.data.publishedAt.toLocaleDateString("en-US", {
@@ -68,33 +66,48 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 								day: "numeric",
 							})}
 						</span>
-						<span className="text-cyber-lime">{post.data.category}</span>
+						<span style={{ color: theme.colors.accent }}>
+							{theme.typography.categoryFormat(post.data.category)}
+						</span>
 					</div>
 
-					<h1 className="mb-6 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl">
+					<h1
+						className="mb-6 text-3xl font-bold tracking-tight md:text-4xl lg:text-5xl"
+						style={{ color: theme.colors.text }}
+					>
 						{post.data.title}
 					</h1>
 
-					<p className="text-slate-text text-lg leading-relaxed">{post.data.description}</p>
+					<p className="text-lg leading-relaxed" style={{ color: theme.colors.textMuted }}>
+						{post.data.description}
+					</p>
 
 					{/* Tags */}
-					<div className="mt-6 flex flex-wrap gap-2">
-						{post.data.tags.map((tag) => (
-							<span
-								key={tag}
-								className="border-cyber-lime/30 bg-cyber-lime/5 flex items-center gap-1 border px-3 py-1 font-mono text-xs"
-							>
-								<Tag className="h-2.5 w-2.5" strokeWidth={1.5} />
-								{tag}
-							</span>
-						))}
-					</div>
+					{theme.layout.showTags && (
+						<div className="mt-6 flex flex-wrap gap-2">
+							{post.data.tags.map((tag) => (
+								<span
+									key={tag}
+									className="flex items-center gap-1 border px-3 py-1 font-mono text-xs"
+									style={{
+										borderColor: theme.colors.borderHover,
+										backgroundColor: theme.colors.accentFaint,
+										color: theme.colors.text,
+									}}
+								>
+									<Tag className="h-2.5 w-2.5" strokeWidth={1.5} />
+									{tag}
+								</span>
+							))}
+						</div>
+					)}
 				</motion.header>
 
 				{/* Featured Image */}
 				{post.data.image && (
 					<motion.div
-						className="relative mb-12 aspect-video w-full overflow-hidden border border-white/10"
+						className="relative mb-12 aspect-video w-full overflow-hidden border"
+						style={{ borderColor: theme.colors.border }}
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ ...springTransition, delay: 0.2 }}
@@ -108,14 +121,21 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 							priority
 						/>
 						{/* Corner accents */}
-						<div className="border-cyber-lime absolute top-0 right-0 h-6 w-6 border-t-2 border-r-2" />
-						<div className="border-cyber-lime absolute bottom-0 left-0 h-6 w-6 border-b-2 border-l-2" />
+						<div
+							className="absolute top-0 right-0 h-6 w-6 border-t-2 border-r-2"
+							style={{ borderColor: theme.colors.accent }}
+						/>
+						<div
+							className="absolute bottom-0 left-0 h-6 w-6 border-b-2 border-l-2"
+							style={{ borderColor: theme.colors.accent }}
+						/>
 					</motion.div>
 				)}
 
 				{/* Divider */}
 				<motion.div
-					className="mb-12 h-px bg-white/10"
+					className="mb-12 h-px"
+					style={{ backgroundColor: theme.colors.border }}
 					initial={{ scaleX: 0 }}
 					animate={{ scaleX: 1 }}
 					transition={{ ...springTransition, delay: 0.3 }}

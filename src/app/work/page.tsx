@@ -12,7 +12,7 @@ const springTransition = {
 	mass: 1,
 };
 
-const categories = ["All", "AI/ML", "SaaS", "Web Apps", "Open Source"] as const;
+const categories = ["All", "AI/ML", "SaaS", "Web Apps"] as const;
 type Category = (typeof categories)[number];
 
 interface Project {
@@ -39,33 +39,24 @@ const projects: Project[] = [
 		featured: true,
 	},
 	{
-		id: "sovereign-cbam",
-		title: "Sovereign CBAM",
+		id: "penqwen",
+		title: "PenQWEN",
 		description:
-			"Carbon Border Adjustment compliance platform for EU importers. Local-first architecture with offline-capable data processing.",
-		category: "SaaS",
-		tech: ["Next.js", "PostgreSQL", "Edge Functions", "AI/ML"],
+			"Custom cybersecurity LLM built on Qwen2.5 with domain-specific LoRA fine-tuning. Two-stage training: domain adaptation on cybersecurity corpus, then agentic fine-tuning for tool calling and OPSEC workflows. 3.6GB LoRA adapters trained on 12GB curated security data.",
+		category: "AI/ML",
+		tech: ["Python", "PyTorch", "LoRA", "Qwen2.5", "Transformers", "PEFT", "Cybersecurity"],
 		year: "2024",
 		featured: true,
 	},
 	{
-		id: "inkos",
-		title: "InkOS",
+		id: "audiokeep",
+		title: "AudioKeep",
 		description:
-			"Tattoo studio management system with real-time collaboration, appointment scheduling, and digital consent workflows.",
-		category: "SaaS",
-		tech: ["React", "Supabase", "WebGL", "Procreate Integration"],
+			"Professional AI audio restoration platform for archival preservation and forensics. Orchestrates Resemble Enhance, AudioSR, DeepFilterNet, and Demucs v4 for noise reduction, spectral repair, audio super-resolution (up to 192kHz), and source separation. Credit-based SaaS with forensic analysis tools.",
+		category: "AI/ML",
+		tech: ["Python", "FastAPI", "PyTorch", "React", "TypeScript", "Celery", "Redis", "Stripe"],
 		year: "2024",
-		featured: true,
-	},
-	{
-		id: "neural-dashboard",
-		title: "Neural Analytics Dashboard",
-		description:
-			"Real-time data visualization platform with AI-powered insights and predictive modeling capabilities.",
-		category: "Web Apps",
-		tech: ["TypeScript", "D3.js", "TensorFlow.js", "WebSockets"],
-		year: "2024",
+		github: "https://github.com/LecoMV/audiokeep",
 	},
 	{
 		id: "donedays",
@@ -77,23 +68,40 @@ const projects: Project[] = [
 		year: "2024",
 	},
 	{
-		id: "claude-flow",
-		title: "Claude Flow",
+		id: "marksman-pro",
+		title: "MarksmanPro",
 		description:
-			"Open-source multi-agent orchestration framework for AI-powered development workflows.",
-		category: "Open Source",
-		tech: ["TypeScript", "Node.js", "MCP Protocol"],
+			"Precision ballistics calculator for long-range shooting. Physics simulation engine accounting for atmospheric conditions, Coriolis effect, spin drift, and projectile aerodynamics. Real-time trajectory visualization.",
+		category: "Web Apps",
+		tech: ["TypeScript", "React", "WebGL", "Physics Engine", "PWA"],
 		year: "2024",
-		github: "https://github.com/example/claude-flow",
 	},
 	{
-		id: "edge-auth",
-		title: "Edge Auth",
-		description: "Zero-latency authentication library optimized for edge computing environments.",
-		category: "Open Source",
-		tech: ["TypeScript", "JWT", "WebCrypto API"],
-		year: "2023",
-		github: "https://github.com/example/edge-auth",
+		id: "webscraper-pro",
+		title: "WebScraperPro",
+		description:
+			"Enterprise-grade web scraping platform with intelligent rate limiting, proxy rotation, and anti-detection measures. Headless browser automation with structured data extraction pipelines.",
+		category: "SaaS",
+		tech: ["Python", "Playwright", "FastAPI", "PostgreSQL", "Redis", "Docker"],
+		year: "2024",
+	},
+	{
+		id: "sovereign-cbam",
+		title: "Sovereign CBAM",
+		description:
+			"Carbon Border Adjustment compliance platform for EU importers. Local-first architecture with offline-capable data processing. (In Development)",
+		category: "SaaS",
+		tech: ["Next.js", "PostgreSQL", "Edge Functions", "AI/ML"],
+		year: "2025",
+	},
+	{
+		id: "inkos",
+		title: "InkOS",
+		description:
+			"Tattoo studio management system with real-time collaboration, appointment scheduling, and digital consent workflows. (In Development)",
+		category: "SaaS",
+		tech: ["React", "Supabase", "WebGL", "Procreate Integration"],
+		year: "2025",
 	},
 ];
 
