@@ -29,4 +29,13 @@ export const blog = defineCollections({
 		})),
 });
 
-export default defineConfig();
+export default defineConfig({
+	mdxOptions: {
+		rehypeCodeOptions: {
+			themes: {
+				light: "github-dark",
+				dark: "github-dark",
+			},
+		},
+	},
+});
