@@ -1,0 +1,629 @@
+---
+title: "Atmospheric Animations: The Physics of Framer Motion"
+description: "Spring dynamics, damping ratios, and velocity preservation. Understanding the physics that makes animations feel natural."
+date: "2026-01-28"
+author: "Alex Mayhew"
+tags: ["framer-motion", "animation", "react", "ux"]
+category: "frontend"
+readingTime: "13 min"
+featured: false
+---
+
+## TL;DR
+
+Spring physics: mass, stiffness, damping. Damping ratio (ζ): <1 bouncy, =1 smooth, >1 sluggish. Layout Projection = FLIP for smooth layout changes. Never use linear easing for UI animations. Respect `prefers-reduced-motion`. Animation is feedback, not decoration.
+
+---
+
+## Why Springs Feel Natural
+
+Biological motion follows physics. When you reach for a coffee cup, your arm doesn't move at constant velocity then stop instantly. It accelerates, decelerates, and settles—with a tiny overshoot if you're rushed.
+
+Linear animations violate this intuition. They feel robotic because nothing in nature moves linearly.
+
+Spring animations model the physics of an oscillating spring. The math is simple:
+
+**Hooke's Law**: Force = -k × displacement
+
+The further you stretch a spring, the harder it pulls back. The variable `k` is the spring constant—how stiff the spring is.
+
+**Damping**: Force = -c × velocity
+
+Friction slows the motion. The variable `c` determines how quickly oscillations die out.
+
+Combined, these forces create motion that accelerates naturally, overshoots slightly, and settles smoothly. This is the motion of physical objects, which is why it feels "right" in UI.
+
+---
+
+## The Harmonic Oscillator
+
+Spring animations solve the damped harmonic oscillator equation:
+
+```
+m × a = -k × x - c × v
+```
+
+Where:
+
+- `m` = mass (inertia)
+- `a` = acceleration
+- `k` = stiffness (spring constant)
+- `x` = displacement from rest
+- `c` = damping coefficient
+- `v` = velocity
+
+This differential equation has three solution types, determined by the **damping ratio** (ζ):
+
+```
+ζ = c / (2 × √(k × m))
+```
+
+The damping ratio determines the character of the motion.
+
+---
+
+## Damping Ratio Deep Dive
+
+### Underdamped (ζ < 1)
+
+The spring overshoots and oscillates before settling. The lower ζ, the more bouncy.
+
+```tsx
+// Very bouncy (ζ ≈ 0.3)
+<motion.div
+	animate={{ x: 100 }}
+	transition={{
+		type: "spring",
+		stiffness: 100,
+		damping: 5,
+	}}
+/>
+```
+
+**Use for**: Playful interactions, attention-grabbing elements, mobile app gestures.
+
+**Avoid for**: Text animations (hard to read while bouncing), professional contexts.
+
+### Critically Damped (ζ = 1)
+
+The fastest path to rest without overshoot. The motion is quick but doesn't bounce.
+
+```tsx
+// Critically damped
+<motion.div
+	animate={{ x: 100 }}
+	transition={{
+		type: "spring",
+		stiffness: 100,
+		damping: 20, // ζ ≈ 1 for this stiffness
+	}}
+/>
+```
+
+**Use for**: Most UI animations. Dialogs, menus, page transitions.
+
+### Overdamped (ζ > 1)
+
+The motion is sluggish. It approaches the target slowly without overshooting.
+
+```tsx
+// Overdamped (sluggish)
+<motion.div
+	animate={{ x: 100 }}
+	transition={{
+		type: "spring",
+		stiffness: 100,
+		damping: 50, // ζ > 1
+	}}
+/>
+```
+
+**Use for**: Rarely. Sometimes appropriate for large, heavy elements where you want to convey mass.
+
+### Framer Motion Defaults
+
+Framer Motion's default spring uses ζ ≈ 0.5 (underdamped, slightly bouncy):
+
+```tsx
+// Default spring - bouncy
+<motion.div animate={{ scale: 1.1 }} transition={{ type: "spring" }} />
+```
+
+For most UI work, increase damping for a more professional feel:
+
+```tsx
+// Better default for UI
+<motion.div
+	animate={{ scale: 1.1 }}
+	transition={{
+		type: "spring",
+		stiffness: 100,
+		damping: 15,
+	}}
+/>
+```
+
+---
+
+## Framer Motion Spring Configuration
+
+### The Three Parameters
+
+**stiffness**: How fast the spring responds. Higher = snappier.
+
+- Low (50-100): Slow, gentle motion
+- Medium (200-400): Responsive, standard UI
+- High (500+): Snappy, immediate feel
+
+**damping**: How quickly oscillations die out. Higher = less bounce.
+
+- Low (5-10): Very bouncy
+- Medium (15-25): Slight bounce, settling quickly
+- High (30+): No visible bounce
+
+**mass**: The inertia of the animated element. Higher = more momentum.
+
+- Low (<1): Light, responsive
+- Default (1): Standard behavior
+- High (>1): Heavy, continued momentum
+
+### Presets
+
+Framer Motion provides named presets:
+
+```tsx
+import { motion } from 'framer-motion'
+
+// Gentle, slow motion
+<motion.div transition={{ type: 'spring', ...presets.gentle }} />
+
+// Bouncy, playful
+<motion.div transition={{ type: 'spring', ...presets.wobbly }} />
+
+// Snappy, immediate
+<motion.div transition={{ type: 'spring', ...presets.stiff }} />
+```
+
+Or define your own:
+
+```tsx
+// config/animation.ts
+export const springPresets = {
+	// UI default - responsive, minimal bounce
+	default: { stiffness: 200, damping: 25 },
+
+	// Buttons, small elements - snappy
+	snappy: { stiffness: 400, damping: 30 },
+
+	// Modals, large elements - deliberate
+	gentle: { stiffness: 100, damping: 20 },
+
+	// Attention-grabbing - bouncy
+	bouncy: { stiffness: 300, damping: 10 },
+};
+```
+
+### Visualizing Spring Behavior
+
+Build intuition by visualizing different configurations:
+
+```tsx
+// Interactive spring playground
+function SpringPlayground() {
+	const [stiffness, setStiffness] = useState(200);
+	const [damping, setDamping] = useState(20);
+	const [isAnimating, setIsAnimating] = useState(false);
+
+	return (
+		<div>
+			<motion.div
+				animate={{ x: isAnimating ? 200 : 0 }}
+				transition={{ type: "spring", stiffness, damping }}
+				className="bg-cyber-lime h-16 w-16"
+			/>
+
+			<input
+				type="range"
+				min="50"
+				max="500"
+				value={stiffness}
+				onChange={(e) => setStiffness(Number(e.target.value))}
+			/>
+			<label>Stiffness: {stiffness}</label>
+
+			<input
+				type="range"
+				min="1"
+				max="50"
+				value={damping}
+				onChange={(e) => setDamping(Number(e.target.value))}
+			/>
+			<label>Damping: {damping}</label>
+
+			<button onClick={() => setIsAnimating(!isAnimating)}>Toggle</button>
+		</div>
+	);
+}
+```
+
+---
+
+## Layout Projection: The Magic
+
+Animating `width`, `height`, `top`, `left` is expensive. These properties trigger layout recalculation, which blocks the main thread.
+
+Framer Motion's Layout Projection uses the FLIP technique to animate these properties performantly.
+
+### FLIP: First, Last, Invert, Play
+
+1. **First**: Record the element's starting position/size
+2. **Last**: Apply the final styles, measure new position/size
+3. **Invert**: Use CSS transforms to move the element back to the starting position
+4. **Play**: Animate the transform back to identity (0)
+
+The result: the element appears to animate width/height, but actually uses GPU-accelerated transforms.
+
+```tsx
+// Enable layout animation
+<motion.div layout>{/* Content that changes size */}</motion.div>
+```
+
+When the content changes, Framer Motion:
+
+1. Measures the old bounds
+2. Lets React re-render with new content
+3. Measures the new bounds
+4. Applies transform to match old bounds
+5. Animates transform to identity
+
+### Scale Correction
+
+When a parent scales, children would appear distorted. Framer Motion corrects for this:
+
+```tsx
+// Parent shrinks, but text stays readable
+<motion.div layout className="p-4">
+	<motion.p layout="position">This text won't scale with the container</motion.p>
+</motion.div>
+```
+
+`layout="position"` tells Framer Motion to only animate position, not scale.
+
+### Shared Element Transitions
+
+The `layoutId` prop creates shared element transitions—an element in one location animates to another location:
+
+```tsx
+function CardList() {
+	const [selectedId, setSelectedId] = useState(null);
+
+	return (
+		<>
+			{items.map((item) => (
+				<motion.div
+					key={item.id}
+					layoutId={`card-${item.id}`}
+					onClick={() => setSelectedId(item.id)}
+				>
+					<motion.h2 layoutId={`title-${item.id}`}>{item.title}</motion.h2>
+				</motion.div>
+			))}
+
+			<AnimatePresence>
+				{selectedId && (
+					<motion.div
+						layoutId={`card-${selectedId}`}
+						className="bg-gunmetal-glass fixed inset-0 p-8"
+					>
+						<motion.h2 layoutId={`title-${selectedId}`}>
+							{items.find((i) => i.id === selectedId).title}
+						</motion.h2>
+						<button onClick={() => setSelectedId(null)}>Close</button>
+					</motion.div>
+				)}
+			</AnimatePresence>
+		</>
+	);
+}
+```
+
+The card "morphs" from its list position into a full-screen modal. The title maintains visual continuity throughout.
+
+---
+
+## Velocity Preservation
+
+Good animations maintain C¹ continuity—no jarring velocity jumps.
+
+When a user interrupts an animation mid-flight, the new animation should start from the current velocity, not zero:
+
+```tsx
+// Framer Motion handles this automatically
+<motion.div animate={{ x: target }} transition={{ type: "spring", stiffness: 200, damping: 20 }} />
+```
+
+If the user changes `target` while the element is moving, Framer Motion:
+
+1. Reads current position and velocity
+2. Starts new spring from that state
+3. Animates smoothly to new target
+
+This creates the "momentum" feel of native applications. Gestures feel continuous, not stuttery.
+
+### Manual Velocity Control
+
+For gesture-driven animations, you can provide initial velocity:
+
+```tsx
+const x = useMotionValue(0);
+
+function handlePanEnd(event, info) {
+	// info.velocity contains the gesture velocity
+	animate(x, snapPoint, {
+		type: "spring",
+		velocity: info.velocity.x, // Continue with gesture momentum
+		stiffness: 500,
+		damping: 30,
+	});
+}
+
+return <motion.div style={{ x }} drag="x" onPanEnd={handlePanEnd} />;
+```
+
+The snap animation carries forward the gesture velocity, creating fluid interaction.
+
+---
+
+## Accessibility: Reduced Motion
+
+Some users experience motion sickness or vestibular disorders triggered by animation. The `prefers-reduced-motion` media query lets users opt out.
+
+### Detecting the Preference
+
+```tsx
+// Hook to detect reduced motion preference
+function usePrefersReducedMotion() {
+	const [prefersReduced, setPrefersReduced] = useState(false);
+
+	useEffect(() => {
+		const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+		setPrefersReduced(mediaQuery.matches);
+
+		const handler = (e: MediaQueryListEvent) => setPrefersReduced(e.matches);
+		mediaQuery.addEventListener("change", handler);
+		return () => mediaQuery.removeEventListener("change", handler);
+	}, []);
+
+	return prefersReduced;
+}
+```
+
+### Conditional Animation
+
+```tsx
+function AnimatedComponent() {
+	const prefersReduced = usePrefersReducedMotion();
+
+	return (
+		<motion.div
+			initial={{ opacity: 0, y: prefersReduced ? 0 : 20 }}
+			animate={{ opacity: 1, y: 0 }}
+			transition={
+				prefersReduced
+					? { duration: 0 } // Instant
+					: { type: "spring", stiffness: 200, damping: 20 }
+			}
+		>
+			Content
+		</motion.div>
+	);
+}
+```
+
+For reduced motion, we either:
+
+1. Disable animation entirely (`duration: 0`)
+2. Use simpler, shorter animations (fade only, no movement)
+3. Reduce amplitude (smaller distance, less bounce)
+
+### WCAG Guidelines
+
+WCAG 2.1 Success Criterion 2.3.3: "Animation from Interactions" (AAA level) states:
+
+> Motion animation triggered by interaction can be disabled, unless the animation is essential to the functionality.
+
+In practice:
+
+- Page transitions: Optional, should respect reduced motion
+- Loading spinners: Essential, can remain (but simplify if possible)
+- Hover effects: Optional, disable or reduce
+- Drag feedback: Essential for functionality, keep but minimize
+
+---
+
+## Performance Engineering
+
+### GPU-Accelerated Properties
+
+Only certain properties animate efficiently:
+
+- `transform` (translate, scale, rotate)
+- `opacity`
+
+These run on the compositor thread, separate from main thread JavaScript. They don't trigger layout or paint.
+
+Properties that trigger layout:
+
+- `width`, `height` (use scale instead)
+- `top`, `left`, `right`, `bottom` (use translate instead)
+- `padding`, `margin` (avoid animating)
+
+```tsx
+// Slow - triggers layout
+<motion.div animate={{ width: 200 }} />
+
+// Fast - uses transform
+<motion.div animate={{ scaleX: 2 }} />
+```
+
+Framer Motion's layout animations convert layout properties to transforms internally, so you get the best of both worlds.
+
+### The will-change Hint
+
+```css
+.animated-element {
+	will-change: transform, opacity;
+}
+```
+
+This hints to the browser to prepare for animation by promoting the element to its own compositor layer. Use sparingly—too many layers consume GPU memory.
+
+Framer Motion applies `will-change` automatically during animation and removes it afterward.
+
+### Avoiding Layout Thrashing
+
+Layout thrashing occurs when you read layout properties between writes:
+
+```tsx
+// Bad - causes thrashing
+items.forEach((item) => {
+	item.style.width = item.offsetWidth + 10 + "px"; // Read + Write
+});
+
+// Better - batch reads, then writes
+const widths = items.map((item) => item.offsetWidth); // All reads
+items.forEach((item, i) => {
+	item.style.width = widths[i] + 10 + "px"; // All writes
+});
+```
+
+Framer Motion batches layout reads in `useLayoutEffect`, preventing thrashing.
+
+---
+
+## Common Animation Patterns
+
+### Staggered Children
+
+```tsx
+const container = {
+	hidden: { opacity: 0 },
+	show: {
+		opacity: 1,
+		transition: {
+			staggerChildren: 0.1,
+		},
+	},
+};
+
+const item = {
+	hidden: { opacity: 0, y: 20 },
+	show: { opacity: 1, y: 0 },
+};
+
+function StaggeredList({ items }) {
+	return (
+		<motion.ul variants={container} initial="hidden" animate="show">
+			{items.map((i) => (
+				<motion.li key={i.id} variants={item}>
+					{i.content}
+				</motion.li>
+			))}
+		</motion.ul>
+	);
+}
+```
+
+Each child animates in sequence, creating a cascade effect.
+
+### Exit Animations
+
+```tsx
+<AnimatePresence>
+	{isVisible && (
+		<motion.div
+			initial={{ opacity: 0, scale: 0.9 }}
+			animate={{ opacity: 1, scale: 1 }}
+			exit={{ opacity: 0, scale: 0.9 }}
+		>
+			Modal content
+		</motion.div>
+	)}
+</AnimatePresence>
+```
+
+`AnimatePresence` keeps the component mounted during exit animation.
+
+### Scroll-Triggered Animation
+
+```tsx
+function ScrollReveal({ children }) {
+	const ref = useRef(null);
+	const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+	return (
+		<motion.div
+			ref={ref}
+			initial={{ opacity: 0, y: 50 }}
+			animate={isInView ? { opacity: 1, y: 0 } : {}}
+			transition={{ type: "spring", stiffness: 100, damping: 20 }}
+		>
+			{children}
+		</motion.div>
+	);
+}
+```
+
+The element animates when it enters the viewport. `once: true` prevents re-animation on scroll.
+
+### Hover and Tap States
+
+```tsx
+<motion.button
+	whileHover={{ scale: 1.05 }}
+	whileTap={{ scale: 0.95 }}
+	transition={{ type: "spring", stiffness: 400, damping: 15 }}
+>
+	Click me
+</motion.button>
+```
+
+Snappy springs (high stiffness) work well for hover states—the feedback should feel immediate.
+
+---
+
+## Animation as Feedback
+
+Animation isn't decoration. It's communication.
+
+**State changes**: When a button transitions from "idle" to "loading," the animation tells the user "I heard you, I'm working on it."
+
+**Spatial relationships**: Shared element transitions show where content came from and where it went. The user maintains a mental model of the interface geography.
+
+**Causality**: When you drag an element and it snaps to a grid, the spring animation shows that the system is responding to your action. Without animation, changes feel arbitrary.
+
+**Error states**: A shake animation on failed validation is clearer than red text. It says "no, try again" in a way that's hard to miss.
+
+The physics of springs—overshoot, settle, momentum—create the illusion that UI elements have weight. This "weight" makes interfaces feel real, responsive, and crafted.
+
+---
+
+## Conclusion
+
+Animation is the physicality layer of UI. Done right, it makes interfaces feel natural, responsive, and alive. Done wrong—linear easing, jarring stops, excessive movement—it creates cognitive friction.
+
+The tools are simple:
+
+1. **Use springs, not linear easing**
+2. **Understand damping**: ζ < 1 bouncy, ζ ≈ 1 smooth
+3. **Use layout projection** for width/height animations
+4. **Preserve velocity** during interruptions
+5. **Respect reduced motion preferences**
+
+Start with Framer Motion's defaults, then tune. Add a spring playground to your component library so designers and developers can explore together.
+
+The goal is invisible animation—motion that feels so natural you don't notice it, but its absence would make the interface feel dead.
+
+---
+
+_This is part of a series on building production SaaS applications. Next up: [Tailwind vs. Component Libraries: A Performance Deep Dive](/blog/tailwind-vs-component-libraries)._

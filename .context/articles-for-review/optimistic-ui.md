@@ -1,0 +1,429 @@
+---
+title: "Optimistic UI: Making Apps Feel Faster Than Physics Allows"
+description: "Update the UI immediately, sync in the background, rollback on failure. The 'lie' that creates the best user experience."
+date: "2026-02-07"
+author: "Alex Mayhew"
+tags: ["react", "ux", "performance", "frontend"]
+category: "frontend"
+readingTime: "12 min"
+featured: false
+---
+
+## TL;DR
+
+100ms feels instant; 1 second breaks flow. Optimistic UI updates the client immediately while the server processes. React Query: `onMutate` for cache manipulation, `onError` for rollback. SWR: `optimisticData` parameter. Next.js: `useOptimistic` hook. Don't use for financial transactions or scarce inventory.
+
+---
+
+## The Cognitive Science of Waiting
+
+Human perception operates in distinct temporal bands:
+
+| Threshold  | User Experience                       |
+| ---------- | ------------------------------------- |
+| 100ms      | Feels instant—direct manipulation     |
+| 1 second   | Noticeable delay, but flow maintained |
+| 10 seconds | Attention drifts, likely abandonment  |
+
+Traditional request-response cycles push interactions into the 100ms-1s danger zone. Even a fast 200ms API response, combined with network latency and rendering time, breaks the illusion of direct manipulation.
+
+The spinner creates uncertainty. "Is my internet down? Did the app freeze? Will my data be lost?" This anxiety dilates perceived time—a 2-second wait feels like 10.
+
+Optimistic UI eliminates the wait by lying to the user. Productively.
+
+---
+
+## How It Works
+
+The pattern:
+
+1. User clicks "Like"
+2. UI immediately shows "Liked" state
+3. Request fires in background
+4. If success: state confirmed (no change visible)
+5. If failure: rollback to original state + show error
+
+The user sees instant feedback. The "system think time" overlaps with the user's "what's next" think time, effectively parallelizing human and machine.
+
+---
+
+## Architectural Levels
+
+### Level 1: Component State
+
+The simplest implementation—toggle local state:
+
+```tsx
+function LikeButton({ postId }) {
+	const [liked, setLiked] = useState(false);
+	const [pending, setPending] = useState(false);
+
+	async function handleClick() {
+		setLiked(!liked); // Optimistic update
+		setPending(true);
+
+		try {
+			await api.toggleLike(postId);
+		} catch {
+			setLiked(liked); // Rollback
+			toast.error("Failed to update");
+		} finally {
+			setPending(false);
+		}
+	}
+
+	return <button onClick={handleClick}>{liked ? "Liked" : "Like"}</button>;
+}
+```
+
+**Limitation**: State is ephemeral. If user navigates away and back, or if other components need to know about the like, local state isn't shared.
+
+### Level 2: Cache-Driven (React Query, SWR)
+
+State lives in a global cache. All components subscribing to that data update simultaneously.
+
+```tsx
+const queryClient = useQueryClient();
+
+const mutation = useMutation({
+	mutationFn: api.addTodo,
+	onMutate: async (newTodo) => {
+		// Cancel any outgoing refetches
+		await queryClient.cancelQueries({ queryKey: ["todos"] });
+
+		// Snapshot previous state
+		const previousTodos = queryClient.getQueryData(["todos"]);
+
+		// Optimistically update
+		queryClient.setQueryData(["todos"], (old) => [...old, newTodo]);
+
+		// Return context for rollback
+		return { previousTodos };
+	},
+	onError: (err, newTodo, context) => {
+		// Rollback on error
+		queryClient.setQueryData(["todos"], context.previousTodos);
+	},
+	onSettled: () => {
+		// Refetch to ensure consistency
+		queryClient.invalidateQueries({ queryKey: ["todos"] });
+	},
+});
+```
+
+Because the cache updates, every component rendering todos updates immediately—the list, the counter, the sidebar.
+
+### Level 3: Local-First
+
+The most advanced pattern. The application reads from and writes to a local database (IndexedDB, SQLite-in-browser). A sync engine replicates changes to the server.
+
+Linear, Notion, and Figma use this architecture. The network is an implementation detail—the app works entirely offline.
+
+Building a sync engine is substantial engineering. Consider libraries like Replicache or ElectricSQL for pre-built solutions.
+
+---
+
+## React Query: The onMutate Pattern
+
+React Query offers the most granular control.
+
+### The Workflow
+
+```tsx
+const mutation = useMutation({
+	mutationFn: (newTodo) => api.createTodo(newTodo),
+
+	onMutate: async (newTodo) => {
+		// 1. Cancel in-flight refetches (prevent race condition)
+		await queryClient.cancelQueries({ queryKey: ["todos"] });
+
+		// 2. Snapshot for rollback
+		const previousTodos = queryClient.getQueryData(["todos"]);
+
+		// 3. Optimistic update
+		queryClient.setQueryData(["todos"], (old) => [
+			...old,
+			{ ...newTodo, id: "temp-id", status: "pending" },
+		]);
+
+		// 4. Return context
+		return { previousTodos };
+	},
+
+	onError: (err, variables, context) => {
+		// 5. Rollback
+		queryClient.setQueryData(["todos"], context.previousTodos);
+		toast.error("Failed to create todo");
+	},
+
+	onSuccess: (data, variables) => {
+		// 6. Replace temp item with real data (if needed)
+		queryClient.setQueryData(["todos"], (old) =>
+			old.map((item) => (item.id === "temp-id" ? data : item))
+		);
+	},
+
+	onSettled: () => {
+		// 7. Refetch for consistency
+		queryClient.invalidateQueries({ queryKey: ["todos"] });
+	},
+});
+```
+
+### Handling Concurrent Updates
+
+What if the user clicks rapidly, triggering multiple mutations before the first resolves?
+
+The naive rollback might restore a snapshot from before any clicks, undoing valid intermediate states.
+
+**Solution**: Use functional updates that operate on current state:
+
+```tsx
+onError: (err, variables, context) => {
+	// Instead of restoring a snapshot,
+	// remove the specific failed item
+	queryClient.setQueryData(["todos"], (current) =>
+		current.filter((todo) => todo.id !== variables.tempId)
+	);
+};
+```
+
+---
+
+## SWR: Declarative Optimism
+
+SWR provides a cleaner API for simple cases:
+
+```tsx
+const { mutate } = useSWR("/api/user");
+
+async function updateName(newName) {
+	mutate(
+		updateUser({ name: newName }), // The actual API call
+		{
+			optimisticData: { ...user, name: newName },
+			rollbackOnError: true,
+			revalidate: true,
+		}
+	);
+}
+```
+
+The `optimisticData` replaces the cache immediately. If the promise rejects, `rollbackOnError` restores the previous value automatically.
+
+Less control than React Query, but less boilerplate for straightforward updates.
+
+---
+
+## Next.js: useOptimistic Hook
+
+React 19 introduced `useOptimistic` for Server Actions:
+
+```tsx
+const [optimisticMessages, addOptimisticMessage] = useOptimistic(
+	messages, // Real state from server
+	(state, newMessage) => [...state, { text: newMessage, sending: true }]
+);
+
+async function sendMessage(formData: FormData) {
+	const text = formData.get("message");
+
+	// Update UI immediately
+	addOptimisticMessage(text);
+
+	// Server Action (runs on server)
+	await createMessage(text);
+}
+```
+
+When the Server Action completes, the component re-renders with new server data. The optimistic state is automatically discarded—no explicit rollback code needed.
+
+The implicit rollback relies on React's render cycle: when the transition ends, `useOptimistic` yields the real state prop, not the temporary state.
+
+---
+
+## Conflict Resolution
+
+When optimistic updates disagree with server reality, you need a strategy.
+
+### Last-Write-Wins (LWW)
+
+The simplest approach. Every update has a timestamp. Newer wins.
+
+```typescript
+// Server compares timestamps
+if (mutation.timestamp > record.updatedAt) {
+	record = mutation.data;
+}
+```
+
+**Pros**: Simple, predictable.
+
+**Cons**: Data loss if two users edit simultaneously—later write overwrites earlier.
+
+**Use for**: Settings, simple fields where concurrent editing of the same field is rare.
+
+### CRDTs
+
+Conflict-free Replicated Data Types guarantee eventual consistency without coordination.
+
+Instead of storing values, CRDTs store operations (or deltas). Operations are designed to commute: A + B = B + A.
+
+**Sequence CRDTs** (like Yjs) enable collaborative text editing—multiple users can type simultaneously without conflicts.
+
+**Use for**: Real-time collaboration (Figma, Notion, Google Docs).
+
+**Complexity**: High. Usually use a library rather than implementing from scratch.
+
+### Server Authority
+
+For critical operations, the server is authoritative:
+
+1. Client sends optimistic update
+2. Server validates and responds with canonical state
+3. Client reconciles (replace optimistic state with server response)
+
+If the server rejects the operation, the client must accept the rejection.
+
+---
+
+## When NOT to Use Optimistic UI
+
+Optimism is a gamble. Some bets are too risky.
+
+### Financial Transactions
+
+Never show "Transfer Complete" before the server confirms.
+
+If the transfer fails (fraud check, insufficient funds), the user has made decisions based on false information. They might initiate a second transfer, overdraw their account, or close the app believing they're done.
+
+Financial UX deliberately uses spinners. The friction implies security. "We're processing your money carefully" is more reassuring than instant feedback that might be revoked.
+
+### Scarce Inventory
+
+"You got the last ticket" → refresh → "Sorry, sold out"
+
+When resources are scarce and contested, optimistic updates create false expectations. The disappointment of a revoked purchase is worse than a slightly slower confirmation.
+
+Booking systems often use a "holding" state: "Securing your seat..." while the server reserves the resource. Not optimistic, but appropriately cautious.
+
+### Irreversible Destructive Actions
+
+Optimistically showing "Server Deleted" when the API might fail leaves the system in an ambiguous state. Is the server deleted or not?
+
+Add friction intentionally: confirmation dialogs, typing the resource name to confirm. These slow the operation but prevent catastrophic mistakes.
+
+---
+
+## Error Handling: The UX of Failure
+
+When optimism fails, the user must know.
+
+### The Ghost Problem
+
+User adds a todo. Optimistic update shows it. Network fails silently. User navigates away. Comes back—todo is gone.
+
+The user experiences data loss with no explanation.
+
+**Solution**: Visual pending state.
+
+```tsx
+// Optimistic items show subtle "pending" indicator
+<TodoItem todo={todo} pending={todo.id.startsWith("temp-")} />
+```
+
+Slight opacity, a clock icon—something that says "not yet saved" without blocking interaction.
+
+### Toast Notifications
+
+When rollback occurs, notify the user:
+
+```tsx
+onError: () => {
+	toast.error("Failed to save. Your change was not saved.", {
+		action: {
+			label: "Retry",
+			onClick: () => mutation.mutate(data),
+		},
+	});
+};
+```
+
+Include a retry action. The user's intent is clear—help them fulfill it.
+
+### Persistent Drafts
+
+For complex inputs (long comments, form data), don't destroy the user's work:
+
+```tsx
+onError: (err, variables) => {
+	// Keep the draft in local storage
+	localStorage.setItem("draft-comment", variables.text);
+	toast.error("Failed to post. Your comment has been saved as a draft.");
+};
+```
+
+The user can retry or copy their work manually.
+
+---
+
+## Case Studies
+
+### Linear
+
+Linear's UI is famous for feeling "native." Their secret: local-first architecture with aggressive optimistic updates.
+
+Every action writes to IndexedDB immediately. The sync engine handles server replication in the background. There's never a loading state because all data is local.
+
+### Figma
+
+Figma applies movements optimistically. When you drag a shape, the local canvas updates immediately. The operation is sent to the server.
+
+For remote users, Figma interpolates movements. If network packets arrive in bursts, other users see smooth animation—the system predicts where objects are heading.
+
+### Notion
+
+Notion uses SQLite in the browser for offline editing. Changes sync when online.
+
+Their "Offline Forest" tracks which pages are available offline, ensuring structural integrity when merging complex nested content.
+
+---
+
+## Implementation Checklist
+
+### Basic Setup
+
+- [ ] Cache layer in place (React Query, SWR, or equivalent)
+- [ ] Optimistic update logic per mutation
+- [ ] Rollback on error
+- [ ] Visual pending state for unconfirmed items
+- [ ] Error toasts with retry options
+
+### Edge Cases
+
+- [ ] Concurrent rapid mutations handled correctly
+- [ ] Network failure during mutation shows clear feedback
+- [ ] User input preserved on failure
+- [ ] Refetch/revalidation after settlement
+
+### Exclusions
+
+- [ ] Financial transactions use pessimistic UI
+- [ ] Inventory/booking operations confirmed before display
+- [ ] Destructive actions have explicit confirmation
+
+---
+
+## Conclusion
+
+Optimistic UI trades technical correctness for perceived performance. The network is slow; humans are faster. By assuming success and handling failure gracefully, you create experiences that feel native.
+
+The pattern is simple: update immediately, sync in background, rollback on failure. The execution requires attention to edge cases, concurrent updates, and graceful error handling.
+
+Use it for likes, comments, todo lists—low-stakes operations where speed matters more than certainty.
+
+Don't use it for money, scarcity, or irreversibility—where the cost of false confidence exceeds the cost of a spinner.
+
+---
+
+_This is part of a series on building production SaaS applications. Next up: [The Designer-Developer Handoff: From Friction to Flow](/blog/designer-developer-handoff)._

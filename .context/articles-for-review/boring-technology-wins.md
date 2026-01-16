@@ -1,0 +1,291 @@
+---
+title: "Why Boring Technology Wins: Lessons from Unicorn Migrations"
+description: "The highest-performing tech companies built on 'boring' technology and only migrated when they had data proving they needed to."
+date: "2026-01-30"
+author: "Alex Mayhew"
+tags: ["architecture", "technical-leadership", "strategy", "startup"]
+category: "business"
+readingTime: "10 min"
+featured: false
+---
+
+## TL;DR
+
+Segment: 140 microservices → monolith (velocity recovered). Prime Video: serverless → monolith (90% cost reduction). Uber: Python → Go (only for hot paths). Instagram: Django monolith → 14M users with 3 engineers. Pattern: start boring, migrate when you have proof.
+
+---
+
+## The Known Failure Modes Principle
+
+When Postgres fails, Stack Overflow has the answer.
+
+When your custom database fails, you're on your own.
+
+Boring technology—mature, widely-adopted, battle-tested—has a decisive advantage: its failure modes are documented. Thousands of engineers have hit the same problems and shared solutions. The next error message you encounter probably has a blog post explaining exactly how to fix it.
+
+Novel technology offers no such safety net. When things break (and they will break), you're pioneering the debugging.
+
+This asymmetry matters more than most architectural discussions admit.
+
+---
+
+## Case Study: Segment's Microservices Retreat
+
+Segment adopted microservices early, following the prevailing wisdom that microservices enable team autonomy and independent deployment.
+
+### What Happened
+
+The architecture grew to 140 distinct services. Each team owned their domain. Independence was achieved.
+
+But Segment used shared libraries for cross-cutting concerns. A change to one of these libraries required redeploying all 140 services. The "independent" services weren't actually independent—they were a distributed monolith with network boundaries.
+
+Testing became a nightmare. Local development required spinning up dozens of containers. A full integration test took longer than shipping the feature.
+
+### The Reversal
+
+Segment consolidated back to a monolith. Not because monoliths are theoretically superior, but because their specific situation made microservices a net negative.
+
+The results:
+
+- Simplified testing and deployment
+- Recovered engineering velocity
+- Reduced operational complexity
+
+### The Lesson
+
+Microservices solve organizational problems, not technical problems. They're valuable when different teams genuinely need to deploy on different schedules with different release cycles. For a team that ships together, the coordination overhead exceeds the benefit.
+
+If you have fewer than 50 engineers, a modular monolith is almost always the right architecture.
+
+---
+
+## Case Study: Amazon Prime Video
+
+Amazon, the company that pioneered cloud computing, made headlines when Prime Video moved from serverless to a monolith.
+
+### The Original Architecture
+
+Prime Video's audio/video monitoring service was built on AWS Lambda and Step Functions. Clean, serverless, event-driven.
+
+### The Problem
+
+At scale, the architecture hit limits:
+
+- Data transfer between distributed Lambda functions became expensive
+- Step Functions had scalability ceilings for their specific workload
+- The cost per stream was too high for their unit economics
+
+### The Pivot
+
+The team refactored into a single monolithic application on ECS containers.
+
+### The Result
+
+90% infrastructure cost reduction.
+
+### The Lesson
+
+Serverless excels at:
+
+- Unpredictable, bursty workloads
+- Embarrassingly parallel tasks
+- Low-traffic applications where pay-per-use beats provisioned capacity
+
+Serverless struggles when:
+
+- Data needs to move between components (serialization overhead, network latency)
+- Workloads are predictable and constant (provisioned capacity is cheaper)
+- Memory locality matters (keeping data in the same process)
+
+Prime Video's workload was high-throughput and data-intensive. Moving everything into a single process eliminated the serialization and network costs that serverless inherently creates.
+
+---
+
+## Case Study: Discord's Rust Migration
+
+Discord's story is different—they migrated to a more exotic technology. But the pattern is instructive: they migrated when they had proof.
+
+### The Original Architecture
+
+The "Read States" service—tracking which messages each user has read—ran on Go. Go is a perfectly reasonable choice for server-side applications.
+
+### The Problem
+
+Go uses garbage collection to manage memory. The garbage collector periodically pauses program execution to clean up unused memory.
+
+For most applications, these pauses are imperceptible. For Discord's real-time messaging, they created latency spikes every few minutes. Users experienced lag. The service couldn't meet its SLAs.
+
+Discord had to over-provision resources to absorb the spikes—paying for capacity to handle garbage collection, not actual traffic.
+
+### The Migration
+
+They rewrote the service in Rust, which manages memory without garbage collection.
+
+### The Result
+
+Latency spikes eliminated. The service became faster, more predictable, and used less memory. They could run servers at higher utilization because there were no GC pauses to absorb.
+
+### The Lesson
+
+Discord didn't migrate because Rust is "better" in the abstract. They migrated because:
+
+1. They had specific, measured latency problems
+2. Those problems traced directly to Go's GC
+3. Rust's memory model solved exactly that problem
+4. They had engineering capacity to execute the migration
+
+This is migration done correctly: data-driven, targeted, and proportionate to the problem.
+
+---
+
+## Case Study: Uber's Selective Go Adoption
+
+Uber's early stack was Python and Node.js—productive languages that allowed rapid development during their growth phase.
+
+### The Problem
+
+At millions of concurrent trips, interpreted languages created latency and CPU consumption issues. The matching engine—connecting drivers to riders—was particularly sensitive.
+
+### The Migration
+
+Uber migrated their highest-throughput services to Go. The matching engine. The geofencing service. The components where performance directly impacted user experience and server costs.
+
+They did not migrate everything. Large portions of Uber still run on Python and Java. The migration was surgical, targeting specific bottlenecks.
+
+### The Lesson
+
+Migration should be proportionate to the problem.
+
+At Uber's scale, language performance translates directly to gross margin. A 20% CPU improvement saves millions annually when you're running hundreds of thousands of servers.
+
+At startup scale, the same optimization might save $50/month—not worth the engineering investment.
+
+Migrate when the cost of the current architecture exceeds the cost of migration. Measure first.
+
+---
+
+## The Counter-Intuitive Truth
+
+The fastest-growing companies didn't use cutting-edge technology. They used mature technology extremely well.
+
+| Company   | Initial Stack   | Scale Achieved                            |
+| --------- | --------------- | ----------------------------------------- |
+| Instagram | Django (Python) | 14M users with 3 engineers                |
+| Shopify   | Ruby on Rails   | From launch through IPO                   |
+| GitHub    | Ruby on Rails   | The world's code repository               |
+| Pinterest | Django (Python) | Millions of users before scaling concerns |
+| Airbnb    | Ruby on Rails   | Massive marketplace                       |
+
+These companies chose "boring" technology because:
+
+- Developers were immediately productive
+- Hiring was easy (deep talent pools)
+- Failure modes were well-documented
+- They could focus on product instead of infrastructure
+
+The exotic architectures came later—when they had revenue, scale, and data showing exactly where the bottlenecks were.
+
+---
+
+## When to Break the Rule
+
+Boring technology is a default, not an absolute. Consider breaking the rule when:
+
+### Clear, Measured Performance Problem
+
+You have production data showing a specific component can't meet requirements. Not theoretical concern—actual measured failure.
+
+Discord had latency spikes they could trace to GC pauses. Uber had CPU costs they could calculate. These are concrete problems that justify migration.
+
+### Team Has Expertise
+
+Migrating to a technology your team doesn't know compounds risk. You're learning the failure modes in production.
+
+If you're going to adopt Rust, have someone who's shipped Rust in production. Otherwise, the learning curve happens on your customers.
+
+### Migration Path Is Documented
+
+Moving from Rails to Go has extensive documentation. Moving from your custom framework to another custom framework is uncharted territory.
+
+Prefer migrations where others have gone before and shared their experience.
+
+---
+
+## The Decision Framework
+
+### Before Migration
+
+- [ ] Do we have production data showing the problem?
+- [ ] Is the problem actually caused by the technology (not our usage of it)?
+- [ ] What's the cost of migration in engineering time?
+- [ ] What's the cost of NOT migrating in business impact?
+- [ ] Does the team have expertise in the target technology?
+- [ ] Have others documented similar migrations?
+
+### During Migration
+
+- [ ] Are we migrating surgically (specific bottlenecks) or wholesale (everything)?
+- [ ] Do we have rollback options if the migration fails?
+- [ ] How are we measuring success?
+
+### Instead of Migration
+
+Often, the better answer is optimization within the existing stack:
+
+- Add caching before rewriting
+- Optimize queries before switching databases
+- Profile before assuming the language is slow
+
+These interventions are cheaper and lower-risk than full migration.
+
+---
+
+## Common Mistakes
+
+### Migrating Too Early
+
+"We'll need to handle this scale eventually" is not sufficient justification.
+
+Scale problems are good problems—they mean you have customers. Solving scale problems before you have customers is optimizing the wrong thing.
+
+Build for the scale you have, with awareness of the next order of magnitude. Don't build for 10x your current scale until you're at 0.5x.
+
+### Migrating Wholesale
+
+Uber migrated their hot paths to Go. They didn't rewrite everything.
+
+Identify the 20% of your system that causes 80% of the problems. Migrate that. Leave the rest alone.
+
+Wholesale rewrites are notorious for taking 2-3x longer than estimated and introducing regressions. Surgical migrations are smaller in scope and easier to validate.
+
+### Technology as Compensation
+
+Sometimes teams propose migrations because the work is more interesting than incremental product development.
+
+"We should migrate to Kubernetes" often means "I'm bored of our current infrastructure and want to learn something new."
+
+This isn't inherently bad—engineer growth matters—but it should be explicit, not hidden behind technical justifications.
+
+---
+
+## Conclusion
+
+Technical debt from "exciting" technology kills more startups than scaling limits.
+
+The constraint at early stages is almost never performance. It's:
+
+- Finding customers
+- Shipping features fast enough to learn
+- Not running out of money
+
+Boring technology—Postgres, Django, Rails, Express—optimizes for these actual constraints. It's productive, well-documented, and has deep talent pools.
+
+The companies that succeeded didn't use boring technology because they couldn't do better. They used it because they had the discipline to optimize for business outcomes instead of technical novelty.
+
+Migrate when you have data, not speculation. And when you do migrate, target the specific bottlenecks you've measured.
+
+Everything else is engineering theater.
+
+---
+
+_This is part of a series on building production SaaS applications. Next up: [RSC, The Edge, and the Death of the Waterfall](/blog/rsc-edge-death-of-waterfall)._

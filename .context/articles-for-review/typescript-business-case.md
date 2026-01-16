@@ -1,0 +1,436 @@
+---
+title: "TypeScript: The Business Case for Static Types"
+description: "15-38% of bugs preventable with types. Faster refactoring, better onboarding, fearless code changes. The ROI of TypeScript is measurable."
+date: "2026-01-24"
+author: "Alex Mayhew"
+tags: ["typescript", "javascript", "productivity", "engineering"]
+category: "architecture"
+readingTime: "10 min"
+featured: false
+---
+
+## TL;DR
+
+15-38% of bugs preventable with types (Airbnb, GitHub studies). 40% less time on regressions (JetBrains 2024). Boehm's Curve: $1 fix in dev → $100 in production. TypeScript = compiler-verified documentation. The question isn't "if" but "how strictly."
+
+---
+
+## The Bug Prevention ROI
+
+TypeScript's value proposition is simple: catch errors at compile time instead of runtime. The question is: how much does this actually matter?
+
+### The Airbnb Study
+
+Airbnb's internal analysis found that **38% of bugs reaching production** could have been prevented by TypeScript.
+
+Not theoretical bugs. Bugs that shipped, affected users, required hotfixes, and consumed engineering time.
+
+This study examined their JavaScript codebase and classified bugs by whether static typing would have caught them: null/undefined access, incorrect function arguments, property access on wrong types.
+
+38% is high because Airbnb moves fast. Their JavaScript codebase evolves rapidly, which increases the odds of type-related errors slipping through.
+
+### The GitHub Study
+
+A study of public GitHub repositories found a lower number: **15% of bugs preventable by types**.
+
+The difference from Airbnb? Public repositories often move slower, have more code review, and receive more scrutiny. Corporate codebases under deadline pressure catch less.
+
+15% is still meaningful. If you ship 100 bugs a year, 15 of them didn't need to happen.
+
+### Boehm's Curve
+
+Barry Boehm's research quantified the cost of defects at different stages:
+
+| Stage        | Relative Cost |
+| ------------ | ------------- |
+| Requirements | 1x            |
+| Design       | 3-6x          |
+| Development  | 10x           |
+| Testing      | 15-40x        |
+| Production   | 30-100x       |
+
+A $10 fix during development becomes a $1,000 fix in production—not because the code is harder to write, but because of the cascade: incident response, user communication, reputation damage, emergency deployments.
+
+TypeScript catches errors at the **cheapest possible moment**: while you're still writing the code. The IDE shows red squiggles before you save the file.
+
+---
+
+## The "Shift Left" Strategy
+
+"Shift left" means catching problems earlier in the development cycle. TypeScript is the ultimate shift-left tool for type errors.
+
+### Traditional Error Discovery
+
+```javascript
+// JavaScript - error discovered in production
+function processUser(user) {
+	return user.name.toUpperCase();
+}
+
+// Called with undefined somewhere in the app
+processUser(getUser()); // Runtime: Cannot read property 'name' of undefined
+```
+
+The error path:
+
+1. Developer writes code
+2. Unit tests pass (they didn't cover this case)
+3. QA tests pass (they didn't hit this path)
+4. Code ships to production
+5. User hits the error
+6. Error logging captures it (maybe)
+7. Developer investigates
+8. Fix deployed
+
+Time to resolution: hours to days.
+
+### TypeScript Error Discovery
+
+```typescript
+// TypeScript - error caught immediately
+function processUser(user: User) {
+	return user.name.toUpperCase();
+}
+
+// getUser returns User | undefined
+processUser(getUser());
+// Compile error: Argument of type 'User | undefined' is not
+// assignable to parameter of type 'User'
+```
+
+The error path:
+
+1. Developer writes code
+2. IDE shows error immediately
+3. Developer fixes before saving
+
+Time to resolution: seconds.
+
+### The Null Safety Case
+
+The billion-dollar mistake (Tony Hoare's term for null references) is largely solved by TypeScript's strict null checks:
+
+```typescript
+// With strictNullChecks: true
+function getLength(str: string | null) {
+	return str.length; // Error: 'str' is possibly 'null'
+}
+
+// Fixed
+function getLength(str: string | null) {
+	if (str === null) return 0;
+	return str.length; // OK, str is narrowed to string
+}
+```
+
+The compiler forces you to handle null cases. You cannot ignore them.
+
+---
+
+## Types as Living Documentation
+
+JSDoc comments document intent. But they lie.
+
+```javascript
+/**
+ * @param {string} name - The user's name
+ * @param {number} age - The user's age
+ */
+function createUser(name, age) {
+	// Six months later, someone adds:
+	return { name, age, createdAt: Date.now() };
+}
+
+// JSDoc says it takes name and age
+// But the return type is undocumented
+// And someone might call it with wrong types
+// The JSDoc doesn't prevent any of this
+```
+
+TypeScript enforces the documentation:
+
+```typescript
+interface User {
+	name: string;
+	age: number;
+	createdAt: number;
+}
+
+function createUser(name: string, age: number): User {
+	return { name, age, createdAt: Date.now() };
+}
+
+// If someone tries to add a field:
+return { name, age, createdAt: Date.now(), email: "a@b.com" };
+// Error: Object literal may only specify known properties
+```
+
+The types cannot drift from the implementation. They're the same thing.
+
+### IDE Integration
+
+TypeScript's real superpower is IDE intelligence:
+
+**Autocomplete**: Know what properties exist on an object without checking the source.
+
+**Go to Definition**: Jump directly to where a type or function is defined.
+
+**Find References**: See everywhere a function is called, across the entire codebase.
+
+**Inline Documentation**: Hover over any symbol to see its type and JSDoc.
+
+**Rename Symbol**: Rename a function and update all call sites automatically.
+
+These features transform code navigation. New developers understand the codebase faster because the tools tell them what exists and how to use it.
+
+### Onboarding Velocity
+
+Without types, new developers rely on:
+
+- Asking colleagues
+- Reading documentation (if it exists and is accurate)
+- Reading source code to understand shapes
+- Trial and error
+
+With types:
+
+- IDE shows what a function expects
+- Autocomplete reveals object properties
+- Compiler errors guide correct usage
+
+The tribal knowledge problem—where critical information exists only in long-tenured employees' heads—is reduced. The types encode the knowledge.
+
+---
+
+## Fearless Refactoring
+
+The fear: "If I change this, what will break?"
+
+In JavaScript, the answer is: "Run the app and find out." If test coverage is incomplete (it always is), you ship bugs.
+
+In TypeScript, the compiler tells you:
+
+```typescript
+// Before: User has a 'name' field
+interface User {
+	name: string;
+}
+
+// Change: Rename to 'fullName'
+interface User {
+	fullName: string;
+}
+
+// Every file using 'user.name' shows errors
+// You cannot ship without fixing them all
+```
+
+### Enterprise-Scale Evidence
+
+**Stripe**: Migrated 3.7 million lines of code from Flow to TypeScript. They gained refactoring confidence and caught migration bugs automatically.
+
+**Bloomberg**: Operates 50+ million lines of JavaScript with TypeScript. They explicitly credit types with enabling scale—code changes that would be terrifying in plain JavaScript are routine.
+
+**Microsoft**: TypeScript exists because Microsoft needed it. Their JavaScript codebases grew too large to manage without types.
+
+### The Ratchet Pattern
+
+For large JavaScript codebases, enable TypeScript incrementally:
+
+```json
+// tsconfig.json - start loose
+{
+	"compilerOptions": {
+		"allowJs": true, // Existing JS files work
+		"strict": false, // Don't enforce strictness yet
+		"noImplicitAny": false // Allow implicit any
+	}
+}
+```
+
+Then tighten over time:
+
+```json
+// Week N: enable strict null checks
+{ "strictNullChecks": true }
+
+// Week N+4: enable noImplicitAny
+{ "noImplicitAny": true }
+
+// Week N+8: full strict mode
+{ "strict": true }
+```
+
+Each step catches more errors. The codebase improves incrementally.
+
+---
+
+## Migration Strategies
+
+### Greenfield Projects
+
+For new projects, start with full strictness:
+
+```json
+{
+	"compilerOptions": {
+		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"exactOptionalPropertyTypes": true
+	}
+}
+```
+
+There's no legacy to worry about. Set the high bar from day one.
+
+### Existing JavaScript Codebases
+
+1. **Add TypeScript tooling**: `npm install -D typescript @types/node`
+2. **Rename files**: `.js` → `.ts` (one at a time)
+3. **Start with `any`**: Get it compiling, then improve types
+4. **Use `ts-migrate`**: Automated conversion with `any` placeholders
+
+```bash
+npx ts-migrate-full .
+```
+
+This converts JavaScript to TypeScript with `any` types where needed. You get compile-time checks for what TypeScript can infer, then improve manually.
+
+### The Allowlist Strategy
+
+```json
+// tsconfig.json
+{
+	"include": [
+		"src/new-feature/**/*.ts", // New code is strict
+		"src/migrated/**/*.ts" // Migrated code is strict
+	],
+	"exclude": [
+		"src/legacy/**/*.js" // Legacy code stays JS
+	]
+}
+```
+
+New code gets full type safety. Legacy code is left alone until prioritized for migration.
+
+---
+
+## Counter-Arguments Addressed
+
+### "Types slow me down"
+
+Types add writing overhead. But development isn't just writing—it's also:
+
+- Debugging runtime errors
+- Reading documentation
+- Understanding existing code
+- Fixing regressions
+
+Types reduce time spent on these activities more than they add to writing time.
+
+JetBrains 2024 survey: TypeScript developers spend **40% less time** on regression-related tasks than JavaScript developers.
+
+### "JSDoc is enough"
+
+For libraries consumed by others, JSDoc provides type hints without requiring TypeScript compilation.
+
+For applications, JSDoc is inferior:
+
+- Not enforced by compiler
+- Verbose syntax
+- No inference—you write everything explicitly
+- No refactoring support
+
+TypeScript's type inference means you write fewer annotations than JSDoc would require.
+
+### "We have good tests"
+
+Tests verify behavior at specific inputs. Types verify contracts at all inputs.
+
+```typescript
+// Test
+test("processUser handles valid input", () => {
+	expect(processUser({ name: "Alice" })).toBe("ALICE");
+});
+
+// This test passes, but what about:
+processUser(null); // Runtime error
+processUser({}); // Runtime error
+processUser("string"); // Runtime error
+```
+
+Tests are samples. Types are proofs.
+
+Use both. Tests verify logic. Types verify contracts.
+
+### "The Svelte Case"
+
+Svelte removed TypeScript from its internal codebase, using JSDoc instead. This is frequently cited as evidence against TypeScript.
+
+Context matters:
+
+1. Svelte is a **library**, not an application
+2. Libraries need to work without TypeScript consumers
+3. JSDoc generates `.d.ts` files for TypeScript consumers
+4. Svelte's internal code is heavily reviewed by expert maintainers
+
+For most teams building applications, the Svelte case doesn't apply.
+
+---
+
+## The Strategic Imperative
+
+TypeScript adoption isn't a technical preference. It's risk management.
+
+**Bug prevention**: 15-38% fewer production bugs.
+
+**Developer velocity**: Faster onboarding, confident refactoring.
+
+**Code quality**: Compiler enforces contracts, IDE enables navigation.
+
+**Hiring**: TypeScript is the industry standard. Developers expect it.
+
+The question isn't whether to adopt TypeScript. It's whether you can afford not to.
+
+### Recommended Configuration
+
+For new projects:
+
+```json
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"forceConsistentCasingInFileNames": true
+	}
+}
+```
+
+Maximum strictness. Maximum safety. Maximum value from the type system.
+
+---
+
+## Conclusion
+
+TypeScript's ROI is measurable:
+
+- 15-38% of bugs prevented
+- 40% less regression time
+- 30-100x cost reduction (catching errors early)
+- Faster onboarding, fearless refactoring
+
+The upfront investment—learning the type system, migrating existing code—pays dividends across the project lifecycle.
+
+For new projects: start strict. For existing projects: migrate incrementally with the ratchet pattern.
+
+The era of "maybe we should add types" is over. TypeScript is the professional standard for JavaScript development. The only question is how quickly you adopt it.
+
+---
+
+_This is part of a series on building production SaaS applications. Next up: [The Lambda Tax: Cold Starts and the True Cost of Serverless](/blog/lambda-tax-cold-starts)._

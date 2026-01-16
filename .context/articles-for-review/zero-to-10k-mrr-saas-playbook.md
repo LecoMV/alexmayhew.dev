@@ -1,0 +1,348 @@
+---
+title: "From Zero to $10k MRR: The SaaS Bootstrapper's Technical Playbook"
+description: "Stop over-engineering your MVP. Here's the minimum viable architecture to reach $10k MRR before you need to worry about scale."
+date: "2026-01-20"
+author: "Alex Mayhew"
+tags: ["saas", "architecture", "bootstrapping", "startup"]
+category: "business"
+readingTime: "11 min"
+featured: false
+---
+
+## TL;DR
+
+Your first $10k MRR requires customers, not Kubernetes. Database: Postgres on Neon ($0 to start). Backend: Hono on Cloudflare Workers ($0-5/month). Frontend: Next.js on Vercel (free tier). Auth: Clerk ($0 to 10k MAU). Payments: Stripe ($0 until revenue). Total infrastructure cost at launch: approximately $0. Stop building infrastructure and start building product.
+
+---
+
+## The Premature Infrastructure Trap
+
+I watched a technical founder spend three months setting up Kubernetes before having a single customer. He had Helm charts, Terraform modules, and a CI/CD pipeline that would make a FAANG DevOps team weep with envy. He also had zero revenue and a dwindling runway.
+
+This is the Premature Infrastructure Trap, and it kills more startups than competition ever will.
+
+The trap is seductive because it _feels_ productive. You're writing code. You're solving hard problems. You're learning valuable skills. But you're solving tomorrow's problems today, and tomorrow might never come if you run out of money first.
+
+Here's the uncomfortable truth: Instagram scaled to 14 million users with three engineers and a Django monolith. Shopify ran on Rails from day one through IPO. The highest-performing startups didn't use cutting-edge technology. They used mature, boring technology extremely well.
+
+The architecture that takes you from $0 to $10k MRR is fundamentally different from the architecture that takes you from $100k to $1M MRR. Optimizing for the wrong stage is a form of technical debt that manifests as wasted time and burned capital.
+
+Your only goal at $0 MRR is validating that someone will pay for what you're building. Every hour you spend on infrastructure is an hour not spent on customer discovery.
+
+---
+
+## The $0 MRR Stack
+
+At zero revenue, your architecture should be embarrassingly simple. If you're not slightly embarrassed by how basic your stack is, you're over-engineering.
+
+### Database: Start with Managed Postgres
+
+Skip the database selection paralysis. Postgres handles everything you'll need for years:
+
+- **Neon** offers a generous free tier with autoscaling to zero. You pay nothing until you actually have traffic worth paying for.
+- **Supabase** provides Postgres with a nice dashboard, auth, and realtime subscriptions built in. Also free to start.
+
+Do not waste time evaluating MongoDB, DynamoDB, or PlanetScale. Postgres can handle documents (JSONB), full-text search, and even time-series data adequately for your first thousand customers. You can always add specialized databases later when you have data proving you need them.
+
+```sql
+-- Your entire schema at $0 MRR might look like this
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE subscriptions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id),
+  stripe_subscription_id TEXT,
+  status TEXT,
+  current_period_end TIMESTAMPTZ
+);
+```
+
+That's it. Two tables. You can add complexity when you have paying customers who need it.
+
+### Backend: One Cloudflare Worker
+
+Your entire API can be a single Hono application deployed to Cloudflare Workers. This runs at the edge in 300+ locations worldwide, has a generous free tier (100,000 requests/day), and requires zero DevOps.
+
+```typescript
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+
+const app = new Hono();
+
+app.use("/*", cors());
+
+app.get("/api/health", (c) => c.json({ status: "ok" }));
+
+app.post("/api/webhooks/stripe", async (c) => {
+	// Handle Stripe webhooks
+	const event = await c.req.json();
+	// Process subscription events
+	return c.json({ received: true });
+});
+
+app.get("/api/user/:id", async (c) => {
+	const id = c.req.param("id");
+	// Fetch from database
+	return c.json({ user });
+});
+
+export default app;
+```
+
+One file. One deployment target. Zero container orchestration. Your entire backend is live in under 50 lines of code.
+
+### Frontend: Next.js on Vercel
+
+Next.js with App Router gives you:
+
+- Server-side rendering for SEO
+- Edge functions for API routes
+- Automatic code splitting
+- Built-in image optimization
+
+Vercel's free tier handles moderate traffic comfortably. You'll outgrow it eventually, but that's a good problem to have—it means you have customers.
+
+### Total Monthly Cost at $0 MRR
+
+| Service            | Cost   |
+| ------------------ | ------ |
+| Neon (Postgres)    | $0     |
+| Cloudflare Workers | $0     |
+| Vercel             | $0     |
+| **Total**          | **$0** |
+
+Yes, you can run a production SaaS for free until you have paying customers. The cloud providers want you to succeed so you'll scale with them.
+
+---
+
+## The $1k MRR Stack
+
+At $1k MRR, you've proven someone will pay. Now you can invest in reducing operational friction. This isn't about scaling—it's about maintaining sanity as a solo founder or tiny team.
+
+### Add: Authentication You Don't Have to Think About
+
+Building auth from scratch is a trap. I've seen founders spend six weeks implementing password reset flows, session management, OAuth integrations, and MFA. That's six weeks of runway burned on something that isn't your product.
+
+**Clerk** or **Auth.js** handle this entirely:
+
+- Magic links, OAuth, passwords, MFA—all configured in a dashboard
+- Prebuilt components that look decent out of the box
+- Webhook events for user lifecycle (created, updated, deleted)
+- Free up to 10,000 monthly active users
+
+```typescript
+// Your entire auth implementation
+import { ClerkProvider } from '@clerk/nextjs'
+
+export default function RootLayout({ children }) {
+  return (
+    <ClerkProvider>
+      {children}
+    </ClerkProvider>
+  )
+}
+```
+
+You can always migrate to self-hosted auth later if Clerk becomes too expensive. At $1k MRR, that's a problem for future-you who has revenue to solve problems with.
+
+### Add: Background Jobs
+
+Some work shouldn't block your request/response cycle:
+
+- Sending emails
+- Processing webhooks
+- Generating reports
+- Syncing third-party data
+
+**Trigger.dev** provides a generous free tier for background jobs that integrates cleanly with your existing stack:
+
+```typescript
+export const emailJob = task({
+	id: "send-welcome-email",
+	run: async (payload: { userId: string }) => {
+		const user = await db.users.findUnique({ where: { id: payload.userId } });
+		await resend.emails.send({
+			to: user.email,
+			subject: "Welcome!",
+			// ...
+		});
+	},
+});
+```
+
+### Add: Error Monitoring
+
+At $1k MRR, you can't afford to lose customers to silent failures. **Sentry** provides error tracking with a free tier that's more than adequate:
+
+```typescript
+import * as Sentry from "@sentry/nextjs";
+
+Sentry.init({
+	dsn: process.env.SENTRY_DSN,
+	tracesSampleRate: 0.1,
+});
+```
+
+Now you'll know when something breaks before your customers complain (or churn).
+
+### What You Still Don't Need
+
+- Kubernetes
+- Microservices
+- Redis (Postgres handles simple caching fine)
+- A dedicated DevOps engineer
+- Multi-region deployment
+- Auto-scaling
+
+These solve problems you don't have yet. They also create problems (complexity, debugging difficulty, operational overhead) that you definitely don't need.
+
+---
+
+## The $10k MRR Decision Point
+
+$10k MRR means you have real customers, real traffic, and real data about how your system actually behaves. This is when optimization decisions become data-driven rather than speculative.
+
+### Signs You Might Need to Scale
+
+**Your Vercel bill exceeds $100/month**
+
+Vercel's Pro plan ($20/user) makes sense when you have team members. But if your bill is growing past $100 from pure usage, it's time to evaluate:
+
+- Are you serving excessive data? (Add caching)
+- Are your functions slow? (Optimize them)
+- Is it cheaper to move some workloads to Cloudflare? (Probably)
+
+**Response times exceed 500ms P95**
+
+At $0 MRR, nobody cares if your API is slow. At $10k MRR, latency directly impacts conversion and retention. If you're consistently above 500ms:
+
+- Add database indices (cheap, easy, should have done this anyway)
+- Implement edge caching for static or semi-static data
+- Consider a connection pooler like Supavisor if database connections are the bottleneck
+
+**You're losing customers to downtime**
+
+At $1k MRR, an hour of downtime might affect a handful of users. At $10k MRR, downtime costs real money and reputation. This is when you might add:
+
+- Uptime monitoring (Checkly, BetterUptime)
+- Database backups (most managed Postgres providers include this)
+- Basic incident response procedures (even just a Slack channel)
+
+### Migration Paths
+
+If you've built your $0 stack correctly—simple, modular, boring—migrating to a more sophisticated architecture is straightforward:
+
+**Cloudflare Workers → AWS/GCP/Fly.io**: Your Hono app runs anywhere that speaks HTTP. The migration is primarily about deployment configuration, not code changes.
+
+**Vercel → OpenNext on Cloudflare**: If Vercel pricing becomes prohibitive, OpenNext lets you deploy Next.js to Cloudflare Pages. I've done this for three projects; the migration takes about a day.
+
+**Neon → Self-managed Postgres**: You'd need a very good reason to do this, but the data exports cleanly via pg_dump if you ever need to.
+
+The key is that you're making these decisions with data. You know exactly which components are bottlenecks because you have traffic patterns, cost data, and performance metrics from real production usage.
+
+---
+
+## Common Mistakes at Each Stage
+
+### At $0 MRR: Building Auth from Scratch
+
+The auth rabbit hole goes deep. You think it's just login/logout, but then you need:
+
+- Password reset flows with secure tokens
+- Email verification with rate limiting
+- Session management across devices
+- CSRF protection
+- OAuth with multiple providers
+- MFA/2FA
+- Account lockout after failed attempts
+
+A founder I worked with spent six weeks on custom auth before launching. By the time they finished, they'd burned runway that could have funded three months of customer discovery.
+
+Just use Clerk or Auth.js. You can always migrate later if you become big enough that their pricing matters.
+
+### At $1k MRR: Over-Engineering Background Jobs
+
+You have a few hundred users and need to send some emails. You don't need:
+
+- Apache Kafka
+- A dedicated message queue
+- Celery with Redis
+- A custom job scheduler
+
+You need a simple background job system that handles retries and doesn't lose tasks. Trigger.dev, Inngest, or even just a serverless function triggered by a cron job handles this fine for your next 10x of growth.
+
+### At $10k MRR: Migrating Too Early OR Too Late
+
+The sweet spot is narrow:
+
+**Too Early**: You migrate to Kubernetes at $8k MRR because you're "planning for growth." You spend two months on the migration. Your growth stalls because you're not shipping features. You never reach the scale that would have justified Kubernetes.
+
+**Too Late**: You're at $15k MRR with response times over 2 seconds, customer complaints mounting, and you've never touched the infrastructure because "it works." Now you're doing emergency migrations under pressure instead of planned optimizations with margin.
+
+The $10k mark is roughly where you should have this conversation. Not $3k (too early). Not $20k with burning servers (too late).
+
+---
+
+## The Counter-Intuitive Path
+
+The fastest path to $100k MRR goes through $10k first. And the fastest path to $10k goes through $1k first. You cannot skip stages by building infrastructure for a stage you haven't reached.
+
+Premature optimization isn't just "the root of all evil" in code—it's the root of all wasted runway in startups. Every hour you spend on infrastructure before you have revenue is borrowed from your runway at the highest possible interest rate.
+
+Here's what actually matters at each stage:
+
+| Stage    | Primary Focus        | Infrastructure Priority  |
+| -------- | -------------------- | ------------------------ |
+| $0 MRR   | Customer discovery   | Absolute minimum viable  |
+| $1k MRR  | Product iteration    | Operational sanity       |
+| $10k MRR | Growth and retention | Data-driven optimization |
+
+Build the simplest thing that works. Measure how it actually behaves with real traffic. Optimize based on data, not speculation. Repeat.
+
+The boring stack—Postgres, a simple API, a React frontend—has taken more companies to $10k MRR than any amount of architectural sophistication. Your customers don't care about your infrastructure. They care about whether your product solves their problem.
+
+Start there. The infrastructure can come later.
+
+---
+
+## The Checklist
+
+### Before You Write Any Infrastructure Code
+
+- [ ] Do you have at least one paying customer?
+- [ ] Do you have at least 10 users actively using the product?
+- [ ] Have you validated the core value proposition?
+
+If any answer is "no," your infrastructure is too complex. Simplify and focus on customers.
+
+### The $0 MRR Default Stack
+
+- [ ] Postgres on Neon or Supabase (free tier)
+- [ ] Single Hono/Express app on Cloudflare Workers (free tier)
+- [ ] Next.js on Vercel (free tier)
+- [ ] Clerk or Auth.js for auth (free tier)
+- [ ] Stripe for payments (only costs when you have revenue)
+
+### The $1k MRR Additions
+
+- [ ] Sentry for error monitoring
+- [ ] Trigger.dev or Inngest for background jobs
+- [ ] Resend or Postmark for transactional email
+- [ ] Basic analytics (Plausible or PostHog)
+
+### The $10k MRR Evaluation Questions
+
+- [ ] What's my current infrastructure cost per customer?
+- [ ] What's my P95 response time?
+- [ ] What percentage of time am I spending on operations vs. product?
+- [ ] Do I have data showing where the actual bottlenecks are?
+
+Answer these questions before making any infrastructure decisions at scale. The answers should drive the architecture, not the other way around.
+
+---
+
+_This is part of a series on building production SaaS applications. Next up: [The Senior Developer Paradox: Why Expensive Talent Saves Money](/blog/senior-developer-paradox)._
