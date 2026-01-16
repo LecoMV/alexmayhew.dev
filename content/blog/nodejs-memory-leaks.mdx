@@ -1,0 +1,491 @@
+---
+title: "Hunting Memory Leaks in Node.js: A Forensic Guide"
+description: "Memory leaks are systematic, not mystical. This guide provides the methodology and tools to find and fix them."
+date: "2026-02-05"
+author: "Alex Mayhew"
+tags: ["nodejs", "debugging", "performance", "devops"]
+category: "infrastructure"
+readingTime: "13 min"
+featured: false
+---
+
+## TL;DR
+
+New Space (Scavenger): fast, small objects—where most allocations happen. Old Space (Mark-Sweep-Compact): long-lived objects—where leaks hide. Three-Snapshot Technique: Baseline → Action → Compare. Container rule: `--max-old-space-size` = container RAM × 0.75. Leaks are bugs with systematic causes, not mysteries.
+
+---
+
+## The V8 Memory Model
+
+Node.js uses V8, Chrome's JavaScript engine. Understanding V8's memory model is prerequisite to debugging leaks.
+
+### Memory Regions
+
+V8 divides memory into several regions:
+
+**RSS (Resident Set Size)**: Total memory allocated to the process. Includes heap, stack, and code.
+
+**Heap**: Where JavaScript objects live. This is where leaks happen.
+
+**Stack**: Function call frames. Fixed size per call, automatically managed.
+
+**External**: Memory allocated by native modules (buffers, file handles). Can leak but outside V8's management.
+
+### The Generational Hypothesis
+
+Most objects die young. A variable in a loop iteration is created, used, and becomes garbage within milliseconds.
+
+V8 exploits this with generational garbage collection:
+
+**New Space (Young Generation)**:
+- 1-8MB, small and fast
+- Most allocations happen here
+- Collected by Scavenger algorithm
+- Surviving objects promoted to Old Space
+
+**Old Space (Old Generation)**:
+- Larger, collected less frequently
+- Objects that survived multiple Scavenger cycles
+- Where long-lived data and leaks accumulate
+- Collected by Mark-Sweep-Compact
+
+---
+
+## The Orinoco GC Pipeline
+
+V8's garbage collector (named Orinoco) uses multiple strategies.
+
+### Scavenger (Young Generation)
+
+The Scavenger runs frequently on New Space:
+
+1. Stops execution (briefly)
+2. Copies live objects to a new area
+3. Dead objects left behind, space reclaimed
+4. Survivors tracked for promotion
+
+Scavenger is fast—milliseconds. You rarely notice it.
+
+### Mark-Sweep-Compact (Old Generation)
+
+Old Space collection is more complex:
+
+**Mark**: Traverse from roots (global, stack), mark all reachable objects.
+
+**Sweep**: Identify unmarked objects as garbage.
+
+**Compact**: Move live objects together, reducing fragmentation.
+
+This runs less frequently but takes longer. Large heaps mean longer pauses.
+
+### The Tri-Color Invariant
+
+Marking uses three colors:
+- **White**: Not yet visited (potentially garbage)
+- **Gray**: Visited, but children not processed
+- **Black**: Visited, children processed (definitely live)
+
+The algorithm maintains: no black object points to a white object. This allows incremental marking—the GC can pause and resume without losing progress.
+
+---
+
+## Memory Leak Taxonomy
+
+Leaks have specific causes. Knowing the categories helps diagnosis.
+
+### 1. Closures Capturing Scope
+
+The most common leak pattern:
+
+```javascript
+function createHandler(bigData) {
+  // bigData is captured in closure
+  return function handler(req, res) {
+    // Even if we never use bigData here,
+    // it's retained for the lifetime of handler
+    res.send('ok')
+  }
+}
+
+// Each request creates a new handler holding bigData
+app.get('/api', createHandler(loadBigData()))
+```
+
+**Fix**: Don't capture large objects in long-lived closures. Extract what you need.
+
+### 2. Unbounded Caches
+
+```javascript
+const cache = {}
+
+function getData(key) {
+  if (!cache[key]) {
+    cache[key] = expensiveFetch(key)
+  }
+  return cache[key]
+}
+// cache grows forever
+```
+
+**Fix**: Use LRU caches with size limits.
+
+```javascript
+import { LRUCache } from 'lru-cache'
+
+const cache = new LRUCache({ max: 1000 })
+```
+
+### 3. EventEmitter Listeners
+
+```javascript
+class Service {
+  constructor(emitter) {
+    // Listener keeps `this` alive
+    emitter.on('data', this.handleData.bind(this))
+  }
+
+  handleData(data) { /* ... */ }
+
+  destroy() {
+    // Forgot to remove listener
+    // `this` leaks
+  }
+}
+```
+
+**Fix**: Always clean up listeners.
+
+```javascript
+class Service {
+  constructor(emitter) {
+    this.emitter = emitter
+    this.boundHandler = this.handleData.bind(this)
+    emitter.on('data', this.boundHandler)
+  }
+
+  destroy() {
+    this.emitter.off('data', this.boundHandler)
+  }
+}
+```
+
+### 4. Global Variable Accumulation
+
+```javascript
+// Intentional or accidental global
+users = [] // Missing 'const'
+
+function addUser(user) {
+  users.push(user)
+  // Never cleaned up
+}
+```
+
+**Fix**: Use strict mode, lint for accidental globals, bound the collection size.
+
+### 5. Detached DOM Trees (Frontend)
+
+```javascript
+let detached = document.createElement('div')
+detached.innerHTML = heavyHTML
+// detached is never added to document
+// but retained by the variable
+```
+
+**Fix**: Null out references when done.
+
+### 6. Timers and Intervals
+
+```javascript
+function startPolling(data) {
+  setInterval(() => {
+    // data captured in closure
+    poll(data)
+  }, 1000)
+  // No way to stop the interval
+  // data retained forever
+}
+```
+
+**Fix**: Store interval ID, clear on cleanup.
+
+---
+
+## The Three-Snapshot Technique
+
+The definitive method for isolating memory leaks.
+
+### The Process
+
+1. **Snapshot 1**: Baseline—take heap snapshot before the suspected leaking action
+2. **Perform Action**: Execute the leaking operation N times (10-100 repetitions)
+3. **Force GC**: Trigger garbage collection explicitly
+4. **Snapshot 2**: Post-action—take second heap snapshot
+5. **Snapshot 3**: Post-GC—take third snapshot to confirm remaining objects
+
+### In Chrome DevTools
+
+1. Navigate to your Node.js debugger (node --inspect)
+2. Open Chrome at chrome://inspect
+3. Go to Memory tab
+4. Take Heap Snapshot (Snapshot 1)
+5. Perform the suspected action repeatedly
+6. Click the trash can icon to force GC
+7. Take Heap Snapshot (Snapshot 2)
+8. Take Heap Snapshot (Snapshot 3)
+
+### Interpreting Results
+
+Switch to "Comparison" view between Snapshot 1 and 2.
+
+Look for:
+- **Objects allocated between snapshots**: Sort by "# New"
+- **Large retained size increases**: Sort by "Size Delta"
+- **Growing arrays or maps**: Objects that get larger
+
+The objects that appear in Snapshot 2 but not Snapshot 1 (and persist in Snapshot 3) are your leak candidates.
+
+---
+
+## Shallow Size vs. Retained Size
+
+Understanding these metrics is crucial.
+
+### Shallow Size
+
+The memory the object itself uses. A plain object with two string properties has a small shallow size—just the object structure.
+
+### Retained Size
+
+The memory that would be freed if this object were garbage collected. Includes all objects that are *only* reachable through this object.
+
+If a cache object has shallow size of 100 bytes but retains 100MB of cached data, its retained size is ~100MB.
+
+### Finding the Retainer
+
+When you find a suspiciously large retained size, expand the object in DevTools to see its "retainers"—the reference chain from the GC root.
+
+The retainer path tells you *why* the object can't be garbage collected. Follow it to find what's holding the reference.
+
+---
+
+## Production Monitoring
+
+DevTools is for development. Production requires different approaches.
+
+### --trace-gc Flag
+
+```bash
+node --trace-gc app.js
+```
+
+Outputs GC events to stdout:
+
+```
+[45372:0x5628e40]    15623 ms: Scavenge 23.4 (25.6) -> 22.1 (26.1) MB, 1.2 / 0.0 ms
+[45372:0x5628e40]    18291 ms: Mark-sweep 42.1 (45.2) -> 38.4 (46.0) MB, 3.2 / 0.0 ms
+```
+
+Watch for:
+- Growing heap sizes after Mark-sweep
+- Increasingly frequent GC
+- Longer GC pauses
+
+### Container Memory Limits
+
+Containers have memory limits. V8 doesn't automatically know about them.
+
+```bash
+# Set Old Space limit to 75% of container RAM
+node --max-old-space-size=768 app.js  # For 1GB container
+```
+
+Formula: `--max-old-space-size` = container limit × 0.75
+
+The remaining 25% is for:
+- New Space
+- Stack
+- Native modules
+- OS overhead
+
+### PM2 Memory Restart
+
+PM2 can restart processes that exceed memory thresholds:
+
+```javascript
+// ecosystem.config.js
+module.exports = {
+  apps: [{
+    name: 'api',
+    script: './app.js',
+    max_memory_restart: '1G',
+  }]
+}
+```
+
+This is a band-aid, not a fix. It keeps your service alive while you investigate.
+
+### Prometheus Metrics
+
+Expose heap statistics for monitoring:
+
+```javascript
+const v8 = require('v8')
+
+function getHeapStats() {
+  const stats = v8.getHeapStatistics()
+  return {
+    heap_used: stats.used_heap_size,
+    heap_total: stats.total_heap_size,
+    heap_limit: stats.heap_size_limit,
+    external: stats.external_memory,
+  }
+}
+
+// Expose via /metrics endpoint for Prometheus
+```
+
+Set alerts for:
+- Heap usage > 80% of limit
+- Heap growing over time (trend)
+- GC frequency increasing
+
+---
+
+## Prevention Patterns
+
+Better than debugging: not leaking in the first place.
+
+### WeakMap for Caches
+
+```javascript
+// Objects as keys, automatically cleaned when key is GC'd
+const metadata = new WeakMap()
+
+function attachMetadata(obj, data) {
+  metadata.set(obj, data)
+  // When obj is GC'd, the entry is removed automatically
+}
+```
+
+WeakMap entries don't prevent garbage collection of the key. When the key is collected, the entry disappears.
+
+### WeakRef for Optional References
+
+```javascript
+const weakRef = new WeakRef(largeObject)
+
+// Later
+const obj = weakRef.deref()
+if (obj) {
+  // Object still exists
+} else {
+  // Object was garbage collected
+}
+```
+
+Useful for caches where you want to keep objects if they're still in use elsewhere, but allow them to be collected if not.
+
+### AbortController for Async Cleanup
+
+```javascript
+async function fetchWithTimeout(url, timeoutMs) {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), timeoutMs)
+
+  try {
+    const response = await fetch(url, { signal: controller.signal })
+    return response.json()
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+```
+
+AbortController ensures pending operations are cancelled when they should be, preventing leaked resources.
+
+### ESLint Rules
+
+```javascript
+// .eslintrc
+{
+  "rules": {
+    "no-unused-vars": "error",
+    "no-undef": "error",
+    "no-global-assign": "error"
+  }
+}
+```
+
+Catch accidental globals and unused variables that might accumulate.
+
+---
+
+## Jest Leak Detection
+
+Jest can detect leaks in tests:
+
+```javascript
+// jest.config.js
+module.exports = {
+  detectLeaks: true,
+  detectOpenHandles: true,
+}
+```
+
+`detectLeaks`: Uses `--detect-leaks` from Node.js to track allocations.
+
+`detectOpenHandles`: Warns about open handles (timers, sockets) that prevent clean exit.
+
+If your tests pass but Jest hangs, you have open handles—likely timers or event listeners not cleaned up.
+
+---
+
+## The Debugging Checklist
+
+### Symptoms
+
+- [ ] Process memory growing over time
+- [ ] OOM crashes after hours/days of uptime
+- [ ] GC pauses increasing
+- [ ] Response times degrading gradually
+
+### Investigation
+
+- [ ] Enable --trace-gc in staging
+- [ ] Identify the time correlation (what operations precede growth)
+- [ ] Use Three-Snapshot Technique on the suspected path
+- [ ] Find the retainer chain
+
+### Common Culprits
+
+- [ ] Event listener not removed
+- [ ] Cache without eviction
+- [ ] Closure capturing more than needed
+- [ ] Global variable accumulation
+- [ ] Timer/interval not cleared
+
+### Verification
+
+- [ ] Fix applied
+- [ ] Heap snapshot shows reduced retention
+- [ ] Long-running test shows stable memory
+- [ ] Production metrics confirm fix
+
+---
+
+## Conclusion
+
+Memory leaks are bugs, not mysteries. They have systematic causes:
+- Closures capturing too much
+- Collections growing unbounded
+- Event listeners outliving their purpose
+- References held longer than needed
+
+The Three-Snapshot Technique isolates the leak. The retainer chain identifies the cause. Prevention patterns keep new leaks from forming.
+
+Set up production monitoring before you need it. When heap usage starts climbing, you'll want the metrics to diagnose the problem.
+
+---
+
+*This is part of a series on building production SaaS applications. Next up: [Optimistic UI: Making Apps Feel Faster Than Physics Allows](/blog/optimistic-ui).*

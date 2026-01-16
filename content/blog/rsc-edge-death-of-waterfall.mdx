@@ -1,0 +1,406 @@
+---
+title: "RSC, The Edge, and the Death of the Waterfall"
+description: "React Server Components + Edge computing collapse traditional data fetching waterfalls into parallel streams. The SPA era is ending."
+date: "2026-02-01"
+author: "Alex Mayhew"
+tags: ["react", "next.js", "performance", "edge-computing"]
+category: "architecture"
+readingTime: "12 min"
+featured: false
+---
+
+## TL;DR
+
+Traditional SPA: HTML → JS → Render → Fetch → Render (waterfall). RSC + Edge: Server renders at edge (300+ locations), streams HTML immediately, ships minimal JS. Result: sub-50ms Time to First Byte globally, zero client-side fetch waterfall. The mental model: Server Components for data, Client Components for interactivity.
+
+---
+
+## The Waterfall Problem
+
+The traditional Single Page Application has a loading sequence:
+
+1. **HTML**: Browser receives minimal HTML shell
+2. **JavaScript**: Browser downloads and parses JS bundle
+3. **Render**: React hydrates and renders loading states
+4. **Fetch**: Client makes API requests for data
+5. **Render again**: React re-renders with actual data
+
+Each step blocks the next. On a slow 3G connection, 3-5 seconds to interactive is common. The user stares at a spinner while the waterfall cascades.
+
+This model made sense when servers were in one region and JS frameworks needed full client-side control. It doesn't make sense anymore.
+
+---
+
+## React Server Components: The Mental Model
+
+React Server Components (RSC) invert the traditional architecture. Components run on the server by default, shipping zero JavaScript to the client.
+
+### Server Components (Default)
+
+```tsx
+// This component runs ONLY on the server
+// Zero JavaScript sent to the browser
+async function UserProfile({ userId }: { userId: string }) {
+  const user = await db.users.findUnique({ where: { id: userId } })
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+    </div>
+  )
+}
+```
+
+This component:
+- Fetches data directly from the database (no API layer needed)
+- Runs during render, not after
+- Sends only HTML to the browser
+- Has zero impact on bundle size
+
+### Client Components (Opt-in)
+
+```tsx
+'use client'
+
+// This component ships to the browser
+// Only use when you need interactivity
+function LikeButton({ postId }: { postId: string }) {
+  const [liked, setLiked] = useState(false)
+
+  return (
+    <button onClick={() => setLiked(!liked)}>
+      {liked ? 'Liked' : 'Like'}
+    </button>
+  )
+}
+```
+
+Client Components:
+- Are marked with `'use client'` directive
+- Ship JavaScript to the browser
+- Support event handlers, useState, useEffect
+- Should be used sparingly—only where interactivity requires it
+
+### The Composition Pattern
+
+The power of RSC is in composition:
+
+```tsx
+// Server Component - no JS shipped
+async function PostPage({ postId }: { postId: string }) {
+  const post = await db.posts.findUnique({ where: { id: postId } })
+
+  return (
+    <article>
+      <h1>{post.title}</h1>
+      <p>{post.content}</p>
+      {/* Client Component island */}
+      <LikeButton postId={postId} />
+    </article>
+  )
+}
+```
+
+The page is mostly server-rendered HTML. Only the interactive island ships JavaScript.
+
+---
+
+## Edge Computing: The Distance Problem
+
+Physics sets a hard limit: the speed of light.
+
+A request from Sydney to a server in Virginia takes ~150ms round trip—just for the photons to travel through fiber optic cables. No optimization can beat physics.
+
+Edge computing solves this by running code in 300+ locations worldwide. Cloudflare Workers, Vercel Edge Functions, Deno Deploy—they all deploy your code to Points of Presence (PoPs) near your users.
+
+### The Impact
+
+| User Location | Origin (Virginia) | Edge (Nearest PoP) |
+|---------------|-------------------|-------------------|
+| New York | ~20ms | ~5ms |
+| London | ~80ms | ~10ms |
+| Sydney | ~150ms | ~15ms |
+| Tokyo | ~120ms | ~10ms |
+
+Sub-50ms response times become achievable globally, regardless of where your primary database lives.
+
+---
+
+## RSC + Edge: The Perfect Marriage
+
+When you combine RSC with edge deployment, the waterfall disappears:
+
+### Traditional SPA Timeline
+
+```
+0ms   - Browser requests HTML
+50ms  - Server returns HTML shell
+150ms - Browser parses HTML, requests JS
+350ms - Browser downloads JS (200KB)
+500ms - React hydrates, shows loading state
+600ms - React fetches data from API
+800ms - API returns data (from origin server)
+850ms - React re-renders with data
+        User sees content: ~850ms
+```
+
+### RSC + Edge Timeline
+
+```
+0ms   - Browser requests page
+20ms  - Edge function starts rendering (nearest PoP)
+50ms  - First HTML bytes stream to browser (Suspense boundary)
+100ms - Page content rendered, user can read
+150ms - Minimal JS loads for interactive islands
+200ms - Page fully interactive
+        User sees content: ~100ms
+```
+
+The edge function fetches data and renders HTML in one step. The browser receives streamable HTML immediately. There's no second round trip for data.
+
+---
+
+## Streaming and Suspense
+
+RSC enables HTML streaming—sending content to the browser as it becomes available.
+
+### Without Streaming
+
+The entire page waits for the slowest data source. If one API call takes 2 seconds, the whole page is blocked.
+
+### With Streaming
+
+```tsx
+import { Suspense } from 'react'
+
+async function Page() {
+  return (
+    <main>
+      {/* This renders immediately */}
+      <Header />
+
+      {/* This streams when ready */}
+      <Suspense fallback={<LoadingSkeleton />}>
+        <SlowDataComponent />
+      </Suspense>
+
+      {/* This also streams independently */}
+      <Suspense fallback={<LoadingSkeleton />}>
+        <AnotherSlowComponent />
+      </Suspense>
+    </main>
+  )
+}
+```
+
+Each Suspense boundary streams independently. Fast content appears immediately; slow content streams in when ready. The user sees a progressively-loading page instead of a single loading spinner.
+
+---
+
+## The Trade-offs
+
+RSC + Edge isn't universally superior. Understand the constraints.
+
+### Cold Starts
+
+Edge functions have cold start latency. A function that hasn't run recently needs to initialize:
+
+- **Cloudflare Workers**: 40-150ms cold start
+- **Vercel Edge Functions**: Similar range
+- **Lambda@Edge**: Can be higher
+
+For high-traffic pages, cold starts are rare (functions stay warm). For low-traffic pages, the cold start might exceed the origin server response time.
+
+**Mitigation**: Keep edge functions small and fast-starting. Avoid heavy initialization logic.
+
+### Database Connections
+
+Edge functions run in many locations. Traditional connection pooling doesn't work—you'd need pools at every edge location.
+
+**Solutions**:
+- **Prisma Accelerate**: Connection pooling as a service, globally distributed
+- **Supabase Supavisor**: Pooler built for edge workloads
+- **PlanetScale**: Serverless MySQL with edge-compatible drivers
+- **Neon**: Serverless Postgres with HTTP-based queries
+
+### Not Everything Works at the Edge
+
+Some dependencies don't work in edge runtimes:
+- Native Node modules (must use pure JavaScript alternatives)
+- Some authentication libraries (check edge compatibility)
+- Heavy compute (better served by origin functions)
+
+**Pattern**: Use edge for read-heavy, data-fetching workloads. Fall back to origin for complex processing.
+
+---
+
+## The Migration Strategy
+
+Moving from a traditional SPA to RSC doesn't require a full rewrite.
+
+### Step 1: Adopt App Router
+
+Next.js App Router gives you RSC by default. Start new pages in the `app` directory while existing pages remain in `pages`.
+
+```
+my-app/
+├── app/           # New RSC-based pages
+│   ├── layout.tsx
+│   └── dashboard/
+│       └── page.tsx
+├── pages/         # Legacy SPA pages (can coexist)
+│   └── old-page.tsx
+```
+
+### Step 2: Move Data Fetching to Server Components
+
+Replace `useEffect` data fetching with server-side queries:
+
+```tsx
+// Before: Client Component with useEffect
+'use client'
+function Dashboard() {
+  const [data, setData] = useState(null)
+
+  useEffect(() => {
+    fetch('/api/dashboard').then(res => res.json()).then(setData)
+  }, [])
+
+  if (!data) return <Loading />
+  return <DashboardContent data={data} />
+}
+
+// After: Server Component with direct data access
+async function Dashboard() {
+  const data = await getDashboardData() // Direct DB query
+  return <DashboardContent data={data} />
+}
+```
+
+### Step 3: Add Suspense Boundaries
+
+Wrap slow data sources in Suspense for streaming:
+
+```tsx
+async function Page() {
+  return (
+    <div>
+      <QuickContent />
+      <Suspense fallback={<Skeleton />}>
+        <SlowContent />
+      </Suspense>
+    </div>
+  )
+}
+```
+
+### Step 4: Deploy to Edge Incrementally
+
+Start with pages that benefit most from edge (global audience, simple data needs). Monitor performance. Expand as confidence grows.
+
+---
+
+## When to Stay on Origin
+
+Edge isn't always the answer:
+
+### Heavy Computation
+
+ML inference, image processing, complex calculations—these benefit from powerful origin servers, not lightweight edge functions.
+
+### Single-Region Users
+
+If 95% of your users are in one country, edge distribution adds complexity without proportionate benefit.
+
+### Complex Database Transactions
+
+Multi-statement transactions with strong consistency requirements often work better with a direct database connection from origin.
+
+### Large Response Payloads
+
+Edge functions have limits on response size and execution time. Large data exports should use origin servers.
+
+---
+
+## The Bundle Size Impact
+
+RSC dramatically reduces JavaScript sent to the browser.
+
+### Before RSC
+
+A typical React SPA ships:
+- React runtime (~40KB)
+- React DOM (~120KB)
+- Data fetching library (~20KB)
+- Component library (~100KB+)
+- Application code (~100KB+)
+
+Total: 400KB+ of JavaScript before the page is interactive.
+
+### After RSC
+
+Server Components ship zero JavaScript. Only Client Components contribute to bundle size.
+
+For a typical page:
+- React runtime (still needed for Client Components): ~40KB
+- Minimal React DOM for hydration: ~50KB
+- Only the Client Components you actually need
+- No data fetching library (data fetched on server)
+
+Total: Often 100KB or less, sometimes much less.
+
+### The Next.js standalone Output
+
+For edge deployment, Next.js's `standalone` output mode creates minimal deployment artifacts:
+
+```js
+// next.config.js
+module.exports = {
+  output: 'standalone',
+}
+```
+
+This can reduce deployment bundle size by 90% compared to a full `node_modules` deployment.
+
+---
+
+## Measuring Success
+
+Track these metrics to validate your migration:
+
+### Time to First Byte (TTFB)
+
+How quickly does the server respond? Edge should reduce this to <100ms for most users.
+
+### Largest Contentful Paint (LCP)
+
+How quickly does the main content appear? RSC should improve this by eliminating client-side fetch waterfalls.
+
+### Interaction to Next Paint (INP)
+
+How responsive is the page? Smaller JavaScript bundles mean faster interaction.
+
+### Core Web Vitals
+
+Monitor CLS (layout shifts), FID (first input delay), and LCP in real user monitoring.
+
+---
+
+## The Future is Streaming
+
+The SPA era—where JavaScript downloads, fetches data, and renders everything client-side—is ending for most applications.
+
+The new default:
+- Server Components for data and layout
+- Client Components for interactivity
+- Edge deployment for global performance
+- Streaming for progressive loading
+
+This isn't just a performance optimization. It's a simpler mental model: render on the server, stream to the client, hydrate islands of interactivity.
+
+Start with your next feature. Build it with RSC. Measure the difference. The waterfall is optional now.
+
+---
+
+*This is part of a series on building production SaaS applications. Next up: [Multi-Tenancy Done Right: A Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls).*

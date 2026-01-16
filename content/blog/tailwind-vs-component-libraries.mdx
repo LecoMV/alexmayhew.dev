@@ -1,0 +1,461 @@
+---
+title: "Tailwind vs. Component Libraries: A Performance Deep Dive"
+description: "Bundle size, runtime overhead, and the customization cliff. When to use Tailwind, when to use component libraries, and why shadcn/ui changed the game."
+date: "2026-01-26"
+author: "Alex Mayhew"
+tags: ["tailwind", "css", "react", "performance"]
+category: "frontend"
+readingTime: "10 min"
+featured: false
+---
+
+## TL;DR
+
+Component libraries: fast to start, expensive to customize. Tailwind: slower start, atomic CSS purges to ~10KB. Material UI adds ~300ms to TTI. shadcn/ui is the middle ground—copy-paste components you own. Decision: internal tools → component libraries; consumer-facing → Tailwind + custom.
+
+---
+
+## The Component Library Promise
+
+"Don't reinvent the wheel."
+
+Component libraries promise pre-built, accessible, styled components. Need a modal? Import Modal. Need a date picker? Import DatePicker. Ship features, not infrastructure.
+
+The promise is real—for certain use cases. But the marketing omits important details about bundle size, runtime overhead, and the customization cliff.
+
+---
+
+## Bundle Size Analysis
+
+CSS is render-blocking. Every kilobyte of CSS delays First Contentful Paint. Let's measure what different approaches actually ship.
+
+### Tailwind CSS (Purged)
+
+Tailwind generates thousands of utility classes. In development, the full framework is ~3MB. But the production build purges unused classes:
+
+```js
+// tailwind.config.js
+export default {
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  // Only classes used in these files are included
+}
+```
+
+Result: **~10KB gzipped** for a typical application. Only the classes you use are shipped.
+
+### Component Libraries
+
+| Library | Gzipped Size | Notes |
+|---------|-------------|-------|
+| Tailwind (purged) | ~10KB | Static CSS |
+| Chakra UI | ~50KB | CSS-in-JS runtime |
+| Material UI (v5) | ~100KB+ | Emotion runtime |
+| Ant Design | ~200KB+ | Full framework |
+| Bootstrap | ~25KB | CSS only |
+
+These sizes are for the CSS/runtime. They don't include the JavaScript components themselves, which add more.
+
+### The "Invisible Tax"
+
+Every user pays this tax on every page load. A 100KB bundle at 3G speeds (~750kbps) takes 1+ second to download. That's before parsing and execution.
+
+For internal tools used by employees on fast connections, this tax is acceptable. For consumer-facing products where bounce rate correlates with load time, it's not.
+
+---
+
+## Runtime Overhead
+
+Bundle size isn't the only cost. CSS-in-JS libraries compute styles at runtime.
+
+### Static CSS (Tailwind, Bootstrap)
+
+CSS is downloaded, parsed, and applied. No JavaScript execution required for styling. The browser's optimized CSS engine handles everything.
+
+### CSS-in-JS (Emotion, Styled Components)
+
+1. JavaScript downloads and executes
+2. Style generator functions run
+3. CSS is constructed in JavaScript
+4. CSS is injected into the DOM
+5. Browser applies styles
+
+This adds to Time to Interactive (TTI). The page might render, but interactions are blocked while JavaScript constructs styles.
+
+Rough overhead by library:
+- **Emotion (Material UI)**: ~200-300ms added TTI
+- **Styled Components**: ~150-250ms added TTI
+- **CSS Modules**: ~0ms (compile-time only)
+- **Tailwind**: ~0ms (static CSS)
+
+### Server-Side Rendering Complications
+
+With SSR, CSS-in-JS requires style extraction:
+
+```tsx
+// pages/_document.tsx (Next.js + Emotion)
+import { extractCritical } from '@emotion/server'
+
+export default class Document extends NextDocument {
+  static getInitialProps = async (ctx) => {
+    const page = await ctx.renderPage()
+    const styles = extractCritical(page.html)
+    return {
+      ...page,
+      styles: (
+        <>
+          <style
+            data-emotion={`css ${styles.ids.join(' ')}`}
+            dangerouslySetInnerHTML={{ __html: styles.css }}
+          />
+        </>
+      ),
+    }
+  }
+}
+```
+
+This adds server-side overhead and complexity. Static CSS just works with SSR—no extraction needed.
+
+---
+
+## The Customization Cliff
+
+Component libraries are fast for prototypes and demos. Then you need to customize.
+
+### The Easy Demo
+
+```tsx
+// "Look how easy!"
+import { Button } from '@mui/material'
+
+<Button variant="contained" color="primary">
+  Click me
+</Button>
+```
+
+Five minutes from `npm install` to styled button. Marketing writes itself.
+
+### The Painful Production
+
+Then the designer says: "Can we make that button match our brand?"
+
+```tsx
+// Three months later
+import { Button } from '@mui/material'
+import { styled } from '@mui/material/styles'
+
+const BrandButton = styled(Button)(({ theme }) => ({
+  backgroundColor: '#ccf381',
+  color: '#0b0e14',
+  borderRadius: 0,
+  border: '3px solid #000',
+  boxShadow: '4px 4px 0px #000',
+  fontFamily: '"JetBrains Mono", monospace',
+  textTransform: 'uppercase',
+  letterSpacing: '0.05em',
+  padding: '12px 24px',
+  '&:hover': {
+    backgroundColor: '#b8dc73',
+    boxShadow: '2px 2px 0px #000',
+  },
+  '&:active': {
+    boxShadow: 'none',
+    transform: 'translate(4px, 4px)',
+  },
+  '&:focus': {
+    outline: '2px solid #ccf381',
+    outlineOffset: '2px',
+  },
+}))
+```
+
+You've overridden nearly everything. The library is now overhead without benefit.
+
+### Specificity Wars
+
+Component libraries apply styles with varying specificity. When you override, you fight:
+
+```css
+/* MUI's internal styles (high specificity) */
+.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary {
+  background-color: #1976d2;
+}
+
+/* Your override needs higher specificity */
+.my-custom-button.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary {
+  background-color: #ccf381; /* Finally wins */
+}
+```
+
+Or you resort to `!important`, creating technical debt.
+
+### Theme Limitations
+
+Component libraries have theming systems, but they're constrained:
+
+```tsx
+// Material UI theme
+const theme = createTheme({
+  palette: {
+    primary: { main: '#ccf381' },
+  },
+  shape: {
+    borderRadius: 0, // OK, affects everything
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          // Can override here, but now maintaining two systems
+        },
+      },
+    },
+  },
+})
+```
+
+You're now maintaining your design system inside a theme object that maps imperfectly to your design language.
+
+---
+
+## The shadcn/ui Middle Ground
+
+shadcn/ui changed the equation. It's not a library you install—it's components you copy.
+
+### How It Works
+
+```bash
+npx shadcn-ui@latest add button
+```
+
+This creates a file in your project:
+
+```tsx
+// components/ui/button.tsx
+// Full source code, you own it
+import * as React from 'react'
+import { Slot } from '@radix-ui/react-slot'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
+
+const buttonVariants = cva(
+  'inline-flex items-center justify-center rounded-md text-sm font-medium...',
+  {
+    variants: {
+      variant: {
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        destructive: 'bg-destructive text-destructive-foreground...',
+        // ...
+      },
+      size: {
+        default: 'h-10 px-4 py-2',
+        sm: 'h-9 rounded-md px-3',
+        lg: 'h-11 rounded-md px-8',
+      },
+    },
+  }
+)
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean
+}
+
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'button'
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        {...props}
+      />
+    )
+  }
+)
+```
+
+### Why This Matters
+
+**You own the code**: No npm update breaks your styles. No specificity wars. Customize freely.
+
+**Accessibility built-in**: Built on Radix primitives, which handle ARIA, keyboard navigation, focus management.
+
+**Tailwind-based**: Uses utility classes, purges to ~10KB total.
+
+**No runtime**: Static CSS, no JavaScript style computation.
+
+The trade-off: no automatic updates. When a Radix primitive improves, you don't get it automatically. But for production applications, this stability is often preferable.
+
+### The Headless Pattern
+
+shadcn/ui uses "headless" components from Radix:
+
+```tsx
+// Radix provides behavior, you provide styles
+import * as Dialog from '@radix-ui/react-dialog'
+
+<Dialog.Root>
+  <Dialog.Trigger className="...your tailwind classes...">
+    Open
+  </Dialog.Trigger>
+  <Dialog.Portal>
+    <Dialog.Overlay className="...your tailwind classes..." />
+    <Dialog.Content className="...your tailwind classes...">
+      Modal content
+    </Dialog.Content>
+  </Dialog.Portal>
+</Dialog.Root>
+```
+
+The library handles:
+- Focus trapping
+- Escape key to close
+- Click outside to close
+- ARIA attributes
+- Scroll locking
+
+You handle: how it looks. No style conflicts because there are no default styles.
+
+---
+
+## Decision Framework
+
+### Use Component Libraries When:
+
+**Internal tools and admin dashboards**: Speed to ship matters more than brand differentiation. Users are employees on fast connections. Bootstrap, Chakra, or Material UI are fine.
+
+**Rapid prototyping**: Getting something in front of users quickly. You can replace the library later if needed.
+
+**Team lacks design resources**: Pre-made components look better than custom components built without design guidance.
+
+**Enterprise B2B**: Customers expect familiar patterns. Material UI's recognizable components build trust through familiarity.
+
+### Use Tailwind + Custom Components When:
+
+**Consumer-facing products**: Performance matters. Brand differentiation matters. Every kilobyte counts.
+
+**Strong design team**: You have Figma files specifying exactly how things should look. A library would constrain the design.
+
+**Long-term projects**: Initial velocity matters less than long-term maintainability. Owning your components reduces vendor risk.
+
+**Performance-critical applications**: Sub-second TTI is a requirement. E-commerce, media sites, global audiences on variable networks.
+
+### The Hybrid Approach
+
+Many teams use both:
+
+```tsx
+// Admin dashboard - Material UI is fine
+import { DataGrid } from '@mui/x-data-grid'
+
+// Consumer-facing - custom with Tailwind
+import { ProductCard } from '@/components/product-card'
+```
+
+Internal tools get library speed. Consumer products get custom optimization.
+
+---
+
+## Performance Measurement
+
+Don't guess. Measure.
+
+### Lighthouse Metrics
+
+```bash
+npx lighthouse https://your-site.com --view
+```
+
+Compare:
+- **First Contentful Paint (FCP)**: When first content appears
+- **Time to Interactive (TTI)**: When page is fully interactive
+- **Total Blocking Time (TBT)**: Sum of long tasks blocking main thread
+
+### Bundle Analysis
+
+```bash
+# Next.js
+npm run build
+# Check .next/analyze/client.html
+
+# Vite
+npm run build -- --report
+```
+
+Identify what's contributing to bundle size.
+
+### Real User Monitoring
+
+Lighthouse tests on your machine. Real users have different conditions:
+
+```tsx
+// web-vitals library
+import { onCLS, onFID, onLCP } from 'web-vitals'
+
+onCLS(console.log)  // Cumulative Layout Shift
+onFID(console.log)  // First Input Delay
+onLCP(console.log)  // Largest Contentful Paint
+
+// Send to analytics
+```
+
+Track metrics over time, by geography, by device type.
+
+---
+
+## Migration Strategies
+
+### From Component Library to Tailwind
+
+1. **Don't big-bang migrate**: Replace components incrementally
+2. **Start with new features**: Use Tailwind for new work, leave existing alone
+3. **Create parallel components**: Build Tailwind versions alongside library versions
+4. **Migrate page by page**: Switch entire pages at once to avoid style conflicts
+
+### Code Cohabitation
+
+```tsx
+// Old component (Chakra)
+import { Button as ChakraButton } from '@chakra-ui/react'
+
+// New component (custom)
+import { Button } from '@/components/ui/button'
+
+// In template, use the appropriate one
+<ChakraButton>Legacy</ChakraButton>
+<Button>New</Button>
+```
+
+Run both systems during transition. Aggressive purging ensures no unused CSS ships.
+
+### Measuring Success
+
+Track metrics before and after migration:
+- Bundle size (target: >50% reduction)
+- TTI (target: >200ms improvement)
+- Lighthouse performance score (target: >10 point improvement)
+
+If metrics don't improve, reconsider whether migration is worth the effort.
+
+---
+
+## Conclusion
+
+Component libraries solve real problems for certain use cases. Internal tools, admin dashboards, prototypes—the productivity gain is worth the bundle cost.
+
+For consumer-facing products, the calculus shifts. Every 100KB costs users time. Every runtime computation delays interaction. When brand differentiation matters, fighting library styles costs engineering time.
+
+shadcn/ui represents the best current synthesis: accessible primitives, zero runtime, full customization. You get the hard parts solved (focus management, ARIA) without the overhead (CSS-in-JS runtime, specificity wars).
+
+The right answer depends on context:
+- **Shipping fast to internal users?** Use a library.
+- **Shipping to the world?** Build custom with Tailwind.
+- **Not sure?** Start with shadcn/ui. You can always add or remove complexity.
+
+Measure before deciding. Measure after implementing. The data will tell you if you made the right choice.
+
+---
+
+*This is part of a series on building production SaaS applications. Next up: [TypeScript: The Business Case for Static Types](/blog/typescript-business-case).*

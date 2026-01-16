@@ -1,0 +1,437 @@
+---
+title: "Beyond the Resume: A Technical Founder's Hiring Framework"
+description: "Work samples predict performance 3x better than years of experience. Here's how to hire developers when you can't afford bad hires."
+date: "2026-01-24"
+author: "Alex Mayhew"
+tags: ["hiring", "engineering-management", "startup", "technical-leadership"]
+category: "business"
+readingTime: "11 min"
+featured: false
+---
+
+## TL;DR
+
+85 years of personnel selection research shows: work samples (r = 0.54) predict performance 3x better than years of experience (r = 0.18). Structured interviews beat unstructured by 34%. The cost of a bad hire is 30% of first-year salary plus the damage they do. Stop reading resumes. Start testing actual work.
+
+---
+
+## The Resume Illusion
+
+Every technical founder's hiring process starts the same way: reviewing resumes. Years of experience. Company names. Technology lists. Maybe a cover letter nobody reads.
+
+This process feels productive. It feels like filtering. It feels like diligence.
+
+It's nearly useless.
+
+Frank Schmidt and John Hunter's meta-analysis of personnel selection methods—aggregating 85 years of research across thousands of studies—established the predictive validity of common hiring practices. The results are uncomfortable for anyone who's ever read a resume:
+
+| Selection Method | Validity Coefficient (r) | What This Means |
+|------------------|--------------------------|-----------------|
+| Work Sample Tests | 0.54 | Best predictor available |
+| General Mental Ability | 0.51-0.65 | Strong, especially for complex roles |
+| Structured Interviews | 0.51 | Consistent questions, rubric scoring |
+| Unstructured Interviews | 0.38 | "Good vibes" approach |
+| Reference Checks | 0.26 | Better than nothing |
+| Years of Experience | 0.18 | Nearly random |
+
+Let that sink in. Years of experience—the primary filter on most job listings—has a validity coefficient of 0.18. A validity of 0.18 means the correlation between experience and job performance is barely above random chance.
+
+A developer with ten years of experience might have ten years of progressive growth. Or they might have one year repeated ten times. The resume doesn't tell you which.
+
+---
+
+## The Predictive Validity Hierarchy
+
+If you can only do one thing to improve your hiring, use work samples. If you can do two things, add structured interviews. Everything else is noise.
+
+### Work Samples: The Gold Standard
+
+Work sample tests predict job performance better than any other method because they directly measure what you care about: can this person do the work?
+
+The key is designing tasks that mirror actual responsibilities:
+
+**Bad Work Sample**: "Reverse a linked list on a whiteboard."
+
+This tests algorithm memorization under artificial pressure. Unless you're hiring for competitive programming, it predicts nothing about job performance.
+
+**Good Work Sample**: "Here's a Next.js component with a bug. The loading state shows briefly, then disappears before data arrives. Find and fix the bug. You have 90 minutes and access to the internet."
+
+This tests:
+- React state management (actual skill needed)
+- Debugging approach (how they diagnose problems)
+- Resource usage (can they find relevant documentation)
+- Time management (shipping something imperfect vs. perfecting nothing)
+
+The work sample should be:
+- Time-boxed (prevent perfectionism, respect candidate time)
+- Representative of daily work
+- Evaluated against a rubric, not "did it work"
+- Focused on approach as much as outcome
+
+### Structured Interviews: Removing the Gut
+
+Most interviews are unstructured conversations where the interviewer decides based on "fit" or "vibe." This is how bias enters. People hire people who remind them of themselves.
+
+Structured interviews control for this by:
+
+1. **Consistent Questions**: Every candidate at the same level answers the same questions.
+2. **Rubric Scoring**: Answers are evaluated against predefined criteria, not compared to other candidates.
+3. **Behavioral Focus**: "Tell me about a time when..." extracts evidence of past behavior, which predicts future behavior.
+
+Google's internal research confirmed these findings. After analyzing thousands of interviews, their People Analytics team found that brainteasers had zero predictive validity. They abandoned them entirely.
+
+Instead, they implemented structured behavioral interviews. Every interviewer asks from a question bank. Every answer is scored 1-4 on specific criteria. The hiring decision aggregates scores across interviewers.
+
+### General Mental Ability: The Controversial Predictor
+
+GMA (essentially IQ) is a strong predictor of job performance, especially for complex roles like software engineering. But it's controversial because:
+
+- Testing can introduce cultural bias
+- Proxy measures are unreliable
+- It feels discriminatory even when technically valid
+
+Most organizations avoid explicit cognitive testing. Instead, work samples implicitly measure cognitive ability—solving novel problems requires it. A well-designed work sample captures GMA benefits without the baggage.
+
+---
+
+## Designing Effective Work Samples
+
+The work sample is your highest-leverage hiring investment. Here's how to design one that actually predicts performance.
+
+### Mirror Real Work
+
+The task should be something the candidate would actually do in the role. For a full-stack developer:
+
+**Production-Like Task**:
+```
+You're building a user dashboard feature. The designer has provided a
+Figma mockup (linked). The API endpoint /api/user/:id returns user data.
+
+Build a React component that:
+1. Fetches and displays user data
+2. Shows appropriate loading and error states
+3. Matches the design reasonably well
+
+You have 3 hours. Use whatever libraries you'd use in a real project.
+```
+
+This tests:
+- API integration (will they async/await correctly?)
+- State management (loading, error, success states)
+- CSS/styling ability
+- Code organization
+- Library choices
+
+### Time-Box Ruthlessly
+
+Respect candidate time and prevent perfectionism. 2-4 hours is reasonable for a take-home. 45-90 minutes for live coding.
+
+Shorter assessments favor experienced developers who work efficiently. Longer assessments favor candidates with more free time. Neither is inherently better—just be aware of the tradeoff.
+
+### Evaluate Process, Not Just Output
+
+A rubric might look like:
+
+| Criterion | 1 (Poor) | 2 (Acceptable) | 3 (Good) | 4 (Excellent) |
+|-----------|----------|----------------|----------|---------------|
+| Code Organization | No clear structure | Basic structure | Clean separation | Excellent modularity |
+| Error Handling | None | Happy path only | Common errors covered | Comprehensive handling |
+| Testing | None | No tests | Basic tests | Thorough test coverage |
+| Communication | No explanation | Minimal explanation | Clear explanation | Detailed rationale |
+
+The candidate who writes imperfect code but clearly explains their tradeoffs often outperforms the candidate with perfect code and no explanation.
+
+### Provide Context and Resources
+
+Real work happens with context and resources. Candidates should have:
+- Access to documentation (internet, official docs)
+- The ability to ask clarifying questions
+- Context about why the feature matters
+
+Artificial constraints ("no internet") test memory, not engineering ability. You want engineers who can find answers, not engineers who memorized the API.
+
+---
+
+## The Pair Programming Variant
+
+Live coding assessments have downsides—they create artificial pressure and favor candidates who perform well under observation. The pair programming variant addresses this.
+
+Instead of watching someone code alone, work with them:
+
+1. You provide the starter code
+2. You explain the problem
+3. They drive (write code)
+4. You navigate (answer questions, provide hints)
+
+This tests:
+- Communication skills (can they explain their thinking?)
+- Coachability (do they take hints gracefully?)
+- Collaboration (would you want to work with them daily?)
+
+The artificial pressure drops because you're helping, not judging. You learn how they think, not just whether they memorized the solution.
+
+---
+
+## Structured Interview Framework
+
+For roles beyond junior, technical ability is necessary but not sufficient. You need to assess:
+
+- System design thinking
+- Communication skills
+- Past behavior under pressure
+- Culture fit (actual, not "would I have a beer with them")
+
+### System Design Questions
+
+For mid-level and above, system design reveals architectural thinking:
+
+**Example**: "Design a URL shortener. Walk me through the architecture."
+
+Follow-ups probe depth:
+- "How would you handle 1M requests/second?"
+- "How do you prevent abuse?"
+- "How do you expire old links?"
+- "What would you do differently with 10x the engineering time?"
+
+Grade against rubric:
+- Did they ask clarifying questions? (Requirements gathering)
+- Did they start with data modeling? (Fundamentals first)
+- Did they consider edge cases? (Production thinking)
+- Did they acknowledge tradeoffs? (Mature reasoning)
+
+### Behavioral Questions
+
+Past behavior predicts future behavior. Behavioral questions extract evidence:
+
+**Strong Behavioral Questions**:
+- "Tell me about a time when you had to debug a production incident under pressure."
+- "Describe a technical decision you made that you later regretted."
+- "Tell me about a conflict with a colleague and how you resolved it."
+
+**Weak Behavioral Questions**:
+- "What would you do if..." (hypothetical, not behavioral)
+- "What's your greatest weakness?" (rehearsed answers)
+- "Where do you see yourself in 5 years?" (irrelevant to job performance)
+
+Look for specificity. Vague answers ("I'm a great team player") score lower than specific examples ("When our deployment pipeline failed during a launch, I stayed late to help the DevOps engineer debug the issue, even though it wasn't my area").
+
+### The STAR Framework
+
+Score behavioral answers using STAR:
+
+- **Situation**: Did they set context?
+- **Task**: What was their specific responsibility?
+- **Action**: What did they personally do?
+- **Result**: What was the outcome?
+
+Candidates who use "we" throughout might be claiming team accomplishments. Candidates who focus only on results might be exaggerating their contribution. Complete STAR responses indicate genuine experience.
+
+---
+
+## Red Flags in Technical Hiring
+
+These patterns predict poor performance:
+
+### Title Inflation
+
+"Senior Developer with 3 years of experience" is a red flag, especially in offshore markets. The title doesn't match industry norms.
+
+Probe with: "What responsibilities did that 'Senior' title include?" Look for architecture decisions, code review authority, mentoring juniors—not just writing code for longer.
+
+### Cannot Explain Own Code
+
+In work sample review, ask: "Walk me through this function. Why did you choose this approach?"
+
+If they struggle to explain their own work, they either didn't write it (plagiarism) or don't understand what they wrote (concerning either way).
+
+### No Questions About the Problem Domain
+
+Candidates who dive into coding without asking clarifying questions are optimizing for speed over correctness. In real work, this creates features that miss requirements.
+
+Strong candidates ask:
+- "Who's the user for this feature?"
+- "What happens if this fails?"
+- "Are there performance requirements?"
+
+### Framework Over Fundamentals
+
+"I've used React for 5 years" tells you nothing. Probe deeper:
+
+"How does React's reconciliation algorithm decide when to re-render?"
+
+If they can only describe *using* React but not *how* React works, they'll struggle when things break in unexpected ways.
+
+### No Production Stories
+
+Ask: "Tell me about a time when something broke in production and you had to fix it."
+
+Candidates with real production experience have war stories. The details might be vague (it was years ago) but the pattern—detect, diagnose, fix, post-mortem—should be familiar.
+
+Candidates who've never handled production systems will either deflect or fabricate. Both are concerning.
+
+---
+
+## Green Flags
+
+These patterns predict strong performance:
+
+### Admits Uncertainty
+
+"I'm not sure, but I'd approach it by..."
+
+This indicates:
+- Self-awareness (knows their limits)
+- Problem-solving orientation (focuses on finding answers)
+- Honesty (doesn't bullshit)
+
+Engineers who admit uncertainty learn faster than engineers who fake confidence.
+
+### Tradeoff Thinking
+
+"The advantage of this approach is X, but the downside is Y."
+
+Engineering is about tradeoffs. Candidates who present solutions as purely good haven't thought deeply about them.
+
+Ask follow-ups: "What would make you choose the other approach?" This reveals whether they understand both sides or just memorized an answer.
+
+### Questions First
+
+Candidates who ask clarifying questions before coding treat the interview like real work. They want to solve the right problem, not just any problem quickly.
+
+In work samples, look for comments like: "I assumed X because... but I would clarify this in a real project."
+
+### System Awareness
+
+Strong candidates understand how their code fits into the larger system:
+
+- "This would need rate limiting at the API gateway level"
+- "We'd want to log this for debugging"
+- "This could be cached if it becomes a bottleneck"
+
+This indicates production experience and architectural thinking beyond the immediate task.
+
+### Failure Reflection
+
+Ask about past failures. Strong candidates:
+- Own their mistakes ("I should have written tests first")
+- Explain what they learned ("Now I always...")
+- Don't blame circumstances or colleagues
+
+Weak candidates deflect or never seem to have failed (suspicious).
+
+---
+
+## The Polyglot Strategy
+
+Some organizations hire for fundamentals and train for stack. The logic: specific frameworks change; problem-solving ability persists.
+
+### When This Works
+
+- **Strong Onboarding**: The organization can bring someone up to speed quickly
+- **Experienced Team**: Seniors available to mentor and review
+- **Low-Risk Projects**: Initial assignments allow for learning curve
+- **Cultural Match**: The candidate has proven ability in *something*
+
+Stripe and Uber have historically hired language-agnostic engineers for their engineering DNA and taught specific stacks during onboarding.
+
+### When This Fails
+
+- **Startups Without Seniors**: Nobody to teach the new stack
+- **Immediate Delivery Pressure**: No time for learning curve
+- **Niche Technologies**: Some stacks (Kubernetes administration, ML ops) require specific experience
+
+For most startups making their first hires, hiring for your specific stack reduces risk. You can't afford months of ramp-up when you have months of runway.
+
+---
+
+## The Cost of Getting It Wrong
+
+The Society for Human Resource Management estimates the cost of a bad hire at 30% of first-year salary. For a $150,000 developer, that's $45,000 in direct costs.
+
+But the hidden costs are larger:
+
+### Architectural Damage
+
+A bad senior developer making architectural decisions can set patterns that burden the team for years. The monolith they chose when microservices made sense. The database schema that doesn't support multi-tenancy. The authentication system that needs to be replaced.
+
+Fixing these decisions costs multiples of the original implementation.
+
+### Team Velocity Drain
+
+Bad developers consume senior attention:
+- Extended code reviews (finding and explaining issues)
+- Pairing to fix bugs
+- Cleaning up after them
+- Documenting things they should have documented
+
+If a senior spends 20% of their time supporting an underperformer, that's effectively a 20% salary overhead on the bad hire.
+
+### Morale and Attrition
+
+Good developers don't want to work with bad ones. They:
+- Get frustrated cleaning up messes
+- Resent the apparent tolerance of underperformance
+- Start looking for teams that maintain standards
+
+The cost of attrition—recruiting, onboarding, lost productivity—dwarfs the salary of the developer who caused it.
+
+---
+
+## The Hiring Checklist
+
+### Before Opening the Role
+
+- [ ] Is the work sample designed and tested?
+- [ ] Is the interview rubric documented?
+- [ ] Who will evaluate candidates? Are they calibrated on the rubric?
+- [ ] What's the timeline? Don't let good candidates wait.
+
+### Resume Screen (Minimal Time)
+
+- [ ] Do they have *any* relevant experience?
+- [ ] Are there obvious mismatches (wrong timezone, wrong level)?
+- [ ] Move quickly—this is low-value filtering
+
+### Work Sample (Highest Weight)
+
+- [ ] Did they complete the task?
+- [ ] How did they approach the problem?
+- [ ] Can they explain their decisions?
+- [ ] Would you want to maintain this code?
+
+### Structured Interview (High Weight)
+
+- [ ] Behavioral questions with STAR framework
+- [ ] System design (for mid-level and above)
+- [ ] Culture and communication fit
+- [ ] Questions they ask you (reveals research and curiosity)
+
+### Reference Checks (Low Weight but Required)
+
+- [ ] Did they verify tenure and title?
+- [ ] Can references speak to specific contributions?
+- [ ] Any hesitation or qualified praise?
+
+### Decision
+
+- [ ] Score candidates against rubric, not each other
+- [ ] Debrief with all interviewers before deciding
+- [ ] If uncertain, don't hire—a false positive is worse than a false negative
+
+---
+
+## Conclusion
+
+The resume is not the candidate. Years of experience is not skill. A good interview is not a good hire.
+
+The data is clear: work samples predict performance 3x better than experience. Structured interviews beat unstructured by 34%. The methods that feel rigorous—reading resumes, having coffee chats—are nearly useless.
+
+For technical founders who can't afford bad hires, this matters. Every mis-hire burns runway, slows delivery, and risks team morale. Every good hire compounds—they ship features, mentor others, and attract more good engineers.
+
+Invest in your hiring process. Design work samples that mirror real work. Structure your interviews with rubrics. Ignore the years on the resume and evaluate what people can actually do.
+
+The cost of getting it right is a few hours of process design. The cost of getting it wrong is months of cleanup.
+
+---
+
+*This is part of a series on building production SaaS applications. Next up: [Choosing Your Startup's Tech Stack: A Capital Allocation Framework](/blog/tech-stack-capital-allocation).*
