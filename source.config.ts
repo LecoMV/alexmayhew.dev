@@ -10,14 +10,23 @@ export const { docs, meta } = defineDocs({
 export const blog = defineCollections({
 	type: "doc",
 	dir: "content/blog",
-	schema: z.object({
-		title: z.string(),
-		description: z.string(),
-		publishedAt: z.string().transform((s) => new Date(s)),
-		category: z.enum(["engineering", "architecture", "devops", "ai-ml"]),
-		tags: z.array(z.string()).default([]),
-		draft: z.boolean().default(false),
-	}),
+	schema: z
+		.object({
+			title: z.string(),
+			description: z.string(),
+			// Accept both 'date' and 'publishedAt' by using union with preprocessing
+			date: z.string().optional(),
+			publishedAt: z.string().optional(),
+			category: z.enum(["engineering", "architecture", "business", "frontend", "infrastructure"]),
+			tags: z.array(z.string()).default([]),
+			image: z.string().optional(),
+			draft: z.boolean().default(false),
+		})
+		.transform((data) => ({
+			...data,
+			// Normalize to publishedAt
+			publishedAt: new Date(data.publishedAt || data.date || ""),
+		})),
 });
 
 export default defineConfig();

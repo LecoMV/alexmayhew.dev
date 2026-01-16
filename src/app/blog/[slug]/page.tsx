@@ -50,6 +50,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
 			publishedAt: post.publishedAt,
 			category: post.category,
 			tags: post.tags,
+			image: post.image,
 		},
 	};
 

@@ -7,11 +7,12 @@ tags: ["serverless", "aws", "performance", "devops"]
 category: "infrastructure"
 readingTime: "10 min"
 featured: false
+image: "/images/blog/lambda-tax-cold-starts-featured.webp"
 ---
 
 ## TL;DR
 
-Cold start: 100-500ms+ penalty (new container creation). Warm start: <20ms (reused container). Provisioned concurrency eliminates cold starts but adds cost. Go/Rust cold start ~100ms; Java/C# cold start ~1-2 seconds. Serverless wins for bursty workloads; loses for consistent traffic with latency requirements.
+Cold start: 100-500ms+ penalty (new container creation). Warm start: `<20ms` (reused container). Provisioned concurrency eliminates cold starts but adds cost. Go/Rust cold start ~100ms; Java/C# cold start ~1-2 seconds. Serverless wins for bursty workloads; loses for consistent traffic with latency requirements.
 
 ---
 
@@ -317,7 +318,7 @@ Serverless pricing is seductive: pay per invocation, scale to zero. But the math
 - $0.20 per 1 million invocations
 - $0.0000166667 per GB-second of execution
 
-**Note (August 2025)**: AWS now bills the INIT phase (cold start initialization) for managed runtimes. Previously this was unbilled for ZIP-packaged functions. The impact is minimal for most workloads (cold starts occur <1% of the time), but it makes Provisioned Concurrency and SnapStart more financially attractive.
+**Note (August 2025)**: AWS now bills the INIT phase (cold start initialization) for managed runtimes. Previously this was unbilled for ZIP-packaged functions. The impact is minimal for most workloads (cold starts occur `<1%` of the time), but it makes Provisioned Concurrency and SnapStart more financially attractive.
 
 For a 512MB function running 100ms average:
 ```

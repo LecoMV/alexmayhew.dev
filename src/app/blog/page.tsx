@@ -31,6 +31,7 @@ export default function BlogPage() {
 				publishedAt: post.publishedAt,
 				category: post.category,
 				tags: post.tags,
+				image: post.image,
 			},
 		}));
 

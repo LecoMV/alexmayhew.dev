@@ -3,6 +3,7 @@
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, Calendar, Tag } from "lucide-react";
 
 const springTransition = {
@@ -20,6 +21,7 @@ interface Post {
 		publishedAt: Date;
 		category: string;
 		tags: string[];
+		image?: string;
 	};
 }
 
@@ -89,12 +91,34 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 					</div>
 				</motion.header>
 
+				{/* Featured Image */}
+				{post.data.image && (
+					<motion.div
+						className="relative mb-12 aspect-video w-full overflow-hidden border border-white/10"
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ ...springTransition, delay: 0.2 }}
+					>
+						<Image
+							src={post.data.image}
+							alt={post.data.title}
+							fill
+							className="object-cover"
+							sizes="(max-width: 900px) 100vw, 900px"
+							priority
+						/>
+						{/* Corner accents */}
+						<div className="border-cyber-lime absolute top-0 right-0 h-6 w-6 border-t-2 border-r-2" />
+						<div className="border-cyber-lime absolute bottom-0 left-0 h-6 w-6 border-b-2 border-l-2" />
+					</motion.div>
+				)}
+
 				{/* Divider */}
 				<motion.div
 					className="mb-12 h-px bg-white/10"
 					initial={{ scaleX: 0 }}
 					animate={{ scaleX: 1 }}
-					transition={{ ...springTransition, delay: 0.2 }}
+					transition={{ ...springTransition, delay: 0.3 }}
 				/>
 
 				{/* Content */}

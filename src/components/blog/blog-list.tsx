@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUpRight, Calendar, Tag } from "lucide-react";
 
 const springTransition = {
@@ -19,6 +20,7 @@ interface Post {
 		publishedAt: Date;
 		category: string;
 		tags: string[];
+		image?: string;
 	};
 }
 
@@ -64,56 +66,72 @@ export function BlogList({ posts }: BlogListProps) {
 						>
 							<Link
 								href={`/blog/${post.slug}`}
-								className="bg-gunmetal-glass/10 hover:border-cyber-lime/50 relative block border border-white/10 p-6 backdrop-blur-sm transition-colors duration-300"
+								className="bg-gunmetal-glass/10 hover:border-cyber-lime/50 relative block border border-white/10 backdrop-blur-sm transition-colors duration-300"
 							>
 								{/* Corner accents */}
 								<div className="border-cyber-lime absolute top-0 right-0 h-4 w-4 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 								<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-								<div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-									<div className="flex-1">
-										{/* Meta */}
-										<div className="text-slate-text mb-3 flex flex-wrap items-center gap-4 font-mono text-xs">
-											<span className="flex items-center gap-1">
-												<Calendar className="h-3 w-3" strokeWidth={1.5} />
-												{post.data.publishedAt.toLocaleDateString("en-US", {
-													year: "numeric",
-													month: "short",
-													day: "numeric",
-												})}
-											</span>
-											<span className="text-cyber-lime/60">{post.data.category}</span>
+								<div className="flex flex-col lg:flex-row">
+									{/* Featured Image */}
+									{post.data.image && (
+										<div className="relative h-48 w-full flex-shrink-0 overflow-hidden lg:h-auto lg:w-72">
+											<Image
+												src={post.data.image}
+												alt={post.data.title}
+												fill
+												className="object-cover transition-transform duration-500 group-hover:scale-105"
+												sizes="(max-width: 1024px) 100vw, 288px"
+											/>
+											<div className="from-void-navy/80 lg:to-void-navy/90 absolute inset-0 bg-gradient-to-r to-transparent lg:from-transparent lg:via-transparent" />
 										</div>
+									)}
 
-										{/* Title */}
-										<h3 className="group-hover:text-cyber-lime mb-2 font-mono text-xl tracking-tight transition-colors md:text-2xl">
-											{post.data.title}
-										</h3>
-
-										{/* Description */}
-										<p className="text-slate-text mb-4 text-sm leading-relaxed">
-											{post.data.description}
-										</p>
-
-										{/* Tags */}
-										<div className="flex flex-wrap gap-2">
-											{post.data.tags.map((tag) => (
-												<span
-													key={tag}
-													className="flex items-center gap-1 bg-white/5 px-2 py-1 font-mono text-xs text-white/60"
-												>
-													<Tag className="h-2.5 w-2.5" strokeWidth={1.5} />
-													{tag}
+									<div className="flex flex-1 flex-col justify-between gap-4 p-6 md:flex-row md:items-start">
+										<div className="flex-1">
+											{/* Meta */}
+											<div className="text-slate-text mb-3 flex flex-wrap items-center gap-4 font-mono text-xs">
+												<span className="flex items-center gap-1">
+													<Calendar className="h-3 w-3" strokeWidth={1.5} />
+													{post.data.publishedAt.toLocaleDateString("en-US", {
+														year: "numeric",
+														month: "short",
+														day: "numeric",
+													})}
 												</span>
-											))}
-										</div>
-									</div>
+												<span className="text-cyber-lime/60">{post.data.category}</span>
+											</div>
 
-									{/* Arrow */}
-									<ArrowUpRight
-										className="text-slate-text group-hover:text-cyber-lime h-5 w-5 flex-shrink-0 transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
-										strokeWidth={1.5}
-									/>
+											{/* Title */}
+											<h3 className="group-hover:text-cyber-lime mb-2 font-mono text-xl tracking-tight transition-colors md:text-2xl">
+												{post.data.title}
+											</h3>
+
+											{/* Description */}
+											<p className="text-slate-text mb-4 text-sm leading-relaxed">
+												{post.data.description}
+											</p>
+
+											{/* Tags */}
+											<div className="flex flex-wrap gap-2">
+												{post.data.tags.map((tag) => (
+													<span
+														key={tag}
+														className="flex items-center gap-1 bg-white/5 px-2 py-1 font-mono text-xs text-white/60"
+													>
+														<Tag className="h-2.5 w-2.5" strokeWidth={1.5} />
+														{tag}
+													</span>
+												))}
+											</div>
+										</div>
+
+										{/* Arrow */}
+										<ArrowUpRight
+											className="text-slate-text group-hover:text-cyber-lime h-5 w-5 flex-shrink-0 transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
+											strokeWidth={1.5}
+										/>
+									</div>
 								</div>
 							</Link>
 						</motion.article>

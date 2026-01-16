@@ -7,11 +7,12 @@ tags: ["framer-motion", "animation", "react", "ux"]
 category: "frontend"
 readingTime: "13 min"
 featured: false
+image: "/images/blog/atmospheric-animations-framer-motion-featured.webp"
 ---
 
 ## TL;DR
 
-Spring physics: mass, stiffness, damping. Damping ratio (ζ): <1 bouncy, =1 smooth, >1 sluggish. Layout Projection = FLIP for smooth layout changes. Never use linear easing for UI animations. Respect `prefers-reduced-motion`. Animation is feedback, not decoration.
+Spring physics: mass, stiffness, damping. Damping ratio (ζ): `<1` bouncy, `=1` smooth, `>1` sluggish. Layout Projection = FLIP for smooth layout changes. Never use linear easing for UI animations. Respect `prefers-reduced-motion`. Animation is feedback, not decoration.
 
 ---
 
@@ -162,7 +163,7 @@ For most UI work, increase damping for a more professional feel:
 - High (30+): No visible bounce
 
 **mass**: The inertia of the animated element. Higher = more momentum.
-- Low (<1): Light, responsive
+- Low (`<1`): Light, responsive
 - Default (1): Standard behavior
 - High (>1): Heavy, continued momentum
 
