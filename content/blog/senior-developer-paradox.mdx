@@ -61,6 +61,8 @@ Barry Boehm's research on software defect costs established what's now known as 
 
 A bug that costs $100 to fix during design costs $100,000 to fix in production. This isn't hyperbole—it's the cost of emergency patches, rollback procedures, customer compensation, support tickets, and reputation damage.
 
+*(Note: Boehm's original research was based on 1970s waterfall projects. Modern iterative development typically shows lower multipliers—closer to 1:10 or 1:20 for smaller projects. The principle holds, but the extreme 1:100 ratio applies primarily to large-scale systems where architectural changes cascade.)*
+
 Senior developers don't just write better code. They "fix" bugs before writing them.
 
 I once reviewed a codebase where a junior had implemented user authentication with email verification. The implementation worked perfectly in testing. In production, it fell apart: no rate limiting on verification emails (abuse vector), no expiration on tokens (security vulnerability), and synchronous email sending that blocked the signup flow (UX disaster).

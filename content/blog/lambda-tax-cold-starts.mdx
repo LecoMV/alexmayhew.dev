@@ -37,10 +37,12 @@ The language runtime boots:
 | Node.js | 100-200ms |
 | Go | 50-100ms |
 | Rust | 50-100ms |
-| Java (JVM) | 300-800ms |
+| Java (JVM) | 300-800ms (2-5s without SnapStart) |
 | C# (.NET) | 200-500ms |
 
 Compiled languages (Go, Rust) have smaller binaries and no runtime to boot. Interpreted languages (Python, Node.js) are moderate. JVM and .NET languages pay a heavy runtime initialization cost.
+
+**Java SnapStart** (introduced 2023) dramatically reduces Java cold starts by snapshotting the initialized state. With SnapStart enabled, Java cold starts drop to ~1.4 seconds. With additional priming optimizations, you can achieve ~781ms—a 6x improvement over baseline.
 
 ### 3. Code Download and Extraction (Depends on Bundle Size)
 
@@ -314,6 +316,8 @@ Serverless pricing is seductive: pay per invocation, scale to zero. But the math
 
 - $0.20 per 1 million invocations
 - $0.0000166667 per GB-second of execution
+
+**Note (August 2025)**: AWS now bills the INIT phase (cold start initialization) for managed runtimes. Previously this was unbilled for ZIP-packaged functions. The impact is minimal for most workloads (cold starts occur <1% of the time), but it makes Provisioned Concurrency and SnapStart more financially attractive.
 
 For a 512MB function running 100ms average:
 ```

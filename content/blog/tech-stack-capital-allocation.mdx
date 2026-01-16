@@ -11,7 +11,7 @@ featured: false
 
 ## TL;DR
 
-Labor costs are 50-70% of engineering opex. Your stack determines your hiring pool. Seed stage: optimize for speed (Rails, Django, Next.js). Growth stage: optimize for scale (add Go/Rust for hotspots). Enterprise: optimize for efficiency (hybrid + repatriation). Instagram scaled to 14 million users with 3 engineers and Django. Technical novelty is not a competitive advantage.
+Labor costs are 50-70% of engineering opex. Your stack determines your hiring pool. Seed stage: optimize for speed (Rails, Django, Next.js). Growth stage: optimize for scale (add Go/Rust for hotspots). Enterprise: optimize for efficiency (hybrid + repatriation). Instagram scaled to 14 million users with 3 engineers using PostgreSQL and Python. Technical novelty is not a competitive advantage.
 
 ---
 
@@ -76,7 +76,7 @@ The math is simple: when Postgres fails, Stack Overflow has the answer. When you
 
 ### Boring Technology Has Known Failure Modes
 
-Instagram scaled to 14 million users with three engineers and Django. Shopify ran Rails from day one through IPO. Pinterest, GitHub, Airbnb—all built on "boring" stacks.
+Instagram scaled to 14 million users with three engineers using PostgreSQL and Python (with Gearman for task queues). Shopify ran Rails from day one through IPO. Pinterest, GitHub, Airbnb—all built on "boring" stacks.
 
 These companies optimized for iteration velocity, not theoretical performance. They accepted higher compute costs (more servers) in exchange for lower development costs (fewer engineers shipping more features).
 
@@ -90,7 +90,7 @@ There's growing consensus among engineering leaders that starting with microserv
 
 ### The Segment Cautionary Tale
 
-Segment adopted microservices to promote team autonomy. They ended up with 140 distinct services. A change to a shared library required redeploying all 140.
+Segment adopted microservices to promote team autonomy. They reportedly ended up with over a hundred distinct services. A change to a shared library required redeploying them all.
 
 This "distributed monolith" strangled developer productivity. They eventually reverted to a monolith, simplifying testing and deployment, recovering engineering velocity.
 

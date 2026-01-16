@@ -11,7 +11,7 @@ featured: false
 
 ## TL;DR
 
-Segment: 140 microservices → monolith (velocity recovered). Prime Video: serverless → monolith (90% cost reduction). Uber: Python → Go (only for hot paths). Instagram: Django monolith → 14M users with 3 engineers. Pattern: start boring, migrate when you have proof.
+Segment: microservices → monolith (velocity recovered). Prime Video: serverless → monolith (90% cost reduction for their Video Quality Analysis service). Uber: Python → Go (only for hot paths). Instagram: PostgreSQL + Python → 14M users with 3 engineers. Pattern: start boring, migrate when you have proof.
 
 ---
 
@@ -37,7 +37,7 @@ Segment adopted microservices early, following the prevailing wisdom that micros
 
 The architecture grew to 140 distinct services. Each team owned their domain. Independence was achieved.
 
-But Segment used shared libraries for cross-cutting concerns. A change to one of these libraries required redeploying all 140 services. The "independent" services weren't actually independent—they were a distributed monolith with network boundaries.
+But Segment used shared libraries for cross-cutting concerns. A change to one of these libraries reportedly required redeploying all of their services. The "independent" services weren't actually independent—they were a distributed monolith with network boundaries.
 
 Testing became a nightmare. Local development required spinning up dozens of containers. A full integration test took longer than shipping the feature.
 
@@ -79,7 +79,7 @@ The team refactored into a single monolithic application on ECS containers.
 
 ### The Result
 
-90% infrastructure cost reduction.
+90% infrastructure cost reduction for that specific service.
 
 ### The Lesson
 
@@ -165,7 +165,7 @@ The fastest-growing companies didn't use cutting-edge technology. They used matu
 
 | Company | Initial Stack | Scale Achieved |
 |---------|--------------|----------------|
-| Instagram | Django (Python) | 14M users with 3 engineers |
+| Instagram | PostgreSQL + Python | 14M users with 3 engineers |
 | Shopify | Ruby on Rails | From launch through IPO |
 | GitHub | Ruby on Rails | The world's code repository |
 | Pinterest | Django (Python) | Millions of users before scaling concerns |
