@@ -60,7 +60,7 @@ const timeline = [
 const stats = [
 	{ label: "Years Experience", value: "6+", suffix: "" },
 	{ label: "Projects Delivered", value: "50", suffix: "+" },
-	{ label: "Lines of Code", value: "500", suffix: "k+" },
+	{ label: "Lines of Code", value: "2", suffix: "M+" },
 	{ label: "Cups of Coffee", value: "∞", suffix: "" },
 ];
 
