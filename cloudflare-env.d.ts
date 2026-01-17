@@ -7,6 +7,7 @@ declare namespace Cloudflare {
 		WORKER_SELF_REFERENCE: Fetcher /* alexmayhew-dev */;
 		IMAGES: ImagesBinding;
 		ASSETS: Fetcher;
+		AI: Ai;
 	}
 }
 interface CloudflareEnv extends Cloudflare.Env {}

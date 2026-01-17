@@ -4,10 +4,12 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack",
+		"prebuild": "npm run clean:cache",
 		"build": "NODE_ENV=production next build",
-		"build:clean": "npm run clean:cache && NODE_ENV=production next build",
-		"clean:cache": "rm -rf .next/cache/webpack node_modules/.cache",
-		"postinstall": "fumadocs-mdx",
+		"build:clean": "npm run clean:full && NODE_ENV=production next build",
+		"clean:cache": "rm -rf .next node_modules/.cache",
+		"clean:full": "rm -rf .next node_modules/.cache && npm cache clean --force",
+		"postinstall": "rm -rf .next/cache 2>/dev/null; fumadocs-mdx",
 		"start": "next start",
 		"lint": "eslint . --ext .ts,.tsx,.js,.jsx",
 		"lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
@@ -48,6 +50,7 @@
 		"zod": "^4.3.5"
 	},
 	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20260117.0",
 		"@eslint/eslintrc": "^3",
 		"@playwright/test": "^1.57.0",
 		"@tailwindcss/postcss": "^4",

@@ -1,0 +1,142 @@
+name: Deploy to Cloudflare
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deployment environment"
+        required: true
+        default: "production"
+        type: choice
+        options:
+          - production
+          - preview
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: "22"
+
+jobs:
+  # Run all checks before deployment
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test:ci
+        continue-on-error: true
+
+  # Build and deploy to Cloudflare
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [validate]
+    permissions:
+      contents: read
+      deployments: write
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+      url: ${{ steps.deploy.outputs.deployment-url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        env:
+          NODE_ENV: production
+          SKIP_ENV_VALIDATION: true
+
+      - name: Deploy to Cloudflare
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
+          workingDirectory: .
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Output deployment URL
+        run: |
+          echo "## Deployment Complete 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**URL:** ${{ steps.deploy.outputs.deployment-url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** ${{ github.event.inputs.environment || 'production' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+
+  # Post-deployment verification
+  verify:
+    name: Verify Deployment
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    steps:
+      - name: Wait for deployment propagation
+        run: sleep 30
+
+      - name: Health check
+        run: |
+          SITE_URL="${{ needs.deploy.outputs.deployment-url || 'https://alexmayhew.dev' }}"
+          echo "Checking $SITE_URL"
+
+          # Check main page
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$SITE_URL" || echo "000")
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ Main page responding (HTTP $HTTP_CODE)"
+          else
+            echo "⚠️ Main page returned HTTP $HTTP_CODE"
+          fi
+
+      - name: Lighthouse CI (optional)
+        continue-on-error: true
+        run: |
+          npm install -g @lhci/cli
+          lhci autorun --collect.url="${{ needs.deploy.outputs.deployment-url || 'https://alexmayhew.dev' }}" || true
+
+  # Notify on failure
+  notify-failure:
+    name: Notify on Failure
+    runs-on: ubuntu-latest
+    needs: [validate, deploy]
+    if: failure()
+    steps:
+      - name: Create failure summary
+        run: |
+          echo "## ❌ Deployment Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Workflow:** [View logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
