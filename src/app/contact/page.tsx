@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Send, Mail, MapPin, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { submitContactForm, type ContactFormData } from "@/app/actions/contact";
 
 const springTransition = {
 	type: "spring" as const,
@@ -43,15 +44,21 @@ export default function ContactPage() {
 		message: "",
 	});
 
+	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setFormStatus("submitting");
+		setErrorMessage(null);
 
-		// Simulate form submission
-		await new Promise((resolve) => setTimeout(resolve, 1500));
+		const result = await submitContactForm(formData as ContactFormData);
 
-		// For now, just show success (integrate with actual backend later)
-		setFormStatus("success");
+		if (result.success) {
+			setFormStatus("success");
+		} else {
+			setFormStatus("error");
+			setErrorMessage(result.error || "Something went wrong");
+		}
 	};
 
 	const handleChange = (
@@ -288,6 +295,24 @@ export default function ContactPage() {
 								>
 									Message received. I&apos;ll respond within 24 hours.
 								</motion.p>
+							)}
+
+							{/* Error Message */}
+							{formStatus === "error" && errorMessage && (
+								<motion.div
+									initial={{ opacity: 0, y: 10 }}
+									animate={{ opacity: 1, y: 0 }}
+									className="flex items-center gap-4"
+								>
+									<p className="text-burnt-ember font-mono text-sm">{errorMessage}</p>
+									<button
+										type="button"
+										onClick={() => setFormStatus("idle")}
+										className="text-slate-text hover:text-cyber-lime font-mono text-xs underline transition-colors"
+									>
+										RETRY()
+									</button>
+								</motion.div>
 							)}
 						</form>
 					</motion.div>

@@ -1,11 +1,12 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Calendar, Tag } from "lucide-react";
 import { useBlogTheme } from "@/lib/blog-themes";
+import { ShareButtons } from "./share-buttons";
 import type { Post } from "./types";
 
 interface BlogArticleProps {
@@ -15,6 +16,11 @@ interface BlogArticleProps {
 
 export function BlogArticle({ post, children }: BlogArticleProps) {
 	const { theme, springTransition } = useBlogTheme();
+	const [articleUrl, setArticleUrl] = useState("");
+
+	useEffect(() => {
+		setArticleUrl(window.location.href);
+	}, []);
 
 	return (
 		<main
@@ -150,6 +156,22 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 				>
 					{children}
 				</motion.article>
+
+				{/* Share Buttons */}
+				{articleUrl && (
+					<motion.div
+						className="mt-16"
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ ...springTransition, delay: 0.4 }}
+					>
+						<ShareButtons
+							title={post.data.title}
+							url={articleUrl}
+							description={post.data.description}
+						/>
+					</motion.div>
+				)}
 			</div>
 		</main>
 	);

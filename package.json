@@ -31,6 +31,7 @@
 		"@keystatic/core": "^0.5.48",
 		"@keystatic/next": "^5.0.4",
 		"@opennextjs/cloudflare": "^1.14.4",
+		"@react-email/components": "^1.0.4",
 		"@types/mdx": "^2.0.13",
 		"clsx": "^2.1.1",
 		"framer-motion": "^12.26.2",
@@ -42,6 +43,7 @@
 		"next": "15.5.9",
 		"react": "19.1.4",
 		"react-dom": "19.1.4",
+		"resend": "^6.7.0",
 		"tailwind-merge": "^3.4.0",
 		"zod": "^4.3.5"
 	},
