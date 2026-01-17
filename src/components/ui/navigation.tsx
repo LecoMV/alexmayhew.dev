@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { m, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AMLogo } from "./am-logo";
 
 const navItems = [
 	{ href: "/", label: "Home", code: "00" },
@@ -33,9 +32,8 @@ export function Navigation() {
 			<nav className="max-w-fd-container mx-auto px-6 py-4 sm:px-12 md:px-24">
 				<div className="bg-gunmetal-glass/20 flex items-center justify-between gap-4 border border-white/10 px-6 py-4 backdrop-blur-md">
 					{/* Logo / Brand */}
-					<Link href="/" className="group flex shrink-0 items-center gap-3">
-						<AMLogo size={80} className="rounded-sm" />
-						<span className="hidden font-mono text-lg tracking-tight lg:inline">
+					<Link href="/" className="group flex shrink-0 items-center">
+						<span className="font-mono text-lg tracking-tight">
 							<span className="text-cyber-lime">alex</span>
 							<span className="text-mist-white">mayhew</span>
 							<span className="text-slate-text">.dev</span>
