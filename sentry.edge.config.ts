@@ -1,0 +1,17 @@
+import * as Sentry from "@sentry/nextjs";
+
+Sentry.init({
+	dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+
+	// Performance monitoring (lower rate for edge)
+	tracesSampleRate: 0.05, // 5% of transactions
+
+	// Only enable in production
+	enabled: process.env.NODE_ENV === "production",
+
+	// Environment tag
+	environment: process.env.NODE_ENV,
+
+	// Release tracking
+	release: process.env.NEXT_PUBLIC_SENTRY_RELEASE,
+});

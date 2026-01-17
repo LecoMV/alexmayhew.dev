@@ -1,7 +1,10 @@
 "use server";
 
+import { headers } from "next/headers";
 import { Resend } from "resend";
 import { ContactNotification } from "@/components/emails/contact-notification";
+import { verifyTurnstileToken } from "@/lib/turnstile";
+import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -11,6 +14,7 @@ export interface ContactFormData {
 	projectType: string;
 	budget: string;
 	message: string;
+	turnstileToken?: string;
 }
 
 export interface ContactFormResult {
@@ -19,7 +23,41 @@ export interface ContactFormResult {
 }
 
 export async function submitContactForm(formData: ContactFormData): Promise<ContactFormResult> {
-	const { name, email, projectType, budget, message } = formData;
+	const { name, email, projectType, budget, message, turnstileToken } = formData;
+
+	// Get client IP for rate limiting
+	const headersList = await headers();
+	const clientIP = getClientIP(headersList);
+
+	// Rate limiting: 5 submissions per hour per IP
+	const rateLimitResult = checkRateLimit(`contact:${clientIP}`, {
+		limit: 5,
+		windowSeconds: 3600,
+	});
+
+	if (!rateLimitResult.success) {
+		return {
+			success: false,
+			error: `Too many submissions. Please try again in ${Math.ceil(rateLimitResult.resetIn / 60)} minutes.`,
+		};
+	}
+
+	// Verify Turnstile token
+	if (turnstileToken) {
+		const isValidToken = await verifyTurnstileToken(turnstileToken);
+		if (!isValidToken) {
+			return {
+				success: false,
+				error: "Security verification failed. Please try again.",
+			};
+		}
+	} else if (process.env.NODE_ENV === "production") {
+		// In production, require Turnstile token
+		return {
+			success: false,
+			error: "Security verification required.",
+		};
+	}
 
 	// Validate required fields
 	if (!name || !email || !projectType || !budget || !message) {
@@ -37,6 +75,9 @@ export async function submitContactForm(formData: ContactFormData): Promise<Cont
 			error: "Invalid email address",
 		};
 	}
+
+	// Honeypot check - if this field exists, it's a bot
+	// (Add a hidden field in form if needed)
 
 	const timestamp = new Date().toLocaleString("en-US", {
 		weekday: "short",

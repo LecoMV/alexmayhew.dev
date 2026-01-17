@@ -123,9 +123,23 @@ export function Footer() {
 						<span className="opacity-50">©</span> {currentYear} Alex Mayhew.{" "}
 						<span className="opacity-50">All systems operational.</span>
 					</p>
-					<p className="text-slate-text font-mono text-xs opacity-50">
-						Built with precision. Deployed on the edge.
-					</p>
+					<div className="flex items-center gap-4">
+						<Link
+							href="/privacy"
+							className="text-slate-text hover:text-cyber-lime font-mono text-xs transition-colors"
+						>
+							Privacy
+						</Link>
+						<Link
+							href="/terms"
+							className="text-slate-text hover:text-cyber-lime font-mono text-xs transition-colors"
+						>
+							Terms
+						</Link>
+						<span className="text-slate-text font-mono text-xs opacity-50">
+							Built with precision.
+						</span>
+					</div>
 				</div>
 			</div>
 		</footer>

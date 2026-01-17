@@ -8,6 +8,8 @@ import { NoiseOverlay } from "@/components/ui/noise-overlay";
 import { ChatWidget } from "@/components/chat";
 import { JsonLd } from "@/components/seo";
 import { CloudflareAnalytics } from "@/components/analytics";
+import { CookieConsent } from "@/components/ui/cookie-consent";
+import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
 
 const siteUrl = "https://alexmayhew.dev";
 
@@ -124,7 +126,9 @@ export default function RootLayout({
 						</div>
 					</SmoothScroll>
 					<ChatWidget />
+					<CookieConsent />
 				</MotionProvider>
+				<ServiceWorkerRegister />
 				<CloudflareAnalytics />
 			</body>
 		</html>

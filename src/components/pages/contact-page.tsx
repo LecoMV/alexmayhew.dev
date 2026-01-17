@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { m } from "framer-motion";
 import { Send, Mail, MapPin, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { submitContactForm, type ContactFormData } from "@/app/actions/contact";
+import { Turnstile, type TurnstileRef } from "@/components/ui/turnstile";
 
 const springTransition = {
 	type: "spring" as const,
@@ -43,21 +44,36 @@ export function ContactPage() {
 		budget: "",
 		message: "",
 	});
+	const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+	const turnstileRef = useRef<TurnstileRef>(null);
 
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+
+		if (!turnstileToken) {
+			setFormStatus("error");
+			setErrorMessage("Please complete the security check");
+			return;
+		}
+
 		setFormStatus("submitting");
 		setErrorMessage(null);
 
-		const result = await submitContactForm(formData as ContactFormData);
+		const result = await submitContactForm({
+			...formData,
+			turnstileToken,
+		} as ContactFormData);
 
 		if (result.success) {
 			setFormStatus("success");
 		} else {
 			setFormStatus("error");
 			setErrorMessage(result.error || "Something went wrong");
+			// Reset turnstile on error
+			turnstileRef.current?.reset();
+			setTurnstileToken(null);
 		}
 	};
 
@@ -232,6 +248,19 @@ export function ContactPage() {
 									onChange={handleChange}
 									className="bg-gunmetal-glass/20 focus:border-cyber-lime text-mist-white w-full resize-none border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 placeholder:text-white/30 focus:outline-none"
 									placeholder="Describe your project, goals, and timeline..."
+								/>
+							</div>
+
+							{/* Turnstile Bot Protection */}
+							<div>
+								<Turnstile
+									ref={turnstileRef}
+									onSuccess={(token) => setTurnstileToken(token)}
+									onError={() => {
+										setTurnstileToken(null);
+										setErrorMessage("Security check failed. Please try again.");
+									}}
+									onExpire={() => setTurnstileToken(null)}
 								/>
 							</div>
 
