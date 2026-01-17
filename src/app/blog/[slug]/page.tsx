@@ -2,7 +2,10 @@ import { blog } from "@/../.source/server";
 import { notFound } from "next/navigation";
 import { BlogArticle } from "@/components/blog/blog-article";
 import { mdxComponents } from "@/components/mdx/mdx-components";
+import { ArticleJsonLd } from "@/components/seo";
 import type { Metadata } from "next";
+
+const siteUrl = "https://alexmayhew.dev";
 
 interface PageProps {
 	params: Promise<{ slug: string }>;
@@ -22,14 +25,35 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	const post = blog.find((p) => getSlug(p.info.path) === slug);
 	if (!post) return {};
 
+	const ogImage = post.image ? `${siteUrl}${post.image}` : `${siteUrl}/og-image.png`;
+
 	return {
 		title: `${post.title} | Alex Mayhew`,
 		description: post.description,
+		authors: [{ name: "Alex Mayhew", url: siteUrl }],
 		openGraph: {
 			title: post.title,
 			description: post.description,
 			type: "article",
 			publishedTime: post.publishedAt.toISOString(),
+			authors: ["Alex Mayhew"],
+			section: post.category,
+			tags: post.tags,
+			images: [
+				{
+					url: ogImage,
+					width: 1200,
+					height: 630,
+					alt: post.title,
+				},
+			],
+		},
+		twitter: {
+			card: "summary_large_image",
+			title: post.title,
+			description: post.description,
+			images: [ogImage],
+			creator: "@alexmayhewdev",
 		},
 	};
 }
@@ -55,8 +79,19 @@ export default async function BlogArticlePage({ params }: PageProps) {
 	};
 
 	return (
-		<BlogArticle post={postData}>
-			<MDX components={mdxComponents} />
-		</BlogArticle>
+		<>
+			<ArticleJsonLd
+				title={post.title}
+				description={post.description}
+				publishedAt={post.publishedAt}
+				image={post.image}
+				slug={slug}
+				category={post.category}
+				tags={post.tags}
+			/>
+			<BlogArticle post={postData}>
+				<MDX components={mdxComponents} />
+			</BlogArticle>
+		</>
 	);
 }

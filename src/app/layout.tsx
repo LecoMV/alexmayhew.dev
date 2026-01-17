@@ -64,6 +64,10 @@ export const metadata: Metadata = {
 		shortcut: "/favicon.svg",
 		apple: "/apple-touch-icon.png",
 	},
+	appleWebApp: {
+		title: "Alex Mayhew",
+	},
+
 	manifest: "/site.webmanifest",
 	openGraph: {
 		type: "website",

@@ -30,7 +30,7 @@ export function Navigation() {
 
 	return (
 		<header className="fixed top-0 right-0 left-0 z-40">
-			<nav className="mx-auto max-w-[1400px] px-6 py-4 sm:px-12 md:px-24">
+			<nav className="max-w-fd-container mx-auto px-6 py-4 sm:px-12 md:px-24">
 				<div className="bg-gunmetal-glass/20 flex items-center justify-between border border-white/10 px-6 py-4 backdrop-blur-md">
 					{/* Logo / Brand */}
 					<Link href="/" className="group flex items-center gap-3">
@@ -61,7 +61,9 @@ export function Navigation() {
 										isActive ? "text-cyber-lime" : "text-slate-text hover:text-mist-white"
 									)}
 								>
-									<span className="mr-2 opacity-40">{item.code}</span>
+									<span className="mr-2 opacity-40" aria-hidden="true">
+										{item.code}
+									</span>
 									{item.label}
 									{isActive && (
 										<motion.div
@@ -133,7 +135,9 @@ export function Navigation() {
 													isActive ? "text-cyber-lime" : "text-slate-text hover:text-mist-white"
 												)}
 											>
-												<span className="text-xs opacity-40">{item.code}</span>
+												<span className="text-xs opacity-40" aria-hidden="true">
+													{item.code}
+												</span>
 												{item.label}
 												{isActive && (
 													<span className="bg-cyber-lime ml-auto h-2 w-2 animate-pulse" />

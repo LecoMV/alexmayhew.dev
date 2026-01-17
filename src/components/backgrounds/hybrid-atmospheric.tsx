@@ -18,7 +18,6 @@ export function HybridAtmospheric({
 	circuitOpacity = 0.2,
 	scanlineOpacity = 0.05,
 	primaryColor = "#CCF381",
-	secondaryColor: _secondaryColor = "#94A3B8",
 }: HybridAtmosphericProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });

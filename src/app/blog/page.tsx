@@ -10,6 +10,25 @@ export const metadata: Metadata = {
 		title: "Blog | Alex Mayhew",
 		description: "Technical articles on engineering, architecture, and modern web development.",
 		type: "website",
+		images: [
+			{
+				url: "/og-image.png",
+				width: 1200,
+				height: 630,
+				alt: "Alex Mayhew - Blog",
+			},
+		],
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Blog | Alex Mayhew",
+		description: "Technical articles on engineering, architecture, and modern web development.",
+		images: ["/og-image.png"],
+	},
+	alternates: {
+		types: {
+			"application/rss+xml": "/blog/rss.xml",
+		},
 	},
 };
 

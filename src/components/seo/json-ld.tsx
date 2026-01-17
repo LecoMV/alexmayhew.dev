@@ -7,8 +7,9 @@ export function JsonLd() {
 		image: "https://alexmayhew.dev/og-image.png",
 		sameAs: [
 			"https://github.com/LecoMV",
-			"https://linkedin.com/in/alexmayhew",
-			"https://twitter.com/alexmayhew",
+			"https://www.linkedin.com/in/alexmmayhew",
+			"https://x.com/alexmayhewdev",
+			"https://bsky.app/profile/alexmayhewdev.bsky.social",
 		],
 		jobTitle: "Full-Stack Developer & Software Architect",
 		worksFor: {
