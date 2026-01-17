@@ -171,3 +171,294 @@
 	font-size: 0.875em !important;
 	border-radius: 2px !important;
 }
+
+/* ===== Responsive & Cross-Browser Compatibility ===== */
+
+/* Safe area insets for notched devices (iPhone X+, etc.) */
+@supports (padding: env(safe-area-inset-bottom)) {
+	body {
+		padding-left: env(safe-area-inset-left);
+		padding-right: env(safe-area-inset-right);
+	}
+
+	.chat-widget-bottom {
+		padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+	}
+}
+
+/* Prevent horizontal overflow on all devices */
+html,
+body {
+	overflow-x: hidden;
+	max-width: 100vw;
+}
+
+/* Improve text rendering */
+body {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+}
+
+/* Touch action improvements for mobile */
+button,
+a,
+[role="button"] {
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
+}
+
+/* Minimum touch target size for accessibility (44x44px) */
+@media (pointer: coarse) {
+	button,
+	a,
+	[role="button"],
+	input[type="submit"] {
+		min-height: 44px;
+		min-width: 44px;
+	}
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/* Firefox scrollbar styling */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: var(--color-gunmetal-glass) var(--color-void-navy);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+	:root {
+		--color-slate-text: #d1d5db;
+		--color-cyber-lime: #a3e635;
+	}
+}
+
+/* Print styles */
+@media print {
+	body {
+		background: white !important;
+		color: black !important;
+	}
+
+	.no-print,
+	header,
+	footer,
+	nav {
+		display: none !important;
+	}
+}
+
+/* Focus visible for keyboard navigation */
+:focus-visible {
+	outline: 2px solid var(--color-cyber-lime);
+	outline-offset: 2px;
+}
+
+/* Remove focus outline for mouse users */
+:focus:not(:focus-visible) {
+	outline: none;
+}
+
+/* iOS input zoom prevention */
+@supports (-webkit-touch-callout: none) {
+	input,
+	select,
+	textarea {
+		font-size: 16px;
+	}
+}
+
+/* ===== Device-Specific Optimizations ===== */
+
+/* Extra small phones (iPhone SE, small Android) - max 374px */
+@media screen and (max-width: 374px) {
+	html {
+		font-size: 14px;
+	}
+
+	h1 {
+		font-size: 1.75rem !important;
+	}
+
+	h2 {
+		font-size: 1.5rem !important;
+	}
+}
+
+/* Small phones (iPhone 12 mini, etc.) - 375px to 413px */
+@media screen and (min-width: 375px) and (max-width: 413px) {
+	html {
+		font-size: 15px;
+	}
+}
+
+/* Standard phones (iPhone 14, Pixel, etc.) - 414px to 479px */
+@media screen and (min-width: 414px) and (max-width: 479px) {
+	html {
+		font-size: 16px;
+	}
+}
+
+/* Large phones (iPhone 14 Pro Max, Samsung Ultra) - 480px to 639px */
+@media screen and (min-width: 480px) and (max-width: 639px) {
+	html {
+		font-size: 16px;
+	}
+}
+
+/* Tablets portrait (iPad Mini, standard tablets) - 640px to 767px */
+@media screen and (min-width: 640px) and (max-width: 767px) {
+	html {
+		font-size: 16px;
+	}
+}
+
+/* Tablets landscape / Small laptops - 768px to 1023px */
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+	html {
+		font-size: 16px;
+	}
+}
+
+/* Standard laptops / Desktops - 1024px to 1279px */
+@media screen and (min-width: 1024px) and (max-width: 1279px) {
+	html {
+		font-size: 16px;
+	}
+}
+
+/* Large desktops - 1280px to 1535px */
+@media screen and (min-width: 1280px) and (max-width: 1535px) {
+	html {
+		font-size: 17px;
+	}
+}
+
+/* Extra large displays - 1536px to 1919px */
+@media screen and (min-width: 1536px) and (max-width: 1919px) {
+	html {
+		font-size: 18px;
+	}
+}
+
+/* 2K displays - 1920px to 2559px */
+@media screen and (min-width: 1920px) and (max-width: 2559px) {
+	html {
+		font-size: 18px;
+	}
+
+	.max-w-\[1400px\] {
+		max-width: 1600px;
+	}
+}
+
+/* 4K / Ultra-wide displays - 2560px+ */
+@media screen and (min-width: 2560px) {
+	html {
+		font-size: 20px;
+	}
+
+	.max-w-\[1400px\] {
+		max-width: 1800px;
+	}
+}
+
+/* ===== High DPI / Retina Display Optimizations ===== */
+
+/* Retina displays (2x) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx) {
+	/* Sharper borders on retina */
+	* {
+		-webkit-backface-visibility: hidden;
+		backface-visibility: hidden;
+	}
+
+	/* Prevent blurry text */
+	body {
+		-webkit-font-smoothing: subpixel-antialiased;
+	}
+}
+
+/* Super retina (3x - iPhone Pro, etc.) */
+@media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 288dpi), (min-resolution: 3dppx) {
+	/* Even sharper rendering */
+	img {
+		image-rendering: -webkit-optimize-contrast;
+	}
+}
+
+/* ===== Landscape Mode Optimizations ===== */
+
+/* Phone landscape */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+	/* Reduce vertical spacing in landscape */
+	main {
+		padding-top: 4rem !important;
+	}
+
+	section {
+		padding-top: 3rem !important;
+		padding-bottom: 3rem !important;
+	}
+
+	/* Smaller nav in landscape */
+	header nav {
+		padding-top: 0.5rem;
+		padding-bottom: 0.5rem;
+	}
+}
+
+/* Tablet landscape */
+@media screen and (min-width: 768px) and (max-height: 600px) and (orientation: landscape) {
+	main {
+		padding-top: 5rem !important;
+	}
+}
+
+/* ===== Color Scheme / Theme Support ===== */
+
+/* Dark mode is default, but ensure proper handling */
+@media (prefers-color-scheme: dark) {
+	:root {
+		color-scheme: dark;
+	}
+}
+
+/* Light mode support (if needed in future) */
+@media (prefers-color-scheme: light) {
+	:root {
+		color-scheme: dark; /* Force dark for now */
+	}
+}
+
+/* ===== Hover State Detection ===== */
+
+/* Only apply hover effects on devices with proper hover support */
+@media (hover: hover) and (pointer: fine) {
+	.group:hover .group-hover\:opacity-100 {
+		opacity: 1;
+	}
+
+	.group:hover .group-hover\:scale-x-100 {
+		transform: scaleX(1);
+	}
+}
+
+/* Touch devices - show states immediately */
+@media (hover: none) {
+	.group:active .group-hover\:opacity-100 {
+		opacity: 1;
+	}
+}
