@@ -39,20 +39,8 @@
 	"ai": {
 		"binding": "AI"
 	},
-	/**
-	 * Custom Domain Routes
-	 * Routes the worker to the alexmayhew.dev domain
-	 */
-	"routes": [
-		{
-			"pattern": "alexmayhew.dev/*",
-			"zone_name": "alexmayhew.dev"
-		},
-		{
-			"pattern": "www.alexmayhew.dev/*",
-			"zone_name": "alexmayhew.dev"
-		}
-	],
+	// Keep workers.dev subdomain active until custom domain is set up in dashboard
+	"workers_dev": true,
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
