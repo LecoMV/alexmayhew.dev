@@ -33,13 +33,13 @@ export function Navigation() {
 			<nav className="max-w-fd-container mx-auto px-6 py-4 sm:px-12 md:px-24">
 				<div className="bg-gunmetal-glass/20 flex items-center justify-between gap-4 border border-white/10 px-6 py-4 backdrop-blur-md">
 					{/* Logo / Brand */}
-					<Link href="/" className="group flex shrink-0 items-center gap-3">
+					<Link href="/" className="group flex shrink-0 items-center gap-4">
 						<Image
 							src="/am-icon-optimized_sized.svg"
 							alt="AM"
-							width={48}
-							height={30}
-							className="transition-opacity duration-300 group-hover:opacity-80"
+							width={52}
+							height={32}
+							className="h-8 w-auto transition-opacity duration-300 group-hover:opacity-80"
 							priority
 						/>
 						<span className="font-mono text-lg tracking-tight">
