@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Terminal, Layers, Zap } from "lucide-react";
 
@@ -59,13 +59,13 @@ export default function Home() {
 			<main className="flex min-h-screen flex-col justify-center px-6 pt-36 pb-12 sm:px-12 md:px-24">
 				<div className="mx-auto grid w-full max-w-[1400px] grid-cols-12 gap-6">
 					{/* Text Content */}
-					<motion.section
+					<m.section
 						className="col-span-12 flex flex-col justify-center gap-8 md:col-span-7 md:col-start-2 lg:col-span-6"
 						variants={staggerContainer}
 						initial="hidden"
 						animate="visible"
 					>
-						<motion.div className="flex flex-col gap-2" variants={fadeInUp}>
+						<m.div className="flex flex-col gap-2" variants={fadeInUp}>
 							<h1 className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase sm:text-sm">
 								<span className="mr-2 animate-pulse">●</span>
 								System Status: Online
@@ -75,19 +75,19 @@ export default function Home() {
 								<br />
 								<span className="text-slate-text">Engineering.</span>
 							</h2>
-						</motion.div>
+						</m.div>
 
-						<motion.div className="my-4 h-px w-full bg-white/10" variants={fadeInUp} />
+						<m.div className="my-4 h-px w-full bg-white/10" variants={fadeInUp} />
 
-						<motion.p
+						<m.p
 							className="text-slate-text max-w-xl text-lg leading-relaxed font-normal sm:text-xl"
 							variants={fadeInUp}
 						>
 							Crafting high-precision digital instruments for the web. Rejecting the generic.
 							Embracing the tactile, the heavy, and the responsive.
-						</motion.p>
+						</m.p>
 
-						<motion.div className="mt-4 flex items-center gap-6" variants={fadeInUp}>
+						<m.div className="mt-4 flex items-center gap-6" variants={fadeInUp}>
 							<Link
 								href="/contact"
 								className="group hover:border-cyber-lime relative border border-white/20 px-6 py-3 transition-colors duration-300"
@@ -95,7 +95,7 @@ export default function Home() {
 								<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">
 									INITIALIZE_PROJECT()
 								</span>
-								<motion.div
+								<m.div
 									className="bg-cyber-lime/5 absolute inset-0"
 									initial={{ opacity: 0 }}
 									whileHover={{ opacity: 1 }}
@@ -112,11 +112,11 @@ export default function Home() {
 									strokeWidth={1.5}
 								/>
 							</Link>
-						</motion.div>
-					</motion.section>
+						</m.div>
+					</m.section>
 
 					{/* Visual Element */}
-					<motion.div
+					<m.div
 						className="relative col-span-4 col-start-9 hidden flex-col justify-center md:flex"
 						initial={{ opacity: 0, x: 50 }}
 						animate={{ opacity: 1, x: 0 }}
@@ -149,7 +149,7 @@ export default function Home() {
 								</p>
 								<br />
 								<p className="text-white/20">{`// Awaiting input sequence...`}</p>
-								<motion.div
+								<m.div
 									className="bg-cyber-lime mt-1 h-4 w-2"
 									animate={{ opacity: [1, 0] }}
 									transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
@@ -160,14 +160,14 @@ export default function Home() {
 						<div className="absolute right-0 -bottom-12 origin-right translate-x-full rotate-90 transform font-mono text-[10px] tracking-[0.2em] text-white/10 uppercase">
 							Sector 09 / Visual
 						</div>
-					</motion.div>
+					</m.div>
 				</div>
 			</main>
 
 			{/* Services Section */}
 			<section className="border-t border-white/10 px-6 py-24 sm:px-12 md:px-24">
 				<div className="mx-auto max-w-[1400px]">
-					<motion.div
+					<m.div
 						className="mb-12"
 						initial={{ opacity: 0, y: 20 }}
 						whileInView={{ opacity: 1, y: 0 }}
@@ -181,11 +181,11 @@ export default function Home() {
 						<p className="text-slate-text max-w-2xl text-lg">
 							Specialized capabilities engineered for digital excellence.
 						</p>
-					</motion.div>
+					</m.div>
 
 					<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
 						{services.map((service, index) => (
-							<motion.article
+							<m.article
 								key={service.title}
 								className="group bg-gunmetal-glass/10 hover:border-cyber-lime/50 relative border border-white/10 p-6 backdrop-blur-sm transition-colors duration-300"
 								initial={{ opacity: 0, y: 30 }}
@@ -210,7 +210,7 @@ export default function Home() {
 								</p>
 
 								<code className="text-cyber-lime/60 font-mono text-xs">{service.code}</code>
-							</motion.article>
+							</m.article>
 						))}
 					</div>
 				</div>
@@ -218,7 +218,7 @@ export default function Home() {
 
 			{/* CTA Section */}
 			<section className="border-t border-white/10 px-6 py-24 sm:px-12 md:px-24">
-				<motion.div
+				<m.div
 					className="mx-auto max-w-[1400px]"
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
@@ -250,7 +250,7 @@ export default function Home() {
 									className="text-slate-text group-hover:text-cyber-lime h-4 w-4 transition-all duration-300 group-hover:translate-x-1"
 									strokeWidth={1.5}
 								/>
-								<motion.div
+								<m.div
 									className="bg-cyber-lime/5 absolute inset-0"
 									initial={{ opacity: 0 }}
 									whileHover={{ opacity: 1 }}
@@ -259,7 +259,7 @@ export default function Home() {
 							</Link>
 						</div>
 					</div>
-				</motion.div>
+				</m.div>
 			</section>
 		</>
 	);

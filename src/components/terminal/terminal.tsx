@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback, KeyboardEvent } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Minus, Square, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { executeCommand, type CommandResult } from "./commands";
@@ -175,7 +175,7 @@ export function Terminal({
 	// Minimized state
 	if (isMinimized) {
 		return (
-			<motion.button
+			<m.button
 				onClick={handleRestore}
 				className="bg-gunmetal-glass/90 hover:border-cyber-lime fixed right-6 bottom-6 z-50 flex items-center gap-2 border border-white/20 px-4 py-2 font-mono text-xs backdrop-blur-sm transition-colors"
 				initial={{ y: 100, opacity: 0 }}
@@ -185,12 +185,12 @@ export function Terminal({
 			>
 				<span className="text-cyber-lime animate-pulse">●</span>
 				ALEX_OS Terminal
-			</motion.button>
+			</m.button>
 		);
 	}
 
 	return (
-		<motion.div
+		<m.div
 			ref={terminalRef}
 			className={`bg-void-navy/95 flex w-full max-w-3xl flex-col overflow-hidden border border-white/20 shadow-2xl backdrop-blur-md ${className}`}
 			initial={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -251,7 +251,7 @@ export function Terminal({
 			>
 				<AnimatePresence>
 					{history.map((entry) => (
-						<motion.div
+						<m.div
 							key={entry.id}
 							initial={{ opacity: 0, y: 5 }}
 							animate={{ opacity: 1, y: 0 }}
@@ -276,7 +276,7 @@ export function Terminal({
 									{entry.output}
 								</pre>
 							)}
-						</motion.div>
+						</m.div>
 					))}
 				</AnimatePresence>
 
@@ -304,7 +304,7 @@ export function Terminal({
 						/>
 						{/* Blinking cursor */}
 						{isFocused && (
-							<motion.span
+							<m.span
 								className="bg-cyber-lime absolute -bottom-0.5 h-4 w-2"
 								style={{ left: `${input.length * 0.6}em` }}
 								animate={{ opacity: [1, 0] }}
@@ -322,7 +322,7 @@ export function Terminal({
 				</span>
 				<span className="text-cyber-lime font-mono text-xs">● Ready</span>
 			</div>
-		</motion.div>
+		</m.div>
 	);
 }
 

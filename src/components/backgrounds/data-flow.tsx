@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 interface Node {
 	id: number;
@@ -284,7 +284,7 @@ export function DataFlow({
 	}, [dimensions, mousePos, nodeColor, lineColor, accentColor]);
 
 	return (
-		<motion.canvas
+		<m.canvas
 			ref={canvasRef}
 			className={`pointer-events-none ${className}`}
 			initial={{ opacity: 0 }}

@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Calendar, Tag } from "lucide-react";
@@ -29,7 +29,7 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 		>
 			<div className="mx-auto max-w-[900px]">
 				{/* Back Link */}
-				<motion.div
+				<m.div
 					initial={{ opacity: 0, x: -20 }}
 					animate={{ opacity: 1, x: 0 }}
 					transition={springTransition}
@@ -51,10 +51,10 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 						/>
 						Back to Articles
 					</Link>
-				</motion.div>
+				</m.div>
 
 				{/* Header */}
-				<motion.header
+				<m.header
 					className="mb-12"
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
@@ -107,11 +107,11 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 							))}
 						</div>
 					)}
-				</motion.header>
+				</m.header>
 
 				{/* Featured Image */}
 				{post.data.image && (
-					<motion.div
+					<m.div
 						className="relative mb-12 aspect-video w-full overflow-hidden border"
 						style={{ borderColor: theme.colors.border }}
 						initial={{ opacity: 0, y: 20 }}
@@ -135,11 +135,11 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 							className="absolute bottom-0 left-0 h-6 w-6 border-b-2 border-l-2"
 							style={{ borderColor: theme.colors.accent }}
 						/>
-					</motion.div>
+					</m.div>
 				)}
 
 				{/* Divider */}
-				<motion.div
+				<m.div
 					className="mb-12 h-px"
 					style={{ backgroundColor: theme.colors.border }}
 					initial={{ scaleX: 0 }}
@@ -148,18 +148,18 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 				/>
 
 				{/* Content */}
-				<motion.article
+				<m.article
 					className="prose-void"
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ ...springTransition, delay: 0.3 }}
 				>
 					{children}
-				</motion.article>
+				</m.article>
 
 				{/* Share Buttons */}
 				{articleUrl && (
-					<motion.div
+					<m.div
 						className="mt-16"
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
@@ -170,7 +170,7 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 							url={articleUrl}
 							description={post.data.description}
 						/>
-					</motion.div>
+					</m.div>
 				)}
 			</div>
 		</main>

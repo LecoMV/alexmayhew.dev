@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { MapPin, Calendar, Code2, Cpu, Database, Globe, Palette, Server } from "lucide-react";
 
 const springTransition = {
@@ -69,7 +69,7 @@ export function AboutPage() {
 		<main className="min-h-screen px-6 pt-44 pb-24 sm:px-12 md:px-24">
 			<div className="mx-auto max-w-[1400px]">
 				{/* Header */}
-				<motion.div
+				<m.div
 					className="mb-16"
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
@@ -84,11 +84,11 @@ export function AboutPage() {
 						<br />
 						<span className="text-slate-text">Digital Frontier.</span>
 					</h2>
-				</motion.div>
+				</m.div>
 
 				{/* Bio Section */}
 				<div className="mb-24 grid grid-cols-1 gap-12 lg:grid-cols-12">
-					<motion.div
+					<m.div
 						className="lg:col-span-7"
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
@@ -128,10 +128,10 @@ export function AboutPage() {
 								English / Spanish
 							</div>
 						</div>
-					</motion.div>
+					</m.div>
 
 					{/* Stats */}
-					<motion.div
+					<m.div
 						className="lg:col-span-5"
 						initial={{ opacity: 0, x: 30 }}
 						animate={{ opacity: 1, x: 0 }}
@@ -158,11 +158,11 @@ export function AboutPage() {
 								))}
 							</div>
 						</div>
-					</motion.div>
+					</m.div>
 				</div>
 
 				{/* Skills Section */}
-				<motion.section
+				<m.section
 					className="mb-24"
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
@@ -176,7 +176,7 @@ export function AboutPage() {
 
 					<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
 						{skills.map((skill, index) => (
-							<motion.div
+							<m.div
 								key={skill.category}
 								className="group bg-gunmetal-glass/10 hover:border-cyber-lime/50 relative border border-white/10 p-6 backdrop-blur-sm transition-colors duration-300"
 								initial={{ opacity: 0, y: 20 }}
@@ -198,13 +198,13 @@ export function AboutPage() {
 										</li>
 									))}
 								</ul>
-							</motion.div>
+							</m.div>
 						))}
 					</div>
-				</motion.section>
+				</m.section>
 
 				{/* Timeline Section */}
-				<motion.section
+				<m.section
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true, margin: "-100px" }}
@@ -221,7 +221,7 @@ export function AboutPage() {
 
 						<div className="space-y-8">
 							{timeline.map((item, index) => (
-								<motion.div
+								<m.div
 									key={item.year}
 									className="relative grid grid-cols-1 gap-4 pl-8 md:grid-cols-2 md:gap-8 md:pl-0"
 									initial={{ opacity: 0, y: 20 }}
@@ -251,11 +251,11 @@ export function AboutPage() {
 										</h3>
 										<p className="text-slate-text text-sm">{item.description}</p>
 									</div>
-								</motion.div>
+								</m.div>
 							))}
 						</div>
 					</div>
-				</motion.section>
+				</m.section>
 			</div>
 		</main>
 	);

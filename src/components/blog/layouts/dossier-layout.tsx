@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { useBlogTheme } from "@/lib/blog-themes";
@@ -35,7 +35,7 @@ export function DossierLayout({ posts }: DossierLayoutProps) {
 			{/* Dossier Cards */}
 			<div className="space-y-4">
 				{posts.map((post, index) => (
-					<motion.div
+					<m.div
 						key={post.slug}
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
@@ -147,7 +147,7 @@ export function DossierLayout({ posts }: DossierLayoutProps) {
 								style={{ borderColor: theme.colors.accent }}
 							/>
 						</Link>
-					</motion.div>
+					</m.div>
 				))}
 			</div>
 

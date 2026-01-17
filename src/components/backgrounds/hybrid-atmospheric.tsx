@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 interface HybridAtmosphericProps {
 	className?: string;
@@ -329,7 +329,7 @@ export function HybridAtmospheric({
 	}, [dimensions, mousePos, asciiOpacity, circuitOpacity, scanlineOpacity, primaryColor, noise]);
 
 	return (
-		<motion.canvas
+		<m.canvas
 			ref={canvasRef}
 			className={`pointer-events-none ${className}`}
 			initial={{ opacity: 0 }}

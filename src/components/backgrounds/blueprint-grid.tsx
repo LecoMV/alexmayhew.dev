@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 interface BlueprintGridProps {
 	className?: string;
@@ -219,7 +219,7 @@ export function BlueprintGrid({
 	}, [dimensions, mousePos, gridSize, color, accentColor, showDiagonals, animate]);
 
 	return (
-		<motion.canvas
+		<m.canvas
 			ref={canvasRef}
 			className={`pointer-events-none ${className}`}
 			initial={{ opacity: 0 }}

@@ -1,9 +1,22 @@
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
+import r2IncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/r2-incremental-cache";
 
+/**
+ * OpenNext Cloudflare Configuration
+ *
+ * R2 Incremental Cache:
+ * - Stores ISR/cache data in R2 for persistence across deployments
+ * - Reduces TTFB by serving cached content from edge
+ * - Requires R2 bucket binding "NEXT_CACHE" in wrangler.jsonc
+ *
+ * Regional Cache:
+ * - Cache is distributed across Cloudflare's global network
+ * - First request to each region is cold, subsequent requests are cached
+ * - Combined with stale-while-revalidate for optimal performance
+ *
+ * See: https://opennext.js.org/cloudflare/caching
+ */
 export default defineCloudflareConfig({
-	// Uncomment to enable R2 cache,
-	// It should be imported as:
-	// `import r2IncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/r2-incremental-cache";`
-	// See https://opennext.js.org/cloudflare/caching for more details
-	// incrementalCache: r2IncrementalCache,
+	// Enable R2 incremental cache for persistent caching across deployments
+	incrementalCache: r2IncrementalCache,
 });

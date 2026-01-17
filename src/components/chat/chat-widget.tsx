@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { MessageSquare, X, Send, Loader2, Bot, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -119,7 +119,7 @@ export function ChatWidget() {
 	return (
 		<>
 			{/* Chat Toggle Button */}
-			<motion.button
+			<m.button
 				onClick={() => setIsOpen(!isOpen)}
 				className={cn(
 					"fixed right-6 bottom-6 z-50 flex h-14 w-14 items-center justify-center border transition-colors duration-300",
@@ -134,7 +134,7 @@ export function ChatWidget() {
 			>
 				<AnimatePresence mode="wait">
 					{isOpen ? (
-						<motion.div
+						<m.div
 							key="close"
 							initial={{ rotate: -90, opacity: 0 }}
 							animate={{ rotate: 0, opacity: 1 }}
@@ -142,9 +142,9 @@ export function ChatWidget() {
 							transition={{ duration: 0.2 }}
 						>
 							<X className="text-cyber-lime h-6 w-6" strokeWidth={1.5} />
-						</motion.div>
+						</m.div>
 					) : (
-						<motion.div
+						<m.div
 							key="open"
 							initial={{ rotate: 90, opacity: 0 }}
 							animate={{ rotate: 0, opacity: 1 }}
@@ -152,7 +152,7 @@ export function ChatWidget() {
 							transition={{ duration: 0.2 }}
 						>
 							<MessageSquare className="text-mist-white h-6 w-6" strokeWidth={1.5} />
-						</motion.div>
+						</m.div>
 					)}
 				</AnimatePresence>
 
@@ -160,12 +160,12 @@ export function ChatWidget() {
 				{!isOpen && messages.length === 1 && (
 					<span className="bg-cyber-lime absolute -top-1 -right-1 h-3 w-3 animate-pulse" />
 				)}
-			</motion.button>
+			</m.button>
 
 			{/* Chat Window */}
 			<AnimatePresence>
 				{isOpen && (
-					<motion.div
+					<m.div
 						initial={{ opacity: 0, y: 20, scale: 0.95 }}
 						animate={{ opacity: 1, y: 0, scale: 1 }}
 						exit={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -191,7 +191,7 @@ export function ChatWidget() {
 						{/* Messages */}
 						<div className="flex-1 space-y-4 overflow-y-auto p-4">
 							{messages.map((message) => (
-								<motion.div
+								<m.div
 									key={message.id}
 									initial={{ opacity: 0, y: 10 }}
 									animate={{ opacity: 1, y: 0 }}
@@ -222,12 +222,12 @@ export function ChatWidget() {
 									>
 										<p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
 									</div>
-								</motion.div>
+								</m.div>
 							))}
 
 							{/* Loading indicator */}
 							{isLoading && (
-								<motion.div
+								<m.div
 									initial={{ opacity: 0, y: 10 }}
 									animate={{ opacity: 1, y: 0 }}
 									className="flex gap-3"
@@ -239,7 +239,7 @@ export function ChatWidget() {
 										<Loader2 className="text-cyber-lime h-4 w-4 animate-spin" />
 										<span className="text-slate-text text-xs">Processing...</span>
 									</div>
-								</motion.div>
+								</m.div>
 							)}
 
 							<div ref={messagesEndRef} />
@@ -271,7 +271,7 @@ export function ChatWidget() {
 								Press Enter to send • Powered by Workers AI
 							</p>
 						</div>
-					</motion.div>
+					</m.div>
 				)}
 			</AnimatePresence>
 		</>

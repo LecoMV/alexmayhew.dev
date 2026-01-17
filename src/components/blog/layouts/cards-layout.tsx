@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight, Calendar, Tag } from "lucide-react";
@@ -57,7 +57,7 @@ function HeroCard({ post, index }: { post: Post; index: number }) {
 	const { theme, springTransition } = useBlogTheme();
 
 	return (
-		<motion.article
+		<m.article
 			initial={{ opacity: 0, y: 30 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ ...springTransition, delay: index * 0.1 }}
@@ -188,7 +188,7 @@ function HeroCard({ post, index }: { post: Post; index: number }) {
 					</div>
 				</div>
 			</Link>
-		</motion.article>
+		</m.article>
 	);
 }
 
@@ -197,7 +197,7 @@ function SecondaryCard({ post, index }: { post: Post; index: number }) {
 	const { theme, springTransition } = useBlogTheme();
 
 	return (
-		<motion.article
+		<m.article
 			initial={{ opacity: 0, y: 30 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ ...springTransition, delay: index * 0.1 }}
@@ -291,7 +291,7 @@ function SecondaryCard({ post, index }: { post: Post; index: number }) {
 					</div>
 				</div>
 			</Link>
-		</motion.article>
+		</m.article>
 	);
 }
 
@@ -300,7 +300,7 @@ function CompactCard({ post, index }: { post: Post; index: number }) {
 	const { theme, springTransition } = useBlogTheme();
 
 	return (
-		<motion.article
+		<m.article
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ ...springTransition, delay: index * 0.05 }}
@@ -387,6 +387,6 @@ function CompactCard({ post, index }: { post: Post; index: number }) {
 					</div>
 				</div>
 			</Link>
-		</motion.article>
+		</m.article>
 	);
 }

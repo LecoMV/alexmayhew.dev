@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 interface CRTEffectProps {
 	className?: string;
@@ -134,7 +134,7 @@ export function CRTEffect({
 	}, [scanlineOpacity, scanlineSize, flickerIntensity, vignetteIntensity, glowColor]);
 
 	return (
-		<motion.div
+		<m.div
 			ref={containerRef}
 			className={`relative overflow-hidden ${className}`}
 			initial={{ opacity: 0 }}
@@ -147,7 +147,7 @@ export function CRTEffect({
 				className="pointer-events-none absolute inset-0"
 				style={{ mixBlendMode: "multiply" }}
 			/>
-		</motion.div>
+		</m.div>
 	);
 }
 

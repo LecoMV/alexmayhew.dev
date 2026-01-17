@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 interface CodeRainProps {
 	className?: string;
@@ -215,7 +215,7 @@ export function CodeRain({
 	}, [fontSize, color, speed, density]);
 
 	return (
-		<motion.canvas
+		<m.canvas
 			ref={canvasRef}
 			className={`pointer-events-none ${className}`}
 			initial={{ opacity: 0 }}

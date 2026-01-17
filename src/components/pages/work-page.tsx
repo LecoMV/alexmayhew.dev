@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { ExternalLink, Github, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -115,7 +115,7 @@ export function WorkPage() {
 		<main className="min-h-screen px-6 pt-44 pb-24 sm:px-12 md:px-24">
 			<div className="mx-auto max-w-[1400px]">
 				{/* Header */}
-				<motion.div
+				<m.div
 					className="mb-16"
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
@@ -134,10 +134,10 @@ export function WorkPage() {
 						A collection of projects that push boundaries, solve complex problems, and deliver
 						exceptional user experiences.
 					</p>
-				</motion.div>
+				</m.div>
 
 				{/* Category Filter */}
-				<motion.div
+				<m.div
 					className="mb-12 flex flex-wrap gap-2"
 					initial={{ opacity: 0, y: 10 }}
 					animate={{ opacity: 1, y: 0 }}
@@ -156,7 +156,7 @@ export function WorkPage() {
 						>
 							{category}
 							{activeCategory === category && (
-								<motion.div
+								<m.div
 									layoutId="category-indicator"
 									className="bg-cyber-lime absolute right-0 bottom-0 left-0 h-px"
 									transition={springTransition}
@@ -164,13 +164,13 @@ export function WorkPage() {
 							)}
 						</button>
 					))}
-				</motion.div>
+				</m.div>
 
 				{/* Projects Grid */}
 				<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
 					<AnimatePresence mode="popLayout">
 						{filteredProjects.map((project, index) => (
-							<motion.article
+							<m.article
 								key={project.id}
 								layout
 								initial={{ opacity: 0, y: 30 }}
@@ -257,20 +257,16 @@ export function WorkPage() {
 										)}
 									</div>
 								</div>
-							</motion.article>
+							</m.article>
 						))}
 					</AnimatePresence>
 				</div>
 
 				{/* Empty State */}
 				{filteredProjects.length === 0 && (
-					<motion.div
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						className="py-12 text-center"
-					>
+					<m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-12 text-center">
 						<p className="text-slate-text font-mono text-sm">No projects found in this category.</p>
-					</motion.div>
+					</m.div>
 				)}
 			</div>
 		</main>

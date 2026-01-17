@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -66,7 +66,7 @@ export function Navigation() {
 									</span>
 									{item.label}
 									{isActive && (
-										<motion.div
+										<m.div
 											layoutId="nav-indicator"
 											className="bg-cyber-lime absolute right-2 bottom-1 left-2 h-px"
 											transition={springTransition}
@@ -110,7 +110,7 @@ export function Navigation() {
 				{/* Mobile Menu */}
 				<AnimatePresence>
 					{mobileMenuOpen && (
-						<motion.div
+						<m.div
 							initial={{ opacity: 0, height: 0 }}
 							animate={{ opacity: 1, height: "auto" }}
 							exit={{ opacity: 0, height: 0 }}
@@ -121,7 +121,7 @@ export function Navigation() {
 								{navItems.map((item, index) => {
 									const isActive = pathname === item.href;
 									return (
-										<motion.div
+										<m.div
 											key={item.href}
 											initial={{ opacity: 0, x: -20 }}
 											animate={{ opacity: 1, x: 0 }}
@@ -143,10 +143,10 @@ export function Navigation() {
 													<span className="bg-cyber-lime ml-auto h-2 w-2 animate-pulse" />
 												)}
 											</Link>
-										</motion.div>
+										</m.div>
 									);
 								})}
-								<motion.div
+								<m.div
 									initial={{ opacity: 0, y: 10 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ ...springTransition, delay: 0.4 }}
@@ -159,9 +159,9 @@ export function Navigation() {
 									>
 										<span className="hover:text-cyber-lime">START_PROJECT()</span>
 									</Link>
-								</motion.div>
+								</m.div>
 							</div>
-						</motion.div>
+						</m.div>
 					)}
 				</AnimatePresence>
 			</nav>

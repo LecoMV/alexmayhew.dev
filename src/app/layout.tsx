@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { inter, jetbrainsMono } from "./fonts";
 import "./globals.css";
-import { NoiseOverlay } from "@/components/ui/noise-overlay";
-import { SmoothScroll } from "@/components/providers/smooth-scroll";
+import { SmoothScroll, MotionProvider } from "@/components/providers";
 import { Navigation } from "@/components/ui/navigation";
 import { Footer } from "@/components/ui/footer";
+import { NoiseOverlay } from "@/components/ui/noise-overlay";
 import { ChatWidget } from "@/components/chat";
 import { JsonLd } from "@/components/seo";
 import { CloudflareAnalytics } from "@/components/analytics";
@@ -114,15 +114,17 @@ export default function RootLayout({
 				<JsonLd />
 			</head>
 			<body className="relative min-h-screen overflow-x-hidden">
-				<NoiseOverlay />
-				<SmoothScroll>
-					<Navigation />
-					<div className="relative z-10 flex min-h-screen flex-col">
-						{children}
-						<Footer />
-					</div>
-				</SmoothScroll>
-				<ChatWidget />
+				<MotionProvider>
+					<NoiseOverlay />
+					<SmoothScroll>
+						<Navigation />
+						<div className="relative z-10 flex min-h-screen flex-col">
+							{children}
+							<Footer />
+						</div>
+					</SmoothScroll>
+					<ChatWidget />
+				</MotionProvider>
 				<CloudflareAnalytics />
 			</body>
 		</html>

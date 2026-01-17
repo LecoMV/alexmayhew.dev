@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useBlogTheme } from "@/lib/blog-themes";
 import { CardsLayout, TerminalLayout, DossierLayout } from "./layouts";
 import type { Post } from "./types";
@@ -26,7 +26,7 @@ export function BlogList({ posts }: BlogListProps) {
 		>
 			<div className="mx-auto max-w-[1400px]">
 				{/* Header */}
-				<motion.div
+				<m.div
 					className="mb-16"
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
@@ -51,22 +51,18 @@ export function BlogList({ posts }: BlogListProps) {
 						Deep dives into system design, performance optimization, and modern web development
 						patterns.
 					</p>
-				</motion.div>
+				</m.div>
 
 				{/* Posts - rendered by selected layout */}
 				<LayoutComponent posts={posts} />
 
 				{/* Empty State */}
 				{posts.length === 0 && (
-					<motion.div
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						className="py-12 text-center"
-					>
+					<m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-12 text-center">
 						<p className="font-mono text-sm" style={{ color: theme.colors.textMuted }}>
 							No articles published yet. Check back soon.
 						</p>
-					</motion.div>
+					</m.div>
 				)}
 			</div>
 		</main>

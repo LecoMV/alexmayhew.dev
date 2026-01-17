@@ -39,13 +39,25 @@
 	"ai": {
 		"binding": "AI",
 	},
+	/**
+	 * R2 Bucket for Incremental Cache
+	 * Required for persistent ISR caching across deployments
+	 * Create bucket: wrangler r2 bucket create alexmayhew-dev-cache
+	 */
+	"r2_buckets": [
+		{
+			"binding": "NEXT_CACHE",
+			"bucket_name": "alexmayhew-dev-cache"
+		}
+	],
 	// Keep workers.dev subdomain active until custom domain is set up in dashboard
 	"workers_dev": true,
 	/**
 	 * Smart Placement
-	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
+	 * Automatically places Worker close to backend services for reduced latency
+	 * https://developers.cloudflare.com/workers/configuration/smart-placement/
 	 */
-	// "placement": {  "mode": "smart" }
+	"placement": { "mode": "smart" },
 	/**
 	 * Bindings
 	 * Bindings allow your Worker to interact with resources on the Cloudflare Developer Platform, including

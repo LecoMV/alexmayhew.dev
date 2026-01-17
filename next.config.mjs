@@ -7,6 +7,19 @@ const __filename = fileURLToPath(import.meta.url);
 const config = {
 	reactStrictMode: true,
 
+	// Performance optimizations
+	experimental: {
+		// Enable CSS optimization for reduced CSS bundle size
+		optimizeCss: true,
+		// Tree-shake specific packages for smaller bundles
+		optimizePackageImports: ["lucide-react", "framer-motion"],
+	},
+
+	// Remove console logs in production for smaller bundle
+	compiler: {
+		removeConsole: process.env.NODE_ENV === "production",
+	},
+
 	// Webpack cache configuration to prevent corruption
 	webpack: (config, { dev, isServer }) => {
 		// In development, clear managedPaths to detect node_modules changes

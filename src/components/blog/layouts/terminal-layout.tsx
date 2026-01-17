@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
 import { useBlogTheme } from "@/lib/blog-themes";
 import type { Post } from "../types";
@@ -38,7 +38,7 @@ export function TerminalLayout({ posts }: TerminalLayoutProps) {
 			{/* Posts List */}
 			<div className="divide-y" style={{ borderColor: theme.colors.border }}>
 				{posts.map((post, index) => (
-					<motion.div
+					<m.div
 						key={post.slug}
 						initial={{ opacity: 0, x: -10 }}
 						animate={{ opacity: 1, x: 0 }}
@@ -107,7 +107,7 @@ export function TerminalLayout({ posts }: TerminalLayoutProps) {
 								</span>
 							</div>
 						</Link>
-					</motion.div>
+					</m.div>
 				))}
 			</div>
 

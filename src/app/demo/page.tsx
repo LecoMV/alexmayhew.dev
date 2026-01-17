@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
 import {
 	ArrowLeft,
@@ -39,7 +39,7 @@ function FeatureCard({ title, description, status, icon, children }: FeatureCard
 	const { label, color, bgColor } = statusConfig[status];
 
 	return (
-		<motion.div
+		<m.div
 			className="bg-gunmetal-glass/20 relative border border-white/10 p-6 backdrop-blur-sm"
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
@@ -61,7 +61,7 @@ function FeatureCard({ title, description, status, icon, children }: FeatureCard
 			<p className="text-slate-text mb-6">{description}</p>
 
 			{children}
-		</motion.div>
+		</m.div>
 	);
 }
 
@@ -72,7 +72,7 @@ export default function DemoPage() {
 		<main className="min-h-screen px-6 pt-44 pb-24 sm:px-12 md:px-24">
 			<div className="mx-auto max-w-[1400px]">
 				{/* Back Link */}
-				<motion.div
+				<m.div
 					initial={{ opacity: 0, x: -20 }}
 					animate={{ opacity: 1, x: 0 }}
 					transition={springTransition}
@@ -87,10 +87,10 @@ export default function DemoPage() {
 						/>
 						Back to Home
 					</Link>
-				</motion.div>
+				</m.div>
 
 				{/* Header */}
-				<motion.div
+				<m.div
 					className="mb-12"
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
@@ -109,10 +109,10 @@ export default function DemoPage() {
 						Preview the cutting-edge features planned for alexmayhew.dev. Each demo showcases the
 						latest web technologies with precision and excellence.
 					</p>
-				</motion.div>
+				</m.div>
 
 				{/* Feature Status Overview */}
-				<motion.div
+				<m.div
 					className="mb-12 flex flex-wrap gap-4"
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
@@ -133,7 +133,7 @@ export default function DemoPage() {
 						<span className="text-slate-text">Phase 3: WebGL + AI Chat</span>
 						<span className="text-blue-400">PENDING</span>
 					</div>
-				</motion.div>
+				</m.div>
 
 				{/* Feature Demos */}
 				<div className="space-y-12">
@@ -168,7 +168,7 @@ export default function DemoPage() {
 						</div>
 
 						{showTerminal && (
-							<motion.div
+							<m.div
 								initial={{ opacity: 0, height: 0 }}
 								animate={{ opacity: 1, height: "auto" }}
 								exit={{ opacity: 0, height: 0 }}
@@ -182,7 +182,7 @@ export default function DemoPage() {
 										README, skills, neofetch, sudo hire alex
 									</p>
 								</div>
-							</motion.div>
+							</m.div>
 						)}
 					</FeatureCard>
 
@@ -212,7 +212,7 @@ export default function DemoPage() {
 							{/* Animated preview dots */}
 							<div className="absolute inset-0 opacity-30">
 								{Array.from({ length: 30 }).map((_, i) => (
-									<motion.div
+									<m.div
 										key={i}
 										className="bg-cyber-lime absolute h-1 w-1"
 										style={{
@@ -358,7 +358,7 @@ export default function DemoPage() {
 				</div>
 
 				{/* Summary Section */}
-				<motion.div
+				<m.div
 					className="mt-16 border-t border-white/10 pt-12"
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
@@ -400,7 +400,7 @@ export default function DemoPage() {
 							</ul>
 						</div>
 					</div>
-				</motion.div>
+				</m.div>
 			</div>
 		</main>
 	);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
 	ArrowLeft,
@@ -134,7 +134,7 @@ export default function BackgroundsDemoPage() {
 			{/* Fullscreen Preview */}
 			<AnimatePresence>
 				{fullscreen && currentBg && (
-					<motion.div
+					<m.div
 						className="bg-void-navy fixed inset-0 z-50"
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
@@ -151,14 +151,14 @@ export default function BackgroundsDemoPage() {
 							<h3 className="text-cyber-lime mb-2 font-mono text-sm">{currentBg.name}</h3>
 							<p className="text-slate-text font-mono text-xs">{currentBg.description}</p>
 						</div>
-					</motion.div>
+					</m.div>
 				)}
 			</AnimatePresence>
 
 			<div className="px-6 pt-44 pb-24 sm:px-12 md:px-24">
 				<div className="mx-auto max-w-[1400px]">
 					{/* Back Link */}
-					<motion.div
+					<m.div
 						initial={{ opacity: 0, x: -20 }}
 						animate={{ opacity: 1, x: 0 }}
 						transition={springTransition}
@@ -173,10 +173,10 @@ export default function BackgroundsDemoPage() {
 							/>
 							Back to Feature Demo
 						</Link>
-					</motion.div>
+					</m.div>
 
 					{/* Header */}
-					<motion.div
+					<m.div
 						className="mb-12"
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
@@ -195,10 +195,10 @@ export default function BackgroundsDemoPage() {
 							Each effect is crafted for the &quot;Atmospheric Engineering&quot; brand. No generic
 							particle clouds. Technical precision with visual impact.
 						</p>
-					</motion.div>
+					</m.div>
 
 					{/* Main Preview */}
-					<motion.div
+					<m.div
 						className="bg-void-navy relative mb-8 aspect-video overflow-hidden border border-white/10"
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
@@ -210,7 +210,7 @@ export default function BackgroundsDemoPage() {
 
 						{/* Active background */}
 						<AnimatePresence mode="wait">
-							<motion.div
+							<m.div
 								key={activeBackground}
 								className="absolute inset-0"
 								initial={{ opacity: 0 }}
@@ -219,7 +219,7 @@ export default function BackgroundsDemoPage() {
 								transition={{ duration: 0.5 }}
 							>
 								{currentBg?.component}
-							</motion.div>
+							</m.div>
 						</AnimatePresence>
 
 						{/* Overlay info */}
@@ -237,10 +237,10 @@ export default function BackgroundsDemoPage() {
 						>
 							FULLSCREEN()
 						</button>
-					</motion.div>
+					</m.div>
 
 					{/* Effect Selector */}
-					<motion.div
+					<m.div
 						className="mb-12 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7"
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
@@ -271,12 +271,12 @@ export default function BackgroundsDemoPage() {
 								</p>
 							</button>
 						))}
-					</motion.div>
+					</m.div>
 
 					{/* Effect Details */}
 					<AnimatePresence mode="wait">
 						{currentBg && (
-							<motion.div
+							<m.div
 								key={currentBg.id}
 								className="grid gap-6 lg:grid-cols-2"
 								initial={{ opacity: 0, y: 20 }}
@@ -356,12 +356,12 @@ export default function BackgroundsDemoPage() {
 										</div>
 									)}
 								</div>
-							</motion.div>
+							</m.div>
 						)}
 					</AnimatePresence>
 
 					{/* Performance Notes */}
-					<motion.div
+					<m.div
 						className="mt-12 border-t border-white/10 pt-8"
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
@@ -386,7 +386,7 @@ export default function BackgroundsDemoPage() {
 								(no Three.js dependency). Total added JS is under 15KB gzipped.
 							</div>
 						</div>
-					</motion.div>
+					</m.div>
 				</div>
 			</div>
 		</main>

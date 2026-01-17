@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Send, Mail, MapPin, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { submitContactForm, type ContactFormData } from "@/app/actions/contact";
@@ -74,7 +74,7 @@ export function ContactPage() {
 		<main className="min-h-screen px-6 pt-44 pb-24 sm:px-12 md:px-24">
 			<div className="mx-auto max-w-[1400px]">
 				{/* Header */}
-				<motion.div
+				<m.div
 					className="mb-16"
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
@@ -93,11 +93,11 @@ export function ContactPage() {
 						Ready to build something exceptional? Send a transmission and let&apos;s discuss your
 						project.
 					</p>
-				</motion.div>
+				</m.div>
 
 				<div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
 					{/* Contact Form */}
-					<motion.div
+					<m.div
 						className="lg:col-span-7"
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
@@ -278,7 +278,7 @@ export function ContactPage() {
 										<AlertCircle className="text-burnt-ember h-4 w-4" strokeWidth={1.5} />
 									</>
 								)}
-								<motion.div
+								<m.div
 									className="bg-cyber-lime/5 absolute inset-0"
 									initial={{ opacity: 0 }}
 									whileHover={{ opacity: 1 }}
@@ -288,18 +288,18 @@ export function ContactPage() {
 
 							{/* Success Message */}
 							{formStatus === "success" && (
-								<motion.p
+								<m.p
 									initial={{ opacity: 0, y: 10 }}
 									animate={{ opacity: 1, y: 0 }}
 									className="text-cyber-lime font-mono text-sm"
 								>
 									Message received. I&apos;ll respond within 24 hours.
-								</motion.p>
+								</m.p>
 							)}
 
 							{/* Error Message */}
 							{formStatus === "error" && errorMessage && (
-								<motion.div
+								<m.div
 									initial={{ opacity: 0, y: 10 }}
 									animate={{ opacity: 1, y: 0 }}
 									className="flex items-center gap-4"
@@ -312,13 +312,13 @@ export function ContactPage() {
 									>
 										RETRY()
 									</button>
-								</motion.div>
+								</m.div>
 							)}
 						</form>
-					</motion.div>
+					</m.div>
 
 					{/* Contact Info Sidebar */}
-					<motion.div
+					<m.div
 						className="lg:col-span-5"
 						initial={{ opacity: 0, x: 30 }}
 						animate={{ opacity: 1, x: 0 }}
@@ -375,7 +375,7 @@ export function ContactPage() {
 								respond within a few hours during business days.
 							</p>
 						</div>
-					</motion.div>
+					</m.div>
 				</div>
 			</div>
 		</main>

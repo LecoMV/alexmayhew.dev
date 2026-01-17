@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Link2, Check, Share2, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -110,7 +110,7 @@ export function ShareButtons({ title, url, description, className }: ShareButton
 			<div className="flex flex-wrap gap-2">
 				{/* Native Share (if supported) */}
 				{isNativeShareSupported && (
-					<motion.button
+					<m.button
 						onClick={handleNativeShare}
 						className="group hover:border-cyber-lime flex items-center gap-2 border border-white/20 px-3 py-2 transition-colors"
 						whileHover={{ scale: 1.02 }}
@@ -125,11 +125,11 @@ export function ShareButtons({ title, url, description, className }: ShareButton
 						<span className="text-slate-text group-hover:text-cyber-lime font-mono text-xs transition-colors">
 							SHARE()
 						</span>
-					</motion.button>
+					</m.button>
 				)}
 
 				{/* Copy Link */}
-				<motion.button
+				<m.button
 					onClick={handleCopyLink}
 					className={cn(
 						"group flex items-center gap-2 border px-3 py-2 transition-colors",
@@ -142,7 +142,7 @@ export function ShareButtons({ title, url, description, className }: ShareButton
 				>
 					<AnimatePresence mode="wait">
 						{copied ? (
-							<motion.div
+							<m.div
 								key="check"
 								initial={{ scale: 0 }}
 								animate={{ scale: 1 }}
@@ -150,9 +150,9 @@ export function ShareButtons({ title, url, description, className }: ShareButton
 								transition={springTransition}
 							>
 								<Check className="text-cyber-lime h-3.5 w-3.5" strokeWidth={1.5} />
-							</motion.div>
+							</m.div>
 						) : (
-							<motion.div
+							<m.div
 								key="link"
 								initial={{ scale: 0 }}
 								animate={{ scale: 1 }}
@@ -163,7 +163,7 @@ export function ShareButtons({ title, url, description, className }: ShareButton
 									className="text-slate-text group-hover:text-cyber-lime h-3.5 w-3.5 transition-colors"
 									strokeWidth={1.5}
 								/>
-							</motion.div>
+							</m.div>
 						)}
 					</AnimatePresence>
 					<span
@@ -174,11 +174,11 @@ export function ShareButtons({ title, url, description, className }: ShareButton
 					>
 						{copied ? "COPIED!" : "COPY_LINK()"}
 					</span>
-				</motion.button>
+				</m.button>
 
 				{/* Platform Buttons */}
 				{platforms.map((platform) => (
-					<motion.button
+					<m.button
 						key={platform.name}
 						onClick={() => handlePlatformShare(platform)}
 						className="group hover:border-cyber-lime flex items-center gap-2 border border-white/20 px-3 py-2 transition-colors"
@@ -194,14 +194,14 @@ export function ShareButtons({ title, url, description, className }: ShareButton
 						<span className="text-slate-text group-hover:text-cyber-lime font-mono text-xs transition-colors">
 							{platform.label}
 						</span>
-					</motion.button>
+					</m.button>
 				))}
 			</div>
 
 			{/* Output feedback */}
 			<AnimatePresence>
 				{copied && (
-					<motion.div
+					<m.div
 						initial={{ opacity: 0, y: -10 }}
 						animate={{ opacity: 1, y: 0 }}
 						exit={{ opacity: 0, y: -10 }}
@@ -209,7 +209,7 @@ export function ShareButtons({ title, url, description, className }: ShareButton
 						className="mt-3 font-mono text-xs"
 					>
 						<span className="text-slate-text">{">"} Link copied to clipboard</span>
-					</motion.div>
+					</m.div>
 				)}
 			</AnimatePresence>
 		</aside>

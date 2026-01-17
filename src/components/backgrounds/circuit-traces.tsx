@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 interface Point {
 	x: number;
@@ -234,7 +234,7 @@ export function CircuitTraces({
 	}, [traces, animated, color]);
 
 	return (
-		<motion.canvas
+		<m.canvas
 			ref={canvasRef}
 			width={dimensions.width}
 			height={dimensions.height}
