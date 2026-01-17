@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { m, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -32,7 +33,15 @@ export function Navigation() {
 			<nav className="max-w-fd-container mx-auto px-6 py-4 sm:px-12 md:px-24">
 				<div className="bg-gunmetal-glass/20 flex items-center justify-between gap-4 border border-white/10 px-6 py-4 backdrop-blur-md">
 					{/* Logo / Brand */}
-					<Link href="/" className="group flex shrink-0 items-center">
+					<Link href="/" className="group flex shrink-0 items-center gap-3">
+						<Image
+							src="/am-icon-optimized_sized.svg"
+							alt="AM"
+							width={48}
+							height={30}
+							className="transition-opacity duration-300 group-hover:opacity-80"
+							priority
+						/>
 						<span className="font-mono text-lg tracking-tight">
 							<span className="text-cyber-lime">alex</span>
 							<span className="text-mist-white">mayhew</span>
