@@ -35,7 +35,7 @@ export function Navigation() {
 					{/* Logo / Brand */}
 					<Link href="/" className="group flex shrink-0 items-center gap-3">
 						<Image
-							src="/favicon.svg"
+							src="/am-icon.svg"
 							alt="Alex Mayhew"
 							width={48}
 							height={48}
