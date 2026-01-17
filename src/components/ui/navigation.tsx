@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { m, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AMLogo } from "./am-logo";
 
 const navItems = [
 	{ href: "/", label: "Home", code: "00" },
@@ -34,13 +34,7 @@ export function Navigation() {
 				<div className="bg-gunmetal-glass/20 flex items-center justify-between gap-4 border border-white/10 px-6 py-4 backdrop-blur-md">
 					{/* Logo / Brand */}
 					<Link href="/" className="group flex shrink-0 items-center gap-3">
-						<Image
-							src="/am-icon.svg"
-							alt="Alex Mayhew"
-							width={48}
-							height={48}
-							className="h-12 w-12"
-						/>
+						<AMLogo size={48} className="rounded-sm" />
 						<span className="hidden font-mono text-lg tracking-tight lg:inline">
 							<span className="text-cyber-lime">alex</span>
 							<span className="text-mist-white">mayhew</span>
