@@ -32,14 +32,14 @@ This phase is mostly outside your control. More memory does make it slightly fas
 
 The language runtime boots:
 
-| Runtime | Typical Init Time |
-|---------|------------------|
-| Python | 100-200ms |
-| Node.js | 100-200ms |
-| Go | 50-100ms |
-| Rust | 50-100ms |
+| Runtime    | Typical Init Time                  |
+| ---------- | ---------------------------------- |
+| Python     | 100-200ms                          |
+| Node.js    | 100-200ms                          |
+| Go         | 50-100ms                           |
+| Rust       | 50-100ms                           |
 | Java (JVM) | 300-800ms (2-5s without SnapStart) |
-| C# (.NET) | 200-500ms |
+| C# (.NET)  | 200-500ms                          |
 
 Compiled languages (Go, Rust) have smaller binaries and no runtime to boot. Interpreted languages (Python, Node.js) are moderate. JVM and .NET languages pay a heavy runtime initialization cost.
 
@@ -62,14 +62,14 @@ Your initialization code runs—imports, database connections, dependency inject
 
 ```typescript
 // This runs ONCE per cold start
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient() // Connection established here
+const prisma = new PrismaClient(); // Connection established here
 
 export const handler = async (event) => {
-  // This runs every invocation
-  return prisma.user.findMany()
-}
+	// This runs every invocation
+	return prisma.user.findMany();
+};
 ```
 
 Code outside the handler runs during cold start. Heavy initialization (ORM setup, SDK clients, ML models) adds to cold start time.
@@ -78,12 +78,12 @@ Code outside the handler runs during cold start. Heavy initialization (ORM setup
 
 Sum all phases:
 
-| Scenario | Typical Cold Start |
-|----------|-------------------|
-| Minimal Node.js | 150-300ms |
-| Next.js API route | 400-800ms |
-| Java Spring | 2-5 seconds |
-| Python with ML model | 5-30 seconds |
+| Scenario             | Typical Cold Start |
+| -------------------- | ------------------ |
+| Minimal Node.js      | 150-300ms          |
+| Next.js API route    | 400-800ms          |
+| Java Spring          | 2-5 seconds        |
+| Python with ML model | 5-30 seconds       |
 
 For user-facing APIs, 400ms is noticeable. 2 seconds is unacceptable.
 
@@ -121,8 +121,8 @@ Best for: API endpoints, webhooks, async processors.
 ```typescript
 // Node.js - reasonable cold start
 export const handler = async (event) => {
-  return { statusCode: 200, body: JSON.stringify({ ok: true }) }
-}
+	return { statusCode: 200, body: JSON.stringify({ ok: true }) };
+};
 ```
 
 ### Go and Rust
@@ -169,8 +169,8 @@ Next.js 13+ supports standalone output:
 ```js
 // next.config.js
 module.exports = {
-  output: 'standalone',
-}
+	output: "standalone",
+};
 ```
 
 This produces a minimal deployment, excluding unnecessary dependencies. Bundle sizes drop by 90%+.
@@ -181,10 +181,10 @@ Barrel files kill Lambda performance:
 
 ```typescript
 // Bad - imports entire SDK
-import { DynamoDB } from 'aws-sdk'
+import { DynamoDB } from "aws-sdk";
 
 // Good - imports only what's needed
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 ```
 
 AWS SDK v3 is modular. Import specific clients, not the umbrella package.
@@ -235,6 +235,7 @@ Five containers are always warm. No cold starts for the first 5 concurrent reque
 Cost: ~$0.000004/GB-second (on top of regular Lambda costs).
 
 For a 512MB function running 24/7:
+
 ```
 $0.000004 × 0.5GB × 3600s × 24h × 30d × 5 instances = ~$26/month
 ```
@@ -262,14 +263,15 @@ functions:
 
 ```typescript
 export const handler = async (event) => {
-  if (event.warmer) {
-    return { statusCode: 200, body: 'warm' }
-  }
-  // Normal handling
-}
+	if (event.warmer) {
+		return { statusCode: 200, body: "warm" };
+	}
+	// Normal handling
+};
 ```
 
 This is a hack. It works, but:
+
 - Costs money (invocations)
 - Doesn't scale to multiple containers
 - AWS may change warm period behavior
@@ -282,27 +284,27 @@ Move heavy work out of cold start:
 
 ```typescript
 // Bad - runs on cold start
-const heavyClient = initializeExpensiveSDK() // 500ms
+const heavyClient = initializeExpensiveSDK(); // 500ms
 
 export const handler = async (event) => {
-  return heavyClient.doThing()
-}
+	return heavyClient.doThing();
+};
 ```
 
 ```typescript
 // Better - lazy initialization
-let heavyClient: HeavyClient | null = null
+let heavyClient: HeavyClient | null = null;
 
 const getClient = () => {
-  if (!heavyClient) {
-    heavyClient = initializeExpensiveSDK()
-  }
-  return heavyClient
-}
+	if (!heavyClient) {
+		heavyClient = initializeExpensiveSDK();
+	}
+	return heavyClient;
+};
 
 export const handler = async (event) => {
-  return getClient().doThing()
-}
+	return getClient().doThing();
+};
 ```
 
 The first invocation still pays the cost, but it's visible in handler duration metrics rather than hidden in cold start time.
@@ -321,6 +323,7 @@ Serverless pricing is seductive: pay per invocation, scale to zero. But the math
 **Note (August 2025)**: AWS now bills the INIT phase (cold start initialization) for managed runtimes. Previously this was unbilled for ZIP-packaged functions. The impact is minimal for most workloads (cold starts occur `<1%` of the time), but it makes Provisioned Concurrency and SnapStart more financially attractive.
 
 For a 512MB function running 100ms average:
+
 ```
 Per invocation: $0.0000002 + (0.5 × 0.1 × $0.0000166667) = ~$0.00000117
 1 million invocations: ~$1.17
@@ -362,6 +365,7 @@ For hobby projects and small teams, Vercel's DX is worth it. For high-traffic pr
 ### Bursty Workloads
 
 Traffic that spikes unpredictably:
+
 - Marketing campaign launches
 - Viral content
 - Flash sales
@@ -371,6 +375,7 @@ Auto-scaling handles 10x traffic instantly. No capacity planning.
 ### True Pay-Per-Use
 
 Workloads with lots of idle time:
+
 - Webhook receivers
 - Scheduled jobs (cron)
 - Development/staging environments
@@ -380,6 +385,7 @@ Paying for idle EC2 instances makes no sense.
 ### Background Processing
 
 Cold starts don't matter when users don't wait:
+
 - Image processing
 - PDF generation
 - Data pipelines
@@ -406,6 +412,7 @@ User-facing API endpoints need consistent performance. A 500ms cold start ruins 
 ### Consistent High Traffic
 
 If traffic is steady (10+ requests/second continuous), always-on compute is:
+
 - Cheaper
 - More predictable
 - Lower latency
@@ -418,12 +425,12 @@ ML models, large dependency trees, complex database connections:
 
 ```typescript
 // Cold start: 5 seconds
-import * as tf from '@tensorflow/tfjs-node'
-const model = await tf.loadLayersModel('./model/model.json')
+import * as tf from "@tensorflow/tfjs-node";
+const model = await tf.loadLayersModel("./model/model.json");
 
 export const handler = async (event) => {
-  return model.predict(event.input)
-}
+	return model.predict(event.input);
+};
 ```
 
 Models should run on GPU instances or containers with persistent processes. Lambda's cold start model doesn't fit.
@@ -442,16 +449,17 @@ The "Lambda Tax" is real: cold starts impose latency costs that often exceed inf
 
 The decision framework:
 
-| Scenario | Recommendation |
-|----------|---------------|
-| Bursty, unpredictable traffic | Serverless |
-| Consistent high traffic | Containers/VMs |
-| Background jobs | Serverless |
-| Latency-critical APIs | Containers + load balancer |
-| Small team, limited ops | Serverless |
-| Cost-sensitive at scale | Calculate break-even |
+| Scenario                      | Recommendation             |
+| ----------------------------- | -------------------------- |
+| Bursty, unpredictable traffic | Serverless                 |
+| Consistent high traffic       | Containers/VMs             |
+| Background jobs               | Serverless                 |
+| Latency-critical APIs         | Containers + load balancer |
+| Small team, limited ops       | Serverless                 |
+| Cost-sensitive at scale       | Calculate break-even       |
 
 Serverless is a tool, not a religion. Use it where it fits:
+
 - Webhooks
 - Cron jobs
 - Async processing
@@ -459,6 +467,7 @@ Serverless is a tool, not a religion. Use it where it fits:
 - Development environments
 
 Avoid it where it doesn't:
+
 - High-traffic production APIs
 - ML inference
 - WebSocket servers
@@ -468,4 +477,4 @@ Measure before deciding. Measure after deploying. The data will tell you if serv
 
 ---
 
-*This is part of a series on building production SaaS applications. Next up: [AI-Assisted Development: Navigating the Generative Debt Crisis](/blog/ai-assisted-development-generative-debt).*
+_This is part of a series on building production SaaS applications. Next up: [AI-Assisted Development: Navigating the Generative Debt Crisis](/blog/ai-assisted-development-generative-debt)._

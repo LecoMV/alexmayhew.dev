@@ -47,6 +47,7 @@ Testing became a nightmare. Local development required spinning up dozens of con
 Segment consolidated back to a monolith. Not because monoliths are theoretically superior, but because their specific situation made microservices a net negative.
 
 The results:
+
 - Simplified testing and deployment
 - Recovered engineering velocity
 - Reduced operational complexity
@@ -70,6 +71,7 @@ Prime Video's audio/video monitoring service was built on AWS Lambda and Step Fu
 ### The Problem
 
 At scale, the architecture hit limits:
+
 - Data transfer between distributed Lambda functions became expensive
 - Step Functions had scalability ceilings for their specific workload
 - The cost per stream was too high for their unit economics
@@ -85,11 +87,13 @@ The team refactored into a single monolithic application on ECS containers.
 ### The Lesson
 
 Serverless excels at:
+
 - Unpredictable, bursty workloads
 - Embarrassingly parallel tasks
 - Low-traffic applications where pay-per-use beats provisioned capacity
 
 Serverless struggles when:
+
 - Data needs to move between components (serialization overhead, network latency)
 - Workloads are predictable and constant (provisioned capacity is cheaper)
 - Memory locality matters (keeping data in the same process)
@@ -125,6 +129,7 @@ Latency spikes eliminated. The service became faster, more predictable, and used
 ### The Lesson
 
 Discord didn't migrate because Rust is "better" in the abstract. They migrated because:
+
 1. They had specific, measured latency problems
 2. Those problems traced directly to Go's GC
 3. Rust's memory model solved exactly that problem
@@ -164,15 +169,16 @@ Migrate when the cost of the current architecture exceeds the cost of migration.
 
 The fastest-growing companies didn't use cutting-edge technology. They used mature technology extremely well.
 
-| Company | Initial Stack | Scale Achieved |
-|---------|--------------|----------------|
-| Instagram | PostgreSQL + Python | 14M users with 3 engineers |
-| Shopify | Ruby on Rails | From launch through IPO |
-| GitHub | Ruby on Rails | The world's code repository |
-| Pinterest | Django (Python) | Millions of users before scaling concerns |
-| Airbnb | Ruby on Rails | Massive marketplace |
+| Company   | Initial Stack       | Scale Achieved                            |
+| --------- | ------------------- | ----------------------------------------- |
+| Instagram | PostgreSQL + Python | 14M users with 3 engineers                |
+| Shopify   | Ruby on Rails       | From launch through IPO                   |
+| GitHub    | Ruby on Rails       | The world's code repository               |
+| Pinterest | Django (Python)     | Millions of users before scaling concerns |
+| Airbnb    | Ruby on Rails       | Massive marketplace                       |
 
 These companies chose "boring" technology because:
+
 - Developers were immediately productive
 - Hiring was easy (deep talent pools)
 - Failure modes were well-documented
@@ -268,6 +274,7 @@ This isn't inherently bad—engineer growth matters—but it should be explicit,
 Technical debt from "exciting" technology kills more startups than scaling limits.
 
 The constraint at early stages is almost never performance. It's:
+
 - Finding customers
 - Shipping features fast enough to learn
 - Not running out of money
@@ -282,4 +289,4 @@ Everything else is engineering theater.
 
 ---
 
-*This is part of a series on building production SaaS applications. Next up: [RSC, The Edge, and the Death of the Waterfall](/blog/rsc-edge-death-of-waterfall).*
+_This is part of a series on building production SaaS applications. Next up: [RSC, The Edge, and the Death of the Waterfall](/blog/rsc-edge-death-of-waterfall)._

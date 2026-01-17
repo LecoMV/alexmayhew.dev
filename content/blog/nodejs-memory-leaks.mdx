@@ -39,12 +39,14 @@ Most objects die young. A variable in a loop iteration is created, used, and bec
 V8 exploits this with generational garbage collection:
 
 **New Space (Young Generation)**:
+
 - 1-8MB, small and fast
 - Most allocations happen here
 - Collected by Scavenger algorithm
 - Surviving objects promoted to Old Space
 
 **Old Space (Old Generation)**:
+
 - Larger, collected less frequently
 - Objects that survived multiple Scavenger cycles
 - Where long-lived data and leaks accumulate
@@ -82,6 +84,7 @@ This runs less frequently but takes longer. Large heaps mean longer pauses.
 ### The Tri-Color Invariant
 
 Marking uses three colors:
+
 - **White**: Not yet visited (potentially garbage)
 - **Gray**: Visited, but children not processed
 - **Black**: Visited, children processed (definitely live)
@@ -100,16 +103,16 @@ The most common leak pattern:
 
 ```javascript
 function createHandler(bigData) {
-  // bigData is captured in closure
-  return function handler(req, res) {
-    // Even if we never use bigData here,
-    // it's retained for the lifetime of handler
-    res.send('ok')
-  }
+	// bigData is captured in closure
+	return function handler(req, res) {
+		// Even if we never use bigData here,
+		// it's retained for the lifetime of handler
+		res.send("ok");
+	};
 }
 
 // Each request creates a new handler holding bigData
-app.get('/api', createHandler(loadBigData()))
+app.get("/api", createHandler(loadBigData()));
 ```
 
 **Fix**: Don't capture large objects in long-lived closures. Extract what you need.
@@ -117,13 +120,13 @@ app.get('/api', createHandler(loadBigData()))
 ### 2. Unbounded Caches
 
 ```javascript
-const cache = {}
+const cache = {};
 
 function getData(key) {
-  if (!cache[key]) {
-    cache[key] = expensiveFetch(key)
-  }
-  return cache[key]
+	if (!cache[key]) {
+		cache[key] = expensiveFetch(key);
+	}
+	return cache[key];
 }
 // cache grows forever
 ```
@@ -131,26 +134,28 @@ function getData(key) {
 **Fix**: Use LRU caches with size limits.
 
 ```javascript
-import { LRUCache } from 'lru-cache'
+import { LRUCache } from "lru-cache";
 
-const cache = new LRUCache({ max: 1000 })
+const cache = new LRUCache({ max: 1000 });
 ```
 
 ### 3. EventEmitter Listeners
 
 ```javascript
 class Service {
-  constructor(emitter) {
-    // Listener keeps `this` alive
-    emitter.on('data', this.handleData.bind(this))
-  }
+	constructor(emitter) {
+		// Listener keeps `this` alive
+		emitter.on("data", this.handleData.bind(this));
+	}
 
-  handleData(data) { /* ... */ }
+	handleData(data) {
+		/* ... */
+	}
 
-  destroy() {
-    // Forgot to remove listener
-    // `this` leaks
-  }
+	destroy() {
+		// Forgot to remove listener
+		// `this` leaks
+	}
 }
 ```
 
@@ -158,15 +163,15 @@ class Service {
 
 ```javascript
 class Service {
-  constructor(emitter) {
-    this.emitter = emitter
-    this.boundHandler = this.handleData.bind(this)
-    emitter.on('data', this.boundHandler)
-  }
+	constructor(emitter) {
+		this.emitter = emitter;
+		this.boundHandler = this.handleData.bind(this);
+		emitter.on("data", this.boundHandler);
+	}
 
-  destroy() {
-    this.emitter.off('data', this.boundHandler)
-  }
+	destroy() {
+		this.emitter.off("data", this.boundHandler);
+	}
 }
 ```
 
@@ -174,11 +179,11 @@ class Service {
 
 ```javascript
 // Intentional or accidental global
-users = [] // Missing 'const'
+users = []; // Missing 'const'
 
 function addUser(user) {
-  users.push(user)
-  // Never cleaned up
+	users.push(user);
+	// Never cleaned up
 }
 ```
 
@@ -187,8 +192,8 @@ function addUser(user) {
 ### 5. Detached DOM Trees (Frontend)
 
 ```javascript
-let detached = document.createElement('div')
-detached.innerHTML = heavyHTML
+let detached = document.createElement("div");
+detached.innerHTML = heavyHTML;
 // detached is never added to document
 // but retained by the variable
 ```
@@ -199,12 +204,12 @@ detached.innerHTML = heavyHTML
 
 ```javascript
 function startPolling(data) {
-  setInterval(() => {
-    // data captured in closure
-    poll(data)
-  }, 1000)
-  // No way to stop the interval
-  // data retained forever
+	setInterval(() => {
+		// data captured in closure
+		poll(data);
+	}, 1000);
+	// No way to stop the interval
+	// data retained forever
 }
 ```
 
@@ -240,6 +245,7 @@ The definitive method for isolating memory leaks.
 Switch to "Comparison" view between Snapshot 1 and 2.
 
 Look for:
+
 - **Objects allocated between snapshots**: Sort by "# New"
 - **Large retained size increases**: Sort by "Size Delta"
 - **Growing arrays or maps**: Objects that get larger
@@ -258,7 +264,7 @@ The memory the object itself uses. A plain object with two string properties has
 
 ### Retained Size
 
-The memory that would be freed if this object were garbage collected. Includes all objects that are *only* reachable through this object.
+The memory that would be freed if this object were garbage collected. Includes all objects that are _only_ reachable through this object.
 
 If a cache object has shallow size of 100 bytes but retains 100MB of cached data, its retained size is ~100MB.
 
@@ -266,7 +272,7 @@ If a cache object has shallow size of 100 bytes but retains 100MB of cached data
 
 When you find a suspiciously large retained size, expand the object in DevTools to see its "retainers"—the reference chain from the GC root.
 
-The retainer path tells you *why* the object can't be garbage collected. Follow it to find what's holding the reference.
+The retainer path tells you _why_ the object can't be garbage collected. Follow it to find what's holding the reference.
 
 ---
 
@@ -288,6 +294,7 @@ Outputs GC events to stdout:
 ```
 
 Watch for:
+
 - Growing heap sizes after Mark-sweep
 - Increasingly frequent GC
 - Longer GC pauses
@@ -304,6 +311,7 @@ node --max-old-space-size=768 app.js  # For 1GB container
 Formula: `--max-old-space-size` = container limit × 0.75
 
 The remaining 25% is for:
+
 - New Space
 - Stack
 - Native modules
@@ -316,12 +324,14 @@ PM2 can restart processes that exceed memory thresholds:
 ```javascript
 // ecosystem.config.js
 module.exports = {
-  apps: [{
-    name: 'api',
-    script: './app.js',
-    max_memory_restart: '1G',
-  }]
-}
+	apps: [
+		{
+			name: "api",
+			script: "./app.js",
+			max_memory_restart: "1G",
+		},
+	],
+};
 ```
 
 This is a band-aid, not a fix. It keeps your service alive while you investigate.
@@ -331,22 +341,23 @@ This is a band-aid, not a fix. It keeps your service alive while you investigate
 Expose heap statistics for monitoring:
 
 ```javascript
-const v8 = require('v8')
+const v8 = require("v8");
 
 function getHeapStats() {
-  const stats = v8.getHeapStatistics()
-  return {
-    heap_used: stats.used_heap_size,
-    heap_total: stats.total_heap_size,
-    heap_limit: stats.heap_size_limit,
-    external: stats.external_memory,
-  }
+	const stats = v8.getHeapStatistics();
+	return {
+		heap_used: stats.used_heap_size,
+		heap_total: stats.total_heap_size,
+		heap_limit: stats.heap_size_limit,
+		external: stats.external_memory,
+	};
 }
 
 // Expose via /metrics endpoint for Prometheus
 ```
 
 Set alerts for:
+
 - Heap usage > 80% of limit
 - Heap growing over time (trend)
 - GC frequency increasing
@@ -361,11 +372,11 @@ Better than debugging: not leaking in the first place.
 
 ```javascript
 // Objects as keys, automatically cleaned when key is GC'd
-const metadata = new WeakMap()
+const metadata = new WeakMap();
 
 function attachMetadata(obj, data) {
-  metadata.set(obj, data)
-  // When obj is GC'd, the entry is removed automatically
+	metadata.set(obj, data);
+	// When obj is GC'd, the entry is removed automatically
 }
 ```
 
@@ -374,14 +385,14 @@ WeakMap entries don't prevent garbage collection of the key. When the key is col
 ### WeakRef for Optional References
 
 ```javascript
-const weakRef = new WeakRef(largeObject)
+const weakRef = new WeakRef(largeObject);
 
 // Later
-const obj = weakRef.deref()
+const obj = weakRef.deref();
 if (obj) {
-  // Object still exists
+	// Object still exists
 } else {
-  // Object was garbage collected
+	// Object was garbage collected
 }
 ```
 
@@ -391,15 +402,15 @@ Useful for caches where you want to keep objects if they're still in use elsewhe
 
 ```javascript
 async function fetchWithTimeout(url, timeoutMs) {
-  const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), timeoutMs)
+	const controller = new AbortController();
+	const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
-  try {
-    const response = await fetch(url, { signal: controller.signal })
-    return response.json()
-  } finally {
-    clearTimeout(timeout)
-  }
+	try {
+		const response = await fetch(url, { signal: controller.signal });
+		return response.json();
+	} finally {
+		clearTimeout(timeout);
+	}
 }
 ```
 
@@ -429,9 +440,9 @@ Jest can detect leaks in tests:
 ```javascript
 // jest.config.js
 module.exports = {
-  detectLeaks: true,
-  detectOpenHandles: true,
-}
+	detectLeaks: true,
+	detectOpenHandles: true,
+};
 ```
 
 `detectLeaks`: Uses `--detect-leaks` from Node.js to track allocations.
@@ -478,6 +489,7 @@ If your tests pass but Jest hangs, you have open handles—likely timers or even
 ## Conclusion
 
 Memory leaks are bugs, not mysteries. They have systematic causes:
+
 - Closures capturing too much
 - Collections growing unbounded
 - Event listeners outliving their purpose
@@ -489,4 +501,4 @@ Set up production monitoring before you need it. When heap usage starts climbing
 
 ---
 
-*This is part of a series on building production SaaS applications. Next up: [Optimistic UI: Making Apps Feel Faster Than Physics Allows](/blog/optimistic-ui).*
+_This is part of a series on building production SaaS applications. Next up: [Optimistic UI: Making Apps Feel Faster Than Physics Allows](/blog/optimistic-ui)._

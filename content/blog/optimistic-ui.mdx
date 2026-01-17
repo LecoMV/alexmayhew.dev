@@ -20,11 +20,11 @@ image: "/images/blog/optimistic-ui-featured.webp"
 
 Human perception operates in distinct temporal bands:
 
-| Threshold | User Experience |
-|-----------|-----------------|
-| 100ms | Feels instant—direct manipulation |
-| 1 second | Noticeable delay, but flow maintained |
-| 10 seconds | Attention drifts, likely abandonment |
+| Threshold  | User Experience                       |
+| ---------- | ------------------------------------- |
+| 100ms      | Feels instant—direct manipulation     |
+| 1 second   | Noticeable delay, but flow maintained |
+| 10 seconds | Attention drifts, likely abandonment  |
 
 Traditional request-response cycles push interactions into the 100ms-1s danger zone. Even a fast 200ms API response, combined with network latency and rendering time, breaks the illusion of direct manipulation.
 
@@ -56,24 +56,24 @@ The simplest implementation—toggle local state:
 
 ```tsx
 function LikeButton({ postId }) {
-  const [liked, setLiked] = useState(false)
-  const [pending, setPending] = useState(false)
+	const [liked, setLiked] = useState(false);
+	const [pending, setPending] = useState(false);
 
-  async function handleClick() {
-    setLiked(!liked) // Optimistic update
-    setPending(true)
+	async function handleClick() {
+		setLiked(!liked); // Optimistic update
+		setPending(true);
 
-    try {
-      await api.toggleLike(postId)
-    } catch {
-      setLiked(liked) // Rollback
-      toast.error('Failed to update')
-    } finally {
-      setPending(false)
-    }
-  }
+		try {
+			await api.toggleLike(postId);
+		} catch {
+			setLiked(liked); // Rollback
+			toast.error("Failed to update");
+		} finally {
+			setPending(false);
+		}
+	}
 
-  return <button onClick={handleClick}>{liked ? 'Liked' : 'Like'}</button>
+	return <button onClick={handleClick}>{liked ? "Liked" : "Like"}</button>;
 }
 ```
 
@@ -84,32 +84,32 @@ function LikeButton({ postId }) {
 State lives in a global cache. All components subscribing to that data update simultaneously.
 
 ```tsx
-const queryClient = useQueryClient()
+const queryClient = useQueryClient();
 
 const mutation = useMutation({
-  mutationFn: api.addTodo,
-  onMutate: async (newTodo) => {
-    // Cancel any outgoing refetches
-    await queryClient.cancelQueries({ queryKey: ['todos'] })
+	mutationFn: api.addTodo,
+	onMutate: async (newTodo) => {
+		// Cancel any outgoing refetches
+		await queryClient.cancelQueries({ queryKey: ["todos"] });
 
-    // Snapshot previous state
-    const previousTodos = queryClient.getQueryData(['todos'])
+		// Snapshot previous state
+		const previousTodos = queryClient.getQueryData(["todos"]);
 
-    // Optimistically update
-    queryClient.setQueryData(['todos'], (old) => [...old, newTodo])
+		// Optimistically update
+		queryClient.setQueryData(["todos"], (old) => [...old, newTodo]);
 
-    // Return context for rollback
-    return { previousTodos }
-  },
-  onError: (err, newTodo, context) => {
-    // Rollback on error
-    queryClient.setQueryData(['todos'], context.previousTodos)
-  },
-  onSettled: () => {
-    // Refetch to ensure consistency
-    queryClient.invalidateQueries({ queryKey: ['todos'] })
-  }
-})
+		// Return context for rollback
+		return { previousTodos };
+	},
+	onError: (err, newTodo, context) => {
+		// Rollback on error
+		queryClient.setQueryData(["todos"], context.previousTodos);
+	},
+	onSettled: () => {
+		// Refetch to ensure consistency
+		queryClient.invalidateQueries({ queryKey: ["todos"] });
+	},
+});
 ```
 
 Because the cache updates, every component rendering todos updates immediately—the list, the counter, the sidebar.
@@ -132,45 +132,43 @@ React Query offers the most granular control.
 
 ```tsx
 const mutation = useMutation({
-  mutationFn: (newTodo) => api.createTodo(newTodo),
+	mutationFn: (newTodo) => api.createTodo(newTodo),
 
-  onMutate: async (newTodo) => {
-    // 1. Cancel in-flight refetches (prevent race condition)
-    await queryClient.cancelQueries({ queryKey: ['todos'] })
+	onMutate: async (newTodo) => {
+		// 1. Cancel in-flight refetches (prevent race condition)
+		await queryClient.cancelQueries({ queryKey: ["todos"] });
 
-    // 2. Snapshot for rollback
-    const previousTodos = queryClient.getQueryData(['todos'])
+		// 2. Snapshot for rollback
+		const previousTodos = queryClient.getQueryData(["todos"]);
 
-    // 3. Optimistic update
-    queryClient.setQueryData(['todos'], (old) => [
-      ...old,
-      { ...newTodo, id: 'temp-id', status: 'pending' }
-    ])
+		// 3. Optimistic update
+		queryClient.setQueryData(["todos"], (old) => [
+			...old,
+			{ ...newTodo, id: "temp-id", status: "pending" },
+		]);
 
-    // 4. Return context
-    return { previousTodos }
-  },
+		// 4. Return context
+		return { previousTodos };
+	},
 
-  onError: (err, variables, context) => {
-    // 5. Rollback
-    queryClient.setQueryData(['todos'], context.previousTodos)
-    toast.error('Failed to create todo')
-  },
+	onError: (err, variables, context) => {
+		// 5. Rollback
+		queryClient.setQueryData(["todos"], context.previousTodos);
+		toast.error("Failed to create todo");
+	},
 
-  onSuccess: (data, variables) => {
-    // 6. Replace temp item with real data (if needed)
-    queryClient.setQueryData(['todos'], (old) =>
-      old.map(item =>
-        item.id === 'temp-id' ? data : item
-      )
-    )
-  },
+	onSuccess: (data, variables) => {
+		// 6. Replace temp item with real data (if needed)
+		queryClient.setQueryData(["todos"], (old) =>
+			old.map((item) => (item.id === "temp-id" ? data : item))
+		);
+	},
 
-  onSettled: () => {
-    // 7. Refetch for consistency
-    queryClient.invalidateQueries({ queryKey: ['todos'] })
-  }
-})
+	onSettled: () => {
+		// 7. Refetch for consistency
+		queryClient.invalidateQueries({ queryKey: ["todos"] });
+	},
+});
 ```
 
 ### Handling Concurrent Updates
@@ -183,12 +181,12 @@ The naive rollback might restore a snapshot from before any clicks, undoing vali
 
 ```tsx
 onError: (err, variables, context) => {
-  // Instead of restoring a snapshot,
-  // remove the specific failed item
-  queryClient.setQueryData(['todos'], (current) =>
-    current.filter(todo => todo.id !== variables.tempId)
-  )
-}
+	// Instead of restoring a snapshot,
+	// remove the specific failed item
+	queryClient.setQueryData(["todos"], (current) =>
+		current.filter((todo) => todo.id !== variables.tempId)
+	);
+};
 ```
 
 ---
@@ -198,17 +196,17 @@ onError: (err, variables, context) => {
 SWR provides a cleaner API for simple cases:
 
 ```tsx
-const { mutate } = useSWR('/api/user')
+const { mutate } = useSWR("/api/user");
 
 async function updateName(newName) {
-  mutate(
-    updateUser({ name: newName }), // The actual API call
-    {
-      optimisticData: { ...user, name: newName },
-      rollbackOnError: true,
-      revalidate: true
-    }
-  )
+	mutate(
+		updateUser({ name: newName }), // The actual API call
+		{
+			optimisticData: { ...user, name: newName },
+			rollbackOnError: true,
+			revalidate: true,
+		}
+	);
 }
 ```
 
@@ -224,18 +222,18 @@ React 19 introduced `useOptimistic` for Server Actions:
 
 ```tsx
 const [optimisticMessages, addOptimisticMessage] = useOptimistic(
-  messages, // Real state from server
-  (state, newMessage) => [...state, { text: newMessage, sending: true }]
-)
+	messages, // Real state from server
+	(state, newMessage) => [...state, { text: newMessage, sending: true }]
+);
 
 async function sendMessage(formData: FormData) {
-  const text = formData.get('message')
+	const text = formData.get("message");
 
-  // Update UI immediately
-  addOptimisticMessage(text)
+	// Update UI immediately
+	addOptimisticMessage(text);
 
-  // Server Action (runs on server)
-  await createMessage(text)
+	// Server Action (runs on server)
+	await createMessage(text);
 }
 ```
 
@@ -256,7 +254,7 @@ The simplest approach. Every update has a timestamp. Newer wins.
 ```typescript
 // Server compares timestamps
 if (mutation.timestamp > record.updatedAt) {
-  record = mutation.data
+	record = mutation.data;
 }
 ```
 
@@ -332,10 +330,7 @@ The user experiences data loss with no explanation.
 
 ```tsx
 // Optimistic items show subtle "pending" indicator
-<TodoItem
-  todo={todo}
-  pending={todo.id.startsWith('temp-')}
-/>
+<TodoItem todo={todo} pending={todo.id.startsWith("temp-")} />
 ```
 
 Slight opacity, a clock icon—something that says "not yet saved" without blocking interaction.
@@ -346,13 +341,13 @@ When rollback occurs, notify the user:
 
 ```tsx
 onError: () => {
-  toast.error('Failed to save. Your change was not saved.', {
-    action: {
-      label: 'Retry',
-      onClick: () => mutation.mutate(data)
-    }
-  })
-}
+	toast.error("Failed to save. Your change was not saved.", {
+		action: {
+			label: "Retry",
+			onClick: () => mutation.mutate(data),
+		},
+	});
+};
 ```
 
 Include a retry action. The user's intent is clear—help them fulfill it.
@@ -363,10 +358,10 @@ For complex inputs (long comments, form data), don't destroy the user's work:
 
 ```tsx
 onError: (err, variables) => {
-  // Keep the draft in local storage
-  localStorage.setItem('draft-comment', variables.text)
-  toast.error('Failed to post. Your comment has been saved as a draft.')
-}
+	// Keep the draft in local storage
+	localStorage.setItem("draft-comment", variables.text);
+	toast.error("Failed to post. Your comment has been saved as a draft.");
+};
 ```
 
 The user can retry or copy their work manually.
@@ -432,4 +427,4 @@ Don't use it for money, scarcity, or irreversibility—where the cost of false c
 
 ---
 
-*This is part of a series on building production SaaS applications. Next up: [The Designer-Developer Handoff: From Friction to Flow](/blog/designer-developer-handoff).*
+_This is part of a series on building production SaaS applications. Next up: [The Designer-Developer Handoff: From Friction to Flow](/blog/designer-developer-handoff)._

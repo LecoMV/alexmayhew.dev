@@ -22,7 +22,7 @@ I watched a technical founder spend three months setting up Kubernetes before ha
 
 This is the Premature Infrastructure Trap, and it kills more startups than competition ever will.
 
-The trap is seductive because it *feels* productive. You're writing code. You're solving hard problems. You're learning valuable skills. But you're solving tomorrow's problems today, and tomorrow might never come if you run out of money first.
+The trap is seductive because it _feels_ productive. You're writing code. You're solving hard problems. You're learning valuable skills. But you're solving tomorrow's problems today, and tomorrow might never come if you run out of money first.
 
 Here's the uncomfortable truth: Instagram scaled to 14 million users with three engineers using PostgreSQL and Python (with Gearman for task queues). Shopify ran on Rails from day one through IPO. The highest-performing startups didn't use cutting-edge technology. They used mature, boring technology extremely well.
 
@@ -69,29 +69,29 @@ That's it. Two tables. You can add complexity when you have paying customers who
 Your entire API can be a single Hono application deployed to Cloudflare Workers. This runs at the edge in 300+ locations worldwide, has a generous free tier (100,000 requests/day), and requires zero DevOps.
 
 ```typescript
-import { Hono } from 'hono'
-import { cors } from 'hono/cors'
+import { Hono } from "hono";
+import { cors } from "hono/cors";
 
-const app = new Hono()
+const app = new Hono();
 
-app.use('/*', cors())
+app.use("/*", cors());
 
-app.get('/api/health', (c) => c.json({ status: 'ok' }))
+app.get("/api/health", (c) => c.json({ status: "ok" }));
 
-app.post('/api/webhooks/stripe', async (c) => {
-  // Handle Stripe webhooks
-  const event = await c.req.json()
-  // Process subscription events
-  return c.json({ received: true })
-})
+app.post("/api/webhooks/stripe", async (c) => {
+	// Handle Stripe webhooks
+	const event = await c.req.json();
+	// Process subscription events
+	return c.json({ received: true });
+});
 
-app.get('/api/user/:id', async (c) => {
-  const id = c.req.param('id')
-  // Fetch from database
-  return c.json({ user })
-})
+app.get("/api/user/:id", async (c) => {
+	const id = c.req.param("id");
+	// Fetch from database
+	return c.json({ user });
+});
 
-export default app
+export default app;
 ```
 
 One file. One deployment target. Zero container orchestration. Your entire backend is live in under 50 lines of code.
@@ -109,12 +109,12 @@ Vercel's free tier handles moderate traffic comfortably. You'll outgrow it event
 
 ### Total Monthly Cost at $0 MRR
 
-| Service | Cost |
-|---------|------|
-| Neon (Postgres) | $0 |
-| Cloudflare Workers | $0 |
-| Vercel | $0 |
-| **Total** | **$0** |
+| Service            | Cost   |
+| ------------------ | ------ |
+| Neon (Postgres)    | $0     |
+| Cloudflare Workers | $0     |
+| Vercel             | $0     |
+| **Total**          | **$0** |
 
 Yes, you can run a production SaaS for free until you have paying customers. The cloud providers want you to succeed so you'll scale with them.
 
@@ -163,16 +163,16 @@ Some work shouldn't block your request/response cycle:
 
 ```typescript
 export const emailJob = task({
-  id: 'send-welcome-email',
-  run: async (payload: { userId: string }) => {
-    const user = await db.users.findUnique({ where: { id: payload.userId } })
-    await resend.emails.send({
-      to: user.email,
-      subject: 'Welcome!',
-      // ...
-    })
-  }
-})
+	id: "send-welcome-email",
+	run: async (payload: { userId: string }) => {
+		const user = await db.users.findUnique({ where: { id: payload.userId } });
+		await resend.emails.send({
+			to: user.email,
+			subject: "Welcome!",
+			// ...
+		});
+	},
+});
 ```
 
 ### Add: Error Monitoring
@@ -180,12 +180,12 @@ export const emailJob = task({
 At $1k MRR, you can't afford to lose customers to silent failures. **Sentry** provides error tracking with a free tier that's more than adequate:
 
 ```typescript
-import * as Sentry from '@sentry/nextjs'
+import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: 0.1,
-})
+	dsn: process.env.SENTRY_DSN,
+	tracesSampleRate: 0.1,
+});
 ```
 
 Now you'll know when something breaks before your customers complain (or churn).
@@ -296,10 +296,10 @@ Premature optimization isn't just "the root of all evil" in code—it's the root
 
 Here's what actually matters at each stage:
 
-| Stage | Primary Focus | Infrastructure Priority |
-|-------|---------------|------------------------|
-| $0 MRR | Customer discovery | Absolute minimum viable |
-| $1k MRR | Product iteration | Operational sanity |
+| Stage    | Primary Focus        | Infrastructure Priority  |
+| -------- | -------------------- | ------------------------ |
+| $0 MRR   | Customer discovery   | Absolute minimum viable  |
+| $1k MRR  | Product iteration    | Operational sanity       |
 | $10k MRR | Growth and retention | Data-driven optimization |
 
 Build the simplest thing that works. Measure how it actually behaves with real traffic. Optimize based on data, not speculation. Repeat.
@@ -346,4 +346,4 @@ Answer these questions before making any infrastructure decisions at scale. The 
 
 ---
 
-*This is part of a series on building production SaaS applications. Next up: [The Senior Developer Paradox: Why Expensive Talent Saves Money](/blog/senior-developer-paradox).*
+_This is part of a series on building production SaaS applications. Next up: [The Senior Developer Paradox: Why Expensive Talent Saves Money](/blog/senior-developer-paradox)._

@@ -42,13 +42,13 @@ The difference from Airbnb? Public repositories often move slower, have more cod
 
 Barry Boehm's research quantified the cost of defects at different stages:
 
-| Stage | Relative Cost |
-|-------|--------------|
-| Requirements | 1x |
-| Design | 3-6x |
-| Development | 10x |
-| Testing | 15-40x |
-| Production | 30-100x |
+| Stage        | Relative Cost |
+| ------------ | ------------- |
+| Requirements | 1x            |
+| Design       | 3-6x          |
+| Development  | 10x           |
+| Testing      | 15-40x        |
+| Production   | 30-100x       |
 
 A $10 fix during development becomes a $1,000 fix in production—not because the code is harder to write, but because of the cascade: incident response, user communication, reputation damage, emergency deployments.
 
@@ -65,14 +65,15 @@ TypeScript catches errors at the **cheapest possible moment**: while you're stil
 ```javascript
 // JavaScript - error discovered in production
 function processUser(user) {
-  return user.name.toUpperCase()
+	return user.name.toUpperCase();
 }
 
 // Called with undefined somewhere in the app
-processUser(getUser()) // Runtime: Cannot read property 'name' of undefined
+processUser(getUser()); // Runtime: Cannot read property 'name' of undefined
 ```
 
 The error path:
+
 1. Developer writes code
 2. Unit tests pass (they didn't cover this case)
 3. QA tests pass (they didn't hit this path)
@@ -89,16 +90,17 @@ Time to resolution: hours to days.
 ```typescript
 // TypeScript - error caught immediately
 function processUser(user: User) {
-  return user.name.toUpperCase()
+	return user.name.toUpperCase();
 }
 
 // getUser returns User | undefined
-processUser(getUser())
+processUser(getUser());
 // Compile error: Argument of type 'User | undefined' is not
 // assignable to parameter of type 'User'
 ```
 
 The error path:
+
 1. Developer writes code
 2. IDE shows error immediately
 3. Developer fixes before saving
@@ -112,13 +114,13 @@ The billion-dollar mistake (Tony Hoare's term for null references) is largely so
 ```typescript
 // With strictNullChecks: true
 function getLength(str: string | null) {
-  return str.length // Error: 'str' is possibly 'null'
+	return str.length; // Error: 'str' is possibly 'null'
 }
 
 // Fixed
 function getLength(str: string | null) {
-  if (str === null) return 0
-  return str.length // OK, str is narrowed to string
+	if (str === null) return 0;
+	return str.length; // OK, str is narrowed to string
 }
 ```
 
@@ -136,8 +138,8 @@ JSDoc comments document intent. But they lie.
  * @param {number} age - The user's age
  */
 function createUser(name, age) {
-  // Six months later, someone adds:
-  return { name, age, createdAt: Date.now() }
+	// Six months later, someone adds:
+	return { name, age, createdAt: Date.now() };
 }
 
 // JSDoc says it takes name and age
@@ -150,17 +152,17 @@ TypeScript enforces the documentation:
 
 ```typescript
 interface User {
-  name: string
-  age: number
-  createdAt: number
+	name: string;
+	age: number;
+	createdAt: number;
 }
 
 function createUser(name: string, age: number): User {
-  return { name, age, createdAt: Date.now() }
+	return { name, age, createdAt: Date.now() };
 }
 
 // If someone tries to add a field:
-return { name, age, createdAt: Date.now(), email: 'a@b.com' }
+return { name, age, createdAt: Date.now(), email: "a@b.com" };
 // Error: Object literal may only specify known properties
 ```
 
@@ -185,12 +187,14 @@ These features transform code navigation. New developers understand the codebase
 ### Onboarding Velocity
 
 Without types, new developers rely on:
+
 - Asking colleagues
 - Reading documentation (if it exists and is accurate)
 - Reading source code to understand shapes
 - Trial and error
 
 With types:
+
 - IDE shows what a function expects
 - Autocomplete reveals object properties
 - Compiler errors guide correct usage
@@ -210,12 +214,12 @@ In TypeScript, the compiler tells you:
 ```typescript
 // Before: User has a 'name' field
 interface User {
-  name: string
+	name: string;
 }
 
 // Change: Rename to 'fullName'
 interface User {
-  fullName: string
+	fullName: string;
 }
 
 // Every file using 'user.name' shows errors
@@ -237,11 +241,11 @@ For large JavaScript codebases, enable TypeScript incrementally:
 ```json
 // tsconfig.json - start loose
 {
-  "compilerOptions": {
-    "allowJs": true,        // Existing JS files work
-    "strict": false,        // Don't enforce strictness yet
-    "noImplicitAny": false  // Allow implicit any
-  }
+	"compilerOptions": {
+		"allowJs": true, // Existing JS files work
+		"strict": false, // Don't enforce strictness yet
+		"noImplicitAny": false // Allow implicit any
+	}
 }
 ```
 
@@ -270,11 +274,11 @@ For new projects, start with full strictness:
 
 ```json
 {
-  "compilerOptions": {
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true
-  }
+	"compilerOptions": {
+		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"exactOptionalPropertyTypes": true
+	}
 }
 ```
 
@@ -298,13 +302,13 @@ This converts JavaScript to TypeScript with `any` types where needed. You get co
 ```json
 // tsconfig.json
 {
-  "include": [
-    "src/new-feature/**/*.ts",  // New code is strict
-    "src/migrated/**/*.ts"       // Migrated code is strict
-  ],
-  "exclude": [
-    "src/legacy/**/*.js"         // Legacy code stays JS
-  ]
+	"include": [
+		"src/new-feature/**/*.ts", // New code is strict
+		"src/migrated/**/*.ts" // Migrated code is strict
+	],
+	"exclude": [
+		"src/legacy/**/*.js" // Legacy code stays JS
+	]
 }
 ```
 
@@ -317,6 +321,7 @@ New code gets full type safety. Legacy code is left alone until prioritized for 
 ### "Types slow me down"
 
 Types add writing overhead. But development isn't just writing—it's also:
+
 - Debugging runtime errors
 - Reading documentation
 - Understanding existing code
@@ -331,6 +336,7 @@ Developer surveys consistently show TypeScript developers spend significantly le
 For libraries consumed by others, JSDoc provides type hints without requiring TypeScript compilation.
 
 For applications, JSDoc is inferior:
+
 - Not enforced by compiler
 - Verbose syntax
 - No inference—you write everything explicitly
@@ -344,14 +350,14 @@ Tests verify behavior at specific inputs. Types verify contracts at all inputs.
 
 ```typescript
 // Test
-test('processUser handles valid input', () => {
-  expect(processUser({ name: 'Alice' })).toBe('ALICE')
-})
+test("processUser handles valid input", () => {
+	expect(processUser({ name: "Alice" })).toBe("ALICE");
+});
 
 // This test passes, but what about:
-processUser(null)      // Runtime error
-processUser({})        // Runtime error
-processUser('string')  // Runtime error
+processUser(null); // Runtime error
+processUser({}); // Runtime error
+processUser("string"); // Runtime error
 ```
 
 Tests are samples. Types are proofs.
@@ -363,6 +369,7 @@ Use both. Tests verify logic. Types verify contracts.
 Svelte removed TypeScript from its internal codebase, using JSDoc instead. This is frequently cited as evidence against TypeScript.
 
 Context matters:
+
 1. Svelte is a **library**, not an application
 2. Libraries need to work without TypeScript consumers
 3. JSDoc generates `.d.ts` files for TypeScript consumers
@@ -392,17 +399,17 @@ For new projects:
 
 ```json
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true
-  }
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"forceConsistentCasingInFileNames": true
+	}
 }
 ```
 
@@ -413,6 +420,7 @@ Maximum strictness. Maximum safety. Maximum value from the type system.
 ## Conclusion
 
 TypeScript's ROI is measurable:
+
 - 15-38% of bugs prevented
 - Faster onboarding, fearless refactoring
 - 30-100x cost reduction (catching errors early)
@@ -426,4 +434,4 @@ The era of "maybe we should add types" is over. TypeScript is the professional s
 
 ---
 
-*This is part of a series on building production SaaS applications. Next up: [The Lambda Tax: Cold Starts and the True Cost of Serverless](/blog/lambda-tax-cold-starts).*
+_This is part of a series on building production SaaS applications. Next up: [The Lambda Tax: Cold Starts and the True Cost of Serverless](/blog/lambda-tax-cold-starts)._

@@ -53,14 +53,14 @@ The border isn't a subtle separator. It's a structural element that defines the 
 ```css
 /* Generic */
 .card {
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 12px;
 }
 
 /* Neo-brutalist */
 .card {
-  border: 3px solid #000;
-  border-radius: 0;
+	border: 3px solid #000;
+	border-radius: 0;
 }
 ```
 
@@ -68,7 +68,7 @@ Borders can use your accent color for emphasis:
 
 ```css
 .card-accent {
-  border: 3px solid #ccf381; /* Cyber lime */
+	border: 3px solid #ccf381; /* Cyber lime */
 }
 ```
 
@@ -93,9 +93,7 @@ The shadow is a physical displacement, like a cut piece of paper held above a su
 In Tailwind:
 
 ```html
-<div class="shadow-[4px_4px_0px_#000]">
-  Hard shadow card
-</div>
+<div class="shadow-[4px_4px_0px_#000]">Hard shadow card</div>
 ```
 
 ### Typography: Bold and Monospace
@@ -108,19 +106,13 @@ Neo-brutalist typography favors:
 
 ```html
 <!-- Headline with monospace accent -->
-<h1 class="font-mono text-4xl font-bold tracking-tight">
-  BUILD_FAST()
-</h1>
+<h1 class="font-mono text-4xl font-bold tracking-tight">BUILD_FAST()</h1>
 
 <!-- Body text -->
-<p class="font-sans text-lg leading-relaxed">
-  Neo-brutalism strips away the decorative...
-</p>
+<p class="font-sans text-lg leading-relaxed">Neo-brutalism strips away the decorative...</p>
 
 <!-- Technical label -->
-<span class="font-mono text-xs uppercase tracking-wider">
-  SECTION_01
-</span>
+<span class="font-mono text-xs tracking-wider uppercase"> SECTION_01 </span>
 ```
 
 The monospace treatment adds a technical, "code-like" quality. It signals intentionality—this isn't a template, it's crafted.
@@ -130,6 +122,7 @@ The monospace treatment adds a technical, "code-like" quality. It signals intent
 Neo-brutalist palettes are constrained: typically 3-4 colors with high contrast.
 
 **The formula**:
+
 - Deep background (not pure black)
 - Bright accent (the signature color)
 - Neutral text colors (high contrast)
@@ -137,11 +130,11 @@ Neo-brutalist palettes are constrained: typically 3-4 colors with high contrast.
 
 ```css
 :root {
-  --bg-primary: #0b0e14;      /* Deep navy, not pure black */
-  --accent: #ccf381;           /* Bright lime - the signature */
-  --text-primary: #e2e8f0;     /* High contrast white */
-  --text-secondary: #94a3b8;   /* Softer for secondary */
-  --border: #000;              /* Pure black for hard edges */
+	--bg-primary: #0b0e14; /* Deep navy, not pure black */
+	--accent: #ccf381; /* Bright lime - the signature */
+	--text-primary: #e2e8f0; /* High contrast white */
+	--text-secondary: #94a3b8; /* Softer for secondary */
+	--border: #000; /* Pure black for hard edges */
 }
 ```
 
@@ -155,9 +148,9 @@ Generic layouts hide their structure. Neo-brutalism exposes it.
 
 ```html
 <div class="grid grid-cols-3 gap-px bg-white/10">
-  <div class="bg-void-navy p-4">Column 1</div>
-  <div class="bg-void-navy p-4">Column 2</div>
-  <div class="bg-void-navy p-4">Column 3</div>
+	<div class="bg-void-navy p-4">Column 1</div>
+	<div class="bg-void-navy p-4">Column 2</div>
+	<div class="bg-void-navy p-4">Column 3</div>
 </div>
 ```
 
@@ -174,33 +167,33 @@ The `gap-px bg-white/10` creates visible grid lines between cells.
 ```js
 // tailwind.config.js
 export default {
-  theme: {
-    extend: {
-      colors: {
-        'void-navy': '#0b0e14',
-        'mist-white': '#e2e8f0',
-        'gunmetal-glass': '#1e293b',
-        'slate-text': '#94a3b8',
-        'cyber-lime': '#ccf381',
-        'burnt-ember': '#ff6b6b',
-      },
-      fontFamily: {
-        mono: ['JetBrains Mono', 'monospace'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-      },
-      boxShadow: {
-        'brutal': '4px 4px 0px #000',
-        'brutal-sm': '2px 2px 0px #000',
-        'brutal-lg': '6px 6px 0px #000',
-        'brutal-accent': '4px 4px 0px #ccf381',
-      },
-      borderWidth: {
-        '3': '3px',
-        '4': '4px',
-      },
-    },
-  },
-}
+	theme: {
+		extend: {
+			colors: {
+				"void-navy": "#0b0e14",
+				"mist-white": "#e2e8f0",
+				"gunmetal-glass": "#1e293b",
+				"slate-text": "#94a3b8",
+				"cyber-lime": "#ccf381",
+				"burnt-ember": "#ff6b6b",
+			},
+			fontFamily: {
+				mono: ["JetBrains Mono", "monospace"],
+				sans: ["Inter", "system-ui", "sans-serif"],
+			},
+			boxShadow: {
+				brutal: "4px 4px 0px #000",
+				"brutal-sm": "2px 2px 0px #000",
+				"brutal-lg": "6px 6px 0px #000",
+				"brutal-accent": "4px 4px 0px #ccf381",
+			},
+			borderWidth: {
+				3: "3px",
+				4: "4px",
+			},
+		},
+	},
+};
 ```
 
 ### Button Component
@@ -208,50 +201,43 @@ export default {
 ```tsx
 // components/ui/brutal-button.tsx
 interface BrutalButtonProps {
-  children: React.ReactNode
-  variant?: 'primary' | 'secondary' | 'ghost'
-  onClick?: () => void
+	children: React.ReactNode;
+	variant?: "primary" | "secondary" | "ghost";
+	onClick?: () => void;
 }
 
-export function BrutalButton({
-  children,
-  variant = 'primary',
-  onClick
-}: BrutalButtonProps) {
-  const base = `
+export function BrutalButton({ children, variant = "primary", onClick }: BrutalButtonProps) {
+	const base = `
     relative font-mono text-sm uppercase tracking-wide
     border-3 border-black px-6 py-3
     transition-all duration-150
     active:translate-x-1 active:translate-y-1 active:shadow-none
     focus:outline-none focus:ring-2 focus:ring-cyber-lime focus:ring-offset-2
     focus:ring-offset-void-navy
-  `
+  `;
 
-  const variants = {
-    primary: `
+	const variants = {
+		primary: `
       bg-cyber-lime text-black
       shadow-brutal
       hover:bg-cyber-lime/90
     `,
-    secondary: `
+		secondary: `
       bg-void-navy text-mist-white
       shadow-brutal
       hover:bg-gunmetal-glass
     `,
-    ghost: `
+		ghost: `
       bg-transparent text-mist-white border-white/20
       hover:border-cyber-lime hover:text-cyber-lime
     `,
-  }
+	};
 
-  return (
-    <button
-      className={`${base} ${variants[variant]}`}
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  )
+	return (
+		<button className={`${base} ${variants[variant]}`} onClick={onClick}>
+			{children}
+		</button>
+	);
 }
 ```
 
@@ -262,24 +248,22 @@ The `active:translate-x-1 active:translate-y-1 active:shadow-none` creates a "pr
 ```tsx
 // components/ui/brutal-card.tsx
 interface BrutalCardProps {
-  children: React.ReactNode
-  accent?: boolean
+	children: React.ReactNode;
+	accent?: boolean;
 }
 
 export function BrutalCard({ children, accent = false }: BrutalCardProps) {
-  return (
-    <div className={`
-      relative bg-gunmetal-glass/20 backdrop-blur-md p-6
-      border-3 ${accent ? 'border-cyber-lime' : 'border-white/10'}
-      shadow-brutal
-    `}>
-      {/* Corner brackets */}
-      <div className="absolute top-0 right-0 h-4 w-4 border-t-2 border-r-2 border-cyber-lime" />
-      <div className="absolute bottom-0 left-0 h-4 w-4 border-b-2 border-l-2 border-cyber-lime" />
+	return (
+		<div
+			className={`bg-gunmetal-glass/20 relative border-3 p-6 backdrop-blur-md ${accent ? "border-cyber-lime" : "border-white/10"} shadow-brutal`}
+		>
+			{/* Corner brackets */}
+			<div className="border-cyber-lime absolute top-0 right-0 h-4 w-4 border-t-2 border-r-2" />
+			<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b-2 border-l-2" />
 
-      {children}
-    </div>
-  )
+			{children}
+		</div>
+	);
 }
 ```
 
@@ -290,22 +274,20 @@ The corner brackets are a signature neo-brutalist touch—they emphasize the rec
 ```tsx
 // components/ui/section-header.tsx
 interface SectionHeaderProps {
-  label: string
-  title: string
+	label: string;
+	title: string;
 }
 
 export function SectionHeader({ label, title }: SectionHeaderProps) {
-  return (
-    <header className="mb-8">
-      <span className="font-mono text-xs uppercase tracking-wider text-cyber-lime">
-        <span className="mr-2 inline-block h-2 w-2 animate-pulse rounded-full bg-cyber-lime" />
-        {label}
-      </span>
-      <h2 className="mt-2 font-mono text-3xl font-bold tracking-tight text-mist-white">
-        {title}
-      </h2>
-    </header>
-  )
+	return (
+		<header className="mb-8">
+			<span className="text-cyber-lime font-mono text-xs tracking-wider uppercase">
+				<span className="bg-cyber-lime mr-2 inline-block h-2 w-2 animate-pulse rounded-full" />
+				{label}
+			</span>
+			<h2 className="text-mist-white mt-2 font-mono text-3xl font-bold tracking-tight">{title}</h2>
+		</header>
+	);
 }
 ```
 
@@ -316,34 +298,22 @@ The pulsing dot next to the label adds subtle life—a "status indicator" aesthe
 ```tsx
 // components/ui/brutal-input.tsx
 interface BrutalInputProps {
-  label: string
-  type?: string
-  placeholder?: string
+	label: string;
+	type?: string;
+	placeholder?: string;
 }
 
-export function BrutalInput({
-  label,
-  type = 'text',
-  placeholder
-}: BrutalInputProps) {
-  return (
-    <div className="space-y-2">
-      <label className="font-mono text-xs uppercase tracking-wider text-slate-text">
-        {label}
-      </label>
-      <input
-        type={type}
-        placeholder={placeholder}
-        className="
-          w-full bg-void-navy px-4 py-3
-          border-3 border-white/20 text-mist-white
-          font-sans placeholder:text-slate-text
-          focus:border-cyber-lime focus:outline-none
-          transition-colors duration-150
-        "
-      />
-    </div>
-  )
+export function BrutalInput({ label, type = "text", placeholder }: BrutalInputProps) {
+	return (
+		<div className="space-y-2">
+			<label className="text-slate-text font-mono text-xs tracking-wider uppercase">{label}</label>
+			<input
+				type={type}
+				placeholder={placeholder}
+				className="bg-void-navy text-mist-white placeholder:text-slate-text focus:border-cyber-lime w-full border-3 border-white/20 px-4 py-3 font-sans transition-colors duration-150 focus:outline-none"
+			/>
+		</div>
+	);
 }
 ```
 
@@ -358,14 +328,14 @@ Neo-brutalist designs often add subtle texture to break up flat digital surfaces
 ```tsx
 // components/ui/noise-overlay.tsx
 export function NoiseOverlay() {
-  return (
-    <div
-      className="pointer-events-none fixed inset-0 z-50 opacity-[0.015]"
-      style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-      }}
-    />
-  )
+	return (
+		<div
+			className="pointer-events-none fixed inset-0 z-50 opacity-[0.015]"
+			style={{
+				backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+			}}
+		/>
+	);
 }
 ```
 
@@ -384,7 +354,7 @@ Neo-brutalism, done well, is more accessible than generic UI.
 **Clear focus states**: The aesthetic naturally emphasizes states. A focus ring in cyber lime against void navy is unmissable.
 
 ```tsx
-className="focus:ring-2 focus:ring-cyber-lime focus:ring-offset-2 focus:ring-offset-void-navy"
+className = "focus:ring-2 focus:ring-cyber-lime focus:ring-offset-2 focus:ring-offset-void-navy";
 ```
 
 **Reduced cognitive load**: Limited color palettes and consistent styling reduce decision fatigue. The design tells you where to look.
@@ -395,7 +365,7 @@ className="focus:ring-2 focus:ring-cyber-lime focus:ring-offset-2 focus:ring-off
 
 ```tsx
 // Respect reduced motion preference
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // Consider a "softer" mode toggle for sensitive users
 ```
@@ -405,6 +375,7 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 ### Color Contrast Requirements
 
 WCAG 2.1 AA requires:
+
 - 4.5:1 contrast for normal text
 - 3:1 contrast for large text and UI components
 
@@ -425,6 +396,7 @@ Test your palette with tools like [WebAIM Contrast Checker](https://webaim.org/r
 This site implements neo-brutalism for a developer portfolio.
 
 **Palette**:
+
 - Void Navy (`#0b0e14`): Background
 - Cyber Lime (`#ccf381`): Accent, CTAs, focus states
 - Gunmetal Glass (`#1e293b`): Cards, surfaces
@@ -432,10 +404,12 @@ This site implements neo-brutalism for a developer portfolio.
 - Slate Text (`#94a3b8`): Secondary text
 
 **Typography**:
+
 - JetBrains Mono: Headlines, labels, code
 - Inter: Body text, paragraphs
 
 **Signature elements**:
+
 - Hard shadows on interactive elements
 - Corner brackets on cards
 - Noise overlay for texture
@@ -524,4 +498,4 @@ And if your client asks for soft shadows and rounded corners—well, there's not
 
 ---
 
-*This is part of a series on building production SaaS applications. Next up: [Atmospheric Animations: The Physics of Framer Motion](/blog/atmospheric-animations-framer-motion).*
+_This is part of a series on building production SaaS applications. Next up: [Atmospheric Animations: The Physics of Framer Motion](/blog/atmospheric-animations-framer-motion)._

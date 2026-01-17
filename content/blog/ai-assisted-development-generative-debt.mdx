@@ -55,13 +55,13 @@ Code that's technically correct but architecturally wrong.
 ```typescript
 // AI generated - works but violates architecture
 async function getUser(id: string) {
-  const response = await fetch(`/api/users/${id}`)
-  return response.json()
+	const response = await fetch(`/api/users/${id}`);
+	return response.json();
 }
 
 // Your architecture uses a service layer
-import { userService } from '@/services/user'
-const user = await userService.getById(id)
+import { userService } from "@/services/user";
+const user = await userService.getById(id);
 ```
 
 AI doesn't know your architecture. It generates plausible code based on training data, not your codebase conventions.
@@ -75,19 +75,19 @@ AI sometimes generates unnecessarily complex solutions:
 ```typescript
 // AI generated - works, but why?
 function validateEmail(email: string) {
-  const emailParts = email.split('@')
-  if (emailParts.length !== 2) return false
-  const domainParts = emailParts[1].split('.')
-  if (domainParts.length < 2) return false
-  const localPart = emailParts[0]
-  if (localPart.length === 0) return false
-  if (domainParts[domainParts.length - 1].length < 2) return false
-  // ... 30 more lines
+	const emailParts = email.split("@");
+	if (emailParts.length !== 2) return false;
+	const domainParts = emailParts[1].split(".");
+	if (domainParts.length < 2) return false;
+	const localPart = emailParts[0];
+	if (localPart.length === 0) return false;
+	if (domainParts[domainParts.length - 1].length < 2) return false;
+	// ... 30 more lines
 }
 
 // What you actually needed
 function validateEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+	return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 ```
 
@@ -100,13 +100,13 @@ Code that appears complete but lacks critical logic:
 ```typescript
 // AI generated - looks complete
 async function createOrder(items: CartItem[]) {
-  const order = await db.order.create({
-    data: {
-      items: { create: items },
-      total: items.reduce((sum, i) => sum + i.price, 0),
-    },
-  })
-  return order
+	const order = await db.order.create({
+		data: {
+			items: { create: items },
+			total: items.reduce((sum, i) => sum + i.price, 0),
+		},
+	});
+	return order;
 }
 
 // Missing: inventory check, payment processing, email notification,
@@ -121,10 +121,10 @@ AI-generated code with vulnerabilities:
 
 ```typescript
 // AI generated - insecure
-app.get('/user/:id', async (req, res) => {
-  const user = await db.query(`SELECT * FROM users WHERE id = '${req.params.id}'`)
-  res.json(user)
-})
+app.get("/user/:id", async (req, res) => {
+	const user = await db.query(`SELECT * FROM users WHERE id = '${req.params.id}'`);
+	res.json(user);
+});
 
 // SQL injection vulnerability - AI didn't use parameterized queries
 ```
@@ -142,6 +142,7 @@ The deepest problem isn't AI-generated bugs. It's the review gap.
 ### The Trust Paradox
 
 Surveys show:
+
 - **96%** of developers don't fully trust AI-generated code
 - **38%** say reviewing AI code is harder than reviewing human code
 - Yet **50%+** admit to merging AI code with cursory review
@@ -159,13 +160,13 @@ Human-written bugs often look buggy: missing brackets, typos, obvious logic erro
 ```typescript
 // AI generated - looks fine
 function calculateDiscount(price: number, quantity: number) {
-  if (quantity > 10) {
-    return price * 0.9 // 10% discount
-  }
-  if (quantity > 5) {
-    return price * 0.95 // 5% discount
-  }
-  return price
+	if (quantity > 10) {
+		return price * 0.9; // 10% discount
+	}
+	if (quantity > 5) {
+		return price * 0.95; // 5% discount
+	}
+	return price;
 }
 
 // Bug: Should apply to total, not unit price
@@ -197,6 +198,7 @@ AI-generated code has specific security concerns.
 ### The Security Research
 
 Multiple studies (including research from Stanford, NYU, and Georgetown CSET) have found consistent patterns:
+
 - Developers with AI assistants wrote **more security vulnerabilities**
 - Same developers rated their code as **more secure**
 - AI-generated code contains security flaws in roughly 40-45% of cases
@@ -214,6 +216,7 @@ sanitize_input(user_data)
 ```
 
 If `security_toolkit` doesn't exist, the import fails. But attackers have started:
+
 1. Identifying hallucinated package names
 2. Registering those names on npm/PyPI
 3. Publishing malicious packages
@@ -226,10 +229,10 @@ Research shows AI "improvement" suggestions often introduce vulnerabilities:
 
 ```typescript
 // Original code
-const data = JSON.parse(fs.readFileSync(path, 'utf-8'))
+const data = JSON.parse(fs.readFileSync(path, "utf-8"));
 
 // AI "improved" version
-const data = eval(fs.readFileSync(path, 'utf-8'))
+const data = eval(fs.readFileSync(path, "utf-8"));
 // Now accepts arbitrary code execution
 ```
 
@@ -248,6 +251,7 @@ Industry average: 20-25% of developer time goes to maintenance.
 AI-generated codebases: estimates range **30-50%** maintenance time.
 
 Why? AI code is:
+
 - Less consistent (no single human's mental model)
 - More verbose (tokens aren't expensive for AI)
 - Less documented (AI doesn't add docs unless asked)
@@ -258,10 +262,10 @@ Why? AI code is:
 From Boehm's research:
 
 | Stage Found | Relative Cost |
-|-------------|--------------|
-| Development | 1x |
-| Testing | 15x |
-| Production | 100x |
+| ----------- | ------------- |
+| Development | 1x            |
+| Testing     | 15x           |
+| Production  | 100x          |
 
 If AI increases bug rates by 23.7% and those bugs reach production, the cost multiplication is substantial.
 
@@ -270,6 +274,7 @@ If AI increases bug rates by 23.7% and those bugs reach production, the cost mul
 Code is read 10x more than it's written. AI-generated code optimizes for writing speed, not reading speed.
 
 Future developers face code that:
+
 - No human fully understands
 - Doesn't match established patterns
 - Has no design rationale recorded
@@ -286,6 +291,7 @@ AI isn't always debt-generating. Used correctly, it can reduce technical debt.
 ### Legacy Modernization
 
 Airbnb used AI to migrate Ruby code to TypeScript. Results:
+
 - **79% faster** than manual migration
 - **97% success rate** with retry loops for failed conversions
 - Human review still required, but effort dramatically reduced
@@ -298,18 +304,18 @@ Converting tests between frameworks:
 
 ```typescript
 // Input: Mocha test
-describe('User', () => {
-  it('should validate email', () => {
-    expect(validateEmail('test@example.com')).to.be.true
-  })
-})
+describe("User", () => {
+	it("should validate email", () => {
+		expect(validateEmail("test@example.com")).to.be.true;
+	});
+});
 
 // AI output: Jest test
-describe('User', () => {
-  it('should validate email', () => {
-    expect(validateEmail('test@example.com')).toBe(true)
-  })
-})
+describe("User", () => {
+	it("should validate email", () => {
+		expect(validateEmail("test@example.com")).toBe(true);
+	});
+});
 ```
 
 Low risk. The test's logic is defined; AI handles the assertion syntax.
@@ -317,6 +323,7 @@ Low risk. The test's logic is defined; AI handles the assertion syntax.
 ### Documentation Generation
 
 AI excels at:
+
 - Generating JSDoc from function signatures
 - Creating README boilerplate
 - Summarizing code changes for changelogs
@@ -326,14 +333,14 @@ Documentation is low-risk AI output. If it's wrong, it doesn't break production.
 
 ### The Translation vs. Creation Distinction
 
-| Task | AI Risk | Recommendation |
-|------|---------|----------------|
-| Language translation | Low | Use AI freely |
-| Test migration | Low | Use AI freely |
-| Documentation | Low | Use AI, verify |
-| Boilerplate generation | Medium | Use AI, review |
-| Feature implementation | High | Human-led, AI assists |
-| Architecture decisions | Very High | Human only |
+| Task                   | AI Risk   | Recommendation        |
+| ---------------------- | --------- | --------------------- |
+| Language translation   | Low       | Use AI freely         |
+| Test migration         | Low       | Use AI freely         |
+| Documentation          | Low       | Use AI, verify        |
+| Boilerplate generation | Medium    | Use AI, review        |
+| Feature implementation | High      | Human-led, AI assists |
+| Architecture decisions | Very High | Human only            |
 
 AI should translate and transcribe, not architect and create.
 
@@ -346,6 +353,7 @@ Teams need policies for AI-assisted development.
 ### Human-in-the-Loop Mandatory
 
 Every AI-generated code block requires:
+
 1. Human review (not just approval)
 2. Tests covering the generated code
 3. Understanding of what the code does (not just that it works)
@@ -386,11 +394,13 @@ Traditional metrics miss AI-specific problems. Track:
 Invert the default:
 
 **Old workflow**:
+
 1. Ask AI for code
 2. Accept if it compiles
 3. Review later (maybe)
 
 **Verification-first workflow**:
+
 1. Write specification/tests first
 2. Ask AI for implementation
 3. AI code must pass existing tests
@@ -438,6 +448,7 @@ This isn't resolved. Until it is, treat AI code as your code—you're responsibl
 AI accelerates code generation. This is undeniable.
 
 But generation is the cheap part of software development. The expensive parts are:
+
 - Understanding requirements
 - Designing architecture
 - Reviewing correctness
@@ -460,4 +471,4 @@ The generative debt crisis is real. Teams that acknowledge it and implement veri
 
 ---
 
-*This is the final article in the series on building production SaaS applications. For more on software architecture and development practices, explore the [full article archive](/blog).*
+_This is the final article in the series on building production SaaS applications. For more on software architecture and development practices, explore the [full article archive](/blog)._

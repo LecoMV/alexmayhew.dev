@@ -37,22 +37,22 @@ Tailwind generates thousands of utility classes. In development, the full framew
 ```js
 // tailwind.config.js
 export default {
-  content: ['./src/**/*.{js,ts,jsx,tsx}'],
-  // Only classes used in these files are included
-}
+	content: ["./src/**/*.{js,ts,jsx,tsx}"],
+	// Only classes used in these files are included
+};
 ```
 
 Result: **~10KB gzipped** for a typical application. Only the classes you use are shipped.
 
 ### Component Libraries
 
-| Library | Gzipped Size | Notes |
-|---------|-------------|-------|
-| Tailwind (purged) | ~10KB | Static CSS |
-| Chakra UI | ~50KB | CSS-in-JS runtime |
-| Material UI (v5) | ~100KB+ | Emotion runtime |
-| Ant Design | ~200KB+ | Full framework |
-| Bootstrap | ~25KB | CSS only |
+| Library           | Gzipped Size | Notes             |
+| ----------------- | ------------ | ----------------- |
+| Tailwind (purged) | ~10KB        | Static CSS        |
+| Chakra UI         | ~50KB        | CSS-in-JS runtime |
+| Material UI (v5)  | ~100KB+      | Emotion runtime   |
+| Ant Design        | ~200KB+      | Full framework    |
+| Bootstrap         | ~25KB        | CSS only          |
 
 These sizes are for the CSS/runtime. They don't include the JavaScript components themselves, which add more.
 
@@ -83,6 +83,7 @@ CSS is downloaded, parsed, and applied. No JavaScript execution required for sty
 This adds to Time to Interactive (TTI). The page might render, but interactions are blocked while JavaScript constructs styles.
 
 Rough overhead by library:
+
 - **Emotion (Material UI)**: ~200-300ms added TTI
 - **Styled Components**: ~150-250ms added TTI
 - **CSS Modules**: ~0ms (compile-time only)
@@ -94,24 +95,24 @@ With SSR, CSS-in-JS requires style extraction:
 
 ```tsx
 // pages/_document.tsx (Next.js + Emotion)
-import { extractCritical } from '@emotion/server'
+import { extractCritical } from "@emotion/server";
 
 export default class Document extends NextDocument {
-  static getInitialProps = async (ctx) => {
-    const page = await ctx.renderPage()
-    const styles = extractCritical(page.html)
-    return {
-      ...page,
-      styles: (
-        <>
-          <style
-            data-emotion={`css ${styles.ids.join(' ')}`}
-            dangerouslySetInnerHTML={{ __html: styles.css }}
-          />
-        </>
-      ),
-    }
-  }
+	static getInitialProps = async (ctx) => {
+		const page = await ctx.renderPage();
+		const styles = extractCritical(page.html);
+		return {
+			...page,
+			styles: (
+				<>
+					<style
+						data-emotion={`css ${styles.ids.join(" ")}`}
+						dangerouslySetInnerHTML={{ __html: styles.css }}
+					/>
+				</>
+			),
+		};
+	};
 }
 ```
 
@@ -127,11 +128,11 @@ Component libraries are fast for prototypes and demos. Then you need to customiz
 
 ```tsx
 // "Look how easy!"
-import { Button } from '@mui/material'
+import { Button } from "@mui/material";
 
 <Button variant="contained" color="primary">
-  Click me
-</Button>
+	Click me
+</Button>;
 ```
 
 Five minutes from `npm install` to styled button. Marketing writes itself.
@@ -142,32 +143,32 @@ Then the designer says: "Can we make that button match our brand?"
 
 ```tsx
 // Three months later
-import { Button } from '@mui/material'
-import { styled } from '@mui/material/styles'
+import { Button } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 const BrandButton = styled(Button)(({ theme }) => ({
-  backgroundColor: '#ccf381',
-  color: '#0b0e14',
-  borderRadius: 0,
-  border: '3px solid #000',
-  boxShadow: '4px 4px 0px #000',
-  fontFamily: '"JetBrains Mono", monospace',
-  textTransform: 'uppercase',
-  letterSpacing: '0.05em',
-  padding: '12px 24px',
-  '&:hover': {
-    backgroundColor: '#b8dc73',
-    boxShadow: '2px 2px 0px #000',
-  },
-  '&:active': {
-    boxShadow: 'none',
-    transform: 'translate(4px, 4px)',
-  },
-  '&:focus': {
-    outline: '2px solid #ccf381',
-    outlineOffset: '2px',
-  },
-}))
+	backgroundColor: "#ccf381",
+	color: "#0b0e14",
+	borderRadius: 0,
+	border: "3px solid #000",
+	boxShadow: "4px 4px 0px #000",
+	fontFamily: '"JetBrains Mono", monospace',
+	textTransform: "uppercase",
+	letterSpacing: "0.05em",
+	padding: "12px 24px",
+	"&:hover": {
+		backgroundColor: "#b8dc73",
+		boxShadow: "2px 2px 0px #000",
+	},
+	"&:active": {
+		boxShadow: "none",
+		transform: "translate(4px, 4px)",
+	},
+	"&:focus": {
+		outline: "2px solid #ccf381",
+		outlineOffset: "2px",
+	},
+}));
 ```
 
 You've overridden nearly everything. The library is now overhead without benefit.
@@ -179,12 +180,12 @@ Component libraries apply styles with varying specificity. When you override, yo
 ```css
 /* MUI's internal styles (high specificity) */
 .MuiButton-root.MuiButton-contained.MuiButton-containedPrimary {
-  background-color: #1976d2;
+	background-color: #1976d2;
 }
 
 /* Your override needs higher specificity */
 .my-custom-button.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary {
-  background-color: #ccf381; /* Finally wins */
+	background-color: #ccf381; /* Finally wins */
 }
 ```
 
@@ -197,22 +198,22 @@ Component libraries have theming systems, but they're constrained:
 ```tsx
 // Material UI theme
 const theme = createTheme({
-  palette: {
-    primary: { main: '#ccf381' },
-  },
-  shape: {
-    borderRadius: 0, // OK, affects everything
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          // Can override here, but now maintaining two systems
-        },
-      },
-    },
-  },
-})
+	palette: {
+		primary: { main: "#ccf381" },
+	},
+	shape: {
+		borderRadius: 0, // OK, affects everything
+	},
+	components: {
+		MuiButton: {
+			styleOverrides: {
+				root: {
+					// Can override here, but now maintaining two systems
+				},
+			},
+		},
+	},
+});
 ```
 
 You're now maintaining your design system inside a theme object that maps imperfectly to your design language.
@@ -234,47 +235,42 @@ This creates a file in your project:
 ```tsx
 // components/ui/button.tsx
 // Full source code, you own it
-import * as React from 'react'
-import { Slot } from '@radix-ui/react-slot'
-import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from '@/lib/utils'
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-md text-sm font-medium...',
-  {
-    variants: {
-      variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        destructive: 'bg-destructive text-destructive-foreground...',
-        // ...
-      },
-      size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-9 rounded-md px-3',
-        lg: 'h-11 rounded-md px-8',
-      },
-    },
-  }
-)
+	"inline-flex items-center justify-center rounded-md text-sm font-medium...",
+	{
+		variants: {
+			variant: {
+				default: "bg-primary text-primary-foreground hover:bg-primary/90",
+				destructive: "bg-destructive text-destructive-foreground...",
+				// ...
+			},
+			size: {
+				default: "h-10 px-4 py-2",
+				sm: "h-9 rounded-md px-3",
+				lg: "h-11 rounded-md px-8",
+			},
+		},
+	}
+);
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean
+	extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+	asChild?: boolean;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'button'
-    return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-      />
-    )
-  }
-)
+	({ className, variant, size, asChild = false, ...props }, ref) => {
+		const Comp = asChild ? Slot : "button";
+		return (
+			<Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
+		);
+	}
+);
 ```
 
 ### Why This Matters
@@ -295,22 +291,19 @@ shadcn/ui uses "headless" components from Radix:
 
 ```tsx
 // Radix provides behavior, you provide styles
-import * as Dialog from '@radix-ui/react-dialog'
+import * as Dialog from "@radix-ui/react-dialog";
 
 <Dialog.Root>
-  <Dialog.Trigger className="...your tailwind classes...">
-    Open
-  </Dialog.Trigger>
-  <Dialog.Portal>
-    <Dialog.Overlay className="...your tailwind classes..." />
-    <Dialog.Content className="...your tailwind classes...">
-      Modal content
-    </Dialog.Content>
-  </Dialog.Portal>
-</Dialog.Root>
+	<Dialog.Trigger className="...your tailwind classes...">Open</Dialog.Trigger>
+	<Dialog.Portal>
+		<Dialog.Overlay className="...your tailwind classes..." />
+		<Dialog.Content className="...your tailwind classes...">Modal content</Dialog.Content>
+	</Dialog.Portal>
+</Dialog.Root>;
 ```
 
 The library handles:
+
 - Focus trapping
 - Escape key to close
 - Click outside to close
@@ -349,10 +342,10 @@ Many teams use both:
 
 ```tsx
 // Admin dashboard - Material UI is fine
-import { DataGrid } from '@mui/x-data-grid'
+import { DataGrid } from "@mui/x-data-grid";
 
 // Consumer-facing - custom with Tailwind
-import { ProductCard } from '@/components/product-card'
+import { ProductCard } from "@/components/product-card";
 ```
 
 Internal tools get library speed. Consumer products get custom optimization.
@@ -370,6 +363,7 @@ npx lighthouse https://your-site.com --view
 ```
 
 Compare:
+
 - **First Contentful Paint (FCP)**: When first content appears
 - **Time to Interactive (TTI)**: When page is fully interactive
 - **Total Blocking Time (TBT)**: Sum of long tasks blocking main thread
@@ -393,11 +387,11 @@ Lighthouse tests on your machine. Real users have different conditions:
 
 ```tsx
 // web-vitals library
-import { onCLS, onFID, onLCP } from 'web-vitals'
+import { onCLS, onFID, onLCP } from "web-vitals";
 
-onCLS(console.log)  // Cumulative Layout Shift
-onFID(console.log)  // First Input Delay
-onLCP(console.log)  // Largest Contentful Paint
+onCLS(console.log); // Cumulative Layout Shift
+onFID(console.log); // First Input Delay
+onLCP(console.log); // Largest Contentful Paint
 
 // Send to analytics
 ```
@@ -434,6 +428,7 @@ Run both systems during transition. Aggressive purging ensures no unused CSS shi
 ### Measuring Success
 
 Track metrics before and after migration:
+
 - Bundle size (target: >50% reduction)
 - TTI (target: >200ms improvement)
 - Lighthouse performance score (target: >10 point improvement)
@@ -451,6 +446,7 @@ For consumer-facing products, the calculus shifts. Every 100KB costs users time.
 shadcn/ui represents the best current synthesis: accessible primitives, zero runtime, full customization. You get the hard parts solved (focus management, ARIA) without the overhead (CSS-in-JS runtime, specificity wars).
 
 The right answer depends on context:
+
 - **Shipping fast to internal users?** Use a library.
 - **Shipping to the world?** Build custom with Tailwind.
 - **Not sure?** Start with shadcn/ui. You can always add or remove complexity.
@@ -459,4 +455,4 @@ Measure before deciding. Measure after implementing. The data will tell you if y
 
 ---
 
-*This is part of a series on building production SaaS applications. Next up: [TypeScript: The Business Case for Static Types](/blog/typescript-business-case).*
+_This is part of a series on building production SaaS applications. Next up: [TypeScript: The Business Case for Static Types](/blog/typescript-business-case)._

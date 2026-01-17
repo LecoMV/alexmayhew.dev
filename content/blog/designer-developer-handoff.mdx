@@ -40,14 +40,14 @@ Figma's Dev Mode attempts to generate CSS for any layer. It's helpful, but gener
 background: #ccf381;
 border-radius: 8px;
 padding: 12px 24px;
-font-family: 'Inter', sans-serif;
+font-family: "Inter", sans-serif;
 ```
 
 But your design system has a `<Button>` component. The developer should see:
 
 ```tsx
 <Button variant="primary" size="md">
-  Submit
+	Submit
 </Button>
 ```
 
@@ -55,29 +55,29 @@ Code Connect bridges this gap. You write configuration files that map Figma comp
 
 ```tsx
 // figma.config.tsx
-import { Button } from '@/components/ui/button'
-import figma from '@figma/code-connect'
+import { Button } from "@/components/ui/button";
+import figma from "@figma/code-connect";
 
-figma.connect(Button, 'https://figma.com/file/abc123/Component?node-id=1:234', {
-  props: {
-    variant: figma.enum('Variant', {
-      Primary: 'primary',
-      Secondary: 'secondary',
-      Ghost: 'ghost',
-    }),
-    size: figma.enum('Size', {
-      Small: 'sm',
-      Medium: 'md',
-      Large: 'lg',
-    }),
-    label: figma.string('Label'),
-  },
-  example: (props) => (
-    <Button variant={props.variant} size={props.size}>
-      {props.label}
-    </Button>
-  ),
-})
+figma.connect(Button, "https://figma.com/file/abc123/Component?node-id=1:234", {
+	props: {
+		variant: figma.enum("Variant", {
+			Primary: "primary",
+			Secondary: "secondary",
+			Ghost: "ghost",
+		}),
+		size: figma.enum("Size", {
+			Small: "sm",
+			Medium: "md",
+			Large: "lg",
+		}),
+		label: figma.string("Label"),
+	},
+	example: (props) => (
+		<Button variant={props.variant} size={props.size}>
+			{props.label}
+		</Button>
+	),
+});
 ```
 
 Now when a developer inspects that button in Figma Dev Mode, they see the actual component syntax, with props derived from Figma's variant settings.
@@ -103,17 +103,17 @@ A design token is a named value with semantic meaning:
 
 ```json
 {
-  "color": {
-    "primary": {
-      "base": { "value": "#ccf381", "type": "color" },
-      "hover": { "value": "#b8dc73", "type": "color" }
-    }
-  },
-  "spacing": {
-    "xs": { "value": "4px", "type": "dimension" },
-    "sm": { "value": "8px", "type": "dimension" },
-    "md": { "value": "16px", "type": "dimension" }
-  }
+	"color": {
+		"primary": {
+			"base": { "value": "#ccf381", "type": "color" },
+			"hover": { "value": "#b8dc73", "type": "color" }
+		}
+	},
+	"spacing": {
+		"xs": { "value": "4px", "type": "dimension" },
+		"sm": { "value": "8px", "type": "dimension" },
+		"md": { "value": "16px", "type": "dimension" }
+	}
 }
 ```
 
@@ -141,15 +141,15 @@ Your Tailwind config imports the generated values:
 
 ```js
 // tailwind.config.js
-import { colors, spacing } from './tokens/tailwind.tokens'
+import { colors, spacing } from "./tokens/tailwind.tokens";
 
 export default {
-  theme: {
-    colors,
-    spacing,
-    // Other generated values
-  },
-}
+	theme: {
+		colors,
+		spacing,
+		// Other generated values
+	},
+};
 ```
 
 Now when a designer changes `color.primary.base` in Figma, the pipeline:
@@ -182,21 +182,21 @@ Percy integrates with E2E tests. After Playwright or Cypress renders a page, Per
 
 ```typescript
 // playwright.spec.ts
-import { test } from '@playwright/test'
-import percySnapshot from '@percy/playwright'
+import { test } from "@playwright/test";
+import percySnapshot from "@percy/playwright";
 
-test('homepage renders correctly', async ({ page }) => {
-  await page.goto('/')
-  await percySnapshot(page, 'Homepage')
-})
+test("homepage renders correctly", async ({ page }) => {
+	await page.goto("/");
+	await percySnapshot(page, "Homepage");
+});
 
-test('dashboard after login', async ({ page }) => {
-  await page.goto('/login')
-  await page.fill('[name="email"]', 'test@example.com')
-  await page.fill('[name="password"]', 'password')
-  await page.click('button[type="submit"]')
-  await percySnapshot(page, 'Dashboard')
-})
+test("dashboard after login", async ({ page }) => {
+	await page.goto("/login");
+	await page.fill('[name="email"]', "test@example.com");
+	await page.fill('[name="password"]', "password");
+	await page.click('button[type="submit"]');
+	await percySnapshot(page, "Dashboard");
+});
 ```
 
 Percy runs these tests across multiple browsers and viewport sizes, catching responsive issues that manual testing misses.
@@ -208,18 +208,18 @@ Chromatic integrates with Storybook. Every story becomes a visual test:
 ```tsx
 // Button.stories.tsx
 export const Primary: Story = {
-  args: {
-    variant: 'primary',
-    children: 'Click me',
-  },
-}
+	args: {
+		variant: "primary",
+		children: "Click me",
+	},
+};
 
 export const Secondary: Story = {
-  args: {
-    variant: 'secondary',
-    children: 'Click me',
-  },
-}
+	args: {
+		variant: "secondary",
+		children: "Click me",
+	},
+};
 
 // Each story is automatically captured and compared
 ```
@@ -263,6 +263,7 @@ Not all pixel differences matter. Anti-aliasing, font rendering, and dynamic con
 **Percy's visual diff settings** let you configure sensitivity thresholds and ignore regions for dynamic content.
 
 **Snapshot testing best practices**:
+
 - Mock dates and randomized content
 - Use consistent test data
 - Ignore elements with animations (`data-percy-ignore`)
@@ -324,6 +325,7 @@ Tested at all breakpoints defined in the design system. Edge cases (between brea
 ### 4. State Coverage
 
 All interactive states implemented:
+
 - Default, hover, active
 - Focus (keyboard and programmatic)
 - Disabled
@@ -370,14 +372,14 @@ Storybook stories can embed Figma frames:
 ```tsx
 // Button.stories.tsx
 export default {
-  title: 'Components/Button',
-  parameters: {
-    design: {
-      type: 'figma',
-      url: 'https://figma.com/file/abc123/Component?node-id=1:234',
-    },
-  },
-}
+	title: "Components/Button",
+	parameters: {
+		design: {
+			type: "figma",
+			url: "https://figma.com/file/abc123/Component?node-id=1:234",
+		},
+	},
+};
 ```
 
 Developers see the design spec alongside the component. No context switching.
@@ -439,4 +441,4 @@ Build the infrastructure. Automate the verification. And stop arguing about whet
 
 ---
 
-*This is part of a series on building production SaaS applications. Next up: [Neo-Brutalism: A Developer's Guide to Anti-Generic Design](/blog/neo-brutalism-developer-guide).*
+_This is part of a series on building production SaaS applications. Next up: [Neo-Brutalism: A Developer's Guide to Anti-Generic Design](/blog/neo-brutalism-developer-guide)._

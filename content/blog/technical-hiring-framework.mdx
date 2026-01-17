@@ -26,14 +26,14 @@ It's nearly useless.
 
 Frank Schmidt and John Hunter's meta-analysis of personnel selection methods—aggregating 85 years of research across thousands of studies—established the predictive validity of common hiring practices. The results are uncomfortable for anyone who's ever read a resume:
 
-| Selection Method | Validity Coefficient (r) | What This Means |
-|------------------|--------------------------|-----------------|
-| Work Sample Tests | 0.54 | Best predictor available |
-| General Mental Ability | 0.51-0.65 | Strong, especially for complex roles |
-| Structured Interviews | 0.51 | Consistent questions, rubric scoring |
-| Unstructured Interviews | 0.38 | "Good vibes" approach |
-| Reference Checks | 0.26 | Better than nothing |
-| Years of Experience | 0.18 | Nearly random |
+| Selection Method        | Validity Coefficient (r) | What This Means                      |
+| ----------------------- | ------------------------ | ------------------------------------ |
+| Work Sample Tests       | 0.54                     | Best predictor available             |
+| General Mental Ability  | 0.51-0.65                | Strong, especially for complex roles |
+| Structured Interviews   | 0.51                     | Consistent questions, rubric scoring |
+| Unstructured Interviews | 0.38                     | "Good vibes" approach                |
+| Reference Checks        | 0.26                     | Better than nothing                  |
+| Years of Experience     | 0.18                     | Nearly random                        |
 
 Let that sink in. Years of experience—the primary filter on most job listings—has a validity coefficient of 0.18. A validity of 0.18 means the correlation between experience and job performance is barely above random chance.
 
@@ -58,12 +58,14 @@ This tests algorithm memorization under artificial pressure. Unless you're hirin
 **Good Work Sample**: "Here's a Next.js component with a bug. The loading state shows briefly, then disappears before data arrives. Find and fix the bug. You have 90 minutes and access to the internet."
 
 This tests:
+
 - React state management (actual skill needed)
 - Debugging approach (how they diagnose problems)
 - Resource usage (can they find relevant documentation)
 - Time management (shipping something imperfect vs. perfecting nothing)
 
 The work sample should be:
+
 - Time-boxed (prevent perfectionism, respect candidate time)
 - Representative of daily work
 - Evaluated against a rubric, not "did it work"
@@ -104,6 +106,7 @@ The work sample is your highest-leverage hiring investment. Here's how to design
 The task should be something the candidate would actually do in the role. For a full-stack developer:
 
 **Production-Like Task**:
+
 ```
 You're building a user dashboard feature. The designer has provided a
 Figma mockup (linked). The API endpoint /api/user/:id returns user data.
@@ -117,6 +120,7 @@ You have 3 hours. Use whatever libraries you'd use in a real project.
 ```
 
 This tests:
+
 - API integration (will they async/await correctly?)
 - State management (loading, error, success states)
 - CSS/styling ability
@@ -133,18 +137,19 @@ Shorter assessments favor experienced developers who work efficiently. Longer as
 
 A rubric might look like:
 
-| Criterion | 1 (Poor) | 2 (Acceptable) | 3 (Good) | 4 (Excellent) |
-|-----------|----------|----------------|----------|---------------|
-| Code Organization | No clear structure | Basic structure | Clean separation | Excellent modularity |
-| Error Handling | None | Happy path only | Common errors covered | Comprehensive handling |
-| Testing | None | No tests | Basic tests | Thorough test coverage |
-| Communication | No explanation | Minimal explanation | Clear explanation | Detailed rationale |
+| Criterion         | 1 (Poor)           | 2 (Acceptable)      | 3 (Good)              | 4 (Excellent)          |
+| ----------------- | ------------------ | ------------------- | --------------------- | ---------------------- |
+| Code Organization | No clear structure | Basic structure     | Clean separation      | Excellent modularity   |
+| Error Handling    | None               | Happy path only     | Common errors covered | Comprehensive handling |
+| Testing           | None               | No tests            | Basic tests           | Thorough test coverage |
+| Communication     | No explanation     | Minimal explanation | Clear explanation     | Detailed rationale     |
 
 The candidate who writes imperfect code but clearly explains their tradeoffs often outperforms the candidate with perfect code and no explanation.
 
 ### Provide Context and Resources
 
 Real work happens with context and resources. Candidates should have:
+
 - Access to documentation (internet, official docs)
 - The ability to ask clarifying questions
 - Context about why the feature matters
@@ -165,6 +170,7 @@ Instead of watching someone code alone, work with them:
 4. You navigate (answer questions, provide hints)
 
 This tests:
+
 - Communication skills (can they explain their thinking?)
 - Coachability (do they take hints gracefully?)
 - Collaboration (would you want to work with them daily?)
@@ -189,12 +195,14 @@ For mid-level and above, system design reveals architectural thinking:
 **Example**: "Design a URL shortener. Walk me through the architecture."
 
 Follow-ups probe depth:
+
 - "How would you handle 1M requests/second?"
 - "How do you prevent abuse?"
 - "How do you expire old links?"
 - "What would you do differently with 10x the engineering time?"
 
 Grade against rubric:
+
 - Did they ask clarifying questions? (Requirements gathering)
 - Did they start with data modeling? (Fundamentals first)
 - Did they consider edge cases? (Production thinking)
@@ -205,11 +213,13 @@ Grade against rubric:
 Past behavior predicts future behavior. Behavioral questions extract evidence:
 
 **Strong Behavioral Questions**:
+
 - "Tell me about a time when you had to debug a production incident under pressure."
 - "Describe a technical decision you made that you later regretted."
 - "Tell me about a conflict with a colleague and how you resolved it."
 
 **Weak Behavioral Questions**:
+
 - "What would you do if..." (hypothetical, not behavioral)
 - "What's your greatest weakness?" (rehearsed answers)
 - "Where do you see yourself in 5 years?" (irrelevant to job performance)
@@ -250,6 +260,7 @@ If they struggle to explain their own work, they either didn't write it (plagiar
 Candidates who dive into coding without asking clarifying questions are optimizing for speed over correctness. In real work, this creates features that miss requirements.
 
 Strong candidates ask:
+
 - "Who's the user for this feature?"
 - "What happens if this fails?"
 - "Are there performance requirements?"
@@ -260,7 +271,7 @@ Strong candidates ask:
 
 "How does React's reconciliation algorithm decide when to re-render?"
 
-If they can only describe *using* React but not *how* React works, they'll struggle when things break in unexpected ways.
+If they can only describe _using_ React but not _how_ React works, they'll struggle when things break in unexpected ways.
 
 ### No Production Stories
 
@@ -281,6 +292,7 @@ These patterns predict strong performance:
 "I'm not sure, but I'd approach it by..."
 
 This indicates:
+
 - Self-awareness (knows their limits)
 - Problem-solving orientation (focuses on finding answers)
 - Honesty (doesn't bullshit)
@@ -314,6 +326,7 @@ This indicates production experience and architectural thinking beyond the immed
 ### Failure Reflection
 
 Ask about past failures. Strong candidates:
+
 - Own their mistakes ("I should have written tests first")
 - Explain what they learned ("Now I always...")
 - Don't blame circumstances or colleagues
@@ -331,7 +344,7 @@ Some organizations hire for fundamentals and train for stack. The logic: specifi
 - **Strong Onboarding**: The organization can bring someone up to speed quickly
 - **Experienced Team**: Seniors available to mentor and review
 - **Low-Risk Projects**: Initial assignments allow for learning curve
-- **Cultural Match**: The candidate has proven ability in *something*
+- **Cultural Match**: The candidate has proven ability in _something_
 
 Stripe and Uber have historically hired language-agnostic engineers for their engineering DNA and taught specific stacks during onboarding.
 
@@ -360,6 +373,7 @@ Fixing these decisions costs multiples of the original implementation.
 ### Team Velocity Drain
 
 Bad developers consume senior attention:
+
 - Extended code reviews (finding and explaining issues)
 - Pairing to fix bugs
 - Cleaning up after them
@@ -370,6 +384,7 @@ If a senior spends 20% of their time supporting an underperformer, that's effect
 ### Morale and Attrition
 
 Good developers don't want to work with bad ones. They:
+
 - Get frustrated cleaning up messes
 - Resent the apparent tolerance of underperformance
 - Start looking for teams that maintain standards
@@ -389,7 +404,7 @@ The cost of attrition—recruiting, onboarding, lost productivity—dwarfs the s
 
 ### Resume Screen (Minimal Time)
 
-- [ ] Do they have *any* relevant experience?
+- [ ] Do they have _any_ relevant experience?
 - [ ] Are there obvious mismatches (wrong timezone, wrong level)?
 - [ ] Move quickly—this is low-value filtering
 
@@ -435,4 +450,4 @@ The cost of getting it right is a few hours of process design. The cost of getti
 
 ---
 
-*This is part of a series on building production SaaS applications. Next up: [Choosing Your Startup's Tech Stack: A Capital Allocation Framework](/blog/tech-stack-capital-allocation).*
+_This is part of a series on building production SaaS applications. Next up: [Choosing Your Startup's Tech Stack: A Capital Allocation Framework](/blog/tech-stack-capital-allocation)._

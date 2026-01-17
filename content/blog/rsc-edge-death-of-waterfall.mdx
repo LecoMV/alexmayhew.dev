@@ -42,18 +42,19 @@ React Server Components (RSC) invert the traditional architecture. Components ru
 // This component runs ONLY on the server
 // Zero JavaScript sent to the browser
 async function UserProfile({ userId }: { userId: string }) {
-  const user = await db.users.findUnique({ where: { id: userId } })
+	const user = await db.users.findUnique({ where: { id: userId } });
 
-  return (
-    <div>
-      <h1>{user.name}</h1>
-      <p>{user.email}</p>
-    </div>
-  )
+	return (
+		<div>
+			<h1>{user.name}</h1>
+			<p>{user.email}</p>
+		</div>
+	);
 }
 ```
 
 This component:
+
 - Fetches data directly from the database (no API layer needed)
 - Runs during render, not after
 - Sends only HTML to the browser
@@ -62,22 +63,19 @@ This component:
 ### Client Components (Opt-in)
 
 ```tsx
-'use client'
+"use client";
 
 // This component ships to the browser
 // Only use when you need interactivity
 function LikeButton({ postId }: { postId: string }) {
-  const [liked, setLiked] = useState(false)
+	const [liked, setLiked] = useState(false);
 
-  return (
-    <button onClick={() => setLiked(!liked)}>
-      {liked ? 'Liked' : 'Like'}
-    </button>
-  )
+	return <button onClick={() => setLiked(!liked)}>{liked ? "Liked" : "Like"}</button>;
 }
 ```
 
 Client Components:
+
 - Are marked with `'use client'` directive
 - Ship JavaScript to the browser
 - Support event handlers, useState, useEffect
@@ -90,16 +88,16 @@ The power of RSC is in composition:
 ```tsx
 // Server Component - no JS shipped
 async function PostPage({ postId }: { postId: string }) {
-  const post = await db.posts.findUnique({ where: { id: postId } })
+	const post = await db.posts.findUnique({ where: { id: postId } });
 
-  return (
-    <article>
-      <h1>{post.title}</h1>
-      <p>{post.content}</p>
-      {/* Client Component island */}
-      <LikeButton postId={postId} />
-    </article>
-  )
+	return (
+		<article>
+			<h1>{post.title}</h1>
+			<p>{post.content}</p>
+			{/* Client Component island */}
+			<LikeButton postId={postId} />
+		</article>
+	);
 }
 ```
 
@@ -118,11 +116,11 @@ Edge computing solves this by running code in 300+ locations worldwide. Cloudfla
 ### The Impact
 
 | User Location | Origin (Virginia) | Edge (Nearest PoP) |
-|---------------|-------------------|-------------------|
-| New York | ~20ms | ~5ms |
-| London | ~80ms | ~10ms |
-| Sydney | ~150ms | ~15ms |
-| Tokyo | ~120ms | ~10ms |
+| ------------- | ----------------- | ------------------ |
+| New York      | ~20ms             | ~5ms               |
+| London        | ~80ms             | ~10ms              |
+| Sydney        | ~150ms            | ~15ms              |
+| Tokyo         | ~120ms            | ~10ms              |
 
 Sub-50ms response times become achievable globally, regardless of where your primary database lives.
 
@@ -173,25 +171,25 @@ The entire page waits for the slowest data source. If one API call takes 2 secon
 ### With Streaming
 
 ```tsx
-import { Suspense } from 'react'
+import { Suspense } from "react";
 
 async function Page() {
-  return (
-    <main>
-      {/* This renders immediately */}
-      <Header />
+	return (
+		<main>
+			{/* This renders immediately */}
+			<Header />
 
-      {/* This streams when ready */}
-      <Suspense fallback={<LoadingSkeleton />}>
-        <SlowDataComponent />
-      </Suspense>
+			{/* This streams when ready */}
+			<Suspense fallback={<LoadingSkeleton />}>
+				<SlowDataComponent />
+			</Suspense>
 
-      {/* This also streams independently */}
-      <Suspense fallback={<LoadingSkeleton />}>
-        <AnotherSlowComponent />
-      </Suspense>
-    </main>
-  )
+			{/* This also streams independently */}
+			<Suspense fallback={<LoadingSkeleton />}>
+				<AnotherSlowComponent />
+			</Suspense>
+		</main>
+	);
 }
 ```
 
@@ -220,6 +218,7 @@ For high-traffic pages, cold starts are rare (functions stay warm). For low-traf
 Edge functions run in many locations. Traditional connection pooling doesn't work—you'd need pools at every edge location.
 
 **Solutions**:
+
 - **Prisma Accelerate**: Connection pooling as a service, globally distributed
 - **Supabase Supavisor**: Pooler built for edge workloads
 - **PlanetScale**: Serverless MySQL with edge-compatible drivers
@@ -228,6 +227,7 @@ Edge functions run in many locations. Traditional connection pooling doesn't wor
 ### Not Everything Works at the Edge
 
 Some dependencies don't work in edge runtimes:
+
 - Native Node modules (must use pure JavaScript alternatives)
 - Some authentication libraries (check edge compatibility)
 - Heavy compute (better served by origin functions)
@@ -260,22 +260,24 @@ Replace `useEffect` data fetching with server-side queries:
 
 ```tsx
 // Before: Client Component with useEffect
-'use client'
+"use client";
 function Dashboard() {
-  const [data, setData] = useState(null)
+	const [data, setData] = useState(null);
 
-  useEffect(() => {
-    fetch('/api/dashboard').then(res => res.json()).then(setData)
-  }, [])
+	useEffect(() => {
+		fetch("/api/dashboard")
+			.then((res) => res.json())
+			.then(setData);
+	}, []);
 
-  if (!data) return <Loading />
-  return <DashboardContent data={data} />
+	if (!data) return <Loading />;
+	return <DashboardContent data={data} />;
 }
 
 // After: Server Component with direct data access
 async function Dashboard() {
-  const data = await getDashboardData() // Direct DB query
-  return <DashboardContent data={data} />
+	const data = await getDashboardData(); // Direct DB query
+	return <DashboardContent data={data} />;
 }
 ```
 
@@ -285,14 +287,14 @@ Wrap slow data sources in Suspense for streaming:
 
 ```tsx
 async function Page() {
-  return (
-    <div>
-      <QuickContent />
-      <Suspense fallback={<Skeleton />}>
-        <SlowContent />
-      </Suspense>
-    </div>
-  )
+	return (
+		<div>
+			<QuickContent />
+			<Suspense fallback={<Skeleton />}>
+				<SlowContent />
+			</Suspense>
+		</div>
+	);
 }
 ```
 
@@ -331,6 +333,7 @@ RSC dramatically reduces JavaScript sent to the browser.
 ### Before RSC
 
 A typical React SPA ships:
+
 - React runtime (~40KB)
 - React DOM (~120KB)
 - Data fetching library (~20KB)
@@ -344,6 +347,7 @@ Total: 400KB+ of JavaScript before the page is interactive.
 Server Components ship zero JavaScript. Only Client Components contribute to bundle size.
 
 For a typical page:
+
 - React runtime (still needed for Client Components): ~40KB
 - Minimal React DOM for hydration: ~50KB
 - Only the Client Components you actually need
@@ -358,8 +362,8 @@ For edge deployment, Next.js's `standalone` output mode creates minimal deployme
 ```js
 // next.config.js
 module.exports = {
-  output: 'standalone',
-}
+	output: "standalone",
+};
 ```
 
 This can reduce deployment bundle size by 90% compared to a full `node_modules` deployment.
@@ -393,6 +397,7 @@ Monitor CLS (layout shifts), FID (first input delay), and LCP in real user monit
 The SPA era—where JavaScript downloads, fetches data, and renders everything client-side—is ending for most applications.
 
 The new default:
+
 - Server Components for data and layout
 - Client Components for interactivity
 - Edge deployment for global performance
@@ -404,4 +409,4 @@ Start with your next feature. Build it with RSC. Measure the difference. The wat
 
 ---
 
-*This is part of a series on building production SaaS applications. Next up: [Multi-Tenancy Done Right: A Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls).*
+_This is part of a series on building production SaaS applications. Next up: [Multi-Tenancy Done Right: A Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls)._

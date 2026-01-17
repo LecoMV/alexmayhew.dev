@@ -37,7 +37,7 @@
 	 * Enables access to Cloudflare Workers AI models including Qwen 2.5-Coder 32B
 	 */
 	"ai": {
-		"binding": "AI"
+		"binding": "AI",
 	},
 	// Keep workers.dev subdomain active until custom domain is set up in dashboard
 	"workers_dev": true,

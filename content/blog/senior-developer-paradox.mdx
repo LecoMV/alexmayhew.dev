@@ -24,11 +24,11 @@ When I present these figures to CTOs, they nod knowingly. When I present them to
 
 The calculation most finance teams run when evaluating engineering talent looks something like this:
 
-| Option | Hourly Rate | Annual Cost (2,000 hrs) |
-|--------|-------------|------------------------|
-| Offshore Junior | $30/hr | $60,000 |
-| US Senior | $150/hr | $300,000 |
-| **Savings** | | **$240,000/year** |
+| Option          | Hourly Rate | Annual Cost (2,000 hrs) |
+| --------------- | ----------- | ----------------------- |
+| Offshore Junior | $30/hr      | $60,000                 |
+| US Senior       | $150/hr     | $300,000                |
+| **Savings**     |             | **$240,000/year**       |
 
 The math looks irrefutable. You can hire five offshore juniors for the cost of one US senior. Five developers shipping five times the code, right?
 
@@ -36,14 +36,14 @@ This is the Sticker Price Fallacy—the assumption that the hourly rate is the c
 
 The actual calculation looks different:
 
-| Factor | Offshore Junior | US Senior |
-|--------|-----------------|-----------|
-| Nominal Rate | $30/hr | $150/hr |
-| Time Spent Fixing Own Bugs | 50% | 10% |
-| Effective Production Rate | $60/hr | $166/hr |
-| Management Overhead | +25% | +5% |
-| Communication Latency Cost | +20% | Minimal |
-| **Effective Total Cost** | **$90-100/hr** | **$175/hr** |
+| Factor                     | Offshore Junior | US Senior   |
+| -------------------------- | --------------- | ----------- |
+| Nominal Rate               | $30/hr          | $150/hr     |
+| Time Spent Fixing Own Bugs | 50%             | 10%         |
+| Effective Production Rate  | $60/hr          | $166/hr     |
+| Management Overhead        | +25%            | +5%         |
+| Communication Latency Cost | +20%            | Minimal     |
+| **Effective Total Cost**   | **$90-100/hr**  | **$175/hr** |
 
 The gap narrows considerably. But the real cost divergence appears in the bugs that reach production, the architectural decisions that need to be reversed, and the speed at which value reaches customers.
 
@@ -53,16 +53,16 @@ The gap narrows considerably. But the real cost divergence appears in the bugs t
 
 Barry Boehm's research on software defect costs established what's now known as the "Rule of 100" or the Boehm Curve. The cost of fixing a defect increases exponentially as software moves through the development lifecycle:
 
-| Stage | Cost to Fix |
-|-------|-------------|
-| Requirements/Design | ~$100 |
-| Coding/Unit Testing | ~$1,000 |
-| Integration/QA | ~$10,000 |
-| Production | ~$100,000+ |
+| Stage               | Cost to Fix |
+| ------------------- | ----------- |
+| Requirements/Design | ~$100       |
+| Coding/Unit Testing | ~$1,000     |
+| Integration/QA      | ~$10,000    |
+| Production          | ~$100,000+  |
 
 A bug that costs $100 to fix during design costs $100,000 to fix in production. This isn't hyperbole—it's the cost of emergency patches, rollback procedures, customer compensation, support tickets, and reputation damage.
 
-*(Note: Boehm's original research was based on 1970s waterfall projects. Modern iterative development typically shows lower multipliers—closer to 1:10 or 1:20 for smaller projects. The principle holds, but the extreme 1:100 ratio applies primarily to large-scale systems where architectural changes cascade.)*
+_(Note: Boehm's original research was based on 1970s waterfall projects. Modern iterative development typically shows lower multipliers—closer to 1:10 or 1:20 for smaller projects. The principle holds, but the extreme 1:100 ratio applies primarily to large-scale systems where architectural changes cascade.)_
 
 Senior developers don't just write better code. They "fix" bugs before writing them.
 
@@ -122,16 +122,16 @@ A 2025 survey by Fastly found that senior developers ship 2.5x more AI-assisted 
 
 The data tells a different story:
 
-| Experience Level | AI Code in Production | Reason |
-|------------------|----------------------|--------|
-| Senior (7+ years) | 33%+ of shipped code | Can validate AI output, spot subtle bugs |
-| Junior (0-2 years) | 13% of shipped code | Lack confidence to trust AI suggestions |
+| Experience Level   | AI Code in Production | Reason                                   |
+| ------------------ | --------------------- | ---------------------------------------- |
+| Senior (7+ years)  | 33%+ of shipped code  | Can validate AI output, spot subtle bugs |
+| Junior (0-2 years) | 13% of shipped code   | Lack confidence to trust AI suggestions  |
 
 Seniors use AI as a force multiplier because they have the expertise to verify the output. They can spot when AI hallucinates an API that doesn't exist, suggests an algorithm with subtle edge case failures, or generates code with security vulnerabilities.
 
 Juniors either don't trust the AI (underutilizing a productivity tool) or trust it too much (shipping bugs they can't diagnose). The sweet spot requires experience that only comes from years of debugging production systems.
 
-This creates an unexpected dynamic: AI makes senior developers *more* valuable, not less. The productivity gains from AI-assisted development accrue primarily to developers with enough experience to use the tools safely.
+This creates an unexpected dynamic: AI makes senior developers _more_ valuable, not less. The productivity gains from AI-assisted development accrue primarily to developers with enough experience to use the tools safely.
 
 ### The Hallucination Cost
 
@@ -195,13 +195,13 @@ Given that the cost difference between good and bad hires is measured in multipl
 
 Frank Schmidt and John Hunter's meta-analysis of 85 years of personnel selection research established the predictive validity of various hiring methods:
 
-| Method | Validity Coefficient (r) | Interpretation |
-|--------|--------------------------|----------------|
-| Work Sample Tests | 0.54 - 0.63 | Highest predictive validity |
-| General Mental Ability | 0.51 - 0.65 | Strong predictor for complex roles |
-| Structured Interviews | 0.51 | Same questions, rubric-based scoring |
-| Unstructured Interviews | 0.38 | The "gut feel" approach |
-| Years of Experience | 0.18 | Nearly useless as predictor |
+| Method                  | Validity Coefficient (r) | Interpretation                       |
+| ----------------------- | ------------------------ | ------------------------------------ |
+| Work Sample Tests       | 0.54 - 0.63              | Highest predictive validity          |
+| General Mental Ability  | 0.51 - 0.65              | Strong predictor for complex roles   |
+| Structured Interviews   | 0.51                     | Same questions, rubric-based scoring |
+| Unstructured Interviews | 0.38                     | The "gut feel" approach              |
+| Years of Experience     | 0.18                     | Nearly useless as predictor          |
 
 The implications are significant:
 
@@ -243,12 +243,14 @@ The data doesn't suggest that every developer should be a $200/hr specialist. It
 Healthy teams resemble rivers—a continuous flow where junior talent enters, gains experience, and eventually becomes senior talent (or exits). The ideal ratio is approximately 1 senior to 2-3 mid-level or junior developers.
 
 **The Senior's Role**:
+
 - Set architecture that junior developers implement
 - Code review everything before it merges
 - Debug the problems juniors can't solve
 - Transfer knowledge through pairing and mentorship
 
 **The Junior's Role**:
+
 - Implement features within established architectural patterns
 - Write tests
 - Handle well-defined tasks with clear acceptance criteria
@@ -273,6 +275,7 @@ The case for senior developers is strong, but it's not absolute. There are conte
 ### Well-Defined, Commoditized Tasks
 
 If the work is:
+
 - Clearly specified with explicit acceptance criteria
 - Covered by comprehensive test suites
 - Low-risk if done incorrectly
@@ -283,6 +286,7 @@ Then lower-cost talent can be effective. Examples include data entry automation,
 ### Strong Management and Automation
 
 If you have:
+
 - Senior architects who can provide detailed specifications
 - Robust CI/CD with automated testing that catches errors
 - Clear documentation and coding standards
@@ -295,6 +299,7 @@ Then junior developers can execute within those guardrails. The senior time inve
 Some organizations treat junior hiring as explicit talent development. They hire juniors knowing they'll be less productive initially, invest in training, and benefit from promoted mid-level developers who understand the codebase intimately.
 
 This model requires:
+
 - Explicit budget for mentorship (senior time allocated)
 - Acceptance of lower initial productivity
 - Low turnover (otherwise you're training for competitors)
@@ -350,6 +355,7 @@ Let me make the business case explicit.
 ### Scenario: Building a Core Product Feature
 
 **Option A: Junior-Heavy Team**
+
 - 3 junior developers at $35/hr = $105/hr team rate
 - 8 weeks estimated delivery
 - 40% of time on rework/bugs = 11.2 weeks actual
@@ -357,6 +363,7 @@ Let me make the business case explicit.
 - Total cost: (11.2 weeks × 40 hrs × $105) + (40 × $105) = $51,240
 
 **Option B: Senior-Led Team**
+
 - 1 senior at $150/hr + 1 mid at $80/hr = $230/hr team rate
 - 6 weeks estimated delivery
 - 10% of time on rework = 6.6 weeks actual
@@ -366,6 +373,7 @@ Let me make the business case explicit.
 **The Delta**: $9,480 more for the senior-led team.
 
 **The Hidden Factors**:
+
 - 6.6 weeks to market vs 11.2 weeks: The senior team captures 4+ weeks of additional revenue
 - 0 production incidents vs 2: Customer trust intact, no support burden
 - Code quality: The senior team's code needs less maintenance for years
@@ -426,4 +434,4 @@ The answers to these questions should drive hiring decisions, not the simple com
 
 ---
 
-*This is part of a series on building production SaaS applications. Next up: [Beyond the Resume: A Technical Founder's Hiring Framework](/blog/technical-hiring-framework).*
+_This is part of a series on building production SaaS applications. Next up: [Beyond the Resume: A Technical Founder's Hiring Framework](/blog/technical-hiring-framework)._

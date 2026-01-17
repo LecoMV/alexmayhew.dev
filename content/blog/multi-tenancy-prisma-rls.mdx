@@ -25,12 +25,14 @@ Multi-tenant architecture comes in three flavors, each with distinct trade-offs.
 Each tenant gets their own PostgreSQL database.
 
 **Advantages**:
+
 - Maximum isolation—one tenant's data cannot possibly leak to another
 - Per-tenant backup and restore
 - Independent scaling
 - Easy regulatory compliance (data residency)
 
 **Disadvantages**:
+
 - Cost: $50-100+/month per tenant minimum (managed Postgres)
 - Operational complexity: Thousands of databases to manage
 - Connection pool explosion
@@ -44,11 +46,13 @@ Each tenant gets their own PostgreSQL database.
 Single database, separate PostgreSQL schemas per tenant.
 
 **Advantages**:
+
 - Good isolation (schema boundaries)
 - Simpler than database-per-tenant
 - Cross-tenant queries possible with schema qualification
 
 **Disadvantages**:
+
 - Prisma generates one client per schema—breaks at 200-300 tenants
 - Schema migrations must still run per-tenant
 - Connection pooling complications
@@ -61,6 +65,7 @@ Single database, separate PostgreSQL schemas per tenant.
 Single database, single schema, tenant_id column on all tables, Row-Level Security enforcing isolation.
 
 **Advantages**:
+
 - Scales to unlimited tenants
 - One schema migration affects everyone
 - Simple connection pooling
@@ -68,6 +73,7 @@ Single database, single schema, tenant_id column on all tables, Row-Level Securi
 - Standard Prisma patterns
 
 **Disadvantages**:
+
 - Requires careful implementation (forgetting RLS on a table is a breach)
 - All tenants share compute resources
 - Cross-tenant queries require superuser access
@@ -124,6 +130,7 @@ PostgreSQL RLS uses two types of policies:
 **RESTRICTIVE**: All restrictive policies must pass. They AND together.
 
 For multi-tenancy, you typically want:
+
 1. A restrictive tenant isolation policy (must always match)
 2. Optional permissive policies for row-level access control within the tenant
 
@@ -184,36 +191,36 @@ Prisma doesn't have native RLS support, but you can implement it cleanly with Cl
 ### The getTenantClient Pattern
 
 ```typescript
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 export function getTenantClient(tenantId: string) {
-  return prisma.$extends({
-    query: {
-      $allModels: {
-        async $allOperations({ args, query }) {
-          const [, result] = await prisma.$transaction([
-            prisma.$executeRaw`SELECT set_config('app.current_tenant_id', ${tenantId}, true)`,
-            query(args),
-          ])
-          return result
-        },
-      },
-    },
-  })
+	return prisma.$extends({
+		query: {
+			$allModels: {
+				async $allOperations({ args, query }) {
+					const [, result] = await prisma.$transaction([
+						prisma.$executeRaw`SELECT set_config('app.current_tenant_id', ${tenantId}, true)`,
+						query(args),
+					]);
+					return result;
+				},
+			},
+		},
+	});
 }
 
 // Usage in your API handler
 export async function GET(request: Request) {
-  const tenantId = getTenantIdFromRequest(request)
-  const db = getTenantClient(tenantId)
+	const tenantId = getTenantIdFromRequest(request);
+	const db = getTenantClient(tenantId);
 
-  const orders = await db.order.findMany({
-    where: { status: 'pending' }
-  })
+	const orders = await db.order.findMany({
+		where: { status: "pending" },
+	});
 
-  return Response.json(orders)
+	return Response.json(orders);
 }
 ```
 
@@ -225,26 +232,26 @@ There's a known issue with Prisma interactive transactions and RLS (GitHub #2358
 
 ```typescript
 // BROKEN - tenant context not visible inside $transaction callback
-const db = getTenantClient(tenantId)
+const db = getTenantClient(tenantId);
 
 await db.$transaction(async (tx) => {
-  // These queries DON'T see the tenant_id setting!
-  const order = await tx.order.findUnique({ where: { id } })
-  await tx.order.update({ where: { id }, data: { status: 'shipped' } })
-})
+	// These queries DON'T see the tenant_id setting!
+	const order = await tx.order.findUnique({ where: { id } });
+	await tx.order.update({ where: { id }, data: { status: "shipped" } });
+});
 ```
 
 **Solution**: Set context explicitly inside the transaction:
 
 ```typescript
 await prisma.$transaction(async (tx) => {
-  // Set context INSIDE the transaction
-  await tx.$executeRaw`SELECT set_config('app.current_tenant_id', ${tenantId}, true)`
+	// Set context INSIDE the transaction
+	await tx.$executeRaw`SELECT set_config('app.current_tenant_id', ${tenantId}, true)`;
 
-  // Now these queries work correctly
-  const order = await tx.order.findUnique({ where: { id } })
-  await tx.order.update({ where: { id }, data: { status: 'shipped' } })
-})
+	// Now these queries work correctly
+	const order = await tx.order.findUnique({ where: { id } });
+	await tx.order.update({ where: { id }, data: { status: "shipped" } });
+});
 ```
 
 This is the most common RLS + Prisma bug. Test your interactive transactions explicitly.
@@ -280,14 +287,15 @@ Even with RLS, include tenant_id in your WHERE clauses:
 // The RLS policy will add tenant_id anyway
 // But being explicit helps the query planner and documents intent
 const order = await db.order.findUnique({
-  where: {
-    id: orderId,
-    tenant_id: tenantId, // Explicit despite RLS
-  }
-})
+	where: {
+		id: orderId,
+		tenant_id: tenantId, // Explicit despite RLS
+	},
+});
 ```
 
 This is redundant from a security perspective (RLS enforces it), but:
+
 1. Makes the intent clear to future developers
 2. Helps the query planner use the optimal index
 3. Provides defense in depth if RLS is misconfigured
@@ -511,13 +519,13 @@ Application writes to both old schema and new pool schema:
 
 ```typescript
 async function createOrder(tenantId: string, data: OrderData) {
-  // Write to legacy schema
-  await legacyDb.order.create({ data })
+	// Write to legacy schema
+	await legacyDb.order.create({ data });
 
-  // Write to pool schema
-  await poolDb.order.create({
-    data: { ...data, tenant_id: tenantId }
-  })
+	// Write to pool schema
+	await poolDb.order.create({
+		data: { ...data, tenant_id: tenantId },
+	});
 }
 ```
 
@@ -606,4 +614,4 @@ Start with RLS. You can always scale up to more isolation. Scaling down from sch
 
 ---
 
-*This is part of a series on building production SaaS applications. Next up: [Hunting Memory Leaks in Node.js: A Forensic Guide](/blog/nodejs-memory-leaks).*
+_This is part of a series on building production SaaS applications. Next up: [Hunting Memory Leaks in Node.js: A Forensic Guide](/blog/nodejs-memory-leaks)._

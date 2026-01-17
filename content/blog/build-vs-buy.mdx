@@ -41,16 +41,19 @@ True Cost = (Hours × Hourly Rate) + Annual Maintenance + Opportunity Cost
 ```
 
 For a senior engineer building auth:
+
 - **Hours**: 200 (4-6 weeks full-time)
 - **Hourly Rate**: $90
 - **Build Cost**: $18,000
 
 But that's not the full picture:
+
 - **Annual Maintenance**: 50 hours × $90 = $4,500/year
 - **Security Patches**: 20 hours × $90 = $1,800/year
 - **Opportunity Cost**: Features not shipped, market timing missed
 
 Over 3 years:
+
 - **Build**: $18,000
 - **Maintenance**: $18,900
 - **Total**: $36,900+
@@ -68,6 +71,7 @@ Building authentication from scratch feels straightforward. Login, logout, sessi
 ### The Hidden Scope
 
 The real requirements:
+
 - Password hashing with modern algorithms (bcrypt, Argon2)
 - Password reset flows with secure, expiring tokens
 - Email verification with rate limiting
@@ -90,6 +94,7 @@ Every year, your auth system needs maintenance just to stay secure. If you don't
 ### When to Build Auth
 
 Build auth if:
+
 - You ARE an auth company (Auth0, Clerk, etc.)
 - Your auth system is core differentiation (identity verification, specific compliance)
 - You need capabilities no vendor provides
@@ -111,6 +116,7 @@ Billing looks simple: charge customers monthly. Stripe already handles the payme
 ### The Hidden Scope
 
 Production billing systems need:
+
 - Subscription lifecycle management (create, upgrade, downgrade, cancel)
 - Proration for mid-cycle changes
 - Dunning (retry logic for failed payments)
@@ -127,6 +133,7 @@ This is 2-3 months of engineering time for a production-grade system.
 ### Revenue Leaks
 
 Every bug in your billing system is either:
+
 - Undercharging customers (revenue loss)
 - Overcharging customers (chargebacks, trust loss)
 - Failing to recover failed payments (churn)
@@ -136,11 +143,13 @@ Stripe has teams dedicated to maximizing payment recovery. Their dunning logic h
 ### When to Build Billing
 
 Build billing if:
+
 - Your pricing model is so unusual that Stripe Billing can't express it
 - You need deep integration with existing ledger systems
 - Stripe's 2.9% is material at your scale (you're processing $100M+/year)
 
 For everyone else, Stripe Billing handles:
+
 - Subscription lifecycle
 - Proration
 - Dunning
@@ -190,12 +199,14 @@ Engineering time spent on internal dashboards is time not spent on customer-faci
 ### The Pattern
 
 Every growing startup eventually needs:
+
 - Admin dashboard for customer support
 - Reporting dashboards for executives
 - Operations tools for ops team
 - Approval workflows for compliance
 
 Building these traditionally means:
+
 - Backend endpoints
 - Frontend UI
 - Authentication and permissions
@@ -212,6 +223,7 @@ A dashboard that takes a week to build custom takes hours in Retool.
 ### When to Build Custom
 
 Build custom internal tools if:
+
 - The tool is customer-facing (it's product, not internal)
 - Performance requirements exceed what low-code can deliver
 - You need UI customization that low-code can't express
@@ -239,11 +251,13 @@ Buying introduces risk: what if the vendor fails, raises prices, or deprecates f
 Even accounting for vendor risk, the math typically favors buying.
 
 If a vendor fails:
+
 - You have months of notice during their wind-down
 - You can migrate to a competitor (the abstraction layer helps)
 - The migration cost is comparable to having built it yourself
 
 If you build yourself:
+
 - You pay the full cost upfront
 - You carry the maintenance burden forever
 - You're not better positioned if you later need to migrate
@@ -259,6 +273,7 @@ Vendor risk is real but usually overweighted in build-vs-buy decisions.
 Building for hypothetical future requirements is premature optimization.
 
 If you might need custom auth later, buy auth now. Later, when "might" becomes "definitely," you'll have:
+
 - Real usage data to inform requirements
 - Revenue to fund the build
 - Actual constraints (not imagined ones) to design against
@@ -270,11 +285,13 @@ Building now costs months. Buying now costs weeks. Switching later costs weeks. 
 Open source shifts cost from dollars to hours.
 
 Self-hosting Keycloak instead of using Auth0:
+
 - No subscription fees
 - But: deployment, configuration, upgrades, patches, monitoring
 - Staff time at $90/hour adds up fast
 
 Open source makes sense when:
+
 - You have dedicated ops staff already
 - The component requires customization that SaaS doesn't support
 - You're large enough that subscription costs are material
@@ -328,4 +345,4 @@ Save your engineering capacity for the work that only you can do. That's what cu
 
 ---
 
-*This is part of a series on building production SaaS applications. Next up: [Why Boring Technology Wins: Lessons from Unicorn Migrations](/blog/boring-technology-wins).*
+_This is part of a series on building production SaaS applications. Next up: [Why Boring Technology Wins: Lessons from Unicorn Migrations](/blog/boring-technology-wins)._

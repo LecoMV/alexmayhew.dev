@@ -83,11 +83,11 @@ For applications where P99 latency must stay under 200ms consistently, serverles
 
 Here's the pattern I've observed across a dozen B2B products:
 
-| Phase | MAU | Infrastructure | Monthly Cost |
-|-------|-----|----------------|--------------|
-| 0-10k | 0-10,000 | Vercel Pro | $100-$500 |
-| 10k-50k | 10,000-50,000 | Vercel + Optimization | $500-$2,000 |
-| 50k-100k | 50,000-100,000 | AWS ECS/Fargate | $300-$800 + labor |
+| Phase    | MAU            | Infrastructure        | Monthly Cost      |
+| -------- | -------------- | --------------------- | ----------------- |
+| 0-10k    | 0-10,000       | Vercel Pro            | $100-$500         |
+| 10k-50k  | 10,000-50,000  | Vercel + Optimization | $500-$2,000       |
+| 50k-100k | 50,000-100,000 | AWS ECS/Fargate       | $300-$800 + labor |
 
 The counterintuitive insight: **AWS is often cheaper at scale, but more expensive at the start.** A minimal high-availability setup on AWS (NAT Gateway, ALB, monitoring) runs $150/month before you deploy any code. On Vercel, that's $0.
 
@@ -116,6 +116,7 @@ Migrate to AWS when any of these are true:
 5. **You need WebSockets at scale** — Serverless can't maintain persistent connections
 
 Don't migrate because:
+
 - "AWS is cheaper" (it's not, until it is)
 - "We might need it someday" (you won't, until you do)
 - "Real companies use AWS" (real companies ship products)
@@ -125,6 +126,7 @@ Don't migrate because:
 When you do migrate, here's what the path looks like:
 
 **Week 1-2: Infrastructure Setup**
+
 - VPC with public/private subnets across 2+ availability zones
 - NAT Gateway for outbound traffic from private subnets
 - Application Load Balancer with SSL termination
@@ -132,12 +134,14 @@ When you do migrate, here's what the path looks like:
 - ECR repository for Docker images
 
 **Week 3: Application Configuration**
+
 - Standalone Next.js Docker build
 - Environment variable management (AWS Secrets Manager or Parameter Store)
 - Health check endpoints for ALB target groups
 - Log aggregation to CloudWatch
 
 **Week 4: Cutover**
+
 - Deploy to ECS behind a staging domain
 - Load test to verify performance
 - DNS cutover with low TTL
@@ -168,6 +172,7 @@ MongoDB is fine for prototypes. But the moment you need ACID transactions across
 There are three models for multi-tenant databases:
 
 **Model 1: Database-per-Tenant**
+
 ```
 tenant_acme.database → tenant_acme's data
 tenant_globex.database → tenant_globex's data
@@ -176,6 +181,7 @@ tenant_globex.database → tenant_globex's data
 Maximum isolation. Impossible to scale. I've never seen this work past 50 tenants.
 
 **Model 2: Schema-per-Tenant**
+
 ```
 public.tenant_acme.users → tenant_acme's users
 public.tenant_globex.users → tenant_globex's users
@@ -188,6 +194,7 @@ Running a migration (adding a column) requires iterating every schema. At 500 te
 I watched a team spend four months building "migration sharding" to work around this. They should have used the right model from the start.
 
 **Model 3: Shared Schema with Row-Level Security**
+
 ```sql
 CREATE TABLE users (
   id UUID PRIMARY KEY,
@@ -214,15 +221,19 @@ The common objection to RLS: "Doesn't checking a policy on every row kill perfor
 The answer is nuanced.
 
 **Naive RLS is slow.** If you write:
+
 ```sql
 SELECT * FROM widgets;
 ```
+
 And rely entirely on RLS to filter, the query planner may choose a sequential scan. On a table with 10 million rows across 1,000 tenants, this is catastrophic.
 
 **Explicit filtering with RLS is fast.** If you write:
+
 ```sql
 SELECT * FROM widgets WHERE tenant_id = 'abc-123';
 ```
+
 The query planner uses your index on `tenant_id`, and RLS acts as a safety net—not the primary filter. Benchmarks show this approach performs within 5% of queries without RLS, while providing defense-in-depth against data leaks.
 
 The pattern: **Always include `tenant_id` in your WHERE clause.** Use RLS as the backstop, not the filter.
@@ -282,14 +293,14 @@ tRPC provides end-to-end type safety in a TypeScript monorepo. You define a proc
 ```typescript
 // server/routers/widgets.ts
 export const widgetRouter = router({
-  list: protectedProcedure
-    .input(z.object({ limit: z.number().default(10) }))
-    .query(async ({ ctx, input }) => {
-      return ctx.db.widget.findMany({
-        where: { tenantId: ctx.tenant.id },
-        take: input.limit,
-      });
-    }),
+	list: protectedProcedure
+		.input(z.object({ limit: z.number().default(10) }))
+		.query(async ({ ctx, input }) => {
+			return ctx.db.widget.findMany({
+				where: { tenantId: ctx.tenant.id },
+				take: input.limit,
+			});
+		}),
 });
 ```
 
@@ -314,12 +325,12 @@ The hybrid approach: tRPC powers your dashboard (80% of traffic), REST handles i
 
 Your choice of data-fetching library affects Time to Interactive:
 
-| Library | Size (min+gzip) | Use Case |
-|---------|-----------------|----------|
-| SWR | ~5.5 kB | Simple REST fetching |
-| tRPC Client | ~5-11 kB | Type-safe internal APIs |
-| TanStack Query | ~13 kB | Complex caching/mutations |
-| Apollo Client | ~20-40 kB | GraphQL with normalization |
+| Library        | Size (min+gzip) | Use Case                   |
+| -------------- | --------------- | -------------------------- |
+| SWR            | ~5.5 kB         | Simple REST fetching       |
+| tRPC Client    | ~5-11 kB        | Type-safe internal APIs    |
+| TanStack Query | ~13 kB          | Complex caching/mutations  |
+| Apollo Client  | ~20-40 kB       | GraphQL with normalization |
 
 For B2B dashboards where users are on corporate networks, these differences matter less than in consumer apps. But if your bundle is already 500kB, adding Apollo's 40kB is a 8% increase. That adds up.
 
@@ -344,20 +355,20 @@ The pattern that works:
 ```tsx
 // Parallel data fetching with Suspense
 async function Dashboard() {
-  // These fetch in parallel, not sequentially
-  const [metrics, activity, alerts] = await Promise.all([
-    getMetrics(),
-    getRecentActivity(),
-    getActiveAlerts(),
-  ]);
+	// These fetch in parallel, not sequentially
+	const [metrics, activity, alerts] = await Promise.all([
+		getMetrics(),
+		getRecentActivity(),
+		getActiveAlerts(),
+	]);
 
-  return (
-    <div>
-      <MetricsPanel data={metrics} />
-      <ActivityFeed data={activity} />
-      <AlertsBanner data={alerts} />
-    </div>
-  );
+	return (
+		<div>
+			<MetricsPanel data={metrics} />
+			<ActivityFeed data={activity} />
+			<AlertsBanner data={alerts} />
+		</div>
+	);
 }
 ```
 
@@ -371,11 +382,11 @@ In Next.js 15+, nothing is cached unless you explicitly enable it:
 
 ```typescript
 // This fetches fresh data on every request
-const data = await fetch('/api/widgets');
+const data = await fetch("/api/widgets");
 
 // This caches for 60 seconds
-const data = await fetch('/api/widgets', {
-  next: { revalidate: 60 }
+const data = await fetch("/api/widgets", {
+	next: { revalidate: 60 },
 });
 ```
 
@@ -403,7 +414,7 @@ The fix is Next.js standalone output:
 ```javascript
 // next.config.js
 module.exports = {
-  output: 'standalone',
+	output: "standalone",
 };
 ```
 
@@ -557,4 +568,4 @@ If you want to go deeper on specific topics covered here:
 
 ---
 
-*Have questions about implementing this architecture? I work with 3-4 clients per year on projects like this. [Get in touch](/contact).*
+_Have questions about implementing this architecture? I work with 3-4 clients per year on projects like this. [Get in touch](/contact)._
