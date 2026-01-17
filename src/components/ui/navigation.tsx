@@ -31,17 +31,17 @@ export function Navigation() {
 	return (
 		<header className="fixed top-0 right-0 left-0 z-40">
 			<nav className="max-w-fd-container mx-auto px-6 py-4 sm:px-12 md:px-24">
-				<div className="bg-gunmetal-glass/20 flex items-center justify-between border border-white/10 px-6 py-4 backdrop-blur-md">
+				<div className="bg-gunmetal-glass/20 flex items-center justify-between gap-4 border border-white/10 px-6 py-4 backdrop-blur-md">
 					{/* Logo / Brand */}
-					<Link href="/" className="group flex items-center gap-3">
+					<Link href="/" className="group flex shrink-0 items-center gap-3">
 						<Image
 							src="/favicon.svg"
 							alt="Alex Mayhew"
-							width={80}
-							height={80}
-							className="h-20 w-20"
+							width={48}
+							height={48}
+							className="h-12 w-12"
 						/>
-						<span className="hidden font-mono text-xl tracking-tight sm:inline">
+						<span className="hidden font-mono text-lg tracking-tight lg:inline">
 							<span className="text-cyber-lime">alex</span>
 							<span className="text-mist-white">mayhew</span>
 							<span className="text-slate-text">.dev</span>
@@ -49,7 +49,7 @@ export function Navigation() {
 					</Link>
 
 					{/* Desktop Navigation */}
-					<div className="hidden items-center gap-2 md:flex">
+					<div className="hidden items-center gap-1 md:flex lg:gap-2">
 						{navItems.map((item) => {
 							const isActive = pathname === item.href;
 							return (
@@ -57,7 +57,7 @@ export function Navigation() {
 									key={item.href}
 									href={item.href}
 									className={cn(
-										"group relative px-5 py-3 font-mono text-sm tracking-wider uppercase transition-colors duration-300",
+										"group relative px-3 py-2 font-mono text-xs tracking-wider uppercase transition-colors duration-300 lg:px-4 lg:py-3 lg:text-sm",
 										isActive ? "text-cyber-lime" : "text-slate-text hover:text-mist-white"
 									)}
 								>
@@ -66,11 +66,7 @@ export function Navigation() {
 									</span>
 									{item.label}
 									{isActive && (
-										<m.div
-											layoutId="nav-indicator"
-											className="bg-cyber-lime absolute right-2 bottom-1 left-2 h-px"
-											transition={springTransition}
-										/>
+										<div className="bg-cyber-lime absolute right-2 bottom-1 left-2 h-px" />
 									)}
 									{!isActive && (
 										<div className="bg-cyber-lime absolute right-2 bottom-1 left-2 h-px origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
@@ -81,12 +77,12 @@ export function Navigation() {
 					</div>
 
 					{/* CTA Button - Desktop */}
-					<div className="hidden md:block">
+					<div className="hidden shrink-0 md:block">
 						<Link
 							href="/contact"
-							className="group hover:border-cyber-lime relative border border-white/20 px-6 py-3 transition-colors duration-300"
+							className="group hover:border-cyber-lime relative border border-white/20 px-4 py-2 transition-colors duration-300 lg:px-6 lg:py-3"
 						>
-							<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">
+							<span className="group-hover:text-cyber-lime font-mono text-xs tracking-tight transition-colors lg:text-sm">
 								START_PROJECT()
 							</span>
 							<div className="bg-cyber-lime/5 absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
