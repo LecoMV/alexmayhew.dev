@@ -34,7 +34,7 @@ export function Navigation() {
 				<div className="bg-gunmetal-glass/20 flex items-center justify-between gap-4 border border-white/10 px-6 py-4 backdrop-blur-md">
 					{/* Logo / Brand */}
 					<Link href="/" className="group flex shrink-0 items-center gap-3">
-						<AMLogo size={48} className="rounded-sm" />
+						<AMLogo size={64} className="rounded-sm" />
 						<span className="hidden font-mono text-lg tracking-tight lg:inline">
 							<span className="text-cyber-lime">alex</span>
 							<span className="text-mist-white">mayhew</span>
