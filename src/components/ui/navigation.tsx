@@ -76,19 +76,6 @@ export function Navigation() {
 						})}
 					</div>
 
-					{/* CTA Button - Desktop */}
-					<div className="hidden shrink-0 md:block">
-						<Link
-							href="/contact"
-							className="group hover:border-cyber-lime relative border border-white/20 px-4 py-2 transition-colors duration-300 lg:px-6 lg:py-3"
-						>
-							<span className="group-hover:text-cyber-lime font-mono text-xs tracking-tight transition-colors lg:text-sm">
-								START_PROJECT()
-							</span>
-							<div className="bg-cyber-lime/5 absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-						</Link>
-					</div>
-
 					{/* Mobile Menu Button */}
 					<button
 						onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -142,20 +129,6 @@ export function Navigation() {
 										</m.div>
 									);
 								})}
-								<m.div
-									initial={{ opacity: 0, y: 10 }}
-									animate={{ opacity: 1, y: 0 }}
-									transition={{ ...springTransition, delay: 0.4 }}
-									className="mt-4"
-								>
-									<Link
-										href="/contact"
-										onClick={() => setMobileMenuOpen(false)}
-										className="hover:border-cyber-lime block border border-white/20 py-3 text-center font-mono text-sm tracking-tight transition-colors duration-300"
-									>
-										<span className="hover:text-cyber-lime">START_PROJECT()</span>
-									</Link>
-								</m.div>
 							</div>
 						</m.div>
 					)}
