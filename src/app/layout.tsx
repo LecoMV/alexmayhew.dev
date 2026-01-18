@@ -120,10 +120,10 @@ export default function RootLayout({
 					<NoiseOverlay />
 					<SmoothScroll>
 						<Navigation />
-						<div className="relative z-10 flex min-h-screen flex-col">
+						<main id="main-content" className="relative z-10 flex min-h-screen flex-col">
 							{children}
 							<Footer />
-						</div>
+						</main>
 					</SmoothScroll>
 					<ChatWidget />
 					<CookieConsent />

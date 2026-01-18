@@ -30,6 +30,13 @@ export function Navigation() {
 
 	return (
 		<header className="fixed top-0 right-0 left-0 z-40">
+			{/* Skip to content link - visible on focus for keyboard users */}
+			<a
+				href="#main-content"
+				className="bg-cyber-lime text-void-navy absolute left-4 z-50 -translate-y-full px-4 py-2 font-mono text-sm transition-transform focus:translate-y-4"
+			>
+				Skip to content
+			</a>
 			<nav className="max-w-fd-container mx-auto px-6 py-4 sm:px-12 md:px-24">
 				<div className="bg-gunmetal-glass/20 flex items-center justify-between gap-4 border border-white/10 px-6 py-4 backdrop-blur-md">
 					{/* Logo / Brand */}

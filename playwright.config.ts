@@ -8,7 +8,7 @@ export default defineConfig({
 	workers: process.env.CI ? 1 : undefined,
 	reporter: [["html", { open: "never" }], ["list"]],
 	use: {
-		baseURL: "http://localhost:3000",
+		baseURL: "http://localhost:3001",
 		trace: "on-first-retry",
 		screenshot: "only-on-failure",
 	},
@@ -35,10 +35,13 @@ export default defineConfig({
 		},
 	],
 	webServer: {
-		// Use 'next start' in CI (serves built app), 'npm run dev' locally
-		command: process.env.CI ? "npm run start" : "npm run dev",
-		url: "http://localhost:3000",
-		reuseExistingServer: !process.env.CI,
+		// Use 'next start' in CI (serves built app), 'next dev' without OpenNext locally
+		// PLAYWRIGHT=1 disables OpenNext Cloudflare integration to avoid wrangler auth
+		command: process.env.CI
+			? "npm run start -- --port 3001"
+			: "PLAYWRIGHT=1 npx next dev --turbopack --port 3001",
+		url: "http://localhost:3001",
+		reuseExistingServer: true, // Always reuse if server is already running
 		timeout: 120000,
 	},
 });

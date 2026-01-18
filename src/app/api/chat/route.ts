@@ -1,4 +1,12 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
+
+// Rate limit: 10 messages per minute per IP (generous for legitimate users)
+const RATE_LIMIT_CONFIG = { limit: 10, windowSeconds: 60 };
+
+// Max message length to prevent abuse
+const MAX_MESSAGE_LENGTH = 1000;
+const MAX_MESSAGES_PER_REQUEST = 10;
 
 // System prompt with portfolio context
 const SYSTEM_PROMPT = `You are Alex Mayhew's portfolio AI assistant. Help visitors learn about Alex's work, skills, and services. Be friendly, professional, and concise.
@@ -57,11 +65,50 @@ interface ChatRequest {
 
 export async function POST(request: Request) {
 	try {
+		// Rate limiting - check before any expensive operations
+		const clientIP = getClientIP(request.headers);
+		const rateLimit = checkRateLimit(`chat:${clientIP}`, RATE_LIMIT_CONFIG);
+
+		if (!rateLimit.success) {
+			return Response.json(
+				{
+					error: "Too many requests. Please wait before sending more messages.",
+					retryAfter: rateLimit.resetIn,
+				},
+				{
+					status: 429,
+					headers: {
+						"Retry-After": String(rateLimit.resetIn),
+						"X-RateLimit-Remaining": "0",
+						"X-RateLimit-Reset": String(rateLimit.resetIn),
+					},
+				}
+			);
+		}
+
 		const body = (await request.json()) as ChatRequest;
 		const { messages } = body;
 
 		if (!messages || !Array.isArray(messages)) {
 			return Response.json({ error: "Messages array required" }, { status: 400 });
+		}
+
+		// Validate message count
+		if (messages.length > MAX_MESSAGES_PER_REQUEST) {
+			return Response.json(
+				{ error: `Too many messages. Maximum ${MAX_MESSAGES_PER_REQUEST} allowed.` },
+				{ status: 400 }
+			);
+		}
+
+		// Validate message lengths
+		for (const msg of messages) {
+			if (msg.content && msg.content.length > MAX_MESSAGE_LENGTH) {
+				return Response.json(
+					{ error: `Message too long. Maximum ${MAX_MESSAGE_LENGTH} characters.` },
+					{ status: 400 }
+				);
+			}
 		}
 
 		// Get Cloudflare context for Workers AI

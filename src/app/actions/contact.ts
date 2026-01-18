@@ -6,7 +6,14 @@ import { ContactNotification } from "@/components/emails/contact-notification";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy initialization to avoid errors during E2E tests and builds
+let resendClient: Resend | null = null;
+function getResendClient(): Resend {
+	if (!resendClient) {
+		resendClient = new Resend(process.env.RESEND_API_KEY);
+	}
+	return resendClient;
+}
 
 export interface ContactFormData {
 	name: string;
@@ -90,7 +97,7 @@ export async function submitContactForm(formData: ContactFormData): Promise<Cont
 	});
 
 	try {
-		const { error } = await resend.emails.send({
+		const { error } = await getResendClient().emails.send({
 			from: "alexmayhew.dev <noreply@alexmayhew.dev>",
 			to: process.env.CONTACT_EMAIL || "alex@alexmayhew.dev",
 			replyTo: email,
