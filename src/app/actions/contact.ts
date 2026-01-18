@@ -5,87 +5,94 @@ import { Resend } from "resend";
 import { ContactNotification } from "@/components/emails/contact-notification";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
+import { contactFormSchema, type ContactFormValues } from "@/lib/schemas/contact";
 
-// Lazy initialization to avoid errors during E2E tests and builds
-let resendClient: Resend | null = null;
-function getResendClient(): Resend {
-	if (!resendClient) {
-		resendClient = new Resend(process.env.RESEND_API_KEY);
+// Dependency Injection container for testing
+let dependencies = {
+	resend: null as Resend | null,
+	verifyTurnstile: verifyTurnstileToken,
+	rateLimit: checkRateLimit,
+	getIP: getClientIP,
+};
+
+// Lazy init for resend to avoid errors during E2E tests
+function getResend(): Resend {
+	if (!dependencies.resend) {
+		dependencies.resend = new Resend(process.env.RESEND_API_KEY);
 	}
-	return resendClient;
+	return dependencies.resend;
 }
 
-export interface ContactFormData {
-	name: string;
-	email: string;
-	projectType: string;
-	budget: string;
-	message: string;
-	turnstileToken?: string;
-}
+// Internal method to swap dependencies during tests
+// Note: Must be async to satisfy Next.js Server Actions requirement
+export const __setDependencies = async (
+	deps: Partial<{
+		resend: Resend;
+		verifyTurnstile: typeof verifyTurnstileToken;
+		rateLimit: typeof checkRateLimit;
+		getIP: typeof getClientIP;
+	}>
+) => {
+	dependencies = { ...dependencies, ...deps };
+};
+
+// Reset dependencies (for testing cleanup)
+// Note: Must be async to satisfy Next.js Server Actions requirement
+export const __resetDependencies = async () => {
+	dependencies = {
+		resend: null,
+		verifyTurnstile: verifyTurnstileToken,
+		rateLimit: checkRateLimit,
+		getIP: getClientIP,
+	};
+};
 
 export interface ContactFormResult {
 	success: boolean;
 	error?: string;
+	fieldErrors?: Record<string, string[]>;
 }
 
-export async function submitContactForm(formData: ContactFormData): Promise<ContactFormResult> {
-	const { name, email, projectType, budget, message, turnstileToken } = formData;
+export async function submitContactForm(data: ContactFormValues): Promise<ContactFormResult> {
+	// 1. Zod Validation
+	const validation = contactFormSchema.safeParse(data);
+	if (!validation.success) {
+		return {
+			success: false,
+			error: "Validation failed",
+			fieldErrors: validation.error.flatten().fieldErrors as Record<string, string[]>,
+		};
+	}
 
-	// Get client IP for rate limiting
+	const { name, email, projectType, budget, message, turnstileToken } = validation.data;
+
+	// 2. Rate Limiting
 	const headersList = await headers();
-	const clientIP = getClientIP(headersList);
-
-	// Rate limiting: 5 submissions per hour per IP
-	const rateLimitResult = checkRateLimit(`contact:${clientIP}`, {
+	const clientIP = dependencies.getIP(headersList);
+	const limitResult = dependencies.rateLimit(`contact:${clientIP}`, {
 		limit: 5,
 		windowSeconds: 3600,
 	});
 
-	if (!rateLimitResult.success) {
+	if (!limitResult.success) {
 		return {
 			success: false,
-			error: `Too many submissions. Please try again in ${Math.ceil(rateLimitResult.resetIn / 60)} minutes.`,
+			error: `Too many submissions. Try again in ${Math.ceil(limitResult.resetIn / 60)} minutes.`,
 		};
 	}
 
-	// Verify Turnstile token
-	if (turnstileToken) {
-		const isValidToken = await verifyTurnstileToken(turnstileToken);
-		if (!isValidToken) {
-			return {
-				success: false,
-				error: "Security verification failed. Please try again.",
-			};
+	// 3. Security (Turnstile)
+	if (process.env.NODE_ENV === "production" || turnstileToken) {
+		if (!turnstileToken) {
+			return { success: false, error: "Security check required." };
 		}
-	} else if (process.env.NODE_ENV === "production") {
-		// In production, require Turnstile token
-		return {
-			success: false,
-			error: "Security verification required.",
-		};
+		const isValid = await dependencies.verifyTurnstile(turnstileToken);
+		if (!isValid) {
+			return { success: false, error: "Security check failed." };
+		}
 	}
 
-	// Validate required fields
-	if (!name || !email || !projectType || !budget || !message) {
-		return {
-			success: false,
-			error: "All fields are required",
-		};
-	}
-
-	// Basic email validation
-	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-	if (!emailRegex.test(email)) {
-		return {
-			success: false,
-			error: "Invalid email address",
-		};
-	}
-
-	// Honeypot check - if this field exists, it's a bot
-	// (Add a hidden field in form if needed)
-
+	// 4. Send Email
 	const timestamp = new Date().toLocaleString("en-US", {
 		weekday: "short",
 		year: "numeric",
@@ -97,7 +104,8 @@ export async function submitContactForm(formData: ContactFormData): Promise<Cont
 	});
 
 	try {
-		const { error } = await getResendClient().emails.send({
+		const resend = getResend();
+		const { error } = await resend.emails.send({
 			from: "alexmayhew.dev <noreply@alexmayhew.dev>",
 			to: process.env.CONTACT_EMAIL || "alex@alexmayhew.dev",
 			replyTo: email,
@@ -114,19 +122,13 @@ export async function submitContactForm(formData: ContactFormData): Promise<Cont
 
 		if (error) {
 			console.error("Resend error:", error);
-			return {
-				success: false,
-				error: "Failed to send message. Please try again.",
-			};
+			return { success: false, error: "Failed to send message." };
 		}
 
 		return { success: true };
 	} catch (err) {
 		console.error("Contact form error:", err);
-		return {
-			success: false,
-			error: "An unexpected error occurred. Please try again.",
-		};
+		return { success: false, error: "An unexpected error occurred." };
 	}
 }
 
