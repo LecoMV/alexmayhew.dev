@@ -87,8 +87,9 @@ describe("contactFormSchema", () => {
 			expect(result.success).toBe(false);
 			if (!result.success) {
 				// Zod enum validation returns either custom message or "Invalid option"
+				// We expect our custom message from the errorMap
 				const message = result.error.issues[0].message;
-				expect(message.toLowerCase()).toMatch(/invalid|valid|expected/i);
+				expect(message).toBe("Please select a valid project type");
 			}
 		});
 	});
@@ -111,8 +112,9 @@ describe("contactFormSchema", () => {
 			expect(result.success).toBe(false);
 			if (!result.success) {
 				// Zod enum validation returns either custom message or "Invalid option"
+				// We expect our custom message from the errorMap
 				const message = result.error.issues[0].message;
-				expect(message.toLowerCase()).toMatch(/invalid|valid|expected/i);
+				expect(message).toBe("Please select a valid budget range");
 			}
 		});
 	});

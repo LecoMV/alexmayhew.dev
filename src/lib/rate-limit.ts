@@ -11,14 +11,16 @@ interface RateLimitEntry {
 const rateLimitMap = new Map<string, RateLimitEntry>();
 
 // Clean up old entries periodically
-setInterval(() => {
+export function cleanupRateLimits() {
 	const now = Date.now();
 	for (const [key, entry] of rateLimitMap.entries()) {
 		if (now > entry.resetTime) {
 			rateLimitMap.delete(key);
 		}
 	}
-}, 60000); // Clean every minute
+}
+
+setInterval(cleanupRateLimits, 60000); // Clean every minute
 
 export interface RateLimitConfig {
 	/** Maximum requests allowed in the window */

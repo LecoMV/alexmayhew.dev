@@ -17,6 +17,17 @@ const validData = {
 };
 
 describe("submitContactForm", () => {
+	// We mock the module to intercept the constructor for coverage of the lazy init
+	vi.mock("resend", () => {
+		return {
+			Resend: vi.fn(function () {
+				return {
+					emails: { send: vi.fn().mockResolvedValue({ error: null }) },
+				};
+			}),
+		};
+	});
+
 	const mockResend = { emails: { send: vi.fn() } };
 	const mockVerify = vi.fn();
 	const mockRateLimit = vi.fn();
@@ -140,8 +151,7 @@ describe("submitContactForm", () => {
 		});
 
 		it("should require token in production", async () => {
-			const originalEnv = process.env.NODE_ENV;
-			process.env.NODE_ENV = "production";
+			vi.stubEnv("NODE_ENV", "production");
 
 			const result = await submitContactForm({
 				...validData,
@@ -150,12 +160,11 @@ describe("submitContactForm", () => {
 			expect(result.success).toBe(false);
 			expect(result.error).toContain("Security check required");
 
-			process.env.NODE_ENV = originalEnv;
+			vi.unstubAllEnvs();
 		});
 
 		it("should skip verification when no token in development", async () => {
-			const originalEnv = process.env.NODE_ENV;
-			process.env.NODE_ENV = "development";
+			vi.stubEnv("NODE_ENV", "development");
 
 			const result = await submitContactForm({
 				...validData,
@@ -164,7 +173,7 @@ describe("submitContactForm", () => {
 			expect(result.success).toBe(true);
 			expect(mockVerify).not.toHaveBeenCalled();
 
-			process.env.NODE_ENV = originalEnv;
+			vi.unstubAllEnvs();
 		});
 	});
 
@@ -181,6 +190,37 @@ describe("submitContactForm", () => {
 			);
 		});
 
+		const projectTypes = ["web-app", "saas", "ecommerce", "consulting", "other"] as const;
+		projectTypes.forEach((type) => {
+			it(`should format subject correctly for project type: ${type}`, async () => {
+				await submitContactForm({ ...validData, projectType: type });
+
+				// Verify the subject formatting logic in the action
+				let expectedLabel: string = type;
+				if (type === "web-app") expectedLabel = "Web Application";
+				if (type === "saas") expectedLabel = "SaaS Platform";
+				if (type === "ecommerce") expectedLabel = "E-Commerce";
+				if (type === "consulting") expectedLabel = "Technical Consulting";
+				if (type === "other") expectedLabel = "Other";
+
+				expect(mockResend.emails.send).toHaveBeenCalledWith(
+					expect.objectContaining({
+						subject: expect.stringContaining(expectedLabel),
+					})
+				);
+			});
+		});
+
+		const budgets = ["5k-10k", "10k-25k", "25k-50k", "50k+"] as const;
+		budgets.forEach((budget) => {
+			it(`should accept budget: ${budget}`, async () => {
+				const result = await submitContactForm({ ...validData, budget });
+				expect(result.success).toBe(true);
+				// Implicitly covers the formatBudget helper in the email component
+				// since the component is rendered (executed) by the action.
+			});
+		});
+
 		it("should handle Resend API errors", async () => {
 			mockResend.emails.send.mockResolvedValue({
 				error: { message: "API Error" },
@@ -195,6 +235,21 @@ describe("submitContactForm", () => {
 			const result = await submitContactForm(validData);
 			expect(result.success).toBe(false);
 			expect(result.error).toContain("unexpected error");
+		});
+
+		it("should use default Resend instance if dependency not injected", async () => {
+			// Clear dependencies to force lazy init path (line 21 coverage)
+			await __resetDependencies();
+
+			// We rely on the module mock above to handle the 'new Resend()' call
+			// so it doesn't actually try to make a network request
+			// and we verify that the instance created by the mock works (returns success)
+
+			const result = await submitContactForm({
+				...validData,
+				turnstileToken: undefined,
+			});
+			expect(result.success).toBe(true);
 		});
 	});
 });
