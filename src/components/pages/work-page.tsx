@@ -4,6 +4,7 @@ import { useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { ExternalLink, Github, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { projects, categories, type Category } from "@/data/projects";
 
 const springTransition = {
 	type: "spring" as const,
@@ -11,99 +12,6 @@ const springTransition = {
 	damping: 20,
 	mass: 1,
 };
-
-const categories = ["All", "AI/ML", "SaaS", "Web Apps"] as const;
-type Category = (typeof categories)[number];
-
-interface Project {
-	id: string;
-	title: string;
-	description: string;
-	category: Exclude<Category, "All">;
-	tech: string[];
-	year: string;
-	link?: string;
-	github?: string;
-	featured?: boolean;
-}
-
-const projects: Project[] = [
-	{
-		id: "photokeep-pro",
-		title: "PhotoKeep Pro",
-		description:
-			"Enterprise AI photo restoration platform orchestrating 14+ deep learning models (SUPIR, HAT, CodeFormer, GFPGAN, DDColor) on 49GB VRAM. Built thread-safe GPU memory management with lazy loading and LRU eviction, achieving 99.95% uptime and 28.5dB PSNR quality—beating Magnific AI and Topaz.",
-		category: "AI/ML",
-		tech: ["Python", "FastAPI", "PyTorch", "React", "TypeScript", "Celery", "Redis", "Stripe"],
-		year: "2024",
-		featured: true,
-	},
-	{
-		id: "penqwen",
-		title: "PenQWEN",
-		description:
-			"Custom cybersecurity LLM built on Qwen2.5 with domain-specific LoRA fine-tuning. Two-stage training: domain adaptation on cybersecurity corpus, then agentic fine-tuning for tool calling and OPSEC workflows. 3.6GB LoRA adapters trained on 12GB curated security data.",
-		category: "AI/ML",
-		tech: ["Python", "PyTorch", "LoRA", "Qwen2.5", "Transformers", "PEFT", "Cybersecurity"],
-		year: "2024",
-		featured: true,
-	},
-	{
-		id: "audiokeep",
-		title: "AudioKeep",
-		description:
-			"Professional AI audio restoration platform for archival preservation and forensics. Orchestrates Resemble Enhance, AudioSR, DeepFilterNet, and Demucs v4 for noise reduction, spectral repair, audio super-resolution (up to 192kHz), and source separation. Credit-based SaaS with forensic analysis tools.",
-		category: "AI/ML",
-		tech: ["Python", "FastAPI", "PyTorch", "React", "TypeScript", "Celery", "Redis", "Stripe"],
-		year: "2024",
-		github: "https://github.com/LecoMV/audiokeep",
-	},
-	{
-		id: "donedays",
-		title: "DoneDays",
-		description:
-			"AI-powered productivity platform with autonomous task orchestration. Multi-agent system with intelligent scheduling and adaptive workflows.",
-		category: "AI/ML",
-		tech: ["TypeScript", "Next.js", "LLM Agents", "PostgreSQL"],
-		year: "2024",
-	},
-	{
-		id: "marksman-pro",
-		title: "MarksmanPro",
-		description:
-			"Precision ballistics calculator for long-range shooting. Physics simulation engine accounting for atmospheric conditions, Coriolis effect, spin drift, and projectile aerodynamics. Real-time trajectory visualization.",
-		category: "Web Apps",
-		tech: ["TypeScript", "React", "WebGL", "Physics Engine", "PWA"],
-		year: "2024",
-	},
-	{
-		id: "webscraper-pro",
-		title: "WebScraperPro",
-		description:
-			"Enterprise-grade web scraping platform with intelligent rate limiting, proxy rotation, and anti-detection measures. Headless browser automation with structured data extraction pipelines.",
-		category: "SaaS",
-		tech: ["Python", "Playwright", "FastAPI", "PostgreSQL", "Redis", "Docker"],
-		year: "2024",
-	},
-	{
-		id: "sovereign-cbam",
-		title: "Sovereign CBAM",
-		description:
-			"Carbon Border Adjustment compliance platform for EU importers. Local-first architecture with offline-capable data processing. (In Development)",
-		category: "SaaS",
-		tech: ["Next.js", "PostgreSQL", "Edge Functions", "AI/ML"],
-		year: "2025",
-	},
-	{
-		id: "inkos",
-		title: "InkOS",
-		description:
-			"Tattoo studio management system with real-time collaboration, appointment scheduling, and digital consent workflows. (In Development)",
-		category: "SaaS",
-		tech: ["React", "Supabase", "WebGL", "Procreate Integration"],
-		year: "2025",
-	},
-];
 
 export function WorkPage() {
 	const [activeCategory, setActiveCategory] = useState<Category>("All");

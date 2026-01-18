@@ -1,6 +1,9 @@
 // Terminal Command Registry
 // Each command returns a string or JSX output
 
+import { getProjectsRecord } from "@/data/projects";
+import { skills, blogPosts } from "@/data/skills";
+
 export interface CommandResult {
 	output: string | React.ReactNode;
 	isError?: boolean;
@@ -16,43 +19,8 @@ export interface CommandContext {
 
 export type CommandHandler = (args: string[], ctx: CommandContext) => CommandResult;
 
-// Portfolio data for commands
-const projects = {
-	"photokeep-ai": {
-		name: "PhotoKeep AI",
-		description: "AI-powered photo organization and memory preservation platform",
-		tech: ["Next.js", "Python", "TensorFlow", "PostgreSQL", "AWS"],
-		status: "Production",
-		url: "https://photokeep.ai",
-	},
-	"tradecraft-pro": {
-		name: "TradeCraft Pro",
-		description: "Real-time cryptocurrency trading analytics dashboard",
-		tech: ["React", "Node.js", "WebSocket", "Redis", "TradingView"],
-		status: "Production",
-		url: "https://tradecraft.pro",
-	},
-	"sovereign-cbam": {
-		name: "Sovereign CBAM",
-		description: "EU Carbon Border Adjustment compliance platform for importers",
-		tech: ["Next.js", "Hono", "PostgreSQL", "Cloudflare Workers"],
-		status: "Development",
-		url: null,
-	},
-};
-
-const skills = {
-	frontend: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
-	backend: ["Node.js", "Python", "Go", "PostgreSQL", "Redis"],
-	infrastructure: ["AWS", "Cloudflare", "Docker", "Kubernetes", "Terraform"],
-	data: ["PostgreSQL", "MongoDB", "GraphQL", "Prisma", "Drizzle"],
-};
-
-const blogPosts = [
-	{ slug: "saas-authentication-patterns", title: "SaaS Authentication Patterns for 2025" },
-	{ slug: "cloudflare-workers-edge", title: "Building at the Edge with Cloudflare Workers" },
-	{ slug: "typescript-strict-mode", title: "Why TypeScript Strict Mode is Non-Negotiable" },
-];
+// Get projects from unified data layer
+const projects = getProjectsRecord();
 
 // Command Implementations
 const commands: Record<string, CommandHandler> = {

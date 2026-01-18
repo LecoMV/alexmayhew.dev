@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Github, Linkedin, Mail } from "lucide-react";
+import { LocalTime } from "./local-time";
 
 // Custom X (formerly Twitter) icon since Lucide deprecated brand icons
 function XIcon({ className }: { className?: string }) {
@@ -119,10 +120,20 @@ export function Footer() {
 
 				{/* Bottom Bar */}
 				<div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 md:flex-row">
-					<p className="text-slate-text font-mono text-xs">
-						<span className="opacity-50">©</span> {currentYear} Alex Mayhew.{" "}
-						<span className="opacity-50">All systems operational.</span>
-					</p>
+					<div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+						<p className="text-slate-text font-mono text-xs">
+							<span className="opacity-50">©</span> {currentYear} Alex Mayhew
+						</p>
+						<span className="text-slate-text flex items-center gap-2 font-mono text-xs">
+							<span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-500" />
+							<span className="opacity-50">Systems operational</span>
+						</span>
+						<LocalTime />
+						<span className="text-slate-text font-mono text-xs opacity-30">
+							v{process.env.NEXT_PUBLIC_SITE_VERSION}
+							<span className="ml-1">({process.env.NEXT_PUBLIC_GIT_SHA})</span>
+						</span>
+					</div>
 					<div className="flex items-center gap-4">
 						<Link
 							href="/privacy"
@@ -136,9 +147,6 @@ export function Footer() {
 						>
 							Terms
 						</Link>
-						<span className="text-slate-text font-mono text-xs opacity-50">
-							Built with precision.
-						</span>
 					</div>
 				</div>
 			</div>

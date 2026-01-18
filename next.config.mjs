@@ -1,11 +1,31 @@
 import { createMDX } from "fumadocs-mdx/next";
 import { fileURLToPath } from "url";
+import { execSync } from "child_process";
 
 const __filename = fileURLToPath(import.meta.url);
+
+// Get git SHA for version display
+function getGitSha() {
+	try {
+		// Use Cloudflare Pages env if available, otherwise get from git
+		return (
+			process.env.CF_PAGES_COMMIT_SHA ||
+			execSync("git rev-parse --short HEAD", { encoding: "utf-8" }).trim()
+		);
+	} catch {
+		return "unknown";
+	}
+}
 
 /** @type {import('next').NextConfig} */
 const config = {
 	reactStrictMode: true,
+
+	// Environment variables for footer
+	env: {
+		NEXT_PUBLIC_SITE_VERSION: process.env.npm_package_version || "0.1.0",
+		NEXT_PUBLIC_GIT_SHA: getGitSha(),
+	},
 
 	// Performance optimizations
 	experimental: {
