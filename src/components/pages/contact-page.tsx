@@ -4,7 +4,8 @@ import { useState, useRef } from "react";
 import { m } from "framer-motion";
 import { Send, Mail, MapPin, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { submitContactForm, type ContactFormData } from "@/app/actions/contact";
+import { submitContactForm } from "@/app/actions/contact";
+import { type ContactFormValues } from "@/lib/schemas/contact";
 import { Turnstile, type TurnstileRef } from "@/components/ui/turnstile";
 
 const springTransition = {
@@ -64,7 +65,7 @@ export function ContactPage() {
 		const result = await submitContactForm({
 			...formData,
 			turnstileToken,
-		} as ContactFormData);
+		} as ContactFormValues);
 
 		if (result.success) {
 			setFormStatus("success");
