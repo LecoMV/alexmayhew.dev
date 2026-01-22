@@ -1,7 +1,7 @@
 // Unified project data - single source of truth
 // Used by: /work page, terminal commands, future features
 
-export const categories = ["All", "AI/ML", "SaaS", "Web Apps"] as const;
+export const categories = ["All", "AI/ML", "SaaS", "Web Apps", "Developer Tools"] as const;
 export type Category = (typeof categories)[number];
 export type ProjectCategory = Exclude<Category, "All">;
 
@@ -19,6 +19,31 @@ export interface Project {
 }
 
 export const projects: Project[] = [
+	{
+		id: "traceforge",
+		title: "TraceForge",
+		description:
+			"GPU-accelerated raster-to-vector converter transforming PNG, JPG, and WebP images into clean, optimized SVGs. Neural upscaling with Potrace and VTracer engines, 10+ quality presets, SVGO optimization pipeline. Free to use, no signup required.",
+		category: "Developer Tools",
+		tech: ["Python", "FastAPI", "Potrace", "VTracer", "CUDA", "SVGO", "React", "TypeScript"],
+		year: "2025",
+		status: "Production",
+		link: "/tools/traceforge",
+		featured: true,
+	},
+	{
+		id: "claude-pilot",
+		title: "Claude Pilot",
+		description:
+			"Professional desktop control center for Claude Code developers. Session management, memory browser (PostgreSQL + Memgraph + Qdrant), MCP server configuration, integrated terminal, and system monitoring. 25 tRPC controllers, 80% test coverage.",
+		category: "Developer Tools",
+		tech: ["Electron", "React", "TypeScript", "tRPC", "Zod", "PostgreSQL", "Memgraph"],
+		year: "2025",
+		status: "Production",
+		link: "/tools/pilot",
+		github: "https://github.com/alexmayhew/claude-pilot",
+		featured: true,
+	},
 	{
 		id: "photokeep-pro",
 		title: "PhotoKeep Pro",
