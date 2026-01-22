@@ -1,7 +1,19 @@
 "use client";
 
-import { m } from "framer-motion";
-import { Sparkles, Zap, Palette, Pencil, Camera, Layers, Grid3X3 } from "lucide-react";
+import { useState } from "react";
+import { m, AnimatePresence } from "framer-motion";
+import {
+	Sparkles,
+	Zap,
+	Palette,
+	Pencil,
+	Camera,
+	Layers,
+	Grid3X3,
+	HelpCircle,
+	ChevronDown,
+	AlertTriangle,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Generator } from "@/lib/hooks/use-vectorizer";
 
@@ -11,6 +23,7 @@ interface PresetOption {
 	description: string;
 	icon: React.ReactNode;
 	recommended?: boolean;
+	warning?: string;
 }
 
 interface PresetSelectorProps {
@@ -78,8 +91,9 @@ const vtracerPresets: PresetOption[] = [
 	{
 		id: "photo",
 		label: "Photo",
-		description: "Photo vectorization with color",
+		description: "Creates stylized poster-art effect from photos",
 		icon: <Camera className="h-4 w-4" strokeWidth={1.5} />,
+		warning: "Creates posterization effect, not photorealistic output",
 	},
 	{
 		id: "detailed",
@@ -108,7 +122,9 @@ export function PresetSelector({
 	onGeneratorChange,
 	disabled,
 }: PresetSelectorProps) {
+	const [showGuide, setShowGuide] = useState(false);
 	const presets = generator === "potrace" ? potracePresets : vtracerPresets;
+	const selectedPresetData = presets.find((p) => p.id === selectedPreset);
 
 	return (
 		<div className="space-y-4">
@@ -192,6 +208,85 @@ export function PresetSelector({
 					</m.button>
 				))}
 			</div>
+
+			{/* Warning for selected preset */}
+			<AnimatePresence>
+				{selectedPresetData?.warning && (
+					<m.div
+						initial={{ opacity: 0, height: 0 }}
+						animate={{ opacity: 1, height: "auto" }}
+						exit={{ opacity: 0, height: 0 }}
+						className="overflow-hidden"
+					>
+						<div className="flex items-start gap-2 border border-amber-400/30 bg-amber-400/5 p-3">
+							<AlertTriangle
+								className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-400"
+								strokeWidth={1.5}
+							/>
+							<p className="text-xs leading-relaxed text-amber-400">{selectedPresetData.warning}</p>
+						</div>
+					</m.div>
+				)}
+			</AnimatePresence>
+
+			{/* Preset Guide Toggle */}
+			<button
+				onClick={() => setShowGuide(!showGuide)}
+				className="text-slate-text hover:text-mist-white flex w-full items-center justify-between border-t border-white/10 pt-3 text-left font-mono text-xs transition-colors"
+			>
+				<span className="flex items-center gap-2">
+					<HelpCircle className="h-3 w-3" strokeWidth={1.5} />
+					Preset Guide
+				</span>
+				<ChevronDown
+					className={cn("h-3 w-3 transition-transform", showGuide && "rotate-180")}
+					strokeWidth={1.5}
+				/>
+			</button>
+
+			{/* Preset Guide Content */}
+			<AnimatePresence>
+				{showGuide && (
+					<m.div
+						initial={{ opacity: 0, height: 0 }}
+						animate={{ opacity: 1, height: "auto" }}
+						exit={{ opacity: 0, height: 0 }}
+						className="overflow-hidden"
+					>
+						<div className="space-y-4 border border-white/10 bg-white/5 p-4">
+							<div>
+								<h4 className="text-cyber-lime mb-2 font-mono text-xs">When to use Potrace</h4>
+								<ul className="text-slate-text space-y-1 text-[10px]">
+									<li>• Single-color logos and icons</li>
+									<li>• Line art and sketches</li>
+									<li>• Black & white images</li>
+									<li>• When you need cleanest curves</li>
+								</ul>
+							</div>
+							<div>
+								<h4 className="text-cyber-lime mb-2 font-mono text-xs">When to use VTracer</h4>
+								<ul className="text-slate-text space-y-1 text-[10px]">
+									<li>• Multi-color graphics</li>
+									<li>• Illustrations with gradients</li>
+									<li>• When preserving colors matters</li>
+									<li>• Complex artwork with many colors</li>
+								</ul>
+							</div>
+							<div className="border-t border-white/10 pt-3">
+								<h4 className="mb-2 font-mono text-xs text-amber-400">Important Notes</h4>
+								<ul className="text-slate-text space-y-1 text-[10px]">
+									<li>
+										• <span className="text-amber-400/80">VTracer Photo</span> creates a stylized
+										poster-art effect, not photorealistic vectors
+									</li>
+									<li>• For best results, use high-contrast images with clean edges</li>
+									<li>• Remove backgrounds before uploading logos</li>
+								</ul>
+							</div>
+						</div>
+					</m.div>
+				)}
+			</AnimatePresence>
 		</div>
 	);
 }
