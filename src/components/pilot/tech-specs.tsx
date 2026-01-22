@@ -23,21 +23,33 @@ const specs: Spec[] = [
 	{ label: "Architecture", value: "Type-safe, sandboxed" },
 ];
 
-const requirements = {
+interface PlatformRequirements {
+	os: string;
+	arch: string;
+	disk: string;
+	status?: "available" | "coming-soon";
+	note?: string;
+}
+
+const requirements: Record<string, PlatformRequirements> = {
 	macos: {
 		os: "macOS 12.0 (Monterey) or later",
 		arch: "Apple Silicon or Intel",
 		disk: "150 MB",
-	},
-	windows: {
-		os: "Windows 10 (64-bit) or later",
-		arch: "x64",
-		disk: "200 MB",
+		status: "available",
 	},
 	linux: {
 		os: "Ubuntu 20.04, Fedora 36, or equivalent",
 		arch: "x64",
 		disk: "180 MB",
+		status: "available",
+	},
+	windows: {
+		os: "Windows 10/11 via WSL2",
+		arch: "x64",
+		disk: "200 MB",
+		status: "coming-soon",
+		note: "Native Windows + WSL2 integration in development",
 	},
 };
 
@@ -73,22 +85,65 @@ export function TechSpecs() {
 				</h3>
 				<div className="grid gap-4 lg:grid-cols-3">
 					{Object.entries(requirements).map(([platform, reqs]) => (
-						<div key={platform} className="border border-white/10 p-4">
-							<h4 className="text-cyber-lime mb-3 font-mono text-sm capitalize">{platform}</h4>
+						<div
+							key={platform}
+							className={`border p-4 ${
+								reqs.status === "coming-soon" ? "border-white/5 bg-white/[0.02]" : "border-white/10"
+							}`}
+						>
+							<div className="mb-3 flex items-center justify-between">
+								<h4
+									className={`font-mono text-sm capitalize ${
+										reqs.status === "coming-soon" ? "text-slate-text" : "text-cyber-lime"
+									}`}
+								>
+									{platform}
+								</h4>
+								{reqs.status === "coming-soon" && (
+									<span className="border border-amber-400/30 bg-amber-400/10 px-2 py-0.5 font-mono text-[10px] text-amber-400">
+										Coming Soon
+									</span>
+								)}
+							</div>
 							<ul className="space-y-2 text-xs">
 								<li className="flex justify-between gap-2">
 									<span className="text-slate-text">OS</span>
-									<span className="text-mist-white text-right">{reqs.os}</span>
+									<span
+										className={
+											reqs.status === "coming-soon"
+												? "text-slate-text/70 text-right"
+												: "text-mist-white text-right"
+										}
+									>
+										{reqs.os}
+									</span>
 								</li>
 								<li className="flex justify-between gap-2">
 									<span className="text-slate-text">Architecture</span>
-									<span className="text-mist-white">{reqs.arch}</span>
+									<span
+										className={
+											reqs.status === "coming-soon" ? "text-slate-text/70" : "text-mist-white"
+										}
+									>
+										{reqs.arch}
+									</span>
 								</li>
 								<li className="flex justify-between gap-2">
 									<span className="text-slate-text">Disk Space</span>
-									<span className="text-mist-white">{reqs.disk}</span>
+									<span
+										className={
+											reqs.status === "coming-soon" ? "text-slate-text/70" : "text-mist-white"
+										}
+									>
+										{reqs.disk}
+									</span>
 								</li>
 							</ul>
+							{reqs.note && (
+								<p className="text-slate-text/60 mt-3 border-t border-white/5 pt-3 text-[11px] italic">
+									{reqs.note}
+								</p>
+							)}
 						</div>
 					))}
 				</div>
