@@ -76,11 +76,17 @@ const potracePresets: PresetOption[] = [
 
 const vtracerPresets: PresetOption[] = [
 	{
+		id: "icon",
+		label: "Icon",
+		description: "Perfect for icons with circles and smooth curves",
+		icon: <Sparkles className="h-4 w-4" strokeWidth={1.5} />,
+		recommended: true,
+	},
+	{
 		id: "logo",
 		label: "Logo",
 		description: "Optimized for logo vectorization",
 		icon: <Layers className="h-4 w-4" strokeWidth={1.5} />,
-		recommended: true,
 	},
 	{
 		id: "logo_smooth",
@@ -257,30 +263,36 @@ export function PresetSelector({
 							<div>
 								<h4 className="text-cyber-lime mb-2 font-mono text-xs">When to use Potrace</h4>
 								<ul className="text-slate-text space-y-1 text-[10px]">
-									<li>• Single-color logos and icons</li>
+									<li>• Single-color logos with sharp edges</li>
 									<li>• Line art and sketches</li>
 									<li>• Black & white images</li>
-									<li>• When you need cleanest curves</li>
+									<li>• Text and typography</li>
 								</ul>
 							</div>
 							<div>
 								<h4 className="text-cyber-lime mb-2 font-mono text-xs">When to use VTracer</h4>
 								<ul className="text-slate-text space-y-1 text-[10px]">
+									<li>
+										• <span className="text-mist-white">Icons with circles or smooth curves</span>{" "}
+										(recommended)
+									</li>
 									<li>• Multi-color graphics</li>
 									<li>• Illustrations with gradients</li>
 									<li>• When preserving colors matters</li>
-									<li>• Complex artwork with many colors</li>
 								</ul>
 							</div>
 							<div className="border-t border-white/10 pt-3">
 								<h4 className="mb-2 font-mono text-xs text-amber-400">Important Notes</h4>
 								<ul className="text-slate-text space-y-1 text-[10px]">
 									<li>
+										• <span className="text-amber-400/80">Circles:</span> Use VTracer Icon preset
+										for perfect bezier curves without flat edges
+									</li>
+									<li>
 										• <span className="text-amber-400/80">VTracer Photo</span> creates a stylized
 										poster-art effect, not photorealistic vectors
 									</li>
 									<li>• For best results, use high-contrast images with clean edges</li>
-									<li>• Remove backgrounds before uploading logos</li>
 								</ul>
 							</div>
 						</div>
