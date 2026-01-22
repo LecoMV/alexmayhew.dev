@@ -107,7 +107,7 @@ export function Navigation() {
 					{/* Logo / Brand */}
 					<Link href="/" className="group flex shrink-0 items-center gap-2 md:gap-3 lg:gap-4">
 						<Image
-							src="/am-icon.svg"
+							src="/am-icon-optimized_sized.svg"
 							alt="AM"
 							width={52}
 							height={32}
