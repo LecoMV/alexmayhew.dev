@@ -25,8 +25,8 @@ const features = [
 	},
 	{
 		icon: <Zap className="h-5 w-5" strokeWidth={1.5} />,
-		title: "Neural Upscaling",
-		description: "Real-ESRGAN 4x super-resolution (requires GPU)",
+		title: "Dual Engines",
+		description: "Potrace + VTracer for any vectorization need",
 	},
 	{
 		icon: <Shield className="h-5 w-5" strokeWidth={1.5} />,

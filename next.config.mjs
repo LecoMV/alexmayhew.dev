@@ -95,8 +95,9 @@ export default withMDX(config);
 // Enable calling `getCloudflareContext()` in `next dev`.
 // See https://opennext.js.org/cloudflare/bindings#local-access-to-bindings.
 // Only initialize in development mode to avoid proxy issues during production builds
-// Skip during E2E tests (PLAYWRIGHT=1) to avoid wrangler authentication requirements
-if (process.env.NODE_ENV === "development" && !process.env.PLAYWRIGHT) {
+// Skip during E2E tests (PLAYWRIGHT=1) or local-only dev (SKIP_CF_DEV=1)
+// to avoid wrangler authentication requirements
+if (process.env.NODE_ENV === "development" && !process.env.PLAYWRIGHT && !process.env.SKIP_CF_DEV) {
 	import("@opennextjs/cloudflare").then(({ initOpenNextCloudflareForDev }) => {
 		initOpenNextCloudflareForDev();
 	});

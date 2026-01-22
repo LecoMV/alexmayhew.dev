@@ -92,10 +92,11 @@ function TraceForgePageContent() {
 					<div className="mt-6 flex items-start gap-3 border border-amber-400/30 bg-amber-400/5 p-4">
 						<div className="text-sm text-amber-400">⚡</div>
 						<div>
-							<p className="font-mono text-sm text-amber-400">GPU Backend Required</p>
+							<p className="font-mono text-sm text-amber-400">Neural Upscaling Disabled</p>
 							<p className="text-slate-text mt-1 text-xs">
-								This demo showcases the interface and workflow. Full functionality requires GPU
-								infrastructure for Real-ESRGAN neural upscaling. Self-hosted deployment coming soon.
+								Full vectorization is functional — Potrace, VTracer, all presets, and SVGO optimization
+								work as expected. Only Real-ESRGAN neural upscaling is disabled (requires GPU backend).
+								Live deployment coming soon.
 							</p>
 						</div>
 					</div>
