@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Layers, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { TraceForgeApp } from "@/components/traceforge";
+import { SystemStatus } from "@/components/traceforge/system-status";
 
 export const metadata: Metadata = {
 	title: "TraceForge",
@@ -88,16 +89,22 @@ function TraceForgePageContent() {
 						illustrations, and line art.
 					</p>
 
-					{/* Demo notice */}
-					<div className="mt-6 flex items-start gap-3 border border-amber-400/30 bg-amber-400/5 p-4">
-						<div className="text-sm text-amber-400">⚡</div>
-						<div>
-							<p className="font-mono text-sm text-amber-400">Neural Upscaling Disabled</p>
-							<p className="text-slate-text mt-1 text-xs">
-								Full vectorization is functional — Potrace, VTracer, all presets, and SVGO
-								optimization work as expected. Only Real-ESRGAN neural upscaling is disabled
-								(requires GPU backend). Live deployment coming soon.
-							</p>
+					{/* Status Grid */}
+					<div className="mt-8 grid gap-6 lg:grid-cols-2">
+						{/* System Status Panel */}
+						<SystemStatus />
+
+						{/* Demo notice */}
+						<div className="flex h-fit items-start gap-3 border border-amber-400/30 bg-amber-400/5 p-4">
+							<div className="text-sm text-amber-400">⚡</div>
+							<div>
+								<p className="font-mono text-sm text-amber-400">Neural Upscaling</p>
+								<p className="text-slate-text mt-1 text-xs">
+									Full vectorization is functional — Potrace, VTracer, all presets, and SVGO
+									optimization work as expected. Real-ESRGAN neural upscaling requires GPU backend
+									to be online.
+								</p>
+							</div>
 						</div>
 					</div>
 				</header>
