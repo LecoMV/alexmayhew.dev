@@ -189,7 +189,7 @@ export function SystemStatus({ apiUrl, onStatusChange }: SystemStatusProps) {
 				// Refresh status
 				await checkStatus();
 			} else {
-				const data = await response.json().catch(() => ({}));
+				const data = (await response.json().catch(() => ({}))) as { detail?: string };
 				setToggleError(data.detail || `Failed to ${action} GPU`);
 			}
 		} catch {

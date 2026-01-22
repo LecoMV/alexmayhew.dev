@@ -7,6 +7,24 @@
 **Philosophy:** "Atmospheric Engineering" - High-precision digital instruments, tactile and heavy
 **Aesthetic:** Neo-Brutalist, anti-AI-generic, handcrafted feel
 
+## Issue Tracking (Beads)
+
+This project uses **project-level beads** stored in `.beads/`. Issue IDs are prefixed with `alexmayhew-dev-`.
+
+```bash
+bd ready              # Available work (no blockers)
+bd list --status=open # All open issues
+bd create --title="..." --type=task --priority=2
+bd close <id>         # Mark complete
+bd sync               # Sync to git (run at session end)
+```
+
+**Memory Labeling:** When saving learnings, use prefix `[amdev]`:
+
+```bash
+/learn "[amdev] - Framer Motion spring config for nav"
+```
+
 ## Tech Stack (Strict)
 
 | Layer           | Technology                  | Version |
