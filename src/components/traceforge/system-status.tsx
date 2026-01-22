@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 interface SystemStatusData {
 	api: { online: boolean; version?: string };
-	gpu: { available: boolean; name?: string | null };
+	gpu: { available: boolean; enabled?: boolean; name?: string | null };
 	potrace: { available: boolean };
 	vtracer: { available: boolean };
 	worker: { online: boolean };
@@ -166,9 +166,17 @@ export function SystemStatus({ apiUrl, onStatusChange }: SystemStatusProps) {
 				/>
 				<StatusItem
 					label="GPU Acceleration"
-					status={isChecking ? "checking" : status?.gpu.available ? "online" : "offline"}
+					status={
+						isChecking
+							? "checking"
+							: status?.gpu.available && status?.gpu.enabled
+								? "online"
+								: "offline"
+					}
 					icon={<Zap className="h-4 w-4" strokeWidth={1.5} />}
-					detail={status?.gpu.name}
+					detail={
+						status?.gpu.available ? (status?.gpu.enabled ? status?.gpu.name : "Disabled") : null
+					}
 				/>
 				<StatusItem
 					label="Potrace Engine"
