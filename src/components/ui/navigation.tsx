@@ -122,7 +122,7 @@ export function Navigation() {
 					</Link>
 
 					{/* Desktop Navigation */}
-					<div className="hidden items-center gap-1 md:flex lg:gap-2">
+					<div className="hidden items-center gap-0.5 md:flex lg:gap-1 xl:gap-2">
 						{navItems.map((item) => {
 							const isActive = item.hasDropdown ? isToolsActive : pathname === item.href;
 
@@ -138,13 +138,13 @@ export function Navigation() {
 										<button
 											onClick={() => setToolsDropdownOpen(!toolsDropdownOpen)}
 											className={cn(
-												"group relative flex items-center gap-1 px-3 py-2 font-mono text-xs tracking-wider uppercase transition-colors duration-300 lg:px-4 lg:py-3 lg:text-sm",
+												"group relative flex items-center gap-1 px-2 py-2 font-mono text-[11px] tracking-wider uppercase transition-colors duration-300 lg:px-3 lg:py-2.5 lg:text-xs xl:px-4 xl:py-3 xl:text-sm",
 												isActive ? "text-cyber-lime" : "text-slate-text hover:text-mist-white"
 											)}
 											aria-expanded={toolsDropdownOpen}
 											aria-haspopup="true"
 										>
-											<span className="mr-2 opacity-40" aria-hidden="true">
+											<span className="mr-1.5 hidden opacity-40 xl:inline" aria-hidden="true">
 												{item.code}
 											</span>
 											{item.label}
@@ -223,11 +223,11 @@ export function Navigation() {
 									key={item.href}
 									href={item.href}
 									className={cn(
-										"group relative px-3 py-2 font-mono text-xs tracking-wider uppercase transition-colors duration-300 lg:px-4 lg:py-3 lg:text-sm",
+										"group relative px-2 py-2 font-mono text-[11px] tracking-wider uppercase transition-colors duration-300 lg:px-3 lg:py-2.5 lg:text-xs xl:px-4 xl:py-3 xl:text-sm",
 										isActive ? "text-cyber-lime" : "text-slate-text hover:text-mist-white"
 									)}
 								>
-									<span className="mr-2 opacity-40" aria-hidden="true">
+									<span className="mr-1.5 hidden opacity-40 xl:inline" aria-hidden="true">
 										{item.code}
 									</span>
 									{item.label}
