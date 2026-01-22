@@ -1,8 +1,18 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { Cpu, Zap, PenTool, Sparkles, Server, Power, X, Lock } from "lucide-react";
+import {
+	Cpu,
+	Zap,
+	PenTool,
+	Sparkles,
+	Server,
+	Power,
+	ArrowRight,
+	Loader2,
+	Lock,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SystemStatusData {
@@ -18,35 +28,40 @@ interface StatusItemProps {
 	status: "online" | "offline" | "checking";
 	icon: React.ReactNode;
 	detail?: string | null;
-	action?: React.ReactNode;
 }
 
-function StatusItem({ label, status, icon, detail, action }: StatusItemProps) {
+function StatusItem({ label, status, icon, detail }: StatusItemProps) {
 	return (
-		<div className="flex items-center justify-between py-2">
+		<div className="flex items-center justify-between py-2.5">
 			<div className="flex items-center gap-3">
-				<span className="text-cyber-lime">{icon}</span>
+				<span
+					className={cn(
+						"transition-colors",
+						status === "online" ? "text-cyber-lime" : "text-slate-text"
+					)}
+				>
+					{icon}
+				</span>
 				<span className="text-mist-white font-mono text-sm">{label}</span>
 			</div>
-			<div className="flex items-center gap-2">
+			<div className="flex items-center gap-3">
 				{detail && (
 					<span className="text-slate-text hidden font-mono text-xs sm:inline">{detail}</span>
 				)}
-				{action}
-				<div className="flex items-center gap-2">
+				<div className="flex min-w-[72px] items-center justify-end gap-2">
 					<span
 						className={cn(
-							"h-2 w-2 rounded-full",
-							status === "online" && "bg-cyber-lime animate-pulse",
-							status === "offline" && "bg-burnt-ember/70",
+							"h-2 w-2 rounded-full transition-colors",
+							status === "online" && "bg-cyber-lime shadow-[0_0_8px_rgba(204,243,129,0.5)]",
+							status === "offline" && "bg-burnt-ember",
 							status === "checking" && "bg-slate-text animate-pulse"
 						)}
 					/>
 					<span
 						className={cn(
-							"font-mono text-xs tracking-wider uppercase",
+							"font-mono text-[11px] tracking-wider uppercase transition-colors",
 							status === "online" && "text-cyber-lime",
-							status === "offline" && "text-burnt-ember/70",
+							status === "offline" && "text-burnt-ember",
 							status === "checking" && "text-slate-text"
 						)}
 					>
@@ -55,121 +70,6 @@ function StatusItem({ label, status, icon, detail, action }: StatusItemProps) {
 				</div>
 			</div>
 		</div>
-	);
-}
-
-interface GPUToggleModalProps {
-	isOpen: boolean;
-	onClose: () => void;
-	onSubmit: (password: string) => Promise<void>;
-	action: "enable" | "disable";
-	isLoading: boolean;
-	error: string | null;
-}
-
-function GPUToggleModal({
-	isOpen,
-	onClose,
-	onSubmit,
-	action,
-	isLoading,
-	error,
-}: GPUToggleModalProps) {
-	const [password, setPassword] = useState("");
-
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		await onSubmit(password);
-		setPassword("");
-	};
-
-	if (!isOpen) return null;
-
-	return (
-		<AnimatePresence>
-			{isOpen && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center">
-					{/* Backdrop */}
-					<m.div
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						className="bg-void-navy/80 absolute inset-0 backdrop-blur-sm"
-						onClick={onClose}
-					/>
-
-					{/* Modal */}
-					<m.div
-						initial={{ opacity: 0, scale: 0.95, y: 10 }}
-						animate={{ opacity: 1, scale: 1, y: 0 }}
-						exit={{ opacity: 0, scale: 0.95, y: 10 }}
-						transition={{ type: "spring", stiffness: 300, damping: 30 }}
-						className="bg-gunmetal-glass relative z-10 w-full max-w-sm border border-white/10 p-6"
-					>
-						{/* Close button */}
-						<button
-							onClick={onClose}
-							className="text-slate-text hover:text-mist-white absolute top-4 right-4 transition-colors"
-						>
-							<X className="h-4 w-4" />
-						</button>
-
-						{/* Header */}
-						<div className="mb-6 flex items-center gap-3">
-							<div className="text-cyber-lime">
-								<Lock className="h-5 w-5" strokeWidth={1.5} />
-							</div>
-							<div>
-								<h3 className="text-mist-white font-mono text-sm">
-									{action === "enable" ? "Enable" : "Disable"} GPU Processing
-								</h3>
-								<p className="text-slate-text text-xs">Enter admin password to continue</p>
-							</div>
-						</div>
-
-						{/* Form */}
-						<form onSubmit={handleSubmit}>
-							<div className="mb-4">
-								<input
-									type="password"
-									value={password}
-									onChange={(e) => setPassword(e.target.value)}
-									placeholder="Password"
-									className="text-mist-white placeholder:text-slate-text/50 focus:border-cyber-lime w-full border border-white/10 bg-white/5 px-3 py-2 font-mono text-sm focus:outline-none"
-									autoFocus
-									disabled={isLoading}
-								/>
-							</div>
-
-							{error && <p className="text-burnt-ember mb-4 font-mono text-xs">{error}</p>}
-
-							<div className="flex gap-3">
-								<button
-									type="button"
-									onClick={onClose}
-									className="text-slate-text hover:text-mist-white flex-1 border border-white/10 py-2 font-mono text-xs transition-colors hover:border-white/30"
-									disabled={isLoading}
-								>
-									Cancel
-								</button>
-								<button
-									type="submit"
-									disabled={isLoading || !password}
-									className={cn(
-										"flex-1 border py-2 font-mono text-xs transition-colors disabled:opacity-50",
-										action === "enable"
-											? "border-cyber-lime/50 text-cyber-lime hover:bg-cyber-lime/10"
-											: "border-burnt-ember/50 text-burnt-ember hover:bg-burnt-ember/10"
-									)}
-								>
-									{isLoading ? "..." : action === "enable" ? "Enable GPU" : "Disable GPU"}
-								</button>
-							</div>
-						</form>
-					</m.div>
-				</div>
-			)}
-		</AnimatePresence>
 	);
 }
 
@@ -183,11 +83,12 @@ export function SystemStatus({ apiUrl, onStatusChange }: SystemStatusProps) {
 	const [isChecking, setIsChecking] = useState(true);
 	const [lastChecked, setLastChecked] = useState<Date | null>(null);
 
-	// GPU toggle modal state
-	const [showGPUModal, setShowGPUModal] = useState(false);
-	const [gpuAction, setGpuAction] = useState<"enable" | "disable">("enable");
+	// GPU toggle inline state
+	const [showPasswordInput, setShowPasswordInput] = useState(false);
+	const [password, setPassword] = useState("");
 	const [isToggling, setIsToggling] = useState(false);
 	const [toggleError, setToggleError] = useState<string | null>(null);
+	const passwordInputRef = useRef<HTMLInputElement>(null);
 
 	// Determine API URL - use localhost if on localhost, otherwise use provided URL
 	const getApiUrl = useCallback(() => {
@@ -245,21 +146,37 @@ export function SystemStatus({ apiUrl, onStatusChange }: SystemStatusProps) {
 		return () => clearInterval(interval);
 	}, [checkStatus]);
 
-	const handleGPUToggle = (action: "enable" | "disable") => {
-		setGpuAction(action);
+	// Focus password input when it appears
+	useEffect(() => {
+		if (showPasswordInput && passwordInputRef.current) {
+			passwordInputRef.current.focus();
+		}
+	}, [showPasswordInput]);
+
+	const handleGPUButtonClick = () => {
 		setToggleError(null);
-		setShowGPUModal(true);
+		setPassword("");
+		setShowPasswordInput(true);
 	};
 
-	const handleGPUSubmit = async (password: string) => {
-		const url = getApiUrl();
-		if (!url) return;
+	const handlePasswordCancel = () => {
+		setShowPasswordInput(false);
+		setPassword("");
+		setToggleError(null);
+	};
 
+	const handleGPUSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		const url = getApiUrl();
+		if (!url || !password) return;
+
+		// If offline or GPU not enabled, we want to enable. If online and enabled, disable.
+		const action = isOnline && gpuEnabled ? "disable" : "enable";
 		setIsToggling(true);
 		setToggleError(null);
 
 		try {
-			const response = await fetch(`${url}/gpu/${gpuAction}`, {
+			const response = await fetch(`${url}/gpu/${action}`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ password }),
@@ -267,12 +184,13 @@ export function SystemStatus({ apiUrl, onStatusChange }: SystemStatusProps) {
 			});
 
 			if (response.ok) {
-				setShowGPUModal(false);
+				setShowPasswordInput(false);
+				setPassword("");
 				// Refresh status
 				await checkStatus();
 			} else {
 				const data = await response.json().catch(() => ({}));
-				setToggleError(data.detail || `Failed to ${gpuAction} GPU`);
+				setToggleError(data.detail || `Failed to ${action} GPU`);
 			}
 		} catch {
 			setToggleError("Connection failed");
@@ -286,122 +204,249 @@ export function SystemStatus({ apiUrl, onStatusChange }: SystemStatusProps) {
 	const gpuEnabled = status?.gpu.enabled;
 
 	return (
-		<>
-			<m.div
-				initial={{ opacity: 0, y: 10 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ type: "spring", stiffness: 100, damping: 20 }}
-				className="bg-gunmetal-glass/30 border border-white/10 p-4"
-			>
-				{/* Header */}
-				<div className="mb-3 flex items-center justify-between border-b border-white/5 pb-3">
-					<h3 className="text-cyber-lime flex items-center gap-2 font-mono text-xs tracking-wider uppercase">
-						<span className="animate-pulse">●</span>
-						System Status
-					</h3>
-					<div className="flex items-center gap-2">
-						{isChecking ? (
-							<span className="text-slate-text font-mono text-[10px]">checking...</span>
-						) : lastChecked ? (
-							<span className="text-slate-text font-mono text-[10px]">
-								{lastChecked.toLocaleTimeString()}
-							</span>
-						) : null}
-						<button
-							onClick={checkStatus}
-							disabled={isChecking}
-							className="text-slate-text hover:text-cyber-lime transition-colors disabled:opacity-50"
-							title="Refresh status"
-						>
-							<Server className="h-3 w-3" />
-						</button>
-					</div>
-				</div>
-
-				{/* Status Items */}
-				<div className="divide-y divide-white/5">
-					<StatusItem
-						label="API Backend"
-						status={isChecking ? "checking" : status?.api.online ? "online" : "offline"}
-						icon={<Server className="h-4 w-4" strokeWidth={1.5} />}
-						detail={status?.api.version}
-					/>
-					<StatusItem
-						label="GPU Acceleration"
-						status={isChecking ? "checking" : gpuAvailable && gpuEnabled ? "online" : "offline"}
-						icon={<Zap className="h-4 w-4" strokeWidth={1.5} />}
-						detail={gpuAvailable ? (gpuEnabled ? status?.gpu.name : "Disabled") : null}
-						action={
-							isOnline && gpuAvailable ? (
-								<button
-									onClick={() => handleGPUToggle(gpuEnabled ? "disable" : "enable")}
-									className={cn(
-										"mr-2 border p-1 transition-colors",
-										gpuEnabled
-											? "border-cyber-lime/30 text-cyber-lime hover:bg-cyber-lime/10"
-											: "border-burnt-ember/30 text-burnt-ember hover:bg-burnt-ember/10"
-									)}
-									title={gpuEnabled ? "Disable GPU" : "Enable GPU"}
-								>
-									<Power className="h-3 w-3" strokeWidth={1.5} />
-								</button>
-							) : null
-						}
-					/>
-					<StatusItem
-						label="Potrace Engine"
-						status={isChecking ? "checking" : status?.potrace.available ? "online" : "offline"}
-						icon={<PenTool className="h-4 w-4" strokeWidth={1.5} />}
-					/>
-					<StatusItem
-						label="VTracer Engine"
-						status={isChecking ? "checking" : status?.vtracer.available ? "online" : "offline"}
-						icon={<Sparkles className="h-4 w-4" strokeWidth={1.5} />}
-					/>
-					<StatusItem
-						label="Task Worker"
-						status={isChecking ? "checking" : status?.worker.online ? "online" : "offline"}
-						icon={<Cpu className="h-4 w-4" strokeWidth={1.5} />}
-					/>
-				</div>
-
-				{/* Overall Status Footer */}
-				<div className="mt-3 border-t border-white/5 pt-3">
-					<div
-						className={cn(
-							"flex items-center justify-center gap-2 font-mono text-xs tracking-wider uppercase",
-							isOnline ? "text-cyber-lime" : "text-slate-text"
-						)}
-					>
-						<span
-							className={cn(
-								"h-2 w-2 rounded-full",
-								isOnline ? "bg-cyber-lime animate-pulse" : "bg-slate-text"
-							)}
-						/>
-						{isChecking
-							? "Checking systems..."
-							: isOnline
-								? "All Systems Operational"
-								: "Backend Offline"}
-					</div>
-					{!isOnline && !isChecking && (
-						<p className="text-slate-text mt-2 text-center text-[10px]">
-							Demo mode: UI preview only
-						</p>
-					)}
-				</div>
-			</m.div>
-
-			{/* GPU Toggle Modal */}
-			<GPUToggleModal
-				isOpen={showGPUModal}
-				onClose={() => setShowGPUModal(false)}
-				onSubmit={handleGPUSubmit}
-				action={gpuAction}
-				isLoading={isToggling}
-				error={toggleError}
+		<m.div
+			initial={{ opacity: 0, y: 10 }}
+			animate={{ opacity: 1, y: 0 }}
+			transition={{ type: "spring", stiffness: 100, damping: 20 }}
+			className={cn(
+				"bg-gunmetal-glass/40 relative border p-5",
+				isOnline ? "border-cyber-lime/30" : "border-white/10"
+			)}
+		>
+			{/* Corner accents */}
+			<div
+				className={cn(
+					"absolute top-0 left-0 h-4 w-4 border-t border-l transition-colors",
+					isOnline ? "border-cyber-lime" : "border-white/20"
+				)}
 			/>
-		</>
+			<div
+				className={cn(
+					"absolute top-0 right-0 h-4 w-4 border-t border-r transition-colors",
+					isOnline ? "border-cyber-lime" : "border-white/20"
+				)}
+			/>
+			<div
+				className={cn(
+					"absolute bottom-0 left-0 h-4 w-4 border-b border-l transition-colors",
+					isOnline ? "border-cyber-lime" : "border-white/20"
+				)}
+			/>
+			<div
+				className={cn(
+					"absolute right-0 bottom-0 h-4 w-4 border-r border-b transition-colors",
+					isOnline ? "border-cyber-lime" : "border-white/20"
+				)}
+			/>
+
+			{/* Header */}
+			<div className="mb-4 flex items-center justify-between border-b border-white/10 pb-3">
+				<h3
+					className={cn(
+						"flex items-center gap-2 font-mono text-xs tracking-wider uppercase transition-colors",
+						isOnline ? "text-cyber-lime" : "text-slate-text"
+					)}
+				>
+					<span className={cn(isOnline ? "text-cyber-lime animate-pulse" : "text-burnt-ember")}>
+						●
+					</span>
+					System Status
+				</h3>
+				<div className="flex items-center gap-3">
+					{isChecking ? (
+						<span className="text-slate-text font-mono text-[10px]">checking...</span>
+					) : lastChecked ? (
+						<span className="text-slate-text font-mono text-[10px]">
+							{lastChecked.toLocaleTimeString()}
+						</span>
+					) : null}
+					<button
+						onClick={checkStatus}
+						disabled={isChecking}
+						className="text-slate-text hover:text-cyber-lime transition-colors disabled:opacity-50"
+						title="Refresh status"
+					>
+						<Server className="h-3.5 w-3.5" />
+					</button>
+				</div>
+			</div>
+
+			{/* Status Items */}
+			<div className="divide-y divide-white/5">
+				<StatusItem
+					label="API Backend"
+					status={isChecking ? "checking" : status?.api.online ? "online" : "offline"}
+					icon={<Server className="h-4 w-4" strokeWidth={1.5} />}
+					detail={status?.api.version}
+				/>
+				<StatusItem
+					label="GPU Acceleration"
+					status={isChecking ? "checking" : gpuAvailable && gpuEnabled ? "online" : "offline"}
+					icon={<Zap className="h-4 w-4" strokeWidth={1.5} />}
+					detail={gpuAvailable ? (gpuEnabled ? status?.gpu.name : "Disabled") : null}
+				/>
+				<StatusItem
+					label="Potrace Engine"
+					status={isChecking ? "checking" : status?.potrace.available ? "online" : "offline"}
+					icon={<PenTool className="h-4 w-4" strokeWidth={1.5} />}
+				/>
+				<StatusItem
+					label="VTracer Engine"
+					status={isChecking ? "checking" : status?.vtracer.available ? "online" : "offline"}
+					icon={<Sparkles className="h-4 w-4" strokeWidth={1.5} />}
+				/>
+				<StatusItem
+					label="Task Worker"
+					status={isChecking ? "checking" : status?.worker.online ? "online" : "offline"}
+					icon={<Cpu className="h-4 w-4" strokeWidth={1.5} />}
+				/>
+			</div>
+
+			{/* Overall Status Footer */}
+			<div className="mt-4 border-t border-white/10 pt-4">
+				<div
+					className={cn(
+						"flex items-center justify-center gap-2 font-mono text-xs tracking-wider uppercase",
+						isOnline ? "text-cyber-lime" : "text-burnt-ember"
+					)}
+				>
+					<span
+						className={cn(
+							"h-2 w-2 rounded-full",
+							isOnline
+								? "bg-cyber-lime shadow-[0_0_8px_rgba(204,243,129,0.5)]"
+								: "bg-burnt-ember shadow-[0_0_8px_rgba(255,107,107,0.3)]"
+						)}
+					/>
+					{isChecking
+						? "Checking systems..."
+						: isOnline
+							? "All Systems Operational"
+							: "Backend Offline"}
+				</div>
+				{!isChecking && (
+					<p className="text-slate-text mt-2 text-center font-mono text-[10px] tracking-wide">
+						GPU not required for vectorization
+					</p>
+				)}
+			</div>
+
+			{/* GPU Control Section - Always visible for remote control */}
+			<div className="mt-4 border-t border-white/10 pt-4">
+				<AnimatePresence mode="wait">
+					{!showPasswordInput ? (
+						<m.button
+							key="gpu-button"
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0, x: -20 }}
+							transition={{ type: "spring", stiffness: 200, damping: 25 }}
+							onClick={handleGPUButtonClick}
+							className={cn(
+								"group relative w-full overflow-hidden border py-3 font-mono text-xs tracking-wider uppercase transition-all duration-300",
+								isOnline && gpuEnabled
+									? "border-burnt-ember/40 text-burnt-ember hover:border-burnt-ember hover:bg-burnt-ember/5"
+									: "border-cyber-lime/40 text-cyber-lime hover:border-cyber-lime hover:bg-cyber-lime/5"
+							)}
+						>
+							{/* Scan line effect */}
+							<div
+								className={cn(
+									"absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+									isOnline && gpuEnabled ? "bg-burnt-ember/5" : "bg-cyber-lime/5"
+								)}
+							/>
+							<div
+								className={cn(
+									"absolute top-0 left-0 h-full w-1 opacity-0 transition-all duration-300 group-hover:opacity-100",
+									isOnline && gpuEnabled ? "bg-burnt-ember/50" : "bg-cyber-lime/50"
+								)}
+							/>
+
+							<span className="relative flex items-center justify-center gap-2">
+								<Lock className="h-3 w-3 opacity-60" strokeWidth={1.5} />
+								<span className="text-[10px] opacity-60">Admin</span>
+								<span className="mx-1 opacity-30">|</span>
+								<Power className="h-3.5 w-3.5" strokeWidth={1.5} />
+								{gpuEnabled ? "Disable GPU" : "Enable GPU"}
+								<ArrowRight className="h-3 w-3 opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100" />
+							</span>
+						</m.button>
+					) : (
+						<m.form
+							key="password-form"
+							initial={{ opacity: 0, x: 20 }}
+							animate={{ opacity: 1, x: 0 }}
+							exit={{ opacity: 0, x: 20 }}
+							transition={{ type: "spring", stiffness: 200, damping: 25 }}
+							onSubmit={handleGPUSubmit}
+							className="space-y-3"
+						>
+							<p className="text-slate-text font-mono text-[10px] tracking-wider uppercase">
+								Admin authentication required
+							</p>
+							<div className="flex gap-2">
+								<div className="relative flex-1">
+									<input
+										ref={passwordInputRef}
+										type="password"
+										value={password}
+										onChange={(e) => setPassword(e.target.value)}
+										placeholder="Admin password..."
+										disabled={isToggling}
+										className={cn(
+											"w-full border bg-white/5 px-3 py-2.5 font-mono text-sm transition-colors",
+											"text-mist-white placeholder:text-slate-text/50",
+											"focus:outline-none",
+											isOnline && gpuEnabled
+												? "border-burnt-ember/30 focus:border-burnt-ember"
+												: "border-cyber-lime/30 focus:border-cyber-lime"
+										)}
+										onKeyDown={(e) => {
+											if (e.key === "Escape") handlePasswordCancel();
+										}}
+									/>
+								</div>
+								<button
+									type="submit"
+									disabled={isToggling || !password}
+									className={cn(
+										"border px-4 py-2.5 font-mono text-xs tracking-wider uppercase transition-all disabled:opacity-50",
+										isOnline && gpuEnabled
+											? "border-burnt-ember/50 text-burnt-ember hover:bg-burnt-ember/10 disabled:hover:bg-transparent"
+											: "border-cyber-lime/50 text-cyber-lime hover:bg-cyber-lime/10 disabled:hover:bg-transparent"
+									)}
+								>
+									{isToggling ? (
+										<Loader2 className="h-4 w-4 animate-spin" />
+									) : (
+										<ArrowRight className="h-4 w-4" />
+									)}
+								</button>
+							</div>
+
+							{toggleError && (
+								<m.p
+									initial={{ opacity: 0, y: -10 }}
+									animate={{ opacity: 1, y: 0 }}
+									className="text-burnt-ember font-mono text-xs"
+								>
+									{toggleError}
+								</m.p>
+							)}
+
+							<button
+								type="button"
+								onClick={handlePasswordCancel}
+								disabled={isToggling}
+								className="text-slate-text hover:text-mist-white w-full py-1 font-mono text-[10px] tracking-wider uppercase transition-colors"
+							>
+								Cancel
+							</button>
+						</m.form>
+					)}
+				</AnimatePresence>
+			</div>
+		</m.div>
 	);
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Layers, ArrowLeft } from "lucide-react";
+import { Layers, ArrowLeft, Zap } from "lucide-react";
 import Link from "next/link";
 import { TraceForgeApp } from "@/components/traceforge";
 import { SystemStatus } from "@/components/traceforge/system-status";
@@ -95,14 +95,32 @@ function TraceForgePageContent() {
 						<SystemStatus />
 
 						{/* Demo notice */}
-						<div className="flex h-fit items-start gap-3 border border-amber-400/30 bg-amber-400/5 p-4">
-							<div className="text-sm text-amber-400">⚡</div>
-							<div>
-								<p className="font-mono text-sm text-amber-400">Neural Upscaling</p>
-								<p className="text-slate-text mt-1 text-xs">
-									Full vectorization is functional — Potrace, VTracer, all presets, and SVGO
-									optimization work as expected. Real-ESRGAN neural upscaling requires GPU backend
-									to be online.
+						<div className="relative flex h-full flex-col justify-between border border-amber-400/20 bg-amber-400/5 p-5">
+							{/* Corner accents */}
+							<div className="absolute top-0 left-0 h-4 w-4 border-t border-l border-amber-400/40" />
+							<div className="absolute top-0 right-0 h-4 w-4 border-t border-r border-amber-400/40" />
+							<div className="absolute bottom-0 left-0 h-4 w-4 border-b border-l border-amber-400/40" />
+							<div className="absolute right-0 bottom-0 h-4 w-4 border-r border-b border-amber-400/40" />
+
+							<div className="flex items-start gap-3">
+								<div className="mt-0.5 text-amber-400">
+									<Zap className="h-4 w-4" strokeWidth={1.5} />
+								</div>
+								<div>
+									<p className="font-mono text-sm tracking-tight text-amber-400">
+										Neural Upscaling
+									</p>
+									<p className="text-slate-text mt-2 text-xs leading-relaxed">
+										Full vectorization is functional — Potrace, VTracer, all presets, and SVGO
+										optimization work as expected. Real-ESRGAN neural upscaling requires GPU backend
+										to be online.
+									</p>
+								</div>
+							</div>
+
+							<div className="mt-4 border-t border-amber-400/10 pt-3">
+								<p className="text-slate-text font-mono text-[10px] tracking-wide uppercase">
+									<span className="text-amber-400/60">●</span> GPU not required for vectorizer
 								</p>
 							</div>
 						</div>

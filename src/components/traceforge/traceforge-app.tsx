@@ -21,7 +21,7 @@ const features = [
 	{
 		icon: <Layers className="h-5 w-5" strokeWidth={1.5} />,
 		title: "10+ Presets",
-		description: "Optimized for logos, line art, photos, and more",
+		description: "Optimized for logos, icons, and illustrations",
 	},
 	{
 		icon: <Zap className="h-5 w-5" strokeWidth={1.5} />,
