@@ -103,18 +103,18 @@ export function Navigation() {
 				Skip to content
 			</a>
 			<nav className="max-w-fd-container mx-auto px-6 py-4 sm:px-12 md:px-24">
-				<div className="bg-gunmetal-glass/20 flex items-center justify-between gap-4 border border-white/10 px-6 py-4 backdrop-blur-md">
+				<div className="bg-gunmetal-glass/20 flex items-center justify-between gap-2 border border-white/10 px-4 py-3 backdrop-blur-md md:gap-3 md:px-5 md:py-4 lg:gap-4 lg:px-6">
 					{/* Logo / Brand */}
-					<Link href="/" className="group flex shrink-0 items-center gap-4">
+					<Link href="/" className="group flex shrink-0 items-center gap-2 md:gap-3 lg:gap-4">
 						<Image
-							src="/am-icon-optimized_sized.svg"
+							src="/am-icon.svg"
 							alt="AM"
 							width={52}
 							height={32}
-							className="h-8 w-auto transition-opacity duration-300 group-hover:opacity-80"
+							className="h-6 w-auto transition-opacity duration-300 group-hover:opacity-80 md:h-7 lg:h-8"
 							priority
 						/>
-						<span className="font-mono text-lg tracking-tight">
+						<span className="font-mono text-sm tracking-tight md:text-base lg:text-lg">
 							<span className="text-cyber-lime">alex</span>
 							<span className="text-mist-white">mayhew</span>
 							<span className="text-slate-text">.dev</span>
@@ -122,7 +122,7 @@ export function Navigation() {
 					</Link>
 
 					{/* Desktop Navigation */}
-					<div className="hidden items-center gap-0.5 md:flex lg:gap-1 xl:gap-2">
+					<div className="hidden items-center gap-0 md:flex lg:gap-0.5 xl:gap-1">
 						{navItems.map((item) => {
 							const isActive = item.hasDropdown ? isToolsActive : pathname === item.href;
 
@@ -138,7 +138,7 @@ export function Navigation() {
 										<button
 											onClick={() => setToolsDropdownOpen(!toolsDropdownOpen)}
 											className={cn(
-												"group relative flex items-center gap-1 px-2 py-2 font-mono text-[11px] tracking-wider uppercase transition-colors duration-300 lg:px-3 lg:py-2.5 lg:text-xs xl:px-4 xl:py-3 xl:text-sm",
+												"group relative flex items-center gap-1 px-1.5 py-2 font-mono text-[10px] tracking-wider uppercase transition-colors duration-300 lg:px-2.5 lg:py-2.5 lg:text-[11px] xl:px-3.5 xl:py-3 xl:text-xs",
 												isActive ? "text-cyber-lime" : "text-slate-text hover:text-mist-white"
 											)}
 											aria-expanded={toolsDropdownOpen}
@@ -223,7 +223,7 @@ export function Navigation() {
 									key={item.href}
 									href={item.href}
 									className={cn(
-										"group relative px-2 py-2 font-mono text-[11px] tracking-wider uppercase transition-colors duration-300 lg:px-3 lg:py-2.5 lg:text-xs xl:px-4 xl:py-3 xl:text-sm",
+										"group relative px-1.5 py-2 font-mono text-[10px] tracking-wider uppercase transition-colors duration-300 lg:px-2.5 lg:py-2.5 lg:text-[11px] xl:px-3.5 xl:py-3 xl:text-xs",
 										isActive ? "text-cyber-lime" : "text-slate-text hover:text-mist-white"
 									)}
 								>
