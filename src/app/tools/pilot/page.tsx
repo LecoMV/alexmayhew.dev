@@ -6,7 +6,7 @@ import { DownloadButtons, FeatureGrid, SecuritySection, TechSpecs } from "@/comp
 export const metadata: Metadata = {
 	title: "Claude Pilot",
 	description:
-		"The desktop control center for Claude Code developers. Session management, memory browser, MCP configuration, and integrated terminal. Cross-platform, open source.",
+		"All-in-one management app for Claude Code workflows. Session monitoring, memory browser, MCP server configuration, and integrated terminal. Cross-platform, open source.",
 	keywords: [
 		"Claude Code",
 		"Claude CLI",
@@ -16,24 +16,25 @@ export const metadata: Metadata = {
 		"Electron app",
 		"developer tools",
 		"AI coding assistant",
+		"Claude Code manager",
 	],
 	openGraph: {
-		title: "Claude Pilot | Command Your Claude Code Sessions",
+		title: "Claude Pilot | All-in-One Claude Code Manager",
 		description:
-			"Professional desktop control center for Claude Code development. Session management, memory browser, MCP configuration.",
+			"Unified management app for Claude Code development. Session monitoring, memory browser, MCP configuration, integrated terminal.",
 		type: "website",
 		images: [
 			{
 				url: "/og-pilot.png",
 				width: 1200,
 				height: 630,
-				alt: "Claude Pilot - Desktop Control Center",
+				alt: "Claude Pilot - All-in-One Claude Code Manager",
 			},
 		],
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Claude Pilot | Desktop Control Center",
+		title: "Claude Pilot | All-in-One Claude Code Manager",
 		description: "The missing UI for Claude Code. Cross-platform, open source.",
 	},
 };
@@ -72,12 +73,12 @@ export default function ClaudePilotPage() {
 					<h1 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
 						Claude Pilot
 						<br />
-						<span className="text-slate-text">Command Your Claude Code Sessions.</span>
+						<span className="text-slate-text">All-in-One Claude Code Manager.</span>
 					</h1>
 
 					<p className="text-slate-text mb-8 max-w-2xl text-lg">
-						The professional desktop control center for Claude Code developers. Monitor sessions,
-						browse memory systems, configure MCP servers, and manage your AI coding workflow — all
+						The unified management app for Claude Code power users. Monitor active sessions, browse
+						memory systems, configure MCP servers, and streamline your AI-assisted development — all
 						from one interface.
 					</p>
 

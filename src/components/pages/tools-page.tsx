@@ -42,9 +42,9 @@ const tools: Tool[] = [
 	{
 		id: "pilot",
 		name: "Claude Pilot",
-		tagline: "Command Your Claude Code Sessions",
+		tagline: "All-in-One Claude Code Manager",
 		description:
-			"Desktop control center for Claude Code developers. Session management, memory browser, MCP configuration, and integrated terminal. Cross-platform.",
+			"Unified management app for Claude Code workflows. Session monitoring, memory browser, MCP server configuration, and integrated terminal. Cross-platform, open source.",
 		href: "/tools/pilot",
 		icon: <Terminal className="h-6 w-6" strokeWidth={1.5} />,
 		badge: "Download",

@@ -46,7 +46,7 @@ const toolsDropdown: ToolItem[] = [
 	{
 		href: "/tools/pilot",
 		label: "Claude Pilot",
-		description: "Desktop control center",
+		description: "All-in-one session & MCP manager",
 		icon: <Terminal className="h-4 w-4" strokeWidth={1.5} />,
 		badge: "Download",
 		badgeColor: "blue",
