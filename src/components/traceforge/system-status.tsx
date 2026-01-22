@@ -90,7 +90,7 @@ export function SystemStatus({ apiUrl, onStatusChange }: SystemStatusProps) {
 	const [toggleError, setToggleError] = useState<string | null>(null);
 	const passwordInputRef = useRef<HTMLInputElement>(null);
 
-	// Determine API URL - use localhost if on localhost, otherwise use provided URL
+	// Determine API URL - use localhost if on localhost, otherwise use production URL
 	const getApiUrl = useCallback(() => {
 		if (apiUrl) return apiUrl;
 		if (typeof window !== "undefined") {
@@ -100,8 +100,8 @@ export function SystemStatus({ apiUrl, onStatusChange }: SystemStatusProps) {
 				return "http://localhost:8000";
 			}
 		}
-		// Production URL - can be configured later
-		return null;
+		// Production URL via Cloudflare Tunnel
+		return "https://api.alexmayhew.dev";
 	}, [apiUrl]);
 
 	const checkStatus = useCallback(async () => {

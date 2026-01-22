@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const VECTORIZER_API = process.env.VECTORIZER_API_URL || "http://localhost:8000";
+const VECTORIZER_API = process.env.VECTORIZER_API_URL || "https://api.alexmayhew.dev";
 
 export async function GET() {
 	try {
