@@ -25,13 +25,13 @@ const features = [
 	},
 	{
 		icon: <Zap className="h-5 w-5" strokeWidth={1.5} />,
-		title: "GPU-Accelerated",
-		description: "Neural upscaling with CUDA processing",
+		title: "Neural Upscaling",
+		description: "Real-ESRGAN 4x super-resolution (requires GPU)",
 	},
 	{
 		icon: <Shield className="h-5 w-5" strokeWidth={1.5} />,
-		title: "No Account",
-		description: "Free to use, no signup required",
+		title: "Open Source",
+		description: "Full source code available on GitHub",
 	},
 	{
 		icon: <Code className="h-5 w-5" strokeWidth={1.5} />,

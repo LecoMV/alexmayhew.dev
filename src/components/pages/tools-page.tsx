@@ -20,8 +20,8 @@ interface Tool {
 	href: string;
 	icon: React.ReactNode;
 	badge: string;
-	badgeColor: "lime" | "blue";
-	status: "live" | "download" | "coming-soon";
+	badgeColor: "lime" | "blue" | "amber";
+	status: "demo" | "download" | "coming-soon";
 	featured?: boolean;
 }
 
@@ -31,12 +31,12 @@ const tools: Tool[] = [
 		name: "TraceForge",
 		tagline: "Raster to Vector in Seconds",
 		description:
-			"Transform PNG, JPG, and WebP images into clean, optimized SVG vectors. 10+ presets for logos, illustrations, and line art. No signup required.",
+			"GPU-accelerated vectorization engine with neural upscaling and precision tracing. 10+ presets for logos, illustrations, and line art. Full source available.",
 		href: "/tools/traceforge",
 		icon: <Layers className="h-6 w-6" strokeWidth={1.5} />,
-		badge: "Live Tool",
+		badge: "Demo",
 		badgeColor: "lime",
-		status: "live",
+		status: "demo",
 		featured: true,
 	},
 	{
@@ -126,16 +126,18 @@ export function ToolsPage() {
 
 								{/* CTA */}
 								<div className="flex items-center gap-2 font-mono text-xs">
-									{tool.status === "live" ? (
+									{tool.status === "demo" ? (
 										<>
 											<Sparkles className="text-cyber-lime h-4 w-4" strokeWidth={1.5} />
-											<span className="text-cyber-lime">Try Now</span>
+											<span className="text-cyber-lime">View Demo</span>
 										</>
-									) : (
+									) : tool.status === "download" ? (
 										<>
 											<Download className="h-4 w-4 text-blue-400" strokeWidth={1.5} />
 											<span className="text-blue-400">Download</span>
 										</>
+									) : (
+										<span className="text-slate-text">Coming Soon</span>
 									)}
 									<ArrowUpRight
 										className="text-slate-text h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"

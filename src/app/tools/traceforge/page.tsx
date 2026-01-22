@@ -6,7 +6,7 @@ import { TraceForgeApp } from "@/components/traceforge";
 export const metadata: Metadata = {
 	title: "TraceForge",
 	description:
-		"Transform raster images into clean, optimized SVG vectors instantly. GPU-accelerated vectorization with 10+ presets for logos, illustrations, and line art. Free, no signup required.",
+		"GPU-accelerated vectorization engine combining Real-ESRGAN neural upscaling with Potrace and VTracer. 10+ presets for logos, illustrations, and line art. Open source portfolio project.",
 	keywords: [
 		"SVG converter",
 		"image to SVG",
@@ -17,25 +17,27 @@ export const metadata: Metadata = {
 		"image tracing",
 		"potrace",
 		"vtracer",
+		"Real-ESRGAN",
+		"neural upscaling",
 	],
 	openGraph: {
-		title: "TraceForge | Raster to Vector in Seconds",
+		title: "TraceForge | GPU-Accelerated Vectorization Engine",
 		description:
-			"Transform PNG, JPG, and WebP images into clean, optimized SVG vectors. GPU-accelerated with 10+ presets.",
+			"Neural upscaling meets precision tracing. Transform raster images into clean, optimized SVG vectors with 10+ presets.",
 		type: "website",
 		images: [
 			{
 				url: "/og-traceforge.png",
 				width: 1200,
 				height: 630,
-				alt: "TraceForge - Raster to Vector Converter",
+				alt: "TraceForge - GPU-Accelerated Vectorization Engine",
 			},
 		],
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "TraceForge | Raster to Vector in Seconds",
-		description: "Transform images into clean SVG vectors instantly. Free, no signup.",
+		title: "TraceForge | GPU-Accelerated Vectorization",
+		description: "Neural upscaling meets precision tracing. Open source portfolio project.",
 	},
 };
 
@@ -64,10 +66,12 @@ function TraceForgePageContent() {
 						<div className="text-cyber-lime">
 							<Layers className="h-8 w-8" strokeWidth={1.5} />
 						</div>
-						<div>
-							<span className="text-cyber-lime block font-mono text-xs tracking-wider uppercase">
-								<span className="mr-2 animate-pulse">●</span>
-								Live Tool
+						<div className="flex items-center gap-2">
+							<span className="border-cyber-lime/50 text-cyber-lime border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
+								Demo
+							</span>
+							<span className="text-slate-text border border-white/20 px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
+								Portfolio Project
 							</span>
 						</div>
 					</div>
@@ -79,9 +83,22 @@ function TraceForgePageContent() {
 					</h1>
 
 					<p className="text-slate-text max-w-2xl text-lg">
-						Transform PNG, JPG, and WebP images into clean, optimized SVG vectors. Powered by neural
-						upscaling and precision tracing algorithms. No signup required.
+						GPU-accelerated vectorization engine combining neural upscaling (Real-ESRGAN) with
+						precision tracing algorithms (Potrace, VTracer). 10+ presets optimized for logos,
+						illustrations, and line art.
 					</p>
+
+					{/* Demo notice */}
+					<div className="mt-6 flex items-start gap-3 border border-amber-400/30 bg-amber-400/5 p-4">
+						<div className="text-sm text-amber-400">⚡</div>
+						<div>
+							<p className="font-mono text-sm text-amber-400">GPU Backend Required</p>
+							<p className="text-slate-text mt-1 text-xs">
+								This demo showcases the interface and workflow. Full functionality requires GPU
+								infrastructure for Real-ESRGAN neural upscaling. Self-hosted deployment coming soon.
+							</p>
+						</div>
+					</div>
 				</header>
 
 				{/* Main App */}
@@ -90,19 +107,19 @@ function TraceForgePageContent() {
 				{/* Technical specs */}
 				<section className="mt-16 border-t border-white/10 pt-12">
 					<h2 className="text-mist-white mb-6 font-mono text-sm tracking-wider uppercase">
-						Under the Hood
+						Technical Architecture
 					</h2>
 					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 						<div className="space-y-2">
-							<h3 className="text-cyber-lime font-mono text-sm">Engines</h3>
+							<h3 className="text-cyber-lime font-mono text-sm">Tracing Engines</h3>
 							<p className="text-slate-text text-xs">
-								Potrace (classic bitmap tracing) + VTracer (modern multi-color)
+								Potrace (classic bitmap tracing) + VTracer (modern multi-color vectorization)
 							</p>
 						</div>
 						<div className="space-y-2">
-							<h3 className="text-cyber-lime font-mono text-sm">Upscaling</h3>
+							<h3 className="text-cyber-lime font-mono text-sm">Neural Upscaling</h3>
 							<p className="text-slate-text text-xs">
-								Neural super-resolution with CUDA acceleration (RTX 3080)
+								Real-ESRGAN 4x super-resolution with CUDA acceleration
 							</p>
 						</div>
 						<div className="space-y-2">
@@ -112,11 +129,24 @@ function TraceForgePageContent() {
 							</p>
 						</div>
 						<div className="space-y-2">
-							<h3 className="text-cyber-lime font-mono text-sm">Formats</h3>
+							<h3 className="text-cyber-lime font-mono text-sm">Stack</h3>
 							<p className="text-slate-text text-xs">
-								Input: PNG, JPG, WebP, GIF, BMP (max 20MB, 8192×8192)
+								Python/FastAPI backend, React frontend, Docker deployment
 							</p>
 						</div>
+					</div>
+
+					{/* Source code link */}
+					<div className="mt-8 flex items-center gap-4">
+						<a
+							href="https://github.com/alexmayhew/vectorizer"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-slate-text hover:text-cyber-lime flex items-center gap-2 border border-white/10 px-4 py-2 font-mono text-xs transition-colors hover:border-white/30"
+						>
+							<span>View Source on GitHub</span>
+							<span className="text-[10px] opacity-50">→</span>
+						</a>
 					</div>
 				</section>
 			</div>

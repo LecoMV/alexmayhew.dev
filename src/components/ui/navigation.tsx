@@ -40,7 +40,7 @@ const toolsDropdown: ToolItem[] = [
 		label: "TraceForge",
 		description: "Raster to SVG vectorization",
 		icon: <Layers className="h-4 w-4" strokeWidth={1.5} />,
-		badge: "Live",
+		badge: "Demo",
 		badgeColor: "lime",
 	},
 	{
