@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { m } from "framer-motion";
-import { ArrowRight, RefreshCw, Layers, Zap, Shield, Code } from "lucide-react";
+import { ArrowRight, RefreshCw, Layers, Zap, Shield, Code, Eraser } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useVectorizer, type Generator } from "@/lib/hooks/use-vectorizer";
 import { UploadZone } from "./upload-zone";
@@ -58,6 +58,7 @@ export function TraceForgeApp() {
 
 	const [generator, setGenerator] = useState<Generator>("potrace");
 	const [preset, setPreset] = useState("logo_smooth");
+	const [removeBackground, setRemoveBackground] = useState(false);
 
 	const handleFileSelect = useCallback(
 		async (file: File) => {
@@ -71,9 +72,10 @@ export function TraceForgeApp() {
 		await process(taskId, {
 			generator,
 			preset,
+			remove_background: removeBackground,
 			calculate_quality: true,
 		});
-	}, [taskId, generator, preset, process]);
+	}, [taskId, generator, preset, removeBackground, process]);
 
 	const handleGeneratorChange = useCallback((newGenerator: Generator) => {
 		setGenerator(newGenerator);
@@ -167,6 +169,46 @@ export function TraceForgeApp() {
 						/>
 					</div>
 
+					{/* Pre-processing options */}
+					<div className="border border-white/10 p-4">
+						<h3 className="text-slate-text mb-3 font-mono text-xs tracking-wider uppercase">
+							Pre-processing
+						</h3>
+						<label
+							className={cn(
+								"flex cursor-pointer items-center gap-3 transition-opacity",
+								isProcessing && "cursor-not-allowed opacity-50"
+							)}
+						>
+							<button
+								type="button"
+								role="switch"
+								aria-checked={removeBackground}
+								onClick={() => !isProcessing && setRemoveBackground(!removeBackground)}
+								disabled={isProcessing}
+								className={cn(
+									"relative h-6 w-11 rounded-sm transition-colors duration-200",
+									removeBackground ? "bg-cyber-lime" : "bg-white/20"
+								)}
+							>
+								<span
+									className={cn(
+										"bg-void-navy absolute top-1 left-1 h-4 w-4 rounded-sm transition-transform duration-200",
+										removeBackground && "translate-x-5"
+									)}
+								/>
+							</button>
+							<div className="flex items-center gap-2">
+								<Eraser className="text-slate-text h-4 w-4" strokeWidth={1.5} />
+								<span className="text-mist-white font-mono text-sm">Remove Background</span>
+							</div>
+						</label>
+						<p className="text-slate-text mt-2 text-[10px] leading-relaxed">
+							Uses AI (rembg) to remove backgrounds before vectorization. Recommended for images
+							with white or colored backgrounds.
+						</p>
+					</div>
+
 					{/* Action buttons */}
 					<div className="flex gap-3">
 						<button
@@ -246,7 +288,9 @@ export function TraceForgeApp() {
 					</li>
 					<li className="flex items-start gap-2">
 						<span className="text-cyber-lime">•</span>
-						<span>Remove backgrounds before uploading for logos</span>
+						<span>
+							Enable &ldquo;Remove Background&rdquo; for images with white/colored backgrounds
+						</span>
 					</li>
 					<li className="flex items-start gap-2">
 						<span className="text-cyber-lime">•</span>
