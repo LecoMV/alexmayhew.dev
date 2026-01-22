@@ -47,8 +47,8 @@
 	"r2_buckets": [
 		{
 			"binding": "NEXT_CACHE",
-			"bucket_name": "alexmayhew-dev-cache"
-		}
+			"bucket_name": "alexmayhew-dev-cache",
+		},
 	],
 	// Keep workers.dev subdomain active until custom domain is set up in dashboard
 	"workers_dev": true,
