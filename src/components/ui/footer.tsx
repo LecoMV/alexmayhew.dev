@@ -56,11 +56,11 @@ export function Footer() {
 					<div className="md:col-span-5">
 						<Link href="/" className="group inline-flex items-center gap-3">
 							<Image
-								src="/favicon.svg"
-								alt="Alex Mayhew"
-								width={48}
-								height={48}
-								className="h-12 w-12"
+								src="/am-icon-optimized_sized.svg"
+								alt="AM"
+								width={40}
+								height={24}
+								className="h-6 w-auto"
 							/>
 							<span className="font-mono text-sm tracking-tight">
 								<span className="text-cyber-lime">alex</span>
