@@ -94,9 +94,9 @@ function TraceForgePageContent() {
 						<div>
 							<p className="font-mono text-sm text-amber-400">Neural Upscaling Disabled</p>
 							<p className="text-slate-text mt-1 text-xs">
-								Full vectorization is functional — Potrace, VTracer, all presets, and SVGO optimization
-								work as expected. Only Real-ESRGAN neural upscaling is disabled (requires GPU backend).
-								Live deployment coming soon.
+								Full vectorization is functional — Potrace, VTracer, all presets, and SVGO
+								optimization work as expected. Only Real-ESRGAN neural upscaling is disabled
+								(requires GPU backend). Live deployment coming soon.
 							</p>
 						</div>
 					</div>
