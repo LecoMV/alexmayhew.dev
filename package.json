@@ -77,7 +77,7 @@
 		"tailwindcss": "^4",
 		"typescript": "^5",
 		"vitest": "^4.0.17",
-		"wrangler": "^4.59.1"
+		"wrangler": "^4.60.0"
 	},
 	"lint-staged": {
 		"*.{ts,tsx}": [

@@ -113,6 +113,7 @@ export function SystemStatus({ apiUrl, onStatusChange }: SystemStatusProps) {
 			return;
 		}
 
+		// Don't blank UI - just show subtle checking indicator
 		setIsChecking(true);
 		try {
 			const response = await fetch(`${url}/system-status`, {
@@ -125,11 +126,13 @@ export function SystemStatus({ apiUrl, onStatusChange }: SystemStatusProps) {
 				setStatus(data);
 				onStatusChange?.(data.api.online && data.worker.online);
 			} else {
-				setStatus(null);
+				// Keep existing status on error - stale-while-revalidate pattern
+				// Only notify parent that status check failed
 				onStatusChange?.(false);
 			}
 		} catch {
-			setStatus(null);
+			// Keep existing status on error - prevents UI blanking
+			// Only notify parent that status check failed
 			onStatusChange?.(false);
 		} finally {
 			setIsChecking(false);
