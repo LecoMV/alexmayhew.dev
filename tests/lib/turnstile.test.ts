@@ -2,24 +2,23 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 
 describe("verifyTurnstileToken", () => {
-	const originalEnv = process.env.NODE_ENV;
 	const mockFetch = vi.fn();
 
 	beforeEach(() => {
 		vi.clearAllMocks();
-		global.fetch = mockFetch;
+		vi.stubGlobal("fetch", mockFetch);
 	});
 
 	afterEach(() => {
-		process.env.NODE_ENV = originalEnv;
-		delete process.env.TURNSTILE_SECRET_KEY;
+		vi.unstubAllEnvs();
+		vi.unstubAllGlobals();
 		vi.restoreAllMocks();
 	});
 
 	describe("without secret key", () => {
 		it("should return true in development without key", async () => {
-			process.env.NODE_ENV = "development";
-			delete process.env.TURNSTILE_SECRET_KEY;
+			vi.stubEnv("NODE_ENV", "development");
+			vi.stubEnv("TURNSTILE_SECRET_KEY", "");
 
 			const result = await verifyTurnstileToken("test-token");
 
@@ -28,8 +27,8 @@ describe("verifyTurnstileToken", () => {
 		});
 
 		it("should return false in production without key", async () => {
-			process.env.NODE_ENV = "production";
-			delete process.env.TURNSTILE_SECRET_KEY;
+			vi.stubEnv("NODE_ENV", "production");
+			vi.stubEnv("TURNSTILE_SECRET_KEY", "");
 
 			const result = await verifyTurnstileToken("test-token");
 
@@ -38,8 +37,8 @@ describe("verifyTurnstileToken", () => {
 		});
 
 		it("should return false in test without key (non-development)", async () => {
-			process.env.NODE_ENV = "test";
-			delete process.env.TURNSTILE_SECRET_KEY;
+			vi.stubEnv("NODE_ENV", "test");
+			vi.stubEnv("TURNSTILE_SECRET_KEY", "");
 
 			const result = await verifyTurnstileToken("test-token");
 
@@ -50,7 +49,7 @@ describe("verifyTurnstileToken", () => {
 
 	describe("with secret key", () => {
 		beforeEach(() => {
-			process.env.TURNSTILE_SECRET_KEY = "test-secret-key";
+			vi.stubEnv("TURNSTILE_SECRET_KEY", "test-secret-key");
 		});
 
 		it("should return true for valid token", async () => {
@@ -114,7 +113,7 @@ describe("verifyTurnstileToken", () => {
 
 	describe("error handling", () => {
 		beforeEach(() => {
-			process.env.TURNSTILE_SECRET_KEY = "test-secret-key";
+			vi.stubEnv("TURNSTILE_SECRET_KEY", "test-secret-key");
 		});
 
 		it("should return false on network error", async () => {

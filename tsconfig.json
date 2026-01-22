@@ -22,7 +22,7 @@
 			"@/*": ["./src/*"],
 			"fumadocs-mdx:collections/*": ["./.source/*"]
 		},
-		"types": ["./cloudflare-env.d.ts", "node"]
+		"types": ["./cloudflare-env.d.ts", "node", "vitest/globals"]
 	},
 	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", ".source/**/*.ts"],
 	"exclude": ["node_modules"]
