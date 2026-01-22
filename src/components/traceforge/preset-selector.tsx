@@ -68,9 +68,10 @@ const potracePresets: PresetOption[] = [
 	},
 	{
 		id: "color_logo",
-		label: "Color Logo",
-		description: "Multi-color logo optimization",
+		label: "Color Extract",
+		description: "Better at extracting colored content (output is still single-color)",
 		icon: <Palette className="h-4 w-4" strokeWidth={1.5} />,
+		warning: "Potrace outputs single-color only. Use VTracer for multi-color SVGs.",
 	},
 ];
 
@@ -262,6 +263,9 @@ export function PresetSelector({
 						<div className="space-y-4 border border-white/10 bg-white/5 p-4">
 							<div>
 								<h4 className="text-cyber-lime mb-2 font-mono text-xs">When to use Potrace</h4>
+								<p className="text-slate-text/70 mb-1 text-[10px] italic">
+									Single-color output only
+								</p>
 								<ul className="text-slate-text space-y-1 text-[10px]">
 									<li>• Single-color logos with sharp edges</li>
 									<li>• Line art and sketches</li>
@@ -271,14 +275,16 @@ export function PresetSelector({
 							</div>
 							<div>
 								<h4 className="text-cyber-lime mb-2 font-mono text-xs">When to use VTracer</h4>
+								<p className="text-slate-text/70 mb-1 text-[10px] italic">
+									Multi-color output supported
+								</p>
 								<ul className="text-slate-text space-y-1 text-[10px]">
 									<li>
 										• <span className="text-mist-white">Icons with circles or smooth curves</span>{" "}
 										(recommended)
 									</li>
-									<li>• Multi-color graphics</li>
-									<li>• Illustrations with gradients</li>
-									<li>• When preserving colors matters</li>
+									<li>• Multi-color graphics and logos</li>
+									<li>• When you need colors preserved in output</li>
 								</ul>
 							</div>
 							<div className="border-t border-white/10 pt-3">
