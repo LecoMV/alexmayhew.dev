@@ -37,6 +37,7 @@ export async function POST(
 			"smooth",
 			"line_art",
 			"highres",
+			"icon",
 		];
 		const vtracerPresets = [
 			"default",
@@ -46,6 +47,7 @@ export async function POST(
 			"line_art",
 			"detailed",
 			"fast",
+			"icon",
 		];
 		const validPresets = generator === "potrace" ? potracePresets : vtracerPresets;
 		const preset = body.preset || (generator === "potrace" ? "logo_smooth" : "logo");
