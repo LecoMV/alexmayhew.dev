@@ -4,11 +4,11 @@ import { AboutPage } from "@/components/pages";
 export const metadata: Metadata = {
 	title: "About",
 	description:
-		"Full-stack developer with 6+ years of experience building high-precision digital instruments. Specializing in React, Next.js, TypeScript, and system architecture.",
+		"Technical advisor helping founders make architectural decisions that compound into competitive advantage. Specializing in React, Next.js, TypeScript, and enterprise-grade systems.",
 	openGraph: {
 		title: "About | Alex Mayhew",
 		description:
-			"Full-stack developer with 6+ years experience. Specializing in React, Next.js, and system architecture.",
+			"Technical advisor partnering with select clients to architect enterprise-grade solutions. Specializing in React, Next.js, and system architecture.",
 		type: "profile",
 		images: [
 			{
@@ -22,7 +22,8 @@ export const metadata: Metadata = {
 	twitter: {
 		card: "summary_large_image",
 		title: "About | Alex Mayhew",
-		description: "Full-stack developer specializing in React, Next.js, and system architecture.",
+		description:
+			"Technical advisor specializing in React, Next.js, and enterprise system architecture.",
 		images: ["/og-image.png"],
 	},
 };

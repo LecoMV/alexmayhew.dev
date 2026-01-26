@@ -1,89 +1,74 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+	VECTORIZER_CONFIG,
+	taskIdSchema,
+	processOptionsSchema,
+	formatZodError,
+} from "@/lib/vectorizer";
 
-const VECTORIZER_API = process.env.VECTORIZER_API_URL || "https://api.alexmayhew.dev";
-const VECTORIZER_API_KEY = process.env.VECTORIZER_API_KEY || "";
-
-interface ProcessOptions {
-	generator?: "potrace" | "vtracer";
-	preset?: string;
-	remove_background?: boolean;
-	calculate_quality?: boolean;
-}
-
+/**
+ * POST /api/vectorize/[taskId]/process
+ * Start vectorization processing with validated options
+ */
 export async function POST(
 	request: NextRequest,
 	{ params }: { params: Promise<{ taskId: string }> }
 ) {
 	try {
+		// Validate API key is configured
+		if (!VECTORIZER_CONFIG.apiKey) {
+			console.error("[TraceForge] API key not configured");
+			return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+		}
+
 		const { taskId } = await params;
-		const body: ProcessOptions = await request.json();
 
-		// Validate generator
-		const validGenerators = ["potrace", "vtracer"];
-		const generator = body.generator || "potrace";
-		if (!validGenerators.includes(generator)) {
-			return NextResponse.json({ error: "Invalid generator" }, { status: 400 });
+		// Validate taskId format (prevents path traversal and injection)
+		const taskIdResult = taskIdSchema.safeParse(taskId);
+		if (!taskIdResult.success) {
+			return NextResponse.json({ error: "Invalid task ID format" }, { status: 400 });
 		}
 
-		// Validate preset based on generator
-		const potracePresets = [
-			"logo_smooth",
-			"logo",
-			"logo_geometric",
-			"color_logo",
-			"photo",
-			"illustration",
-			"detailed",
-			"smooth",
-			"line_art",
-			"highres",
-			"icon",
-		];
-		const vtracerPresets = [
-			"default",
-			"logo",
-			"logo_smooth",
-			"photo",
-			"line_art",
-			"detailed",
-			"fast",
-			"icon",
-		];
-		const validPresets = generator === "potrace" ? potracePresets : vtracerPresets;
-		const preset = body.preset || (generator === "potrace" ? "logo_smooth" : "logo");
+		// Parse and validate request body
+		const body = await request.json();
+		const optionsResult = processOptionsSchema.safeParse(body);
 
-		if (!validPresets.includes(preset)) {
-			return NextResponse.json({ error: `Invalid preset for ${generator}` }, { status: 400 });
+		if (!optionsResult.success) {
+			return NextResponse.json({ error: formatZodError(optionsResult.error) }, { status: 400 });
 		}
 
-		const response = await fetch(`${VECTORIZER_API}/process/${taskId}`, {
+		const options = optionsResult.data;
+
+		const response = await fetch(`${VECTORIZER_CONFIG.apiUrl}/process/${taskIdResult.data}`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				"X-API-Key": VECTORIZER_API_KEY,
+				"X-API-Key": VECTORIZER_CONFIG.apiKey,
 			},
 			body: JSON.stringify({
-				generator,
-				preset,
-				remove_background: body.remove_background || false,
-				calculate_quality: body.calculate_quality ?? true,
+				generator: options.generator,
+				preset: options.preset,
+				remove_background: options.remove_background,
+				calculate_quality: options.calculate_quality,
 			}),
 		});
 
 		if (!response.ok) {
-			const errorData = (await response
-				.json()
-				.catch(() => ({ detail: "Process request failed" }))) as { detail?: string };
-			return NextResponse.json(
-				{ error: errorData.detail || "Process failed" },
-				{ status: response.status }
-			);
+			const errorData = await response.json().catch(() => ({ detail: "Process request failed" }));
+			const detail =
+				errorData && typeof errorData === "object" && "detail" in errorData
+					? String(errorData.detail)
+					: "Process failed";
+			return NextResponse.json({ error: detail }, { status: response.status });
 		}
 
 		const data = await response.json();
 		return NextResponse.json(data);
 	} catch (error) {
-		console.error("Process error:", error);
+		console.error(
+			"[TraceForge] Process error:",
+			error instanceof Error ? error.message : "Unknown error"
+		);
 		return NextResponse.json({ error: "Internal server error" }, { status: 500 });
 	}
 }

@@ -1,0 +1,19 @@
+{
+	"mcpServers": {
+		"github": {
+			"command": "/home/deploy/.config/nvm/versions/node/v22.21.1/bin/npx",
+			"args": ["-y", "@modelcontextprotocol/server-github"],
+			"env": {
+				"GITHUB_PERSONAL_ACCESS_TOKEN": "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",
+				"PATH": "/home/deploy/.config/nvm/versions/node/v22.21.1/bin:/usr/local/bin:/usr/bin:/bin"
+			}
+		},
+		"beads": {
+			"command": "/home/deploy/.local/bin/beads-mcp",
+			"args": [],
+			"env": {
+				"PATH": "/home/deploy/go/bin:/home/deploy/.local/bin:/usr/local/bin:/usr/bin:/bin"
+			}
+		}
+	}
+}

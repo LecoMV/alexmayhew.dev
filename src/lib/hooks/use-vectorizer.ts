@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 
 export type VectorizerStatus =
 	| "idle"
@@ -56,65 +56,147 @@ const initialState: VectorizerState = {
 	svgContent: null,
 };
 
+/**
+ * Custom hook for vectorization workflow
+ * Handles upload, processing, status polling, and download
+ *
+ * Includes proper cleanup for:
+ * - Object URLs (prevents memory leaks)
+ * - Polling intervals (prevents zombie timers)
+ * - AbortController (prevents stale requests)
+ */
 export function useVectorizer() {
 	const [state, setState] = useState<VectorizerState>(initialState);
-	const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
-	const reset = useCallback(() => {
+	// Refs for cleanup
+	const pollingRef = useRef<NodeJS.Timeout | null>(null);
+	const abortControllerRef = useRef<AbortController | null>(null);
+	const currentPreviewUrlRef = useRef<string | null>(null);
+
+	/**
+	 * Clean up object URL to prevent memory leaks
+	 */
+	const revokePreviewUrl = useCallback(() => {
+		if (currentPreviewUrlRef.current) {
+			URL.revokeObjectURL(currentPreviewUrlRef.current);
+			currentPreviewUrlRef.current = null;
+		}
+	}, []);
+
+	/**
+	 * Clean up polling interval
+	 */
+	const stopPolling = useCallback(() => {
 		if (pollingRef.current) {
 			clearInterval(pollingRef.current);
 			pollingRef.current = null;
 		}
-		if (state.previewUrl) {
-			URL.revokeObjectURL(state.previewUrl);
-		}
-		setState(initialState);
-	}, [state.previewUrl]);
+	}, []);
 
-	const upload = useCallback(async (file: File) => {
-		setState((prev) => ({
-			...prev,
-			status: "uploading",
-			error: null,
-			progress: ["Uploading image..."],
-			previewUrl: URL.createObjectURL(file),
-		}));
-
-		try {
-			const formData = new FormData();
-			formData.append("file", file);
-
-			const response = await fetch("/api/vectorize", {
-				method: "POST",
-				body: formData,
-			});
-
-			if (!response.ok) {
-				const errorData = (await response.json()) as { error?: string };
-				throw new Error(errorData.error || "Upload failed");
-			}
-
-			const data = (await response.json()) as { task_id: string };
-			setState((prev) => ({
-				...prev,
-				status: "uploaded",
-				taskId: data.task_id,
-				progress: [...prev.progress, "Upload complete. Ready to vectorize."],
-			}));
-
-			return data.task_id;
-		} catch (error) {
-			const message = error instanceof Error ? error.message : "Upload failed";
-			setState((prev) => ({
-				...prev,
-				status: "error",
-				error: message,
-				progress: [...prev.progress, `Error: ${message}`],
-			}));
-			return null;
+	/**
+	 * Cancel any pending requests
+	 */
+	const cancelRequests = useCallback(() => {
+		if (abortControllerRef.current) {
+			abortControllerRef.current.abort();
+			abortControllerRef.current = null;
 		}
 	}, []);
 
+	/**
+	 * Full cleanup - called on reset and unmount
+	 */
+	const cleanup = useCallback(() => {
+		stopPolling();
+		cancelRequests();
+		revokePreviewUrl();
+	}, [stopPolling, cancelRequests, revokePreviewUrl]);
+
+	// Cleanup on unmount
+	useEffect(() => {
+		return cleanup;
+	}, [cleanup]);
+
+	/**
+	 * Reset to initial state with full cleanup
+	 */
+	const reset = useCallback(() => {
+		cleanup();
+		setState(initialState);
+	}, [cleanup]);
+
+	/**
+	 * Upload a file for vectorization
+	 */
+	const upload = useCallback(
+		async (file: File) => {
+			// Clean up previous preview URL before creating new one
+			revokePreviewUrl();
+
+			// Create new preview URL and track it
+			const newPreviewUrl = URL.createObjectURL(file);
+			currentPreviewUrlRef.current = newPreviewUrl;
+
+			setState((prev) => ({
+				...prev,
+				status: "uploading",
+				error: null,
+				progress: ["Uploading image..."],
+				previewUrl: newPreviewUrl,
+				svgContent: null,
+				result: null,
+			}));
+
+			// Create abort controller for this request
+			cancelRequests();
+			abortControllerRef.current = new AbortController();
+
+			try {
+				const formData = new FormData();
+				formData.append("file", file);
+
+				const response = await fetch("/api/vectorize", {
+					method: "POST",
+					body: formData,
+					signal: abortControllerRef.current.signal,
+				});
+
+				if (!response.ok) {
+					const errorData = (await response.json()) as { error?: string };
+					throw new Error(errorData.error || "Upload failed");
+				}
+
+				const data = (await response.json()) as { task_id: string };
+				setState((prev) => ({
+					...prev,
+					status: "uploaded",
+					taskId: data.task_id,
+					progress: [...prev.progress, "Upload complete. Ready to vectorize."],
+				}));
+
+				return data.task_id;
+			} catch (error) {
+				// Don't update state if request was aborted
+				if (error instanceof Error && error.name === "AbortError") {
+					return null;
+				}
+
+				const message = error instanceof Error ? error.message : "Upload failed";
+				setState((prev) => ({
+					...prev,
+					status: "error",
+					error: message,
+					progress: [...prev.progress, `Error: ${message}`],
+				}));
+				return null;
+			}
+		},
+		[revokePreviewUrl, cancelRequests]
+	);
+
+	/**
+	 * Poll for task status
+	 */
 	const pollStatus = useCallback(async (taskId: string): Promise<boolean> => {
 		try {
 			const response = await fetch(`/api/vectorize/${taskId}/status`);
@@ -128,7 +210,7 @@ export function useVectorizer() {
 				result?: ProcessingResult;
 			};
 
-			// Update progress logs
+			// Update progress logs (deduplicated)
 			const logs = data.logs;
 			if (logs && logs.length > 0) {
 				setState((prev) => {
@@ -165,12 +247,18 @@ export function useVectorizer() {
 
 			return false;
 		} catch (error) {
-			console.error("Status poll error:", error);
+			// Log but don't fail the whole process on a single poll error
+			if (process.env.NODE_ENV === "development") {
+				console.warn("[TraceForge] Status poll error:", error);
+			}
 			return false;
 		}
 	}, []);
 
-	const process = useCallback(
+	/**
+	 * Start vectorization processing
+	 */
+	const processImage = useCallback(
 		async (taskId: string, options: ProcessOptions) => {
 			setState((prev) => ({
 				...prev,
@@ -181,11 +269,16 @@ export function useVectorizer() {
 				],
 			}));
 
+			// Cancel any existing requests
+			cancelRequests();
+			abortControllerRef.current = new AbortController();
+
 			try {
 				const response = await fetch(`/api/vectorize/${taskId}/process`, {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify(options),
+					signal: abortControllerRef.current.signal,
 				});
 
 				if (!response.ok) {
@@ -193,15 +286,22 @@ export function useVectorizer() {
 					throw new Error(errorData.error || "Process request failed");
 				}
 
+				// Stop any existing polling before starting new one
+				stopPolling();
+
 				// Start polling for status
 				pollingRef.current = setInterval(async () => {
 					const done = await pollStatus(taskId);
-					if (done && pollingRef.current) {
-						clearInterval(pollingRef.current);
-						pollingRef.current = null;
+					if (done) {
+						stopPolling();
 					}
 				}, 2000);
 			} catch (error) {
+				// Don't update state if request was aborted
+				if (error instanceof Error && error.name === "AbortError") {
+					return;
+				}
+
 				const message = error instanceof Error ? error.message : "Process failed";
 				setState((prev) => ({
 					...prev,
@@ -211,9 +311,12 @@ export function useVectorizer() {
 				}));
 			}
 		},
-		[pollStatus]
+		[pollStatus, cancelRequests, stopPolling]
 	);
 
+	/**
+	 * Download the vectorized SVG
+	 */
 	const downloadSvg = useCallback(async () => {
 		if (!state.taskId) return null;
 
@@ -237,15 +340,22 @@ export function useVectorizer() {
 			document.body.appendChild(a);
 			a.click();
 			document.body.removeChild(a);
+
+			// Clean up blob URL immediately
 			URL.revokeObjectURL(url);
 
 			return svgContent;
 		} catch (error) {
-			console.error("Download error:", error);
+			if (process.env.NODE_ENV === "development") {
+				console.warn("[TraceForge] Download error:", error);
+			}
 			return null;
 		}
 	}, [state.taskId]);
 
+	/**
+	 * Get SVG preview without downloading
+	 */
 	const getSvgPreview = useCallback(async () => {
 		if (!state.taskId || state.svgContent) return state.svgContent;
 
@@ -259,7 +369,9 @@ export function useVectorizer() {
 			setState((prev) => ({ ...prev, svgContent }));
 			return svgContent;
 		} catch (error) {
-			console.error("Preview error:", error);
+			if (process.env.NODE_ENV === "development") {
+				console.warn("[TraceForge] Preview error:", error);
+			}
 			return null;
 		}
 	}, [state.taskId, state.svgContent]);
@@ -267,7 +379,7 @@ export function useVectorizer() {
 	return {
 		...state,
 		upload,
-		process,
+		process: processImage,
 		reset,
 		downloadSvg,
 		getSvgPreview,

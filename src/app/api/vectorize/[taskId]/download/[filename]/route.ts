@@ -1,26 +1,44 @@
 import { NextRequest, NextResponse } from "next/server";
+import { VECTORIZER_CONFIG, taskIdSchema, filenameSchema } from "@/lib/vectorizer";
 
-const VECTORIZER_API = process.env.VECTORIZER_API_URL || "https://api.alexmayhew.dev";
-const VECTORIZER_API_KEY = process.env.VECTORIZER_API_KEY || "";
-
+/**
+ * GET /api/vectorize/[taskId]/download/[filename]
+ * Download processed files with validated parameters
+ */
 export async function GET(
 	_request: NextRequest,
 	{ params }: { params: Promise<{ taskId: string; filename: string }> }
 ) {
 	try {
+		// Validate API key is configured
+		if (!VECTORIZER_CONFIG.apiKey) {
+			console.error("[TraceForge] API key not configured");
+			return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
+		}
+
 		const { taskId, filename } = await params;
 
-		// Validate filename to prevent path traversal
-		if (filename.includes("..") || filename.includes("/") || filename.includes("\\")) {
+		// Validate taskId format (prevents path traversal and injection)
+		const taskIdResult = taskIdSchema.safeParse(taskId);
+		if (!taskIdResult.success) {
+			return NextResponse.json({ error: "Invalid task ID format" }, { status: 400 });
+		}
+
+		// Validate filename (prevents path traversal and header injection)
+		const filenameResult = filenameSchema.safeParse(filename);
+		if (!filenameResult.success) {
 			return NextResponse.json({ error: "Invalid filename" }, { status: 400 });
 		}
 
-		const response = await fetch(`${VECTORIZER_API}/download/${taskId}/${filename}`, {
-			method: "GET",
-			headers: {
-				"X-API-Key": VECTORIZER_API_KEY,
-			},
-		});
+		const response = await fetch(
+			`${VECTORIZER_CONFIG.apiUrl}/download/${taskIdResult.data}/${filenameResult.data}`,
+			{
+				method: "GET",
+				headers: {
+					"X-API-Key": VECTORIZER_CONFIG.apiKey,
+				},
+			}
+		);
 
 		if (!response.ok) {
 			return NextResponse.json({ error: "File not found" }, { status: response.status });
@@ -29,15 +47,24 @@ export async function GET(
 		const contentType = response.headers.get("content-type") || "application/octet-stream";
 		const buffer = await response.arrayBuffer();
 
+		// Sanitize filename for Content-Disposition header
+		// Only allow alphanumeric, dash, underscore, and dot
+		const safeFilename = filenameResult.data.replace(/[^a-zA-Z0-9._-]/g, "_");
+
 		return new NextResponse(buffer, {
 			headers: {
 				"Content-Type": contentType,
-				"Content-Disposition": `attachment; filename="${filename}"`,
+				"Content-Disposition": `attachment; filename="${safeFilename}"`,
 				"Cache-Control": "public, max-age=3600",
+				// Security headers
+				"X-Content-Type-Options": "nosniff",
 			},
 		});
 	} catch (error) {
-		console.error("Download error:", error);
+		console.error(
+			"[TraceForge] Download error:",
+			error instanceof Error ? error.message : "Unknown error"
+		);
 		return NextResponse.json({ error: "Internal server error" }, { status: 500 });
 	}
 }

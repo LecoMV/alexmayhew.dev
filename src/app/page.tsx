@@ -35,19 +35,20 @@ const services = [
 	{
 		icon: Terminal,
 		title: "Full-Stack Development",
-		description: "End-to-end web applications built with modern frameworks and best practices.",
+		description:
+			"End-to-end web applications architected for scale, security, and long-term maintainability.",
 		code: "dev.fullstack()",
 	},
 	{
 		icon: Layers,
 		title: "System Architecture",
-		description: "Scalable, maintainable systems designed for growth and performance.",
+		description: "Production systems designed to scale from MVP to millions without rewrites.",
 		code: "sys.architect()",
 	},
 	{
 		icon: Zap,
 		title: "Performance Engineering",
-		description: "Optimized experiences with sub-second load times and smooth interactions.",
+		description: "Optimized experiences that convert users and reduce infrastructure costs.",
 		code: "perf.optimize()",
 	},
 ];
@@ -68,12 +69,12 @@ export default function Home() {
 						<m.div className="flex flex-col gap-2" variants={fadeInUp}>
 							<h1 className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase sm:text-sm">
 								<span className="mr-2 animate-pulse">●</span>
-								System Status: Online
+								Technical Advisor
 							</h1>
 							<h2 className="text-4xl leading-[1.1] font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-								Atmospheric
+								Strategic
 								<br />
-								<span className="text-slate-text">Engineering.</span>
+								<span className="text-slate-text">Architecture.</span>
 							</h2>
 						</m.div>
 
@@ -83,8 +84,8 @@ export default function Home() {
 							className="text-slate-text max-w-xl text-lg leading-relaxed font-normal sm:text-xl"
 							variants={fadeInUp}
 						>
-							Crafting high-precision digital instruments for the web. Rejecting the generic.
-							Embracing the tactile, the heavy, and the responsive.
+							I architect production systems that scale from MVP to millions. When your tech
+							decisions have business consequences, you need strategic guidance—not just code.
 						</m.p>
 
 						<m.div className="mt-4 flex items-center gap-6" variants={fadeInUp}>
@@ -93,7 +94,7 @@ export default function Home() {
 								className="group hover:border-cyber-lime relative border border-white/20 px-6 py-3 transition-colors duration-300"
 							>
 								<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">
-									INITIALIZE_PROJECT()
+									START_CONVERSATION()
 								</span>
 								<m.div
 									className="bg-cyber-lime/5 absolute inset-0"
@@ -232,10 +233,10 @@ export default function Home() {
 						<div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
 							<div>
 								<h2 className="mb-2 font-mono text-2xl tracking-tight md:text-3xl">
-									Ready to build something exceptional?
+									Ready to architect something exceptional?
 								</h2>
 								<p className="text-slate-text max-w-xl">
-									Transform your vision into a high-precision digital reality.
+									Partner with me to transform your vision into enterprise-grade digital reality.
 								</p>
 							</div>
 
@@ -244,7 +245,7 @@ export default function Home() {
 								className="group hover:border-cyber-lime relative flex items-center gap-3 border border-white/20 px-6 py-4 transition-colors duration-300"
 							>
 								<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">
-									START_PROJECT()
+									INITIATE_PARTNERSHIP()
 								</span>
 								<ArrowRight
 									className="text-slate-text group-hover:text-cyber-lime h-4 w-4 transition-all duration-300 group-hover:translate-x-1"

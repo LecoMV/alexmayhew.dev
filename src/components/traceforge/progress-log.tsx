@@ -58,14 +58,22 @@ export function ProgressLog({ logs, status }: ProgressLogProps) {
 			</div>
 
 			{/* Log content */}
-			<div ref={scrollRef} className="h-40 overflow-y-auto p-4 font-mono text-xs">
+			<div
+				ref={scrollRef}
+				className="h-40 overflow-y-auto p-4 font-mono text-xs"
+				role="log"
+				aria-live="polite"
+				aria-label="Process log"
+			>
 				<AnimatePresence initial={false}>
 					{logs.length === 0 ? (
 						<p className="text-slate-text">Waiting for input...</p>
 					) : (
 						logs.map((log, index) => (
 							<m.div
-								key={index}
+								// Use combination of content hash and index for stable keys
+								// This prevents animation glitches while handling duplicate logs
+								key={`${log.slice(0, 20)}-${index}`}
 								initial={{ opacity: 0, x: -10 }}
 								animate={{ opacity: 1, x: 0 }}
 								transition={{ duration: 0.15 }}
@@ -74,7 +82,9 @@ export function ProgressLog({ logs, status }: ProgressLogProps) {
 									log.startsWith("Error:") ? "text-burnt-ember" : "text-slate-text"
 								)}
 							>
-								<span className="text-cyber-lime shrink-0 select-none">›</span>
+								<span className="text-cyber-lime shrink-0 select-none" aria-hidden="true">
+									›
+								</span>
 								<span className="break-all">{log}</span>
 							</m.div>
 						))

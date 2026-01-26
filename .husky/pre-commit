@@ -1,1 +1,4 @@
+# Run beads pre-commit hook
+bd hooks run pre-commit 2>/dev/null || true
+
 npx lint-staged

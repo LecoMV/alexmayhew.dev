@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { m } from "framer-motion";
 import { Download, Copy, Check, ZoomIn, ZoomOut, RotateCcw, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { sanitizeSvg } from "@/lib/vectorizer/sanitize";
 import type { ProcessingResult } from "@/lib/hooks/use-vectorizer";
 
 interface ResultViewerProps {
@@ -35,6 +36,13 @@ export function ResultViewer({
 			setLoadedSvg(svgContent);
 		}
 	}, [svgContent, result, onGetPreview]);
+
+	// Memoize sanitized SVG to prevent re-sanitization on every render
+	// This is critical for security - SVG content is sanitized before rendering
+	const sanitizedSvg = useMemo(() => {
+		if (!loadedSvg) return null;
+		return sanitizeSvg(loadedSvg);
+	}, [loadedSvg]);
 
 	const handleCopy = async () => {
 		if (loadedSvg) {
@@ -219,10 +227,11 @@ export function ResultViewer({
 										className="max-h-[300px] max-w-[200px] object-contain"
 									/>
 								)}
-								{loadedSvg && (
+								{sanitizedSvg && (
 									<div
 										className="max-h-[300px] max-w-[200px] object-contain"
-										dangerouslySetInnerHTML={{ __html: loadedSvg }}
+										// SVG is sanitized via DOMPurify to prevent XSS
+										dangerouslySetInnerHTML={{ __html: sanitizedSvg }}
 									/>
 								)}
 							</div>
@@ -233,10 +242,11 @@ export function ResultViewer({
 								alt="Original"
 								className="max-h-full max-w-full object-contain"
 							/>
-						) : loadedSvg ? (
+						) : sanitizedSvg ? (
 							<div
 								className="max-h-full max-w-full [&>svg]:max-h-full [&>svg]:max-w-full"
-								dangerouslySetInnerHTML={{ __html: loadedSvg }}
+								// SVG is sanitized via DOMPurify to prevent XSS
+								dangerouslySetInnerHTML={{ __html: sanitizedSvg }}
 							/>
 						) : (
 							<div className="text-slate-text font-mono text-sm">Loading preview...</div>

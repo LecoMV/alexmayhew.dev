@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { VECTORIZER_CONFIG, taskIdSchema } from "@/lib/vectorizer";
 
-const VECTORIZER_API = process.env.VECTORIZER_API_URL || "https://api.alexmayhew.dev";
-
+/**
+ * GET /api/vectorize/[taskId]/status
+ * Check processing status with validated task ID
+ */
 export async function GET(
 	_request: NextRequest,
 	{ params }: { params: Promise<{ taskId: string }> }
@@ -9,7 +12,13 @@ export async function GET(
 	try {
 		const { taskId } = await params;
 
-		const response = await fetch(`${VECTORIZER_API}/status/${taskId}`, {
+		// Validate taskId format (prevents path traversal and injection)
+		const taskIdResult = taskIdSchema.safeParse(taskId);
+		if (!taskIdResult.success) {
+			return NextResponse.json({ error: "Invalid task ID format" }, { status: 400 });
+		}
+
+		const response = await fetch(`${VECTORIZER_CONFIG.apiUrl}/status/${taskIdResult.data}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -17,19 +26,21 @@ export async function GET(
 		});
 
 		if (!response.ok) {
-			const errorData = (await response
-				.json()
-				.catch(() => ({ detail: "Status check failed" }))) as { detail?: string };
-			return NextResponse.json(
-				{ error: errorData.detail || "Status check failed" },
-				{ status: response.status }
-			);
+			const errorData = await response.json().catch(() => ({ detail: "Status check failed" }));
+			const detail =
+				errorData && typeof errorData === "object" && "detail" in errorData
+					? String(errorData.detail)
+					: "Status check failed";
+			return NextResponse.json({ error: detail }, { status: response.status });
 		}
 
 		const data = await response.json();
 		return NextResponse.json(data);
 	} catch (error) {
-		console.error("Status error:", error);
+		console.error(
+			"[TraceForge] Status error:",
+			error instanceof Error ? error.message : "Unknown error"
+		);
 		return NextResponse.json({ error: "Internal server error" }, { status: 500 });
 	}
 }
