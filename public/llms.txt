@@ -1,0 +1,125 @@
+# Alex Mayhew: Technical Advisor & Systems Architect
+
+> "Atmospheric Engineering" - High-precision, low-latency architecture for modern web development.
+
+## Identity
+
+- Name: Alex Mayhew
+- Role: Technical Advisor & Systems Architect
+- Location: Remote (Worldwide)
+- Contact: alex@alexmayhew.dev
+- Website: https://alexmayhew.dev
+
+## Core Capabilities
+
+### System Architecture
+Scalable microservices, cloud-native infrastructure, event-driven systems. Design patterns that compound into competitive advantage over 3+ year horizons.
+
+### Performance Engineering
+Sub-50ms INP, Core Web Vitals optimization, edge computing. Reduced SaaS dashboard load times from 2.1s to 0.3s serving 100k+ users.
+
+### Legacy Migration
+Strategic refactoring from monoliths (ColdFusion, AngularJS, jQuery) to modern stacks. Incremental migration without business disruption.
+
+### AI/ML Integration
+LLM deployment, RAG systems, vector databases, fine-tuning pipelines. Built domain-adapted models for cybersecurity and document processing.
+
+## Technical Stack
+
+### Frontend
+- Next.js 15 (App Router, Server Components, Server Actions)
+- React 19 (Concurrent Features, Suspense)
+- TypeScript (Strict mode, Zod validation)
+- Tailwind CSS 4, Framer Motion
+
+### Backend
+- Node.js, Python/FastAPI, Go
+- PostgreSQL, Redis, MongoDB
+- GraphQL, REST APIs, WebSockets
+- Prisma ORM, Drizzle
+
+### Infrastructure
+- Cloudflare Pages/Workers/R2
+- AWS (Lambda, ECS, RDS, S3)
+- Docker, Kubernetes, Terraform
+- Vercel, Railway
+
+### AI/ML
+- PyTorch, Transformers, ONNX
+- Qdrant, Pinecone (vector databases)
+- OpenAI, Anthropic APIs
+- LangChain, LlamaIndex
+
+## Proof of Work
+
+### TraceForge
+GPU-accelerated image vectorization achieving 337x performance improvement over Inkscape. WebGPU-powered edge detection and path optimization.
+
+### PhotoKeep Pro
+AI photo restoration with 28.5dB PSNR quality, 73% cost reduction through edge-optimized inference. Processes 10M+ images monthly.
+
+### PenQWEN
+Domain-adapted cybersecurity LLM fine-tuned on penetration testing datasets. Achieves 94% accuracy on OWASP classification tasks.
+
+### Claude Pilot
+Enterprise Claude Code manager with session orchestration, context persistence, and multi-agent coordination.
+
+## Services
+
+### Advisory Retainer (Tier 1)
+Ongoing strategic guidance: 10-20 hours/month. Architecture reviews, hiring support, vendor evaluation, due diligence preparation.
+
+### Strategic Implementation (Tier 2)
+Hands-on architectural work for critical projects. MVP development, infrastructure setup, performance optimization, security hardening.
+
+### Technical Due Diligence (Tier 3)
+Comprehensive technical assessment for investors and acquirers. Codebase audit, architecture review, risk identification.
+
+## Service Pages (pSEO)
+
+- /services/nextjs-developer-for-saas - Multi-tenant SaaS architecture with Next.js
+- /services/react-developer-for-fintech - PCI-DSS compliant React applications
+- /services/python-developer-for-healthcare - HIPAA-compliant Python/FastAPI systems
+- /services/fullstack-developer-for-startups - Strategic MVP development
+- /services/technical-advisor-for-startups - Fractional CTO services
+
+## Key Content
+
+- /work - Portfolio with 10 featured projects demonstrating technical depth
+- /blog - Technical articles on architecture, performance, and engineering practices
+- /about - Background, approach, and engagement philosophy
+- /contact - Consultation booking
+- /tools/traceforge - Live GPU-accelerated vectorization tool
+
+## Industry Expertise
+
+### SaaS
+Multi-tenant architecture, subscription billing (Stripe), feature flags, SOC 2 compliance preparation.
+
+### Fintech
+PCI-DSS compliance, real-time trading dashboards, payment integrations, audit logging.
+
+### Healthcare
+HIPAA compliance, EHR integrations (Epic, Cerner), PHI handling, clinical workflow optimization.
+
+### Startups
+MVP scoping, tech stack selection, hiring support, investor technical due diligence.
+
+## Engagement Model
+
+- Advisory engagements: $2,000-$8,000/month
+- MVP projects: $15,000-$50,000
+- Full implementations: $50,000-$300,000
+- Due diligence: Project-based
+
+## Contact
+
+- Email: alex@alexmayhew.dev
+- Website: https://alexmayhew.dev/contact
+- GitHub: https://github.com/LecoMV
+- LinkedIn: https://www.linkedin.com/in/alexmmayhew
+- X/Twitter: https://x.com/alexmayhewdev
+
+---
+
+Last updated: 2026-01-26

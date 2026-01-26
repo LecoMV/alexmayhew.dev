@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { blog } from "@/../.source/server";
+import { getPublishedPages } from "@/data/pseo";
 
 const siteUrl = "https://alexmayhew.dev";
 
@@ -34,6 +35,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			lastModified: new Date(),
 			changeFrequency: "yearly",
 			priority: 0.7,
+		},
+		// Services hub page
+		{
+			url: `${siteUrl}/services`,
+			lastModified: new Date(),
+			changeFrequency: "monthly",
+			priority: 0.95,
 		},
 		{
 			url: `${siteUrl}/blog`,
@@ -90,5 +98,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			priority: 0.7,
 		}));
 
-	return [...staticPages, ...blogPosts];
+	// Service pages (pSEO)
+	const servicePages: MetadataRoute.Sitemap = getPublishedPages().map((page) => ({
+		url: `${siteUrl}/services/${page.slug}`,
+		lastModified: page.lastUpdated ?? new Date(),
+		changeFrequency: "monthly" as const,
+		priority: 0.9,
+	}));
+
+	return [...staticPages, ...blogPosts, ...servicePages];
 }
