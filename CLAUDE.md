@@ -1,15 +1,46 @@
 # alexmayhew.dev - Claude Code Project Instructions
 
+> **Last Updated:** 2026-01-26
+> **Status:** Active pSEO Implementation
+> **Epic:** amdev-183 (2026 Marketing Launch Plan)
+
 ## Project Identity
 
 **Domain:** alexmayhew.dev
-**Purpose:** Freelance portfolio for full-stack web developer
+**Purpose:** Technical Advisor portfolio & lead generation engine
 **Philosophy:** "Atmospheric Engineering" - High-precision digital instruments, tactile and heavy
 **Aesthetic:** Neo-Brutalist, anti-AI-generic, handcrafted feel
+**Positioning:** Technical Advisor (NOT freelancer) - strategic guidance, not just code
+
+## Current State (2026-01-26)
+
+### ✅ Completed
+
+- 19 pSEO service pages live at `/services/[slug]`
+- Services hub page at `/services`
+- JSON-LD structured data (Service, FAQ, WebPage, Breadcrumb)
+- `llms.txt` for AI agent discovery
+- Sitemap includes all service pages
+- 19 blog posts supporting internal linking
+- TraceForge tool at `/tools/traceforge`
+
+### 🚧 In Progress (P1 Beads)
+
+- amdev-cqy: Legacy migrations data file
+- amdev-3nt: SaaS integrations data file
+- amdev-79j: Technology hub pages (6 pages)
+- amdev-6qf: Role-based founder pages (4 pages)
+
+### 📋 Key Documentation
+
+- `MARKETING_PLAN_2026.md` - Full go-to-market strategy
+- `docs/IMPLEMENTATION_PLAN.md` - Phase-by-phase roadmap
+- `docs/BLOG_CONTENT_IDEAS.md` - Supporting content tracker
+- `/home/deploy/projects/amdev/Gemini_Research_pSEO+Site-Enhancements.md` - Agentic SEO research
 
 ## Issue Tracking (Beads)
 
-This project uses **project-level beads** stored in `.beads/`. Issue IDs are prefixed with `alexmayhew-dev-`.
+This project uses **project-level beads** stored in `.beads/`. Issue IDs prefixed with `amdev-`.
 
 ```bash
 bd ready              # Available work (no blockers)
@@ -41,12 +72,49 @@ bd sync               # Sync to git (run at session end)
 ## Commands
 
 ```bash
-npm run dev        # Development server (Turbopack)
+# Development server (skip Cloudflare bindings for faster local dev)
+SKIP_CF_DEV=1 PORT=3001 npm run dev
+
+# Development with Cloudflare bindings (requires wrangler OAuth login)
+CLOUDFLARE_API_TOKEN=$(pass show claude/cloudflare/api-token) PORT=3001 npm run dev
+
 npm run build      # Production build
 npm run preview    # Preview on Cloudflare runtime locally
 npm run deploy     # Deploy to Cloudflare Pages
 npm run lint       # ESLint check
 ```
+
+## Development Server Options
+
+**Port 3000 is reserved** (Memgraph Lab), always use `PORT=3001` or higher.
+
+### Option 1: Skip Cloudflare Context (Recommended for most dev work)
+
+```bash
+SKIP_CF_DEV=1 PORT=3001 npm run dev
+```
+
+- Fastest startup, no authentication required
+- Works for all pages that don't need R2, AI, or other CF bindings
+- Most UI/component work doesn't need Cloudflare context
+
+### Option 2: With Cloudflare Bindings (For testing R2, AI, etc.)
+
+```bash
+# First, authenticate wrangler via OAuth (opens browser)
+npx wrangler login
+
+# Then run with bindings
+PORT=3001 npm run dev
+```
+
+### Troubleshooting
+
+If you see "/memberships API failed":
+
+- The API token in pass doesn't have user-level permissions
+- Use `SKIP_CF_DEV=1` for local dev, or run `npx wrangler login` for OAuth
+- `account_id` is already set in `wrangler.jsonc` to bypass some auth issues
 
 ## File Structure
 
@@ -226,15 +294,44 @@ import { NoiseOverlay } from "../../../components/ui/noise-overlay";
 </h2>
 ```
 
-## Pages to Build
+## Pages Structure
 
-| Route      | Purpose                       | Priority |
-| ---------- | ----------------------------- | -------- |
-| `/`        | Hero + intro (exists)         | Done     |
-| `/work`    | Project showcase grid         | High     |
-| `/about`   | Bio, skills, tech stack       | High     |
-| `/contact` | Contact form + Calendly       | High     |
-| `/blog`    | Technical articles (optional) | Low      |
+### Core Pages (Complete)
+
+| Route               | Purpose                 | Status  |
+| ------------------- | ----------------------- | ------- |
+| `/`                 | Hero + intro            | ✅ Done |
+| `/work`             | Project showcase        | ✅ Done |
+| `/about`            | Bio, skills, tech stack | ✅ Done |
+| `/contact`          | Contact form            | ✅ Done |
+| `/blog`             | 19 technical articles   | ✅ Done |
+| `/tools`            | Tools hub               | ✅ Done |
+| `/tools/traceforge` | GPU vectorizer          | ✅ Done |
+
+### pSEO Pages (19 Live, 40+ Planned)
+
+| Route Pattern                   | Count | Status                 |
+| ------------------------------- | ----- | ---------------------- |
+| `/services`                     | 1     | ✅ Hub page            |
+| `/services/[slug]`              | 19    | ✅ Tech+Industry pages |
+| `/services/migrations/[slug]`   | 0     | 🚧 Planned (8 pages)   |
+| `/services/integrations/[slug]` | 0     | 🚧 Planned (5 pages)   |
+| Technology hub pages            | 0     | 🚧 Planned (6 pages)   |
+| Role-based pages                | 0     | 🚧 Planned (4 pages)   |
+
+### pSEO Data Files
+
+```
+src/data/pseo/
+├── index.ts          # Exports and utilities
+├── types.ts          # TypeScript interfaces
+├── validation.ts     # Zod schemas
+├── pages.ts          # 19 service pages
+├── technologies.ts   # 8 technology definitions
+├── industries.ts     # 10 industry definitions
+├── migrations.ts     # 🚧 TODO: Legacy migration data
+└── integrations.ts   # 🚧 TODO: SaaS integration data
+```
 
 ## Deployment
 
@@ -279,3 +376,63 @@ Read `.context/design-manifesto.md` for detailed aesthetic guidance. This file c
 5. **GSAP is NOT installed** - If needed for complex scroll animations, install it.
 6. **Server Components by default** - Only use 'use client' when absolutely necessary.
 7. **No component libraries** - Build all UI from scratch using Tailwind.
+
+## pSEO Implementation Guide
+
+### Quality Gates (Non-Negotiable)
+
+Per MARKETING_PLAN_2026.md, every pSEO page must have:
+
+- 5+ unique insights (50+ chars each)
+- 150+ words in `whyThisStack`
+- 150+ words in `projectApproach`
+- 3+ industry regulations (if applicable)
+- 5+ pain points with solutions
+- 4+ FAQs
+- SEO title 30-70 chars
+- SEO description 100-170 chars
+
+### Adding New pSEO Pages
+
+1. Add page data to `src/data/pseo/pages.ts`
+2. Run validation: `npm run build` (will fail if quality gates not met)
+3. Verify JSON-LD in browser dev tools
+4. Check internal links to related pages
+
+### Key Research Documents
+
+- **Gemini Research:** `/home/deploy/projects/amdev/Gemini_Research_pSEO+Site-Enhancements.md`
+  - Agentic Optimization (AIO) strategy
+  - llms.txt standard
+  - Legacy Migration Vertical (Vertical A)
+  - SaaS Integration Vertical (Vertical B)
+- **Marketing Plan:** `MARKETING_PLAN_2026.md`
+  - 5-phase go-to-market strategy
+  - Positioning: Freelancer → Technical Advisor
+  - Content calendar and metrics
+
+## Quick Reference - Beads
+
+```bash
+# See available pSEO work
+bd list --status=open | grep -iE "pseo|migration|integration|hub"
+
+# Key beads to resume
+bd show amdev-9z1   # pSEO Implementation epic
+bd show amdev-cqy   # Migrations data file
+bd show amdev-3nt   # Integrations data file
+bd show amdev-79j   # Technology hub pages
+```
+
+## Git Workflow
+
+```bash
+# Always use SSH for this repo
+git remote set-url origin git@github.com:LecoMV/alexmayhew.dev.git
+
+# Session end protocol
+git add <files>
+bd sync
+git commit -m "feat(pseo): ..."
+git push
+```
