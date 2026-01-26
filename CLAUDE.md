@@ -16,7 +16,7 @@
 
 ### ✅ Completed
 
-- 19 pSEO service pages live at `/services/[slug]`
+- 21 pSEO service pages live at `/services/[slug]`
 - Services hub page at `/services`
 - JSON-LD structured data (Service, FAQ, WebPage, Breadcrumb)
 - `llms.txt` for AI agent discovery
@@ -313,7 +313,7 @@ import { NoiseOverlay } from "../../../components/ui/noise-overlay";
 | Route Pattern                   | Count | Status                 |
 | ------------------------------- | ----- | ---------------------- |
 | `/services`                     | 1     | ✅ Hub page            |
-| `/services/[slug]`              | 19    | ✅ Tech+Industry pages |
+| `/services/[slug]`              | 21    | ✅ Tech+Industry pages |
 | `/services/migrations/[slug]`   | 0     | 🚧 Planned (8 pages)   |
 | `/services/integrations/[slug]` | 0     | 🚧 Planned (5 pages)   |
 | Technology hub pages            | 0     | 🚧 Planned (6 pages)   |
@@ -326,7 +326,7 @@ src/data/pseo/
 ├── index.ts          # Exports and utilities
 ├── types.ts          # TypeScript interfaces
 ├── validation.ts     # Zod schemas
-├── pages.ts          # 19 service pages
+├── pages.ts          # 21 service pages
 ├── technologies.ts   # 8 technology definitions
 ├── industries.ts     # 10 industry definitions
 ├── migrations.ts     # 🚧 TODO: Legacy migration data
