@@ -1,0 +1,165 @@
+{
+	"name": "Blog to Social Content Suite",
+	"nodes": [
+		{
+			"parameters": {
+				"httpMethod": "POST",
+				"path": "blog-published",
+				"responseMode": "onReceived",
+				"options": {}
+			},
+			"id": "webhook-trigger",
+			"name": "Blog Published Webhook",
+			"type": "n8n-nodes-base.webhook",
+			"typeVersion": 2,
+			"position": [250, 300]
+		},
+		{
+			"parameters": {
+				"method": "POST",
+				"url": "http://host.containers.internal:11434/api/generate",
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `<task>Convert a technical blog post into a LinkedIn carousel</task>\\n\\n<persona>\\nYou are a B2B content strategist creating carousel content for Alex Mayhew, a Technical Advisor who helps CTOs make better architecture decisions. His tone is confident, direct, and technically precise without being condescending.\\n</persona>\\n\\n<rules>\\n- Create exactly 10-12 slides\\n- Slide 1: Hook (5-10 words, create curiosity or state a contrarian view)\\n- Slide 2: The problem or common misconception\\n- Slides 3-8: One key insight per slide (max 25 words each)\\n- Slide 9: Code example if applicable (5-10 lines max), otherwise another insight\\n- Slide 10: The main takeaway (actionable)\\n- Slide 11: CTA \"Follow @alexmayhew for more architecture insights\"\\n- NO emojis, NO hashtags\\n- Use active voice, present tense\\n</rules>\\n\\n<input>\\n${$json.content}\\n</input>\\n\\nGenerate the carousel now.`, stream: false, options: { temperature: 0.7, top_p: 0.9, num_predict: 1200 } }) }}",
+				"options": {
+					"timeout": 120000
+				}
+			},
+			"id": "ollama-linkedin-carousel",
+			"name": "Generate LinkedIn Carousel",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [500, 150]
+		},
+		{
+			"parameters": {
+				"method": "POST",
+				"url": "http://host.containers.internal:11434/api/generate",
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `<task>Convert a blog post into a Twitter thread</task>\\n\\n<constraints>\\n- Thread length: 8-12 tweets\\n- Each tweet: Maximum 270 characters (leave room for engagement)\\n- Tweet 1: Must work as a standalone hook\\n- Final tweet: Include [LINK] placeholder for the full article\\n</constraints>\\n\\n<formatting>\\n- Number format: \"1/\" not \"(1)\"\\n- Use \"→\" to indicate thread continues\\n- NO hashtags\\n- NO emojis\\n- Use line breaks within tweets for emphasis\\n</formatting>\\n\\n<input>\\n${$json.content}\\n</input>\\n\\nGenerate the thread now. Number each tweet.`, stream: false, options: { temperature: 0.6, top_p: 0.9, num_predict: 800 } }) }}",
+				"options": {
+					"timeout": 120000
+				}
+			},
+			"id": "ollama-twitter-thread",
+			"name": "Generate Twitter Thread",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [500, 300]
+		},
+		{
+			"parameters": {
+				"method": "POST",
+				"url": "http://host.containers.internal:11434/api/generate",
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `<task>Create a newsletter section for \"The Architect's Brief\"</task>\\n\\n<newsletter_context>\\n\"The Architect's Brief\" is a weekly newsletter for CTOs and engineering leaders. Each issue features a \"This Week's Decision\" section that breaks down a real technical decision with practical guidance.\\n</newsletter_context>\\n\\n<section_structure>\\n## This Week's Decision\\n\\n**The Situation:**\\n[2-3 sentences: When does this decision come up? What triggers it?]\\n\\n**The Insight:**\\n[100-150 words: What's the right approach? Include specific numbers, examples, or code if relevant. Be prescriptive, not wishy-washy.]\\n\\n**When to Apply This:**\\n- [Specific condition 1]\\n- [Specific condition 2]\\n- [Specific condition 3]\\n</section_structure>\\n\\n<tone>\\nWrite like a senior engineer giving advice to a peer over coffee. Friendly but direct. Use \"you\" not \"one\" or \"developers.\"\\n</tone>\\n\\n<input>\\n${$json.content}\\n</input>\\n\\nGenerate the newsletter section now.`, stream: false, options: { temperature: 0.7, top_p: 0.9, num_predict: 800 } }) }}",
+				"options": {
+					"timeout": 120000
+				}
+			},
+			"id": "ollama-newsletter",
+			"name": "Generate Newsletter Section",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [500, 450]
+		},
+		{
+			"parameters": {
+				"jsCode": "// Parse Ollama responses and format for output\nconst items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  if (item.json.response) {\n    results.push({\n      json: {\n        content: item.json.response,\n        type: item.json.type || 'unknown',\n        generatedAt: new Date().toISOString()\n      }\n    });\n  }\n}\n\nreturn results;"
+			},
+			"id": "parse-responses",
+			"name": "Parse LLM Responses",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [750, 300]
+		},
+		{
+			"parameters": {
+				"operation": "toJson",
+				"options": {}
+			},
+			"id": "format-output",
+			"name": "Format Output",
+			"type": "n8n-nodes-base.convertToFile",
+			"typeVersion": 1,
+			"position": [950, 300]
+		}
+	],
+	"connections": {
+		"Blog Published Webhook": {
+			"main": [
+				[
+					{
+						"node": "Generate LinkedIn Carousel",
+						"type": "main",
+						"index": 0
+					},
+					{
+						"node": "Generate Twitter Thread",
+						"type": "main",
+						"index": 0
+					},
+					{
+						"node": "Generate Newsletter Section",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Generate LinkedIn Carousel": {
+			"main": [
+				[
+					{
+						"node": "Parse LLM Responses",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Generate Twitter Thread": {
+			"main": [
+				[
+					{
+						"node": "Parse LLM Responses",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Generate Newsletter Section": {
+			"main": [
+				[
+					{
+						"node": "Parse LLM Responses",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Parse LLM Responses": {
+			"main": [
+				[
+					{
+						"node": "Format Output",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		}
+	},
+	"settings": {
+		"executionOrder": "v1"
+	},
+	"staticData": null,
+	"tags": [],
+	"triggerCount": 0,
+	"updatedAt": "2026-01-27T00:00:00.000Z",
+	"versionId": "1"
+}
