@@ -118,3 +118,35 @@ export {
 	getPagesByIndustry,
 	getRelatedPages,
 } from "./pages";
+
+// =============================================================================
+// Migration Data (Legacy Tech → Modern Tech)
+// =============================================================================
+
+export {
+	// Migration page data
+	migrationPages,
+	// Helper functions
+	getAllMigrationSlugs,
+	getMigrationPageBySlug,
+	getMigrationPagesByIndustry,
+	getAllMigrationPages,
+} from "./migrations";
+
+export type { LegacyTech, ModernTech, MigrationPattern, MigrationPage } from "./migrations";
+
+// =============================================================================
+// Integration Data (SaaS A ↔ SaaS B)
+// =============================================================================
+
+export {
+	// Integration page data
+	integrationPages,
+	// Helper functions
+	getAllIntegrationSlugs,
+	getIntegrationPageBySlug,
+	getIntegrationPagesByIndustry,
+	getAllIntegrationPages,
+} from "./integrations";
+
+export type { SaasProduct, IntegrationPattern, IntegrationPage } from "./integrations";

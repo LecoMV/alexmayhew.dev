@@ -387,7 +387,7 @@ export const pseoPages: PseoPage[] = [
 	// ===========================================================================
 	{
 		slug: "python-developer-for-healthcare",
-		technology: "nodejs",
+		technology: "python",
 		industry: "healthcare",
 		published: true,
 
@@ -2106,7 +2106,7 @@ export const pseoPages: PseoPage[] = [
 	// ===========================================================================
 	{
 		slug: "python-developer-for-fintech",
-		technology: "nodejs",
+		technology: "python",
 		industry: "fintech",
 		published: true,
 

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { blog } from "@/../.source/server";
-import { getPublishedPages } from "@/data/pseo";
+import { getPublishedPages, getAllMigrationPages, getAllIntegrationPages } from "@/data/pseo";
 
 const siteUrl = "https://alexmayhew.dev";
 
@@ -106,5 +106,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		priority: 0.9,
 	}));
 
-	return [...staticPages, ...blogPosts, ...servicePages];
+	// Migration pages (Legacy Tech → Modern Tech)
+	const migrationPages: MetadataRoute.Sitemap = getAllMigrationPages()
+		.filter((page) => page.published)
+		.map((page) => ({
+			url: `${siteUrl}/services/migrations/${page.slug}`,
+			lastModified: new Date(),
+			changeFrequency: "monthly" as const,
+			priority: 0.85,
+		}));
+
+	// Integration pages (SaaS A ↔ SaaS B)
+	const integrationPages: MetadataRoute.Sitemap = getAllIntegrationPages()
+		.filter((page) => page.published)
+		.map((page) => ({
+			url: `${siteUrl}/services/integrations/${page.slug}`,
+			lastModified: new Date(),
+			changeFrequency: "monthly" as const,
+			priority: 0.85,
+		}));
+
+	return [...staticPages, ...blogPosts, ...servicePages, ...migrationPages, ...integrationPages];
 }

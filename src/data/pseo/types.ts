@@ -17,6 +17,7 @@ export type Technology =
 	| "nextjs"
 	| "react"
 	| "nodejs"
+	| "python"
 	| "typescript"
 	| "postgresql"
 	| "prisma"
@@ -34,6 +35,7 @@ export const TECHNOLOGY_LABELS: Record<Technology, string> = {
 	nextjs: "Next.js",
 	react: "React",
 	nodejs: "Node.js",
+	python: "Python",
 	typescript: "TypeScript",
 	postgresql: "PostgreSQL",
 	prisma: "Prisma ORM",
@@ -61,6 +63,7 @@ export const TECHNOLOGY_CATEGORIES: Record<Technology, TechnologyCategory> = {
 	react: "frontend",
 	tailwindcss: "frontend",
 	nodejs: "backend",
+	python: "backend",
 	typescript: "backend",
 	postgresql: "database",
 	prisma: "database",
