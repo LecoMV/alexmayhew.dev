@@ -21,6 +21,7 @@ export type {
 	BudgetRange,
 	FaqItem,
 	SeoMeta,
+	ExpertApproach,
 	// Main page type
 	PseoPage,
 	PseoPageInput,

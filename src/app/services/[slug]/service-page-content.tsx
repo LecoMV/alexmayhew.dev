@@ -15,8 +15,9 @@ import {
 	AlertTriangle,
 } from "lucide-react";
 import { useState } from "react";
-import type { PseoPage } from "@/data/pseo";
+import type { PseoPage, ExpertApproach } from "@/data/pseo";
 import { TECHNOLOGY_LABELS, INDUSTRY_LABELS } from "@/data/pseo";
+import { TopicClusterNav } from "@/components/seo";
 import { cn } from "@/lib/utils";
 
 const springTransition = {
@@ -91,6 +92,9 @@ export function ServicePageContent({ page, relatedPages }: ServicePageContentPro
 				{/* Project Approach */}
 				<ProjectApproachSection content={page.projectApproach} />
 
+				{/* Expert Approach (if available) */}
+				{page.expertApproach && <ExpertApproachSection expertApproach={page.expertApproach} />}
+
 				{/* Budget Guidance */}
 				<BudgetSection
 					budget={page.budgetGuidance}
@@ -103,6 +107,9 @@ export function ServicePageContent({ page, relatedPages }: ServicePageContentPro
 
 				{/* Related Services */}
 				{relatedPages.length > 0 && <RelatedServicesSection relatedPages={relatedPages} />}
+
+				{/* Topic Cluster Navigation */}
+				<TopicClusterNav currentSlug={page.slug} basePath="/services" />
 
 				{/* CTA Section */}
 				<CtaSection />
@@ -496,6 +503,89 @@ function ProjectApproachSection({ content }: { content: string }) {
 						</p>
 					))}
 				</div>
+			</div>
+		</m.section>
+	);
+}
+
+function ExpertApproachSection({ expertApproach }: { expertApproach: ExpertApproach }) {
+	return (
+		<m.section
+			className="mb-20"
+			initial={{ opacity: 0, y: 20 }}
+			whileInView={{ opacity: 1, y: 0 }}
+			viewport={{ once: true, margin: "-100px" }}
+			transition={springTransition}
+		>
+			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
+				<span className="mr-2 animate-pulse">●</span>
+				Expert Insights
+			</h2>
+
+			<div className="space-y-6">
+				{/* Summary */}
+				<div className="bg-gunmetal-glass/20 relative border border-white/10 p-8 backdrop-blur-sm">
+					<div className="border-cyber-lime absolute top-0 right-0 h-5 w-5 border-t border-r" />
+					<div className="border-cyber-lime absolute bottom-0 left-0 h-5 w-5 border-b border-l" />
+					<p className="text-mist-white leading-relaxed">{expertApproach.summary}</p>
+				</div>
+
+				{/* Real Outcomes */}
+				{expertApproach.realOutcomes.length > 0 && (
+					<div>
+						<h3 className="text-slate-text mb-4 font-mono text-xs tracking-wider uppercase">
+							Proven Results
+						</h3>
+						<div className="grid gap-3 sm:grid-cols-2">
+							{expertApproach.realOutcomes.map((outcome, i) => (
+								<div key={i} className="flex items-start gap-3 border border-white/10 p-4">
+									<span className="text-cyber-lime font-mono text-xs">✓</span>
+									<span className="text-slate-text text-sm">{outcome}</span>
+								</div>
+							))}
+						</div>
+					</div>
+				)}
+
+				{/* Common Mistakes */}
+				{expertApproach.commonMistakes.length > 0 && (
+					<div>
+						<h3 className="text-slate-text mb-4 font-mono text-xs tracking-wider uppercase">
+							Mistakes I Help You Avoid
+						</h3>
+						<div className="space-y-3">
+							{expertApproach.commonMistakes.map((mistake, i) => (
+								<div
+									key={i}
+									className="border-burnt-ember/50 bg-burnt-ember/5 flex items-start gap-3 border-l-2 py-3 pr-4 pl-4"
+								>
+									<AlertTriangle
+										className="text-burnt-ember mt-0.5 h-4 w-4 shrink-0"
+										strokeWidth={1.5}
+									/>
+									<span className="text-slate-text text-sm">{mistake}</span>
+								</div>
+							))}
+						</div>
+					</div>
+				)}
+
+				{/* Decision Frameworks */}
+				{expertApproach.decisionFrameworks && expertApproach.decisionFrameworks.length > 0 && (
+					<div>
+						<h3 className="text-slate-text mb-4 font-mono text-xs tracking-wider uppercase">
+							Decision Frameworks I Use
+						</h3>
+						<ul className="space-y-2">
+							{expertApproach.decisionFrameworks.map((framework, i) => (
+								<li key={i} className="text-slate-text flex items-center gap-2 text-sm">
+									<span className="text-cyber-lime">→</span>
+									{framework}
+								</li>
+							))}
+						</ul>
+					</div>
+				)}
 			</div>
 		</m.section>
 	);

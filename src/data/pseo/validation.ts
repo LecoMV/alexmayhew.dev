@@ -16,6 +16,7 @@ import type {
 	BudgetRange,
 	FaqItem,
 	SeoMeta,
+	ExpertApproach,
 	PseoPage,
 } from "./types";
 import { TECHNOLOGY_LABELS, INDUSTRY_LABELS } from "./types";
@@ -142,6 +143,14 @@ export const faqItemSchema: z.ZodType<FaqItem> = z.object({
 	answer: z.string().min(50, "Answer must be at least 50 characters"),
 });
 
+export const expertApproachSchema = z.object({
+	summary: z.string().min(50, "Summary must be at least 50 characters"),
+	realOutcomes: z.array(nonEmptyString).min(1, "At least 1 real outcome is required"),
+	commonMistakes: z.array(nonEmptyString).min(1, "At least 1 common mistake is required"),
+	decisionFrameworks: z.array(nonEmptyString).optional(),
+	relatedProjectId: z.string().optional(),
+});
+
 export const seoMetaSchema: z.ZodType<SeoMeta> = z.object({
 	title: z
 		.string()
@@ -197,6 +206,9 @@ export const pseoPageSchema: z.ZodType<PseoPage> = z.object({
 	// Long-form Content - Quality Gate: 150+ words each
 	whyThisStack: minWords(MIN_LONG_FORM_WORDS),
 	projectApproach: minWords(MIN_LONG_FORM_WORDS),
+
+	// Expert Approach (optional - pages without this still render)
+	expertApproach: expertApproachSchema.optional(),
 
 	// Social Proof
 	caseStudySnippet: caseStudySchema.optional(),

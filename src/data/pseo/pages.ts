@@ -186,6 +186,29 @@ export const pseoPages: PseoPage[] = [
 			},
 		],
 
+		expertApproach: {
+			summary:
+				"In building Claude Pilot—a native Electron app managing 25 tRPC endpoints across PostgreSQL, Memgraph, and Qdrant—I developed battle-tested patterns for SaaS data orchestration that I now apply to every multi-tenant system I build.",
+			realOutcomes: [
+				"Recovered 2+ hours daily lost to context-switching for Claude Code power users",
+				"80% test coverage with zero production incidents since launch",
+				"25 tRPC endpoints with full type safety from database to UI",
+				"Unified view of sessions, memory state, and MCP server health",
+			],
+			commonMistakes: [
+				"Starting with separate databases per tenant instead of row-level security—this doesn't scale cost-effectively and makes cross-tenant analytics impossible",
+				"Bolting subscription billing on later instead of designing for it from day one—this leads to edge cases around trials, upgrades, and failed payments that are painful to retrofit",
+				"Using client-side feature flags instead of edge-evaluated flags—causes flicker and exposes flag logic to end users",
+				"Implementing custom auth instead of using battle-tested solutions like Auth.js or Clerk—security is not where you want to innovate",
+			],
+			decisionFrameworks: [
+				"Tenant isolation decision tree: shared schema with RLS for <100 tenants, schema-per-tenant for 100-1000, database-per-tenant only for strict compliance requirements",
+				"Feature flag evaluation: edge middleware for user-facing flags, server-only for backend flags, client-side only for UI experiments",
+				"Subscription state: always maintain local state for graceful degradation, never rely solely on Stripe webhooks for real-time access control",
+			],
+			relatedProjectId: "claude-pilot",
+		},
+
 		relatedServices: [
 			"react-developer-for-saas",
 			"typescript-developer-for-saas",
@@ -568,6 +591,29 @@ export const pseoPages: PseoPage[] = [
 					"Typically 12-16 weeks for a compliant MVP, plus 4-8 weeks for security assessment and compliance documentation review. Healthcare timelines are longer than general SaaS because compliance isn't optional—it must be built in from the start, not added later.",
 			},
 		],
+
+		expertApproach: {
+			summary:
+				"Building PhotoKeep Pro—a 14-model AI orchestration platform for image restoration—taught me how to deliver medical-grade ML systems that actually work in production, not just in notebooks.",
+			realOutcomes: [
+				"73% reduction in cloud GPU costs while improving quality by 4dB over commercial alternatives",
+				"99.95% uptime serving 2,000+ restorations monthly",
+				"Thread-safe VRAM allocation managing 49GB across 14 deep learning models",
+				"28.5dB PSNR quality—outperforming Magnific AI and Topaz on blind tests",
+			],
+			commonMistakes: [
+				"Loading all AI models into VRAM simultaneously—implement LRU eviction and lazy loading for multi-model systems",
+				"Using generic cloud GPU providers instead of optimized inference endpoints—the cost difference is 3-5x for production workloads",
+				"Treating HIPAA compliance as a checklist rather than an architecture—security must be designed in from the data model up",
+				"Skipping clinical validation and going straight to deployment—medical AI requires documented performance across demographic subgroups",
+			],
+			decisionFrameworks: [
+				"Model orchestration: pre-load only the most common models, lazy-load specialized ones, implement graceful degradation when VRAM is constrained",
+				"Healthcare data flow: map PHI touchpoints before writing code, encrypt sensitive columns at the application layer, log every access with immutable audit trails",
+				"EHR integration: abstract vendor APIs behind unified interfaces—Epic FHIR, Cerner HL7v2, and custom endpoints should all look the same to your application",
+			],
+			relatedProjectId: "photokeep-pro",
+		},
 
 		relatedServices: [
 			"python-developer-for-ai-integration",
@@ -2475,6 +2521,29 @@ export const pseoPages: PseoPage[] = [
 			},
 		],
 
+		expertApproach: {
+			summary:
+				"Building PenQWEN—a domain-adapted Qwen2.5 model for security assessments—taught me that successful AI integration is about architecture and evaluation, not just model selection. The same patterns apply to SaaS AI features.",
+			realOutcomes: [
+				"Reduced security assessment setup from 4 hours to 12 minutes with zero hallucinated commands",
+				"3.6GB LoRA adapters trained on 12GB curated domain data now automate 60% of routine tasks",
+				"Two-stage training: domain corpus adaptation then agentic fine-tuning for tool calling",
+				"Built evaluation pipelines that catch quality regressions before deployment",
+			],
+			commonMistakes: [
+				"Fine-tuning when RAG is sufficient—RAG is cheaper, faster, and keeps customer data out of model training",
+				"Sending every query to the most expensive model—implement tiered routing based on query complexity",
+				"Missing tenant isolation in vector databases—namespace separation is table stakes for multi-tenant AI",
+				"Deploying without evaluation infrastructure—you need to measure quality before users complain",
+			],
+			decisionFrameworks: [
+				"RAG vs fine-tuning: RAG for customer-specific context, fine-tuning only for domain-specific behaviors that can't be prompted",
+				"Model routing: classify query complexity, route simple tasks to cheap models, escalate only when needed",
+				"Cost control: per-tenant caps, aggressive caching, fallback to cached responses when budget exhausted",
+			],
+			relatedProjectId: "penqwen",
+		},
+
 		relatedServices: [
 			"react-developer-for-saas",
 			"nextjs-developer-for-saas",
@@ -3426,6 +3495,29 @@ export const pseoPages: PseoPage[] = [
 					"Optimize first. Hardware scaling is expensive and often hits limits. Optimization makes existing resources more effective.",
 			},
 		],
+
+		expertApproach: {
+			summary:
+				"Building TraceForge—a GPU-accelerated vector conversion pipeline—demonstrated what's possible when you measure obsessively and optimize surgically. A 337x speedup doesn't come from intuition; it comes from profiling.",
+			realOutcomes: [
+				"Cut vector conversion time from 45 minutes to 8 seconds per asset—337x speedup",
+				"SVGO optimization stage reduces file sizes by 40-60%",
+				"Processing 2,000+ conversions monthly with zero manual intervention",
+				"GPU-accelerated pipeline combining neural upscaling with dual vectorization engines",
+			],
+			commonMistakes: [
+				"Optimizing without profiling—intuition about bottlenecks is wrong more than half the time",
+				"Focusing on micro-optimizations instead of architectural changes—a cache or async job queue often beats code tweaks by 10x",
+				"Load testing with uniform traffic instead of realistic burst patterns—production incidents happen at peaks, not averages",
+				"Optimizing past the point of diminishing returns—know when good enough is good enough",
+			],
+			decisionFrameworks: [
+				"Profiling before optimizing: measure P50, P95, P99 latencies to find actual bottlenecks, not assumed ones",
+				"Impact vs effort matrix: highest-impact, lowest-effort optimizations first—architectural wins before micro-optimizations",
+				"Cache strategy: multi-layer caching with proper invalidation beats single-layer caching every time",
+			],
+			relatedProjectId: "traceforge",
+		},
 
 		relatedServices: [
 			"legacy-migration-architect",

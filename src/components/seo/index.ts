@@ -12,3 +12,4 @@ export {
 	generateIntegrationHowToSteps,
 } from "./howto-json-ld";
 export { LocalBusinessJsonLd } from "./local-business-json-ld";
+export { TopicClusterNav } from "./topic-cluster-nav";

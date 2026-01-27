@@ -196,6 +196,24 @@ export interface FaqItem {
 	answer: string;
 }
 
+/**
+ * Expert approach content based on real project experience.
+ * Differentiates from generic content by including specific outcomes,
+ * observed mistakes, and quantified results.
+ */
+export interface ExpertApproach {
+	/** High-level summary of the expert approach (2-3 sentences) */
+	summary: string;
+	/** Quantified outcomes from real projects (e.g., "337x performance improvement") */
+	realOutcomes: string[];
+	/** Common mistakes observed in this tech+industry combination */
+	commonMistakes: string[];
+	/** Specific decision frameworks used */
+	decisionFrameworks?: string[];
+	/** Reference to related project (from projects.ts) */
+	relatedProjectId?: string;
+}
+
 // =============================================================================
 // SEO Types
 // =============================================================================
@@ -289,6 +307,14 @@ export interface PseoPage {
 	 */
 	projectApproach: string;
 
+	/**
+	 * Expert approach content based on Alex's real experience.
+	 * Differentiates from generic content with specific outcomes, mistakes observed,
+	 * and quantified results from actual projects.
+	 * Optional - pages without this will still render.
+	 */
+	expertApproach?: ExpertApproach;
+
 	// ---------------------------------------------------------------------------
 	// Content - Social Proof
 	// ---------------------------------------------------------------------------
@@ -328,6 +354,122 @@ export interface PseoPage {
 
 	/** Whether this page is ready for publishing */
 	published: boolean;
+}
+
+// =============================================================================
+// Topic Clusters
+// =============================================================================
+
+/**
+ * Topic cluster definitions for internal linking structure.
+ * Hub pages link to all spokes, spokes link back to hub and laterally.
+ */
+export type TopicCluster =
+	| "saas-at-scale"
+	| "compliance-heavy"
+	| "startup-stack"
+	| "ai-integration"
+	| "performance-engineering";
+
+export interface TopicClusterDefinition {
+	/** Cluster identifier */
+	id: TopicCluster;
+	/** Display name for the cluster */
+	name: string;
+	/** Short description */
+	description: string;
+	/** Hub page slug (if exists) or primary page */
+	hubSlug: string;
+	/** All page slugs in this cluster */
+	spokeSlugs: string[];
+}
+
+/**
+ * Topic cluster definitions
+ */
+export const TOPIC_CLUSTERS: TopicClusterDefinition[] = [
+	{
+		id: "saas-at-scale",
+		name: "SaaS at Scale",
+		description: "Building and scaling multi-tenant SaaS platforms",
+		hubSlug: "nextjs-developer-for-saas",
+		spokeSlugs: [
+			"nextjs-developer-for-saas",
+			"react-developer-for-saas",
+			"postgresql-fintech-database",
+			"fractional-cto-startups",
+			"ai-integration-developer",
+		],
+	},
+	{
+		id: "compliance-heavy",
+		name: "Compliance-Heavy Industries",
+		description: "Healthcare, fintech, and regulated sectors",
+		hubSlug: "python-developer-for-healthcare",
+		spokeSlugs: [
+			"python-developer-for-healthcare",
+			"react-developer-for-fintech",
+			"nextjs-developer-for-fintech",
+			"nextjs-developer-for-healthcare",
+			"react-developer-for-healthcare",
+			"ai-integration-healthcare",
+		],
+	},
+	{
+		id: "startup-stack",
+		name: "Startup Tech Stacks",
+		description: "From MVP to Series A and beyond",
+		hubSlug: "technical-advisor-startups",
+		spokeSlugs: [
+			"technical-advisor-startups",
+			"fractional-cto-startups",
+			"fractional-cto-investor-ready",
+			"technical-due-diligence",
+		],
+	},
+	{
+		id: "ai-integration",
+		name: "AI/ML Integration",
+		description: "LLMs, RAG systems, and intelligent features",
+		hubSlug: "ai-integration-developer",
+		spokeSlugs: ["ai-integration-developer", "ai-integration-healthcare"],
+	},
+	{
+		id: "performance-engineering",
+		name: "Performance Engineering",
+		description: "Speed, scale, and reliability optimization",
+		hubSlug: "performance-optimization-consultant",
+		spokeSlugs: [
+			"performance-optimization-consultant",
+			"legacy-migration-architect",
+			"nodejs-developer-for-logistics",
+		],
+	},
+];
+
+/**
+ * Get clusters a page belongs to
+ */
+export function getPageClusters(pageSlug: string): TopicClusterDefinition[] {
+	return TOPIC_CLUSTERS.filter((cluster) => cluster.spokeSlugs.includes(pageSlug));
+}
+
+/**
+ * Get related pages from clusters (excluding self)
+ */
+export function getClusterRelatedPages(pageSlug: string): string[] {
+	const clusters = getPageClusters(pageSlug);
+	const related = new Set<string>();
+
+	for (const cluster of clusters) {
+		for (const spoke of cluster.spokeSlugs) {
+			if (spoke !== pageSlug) {
+				related.add(spoke);
+			}
+		}
+	}
+
+	return Array.from(related);
 }
 
 // =============================================================================
