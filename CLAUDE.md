@@ -14,28 +14,46 @@
 
 ## Current State (2026-01-26)
 
-### ✅ Completed
+### ✅ Completed (Phase 2 pSEO - DONE)
 
 - 21 pSEO service pages live at `/services/[slug]`
-- Services hub page at `/services`
-- JSON-LD structured data (Service, FAQ, WebPage, Breadcrumb)
+- Services hub page at `/services` with 3-tier framework
+- 8 Technology hub pages at `/technologies/[slug]`
+- Technologies hub at `/technologies`
+- JSON-LD structured data (Service, FAQ, WebPage, Breadcrumb, ItemList)
 - `llms.txt` for AI agent discovery
-- Sitemap includes all service pages
-- 19 blog posts supporting internal linking
+- Sitemap includes all pages (services + technologies)
+- Internal linking from 18 blog posts to service pages
+- GA4 conversion tracking on contact form
 - TraceForge tool at `/tools/traceforge`
+- Claude Pilot tool at `/tools/pilot`
+- Case studies rewritten with ROI focus
+- Copy audit documented in `docs/COPY_AUDIT_REPORT.md`
 
-### 🚧 In Progress (P1 Beads)
+### 🚧 P1 Remaining (Do Next)
 
-- amdev-cqy: Legacy migrations data file
-- amdev-3nt: SaaS integrations data file
-- amdev-79j: Technology hub pages (6 pages)
-- amdev-6qf: Role-based founder pages (4 pages)
+- **amdev-d65**: Apply copy audit changes (Freelancer → Technical Advisor positioning)
+- **amdev-cqy**: Legacy migrations data file (8-10 migration pages)
+- **amdev-3nt**: SaaS integrations data file (5-8 integration pages)
+- **amdev-6qf**: Role-based founder pages (/for/cto, /for/technical-founder, etc.)
+- **amdev-kgm**: Initialize Sentry for error monitoring
+
+### 📋 P2 Enhancements (Nice to Have)
+
+- **amdev-8th**: Supporting blog posts for pSEO internal linking
+- **amdev-ukt**: Custom share buttons for blog posts
+- **amdev-kph**: Interactive terminal feature
+- **amdev-bzm**: WebGL neural field background
+- **amdev-8gr**: AI chat assistant (Cloudflare Workers AI)
 
 ### 📋 Key Documentation
 
 - `MARKETING_PLAN_2026.md` - Full go-to-market strategy
 - `docs/IMPLEMENTATION_PLAN.md` - Phase-by-phase roadmap
+- `docs/COPY_AUDIT_REPORT.md` - 24 copy changes needed (Freelancer → Technical Advisor)
 - `docs/BLOG_CONTENT_IDEAS.md` - Supporting content tracker
+- `docs/FEATURE_IMPLEMENTATION_PLAN.md` - Terminal, WebGL, AI chat specs
+- `docs/PORTFOLIO_PRODUCTS_STRATEGY.md` - TraceForge, Claude Pilot showcase
 - `/home/deploy/projects/amdev/Gemini_Research_pSEO+Site-Enhancements.md` - Agentic SEO research
 
 ## Issue Tracking (Beads)
@@ -308,16 +326,17 @@ import { NoiseOverlay } from "../../../components/ui/noise-overlay";
 | `/tools`            | Tools hub               | ✅ Done |
 | `/tools/traceforge` | GPU vectorizer          | ✅ Done |
 
-### pSEO Pages (19 Live, 40+ Planned)
+### pSEO Pages (30 Live, 50+ Planned)
 
-| Route Pattern                   | Count | Status                 |
-| ------------------------------- | ----- | ---------------------- |
-| `/services`                     | 1     | ✅ Hub page            |
-| `/services/[slug]`              | 21    | ✅ Tech+Industry pages |
-| `/services/migrations/[slug]`   | 0     | 🚧 Planned (8 pages)   |
-| `/services/integrations/[slug]` | 0     | 🚧 Planned (5 pages)   |
-| Technology hub pages            | 0     | 🚧 Planned (6 pages)   |
-| Role-based pages                | 0     | 🚧 Planned (4 pages)   |
+| Route Pattern                   | Count | Status                         |
+| ------------------------------- | ----- | ------------------------------ |
+| `/services`                     | 1     | ✅ Hub page (3-tier framework) |
+| `/services/[slug]`              | 21    | ✅ Tech+Industry pages         |
+| `/technologies`                 | 1     | ✅ Technology hub              |
+| `/technologies/[slug]`          | 8     | ✅ Individual tech pages       |
+| `/services/migrations/[slug]`   | 0     | 🚧 Planned (8-10 pages)        |
+| `/services/integrations/[slug]` | 0     | 🚧 Planned (5-8 pages)         |
+| `/for/[role]`                   | 0     | 🚧 Planned (4 pages)           |
 
 ### pSEO Data Files
 
@@ -414,14 +433,19 @@ Per MARKETING_PLAN_2026.md, every pSEO page must have:
 ## Quick Reference - Beads
 
 ```bash
-# See available pSEO work
-bd list --status=open | grep -iE "pseo|migration|integration|hub"
+# See available work (no blockers)
+bd ready
 
-# Key beads to resume
-bd show amdev-9z1   # pSEO Implementation epic
+# Key P1 beads
+bd show amdev-d65   # Copy audit changes (Freelancer → Technical Advisor)
 bd show amdev-cqy   # Migrations data file
 bd show amdev-3nt   # Integrations data file
-bd show amdev-79j   # Technology hub pages
+bd show amdev-6qf   # Role-based founder pages
+bd show amdev-kgm   # Sentry initialization
+
+# Completed beads (reference)
+bd show amdev-9z1   # ✅ Phase 2 pSEO (CLOSED)
+bd show amdev-79j   # ✅ Technology hub pages (CLOSED)
 ```
 
 ## Git Workflow
