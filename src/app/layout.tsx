@@ -7,7 +7,7 @@ import { Footer } from "@/components/ui/footer";
 import { NoiseOverlay } from "@/components/ui/noise-overlay";
 import { ChatWidget } from "@/components/chat";
 import { JsonLd } from "@/components/seo";
-import { CloudflareAnalytics } from "@/components/analytics";
+import { CloudflareAnalytics, GoogleAnalytics } from "@/components/analytics";
 import { CookieConsent } from "@/components/ui/cookie-consent";
 import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
 
@@ -129,6 +129,7 @@ export default function RootLayout({
 					<CookieConsent />
 				</MotionProvider>
 				<ServiceWorkerRegister />
+				<GoogleAnalytics />
 				<CloudflareAnalytics />
 			</body>
 		</html>
