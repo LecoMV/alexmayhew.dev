@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 
-export const runtime = "edge";
-
 /**
  * Health check endpoint for deployment validation
  * Used by GitHub Actions to verify successful deployments
