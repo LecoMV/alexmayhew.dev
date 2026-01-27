@@ -44,11 +44,12 @@
 	/**
 	 * R2 Bucket for Incremental Cache
 	 * Required for persistent ISR caching across deployments
+	 * OpenNext expects binding name "NEXT_INC_CACHE_R2_BUCKET"
 	 * Create bucket: wrangler r2 bucket create alexmayhew-dev-cache
 	 */
 	"r2_buckets": [
 		{
-			"binding": "NEXT_CACHE",
+			"binding": "NEXT_INC_CACHE_R2_BUCKET",
 			"bucket_name": "alexmayhew-dev-cache",
 		},
 	],
