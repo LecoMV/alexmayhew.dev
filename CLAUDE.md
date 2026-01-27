@@ -2,6 +2,7 @@
 
 > **Last Updated:** 2026-01-27
 > **Status:** Production - GitHub Actions CI/CD Active
+> **Build:** 88 static pages | SHA: 29dec80
 > **Epic:** amdev-183 (2026 Marketing Launch Plan)
 
 ## Project Identity
@@ -12,54 +13,61 @@
 **Aesthetic:** Neo-Brutalist, anti-AI-generic, handcrafted feel
 **Positioning:** Technical Advisor (NOT freelancer) - strategic guidance, not just code
 
-## Current State (2026-01-26)
+## Current State (2026-01-27)
 
-### ✅ Completed (Phase 2 pSEO - DONE)
+### 📊 Live Page Inventory (74 Total)
 
-- 21 pSEO service pages live at `/services/[slug]`
-- Services hub page at `/services` with 3-tier framework
-- 8 Technology hub pages at `/technologies/[slug]`
-- Technologies hub at `/technologies`
-- JSON-LD structured data (Service, FAQ, WebPage, Breadcrumb, ItemList)
-- `llms.txt` for AI agent discovery
-- Sitemap includes all pages (services + technologies)
-- Internal linking from 18 blog posts to service pages
-- GA4 conversion tracking on contact form
-- TraceForge tool at `/tools/traceforge`
-- Claude Pilot tool at `/tools/pilot`
-- Case studies rewritten with ROI focus
-- Copy audit documented in `docs/COPY_AUDIT_REPORT.md`
+| Category          | Count | Route Pattern                                                  |
+| ----------------- | ----- | -------------------------------------------------------------- |
+| Core Pages        | 7     | `/`, `/about`, `/contact`, `/work`, `/blog`, `/tools`, `/demo` |
+| Blog Posts        | 19    | `/blog/[slug]` (MDX)                                           |
+| Service Pages     | 19    | `/services/[slug]` (Tech×Industry)                             |
+| Technology Pages  | 8     | `/technologies/[slug]`                                         |
+| Migration Pages   | 7     | `/services/migrations/[slug]`                                  |
+| Integration Pages | 5     | `/services/integrations/[slug]`                                |
+| Role Pages        | 4     | `/for/[role]` (CTO, Technical Founder, etc.)                   |
+| Hub Pages         | 5     | `/services`, `/technologies`, `/for`, `/tools`, `/docs`        |
 
-### ✅ Recently Completed
+### ✅ Fully Completed
 
-- **GitHub Actions CI/CD** - Automatic deployment on push to main
-- **Role-based pages** - `/for/cto`, `/for/technical-founder`, etc.
-- **Legacy migrations** - Drupal 7, ASP.NET Web Forms
-- **SaaS integrations** - Shopify-Klaviyo, Stripe-HubSpot
-- **Copy audit** - Freelancer → Technical Advisor positioning
+- **GitHub Actions CI/CD** - Auto-deploy on push to main (bulletproofed)
+- **pSEO Infrastructure** - 43 dynamic pages across 4 verticals
+- **Role-based pages** - `/for/cto`, `/for/technical-founder`, `/for/engineering-director`, `/for/startup-founder`
+- **Legacy migrations vertical** - 7 pages (Drupal 7, ASP.NET, etc.)
+- **SaaS integrations vertical** - 5 pages (Stripe-HubSpot, Shopify-Klaviyo, etc.)
+- **Copy audit applied** - Freelancer → Technical Advisor positioning
+- **JSON-LD structured data** - Service, FAQ, WebPage, Breadcrumb, ItemList
+- **TraceForge tool** - GPU vectorizer with remote GPU control
+- **Claude Pilot tool** - AI assistant showcase
+- **GA4 conversion tracking** - Contact form events
+- **llms.txt** - AI agent discovery file
 
 ### 🚧 P1 Remaining (Do Next)
 
 - **amdev-71k**: Add Core Web Vitals monitoring
-- **Error monitoring** - Need Cloudflare-compatible solution (not Sentry - incompatible with Workers)
+- **amdev-nfc**: Phase 1 - Positioning & Messaging Overhaul (final review)
 
-### 📋 P2 Enhancements (Nice to Have)
+### 📋 P2 Enhancements (37 open beads)
 
-- **amdev-8th**: Supporting blog posts for pSEO internal linking
-- **amdev-ukt**: Custom share buttons for blog posts
+- **Content**: Supporting blog posts, share buttons, internal links
+- **SEO**: Meta optimization, LocalBusiness schema, HowTo schema
+- **LinkedIn**: Profile overhaul, content calendar, engagement strategy
+- **Community**: Slack/Discord infiltration, keyword monitoring
+- **Partnerships**: Agency prospect list, outreach campaigns
+
+### 📋 P3 Features (Nice to Have)
+
 - **amdev-kph**: Interactive terminal feature
 - **amdev-bzm**: WebGL neural field background
 - **amdev-8gr**: AI chat assistant (Cloudflare Workers AI)
+- **amdev-eu8**: SVG Colorizer for TraceForge
 
 ### 📋 Key Documentation
 
-- `docs/DEPLOYMENT.md` - **CI/CD and deployment guide (READ THIS FIRST)**
-- `MARKETING_PLAN_2026.md` - Full go-to-market strategy
+- `docs/DEPLOYMENT.md` - **CI/CD guide (READ FIRST)** - GitHub Actions → Cloudflare
+- `docs/COPY_AUDIT_REPORT.md` - Copy changes applied
+- `MARKETING_PLAN_2026.md` - 5-phase go-to-market strategy
 - `docs/IMPLEMENTATION_PLAN.md` - Phase-by-phase roadmap
-- `docs/COPY_AUDIT_REPORT.md` - 24 copy changes needed (Freelancer → Technical Advisor)
-- `docs/BLOG_CONTENT_IDEAS.md` - Supporting content tracker
-- `docs/FEATURE_IMPLEMENTATION_PLAN.md` - Terminal, WebGL, AI chat specs
-- `docs/PORTFOLIO_PRODUCTS_STRATEGY.md` - TraceForge, Claude Pilot showcase
 - `/home/deploy/projects/amdev/Gemini_Research_pSEO+Site-Enhancements.md` - Agentic SEO research
 
 ## Issue Tracking (Beads)
@@ -420,17 +428,18 @@ import { NoiseOverlay } from "../../../components/ui/noise-overlay";
 | `/tools`            | Tools hub               | ✅ Done |
 | `/tools/traceforge` | GPU vectorizer          | ✅ Done |
 
-### pSEO Pages (30 Live, 50+ Planned)
+### pSEO Pages (43 Live)
 
 | Route Pattern                   | Count | Status                         |
 | ------------------------------- | ----- | ------------------------------ |
 | `/services`                     | 1     | ✅ Hub page (3-tier framework) |
-| `/services/[slug]`              | 21    | ✅ Tech+Industry pages         |
+| `/services/[slug]`              | 19    | ✅ Tech+Industry pages         |
 | `/technologies`                 | 1     | ✅ Technology hub              |
 | `/technologies/[slug]`          | 8     | ✅ Individual tech pages       |
-| `/services/migrations/[slug]`   | 0     | 🚧 Planned (8-10 pages)        |
-| `/services/integrations/[slug]` | 0     | 🚧 Planned (5-8 pages)         |
-| `/for/[role]`                   | 0     | 🚧 Planned (4 pages)           |
+| `/services/migrations/[slug]`   | 7     | ✅ Legacy migration pages      |
+| `/services/integrations/[slug]` | 5     | ✅ SaaS integration pages      |
+| `/for`                          | 1     | ✅ Role hub page               |
+| `/for/[role]`                   | 4     | ✅ CTO, Technical Founder, etc |
 
 ### pSEO Data Files
 
@@ -439,11 +448,11 @@ src/data/pseo/
 ├── index.ts          # Exports and utilities
 ├── types.ts          # TypeScript interfaces
 ├── validation.ts     # Zod schemas
-├── pages.ts          # 21 service pages
-├── technologies.ts   # 8 technology definitions
-├── industries.ts     # 10 industry definitions
-├── migrations.ts     # 🚧 TODO: Legacy migration data
-└── integrations.ts   # 🚧 TODO: SaaS integration data
+├── pages.ts          # 19 service pages (3,501 lines)
+├── technologies.ts   # 8 technology definitions (542 lines)
+├── industries.ts     # 10 industry definitions (1,985 lines)
+├── migrations.ts     # 7 legacy migration pages (2,096 lines)
+└── integrations.ts   # 5 SaaS integration pages (1,708 lines)
 ```
 
 ## OpenNext Technical Requirements (CRITICAL)
@@ -553,20 +562,49 @@ Per MARKETING_PLAN_2026.md, every pSEO page must have:
   - Positioning: Freelancer → Technical Advisor
   - Content calendar and metrics
 
+## TraceForge Backend API
+
+TraceForge uses a separate backend API for GPU-accelerated vectorization.
+
+**Backend Location:** `/home/deploy/projects/vectorizer/`
+**API URL:** `https://api.alexmayhew.dev` (production) | `http://localhost:8000` (local)
+**Service:** `systemctl --user status vectorizer-api`
+
+### GPU Control
+
+```bash
+# Enable GPU
+curl -X POST https://api.alexmayhew.dev/gpu/enable \
+  -H "Content-Type: application/json" \
+  -d '{"password":"NoahBalboaTheBoaConstrictor2019"}'
+
+# Disable GPU
+curl -X POST https://api.alexmayhew.dev/gpu/disable \
+  -H "Content-Type: application/json" \
+  -d '{"password":"NoahBalboaTheBoaConstrictor2019"}'
+
+# Check status
+curl https://api.alexmayhew.dev/system-status | jq '.gpu'
+```
+
+**Password:** `NoahBalboaTheBoaConstrictor2019` (stored in systemd service env)
+
 ## Quick Reference - Beads
 
 ```bash
 # See available work (no blockers)
 bd ready
 
-# Key P1 beads
-bd show amdev-d65   # Copy audit changes (Freelancer → Technical Advisor)
-bd show amdev-cqy   # Migrations data file
-bd show amdev-3nt   # Integrations data file
-bd show amdev-6qf   # Role-based founder pages
-bd show amdev-kgm   # Sentry initialization
+# Key P1 beads (remaining)
+bd show amdev-71k   # Core Web Vitals monitoring
+bd show amdev-nfc   # Positioning & Messaging Overhaul
 
-# Completed beads (reference)
+# Recently completed
+bd show amdev-d65   # ✅ Copy audit (CLOSED)
+bd show amdev-cqy   # ✅ Migrations data (CLOSED)
+bd show amdev-3nt   # ✅ Integrations data (CLOSED)
+bd show amdev-6qf   # ✅ Role-based pages (CLOSED)
+bd show amdev-kgm   # ✅ Sentry init (CLOSED - incompatible with Workers)
 bd show amdev-9z1   # ✅ Phase 2 pSEO (CLOSED)
 bd show amdev-79j   # ✅ Technology hub pages (CLOSED)
 ```
