@@ -151,3 +151,24 @@ export {
 } from "./integrations";
 
 export type { SaasProduct, IntegrationPattern, IntegrationPage } from "./integrations";
+
+// =============================================================================
+// Comparison Data (Tech A vs Tech B)
+// =============================================================================
+
+export {
+	// Comparison page data
+	comparisonPages,
+	// Helper functions
+	getAllComparisonSlugs,
+	getComparisonPageBySlug,
+	getComparisonPagesByIndustry,
+	getAllComparisonPages,
+} from "./comparisons";
+
+export type {
+	TechOption,
+	ComparisonCriterion,
+	DecisionMatrix,
+	ComparisonPage,
+} from "./comparisons";
