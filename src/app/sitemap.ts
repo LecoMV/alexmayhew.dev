@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { blog } from "@/../.source/server";
 import { getPublishedPages, getAllMigrationPages, getAllIntegrationPages } from "@/data/pseo";
+import { getTechnologyIds } from "@/data/pseo/technologies";
 
 const siteUrl = "https://alexmayhew.dev";
 
@@ -126,5 +127,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			priority: 0.85,
 		}));
 
-	return [...staticPages, ...blogPosts, ...servicePages, ...migrationPages, ...integrationPages];
+	// Technology hub pages
+	const technologyPages: MetadataRoute.Sitemap = [
+		{
+			url: `${siteUrl}/technologies`,
+			lastModified: new Date(),
+			changeFrequency: "monthly" as const,
+			priority: 0.9,
+		},
+		...getTechnologyIds().map((techId) => ({
+			url: `${siteUrl}/technologies/${techId}`,
+			lastModified: new Date(),
+			changeFrequency: "monthly" as const,
+			priority: 0.85,
+		})),
+	];
+
+	return [
+		...staticPages,
+		...blogPosts,
+		...servicePages,
+		...migrationPages,
+		...integrationPages,
+		...technologyPages,
+	];
 }
