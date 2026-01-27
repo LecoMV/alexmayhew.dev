@@ -1,5 +1,4 @@
 import { createMDX } from "fumadocs-mdx/next";
-import { withSentryConfig } from "@sentry/nextjs";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
 
@@ -91,33 +90,7 @@ const config = {
 
 const withMDX = createMDX();
 
-// Sentry configuration for source maps and error tracking
-const sentryConfig = {
-	// Suppress source map upload warnings in CI (no auth token)
-	silent: !process.env.SENTRY_AUTH_TOKEN,
-
-	// Upload source maps for better stack traces
-	widenClientFileUpload: true,
-
-	// Disable tunneling (use direct Sentry ingest)
-	tunnelRoute: undefined,
-
-	// Hide source maps from client bundles
-	hideSourceMaps: true,
-
-	// Disable logger instrumentation (reduces bundle size)
-	disableLogger: true,
-
-	// Automatically instrument API routes
-	automaticVercelMonitors: false,
-};
-
-// Only wrap with Sentry if DSN is configured
-const finalConfig = process.env.NEXT_PUBLIC_SENTRY_DSN
-	? withSentryConfig(withMDX(config), sentryConfig)
-	: withMDX(config);
-
-export default finalConfig;
+export default withMDX(config);
 
 // Enable calling `getCloudflareContext()` in `next dev`.
 // See https://opennext.js.org/cloudflare/bindings#local-access-to-bindings.
