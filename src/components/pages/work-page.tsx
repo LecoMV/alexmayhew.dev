@@ -39,8 +39,8 @@ export function WorkPage() {
 						<span className="text-slate-text">& Experiments.</span>
 					</h2>
 					<p className="text-slate-text max-w-2xl text-lg">
-						A collection of projects that push boundaries, solve complex problems, and deliver
-						exceptional user experiences.
+						Enterprise-grade solutions that push boundaries, solve complex problems, and deliver
+						measurable business outcomes.
 					</p>
 				</m.div>
 

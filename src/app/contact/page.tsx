@@ -5,11 +5,11 @@ import { ContactJsonLd } from "@/components/seo";
 export const metadata: Metadata = {
 	title: "Contact",
 	description:
-		"Get in touch for web development projects, technical consulting, or collaboration opportunities. Available for freelance work worldwide.",
+		"Get in touch for web development projects, technical consulting, or collaboration opportunities. Accepting select engagements worldwide.",
 	openGraph: {
 		title: "Contact | Alex Mayhew",
 		description:
-			"Get in touch for web development projects, consulting, or collaboration. Available worldwide.",
+			"Get in touch for web development projects, consulting, or collaboration. Serving select clients worldwide.",
 		type: "website",
 		images: [
 			{

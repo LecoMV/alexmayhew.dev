@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { blog } from "@/../.source/server";
 import { getPublishedPages, getAllMigrationPages, getAllIntegrationPages } from "@/data/pseo";
 import { getTechnologyIds } from "@/data/pseo/technologies";
+import { getPublishedRolePages } from "@/data/roles";
 
 const siteUrl = "https://alexmayhew.dev";
 
@@ -143,6 +144,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		})),
 	];
 
+	// Role-based pages (for CTOs, founders, etc.)
+	const rolePages: MetadataRoute.Sitemap = [
+		{
+			url: `${siteUrl}/for`,
+			lastModified: new Date(),
+			changeFrequency: "monthly" as const,
+			priority: 0.9,
+		},
+		...getPublishedRolePages().map((page) => ({
+			url: `${siteUrl}/for/${page.slug}`,
+			lastModified: page.lastUpdated ?? new Date(),
+			changeFrequency: "monthly" as const,
+			priority: 0.9,
+		})),
+	];
+
 	return [
 		...staticPages,
 		...blogPosts,
@@ -150,5 +167,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		...migrationPages,
 		...integrationPages,
 		...technologyPages,
+		...rolePages,
 	];
 }

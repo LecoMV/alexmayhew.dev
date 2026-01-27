@@ -13,7 +13,7 @@ export function ContactJsonLd() {
 			name: "Alex Mayhew",
 			email: "alex@alexmayhew.dev",
 			url: siteUrl,
-			jobTitle: "Full-Stack Developer & Software Architect",
+			jobTitle: "Technical Advisor & Systems Architect",
 			sameAs: [
 				"https://github.com/LecoMV",
 				"https://linkedin.com/in/alexmmayhew",

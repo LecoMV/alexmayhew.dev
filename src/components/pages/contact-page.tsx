@@ -113,8 +113,8 @@ export function ContactPage() {
 						<span className="text-slate-text">Connection.</span>
 					</h2>
 					<p className="text-slate-text max-w-2xl text-lg">
-						Ready to build something exceptional? Send a transmission and let&apos;s discuss your
-						project.
+						Ready to architect something exceptional? Initiate a transmission to discuss a potential
+						partnership.
 					</p>
 				</m.div>
 
@@ -396,9 +396,7 @@ export function ContactPage() {
 							<div className="mt-8 border-t border-white/10 pt-6">
 								<div className="flex items-center gap-3">
 									<div className="bg-cyber-lime h-2 w-2 animate-pulse" />
-									<p className="text-slate-text font-mono text-xs">
-										Currently accepting new projects
-									</p>
+									<p className="text-slate-text font-mono text-xs">Accepting select engagements</p>
 								</div>
 							</div>
 						</div>
