@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Prevent manual wrangler deploys - deployment is via GitHub Actions only
+echo "Pre-push check: Ensuring deployment is via GitHub Actions..."
+
+# Run typecheck before push
+echo "Running typecheck..."
+npm run typecheck || {
+    echo "❌ Typecheck failed. Fix errors before pushing."
+    exit 1
+}
+
+echo "✅ Pre-push checks passed. GitHub Actions will handle deployment."

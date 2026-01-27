@@ -98,8 +98,96 @@ CLOUDFLARE_API_TOKEN=$(pass show claude/cloudflare/api-token) PORT=3001 npm run 
 
 npm run build      # Production build
 npm run preview    # Preview on Cloudflare runtime locally
-npm run deploy     # Deploy to Cloudflare Pages
 npm run lint       # ESLint check
+
+# DEPLOYMENT IS AUTOMATIC VIA GITHUB ACTIONS
+# Just push to main branch - DO NOT run npm run deploy manually
+git push origin main
+```
+
+## Deployment (CRITICAL - READ THIS)
+
+### How Deployment Works
+
+**THIS PROJECT USES GITHUB ACTIONS FOR DEPLOYMENT. DO NOT DEPLOY MANUALLY.**
+
+```
+Local Dev → git push → GitHub Actions → Cloudflare Pages
+```
+
+1. **Commit locally** - Normal git workflow
+2. **Push to GitHub** - Triggers GitHub Actions
+3. **Automatic deployment** - GitHub Actions builds and deploys to Cloudflare
+4. **Health checks** - Automatic verification after deploy
+5. **Rollback** - Via Cloudflare Dashboard if needed
+
+### Deployment Workflow
+
+| Trigger        | Action                    | Environment     |
+| -------------- | ------------------------- | --------------- |
+| Push to `main` | Auto-deploy to production | alexmayhew.dev  |
+| Pull Request   | Auto-deploy preview       | PR-specific URL |
+| Manual         | **NEVER DO THIS**         | -               |
+
+### What Happens on Push to Main
+
+1. **Validate** - typecheck, lint, build
+2. **Build OpenNext** - Creates Cloudflare-compatible bundle
+3. **Deploy** - Pushes to Cloudflare Pages
+4. **Health Check** - Verifies `/api/health` returns 200
+5. **Smoke Tests** - Checks critical pages (/, /services, /for, /contact)
+6. **Notify** - Creates GitHub issue if deployment fails
+
+### GitHub Secrets Required
+
+These must be configured in GitHub repository settings:
+
+| Secret                  | Description                          | Where to Get                      |
+| ----------------------- | ------------------------------------ | --------------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | API token with Pages Edit permission | Cloudflare Dashboard → API Tokens |
+| `CLOUDFLARE_ACCOUNT_ID` | Account identifier                   | Cloudflare Dashboard → Overview   |
+
+### Rollback Procedure
+
+If a deployment breaks production:
+
+1. **Cloudflare Dashboard** → Workers & Pages → alexmayhew-dev → Deployments
+2. Find the last working deployment
+3. Click "..." → "Rollback to this deployment"
+4. Fix the issue locally, push a new commit
+
+### Common Deployment Errors
+
+| Error               | Cause                       | Fix                                         |
+| ------------------- | --------------------------- | ------------------------------------------- |
+| Health check failed | Runtime error in production | Check Cloudflare logs, rollback if critical |
+| Build failed        | TypeScript/ESLint errors    | Fix errors locally, push again              |
+| Smoke test failed   | Page returns non-200        | Check specific page, may need rollback      |
+
+### NEVER DO THIS
+
+```bash
+# WRONG - Do not deploy manually
+npm run deploy           # ❌ DON'T DO THIS
+npx wrangler deploy      # ❌ DON'T DO THIS
+npx wrangler pages deploy # ❌ DON'T DO THIS
+
+# CORRECT - Push to GitHub, let Actions deploy
+git push origin main     # ✅ THIS IS THE ONLY WAY TO DEPLOY
+```
+
+### Version Tracking
+
+Every deployment includes:
+
+- Git SHA in `/api/health` response
+- Build timestamp
+- Site version from package.json
+
+Check deployed version:
+
+```bash
+curl -s https://alexmayhew.dev/api/health | jq
 ```
 
 ## Development Server Options

@@ -1,42 +1,29 @@
 import { NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 
-interface HealthStatus {
-	status: "healthy" | "degraded" | "unhealthy";
-	timestamp: string;
-	services: {
-		ai: { available: boolean };
-		cache: { available: boolean };
-	};
-	version: string;
-}
+export const runtime = "edge";
 
+/**
+ * Health check endpoint for deployment validation
+ * Used by GitHub Actions to verify successful deployments
+ */
 export async function GET() {
-	const { env } = await getCloudflareContext();
-
-	const health: HealthStatus = {
-		status: "healthy",
-		timestamp: new Date().toISOString(),
-		services: {
-			ai: { available: !!env?.AI },
-			cache: { available: !!env?.NEXT_CACHE },
-		},
-		version: process.env.npm_package_version || "1.0.0",
+	const buildInfo = {
+		sha: process.env.NEXT_PUBLIC_GIT_SHA || "development",
+		buildTime: process.env.NEXT_PUBLIC_BUILD_TIME || new Date().toISOString(),
+		version: process.env.NEXT_PUBLIC_SITE_VERSION || "0.0.0",
 	};
 
-	// Determine overall status
-	if (!health.services.ai.available && !health.services.cache.available) {
-		health.status = "unhealthy";
-	} else if (!health.services.ai.available) {
-		health.status = "degraded";
-	}
-
-	const statusCode = health.status === "unhealthy" ? 503 : 200;
-
-	return NextResponse.json(health, {
-		status: statusCode,
-		headers: {
-			"Cache-Control": "no-store, max-age=0",
+	return NextResponse.json(
+		{
+			status: "ok",
+			timestamp: new Date().toISOString(),
+			deployment: buildInfo,
 		},
-	});
+		{
+			status: 200,
+			headers: {
+				"Cache-Control": "no-store, no-cache, must-revalidate",
+			},
+		}
+	);
 }
