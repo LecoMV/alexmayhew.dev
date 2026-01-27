@@ -75,3 +75,61 @@ Automated deployments via GitHub Actions:
 - Update GitHub status
 - Notify on failure
 - Leave audit trail
+
+## OpenNext Technical Requirements
+
+### R2 Binding Name (CRITICAL)
+
+The R2 bucket binding MUST be named exactly `NEXT_INC_CACHE_R2_BUCKET` in wrangler.jsonc:
+
+```jsonc
+"r2_buckets": [
+  {
+    "binding": "NEXT_INC_CACHE_R2_BUCKET",  // ← Exact name required
+    "bucket_name": "alexmayhew-dev-cache"
+  }
+]
+```
+
+**DO NOT** use `NEXT_CACHE` or any other name - OpenNext will fail with "No R2 binding 'NEXT_INC_CACHE_R2_BUCKET' found!"
+
+### No Edge Runtime
+
+API routes cannot use `export const runtime = "edge"` with OpenNext. Remove any such exports.
+
+### GitHub Actions Hidden Files
+
+The `.open-next/` directory requires `include-hidden-files: true` in upload-artifact action.
+
+## Checking Deployment Status
+
+```bash
+# Check if site is healthy
+curl -s https://alexmayhew.dev/api/health | jq
+
+# Expected response
+{
+  "status": "ok",
+  "timestamp": "...",
+  "deployment": {
+    "sha": "abc1234",
+    "buildTime": "...",
+    "version": "0.1.0"
+  }
+}
+
+# Check GitHub Actions runs
+GITHUB_TOKEN=$(pass show claude/github/token) gh run list --repo LecoMV/alexmayhew.dev --limit 5
+```
+
+## Credentials
+
+GitHub repository secrets are configured:
+
+- `CLOUDFLARE_API_TOKEN` - API token with Pages Edit permission
+- `CLOUDFLARE_ACCOUNT_ID` - `7a614aa1a5509b080b4e8cc556440e71`
+
+Local credentials:
+
+- `pass show claude/cloudflare/api-token` - Cloudflare API token
+- `pass show claude/github/token` - GitHub token for gh CLI

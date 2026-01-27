@@ -446,16 +446,45 @@ src/data/pseo/
 └── integrations.ts   # 🚧 TODO: SaaS integration data
 ```
 
-## Deployment
+## OpenNext Technical Requirements (CRITICAL)
 
-### Cloudflare Pages via OpenNext
+### R2 Incremental Cache Binding
 
-```bash
-# Build and deploy
-npm run deploy
+The R2 bucket binding in `wrangler.jsonc` **MUST** be named exactly `NEXT_INC_CACHE_R2_BUCKET`:
 
-# Preview locally on CF runtime
-npm run preview
+```jsonc
+// wrangler.jsonc - CORRECT
+"r2_buckets": [
+  {
+    "binding": "NEXT_INC_CACHE_R2_BUCKET",  // ✅ Exact name required
+    "bucket_name": "alexmayhew-dev-cache"
+  }
+]
+```
+
+Using any other name (like `NEXT_CACHE`) will cause deployment failure.
+
+### Edge Runtime Restriction
+
+**API routes cannot use `export const runtime = "edge"` with OpenNext.**
+
+```typescript
+// ❌ WRONG - Will fail OpenNext build
+export const runtime = "edge";
+
+// ✅ CORRECT - Let OpenNext handle runtime
+// (no runtime export)
+```
+
+### GitHub Actions Artifact Upload
+
+The `.open-next/` directory starts with a dot, so `actions/upload-artifact@v4` needs:
+
+```yaml
+- uses: actions/upload-artifact@v4
+  with:
+    path: .open-next/
+    include-hidden-files: true # ← Required for .open-next
 ```
 
 ### Environment Variables
