@@ -62,9 +62,9 @@ export default function TermsPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Freelance Services</h3>
+						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Advisory Services</h3>
 						<p className="text-slate-text leading-relaxed">
-							Any freelance development services engaged through this website will be subject to a
+							Any advisory or development services engaged through this website will be subject to a
 							separate agreement. The contact form is for inquiries only and does not constitute a
 							binding contract.
 						</p>

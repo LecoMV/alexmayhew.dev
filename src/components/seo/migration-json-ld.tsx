@@ -26,7 +26,7 @@ export function MigrationJsonLd({ page }: MigrationJsonLdProps) {
 			name: "Alex Mayhew",
 			url: siteUrl,
 			image: `${siteUrl}/og-image.png`,
-			jobTitle: "Full-Stack Developer & Software Architect",
+			jobTitle: "Technical Advisor & Systems Architect",
 		},
 		serviceType: "Software Migration Services",
 		areaServed: {

@@ -47,7 +47,7 @@ const commands: Record<string, CommandHandler> = {
 ┌─────────────────────────────────────────────────────────────┐
 │ IDENTITY: Alex Mayhew                                       │
 ├─────────────────────────────────────────────────────────────┤
-│ Role:       Full-Stack Developer & Technical Architect      │
+│ Role:       Technical Advisor & Systems Architect           │
 │ Location:   Remote / Worldwide                              │
 │ Experience: 6+ years                                        │
 │ Status:     ● Currently accepting projects                  │

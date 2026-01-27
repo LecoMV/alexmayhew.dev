@@ -65,7 +65,7 @@ export function JsonLd() {
 		name: "Alex Mayhew",
 		alternateName: "alexmayhew.dev",
 		url: "https://alexmayhew.dev",
-		description: "Portfolio and blog of Alex Mayhew - Full-Stack Developer & Software Architect",
+		description: "Portfolio and blog of Alex Mayhew - Technical Advisor & Systems Architect",
 		author: {
 			"@type": "Person",
 			name: "Alex Mayhew",

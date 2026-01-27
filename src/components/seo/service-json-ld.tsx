@@ -28,7 +28,7 @@ export function ServiceJsonLd({ page }: ServiceJsonLdProps) {
 			name: "Alex Mayhew",
 			url: siteUrl,
 			image: `${siteUrl}/og-image.png`,
-			jobTitle: "Full-Stack Developer & Software Architect",
+			jobTitle: "Technical Advisor & Systems Architect",
 		},
 		serviceType: "Web Development",
 		areaServed: {

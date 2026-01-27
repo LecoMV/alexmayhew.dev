@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { ExternalLink, Github, ArrowUpRight } from "lucide-react";
+import Link from "next/link";
+import { ExternalLink, Github, ArrowUpRight, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { projects, categories, type Category } from "@/data/projects";
 
@@ -132,7 +133,7 @@ export function WorkPage() {
 									</div>
 
 									{/* Links */}
-									<div className="mt-2 flex gap-4">
+									<div className="mt-2 flex flex-wrap gap-4">
 										{project.link && (
 											<a
 												href={project.link}
@@ -164,6 +165,27 @@ export function WorkPage() {
 											</a>
 										)}
 									</div>
+
+									{/* Related Services - Internal Links for SEO */}
+									{project.relatedServices && project.relatedServices.length > 0 && (
+										<div className="mt-4 border-t border-white/5 pt-4">
+											<span className="text-slate-text mb-2 flex items-center gap-1.5 font-mono text-[10px] tracking-wider uppercase">
+												<Layers className="h-3 w-3" strokeWidth={1.5} />
+												Related Services
+											</span>
+											<div className="flex flex-wrap gap-2">
+												{project.relatedServices.map((service) => (
+													<Link
+														key={service.href}
+														href={service.href}
+														className="text-slate-text hover:text-cyber-lime hover:border-cyber-lime/50 border border-white/10 px-2 py-1 font-mono text-xs transition-colors duration-300"
+													>
+														{service.label}
+													</Link>
+												))}
+											</div>
+										</div>
+									)}
 								</div>
 							</m.article>
 						))}

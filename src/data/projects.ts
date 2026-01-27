@@ -5,6 +5,11 @@ export const categories = ["All", "AI/ML", "SaaS", "Web Apps", "Developer Tools"
 export type Category = (typeof categories)[number];
 export type ProjectCategory = Exclude<Category, "All">;
 
+export interface RelatedService {
+	label: string; // Contextual anchor text
+	href: string; // Link to service page
+}
+
 export interface Project {
 	id: string;
 	title: string;
@@ -16,6 +21,7 @@ export interface Project {
 	link?: string;
 	github?: string;
 	featured?: boolean;
+	relatedServices?: RelatedService[]; // Internal links for SEO
 }
 
 export const projects: Project[] = [
@@ -30,6 +36,16 @@ export const projects: Project[] = [
 		status: "Production",
 		link: "/tools/traceforge",
 		featured: true,
+		relatedServices: [
+			{
+				label: "Python performance optimization",
+				href: "/services/python-developer-for-healthcare",
+			},
+			{
+				label: "337x performance engineering",
+				href: "/services/performance-optimization-consultant",
+			},
+		],
 	},
 	{
 		id: "claude-pilot",
@@ -43,6 +59,10 @@ export const projects: Project[] = [
 		link: "/tools/pilot",
 		github: "https://github.com/alexmayhew/claude-pilot",
 		featured: true,
+		relatedServices: [
+			{ label: "AI-powered SaaS development", href: "/services/ai-integration-developer" },
+			{ label: "React enterprise dashboards", href: "/services/react-developer-for-saas" },
+		],
 	},
 	{
 		id: "photokeep-pro",
@@ -54,6 +74,14 @@ export const projects: Project[] = [
 		year: "2024",
 		status: "Production",
 		featured: true,
+		relatedServices: [
+			{ label: "AI/ML integration for SaaS", href: "/services/ai-integration-developer" },
+			{ label: "Python backend architecture", href: "/services/python-developer-for-healthcare" },
+			{
+				label: "Performance-critical systems",
+				href: "/services/performance-optimization-consultant",
+			},
+		],
 	},
 	{
 		id: "penqwen",
@@ -65,6 +93,10 @@ export const projects: Project[] = [
 		year: "2024",
 		status: "Production",
 		featured: true,
+		relatedServices: [
+			{ label: "Custom LLM fine-tuning", href: "/services/ai-integration-developer" },
+			{ label: "Domain-specific AI systems", href: "/services/ai-integration-healthcare" },
+		],
 	},
 	{
 		id: "audiokeep",
