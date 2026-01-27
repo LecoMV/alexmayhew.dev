@@ -66,9 +66,24 @@ docs/                       # Implementation docs
 .claude/rules/              # Modular Claude rules
 ```
 
+## Credentials
+
+```bash
+# LLM APIs for content repurposing
+pass show claude/groq/api-key           # Groq (Llama 3.3 70B, 14,400 req/day free)
+pass show claude/cloudflare/api-token   # Cloudflare Workers AI (already in wrangler)
+```
+
+**LLM Stack:** See @docs/SELF_HOSTED_LLM_GUIDE.md
+
+- Local: Ollama + Gemma 2 9B (RTX 3080 10GB)
+- Cloud: Groq API (free), Cloudflare Workers AI (free 10K neurons/day)
+
 ## References
 
 - Architecture: @docs/IMPLEMENTATION_PLAN.md
 - Deployment: @docs/DEPLOYMENT.md
 - Copy guidelines: @docs/COPY_AUDIT_REPORT.md
 - Marketing: @MARKETING_PLAN_2026.md
+- LLM Setup: @docs/SELF_HOSTED_LLM_GUIDE.md
+- Implementation Roadmap: @docs/IMPLEMENTATION_ROADMAP.md
