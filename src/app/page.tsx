@@ -3,6 +3,7 @@
 import { m } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Terminal, Layers, Zap } from "lucide-react";
+import { NewsletterSignup } from "@/components/newsletter";
 
 const springTransition = {
 	type: "spring" as const,
@@ -215,6 +216,36 @@ export default function Home() {
 						))}
 					</div>
 				</div>
+			</section>
+
+			{/* Newsletter Section */}
+			<section className="border-t border-white/10 px-6 py-24 sm:px-12 md:px-24">
+				<m.div
+					className="mx-auto max-w-[1400px]"
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, margin: "-100px" }}
+					transition={springTransition}
+				>
+					<div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
+						<div>
+							<h2 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+								<span className="mr-2 animate-pulse">●</span>
+								The Architect&apos;s Brief
+							</h2>
+							<p className="mb-2 font-mono text-2xl tracking-tight md:text-3xl">
+								Weekly technical insights
+							</p>
+							<p className="text-slate-text max-w-md text-lg">
+								One actionable architectural decision, pattern, or lesson every Tuesday. No fluff,
+								just substance from real production systems.
+							</p>
+						</div>
+						<div className="md:max-w-md md:justify-self-end">
+							<NewsletterSignup variant="card" source="homepage" showDescription={false} />
+						</div>
+					</div>
+				</m.div>
 			</section>
 
 			{/* CTA Section */}
