@@ -101,6 +101,22 @@ export const runtime = "edge";
 - Some Next.js experimental features
 - Node.js-specific APIs in edge contexts
 
+### R2 Incremental Cache Binding
+
+**CRITICAL:** The R2 bucket binding must be named exactly `NEXT_INC_CACHE_R2_BUCKET`.
+
+```jsonc
+// wrangler.jsonc
+"r2_buckets": [
+  {
+    "binding": "NEXT_INC_CACHE_R2_BUCKET",  // ✅ Exact name required
+    "bucket_name": "alexmayhew-dev-cache"
+  }
+]
+```
+
+OpenNext expects this exact binding name for the incremental cache. Using a different name (like `NEXT_CACHE`) will cause deployment to fail with "No R2 binding 'NEXT_INC_CACHE_R2_BUCKET' found!" error.
+
 ## Health Check Endpoint
 
 **URL:** `https://alexmayhew.dev/api/health`
@@ -153,11 +169,13 @@ If a deployment breaks production:
 
 ### Deploy Fails
 
-| Error               | Cause         | Fix                      |
-| ------------------- | ------------- | ------------------------ |
-| Health check failed | Runtime error | Check Cloudflare logs    |
-| Smoke test failed   | Page 500      | Check specific route     |
-| API token invalid   | Token expired | Regenerate in Cloudflare |
+| Error                                    | Cause                  | Fix                                  |
+| ---------------------------------------- | ---------------------- | ------------------------------------ |
+| No R2 binding 'NEXT_INC_CACHE_R2_BUCKET' | Wrong binding name     | Rename to `NEXT_INC_CACHE_R2_BUCKET` |
+| No files found (.open-next)              | Hidden directory issue | Add `include-hidden-files: true`     |
+| Health check failed                      | Runtime error          | Check Cloudflare logs                |
+| Smoke test failed                        | Page 500               | Check specific route                 |
+| API token invalid                        | Token expired          | Regenerate in Cloudflare             |
 
 ### Checking Logs
 
