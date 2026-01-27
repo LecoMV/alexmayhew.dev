@@ -42,13 +42,14 @@ INBOUND CONSULTING LEADS
 
 This master plan references detailed strategy documents. Each handles a specific domain:
 
-| Document                                                                         | Purpose             | Key Content                                   |
-| -------------------------------------------------------------------------------- | ------------------- | --------------------------------------------- |
-| [SOCIAL_MEDIA_MARKETING_PLAN.md](./SOCIAL_MEDIA_MARKETING_PLAN.md)               | Platform strategies | LinkedIn, X, HN, Bluesky, Communities         |
-| [SOCIAL_MEDIA_STRATEGY_2026.md](./SOCIAL_MEDIA_STRATEGY_2026.md)                 | Detailed research   | ROI benchmarks, posting times, growth tactics |
-| [NEWSLETTER_STRATEGY.md](./NEWSLETTER_STRATEGY.md)                               | Email system        | Buttondown setup, welcome sequence, CTAs      |
-| [CONTENT_REPURPOSING_SYSTEM.md](./CONTENT_REPURPOSING_SYSTEM.md)                 | 1-to-10 framework   | Templates, weekly calendar, tools stack       |
-| [CONTENT_STRATEGY_TECHNICAL_ADVISOR.md](./CONTENT_STRATEGY_TECHNICAL_ADVISOR.md) | Strategic blueprint | CMS architecture, ADRs, positioning theory    |
+| Document                                                                         | Purpose             | Key Content                                    |
+| -------------------------------------------------------------------------------- | ------------------- | ---------------------------------------------- |
+| [SOCIAL_MEDIA_MARKETING_PLAN.md](./SOCIAL_MEDIA_MARKETING_PLAN.md)               | Platform strategies | LinkedIn, X, HN, Bluesky, Communities          |
+| [SOCIAL_MEDIA_STRATEGY_2026.md](./SOCIAL_MEDIA_STRATEGY_2026.md)                 | Detailed research   | ROI benchmarks, posting times, growth tactics  |
+| [NEWSLETTER_STRATEGY.md](./NEWSLETTER_STRATEGY.md)                               | Email system        | Buttondown setup, welcome sequence, CTAs       |
+| [CONTENT_REPURPOSING_SYSTEM.md](./CONTENT_REPURPOSING_SYSTEM.md)                 | 1-to-10 framework   | Templates, weekly calendar, tools stack        |
+| [CONTENT_STRATEGY_TECHNICAL_ADVISOR.md](./CONTENT_STRATEGY_TECHNICAL_ADVISOR.md) | Strategic blueprint | CMS architecture, ADRs, positioning theory     |
+| [SELF_HOSTED_LLM_GUIDE.md](./SELF_HOSTED_LLM_GUIDE.md)                           | AI infrastructure   | Ollama, Groq, n8n integration, model selection |
 
 ---
 
