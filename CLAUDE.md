@@ -1,7 +1,7 @@
 # alexmayhew.dev - Claude Code Project Instructions
 
-> **Last Updated:** 2026-01-26
-> **Status:** Active pSEO Implementation
+> **Last Updated:** 2026-01-27
+> **Status:** Production - GitHub Actions CI/CD Active
 > **Epic:** amdev-183 (2026 Marketing Launch Plan)
 
 ## Project Identity
@@ -30,13 +30,18 @@
 - Case studies rewritten with ROI focus
 - Copy audit documented in `docs/COPY_AUDIT_REPORT.md`
 
+### ✅ Recently Completed
+
+- **GitHub Actions CI/CD** - Automatic deployment on push to main
+- **Role-based pages** - `/for/cto`, `/for/technical-founder`, etc.
+- **Legacy migrations** - Drupal 7, ASP.NET Web Forms
+- **SaaS integrations** - Shopify-Klaviyo, Stripe-HubSpot
+- **Copy audit** - Freelancer → Technical Advisor positioning
+
 ### 🚧 P1 Remaining (Do Next)
 
-- **amdev-d65**: Apply copy audit changes (Freelancer → Technical Advisor positioning)
-- **amdev-cqy**: Legacy migrations data file (8-10 migration pages)
-- **amdev-3nt**: SaaS integrations data file (5-8 integration pages)
-- **amdev-6qf**: Role-based founder pages (/for/cto, /for/technical-founder, etc.)
-- **amdev-kgm**: Initialize Sentry for error monitoring
+- **amdev-71k**: Add Core Web Vitals monitoring
+- **Error monitoring** - Need Cloudflare-compatible solution (not Sentry - incompatible with Workers)
 
 ### 📋 P2 Enhancements (Nice to Have)
 
@@ -48,6 +53,7 @@
 
 ### 📋 Key Documentation
 
+- `docs/DEPLOYMENT.md` - **CI/CD and deployment guide (READ THIS FIRST)**
 - `MARKETING_PLAN_2026.md` - Full go-to-market strategy
 - `docs/IMPLEMENTATION_PLAN.md` - Phase-by-phase roadmap
 - `docs/COPY_AUDIT_REPORT.md` - 24 copy changes needed (Freelancer → Technical Advisor)
