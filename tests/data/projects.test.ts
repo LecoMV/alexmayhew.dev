@@ -5,7 +5,6 @@ import {
 	getProjectsRecord,
 	getProjectsByCategory,
 	getFeaturedProjects,
-	type Project,
 	type Category,
 } from "@/data/projects";
 

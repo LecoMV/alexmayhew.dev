@@ -7,6 +7,7 @@ import Image from "next/image";
 import { ArrowLeft, Calendar, Tag } from "lucide-react";
 import { useBlogTheme } from "@/lib/blog-themes";
 import { ShareButtons } from "./share-buttons";
+import { NewsletterSignup } from "@/components/newsletter";
 import type { Post } from "./types";
 
 interface BlogArticleProps {
@@ -157,13 +158,22 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 					{children}
 				</m.article>
 
+				{/* Newsletter Signup */}
+				<m.div
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ ...springTransition, delay: 0.4 }}
+				>
+					<NewsletterSignup variant="inline" source={`blog-${post.slug}`} />
+				</m.div>
+
 				{/* Share Buttons */}
 				{articleUrl && (
 					<m.div
-						className="mt-16"
+						className="mt-8"
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
-						transition={{ ...springTransition, delay: 0.4 }}
+						transition={{ ...springTransition, delay: 0.5 }}
 					>
 						<ShareButtons
 							title={post.data.title}

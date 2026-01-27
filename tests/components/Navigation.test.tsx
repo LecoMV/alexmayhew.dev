@@ -7,12 +7,14 @@ vi.mock("next/navigation", () => ({
 	usePathname: () => "/",
 }));
 
-// Mock next/image
+// Mock next/image - destructure priority to prevent passing it to native img element
 vi.mock("next/image", () => ({
-	default: ({
-		priority,
-		...props
-	}: React.ImgHTMLAttributes<HTMLImageElement> & { priority?: boolean }) => <img {...props} />,
+	default: (props: React.ImgHTMLAttributes<HTMLImageElement> & { priority?: boolean }) => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { priority, ...rest } = props;
+		// eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+		return <img {...rest} />;
+	},
 }));
 
 describe("Navigation", () => {

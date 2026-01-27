@@ -1,10 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import {
-	checkRateLimit,
-	getClientIP,
-	cleanupRateLimits,
-	type RateLimitConfig,
-} from "@/lib/rate-limit";
+import { checkRateLimit, getClientIP, type RateLimitConfig } from "@/lib/rate-limit";
 
 describe("rate-limit", () => {
 	describe("checkRateLimit", () => {

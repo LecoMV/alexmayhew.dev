@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Github, Linkedin, Mail } from "lucide-react";
 import { LocalTime } from "./local-time";
+import { NewsletterSignup } from "@/components/newsletter";
 
 // Custom X (formerly Twitter) icon since Lucide deprecated brand icons
 function XIcon({ className }: { className?: string }) {
@@ -92,8 +93,15 @@ export function Footer() {
 						</nav>
 					</div>
 
-					{/* Social Links */}
+					{/* Newsletter & Social */}
 					<div className="md:col-span-4">
+						<h4 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+							<span className="mr-2 animate-pulse">●</span>
+							Newsletter
+						</h4>
+						<p className="text-slate-text mb-3 text-sm">Weekly technical insights. No spam.</p>
+						<NewsletterSignup variant="minimal" source="footer" className="mb-6" />
+
 						<h4 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
 							<span className="mr-2 animate-pulse">●</span>
 							Connect

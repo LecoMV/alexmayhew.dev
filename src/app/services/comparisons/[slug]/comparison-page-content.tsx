@@ -9,12 +9,9 @@ import {
 	HelpCircle,
 	ChevronDown,
 	DollarSign,
-	Target,
 	Lightbulb,
 	Scale,
 	Award,
-	Zap,
-	AlertCircle,
 } from "lucide-react";
 import { useState } from "react";
 import type { ComparisonPage, PseoPage } from "@/data/pseo";
@@ -81,7 +78,6 @@ export function ComparisonPageContent({ page }: ComparisonPageContentProps) {
 				<WhenToChooseSection
 					title={`When to Choose ${page.optionA.name}`}
 					content={page.whenToChooseA}
-					techName={page.optionA.name}
 					variant="A"
 				/>
 
@@ -89,7 +85,6 @@ export function ComparisonPageContent({ page }: ComparisonPageContentProps) {
 				<WhenToChooseSection
 					title={`When to Choose ${page.optionB.name}`}
 					content={page.whenToChooseB}
-					techName={page.optionB.name}
 					variant="B"
 				/>
 
@@ -565,12 +560,10 @@ function UniqueInsightsSection({ insights }: { insights: string[] }) {
 function WhenToChooseSection({
 	title,
 	content,
-	techName,
 	variant,
 }: {
 	title: string;
 	content: string;
-	techName: string;
 	variant: "A" | "B";
 }) {
 	return (

@@ -3,11 +3,7 @@
 import Link from "next/link";
 import { Layers, ArrowRight } from "lucide-react";
 import { m } from "framer-motion";
-import {
-	getPageClusters,
-	getClusterRelatedPages,
-	type TopicClusterDefinition,
-} from "@/data/pseo/types";
+import { getPageClusters, getClusterRelatedPages } from "@/data/pseo/types";
 
 interface TopicClusterNavProps {
 	currentSlug: string;

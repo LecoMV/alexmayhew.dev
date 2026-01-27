@@ -16,7 +16,6 @@ import type {
 	BudgetRange,
 	FaqItem,
 	SeoMeta,
-	ExpertApproach,
 	PseoPage,
 } from "./types";
 import { TECHNOLOGY_LABELS, INDUSTRY_LABELS } from "./types";
