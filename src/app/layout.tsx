@@ -6,8 +6,9 @@ import { Navigation } from "@/components/ui/navigation";
 import { Footer } from "@/components/ui/footer";
 import { NoiseOverlay } from "@/components/ui/noise-overlay";
 import { ChatWidget } from "@/components/chat";
-import { JsonLd } from "@/components/seo";
+import { JsonLd, LocalBusinessJsonLd } from "@/components/seo";
 import { CloudflareAnalytics, GoogleAnalytics } from "@/components/analytics";
+import { WebVitalsReporter } from "@/components/analytics/web-vitals";
 import { CookieConsent } from "@/components/ui/cookie-consent";
 import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
 
@@ -114,6 +115,7 @@ export default function RootLayout({
 		>
 			<head>
 				<JsonLd />
+				<LocalBusinessJsonLd />
 			</head>
 			<body className="relative min-h-screen overflow-x-hidden">
 				<MotionProvider>
@@ -131,6 +133,7 @@ export default function RootLayout({
 				<ServiceWorkerRegister />
 				<GoogleAnalytics />
 				<CloudflareAnalytics />
+				<WebVitalsReporter />
 			</body>
 		</html>
 	);

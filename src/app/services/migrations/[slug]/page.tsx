@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getMigrationPageBySlug, getAllMigrationSlugs } from "@/data/pseo";
 import { MigrationJsonLd } from "@/components/seo/migration-json-ld";
+import { HowToJsonLd, generateMigrationHowToSteps } from "@/components/seo/howto-json-ld";
 import { MigrationPageContent } from "./migration-page-content";
 
 const siteUrl = "https://alexmayhew.dev";
@@ -76,9 +77,32 @@ export default async function MigrationPage({ params }: PageProps) {
 		notFound();
 	}
 
+	const howToSteps = generateMigrationHowToSteps(page.legacyTech.name, page.modernTech.name);
+
+	// Calculate total weeks from migration timeline phases
+	const totalWeeks =
+		page.timeline.assessmentWeeks + page.timeline.mvpWeeks + page.timeline.fullMigrationWeeks;
+
 	return (
 		<>
 			<MigrationJsonLd page={page} />
+			<HowToJsonLd
+				name={`How to Migrate from ${page.legacyTech.name} to ${page.modernTech.name}`}
+				description={`Step-by-step guide for migrating your ${page.legacyTech.name} application to ${page.modernTech.name}. Covers assessment, architecture planning, incremental migration, and production cutover.`}
+				steps={howToSteps}
+				totalTime={`P${totalWeeks}W`}
+				estimatedCost={{
+					currency: "USD",
+					minValue: page.budgetGuidance.mvpMin,
+					maxValue: page.budgetGuidance.fullMax,
+				}}
+				tool={[
+					"Code Analysis Tools",
+					"CI/CD Pipeline",
+					"Monitoring Dashboard",
+					"Feature Flag System",
+				]}
+			/>
 			<MigrationPageContent page={page} />
 		</>
 	);

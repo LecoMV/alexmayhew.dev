@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getIntegrationPageBySlug, getAllIntegrationSlugs } from "@/data/pseo";
 import { IntegrationJsonLd } from "@/components/seo/integration-json-ld";
+import { HowToJsonLd, generateIntegrationHowToSteps } from "@/components/seo/howto-json-ld";
 import { IntegrationPageContent } from "./integration-page-content";
 
 const siteUrl = "https://alexmayhew.dev";
@@ -76,9 +77,27 @@ export default async function IntegrationPage({ params }: PageProps) {
 		notFound();
 	}
 
+	const howToSteps = generateIntegrationHowToSteps(page.saasA.name, page.saasB.name);
+
+	// Calculate total weeks from integration timeline phases
+	const totalWeeks =
+		page.timeline.discoveryWeeks + page.timeline.mvpWeeks + page.timeline.productionWeeks;
+
 	return (
 		<>
 			<IntegrationJsonLd page={page} />
+			<HowToJsonLd
+				name={`How to Integrate ${page.saasA.name} with ${page.saasB.name}`}
+				description={`Enterprise-grade integration guide for connecting ${page.saasA.name} and ${page.saasB.name}. Covers API setup, data mapping, middleware architecture, and compliance requirements.`}
+				steps={howToSteps}
+				totalTime={`P${totalWeeks}W`}
+				estimatedCost={{
+					currency: "USD",
+					minValue: page.budgetGuidance.mvpMin,
+					maxValue: page.budgetGuidance.fullMax,
+				}}
+				tool={["API Documentation", "Middleware Platform", "Monitoring Tools", "Testing Framework"]}
+			/>
 			<IntegrationPageContent page={page} />
 		</>
 	);

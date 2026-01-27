@@ -6,3 +6,9 @@ export { MigrationJsonLd } from "./migration-json-ld";
 export { IntegrationJsonLd } from "./integration-json-ld";
 export { TechnologyJsonLd } from "./technology-json-ld";
 export { RoleJsonLd } from "./role-json-ld";
+export {
+	HowToJsonLd,
+	generateMigrationHowToSteps,
+	generateIntegrationHowToSteps,
+} from "./howto-json-ld";
+export { LocalBusinessJsonLd } from "./local-business-json-ld";

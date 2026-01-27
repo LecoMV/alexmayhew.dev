@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/nextjs";
 Sentry.init({
 	dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 
-	// Performance monitoring
+	// Performance monitoring - capture Core Web Vitals
 	tracesSampleRate: 0.1, // 10% of transactions for performance data
 
 	// Session replay for debugging
@@ -34,6 +34,11 @@ Sentry.init({
 	release: process.env.NEXT_PUBLIC_SENTRY_RELEASE,
 
 	integrations: [
+		// Browser tracing for performance and Core Web Vitals
+		Sentry.browserTracingIntegration({
+			// Capture interactions for INP measurement
+			enableInp: true,
+		}),
 		Sentry.replayIntegration({
 			// Mask all text for privacy
 			maskAllText: false,
