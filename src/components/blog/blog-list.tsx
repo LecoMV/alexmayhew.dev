@@ -1,9 +1,21 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import { m } from "framer-motion";
 import { useBlogTheme } from "@/lib/blog-themes";
 import { CardsLayout, TerminalLayout, DossierLayout } from "./layouts";
 import type { Post } from "./types";
+
+const CATEGORIES = ["all", "architecture", "business", "frontend", "infrastructure"] as const;
+type Category = (typeof CATEGORIES)[number];
+
+const CATEGORY_LABELS: Record<Category, string> = {
+	all: "All Posts",
+	architecture: "Architecture",
+	business: "Business",
+	frontend: "Frontend",
+	infrastructure: "Infrastructure",
+};
 
 interface BlogListProps {
 	posts: Post[];
@@ -11,6 +23,31 @@ interface BlogListProps {
 
 export function BlogList({ posts }: BlogListProps) {
 	const { theme, springTransition } = useBlogTheme();
+	const [activeCategory, setActiveCategory] = useState<Category>("all");
+
+	// Calculate post counts per category
+	const categoryCounts = useMemo(() => {
+		const counts: Record<Category, number> = {
+			all: posts.length,
+			architecture: 0,
+			business: 0,
+			frontend: 0,
+			infrastructure: 0,
+		};
+		posts.forEach((post) => {
+			const category = post.data.category as Category;
+			if (category && category in counts) {
+				counts[category]++;
+			}
+		});
+		return counts;
+	}, [posts]);
+
+	// Filter posts by active category
+	const filteredPosts = useMemo(() => {
+		if (activeCategory === "all") return posts;
+		return posts.filter((post) => post.data.category === activeCategory);
+	}, [posts, activeCategory]);
 
 	// Select layout component based on theme
 	const LayoutComponent = {
@@ -51,17 +88,66 @@ export function BlogList({ posts }: BlogListProps) {
 						Deep dives into system design, performance optimization, and modern web development
 						patterns.
 					</p>
+
+					{/* Category Filter Tabs */}
+					<div className="mt-8 flex flex-wrap gap-2">
+						{CATEGORIES.map((category) => {
+							const isActive = activeCategory === category;
+							const count = categoryCounts[category];
+							return (
+								<button
+									key={category}
+									onClick={() => setActiveCategory(category)}
+									className="group relative px-4 py-2 font-mono text-xs tracking-wider uppercase transition-all duration-200"
+									style={{
+										backgroundColor: isActive ? theme.colors.accent : "transparent",
+										color: isActive ? theme.colors.background : theme.colors.textMuted,
+										border: `1px solid ${isActive ? theme.colors.accent : theme.colors.border}`,
+									}}
+								>
+									<span className="relative z-10">
+										{CATEGORY_LABELS[category]}
+										<span
+											className="ml-2 opacity-60"
+											style={{
+												color: isActive ? theme.colors.background : theme.colors.textMuted,
+											}}
+										>
+											({count})
+										</span>
+									</span>
+									{!isActive && (
+										<span
+											className="absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-10"
+											style={{ backgroundColor: theme.colors.accent }}
+										/>
+									)}
+								</button>
+							);
+						})}
+					</div>
 				</m.div>
 
 				{/* Posts - rendered by selected layout */}
-				<LayoutComponent posts={posts} />
+				<LayoutComponent posts={filteredPosts} />
 
 				{/* Empty State */}
-				{posts.length === 0 && (
+				{filteredPosts.length === 0 && (
 					<m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-12 text-center">
 						<p className="font-mono text-sm" style={{ color: theme.colors.textMuted }}>
-							No articles published yet. Check back soon.
+							{activeCategory === "all"
+								? "No articles published yet. Check back soon."
+								: `No articles in ${CATEGORY_LABELS[activeCategory]} yet.`}
 						</p>
+						{activeCategory !== "all" && (
+							<button
+								onClick={() => setActiveCategory("all")}
+								className="mt-4 font-mono text-xs underline"
+								style={{ color: theme.colors.accent }}
+							>
+								View all posts
+							</button>
+						)}
 					</m.div>
 				)}
 			</div>
