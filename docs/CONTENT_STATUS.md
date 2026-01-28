@@ -1,0 +1,302 @@
+# Content Status - alexmayhew.dev
+
+> **Last Updated:** 2026-01-28
+> **Status:** Hub-and-Spoke Implementation Complete
+
+---
+
+## Executive Summary
+
+The alexmayhew.dev blog has been restructured into a **hub-and-spoke content architecture** with 5 comprehensive guide hubs and 39 spoke posts. All internal linking, cross-cluster linking, and featured images are complete.
+
+**Total Content:** 44 blog posts (5 hubs + 39 spokes)
+
+---
+
+## Content Architecture
+
+```
+                    ┌─────────────────────────────────────┐
+                    │         BLOG PAGE                   │
+                    │   "Comprehensive Guides" Section    │
+                    │      (5 Hub Cards Featured)         │
+                    └─────────────┬───────────────────────┘
+                                  │
+        ┌─────────────────────────┼─────────────────────────┐
+        │           │             │             │           │
+        ▼           ▼             ▼             ▼           ▼
+   ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐
+   │  SaaS   │ │ Eng     │ │Frontend │ │ Perf    │ │   AI    │
+   │  Arch   │ │ Leader  │ │  Arch   │ │  Eng    │ │  Dev    │
+   │  (11)   │ │  (6)    │ │  (8)    │ │  (8)    │ │  (6)    │
+   └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘
+        │           │             │             │           │
+        ▼           ▼             ▼             ▼           ▼
+    Spoke       Spoke         Spoke         Spoke       Spoke
+    Posts       Posts         Posts         Posts       Posts
+```
+
+---
+
+## Hub Pages (5 Total)
+
+All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Guides" section.
+
+### 1. SaaS Architecture Decision Framework
+
+- **Slug:** `saas-architecture-decision-framework`
+- **Series:** `saas-architecture`
+- **Spoke Count:** 11 posts
+- **Featured Image:** ✅ `saas-architecture-decision-framework-featured.webp`
+- **Status:** ✅ Complete
+
+### 2. Engineering Leadership: Founder to CTO
+
+- **Slug:** `engineering-leadership-founder-to-cto`
+- **Series:** `engineering-leadership`
+- **Spoke Count:** 6 posts
+- **Featured Image:** ✅ `engineering-leadership-founder-to-cto-featured.webp`
+- **Status:** ✅ Complete
+
+### 3. Modern Frontend Architecture
+
+- **Slug:** `modern-frontend-architecture`
+- **Series:** `frontend-architecture`
+- **Spoke Count:** 8 posts
+- **Featured Image:** ✅ `modern-frontend-architecture-featured.webp`
+- **Status:** ✅ Complete
+
+### 4. Performance Engineering Playbook
+
+- **Slug:** `performance-engineering-playbook`
+- **Series:** `performance-engineering`
+- **Spoke Count:** 8 posts
+- **Featured Image:** ✅ `performance-engineering-playbook-featured.webp`
+- **Status:** ✅ Complete
+
+### 5. AI-Assisted Development Guide
+
+- **Slug:** `ai-assisted-development-guide`
+- **Series:** `ai-development`
+- **Spoke Count:** 6 posts
+- **Featured Image:** ✅ `ai-assisted-development-guide-featured.webp`
+- **Status:** ✅ Complete
+
+---
+
+## Spoke Posts by Cluster
+
+### SaaS Architecture (11 posts)
+
+| Post                            | Status                    |
+| ------------------------------- | ------------------------- |
+| multi-tenancy-prisma-rls        | ✅ Linked                 |
+| zero-to-10k-mrr-saas-playbook   | ✅ Linked                 |
+| 500k-architecture-mistake       | ✅ Linked                 |
+| anatomy-of-high-precision-saas  | ✅ Linked                 |
+| multi-region-saas-architecture  | ✅ Linked                 |
+| rest-api-design-mistakes        | ✅ Linked                 |
+| soc2-compliance-startup-roadmap | ✅ Linked                 |
+| tech-stack-capital-allocation   | ✅ Linked + Cross-cluster |
+| build-vs-buy                    | ✅ Linked + Cross-cluster |
+| boring-technology-wins          | ✅ Linked + Cross-cluster |
+| technical-debt-strategy         | ✅ Linked + Cross-cluster |
+
+### Engineering Leadership (6 posts)
+
+| Post                            | Status                    |
+| ------------------------------- | ------------------------- |
+| ic-to-tech-lead                 | ✅ Linked                 |
+| fractional-cto-vs-full-time     | ✅ Linked                 |
+| senior-developer-paradox        | ✅ Linked + Cross-cluster |
+| first-engineering-team-playbook | ✅ Linked                 |
+| technical-hiring-framework      | ✅ Linked                 |
+| typescript-business-case        | ✅ Linked                 |
+
+### Frontend Architecture (8 posts)
+
+| Post                                 | Status                    |
+| ------------------------------------ | ------------------------- |
+| neo-brutalism-developer-guide        | ✅ Linked                 |
+| design-tokens-comprehensive          | ✅ Linked                 |
+| accessibility-design-systems         | ✅ Linked                 |
+| component-api-design                 | ✅ Linked                 |
+| designer-developer-handoff           | ✅ Linked                 |
+| tailwind-vs-component-libraries      | ✅ Linked                 |
+| optimistic-ui                        | ✅ Linked                 |
+| rsc-edge-death-of-waterfall          | ✅ Linked + Cross-cluster |
+| atmospheric-animations-framer-motion | ✅ Linked                 |
+
+### Performance Engineering (8 posts)
+
+| Post                             | Status    |
+| -------------------------------- | --------- |
+| core-web-vitals-optimization     | ✅ Linked |
+| cdn-caching-strategy             | ✅ Linked |
+| lambda-tax-cold-starts           | ✅ Linked |
+| edge-computing-when-worth-it     | ✅ Linked |
+| database-connection-pooling      | ✅ Linked |
+| frontend-bundle-optimization     | ✅ Linked |
+| api-response-time-optimization   | ✅ Linked |
+| monitoring-observability-startup | ✅ Linked |
+
+### AI Development (6 posts)
+
+| Post                                    | Status    |
+| --------------------------------------- | --------- |
+| ai-assisted-development-generative-debt | ✅ Linked |
+| ai-code-review                          | ✅ Linked |
+| llm-integration-architecture            | ✅ Linked |
+| prompt-engineering-developers           | ✅ Linked |
+| building-ai-features-users-want         | ✅ Linked |
+| ai-cost-optimization                    | ✅ Linked |
+
+---
+
+## Internal Linking Structure
+
+### Spoke → Hub Links
+
+Every spoke post contains:
+
+1. **"Part of [Hub]" callout** - Links to parent hub with brief description
+2. **"More in This Series" section** - Lists 3-5 related spokes
+3. **series frontmatter** - Identifies cluster membership
+
+### Cross-Cluster Links
+
+Meta-framework posts that span multiple topics include "Related Guides" section:
+
+| Post                          | Links To                                 |
+| ----------------------------- | ---------------------------------------- |
+| tech-stack-capital-allocation | Engineering Leadership, Performance      |
+| build-vs-buy                  | Engineering Leadership                   |
+| boring-technology-wins        | Engineering Leadership, Performance      |
+| rsc-edge-death-of-waterfall   | Frontend Architecture, SaaS Architecture |
+| technical-debt-strategy       | SaaS Architecture                        |
+| senior-developer-paradox      | AI Development                           |
+
+### Service Page → Hub Links
+
+All 20 pSEO service pages include relevant hub pages in `relatedBlogPosts`:
+
+- SaaS services → `saas-architecture-decision-framework`
+- React/Next.js services → `modern-frontend-architecture`
+- Technical advisor services → `engineering-leadership-founder-to-cto`
+- Performance services → `performance-engineering-playbook`
+- AI services → `ai-assisted-development-guide`
+
+---
+
+## Blog Page Features
+
+### Comprehensive Guides Section
+
+- **Location:** Above category filters on /blog
+- **Layout:** Responsive grid (5 cols on xl, 3 on lg, 2 on sm, 1 on mobile)
+- **Display:** Featured image, title, description (2 lines)
+- **Hover:** Image zoom, title color change to accent
+
+### Category Filtering
+
+- All Posts (44)
+- Architecture (X)
+- Business (X)
+- Frontend (X)
+- Infrastructure (X)
+
+Hub posts are **excluded** from the main post feed to avoid duplication.
+
+---
+
+## Featured Images
+
+All hub posts have branded featured images:
+
+| Hub                                  | Image | Size       |
+| ------------------------------------ | ----- | ---------- |
+| AI-Assisted Development Guide        | ✅    | 196KB      |
+| Modern Frontend Architecture         | ✅    | 138KB      |
+| SaaS Architecture Decision Framework | ✅    | 165KB      |
+| Performance Engineering Playbook     | ✅    | (existing) |
+| Engineering Leadership               | ✅    | (existing) |
+
+**Image Specs:**
+
+- Dimensions: 1920x1072 (16:9)
+- Format: WebP
+- Style: Neo-brutalist, void navy background, cyber lime accents
+- Title text included in image
+
+---
+
+## Schema Configuration
+
+### source.config.ts
+
+```typescript
+// Blog schema includes hub/series fields
+isHub: z.boolean().default(false),
+series: z.string().optional(),
+```
+
+### Frontmatter Example (Hub)
+
+```yaml
+---
+title: "AI-Assisted Development Guide"
+isHub: true
+series: "ai-development"
+image: "/images/blog/ai-assisted-development-guide-featured.webp"
+---
+```
+
+### Frontmatter Example (Spoke)
+
+```yaml
+---
+title: "AI Code Review: Catching What LLMs Miss"
+series: "ai-development"
+image: "/images/blog/ai-code-review-featured.webp"
+---
+```
+
+---
+
+## Maintenance Notes
+
+### Adding New Spoke Posts
+
+1. Create MDX file in `content/blog/`
+2. Add `series: "[cluster-name]"` to frontmatter
+3. Add "Part of [Hub]" callout at top
+4. Add "More in This Series" section at bottom
+5. Update hub page's spoke list if manually maintained
+
+### Adding New Hub
+
+1. Create MDX file with `isHub: true`
+2. Create featured image following brand guidelines
+3. Add to CONTENT_STATUS.md
+4. Will automatically appear in "Comprehensive Guides" section
+
+### Cross-Cluster Linking
+
+For posts spanning multiple topics:
+
+1. Add "Related Guides" section after "More in This Series"
+2. Link to relevant hub pages from other clusters
+3. Update service pages if applicable
+
+---
+
+## Related Documentation
+
+- **CLAUDE.md** - Project overview and commands
+- **VOICE_GUIDE.md** - Brand voice for content
+- **IMPLEMENTATION_PLAN.md** - Original marketing plan
+- **HUB_AND_SPOKE_CONTENT_STRATEGY.md** - Research and best practices
+
+---
+
+_This document is the source of truth for content status. Update when adding new content._

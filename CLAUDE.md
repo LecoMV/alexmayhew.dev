@@ -62,9 +62,34 @@ src/app/                    # Pages (App Router)
 src/components/ui/          # Atomic components
 src/components/pages/       # Page-level components
 src/data/pseo/              # pSEO data layer (pages, tech, industries)
+content/blog/               # Blog posts (MDX) - 44 posts total
 docs/                       # Implementation docs
 .claude/rules/              # Modular Claude rules
 ```
+
+## Content Architecture (Hub-and-Spoke)
+
+**Status:** ✅ Complete (2026-01-28)
+
+The blog uses a hub-and-spoke model with 5 comprehensive guide hubs and 39 spoke posts.
+
+| Hub                                    | Series Key                | Spokes |
+| -------------------------------------- | ------------------------- | ------ |
+| SaaS Architecture Decision Framework   | `saas-architecture`       | 11     |
+| Engineering Leadership: Founder to CTO | `engineering-leadership`  | 6      |
+| Modern Frontend Architecture           | `frontend-architecture`   | 8      |
+| Performance Engineering Playbook       | `performance-engineering` | 8      |
+| AI-Assisted Development Guide          | `ai-development`          | 6      |
+
+**Key Features:**
+
+- Hub posts have `isHub: true` in frontmatter
+- Spoke posts have `series: "[cluster-name]"` in frontmatter
+- "Comprehensive Guides" section on /blog shows all hubs
+- Cross-cluster linking for meta-framework posts
+- All pSEO service pages link to relevant hubs
+
+See @docs/CONTENT_STATUS.md for full content inventory and linking structure.
 
 ## Credentials
 
@@ -107,9 +132,14 @@ See @docs/SELF_HOSTED_LLM_GUIDE.md for details.
 - Deployment: @docs/DEPLOYMENT.md
 - Claude Config: @docs/CLAUDE_CODE_CONFIG.md
 
-### Content & Marketing
+### Content (Start Here for Content Work)
 
+- **Content Status: @docs/CONTENT_STATUS.md** (source of truth for blog content)
 - Voice Guide: @docs/VOICE_GUIDE.md (brand voice for all content)
+- Hub Strategy: @docs/HUB_AND_SPOKE_CONTENT_STRATEGY.md (best practices reference)
+
+### Marketing & Repurposing
+
 - n8n Setup: @docs/N8N_SETUP_GUIDE.md
 - LLM Prompts: @docs/LLM_REPURPOSING_PROMPTS.md
 - Content System: @docs/CONTENT_REPURPOSING_SYSTEM.md
