@@ -39,7 +39,7 @@ function getSlug(path: string): string {
 
 export default function BlogPage() {
 	// Frontmatter is spread at top level of entry, file info is in entry.info
-	const posts = blog
+	const allPosts = blog
 		.filter((post) => !post.draft)
 		.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime())
 		.map((post) => ({
@@ -51,8 +51,14 @@ export default function BlogPage() {
 				category: post.category,
 				tags: post.tags,
 				image: post.image,
+				isHub: post.isHub,
+				series: post.series,
 			},
 		}));
 
-	return <BlogList posts={posts} />;
+	// Separate hub posts for featured section
+	const hubPosts = allPosts.filter((post) => post.data.isHub);
+	const posts = allPosts.filter((post) => !post.data.isHub);
+
+	return <BlogList posts={posts} hubPosts={hubPosts} />;
 }

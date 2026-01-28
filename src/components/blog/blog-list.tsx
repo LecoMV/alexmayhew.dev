@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { m } from "framer-motion";
+import Link from "next/link";
+import Image from "next/image";
 import { useBlogTheme } from "@/lib/blog-themes";
 import { CardsLayout, TerminalLayout, DossierLayout } from "./layouts";
 import type { Post } from "./types";
@@ -19,9 +21,10 @@ const CATEGORY_LABELS: Record<Category, string> = {
 
 interface BlogListProps {
 	posts: Post[];
+	hubPosts?: Post[];
 }
 
-export function BlogList({ posts }: BlogListProps) {
+export function BlogList({ posts, hubPosts = [] }: BlogListProps) {
 	const { theme, springTransition } = useBlogTheme();
 	const [activeCategory, setActiveCategory] = useState<Category>("all");
 
@@ -88,6 +91,72 @@ export function BlogList({ posts }: BlogListProps) {
 						Deep dives into system design, performance optimization, and modern web development
 						patterns.
 					</p>
+
+					{/* Featured Guides Section */}
+					{hubPosts.length > 0 && (
+						<div className="mt-12">
+							<h3
+								className="mb-4 font-mono text-xs tracking-wider uppercase"
+								style={{ color: theme.colors.accent }}
+							>
+								<span className="mr-2">◆</span>
+								Comprehensive Guides
+							</h3>
+							<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+								{hubPosts.map((hub, index) => (
+									<m.div
+										key={hub.slug}
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ ...springTransition, delay: index * 0.05 }}
+									>
+										<Link
+											href={`/blog/${hub.slug}`}
+											className="group hover:border-opacity-50 block overflow-hidden border transition-all duration-300"
+											style={{
+												backgroundColor: theme.colors.surface,
+												borderColor: theme.colors.border,
+											}}
+										>
+											{hub.data.image && (
+												<div className="relative aspect-video overflow-hidden">
+													<Image
+														src={hub.data.image}
+														alt={hub.data.title}
+														fill
+														className="object-cover transition-transform duration-500 group-hover:scale-105"
+													/>
+													<div
+														className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-20"
+														style={{ backgroundColor: theme.colors.accent }}
+													/>
+												</div>
+											)}
+											<div className="p-4">
+												<h4
+													className="mb-2 text-sm leading-tight font-semibold transition-colors duration-200 group-hover:text-[var(--accent)]"
+													style={
+														{
+															color: theme.colors.text,
+															"--accent": theme.colors.accent,
+														} as React.CSSProperties
+													}
+												>
+													{hub.data.title}
+												</h4>
+												<p
+													className="line-clamp-2 text-xs"
+													style={{ color: theme.colors.textMuted }}
+												>
+													{hub.data.description}
+												</p>
+											</div>
+										</Link>
+									</m.div>
+								))}
+							</div>
+						</div>
+					)}
 
 					{/* Category Filter Tabs */}
 					<div className="mt-8 flex flex-wrap gap-2">

@@ -7,5 +7,7 @@ export interface Post {
 		category: string;
 		tags: string[];
 		image?: string;
+		isHub?: boolean;
+		series?: string;
 	};
 }

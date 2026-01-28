@@ -21,6 +21,9 @@ export const blog = defineCollections({
 			tags: z.array(z.string()).default([]),
 			image: z.string().optional(),
 			draft: z.boolean().default(false),
+			// Hub and series fields for content clusters
+			isHub: z.boolean().default(false),
+			series: z.string().optional(),
 		})
 		.transform((data) => ({
 			...data,
