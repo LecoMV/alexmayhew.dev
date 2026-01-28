@@ -55,12 +55,12 @@ console.log(`User ${userId} created order ${orderId}`);
 
 // Good: Structured logging
 logger.info({
-  event: 'order.created',
-  userId,
-  orderId,
-  amount: order.total,
-  items: order.items.length,
-  latencyMs: Date.now() - startTime,
+	event: "order.created",
+	userId,
+	orderId,
+	amount: order.total,
+	items: order.items.length,
+	latencyMs: Date.now() - startTime,
 });
 ```
 
@@ -107,13 +107,13 @@ The P99 is where problems hide. An API with 50ms P50 and 3,000ms P99 has a 3-sec
 
 ```typescript
 // Instrument latency with histogram buckets
-import { Histogram } from 'prom-client';
+import { Histogram } from "prom-client";
 
 const httpRequestDuration = new Histogram({
-  name: 'http_request_duration_seconds',
-  help: 'Duration of HTTP requests in seconds',
-  labelNames: ['method', 'route', 'status_code'],
-  buckets: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
+	name: "http_request_duration_seconds",
+	help: "Duration of HTTP requests in seconds",
+	labelNames: ["method", "route", "status_code"],
+	buckets: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
 });
 
 // In your middleware
@@ -176,46 +176,47 @@ OpenTelemetry is the standard. Vendor-specific SDKs lock you in. I've helped thr
 
 ```typescript
 // instrumentation.ts (Next.js 14+)
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
-import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
-import { Resource } from '@opentelemetry/resources';
-import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import { NodeSDK } from "@opentelemetry/sdk-node";
+import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
+import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
+import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
+import { Resource } from "@opentelemetry/resources";
+import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 
 const sdk = new NodeSDK({
-  resource: new Resource({
-    [SemanticResourceAttributes.SERVICE_NAME]: 'my-saas-api',
-    [SemanticResourceAttributes.SERVICE_VERSION]: process.env.GIT_SHA || 'unknown',
-    [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV,
-  }),
-  traceExporter: new OTLPTraceExporter({
-    url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT + '/v1/traces',
-  }),
-  metricReader: new PeriodicExportingMetricReader({
-    exporter: new OTLPMetricExporter({
-      url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT + '/v1/metrics',
-    }),
-    exportIntervalMillis: 15000, // 15 second resolution
-  }),
-  instrumentations: [
-    getNodeAutoInstrumentations({
-      '@opentelemetry/instrumentation-fs': { enabled: false }, // Too noisy
-      '@opentelemetry/instrumentation-http': {
-        ignoreIncomingPaths: ['/health', '/ready', '/metrics'],
-      },
-    }),
-  ],
+	resource: new Resource({
+		[SemanticResourceAttributes.SERVICE_NAME]: "my-saas-api",
+		[SemanticResourceAttributes.SERVICE_VERSION]: process.env.GIT_SHA || "unknown",
+		[SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV,
+	}),
+	traceExporter: new OTLPTraceExporter({
+		url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT + "/v1/traces",
+	}),
+	metricReader: new PeriodicExportingMetricReader({
+		exporter: new OTLPMetricExporter({
+			url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT + "/v1/metrics",
+		}),
+		exportIntervalMillis: 15000, // 15 second resolution
+	}),
+	instrumentations: [
+		getNodeAutoInstrumentations({
+			"@opentelemetry/instrumentation-fs": { enabled: false }, // Too noisy
+			"@opentelemetry/instrumentation-http": {
+				ignoreIncomingPaths: ["/health", "/ready", "/metrics"],
+			},
+		}),
+	],
 });
 
 sdk.start();
 
-process.on('SIGTERM', () => {
-  sdk.shutdown()
-    .then(() => console.log('Tracing terminated'))
-    .catch((error) => console.error('Error terminating tracing', error))
-    .finally(() => process.exit(0));
+process.on("SIGTERM", () => {
+	sdk
+		.shutdown()
+		.then(() => console.log("Tracing terminated"))
+		.catch((error) => console.error("Error terminating tracing", error))
+		.finally(() => process.exit(0));
 });
 ```
 
@@ -225,42 +226,42 @@ Auto-instrumentation catches HTTP and database calls. Business metrics require m
 
 ```typescript
 // metrics/business.ts
-import { metrics } from '@opentelemetry/api';
+import { metrics } from "@opentelemetry/api";
 
-const meter = metrics.getMeter('business-metrics');
+const meter = metrics.getMeter("business-metrics");
 
 // Counter for events
-const ordersCreated = meter.createCounter('orders_created_total', {
-  description: 'Total number of orders created',
+const ordersCreated = meter.createCounter("orders_created_total", {
+	description: "Total number of orders created",
 });
 
 // Histogram for values
-const orderValue = meter.createHistogram('order_value_dollars', {
-  description: 'Value of orders in dollars',
-  unit: 'dollars',
+const orderValue = meter.createHistogram("order_value_dollars", {
+	description: "Value of orders in dollars",
+	unit: "dollars",
 });
 
 // Gauge for current state
-const activeSubscriptions = meter.createObservableGauge('active_subscriptions', {
-  description: 'Number of active subscriptions',
+const activeSubscriptions = meter.createObservableGauge("active_subscriptions", {
+	description: "Number of active subscriptions",
 });
 
 // Usage
 export function recordOrderCreated(order: Order) {
-  ordersCreated.add(1, {
-    plan: order.plan,
-    source: order.source,
-  });
-  orderValue.record(order.total, {
-    plan: order.plan,
-    currency: order.currency,
-  });
+	ordersCreated.add(1, {
+		plan: order.plan,
+		source: order.source,
+	});
+	orderValue.record(order.total, {
+		plan: order.plan,
+		currency: order.currency,
+	});
 }
 
 // For gauges, register a callback
 activeSubscriptions.addCallback(async (result) => {
-  const count = await db.subscription.count({ where: { status: 'active' } });
-  result.observe(count, { tier: 'all' });
+	const count = await db.subscription.count({ where: { status: "active" } });
+	result.observe(count, { tier: "all" });
 });
 ```
 
@@ -340,7 +341,7 @@ For teams of 4-8 engineers, a weekly rotation works. For larger teams, use sub-t
 schedules:
   primary:
     type: weekly
-    rotation_virtual_start: "2026-01-06T09:00:00-05:00"  # Monday 9am EST
+    rotation_virtual_start: "2026-01-06T09:00:00-05:00" # Monday 9am EST
     users:
       - alice@company.com
       - bob@company.com
@@ -349,7 +350,7 @@ schedules:
 
   secondary:
     type: weekly
-    rotation_virtual_start: "2026-01-13T09:00:00-05:00"  # Offset by one week
+    rotation_virtual_start: "2026-01-13T09:00:00-05:00" # Offset by one week
     users:
       - alice@company.com
       - bob@company.com
@@ -359,7 +360,7 @@ schedules:
 escalation_policy:
   - targets:
       - schedule: primary
-    escalation_timeout: 10  # minutes
+    escalation_timeout: 10 # minutes
   - targets:
       - schedule: secondary
     escalation_timeout: 15
@@ -380,22 +381,27 @@ If an alert escalates to the CTO, something is broken beyond the incident itself
 
 Every alert should link to a runbook. Here's the template I use:
 
-```markdown
+````markdown
 # Runbook: High Error Rate
 
 ## Alert Condition
+
 Error rate > 1% for 2+ minutes
 
 ## Impact
+
 Users experiencing failed requests. API returning 5xx errors.
 
 ## Immediate Actions
+
 1. Check deployment status: Did we just deploy?
    ```bash
    kubectl rollout history deployment/api
    ```
+````
 
 2. Check database connectivity:
+
    ```bash
    curl -s https://api.internal/health | jq .database
    ```
@@ -406,6 +412,7 @@ Users experiencing failed requests. API returning 5xx errors.
    ```
 
 ## Diagnostic Commands
+
 ```bash
 # Error distribution by endpoint
 kubectl logs -l app=api --since=5m | grep "level\":\"error" | jq .path | sort | uniq -c
@@ -420,29 +427,35 @@ kubectl exec -it deployment/api -- node -e "require('./db').pool.totalCount"
 ## Mitigation Steps
 
 ### If recent deployment caused it:
+
 ```bash
 kubectl rollout undo deployment/api
 ```
 
 ### If database connection issues:
+
 1. Check connection pool exhaustion
 2. Restart pods if pool is corrupted
 3. Scale up if load is legitimate
 
 ### If downstream dependency failure:
+
 1. Enable circuit breaker
 2. Return cached/degraded response
 3. Notify dependency team
 
 ## Escalation Criteria
+
 - Error rate > 5% for 5 minutes: Escalate to secondary
 - Complete outage: Escalate to engineering manager
 - Data corruption suspected: Escalate to CTO immediately
 
 ## Post-Incident
+
 - Create incident ticket
 - Update this runbook if steps were missing
 - Schedule blameless postmortem
+
 ```
 
 ---
@@ -467,11 +480,13 @@ I've been through enough 2am incidents to know that having a framework matters. 
 4. Open relevant dashboards
 
 ```
+
 @here Incident declared. High error rate on API.
 Status: Investigating
 Impact: Estimated 5% of requests failing
 Incident Commander: @alice
-```
+
+````
 
 ### Triage (Minutes 5-15)
 
@@ -551,7 +566,7 @@ Blameless postmortem template:
 
 ## Lessons Learned
 [One paragraph summary]
-```
+````
 
 ---
 
@@ -562,6 +577,7 @@ Observability tooling should match your scale and budget. I've seen seed-stage s
 ### Seed Stage ($0-50K MRR)
 
 **Stack:**
+
 - **Error Tracking:** Sentry ($26/month)
 - **Uptime Monitoring:** Checkly or Better Uptime ($20/month)
 - **Alerting:** PagerDuty free tier (up to 5 users)
@@ -575,6 +591,7 @@ Focus on knowing when you're down and capturing errors. Deep observability can w
 ### Series A ($50K-500K MRR)
 
 **Stack:**
+
 - **Metrics + Logs + Traces:** Grafana Cloud ($50-200/month)
 - **Error Tracking:** Sentry Team ($80/month)
 - **Uptime + API Monitoring:** Checkly ($40/month)
@@ -588,11 +605,13 @@ At this stage, you need dashboards, historical data, and proper on-call rotation
 ### Series B+ ($500K+ MRR)
 
 **Option A: Managed (Datadog)**
+
 - Full Datadog suite: $1,500-5,000/month
 - Pros: Everything integrated, great UX
 - Cons: Expensive, vendor lock-in
 
 **Option B: Self-Managed (OpenTelemetry + OSS)**
+
 - OpenTelemetry Collector → Grafana Mimir/Tempo/Loki
 - Hosted on Kubernetes
 - Pros: No vendor lock-in, unlimited scale
@@ -615,6 +634,7 @@ Monitoring systems have their own reliability requirements. I've seen companies 
 ### Multi-Provider Strategy
 
 For critical alerting, use two providers:
+
 - Primary: PagerDuty
 - Backup: Opsgenie or plain SMS via Twilio
 

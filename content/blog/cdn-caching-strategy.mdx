@@ -74,20 +74,17 @@ The hash changes when content changes. Old URLs are never reused. Cache forever.
 
 Content that changes occasionally but can tolerate brief staleness:
 
-| Content Type     | Cache Duration | Strategy                     |
-| ---------------- | -------------- | ---------------------------- |
-| Product listings | 1-5 minutes    | stale-while-revalidate       |
-| Blog posts       | 1 hour         | Cache tags for invalidation  |
+| Content Type     | Cache Duration | Strategy                       |
+| ---------------- | -------------- | ------------------------------ |
+| Product listings | 1-5 minutes    | stale-while-revalidate         |
+| Blog posts       | 1 hour         | Cache tags for invalidation    |
 | Marketing pages  | 5 minutes      | ISR (Incremental Static Regen) |
-| API responses    | 30-60 seconds  | stale-while-revalidate       |
+| API responses    | 30-60 seconds  | stale-while-revalidate         |
 
 ```typescript
 // stale-while-revalidate pattern
 // Serve stale content immediately, revalidate in background
-res.setHeader(
-  "Cache-Control",
-  "public, max-age=60, stale-while-revalidate=300"
-);
+res.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
 ```
 
 This header says: serve cached content for 60 seconds, then revalidate in the background while still serving stale content for up to 5 minutes.
@@ -96,12 +93,12 @@ This header says: serve cached content for 60 seconds, then revalidate in the ba
 
 Content that varies by user or session requires special handling:
 
-| Content Type        | Approach                          |
-| ------------------- | --------------------------------- |
-| User dashboards     | No CDN cache, origin cache only   |
-| Authenticated APIs  | Vary by Authorization header      |
-| A/B test variants   | Vary by cookie or edge compute    |
-| Geo-personalized    | Edge compute or Vary by geography |
+| Content Type       | Approach                          |
+| ------------------ | --------------------------------- |
+| User dashboards    | No CDN cache, origin cache only   |
+| Authenticated APIs | Vary by Authorization header      |
+| A/B test variants  | Vary by cookie or edge compute    |
+| Geo-personalized   | Edge compute or Vary by geography |
 
 ```typescript
 // NEVER cache without Vary header
@@ -143,18 +140,18 @@ Cache-Control: public, max-age=31536000, immutable
 
 ### Common Directives
 
-| Directive             | Meaning                                           |
-| --------------------- | ------------------------------------------------- |
-| `public`              | Any cache (browser, CDN) can store                |
-| `private`             | Only browser can cache, not CDN                   |
-| `max-age=N`           | Cache for N seconds                               |
-| `s-maxage=N`          | CDN cache duration (overrides max-age for CDN)    |
-| `no-cache`            | Cache but revalidate before using                 |
-| `no-store`            | Don't cache at all                                |
-| `must-revalidate`     | Don't serve stale content                         |
-| `stale-while-revalidate=N` | Serve stale for N seconds while revalidating |
-| `stale-if-error=N`    | Serve stale for N seconds if origin fails         |
-| `immutable`           | Content will never change, don't revalidate       |
+| Directive                  | Meaning                                        |
+| -------------------------- | ---------------------------------------------- |
+| `public`                   | Any cache (browser, CDN) can store             |
+| `private`                  | Only browser can cache, not CDN                |
+| `max-age=N`                | Cache for N seconds                            |
+| `s-maxage=N`               | CDN cache duration (overrides max-age for CDN) |
+| `no-cache`                 | Cache but revalidate before using              |
+| `no-store`                 | Don't cache at all                             |
+| `must-revalidate`          | Don't serve stale content                      |
+| `stale-while-revalidate=N` | Serve stale for N seconds while revalidating   |
+| `stale-if-error=N`         | Serve stale for N seconds if origin fails      |
+| `immutable`                | Content will never change, don't revalidate    |
 
 ### Pattern: Different TTLs for Browser vs CDN
 
@@ -173,8 +170,8 @@ For critical content, serve stale data during origin failures:
 
 ```typescript
 res.setHeader(
-  "Cache-Control",
-  "public, max-age=60, stale-while-revalidate=300, stale-if-error=86400"
+	"Cache-Control",
+	"public, max-age=60, stale-while-revalidate=300, stale-if-error=86400"
 );
 ```
 
@@ -211,27 +208,27 @@ Origin Cache Control: On
 ```javascript
 // Cloudflare Workers for fine-grained control
 export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
+	async fetch(request, env) {
+		const url = new URL(request.url);
 
-    // Static assets - aggressive caching
-    if (url.pathname.startsWith('/_next/static/')) {
-      const response = await fetch(request);
-      const headers = new Headers(response.headers);
-      headers.set('Cache-Control', 'public, max-age=31536000, immutable');
-      return new Response(response.body, { headers });
-    }
+		// Static assets - aggressive caching
+		if (url.pathname.startsWith("/_next/static/")) {
+			const response = await fetch(request);
+			const headers = new Headers(response.headers);
+			headers.set("Cache-Control", "public, max-age=31536000, immutable");
+			return new Response(response.body, { headers });
+		}
 
-    // API routes - stale-while-revalidate
-    if (url.pathname.startsWith('/api/')) {
-      const response = await fetch(request);
-      const headers = new Headers(response.headers);
-      headers.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
-      return new Response(response.body, { headers });
-    }
+		// API routes - stale-while-revalidate
+		if (url.pathname.startsWith("/api/")) {
+			const response = await fetch(request);
+			const headers = new Headers(response.headers);
+			headers.set("Cache-Control", "public, max-age=30, stale-while-revalidate=60");
+			return new Response(response.body, { headers });
+		}
 
-    return fetch(request);
-  }
+		return fetch(request);
+	},
 };
 ```
 
@@ -242,15 +239,12 @@ Vercel handles much of this automatically, but you can override:
 ```typescript
 // pages/api/products.ts
 export default function handler(req, res) {
-  const products = await getProducts();
+	const products = await getProducts();
 
-  // ISR-style caching for API routes
-  res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=60, stale-while-revalidate=300'
-  );
+	// ISR-style caching for API routes
+	res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");
 
-  res.json(products);
+	res.json(products);
 }
 ```
 
@@ -290,10 +284,10 @@ Include version in the URL or query parameter:
 
 ```typescript
 // Version in path
-const response = await fetch('/api/v2/products');
+const response = await fetch("/api/v2/products");
 
 // Or version as query param (less clean but works)
-const response = await fetch('/api/products?v=1643234567');
+const response = await fetch("/api/products?v=1643234567");
 ```
 
 When you deploy new code, bump the version. Old URLs serve old content (acceptable during rollout); new URLs fetch fresh.
@@ -304,7 +298,7 @@ Cloudflare, Fastly, and other CDNs support cache tags:
 
 ```typescript
 // Tag responses during render
-res.setHeader('Cache-Tag', 'product-123, category-electronics');
+res.setHeader("Cache-Tag", "product-123, category-electronics");
 ```
 
 ```bash
@@ -321,7 +315,7 @@ When product 123 changes, purge that tag. All pages containing that product refr
 Similar to cache tags, but Fastly-specific:
 
 ```typescript
-res.setHeader('Surrogate-Key', 'product-123 category-electronics homepage');
+res.setHeader("Surrogate-Key", "product-123 category-electronics homepage");
 ```
 
 ```bash
@@ -336,7 +330,7 @@ The simplest approach—let content expire naturally:
 
 ```typescript
 // Content auto-expires after 5 minutes
-res.setHeader('Cache-Control', 'public, max-age=300');
+res.setHeader("Cache-Control", "public, max-age=300");
 ```
 
 No active invalidation needed. The trade-off is stale content for up to 5 minutes after changes.
@@ -372,23 +366,23 @@ Traditional CDN is simpler and cheaper for these cases.
 ```typescript
 // Cloudflare Worker for A/B testing
 export default {
-  async fetch(request) {
-    const url = new URL(request.url);
+	async fetch(request) {
+		const url = new URL(request.url);
 
-    // Determine variant at the edge
-    const variant = await getVariant(request);
+		// Determine variant at the edge
+		const variant = await getVariant(request);
 
-    // Fetch from origin with variant header
-    const response = await fetch(url, {
-      headers: { 'X-Variant': variant }
-    });
+		// Fetch from origin with variant header
+		const response = await fetch(url, {
+			headers: { "X-Variant": variant },
+		});
 
-    // Cache per variant
-    const headers = new Headers(response.headers);
-    headers.set('Vary', 'X-Variant');
+		// Cache per variant
+		const headers = new Headers(response.headers);
+		headers.set("Vary", "X-Variant");
 
-    return new Response(response.body, { headers });
-  }
+		return new Response(response.body, { headers });
+	},
 };
 ```
 
@@ -399,20 +393,20 @@ Without edge computing, you'd either fragment your cache (one entry per variant 
 ```typescript
 // Edge function that personalizes without origin
 export default {
-  async fetch(request, env) {
-    // Get cached base response
-    const baseResponse = await caches.default.match(request);
+	async fetch(request, env) {
+		// Get cached base response
+		const baseResponse = await caches.default.match(request);
 
-    if (baseResponse) {
-      // Personalize at edge using KV store
-      const userId = getUserIdFromCookie(request);
-      const preferences = await env.USER_PREFS.get(userId);
+		if (baseResponse) {
+			// Personalize at edge using KV store
+			const userId = getUserIdFromCookie(request);
+			const preferences = await env.USER_PREFS.get(userId);
 
-      return injectPersonalization(baseResponse, preferences);
-    }
+			return injectPersonalization(baseResponse, preferences);
+		}
 
-    return fetch(request);
-  }
+		return fetch(request);
+	},
 };
 ```
 
@@ -423,16 +417,16 @@ The base content is cached. Personalization happens at the edge with no origin r
 ```typescript
 // Validate JWT at the edge
 export default {
-  async fetch(request) {
-    const token = request.headers.get('Authorization')?.replace('Bearer ', '');
+	async fetch(request) {
+		const token = request.headers.get("Authorization")?.replace("Bearer ", "");
 
-    if (!token || !await verifyJWT(token)) {
-      return new Response('Unauthorized', { status: 401 });
-    }
+		if (!token || !(await verifyJWT(token))) {
+			return new Response("Unauthorized", { status: 401 });
+		}
 
-    // Token valid, proceed with cached response
-    return fetch(request);
-  }
+		// Token valid, proceed with cached response
+		return fetch(request);
+	},
 };
 ```
 
@@ -449,18 +443,21 @@ CDN caching directly impacts your infrastructure costs. Here's how to calculate 
 ### Bandwidth Calculation
 
 Assume:
+
 - 10 million requests/month
 - Average response size: 50KB
 - Origin bandwidth cost: $0.085/GB (AWS)
 - CDN bandwidth cost: $0.02/GB (Cloudflare Enterprise) or $0 (Cloudflare Free/Pro)
 
 **Without CDN (0% cache hit):**
+
 ```
 10M requests × 50KB = 500GB
 500GB × $0.085 = $42.50/month origin bandwidth
 ```
 
 **With CDN (90% cache hit):**
+
 ```
 1M requests × 50KB = 50GB origin bandwidth
 50GB × $0.085 = $4.25/month origin bandwidth
@@ -474,12 +471,14 @@ But bandwidth is only part of the equation.
 ### Origin Compute Savings
 
 Each request to origin requires compute:
+
 - Lambda/serverless: ~$0.20 per million requests + compute time
 - Container/EC2: Provisioned for peak load
 
 With 90% cache hit ratio, you need 90% fewer origin instances.
 
 **Example:**
+
 - Without CDN: 4 × m5.large instances ($140/month each) = $560/month
 - With CDN: 1 × m5.large instance = $140/month
 - **Savings: $420/month in compute alone**
@@ -548,7 +547,7 @@ I've seen CDN configurations go wrong in predictable ways.
 
 ```typescript
 // WRONG - User B might see User A's dashboard
-res.setHeader('Cache-Control', 'public, max-age=3600');
+res.setHeader("Cache-Control", "public, max-age=3600");
 res.json(await getUserDashboard(userId));
 ```
 
@@ -558,10 +557,10 @@ res.json(await getUserDashboard(userId));
 
 ```typescript
 // WRONG - Same URL, different responses, but CDN doesn't know
-if (req.headers['accept-language'].includes('es')) {
-  res.json(spanishContent);
+if (req.headers["accept-language"].includes("es")) {
+	res.json(spanishContent);
 } else {
-  res.json(englishContent);
+	res.json(englishContent);
 }
 ```
 
@@ -571,9 +570,9 @@ if (req.headers['accept-language'].includes('es')) {
 
 ```typescript
 // WRONG - Browsers might cache form submissions
-app.post('/api/submit', (req, res) => {
-  res.setHeader('Cache-Control', 'public, max-age=300');
-  // ...
+app.post("/api/submit", (req, res) => {
+	res.setHeader("Cache-Control", "public, max-age=300");
+	// ...
 });
 ```
 
@@ -589,14 +588,15 @@ CDN defaults are conservative—often shorter TTLs than optimal. Explicitly set 
 
 Track these metrics to validate your caching strategy:
 
-| Metric            | Target        | Tool                              |
-| ----------------- | ------------- | --------------------------------- |
-| Cache Hit Ratio   | 85%+          | Cloudflare Analytics, Fastly Stats |
-| TTFB (P50)        | Under 100ms global | WebPageTest, Lighthouse           |
-| Origin Requests   | Down 80%+     | Origin server metrics             |
-| Bandwidth Cost    | Down 70%+     | Cloud provider billing            |
+| Metric          | Target             | Tool                               |
+| --------------- | ------------------ | ---------------------------------- |
+| Cache Hit Ratio | 85%+               | Cloudflare Analytics, Fastly Stats |
+| TTFB (P50)      | Under 100ms global | WebPageTest, Lighthouse            |
+| Origin Requests | Down 80%+          | Origin server metrics              |
+| Bandwidth Cost  | Down 70%+          | Cloud provider billing             |
 
 If cache hit ratio drops unexpectedly, check for:
+
 - New query parameters fragmenting cache
 - Cookies being forwarded unnecessarily
 - Vary headers that are too broad

@@ -24,12 +24,12 @@ I've optimized systems across industries—fintech dashboards, e-commerce checko
 
 The data is unambiguous:
 
-| Improvement | Business Impact |
-| --- | --- |
-| 100ms faster load | +1% conversion rate (Vodafone study) |
-| 1 second delay | 7% reduction in conversions (Aberdeen) |
-| 400ms faster page load | 9% increase in traffic (Yahoo) |
-| 2.2 second improvement | 15.4% more conversions (Walmart) |
+| Improvement            | Business Impact                        |
+| ---------------------- | -------------------------------------- |
+| 100ms faster load      | +1% conversion rate (Vodafone study)   |
+| 1 second delay         | 7% reduction in conversions (Aberdeen) |
+| 400ms faster page load | 9% increase in traffic (Yahoo)         |
+| 2.2 second improvement | 15.4% more conversions (Walmart)       |
 
 When Vodafone improved their LCP by 31%, sales increased by 8%—measured through controlled A/B tests, not correlation. Pinterest reduced perceived wait times by 40% and saw a 15% increase in organic traffic and signups.
 
@@ -57,11 +57,11 @@ Each stage has different optimization strategies and different impact on user ex
 
 TTFB measures server responsiveness—from request initiation to first byte received.
 
-| TTFB | Rating |
-| --- | --- |
-| < 200ms | Good |
+| TTFB      | Rating            |
+| --------- | ----------------- |
+| < 200ms   | Good              |
 | 200-500ms | Needs Improvement |
-| > 500ms | Poor |
+| > 500ms   | Poor              |
 
 TTFB is your ceiling. If the server takes 800ms to respond, no amount of frontend optimization will achieve sub-second LCP. This is where [CDN strategy](/blog/cdn-caching-strategy) and edge computing pay dividends.
 
@@ -69,11 +69,11 @@ TTFB is your ceiling. If the server takes 800ms to respond, no amount of fronten
 
 FCP marks when the browser renders the first piece of DOM content—text, image, or SVG. It signals to users that the page is loading.
 
-| FCP | Rating |
-| --- | --- |
-| < 1.8s | Good |
+| FCP      | Rating            |
+| -------- | ----------------- |
+| < 1.8s   | Good              |
 | 1.8-3.0s | Needs Improvement |
-| > 3.0s | Poor |
+| > 3.0s   | Poor              |
 
 FCP is primarily affected by render-blocking resources: CSS and synchronous JavaScript in the `<head>` that delay first paint.
 
@@ -81,11 +81,11 @@ FCP is primarily affected by render-blocking resources: CSS and synchronous Java
 
 LCP measures when the largest visible element renders—typically a hero image, heading, or large text block.
 
-| LCP | Rating |
-| --- | --- |
-| < 2.5s | Good (Green) |
+| LCP      | Rating                     |
+| -------- | -------------------------- |
+| < 2.5s   | Good (Green)               |
 | 2.5-4.0s | Needs Improvement (Yellow) |
-| > 4.0s | Poor (Red) |
+| > 4.0s   | Poor (Red)                 |
 
 LCP is the primary Core Web Vital for perceived load speed. It's also where most sites fail. Common culprits: unoptimized hero images, slow server response, late-discovered resources, and render-blocking CSS.
 
@@ -95,11 +95,11 @@ For a deep dive into LCP optimization—including preload strategies, image opti
 
 INP replaced First Input Delay in March 2024. It measures the entire interaction lifecycle—from user input through processing to the next paint.
 
-| INP | Rating |
-| --- | --- |
-| < 200ms | Good (Green) |
+| INP       | Rating                     |
+| --------- | -------------------------- |
+| < 200ms   | Good (Green)               |
 | 200-500ms | Needs Improvement (Yellow) |
-| > 500ms | Poor (Red) |
+| > 500ms   | Poor (Red)                 |
 
 INP is harder to pass than FID was. FID only measured the delay before processing started. INP captures the full cycle, including long JavaScript tasks and rendering time. A click handler that takes 500ms to execute will tank your INP score.
 
@@ -107,11 +107,11 @@ INP is harder to pass than FID was. FID only measured the delay before processin
 
 CLS measures visual stability—unexpected layout changes that frustrate users.
 
-| CLS | Rating |
-| --- | --- |
-| < 0.1 | Good (Green) |
+| CLS      | Rating                     |
+| -------- | -------------------------- |
+| < 0.1    | Good (Green)               |
 | 0.1-0.25 | Needs Improvement (Yellow) |
-| > 0.25 | Poor (Red) |
+| > 0.25   | Poor (Red)                 |
 
 CLS issues typically stem from images without dimensions, late-loading fonts, dynamically injected content, and ads without reserved space.
 
@@ -160,10 +160,10 @@ The cache invalidation problem—ensuring stale data doesn't persist—requires 
 Modern compression algorithms significantly reduce payload sizes:
 
 | Algorithm | Compression Ratio | CPU Cost | Browser Support |
-| --- | --- | --- | --- |
-| gzip | 70-80% reduction | Low | Universal |
-| Brotli | 80-85% reduction | Medium | Modern browsers |
-| Zstandard | 80-90% reduction | Low | Emerging |
+| --------- | ----------------- | -------- | --------------- |
+| gzip      | 70-80% reduction  | Low      | Universal       |
+| Brotli    | 80-85% reduction  | Medium   | Modern browsers |
+| Zstandard | 80-90% reduction  | Low      | Emerging        |
 
 Enable Brotli for text-based responses (HTML, CSS, JS, JSON). The additional 5-10% reduction over gzip matters when you're serving thousands of requests per second. Most CDNs and edge providers handle compression automatically, but verify it's configured correctly—I've seen misconfigured servers sending uncompressed 2MB JSON payloads.
 
@@ -178,11 +178,11 @@ Edge computing solves the distance problem by running code closer to users.
 ### The Edge Advantage
 
 | User Location | Origin (Virginia) | Edge (Nearest PoP) |
-| --- | --- | --- |
-| New York | ~20ms | ~5ms |
-| London | ~80ms | ~10ms |
-| Sydney | ~150ms | ~15ms |
-| Tokyo | ~120ms | ~10ms |
+| ------------- | ----------------- | ------------------ |
+| New York      | ~20ms             | ~5ms               |
+| London        | ~80ms             | ~10ms              |
+| Sydney        | ~150ms            | ~15ms              |
+| Tokyo         | ~120ms            | ~10ms              |
 
 Sub-50ms TTFB becomes achievable globally when your code runs in 300+ locations worldwide.
 
@@ -241,8 +241,8 @@ Heavy computation during render blocks the main thread and tanks INP scores.
 
 ```typescript
 const filtered = useMemo(
-  () => products.filter(p => expensiveFilterLogic(p, filter)),
-  [products, filter]
+	() => products.filter((p) => expensiveFilterLogic(p, filter)),
+	[products, filter]
 );
 ```
 
@@ -330,13 +330,13 @@ Performance optimization is not free. Understand where to invest at each stage.
 
 ### Infrastructure by Revenue Stage
 
-| Stage | Monthly Spend | Priority |
-| --- | --- | --- |
-| Pre-revenue | $0-50 | Ship features, don't optimize |
-| $0-10k MRR | $50-200 | Basic observability, obvious fixes |
-| $10k-50k MRR | $200-1,000 | CDN, caching, database indexes |
-| $50k-100k MRR | $1,000-5,000 | Edge deployment, APM, dedicated SRE time |
-| $100k+ MRR | $5,000+ | Full observability stack, performance budgets in CI |
+| Stage         | Monthly Spend | Priority                                            |
+| ------------- | ------------- | --------------------------------------------------- |
+| Pre-revenue   | $0-50         | Ship features, don't optimize                       |
+| $0-10k MRR    | $50-200       | Basic observability, obvious fixes                  |
+| $10k-50k MRR  | $200-1,000    | CDN, caching, database indexes                      |
+| $50k-100k MRR | $1,000-5,000  | Edge deployment, APM, dedicated SRE time            |
+| $100k+ MRR    | $5,000+       | Full observability stack, performance budgets in CI |
 
 At pre-revenue, every hour spent on performance is an hour not spent validating product-market fit. Ship fast, fix later. The patterns in [Zero to 10K MRR](/blog/zero-to-10k-mrr-saas-playbook) are intentionally minimal—infrastructure complexity should match revenue.
 
@@ -365,12 +365,12 @@ Cold starts add 100-500ms to requests. For a user-facing API where P99 must stay
 
 The decision framework:
 
-| Workload | Recommendation |
-| --- | --- |
-| Bursty, unpredictable traffic | Serverless |
-| Consistent high traffic | Containers/VMs |
-| Background jobs | Serverless |
-| Latency-critical APIs | Containers with load balancer |
+| Workload                      | Recommendation                |
+| ----------------------------- | ----------------------------- |
+| Bursty, unpredictable traffic | Serverless                    |
+| Consistent high traffic       | Containers/VMs                |
+| Background jobs               | Serverless                    |
+| Latency-critical APIs         | Containers with load balancer |
 
 The full cost analysis—including when provisioned concurrency makes sense—is in [The Lambda Tax](/blog/lambda-tax-cold-starts).
 
@@ -452,12 +452,14 @@ Abstract principles matter less than concrete examples. Here are three optimizat
 **Initial state**: B2B SaaS dashboard with 4.2 second LCP on desktop, 7+ seconds on mobile. Trial-to-paid conversion at 12%. Users complained about "sluggish" feel.
 
 **Root causes identified**:
+
 1. N+1 queries loading dashboard widgets (47 database queries per page load)
 2. Unoptimized hero chart image (2.3MB PNG)
 3. Synchronous third-party analytics script blocking render
 4. No CDN caching on API responses
 
 **Optimizations applied**:
+
 - Consolidated queries using Prisma `include` with selective `select`—reduced to 4 queries
 - Converted chart to WebP with responsive sizing—reduced to 180KB
 - Moved analytics to `afterInteractive` strategy
@@ -470,11 +472,13 @@ Abstract principles matter less than concrete examples. Here are three optimizat
 **Initial state**: Checkout flow with 68% abandonment rate. Page load time was acceptable (2.1s LCP), but INP was 480ms on the payment step.
 
 **Root causes identified**:
+
 1. Payment form validation running synchronously on every keystroke
 2. Address autocomplete library blocking main thread during initialization
 3. Layout shift from dynamically loaded shipping options
 
 **Optimizations applied**:
+
 - Debounced validation with 300ms delay, moved complex validation to blur events
 - Lazy-loaded address library only when address field focused
 - Reserved space for shipping options with skeleton placeholder
@@ -486,11 +490,13 @@ Abstract principles matter less than concrete examples. Here are three optimizat
 **Initial state**: Media company with 40% international traffic experiencing 3+ second TTFB for users outside US. Origin servers in Virginia.
 
 **Root causes identified**:
+
 1. All requests hitting origin regardless of cachability
 2. Database queries for article metadata on every request
 3. Large JavaScript bundles with poor code splitting
 
 **Optimizations applied**:
+
 - Deployed to Cloudflare with edge caching for article pages (1-hour TTL)
 - Implemented ISR (Incremental Static Regeneration) for article pages
 - Added cache tags for granular invalidation when articles update

@@ -87,14 +87,14 @@ I walked through the real cost of the microservices migration.
 
 ### Engineering Time
 
-| Task | Estimated Weeks | Engineers |
-|------|-----------------|-----------|
-| Service decomposition | 8 | 4 |
-| API design and implementation | 4 | 3 |
-| Data migration and sync | 6 | 2 |
-| Infrastructure (K8s, service mesh) | 6 | 2 |
-| Testing and validation | 4 | 4 |
-| **Total** | **28 engineer-weeks** | |
+| Task                               | Estimated Weeks       | Engineers |
+| ---------------------------------- | --------------------- | --------- |
+| Service decomposition              | 8                     | 4         |
+| API design and implementation      | 4                     | 3         |
+| Data migration and sync            | 6                     | 2         |
+| Infrastructure (K8s, service mesh) | 6                     | 2         |
+| Testing and validation             | 4                     | 4         |
+| **Total**                          | **28 engineer-weeks** |           |
 
 At their burn rate, 28 engineer-weeks is roughly **$250-300K** in salary alone. Plus opportunity cost—6 months of features not shipped.
 
@@ -102,13 +102,13 @@ At their burn rate, 28 engineer-weeks is roughly **$250-300K** in salary alone. 
 
 Microservices aren't free to maintain:
 
-| New Requirement | Monthly Cost |
-|-----------------|--------------|
-| Kubernetes cluster | $2-5K |
-| Service mesh (Istio/Linkerd) | Engineering time |
-| Distributed tracing | $500-2K |
-| Log aggregation (12 services) | $1-3K |
-| On-call complexity | Burnout |
+| New Requirement               | Monthly Cost     |
+| ----------------------------- | ---------------- |
+| Kubernetes cluster            | $2-5K            |
+| Service mesh (Istio/Linkerd)  | Engineering time |
+| Distributed tracing           | $500-2K          |
+| Log aggregation (12 services) | $1-3K            |
+| On-call complexity            | Burnout          |
 
 They'd be spending **$5-10K/month** on infrastructure they didn't need, plus significant engineering overhead.
 
@@ -357,12 +357,12 @@ The pattern: complex solutions to simple problems.
 
 Let's total it up:
 
-| Avoided Cost | Amount |
-|--------------|--------|
-| Engineering time (6 months × 4 engineers) | $300K |
-| Infrastructure overhead (12 months) | $60-120K |
-| Opportunity cost (features not shipped) | $100K+ |
-| **Total saved** | **$460-520K+** |
+| Avoided Cost                              | Amount         |
+| ----------------------------------------- | -------------- |
+| Engineering time (6 months × 4 engineers) | $300K          |
+| Infrastructure overhead (12 months)       | $60-120K       |
+| Opportunity cost (features not shipped)   | $100K+         |
+| **Total saved**                           | **$460-520K+** |
 
 And that's conservative. The real cost of shipping 4x slower for a year is incalculable in a competitive market.
 

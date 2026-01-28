@@ -30,10 +30,10 @@ const orders = await prisma.order.findMany({ take: 50 });
 
 // What you don't see: this runs once per order
 for (const order of orders) {
-  const customer = await prisma.customer.findUnique({
-    where: { id: order.customerId },
-  });
-  console.log(`Order ${order.id} for ${customer.name}`);
+	const customer = await prisma.customer.findUnique({
+		where: { id: order.customerId },
+	});
+	console.log(`Order ${order.id} for ${customer.name}`);
 }
 ```
 
@@ -55,14 +55,12 @@ Enable Prisma query logging in development:
 
 ```typescript
 const prisma = new PrismaClient({
-  log: [
-    { emit: "event", level: "query" },
-  ],
+	log: [{ emit: "event", level: "query" }],
 });
 
 prisma.$on("query", (e) => {
-  console.log(`Query: ${e.query}`);
-  console.log(`Duration: ${e.duration}ms`);
+	console.log(`Query: ${e.query}`);
+	console.log(`Duration: ${e.duration}ms`);
 });
 ```
 
@@ -356,23 +354,23 @@ Prisma is convenient but not optimized by default. Here's how to fix that.
 ```typescript
 // INCLUDE: Fetches ALL customer fields
 const orders = await prisma.order.findMany({
-  include: { customer: true },
+	include: { customer: true },
 });
 // Returns: { id, status, amount, customerId, createdAt,
 //            customer: { id, name, email, phone, address, createdAt, updatedAt, ... } }
 
 // SELECT: Fetches only what you need
 const orders = await prisma.order.findMany({
-  select: {
-    id: true,
-    status: true,
-    customer: {
-      select: {
-        name: true,
-        email: true,
-      },
-    },
-  },
+	select: {
+		id: true,
+		status: true,
+		customer: {
+			select: {
+				name: true,
+				email: true,
+			},
+		},
+	},
 });
 // Returns: { id, status, customer: { name, email } }
 ```
@@ -386,10 +384,10 @@ Prisma middleware runs on every query. I've seen middleware that adds 5-10ms per
 ```typescript
 // BAD: Logging adds latency to every query
 prisma.$use(async (params, next) => {
-  const start = Date.now();
-  const result = await next(params);
-  console.log(`Query ${params.model}.${params.action} took ${Date.now() - start}ms`);
-  return result;
+	const start = Date.now();
+	const result = await next(params);
+	console.log(`Query ${params.model}.${params.action} took ${Date.now() - start}ms`);
+	return result;
 });
 ```
 
@@ -397,17 +395,17 @@ If you need query logging, sample it:
 
 ```typescript
 prisma.$use(async (params, next) => {
-  // Only log 1% of queries in production
-  const shouldLog = process.env.NODE_ENV !== "production" || Math.random() < 0.01;
+	// Only log 1% of queries in production
+	const shouldLog = process.env.NODE_ENV !== "production" || Math.random() < 0.01;
 
-  if (shouldLog) {
-    const start = Date.now();
-    const result = await next(params);
-    console.log(`Query ${params.model}.${params.action} took ${Date.now() - start}ms`);
-    return result;
-  }
+	if (shouldLog) {
+		const start = Date.now();
+		const result = await next(params);
+		console.log(`Query ${params.model}.${params.action} took ${Date.now() - start}ms`);
+		return result;
+	}
 
-  return next(params);
+	return next(params);
 });
 ```
 
@@ -418,10 +416,10 @@ Prisma generates reasonable SQL, but not optimal SQL. For complex reporting quer
 ```typescript
 // Prisma generates suboptimal SQL for aggregations
 const result = await prisma.order.groupBy({
-  by: ["status"],
-  _count: { id: true },
-  _sum: { amount: true },
-  where: { tenantId: "abc", createdAt: { gte: startOfMonth } },
+	by: ["status"],
+	_count: { id: true },
+	_sum: { amount: true },
+	where: { tenantId: "abc", createdAt: { gte: startOfMonth } },
 });
 
 // Raw SQL gives you control
@@ -439,6 +437,7 @@ const result = await prisma.$queryRaw`
 ```
 
 I use raw queries for:
+
 - Aggregate reports
 - Queries with CTEs (Common Table Expressions)
 - Queries that need specific index hints
@@ -451,14 +450,14 @@ For bulk inserts, Prisma's `createMany` is 10-50x faster than individual creates
 ```typescript
 // SLOW: 1000 individual inserts
 for (const item of items) {
-  await prisma.item.create({ data: item });
+	await prisma.item.create({ data: item });
 }
 // Time: ~5000ms (5ms × 1000)
 
 // FAST: Single batch insert
 await prisma.item.createMany({
-  data: items,
-  skipDuplicates: true,
+	data: items,
+	skipDuplicates: true,
 });
 // Time: ~100ms
 ```
@@ -472,9 +471,9 @@ import { from as copyFrom } from "pg-copy-streams";
 const pool = new Pool({ connectionString: process.env.DIRECT_URL });
 const client = await pool.connect();
 
-const stream = client.query(copyFrom(
-  `COPY items (id, name, tenant_id, created_at) FROM STDIN WITH CSV`
-));
+const stream = client.query(
+	copyFrom(`COPY items (id, name, tenant_id, created_at) FROM STDIN WITH CSV`)
+);
 
 await pipeline(yourCsvStream, stream);
 ```
@@ -563,4 +562,4 @@ If you're building a multi-tenant SaaS, start with [proper tenant isolation usin
 
 ---
 
-*Building a SaaS and hitting database performance walls? I help teams architect systems that scale from MVP to 100k+ users. [Let's talk about your technical challenges](/services/nextjs-developer-for-saas).*
+_Building a SaaS and hitting database performance walls? I help teams architect systems that scale from MVP to 100k+ users. [Let's talk about your technical challenges](/services/nextjs-developer-for-saas)._

@@ -173,19 +173,19 @@ jobs:
           echo "Checking health endpoint..."
           response=$(curl -sf https://alexmayhew.dev/api/health || echo '{"status":"error"}')
           echo "Response: $response"
-          
+
           status=$(echo "$response" | jq -r '.status // "error"')
           if [ "$status" != "ok" ]; then
             echo "Health check failed! Status: $status"
             exit 1
           fi
-          
+
           echo "Health check passed!"
 
       - name: Smoke Tests
         run: |
           echo "Running smoke tests..."
-          
+
           # Test critical pages
           for page in "/" "/services" "/for" "/contact" "/work"; do
             echo "Testing https://alexmayhew.dev$page"
@@ -196,7 +196,7 @@ jobs:
             fi
             echo "OK: $page"
           done
-          
+
           echo "All smoke tests passed!"
 
       - name: Notify on failure
@@ -206,7 +206,7 @@ jobs:
           script: |
             const sha = '${{ github.sha }}'.substring(0, 7);
             const runUrl = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';
-            
+
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,

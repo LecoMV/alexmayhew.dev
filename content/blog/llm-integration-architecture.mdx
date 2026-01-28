@@ -37,14 +37,14 @@ The vector database is the foundation of any retrieval-augmented generation (RAG
 
 ### The Options
 
-| Database     | Type              | Max Vectors | Query Latency | Cost Model           |
-| ------------ | ----------------- | ----------- | ------------- | -------------------- |
-| **pgvector** | Extension         | ~5M         | 10-50ms       | PostgreSQL hosting   |
-| **Qdrant**   | Purpose-built     | 100M+       | 5-20ms        | Self-host or cloud   |
-| **Weaviate** | Purpose-built     | 100M+       | 5-20ms        | Self-host or cloud   |
-| **Pinecone** | Managed SaaS      | Unlimited   | 10-30ms       | $0.096/1M reads      |
-| **Milvus**   | Purpose-built     | 1B+         | 5-15ms        | Self-host or Zilliz  |
-| **Chroma**   | Embedded/Dev      | ~1M         | 20-100ms      | Free                 |
+| Database     | Type          | Max Vectors | Query Latency | Cost Model          |
+| ------------ | ------------- | ----------- | ------------- | ------------------- |
+| **pgvector** | Extension     | ~5M         | 10-50ms       | PostgreSQL hosting  |
+| **Qdrant**   | Purpose-built | 100M+       | 5-20ms        | Self-host or cloud  |
+| **Weaviate** | Purpose-built | 100M+       | 5-20ms        | Self-host or cloud  |
+| **Pinecone** | Managed SaaS  | Unlimited   | 10-30ms       | $0.096/1M reads     |
+| **Milvus**   | Purpose-built | 1B+         | 5-15ms        | Self-host or Zilliz |
+| **Chroma**   | Embedded/Dev  | ~1M         | 20-100ms      | Free                |
 
 ### pgvector: The Boring Choice That Works
 
@@ -142,14 +142,14 @@ Your embedding model and chunking strategy determine retrieval quality more than
 
 ### Model Selection
 
-| Model                       | Dimensions | Cost (per 1M tokens) | Performance |
-| --------------------------- | ---------- | -------------------- | ----------- |
-| text-embedding-3-small      | 1536       | $0.02                | Good        |
-| text-embedding-3-large      | 3072       | $0.13                | Better      |
-| text-embedding-ada-002      | 1536       | $0.10                | Legacy      |
-| Cohere embed-v3             | 1024       | $0.10                | Good        |
-| Voyage AI voyage-large-2    | 1536       | $0.12                | Excellent   |
-| Open-source (BGE, E5)       | 768-1024   | Compute only         | Good        |
+| Model                    | Dimensions | Cost (per 1M tokens) | Performance |
+| ------------------------ | ---------- | -------------------- | ----------- |
+| text-embedding-3-small   | 1536       | $0.02                | Good        |
+| text-embedding-3-large   | 3072       | $0.13                | Better      |
+| text-embedding-ada-002   | 1536       | $0.10                | Legacy      |
+| Cohere embed-v3          | 1024       | $0.10                | Good        |
+| Voyage AI voyage-large-2 | 1536       | $0.12                | Excellent   |
+| Open-source (BGE, E5)    | 768-1024   | Compute only         | Good        |
 
 **Default choice**: text-embedding-3-small. Half the cost of ada-002 with better performance. The 1536 dimensions are sufficient for most use cases.
 
@@ -178,12 +178,12 @@ chunks = splitter.split_text(document)
 
 Optimal chunk size depends on content type:
 
-| Content Type       | Recommended Size | Overlap |
-| ------------------ | ---------------- | ------- |
-| Technical docs     | 512-1024 tokens  | 50-100  |
-| Legal documents    | 256-512 tokens   | 50      |
-| Conversational     | 128-256 tokens   | 25      |
-| Code               | Function/class   | 0       |
+| Content Type    | Recommended Size | Overlap |
+| --------------- | ---------------- | ------- |
+| Technical docs  | 512-1024 tokens  | 50-100  |
+| Legal documents | 256-512 tokens   | 50      |
+| Conversational  | 128-256 tokens   | 25      |
+| Code            | Function/class   | 0       |
 
 The overlap prevents context from being split mid-sentence. Without overlap, you get chunks that end "The key consideration is" and start "implementing proper authentication"—neither useful alone.
 

@@ -122,15 +122,12 @@ Prefixes make debugging easier. You know what kind of resource an ID refers to w
 **Implementation with nanoid:**
 
 ```typescript
-import { customAlphabet } from 'nanoid';
+import { customAlphabet } from "nanoid";
 
-const generateId = customAlphabet(
-  '0123456789abcdefghijklmnopqrstuvwxyz',
-  16
-);
+const generateId = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz", 16);
 
 function createOrderId(): string {
-  return `ord_${generateId()}`;
+	return `ord_${generateId()}`;
 }
 ```
 
@@ -195,27 +192,27 @@ GET /api/orders?limit=20&cursor=ord_a1b2c3
 
 ```typescript
 async function getOrders(cursor?: string, limit = 20) {
-  const where = cursor
-    ? { publicId: { gt: cursor } }  // Fetch after cursor
-    : {};
+	const where = cursor
+		? { publicId: { gt: cursor } } // Fetch after cursor
+		: {};
 
-  const orders = await prisma.order.findMany({
-    where,
-    orderBy: { publicId: 'asc' },
-    take: limit + 1,  // Fetch one extra to detect "has_more"
-  });
+	const orders = await prisma.order.findMany({
+		where,
+		orderBy: { publicId: "asc" },
+		take: limit + 1, // Fetch one extra to detect "has_more"
+	});
 
-  const hasMore = orders.length > limit;
-  const data = hasMore ? orders.slice(0, -1) : orders;
+	const hasMore = orders.length > limit;
+	const data = hasMore ? orders.slice(0, -1) : orders;
 
-  return {
-    data,
-    pagination: {
-      limit,
-      next_cursor: data.at(-1)?.publicId ?? null,
-      has_more: hasMore,
-    },
-  };
+	return {
+		data,
+		pagination: {
+			limit,
+			next_cursor: data.at(-1)?.publicId ?? null,
+			has_more: hasMore,
+		},
+	};
 }
 ```
 
@@ -271,30 +268,23 @@ Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000
 **Implementation:**
 
 ```typescript
-async function createOrder(
-  data: CreateOrderInput,
-  idempotencyKey: string
-): Promise<Order> {
-  // Check if we've seen this key before
-  const existing = await redis.get(`idempotency:${idempotencyKey}`);
-  if (existing) {
-    return JSON.parse(existing);
-  }
+async function createOrder(data: CreateOrderInput, idempotencyKey: string): Promise<Order> {
+	// Check if we've seen this key before
+	const existing = await redis.get(`idempotency:${idempotencyKey}`);
+	if (existing) {
+		return JSON.parse(existing);
+	}
 
-  // Process the order
-  const order = await prisma.$transaction(async (tx) => {
-    // Create order logic...
-    return order;
-  });
+	// Process the order
+	const order = await prisma.$transaction(async (tx) => {
+		// Create order logic...
+		return order;
+	});
 
-  // Store result for 24 hours
-  await redis.setex(
-    `idempotency:${idempotencyKey}`,
-    86400,
-    JSON.stringify(order)
-  );
+	// Store result for 24 hours
+	await redis.setex(`idempotency:${idempotencyKey}`, 86400, JSON.stringify(order));
 
-  return order;
+	return order;
 }
 ```
 
@@ -341,28 +331,28 @@ Structured, actionable error responses.
 
 ```json
 {
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Request validation failed",
-    "details": [
-      {
-        "field": "email",
-        "code": "INVALID_FORMAT",
-        "message": "Email must be a valid email address"
-      },
-      {
-        "field": "amount",
-        "code": "OUT_OF_RANGE",
-        "message": "Amount must be between 1 and 999999",
-        "meta": {
-          "min": 1,
-          "max": 999999,
-          "provided": 0
-        }
-      }
-    ]
-  },
-  "request_id": "req_abc123"
+	"error": {
+		"code": "VALIDATION_ERROR",
+		"message": "Request validation failed",
+		"details": [
+			{
+				"field": "email",
+				"code": "INVALID_FORMAT",
+				"message": "Email must be a valid email address"
+			},
+			{
+				"field": "amount",
+				"code": "OUT_OF_RANGE",
+				"message": "Amount must be between 1 and 999999",
+				"meta": {
+					"min": 1,
+					"max": 999999,
+					"provided": 0
+				}
+			}
+		]
+	},
+	"request_id": "req_abc123"
 }
 ```
 
@@ -370,36 +360,36 @@ Structured, actionable error responses.
 
 ```typescript
 interface ErrorResponse {
-  error: {
-    code: string;           // Machine-readable, stable
-    message: string;        // Human-readable, can change
-    details?: ErrorDetail[];
-  };
-  request_id: string;       // For support/debugging
+	error: {
+		code: string; // Machine-readable, stable
+		message: string; // Human-readable, can change
+		details?: ErrorDetail[];
+	};
+	request_id: string; // For support/debugging
 }
 
 interface ErrorDetail {
-  field?: string;           // Which field caused the error
-  code: string;             // Specific error code
-  message: string;          // Human-readable explanation
-  meta?: Record<string, unknown>;  // Additional context
+	field?: string; // Which field caused the error
+	code: string; // Specific error code
+	message: string; // Human-readable explanation
+	meta?: Record<string, unknown>; // Additional context
 }
 ```
 
 **Standard error codes:**
 
-| HTTP Status | Error Code | When to Use |
-|-------------|------------|-------------|
-| 400 | VALIDATION_ERROR | Request body invalid |
-| 400 | INVALID_PARAMETER | Query param invalid |
-| 401 | AUTHENTICATION_REQUIRED | No auth provided |
-| 401 | INVALID_CREDENTIALS | Bad auth |
-| 403 | PERMISSION_DENIED | Auth valid, not authorized |
-| 404 | RESOURCE_NOT_FOUND | Resource doesn't exist |
-| 409 | CONFLICT | State conflict (duplicate) |
-| 422 | BUSINESS_RULE_VIOLATION | Valid request, business logic prevents |
-| 429 | RATE_LIMIT_EXCEEDED | Too many requests |
-| 500 | INTERNAL_ERROR | Unexpected server error |
+| HTTP Status | Error Code              | When to Use                            |
+| ----------- | ----------------------- | -------------------------------------- |
+| 400         | VALIDATION_ERROR        | Request body invalid                   |
+| 400         | INVALID_PARAMETER       | Query param invalid                    |
+| 401         | AUTHENTICATION_REQUIRED | No auth provided                       |
+| 401         | INVALID_CREDENTIALS     | Bad auth                               |
+| 403         | PERMISSION_DENIED       | Auth valid, not authorized             |
+| 404         | RESOURCE_NOT_FOUND      | Resource doesn't exist                 |
+| 409         | CONFLICT                | State conflict (duplicate)             |
+| 422         | BUSINESS_RULE_VIOLATION | Valid request, business logic prevents |
+| 429         | RATE_LIMIT_EXCEEDED     | Too many requests                      |
+| 500         | INTERNAL_ERROR          | Unexpected server error                |
 
 ### The Cost of Not Fixing
 
@@ -523,53 +513,53 @@ X-Timestamp: {unix_timestamp}
 ```typescript
 // Middleware that runs on ALL routes
 async function authMiddleware(req, res, next) {
-  // Extract token
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith('Bearer ')) {
-    return res.status(401).json({
-      error: {
-        code: 'AUTHENTICATION_REQUIRED',
-        message: 'Authorization header required',
-      },
-    });
-  }
+	// Extract token
+	const authHeader = req.headers.authorization;
+	if (!authHeader?.startsWith("Bearer ")) {
+		return res.status(401).json({
+			error: {
+				code: "AUTHENTICATION_REQUIRED",
+				message: "Authorization header required",
+			},
+		});
+	}
 
-  const token = authHeader.slice(7);
+	const token = authHeader.slice(7);
 
-  // Validate token
-  try {
-    const payload = await validateToken(token);
-    req.user = payload;
-    req.scopes = payload.scopes;
-    next();
-  } catch (err) {
-    return res.status(401).json({
-      error: {
-        code: 'INVALID_CREDENTIALS',
-        message: 'Token invalid or expired',
-      },
-    });
-  }
+	// Validate token
+	try {
+		const payload = await validateToken(token);
+		req.user = payload;
+		req.scopes = payload.scopes;
+		next();
+	} catch (err) {
+		return res.status(401).json({
+			error: {
+				code: "INVALID_CREDENTIALS",
+				message: "Token invalid or expired",
+			},
+		});
+	}
 }
 
 // Scope-based authorization
 function requireScope(scope: string) {
-  return (req, res, next) => {
-    if (!req.scopes?.includes(scope)) {
-      return res.status(403).json({
-        error: {
-          code: 'PERMISSION_DENIED',
-          message: `Requires scope: ${scope}`,
-        },
-      });
-    }
-    next();
-  };
+	return (req, res, next) => {
+		if (!req.scopes?.includes(scope)) {
+			return res.status(403).json({
+				error: {
+					code: "PERMISSION_DENIED",
+					message: `Requires scope: ${scope}`,
+				},
+			});
+		}
+		next();
+	};
 }
 
 // Usage
-app.get('/api/users', requireScope('users:read'), getUsers);
-app.post('/api/users', requireScope('users:write'), createUser);
+app.get("/api/users", requireScope("users:read"), getUsers);
+app.post("/api/users", requireScope("users:write"), createUser);
 ```
 
 **Auth checklist:**

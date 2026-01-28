@@ -30,7 +30,7 @@ For users in Singapore connecting to us-east-1? 250-300ms round trip. For every 
 User perception research is consistent: anything under 100ms feels instant. 100-300ms feels responsive. Over 300ms feels slow. Over 1 second feels broken.
 
 | User Location | Single US Region | With Edge Caching | Multi-Region |
-|---------------|------------------|-------------------|--------------|
+| ------------- | ---------------- | ----------------- | ------------ |
 | US East       | 20-50ms          | 20-50ms           | 20-50ms      |
 | US West       | 60-80ms          | 30-40ms           | 20-50ms      |
 | EU            | 100-150ms        | 50-80ms           | 20-50ms      |
@@ -329,9 +329,9 @@ Neon separates storage from compute, which enables interesting multi-region patt
 ```typescript
 // Read replicas can be created in different regions
 const neonConfig = {
-  primaryRegion: 'us-east-1',
-  readReplicas: ['eu-west-1', 'ap-southeast-1'],
-}
+	primaryRegion: "us-east-1",
+	readReplicas: ["eu-west-1", "ap-southeast-1"],
+};
 ```
 
 **Capabilities**:
@@ -369,19 +369,19 @@ Multi-region doesn't mean putting everything everywhere. Some data should live a
 ```typescript
 // Cloudflare Worker at edge
 export default {
-  async fetch(request: Request, env: Env) {
-    // JWT validation at edge - no origin round trip
-    const token = request.headers.get('Authorization')
-    const valid = await validateJWT(token, env.JWT_SECRET)
+	async fetch(request: Request, env: Env) {
+		// JWT validation at edge - no origin round trip
+		const token = request.headers.get("Authorization");
+		const valid = await validateJWT(token, env.JWT_SECRET);
 
-    if (!valid) {
-      return new Response('Unauthorized', { status: 401 })
-    }
+		if (!valid) {
+			return new Response("Unauthorized", { status: 401 });
+		}
 
-    // Only hit origin if authenticated
-    return fetch(request)
-  }
-}
+		// Only hit origin if authenticated
+		return fetch(request);
+	},
+};
 ```
 
 I've covered edge caching patterns in detail in [CDN Strategy](/blog/cdn-caching-strategy)—the key insight is that edge can handle 90%+ of requests for many applications.
@@ -436,13 +436,13 @@ The simplest approach: timestamp every write, keep the latest.
 
 ```typescript
 interface Record {
-  id: string
-  data: any
-  updatedAt: Date  // Used for conflict resolution
+	id: string;
+	data: any;
+	updatedAt: Date; // Used for conflict resolution
 }
 
 function resolveConflict(local: Record, remote: Record): Record {
-  return local.updatedAt > remote.updatedAt ? local : remote
+	return local.updatedAt > remote.updatedAt ? local : remote;
 }
 ```
 
@@ -457,31 +457,31 @@ Data structures designed to merge automatically without conflicts. The academic 
 ```typescript
 // G-Counter: A CRDT for counting that never loses increments
 interface GCounter {
-  counts: Record<string, number>  // Node ID -> local count
+	counts: Record<string, number>; // Node ID -> local count
 }
 
 function increment(counter: GCounter, nodeId: string): GCounter {
-  return {
-    counts: {
-      ...counter.counts,
-      [nodeId]: (counter.counts[nodeId] || 0) + 1,
-    },
-  }
+	return {
+		counts: {
+			...counter.counts,
+			[nodeId]: (counter.counts[nodeId] || 0) + 1,
+		},
+	};
 }
 
 function merge(a: GCounter, b: GCounter): GCounter {
-  const allNodes = new Set([...Object.keys(a.counts), ...Object.keys(b.counts)])
-  const counts: Record<string, number> = {}
+	const allNodes = new Set([...Object.keys(a.counts), ...Object.keys(b.counts)]);
+	const counts: Record<string, number> = {};
 
-  for (const node of allNodes) {
-    counts[node] = Math.max(a.counts[node] || 0, b.counts[node] || 0)
-  }
+	for (const node of allNodes) {
+		counts[node] = Math.max(a.counts[node] || 0, b.counts[node] || 0);
+	}
 
-  return { counts }
+	return { counts };
 }
 
 function value(counter: GCounter): number {
-  return Object.values(counter.counts).reduce((a, b) => a + b, 0)
+	return Object.values(counter.counts).reduce((a, b) => a + b, 0);
 }
 ```
 
@@ -494,34 +494,31 @@ CRDTs guarantee that all nodes converge to the same state regardless of message 
 For complex business logic, handle conflicts in your application code.
 
 ```typescript
-async function resolveOrderConflict(
-  localOrder: Order,
-  remoteOrder: Order
-): Promise<Order> {
-  // Business rules for order conflicts
+async function resolveOrderConflict(localOrder: Order, remoteOrder: Order): Promise<Order> {
+	// Business rules for order conflicts
 
-  // Rule 1: Canceled orders take precedence
-  if (remoteOrder.status === 'canceled') return remoteOrder
-  if (localOrder.status === 'canceled') return localOrder
+	// Rule 1: Canceled orders take precedence
+	if (remoteOrder.status === "canceled") return remoteOrder;
+	if (localOrder.status === "canceled") return localOrder;
 
-  // Rule 2: Shipped orders can't be modified
-  if (localOrder.status === 'shipped') return localOrder
-  if (remoteOrder.status === 'shipped') return remoteOrder
+	// Rule 2: Shipped orders can't be modified
+	if (localOrder.status === "shipped") return localOrder;
+	if (remoteOrder.status === "shipped") return remoteOrder;
 
-  // Rule 3: Merge line items (keep both, flag for review)
-  const mergedItems = mergeLineItems(localOrder.items, remoteOrder.items)
+	// Rule 3: Merge line items (keep both, flag for review)
+	const mergedItems = mergeLineItems(localOrder.items, remoteOrder.items);
 
-  // Rule 4: Flag for manual review
-  return {
-    ...localOrder,
-    items: mergedItems,
-    conflictDetected: true,
-    conflictDetails: {
-      localVersion: localOrder,
-      remoteVersion: remoteOrder,
-      resolvedAt: new Date(),
-    },
-  }
+	// Rule 4: Flag for manual review
+	return {
+		...localOrder,
+		items: mergedItems,
+		conflictDetected: true,
+		conflictDetails: {
+			localVersion: localOrder,
+			remoteVersion: remoteOrder,
+			resolvedAt: new Date(),
+		},
+	};
 }
 ```
 
@@ -537,11 +534,11 @@ Multi-region architecture costs more. Here's what to expect at different scales.
 
 ### Infrastructure Costs
 
-| Scale | Single Region | Read Replicas (3 regions) | Active-Active (3 regions) |
-|-------|---------------|---------------------------|---------------------------|
-| 10K MAU | $500-1K/mo | $1.5-3K/mo | $3-6K/mo |
-| 100K MAU | $2-5K/mo | $6-15K/mo | $15-30K/mo |
-| 1M MAU | $10-25K/mo | $30-75K/mo | $75-150K/mo |
+| Scale    | Single Region | Read Replicas (3 regions) | Active-Active (3 regions) |
+| -------- | ------------- | ------------------------- | ------------------------- |
+| 10K MAU  | $500-1K/mo    | $1.5-3K/mo                | $3-6K/mo                  |
+| 100K MAU | $2-5K/mo      | $6-15K/mo                 | $15-30K/mo                |
+| 1M MAU   | $10-25K/mo    | $30-75K/mo                | $75-150K/mo               |
 
 **Read replicas** (3x): You're roughly tripling database costs, plus cross-region data transfer ($0.02-0.09/GB depending on provider).
 
@@ -551,13 +548,13 @@ Multi-region architecture costs more. Here's what to expect at different scales.
 
 Cross-region data transfer is often the hidden cost that surprises teams.
 
-| Provider | Same Region | Cross-Region | Cross-Continent |
-|----------|-------------|--------------|-----------------|
-| AWS | Free | $0.02/GB | $0.02-0.09/GB |
-| GCP | Free | $0.01/GB | $0.05-0.08/GB |
-| Cloudflare | Free | Free* | Free* |
+| Provider   | Same Region | Cross-Region | Cross-Continent |
+| ---------- | ----------- | ------------ | --------------- |
+| AWS        | Free        | $0.02/GB     | $0.02-0.09/GB   |
+| GCP        | Free        | $0.01/GB     | $0.05-0.08/GB   |
+| Cloudflare | Free        | Free\*       | Free\*          |
 
-*Cloudflare doesn't charge for egress on Workers/R2, which makes them attractive for multi-region deployments.
+\*Cloudflare doesn't charge for egress on Workers/R2, which makes them attractive for multi-region deployments.
 
 ### When Multi-Region Pays for Itself
 
@@ -582,14 +579,14 @@ Before touching databases, add CDN caching. This gives global performance improv
 ```typescript
 // Add cache headers to API responses
 export async function GET(request: Request) {
-  const data = await fetchProducts()
+	const data = await fetchProducts();
 
-  return Response.json(data, {
-    headers: {
-      'Cache-Control': 'public, max-age=60, stale-while-revalidate=300',
-      'CDN-Cache-Control': 'max-age=300',  // Longer CDN cache
-    },
-  })
+	return Response.json(data, {
+		headers: {
+			"Cache-Control": "public, max-age=60, stale-while-revalidate=300",
+			"CDN-Cache-Control": "max-age=300", // Longer CDN cache
+		},
+	});
 }
 ```
 
@@ -602,18 +599,18 @@ Add read replicas in your secondary regions. Route read queries to the nearest r
 ```typescript
 // Database routing based on request region
 function getDatabaseConnection(isWrite: boolean, region: string) {
-  if (isWrite) {
-    return connections.primary  // Always write to primary
-  }
+	if (isWrite) {
+		return connections.primary; // Always write to primary
+	}
 
-  // Read from nearest replica
-  const replicaMap = {
-    'us': connections.usReplica,
-    'eu': connections.euReplica,
-    'ap': connections.apReplica,
-  }
+	// Read from nearest replica
+	const replicaMap = {
+		us: connections.usReplica,
+		eu: connections.euReplica,
+		ap: connections.apReplica,
+	};
 
-  return replicaMap[region] || connections.primary
+	return replicaMap[region] || connections.primary;
 }
 ```
 
@@ -626,13 +623,13 @@ For applications where most writes are tenant-scoped, route tenants to their des
 ```typescript
 // Tenant-based region routing
 const tenantRegions: Record<string, string> = {
-  'tenant-eu-123': 'eu-west-1',
-  'tenant-us-456': 'us-east-1',
-  // Assigned at tenant creation based on billing address
-}
+	"tenant-eu-123": "eu-west-1",
+	"tenant-us-456": "us-east-1",
+	// Assigned at tenant creation based on billing address
+};
 
 function getWriteRegion(tenantId: string): string {
-  return tenantRegions[tenantId] || 'us-east-1'
+	return tenantRegions[tenantId] || "us-east-1";
 }
 ```
 
@@ -669,8 +666,8 @@ Read replicas are asynchronously replicated. There's a delay—typically 50-500m
 
 ```typescript
 // BUG: User creates order, immediately reads it, gets 404
-await db.order.create({ data: orderData })
-const order = await replicaDb.order.findUnique({ where: { id: orderId } })
+await db.order.create({ data: orderData });
+const order = await replicaDb.order.findUnique({ where: { id: orderId } });
 // order might be null if replica hasn't caught up
 ```
 
@@ -678,13 +675,13 @@ const order = await replicaDb.order.findUnique({ where: { id: orderId } })
 
 ```typescript
 // Set a cookie/header indicating "just wrote"
-response.headers.set('X-Read-Primary-Until', Date.now() + 5000)
+response.headers.set("X-Read-Primary-Until", Date.now() + 5000);
 
 // On subsequent requests, check the header
-if (request.headers.get('X-Read-Primary-Until') > Date.now()) {
-  return primaryDb
+if (request.headers.get("X-Read-Primary-Until") > Date.now()) {
+	return primaryDb;
 }
-return replicaDb
+return replicaDb;
 ```
 
 ### Mistake 3: Forgetting About Sequences and UUIDs
@@ -695,9 +692,9 @@ PostgreSQL sequences don't replicate well. If you have `SERIAL` primary keys, tw
 
 ```typescript
 // UUID v7 - time-ordered and globally unique
-import { uuidv7 } from 'uuidv7'
+import { uuidv7 } from "uuidv7";
 
-const orderId = uuidv7()  // 0190a523-1234-7abc-...
+const orderId = uuidv7(); // 0190a523-1234-7abc-...
 ```
 
 This is also covered in [Database Query Optimization for Scale](/blog/database-query-optimization)—proper indexing on UUIDs matters.

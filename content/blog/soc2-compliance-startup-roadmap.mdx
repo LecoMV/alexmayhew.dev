@@ -93,12 +93,12 @@ Personal data handling. Overlaps with GDPR. Add if you process PII extensively.
 
 Don't do this manually. The platforms automate evidence collection, policy generation, and auditor coordination.
 
-| Platform | Starting Price | Strengths |
-|----------|----------------|-----------|
-| Vanta | ~$10K/year | Best integrations, fast setup |
-| Drata | ~$12K/year | Strong automation, good UI |
-| Secureframe | ~$8K/year | Cost-effective, solid features |
-| Laika | ~$15K/year | Enterprise-focused |
+| Platform    | Starting Price | Strengths                      |
+| ----------- | -------------- | ------------------------------ |
+| Vanta       | ~$10K/year     | Best integrations, fast setup  |
+| Drata       | ~$12K/year     | Strong automation, good UI     |
+| Secureframe | ~$8K/year      | Cost-effective, solid features |
+| Laika       | ~$15K/year     | Enterprise-focused             |
 
 I've worked with Vanta and Drata. Both integrate with AWS, GCP, GitHub, and major SaaS tools. They pull evidence automatically—no manual screenshot collection.
 
@@ -137,28 +137,28 @@ Prioritize by effort vs. impact. Some fixes are one-click. Others require engine
 ```typescript
 // Example: Role-based access with audit logging
 interface AccessRequest {
-  userId: string;
-  resource: string;
-  action: 'read' | 'write' | 'delete';
-  timestamp: Date;
-  granted: boolean;
-  reason?: string;
+	userId: string;
+	resource: string;
+	action: "read" | "write" | "delete";
+	timestamp: Date;
+	granted: boolean;
+	reason?: string;
 }
 
 async function checkAccess(request: AccessRequest): Promise<boolean> {
-  const user = await getUser(request.userId);
-  const permissions = await getPermissions(user.role);
+	const user = await getUser(request.userId);
+	const permissions = await getPermissions(user.role);
 
-  const granted = permissions.includes(`${request.resource}:${request.action}`);
+	const granted = permissions.includes(`${request.resource}:${request.action}`);
 
-  // Log every access decision for audit trail
-  await logAccessDecision({
-    ...request,
-    granted,
-    userRole: user.role,
-  });
+	// Log every access decision for audit trail
+	await logAccessDecision({
+		...request,
+		granted,
+		userRole: user.role,
+	});
 
-  return granted;
+	return granted;
 }
 ```
 
@@ -201,28 +201,25 @@ aws rds create-db-instance \
 ```typescript
 // Example: Immutable audit log structure
 interface AuditEvent {
-  id: string;
-  timestamp: Date;
-  actor: {
-    userId: string;
-    ipAddress: string;
-    userAgent: string;
-  };
-  action: string;
-  resource: string;
-  outcome: 'success' | 'failure';
-  metadata: Record<string, unknown>;
+	id: string;
+	timestamp: Date;
+	actor: {
+		userId: string;
+		ipAddress: string;
+		userAgent: string;
+	};
+	action: string;
+	resource: string;
+	outcome: "success" | "failure";
+	metadata: Record<string, unknown>;
 
-  // Tamper detection
-  previousHash: string;
-  hash: string;
+	// Tamper detection
+	previousHash: string;
+	hash: string;
 }
 
-function hashEvent(event: Omit<AuditEvent, 'hash'>): string {
-  return crypto
-    .createHash('sha256')
-    .update(JSON.stringify(event))
-    .digest('hex');
+function hashEvent(event: Omit<AuditEvent, "hash">): string {
+	return crypto.createHash("sha256").update(JSON.stringify(event)).digest("hex");
 }
 ```
 
@@ -267,12 +264,15 @@ Example policy structure:
 # Access Control Policy
 
 ## Purpose
+
 Define requirements for granting, reviewing, and revoking access.
 
 ## Scope
+
 All employees and contractors accessing company systems.
 
 ## Policy
+
 1. Access granted based on job function (least privilege)
 2. All accounts require MFA
 3. Access reviewed quarterly by department heads
@@ -280,9 +280,11 @@ All employees and contractors accessing company systems.
 5. Shared accounts prohibited
 
 ## Exceptions
+
 Emergency break-glass procedures documented in Incident Response Plan.
 
 ## Review
+
 Annually by Security Lead.
 ```
 
@@ -333,12 +335,12 @@ The Big 4 cost $150K+. Don't do that.
 
 Startup-friendly auditors:
 
-| Auditor | Typical Cost | Notes |
-|---------|--------------|-------|
-| Johanson Group | $8-15K | Fast, startup-focused |
-| A-LIGN | $15-25K | Solid reputation |
-| Coalfire | $20-30K | More enterprise |
-| Prescient Assurance | $10-18K | Good for first audit |
+| Auditor             | Typical Cost | Notes                 |
+| ------------------- | ------------ | --------------------- |
+| Johanson Group      | $8-15K       | Fast, startup-focused |
+| A-LIGN              | $15-25K      | Solid reputation      |
+| Coalfire            | $20-30K      | More enterprise       |
+| Prescient Assurance | $10-18K      | Good for first audit  |
 
 Your compliance platform usually has preferred auditors with discounted rates.
 
@@ -434,14 +436,14 @@ SOC 2 isn't a one-time event. It's an annual audit. Build sustainable processes,
 
 For a 10-person seed-stage startup:
 
-| Item | Cost |
-|------|------|
-| Compliance platform (annual) | $8-15K |
-| Auditor (Type I) | $10-20K |
-| Security awareness training | $500-2K |
-| Background checks | $50-100/person |
-| Endpoint management | $5-10/device/month |
-| **Total Year 1** | **$20-40K** |
+| Item                         | Cost               |
+| ---------------------------- | ------------------ |
+| Compliance platform (annual) | $8-15K             |
+| Auditor (Type I)             | $10-20K            |
+| Security awareness training  | $500-2K            |
+| Background checks            | $50-100/person     |
+| Endpoint management          | $5-10/device/month |
+| **Total Year 1**             | **$20-40K**        |
 
 Engineering time: 80-160 hours (2-4 weeks of one engineer's focused time)
 

@@ -22,12 +22,12 @@ Google made Core Web Vitals a ranking factor in 2021. But the real reason to car
 
 The data is consistent across industries:
 
-| Metric Improvement | Business Impact                          |
-| ------------------ | ---------------------------------------- |
-| 100ms faster LCP   | +1.11% conversion rate (Vodafone)        |
-| 100ms faster INP   | +0.7% cart additions (Rakuten)           |
-| 0.1 lower CLS      | +15% session duration (Pinterest)        |
-| Sub-2.5s LCP       | 24% lower bounce rate (Google research)  |
+| Metric Improvement | Business Impact                         |
+| ------------------ | --------------------------------------- |
+| 100ms faster LCP   | +1.11% conversion rate (Vodafone)       |
+| 100ms faster INP   | +0.7% cart additions (Rakuten)          |
+| 0.1 lower CLS      | +15% session duration (Pinterest)       |
+| Sub-2.5s LCP       | 24% lower bounce rate (Google research) |
 
 When Vodafone improved LCP by 31%, their sales increased by 8%. That's not correlation—they ran controlled A/B tests.
 
@@ -69,19 +69,12 @@ The most common culprit. A 2MB uncompressed JPEG as your hero image guarantees a
 
 ```tsx
 // Bad: No priority, no sizing hints
-<img src="/hero.jpg" alt="Hero" />
+<img src="/hero.jpg" alt="Hero" />;
 
 // Good: Next.js Image with priority
 import Image from "next/image";
 
-<Image
-  src="/hero.webp"
-  alt="Hero"
-  width={1200}
-  height={600}
-  priority
-  sizes="100vw"
-/>
+<Image src="/hero.webp" alt="Hero" width={1200} height={600} priority sizes="100vw" />;
 ```
 
 The `priority` prop does two things: it adds a preload hint and disables lazy loading. For your LCP image, this is non-negotiable.
@@ -111,6 +104,7 @@ If your server takes 2 seconds to respond, you've already burned 80% of your LCP
 Target: TTFB < 600ms. Ideally < 200ms.
 
 Solutions:
+
 - Edge deployment ([I wrote about RSC + Edge here](/blog/rsc-edge-death-of-waterfall))
 - Caching (CDN for static, stale-while-revalidate for dynamic)
 - Database query optimization
@@ -122,13 +116,7 @@ The browser can't download what it doesn't know about. If your LCP image URL is 
 
 ```tsx
 // Preload the LCP image in the document head
-<link
-  rel="preload"
-  href="/hero.webp"
-  as="image"
-  type="image/webp"
-  fetchpriority="high"
-/>
+<link rel="preload" href="/hero.webp" as="image" type="image/webp" fetchpriority="high" />
 ```
 
 In Next.js, use `priority` on Image components or add explicit preload links in your root layout.
@@ -169,27 +157,27 @@ Long tasks (> 50ms) block the main thread. If a user interacts during a long tas
 ```typescript
 // Bad: One massive synchronous operation
 function processLargeDataset(data: DataPoint[]) {
-  const results = data.map(item => complexCalculation(item));
-  const filtered = results.filter(predicateFunction);
-  const sorted = filtered.sort(compareFunction);
-  return sorted;
+	const results = data.map((item) => complexCalculation(item));
+	const filtered = results.filter(predicateFunction);
+	const sorted = filtered.sort(compareFunction);
+	return sorted;
 }
 
 // Good: Break into chunks with scheduler
 async function processLargeDataset(data: DataPoint[]) {
-  const results: ProcessedData[] = [];
-  const CHUNK_SIZE = 100;
+	const results: ProcessedData[] = [];
+	const CHUNK_SIZE = 100;
 
-  for (let i = 0; i < data.length; i += CHUNK_SIZE) {
-    const chunk = data.slice(i, i + CHUNK_SIZE);
-    const processed = chunk.map(item => complexCalculation(item));
-    results.push(...processed);
+	for (let i = 0; i < data.length; i += CHUNK_SIZE) {
+		const chunk = data.slice(i, i + CHUNK_SIZE);
+		const processed = chunk.map((item) => complexCalculation(item));
+		results.push(...processed);
 
-    // Yield to the main thread
-    await scheduler.yield?.() ?? new Promise(r => setTimeout(r, 0));
-  }
+		// Yield to the main thread
+		(await scheduler.yield?.()) ?? new Promise((r) => setTimeout(r, 0));
+	}
 
-  return results;
+	return results;
 }
 ```
 
@@ -219,6 +207,7 @@ import Script from "next/script";
 ```
 
 Next.js Script strategies:
+
 - `beforeInteractive`: Loads before hydration (rarely needed)
 - `afterInteractive`: Loads after hydration (analytics, essential scripts)
 - `lazyOnload`: Loads during idle time (chat widgets, non-critical)
@@ -230,21 +219,19 @@ React components that trigger heavy computation on state change create slow inte
 ```tsx
 // Bad: Expensive filter runs on every render
 function ProductList({ products, filter }) {
-  const filtered = products.filter(p =>
-    expensiveFilterLogic(p, filter)
-  );
+	const filtered = products.filter((p) => expensiveFilterLogic(p, filter));
 
-  return filtered.map(p => <ProductCard key={p.id} {...p} />);
+	return filtered.map((p) => <ProductCard key={p.id} {...p} />);
 }
 
 // Good: Memoize expensive computations
 function ProductList({ products, filter }) {
-  const filtered = useMemo(
-    () => products.filter(p => expensiveFilterLogic(p, filter)),
-    [products, filter]
-  );
+	const filtered = useMemo(
+		() => products.filter((p) => expensiveFilterLogic(p, filter)),
+		[products, filter]
+	);
 
-  return filtered.map(p => <ProductCard key={p.id} {...p} />);
+	return filtered.map((p) => <ProductCard key={p.id} {...p} />);
 }
 ```
 
@@ -256,15 +243,15 @@ Reading layout properties (offsetHeight, getBoundingClientRect) forces the brows
 
 ```typescript
 // Bad: Layout thrashing (read-write-read-write pattern)
-elements.forEach(el => {
-  const height = el.offsetHeight; // Read (forces layout)
-  el.style.height = height + 10 + 'px'; // Write (invalidates layout)
+elements.forEach((el) => {
+	const height = el.offsetHeight; // Read (forces layout)
+	el.style.height = height + 10 + "px"; // Write (invalidates layout)
 });
 
 // Good: Batch reads, then batch writes
-const heights = elements.map(el => el.offsetHeight);
+const heights = elements.map((el) => el.offsetHeight);
 elements.forEach((el, i) => {
-  el.style.height = heights[i] + 10 + 'px';
+	el.style.height = heights[i] + 10 + "px";
 });
 ```
 
@@ -320,17 +307,17 @@ Flash of Unstyled Text (FOUT) or Flash of Invisible Text (FOIT) shifts layout wh
 import { Inter } from "next/font/google";
 
 const inter = Inter({
-  subsets: ["latin"],
-  display: "swap", // Shows fallback immediately, swaps when ready
-  variable: "--font-inter",
+	subsets: ["latin"],
+	display: "swap", // Shows fallback immediately, swaps when ready
+	variable: "--font-inter",
 });
 
 export default function RootLayout({ children }) {
-  return (
-    <html lang="en" className={inter.variable}>
-      <body>{children}</body>
-    </html>
-  );
+	return (
+		<html lang="en" className={inter.variable}>
+			<body>{children}</body>
+		</html>
+	);
 }
 ```
 
@@ -343,37 +330,29 @@ Ads, embeds, cookie banners—anything that appears after initial render and pus
 ```tsx
 // Bad: Banner appears and shifts page content
 function CookieBanner() {
-  const [show, setShow] = useState(false);
+	const [show, setShow] = useState(false);
 
-  useEffect(() => {
-    setShow(!localStorage.getItem("cookies-accepted"));
-  }, []);
+	useEffect(() => {
+		setShow(!localStorage.getItem("cookies-accepted"));
+	}, []);
 
-  if (!show) return null;
+	if (!show) return null;
 
-  return (
-    <div className="fixed-banner">
-      Accept cookies?
-    </div>
-  );
+	return <div className="fixed-banner">Accept cookies?</div>;
 }
 
 // Good: Reserve space or use overlay that doesn't shift content
 function CookieBanner() {
-  const [show, setShow] = useState(false);
+	const [show, setShow] = useState(false);
 
-  useEffect(() => {
-    setShow(!localStorage.getItem("cookies-accepted"));
-  }, []);
+	useEffect(() => {
+		setShow(!localStorage.getItem("cookies-accepted"));
+	}, []);
 
-  if (!show) return null;
+	if (!show) return null;
 
-  // Fixed positioning overlays content instead of shifting
-  return (
-    <div className="fixed bottom-0 left-0 right-0 z-50">
-      Accept cookies?
-    </div>
-  );
+	// Fixed positioning overlays content instead of shifting
+	return <div className="fixed right-0 bottom-0 left-0 z-50">Accept cookies?</div>;
 }
 ```
 
@@ -386,11 +365,11 @@ YouTube, Twitter, and other embeds load asynchronously. Without reserved space, 
 ```tsx
 // Reserve space for embeds with aspect-ratio
 <div className="relative w-full" style={{ aspectRatio: "16/9" }}>
-  <iframe
-    src="https://www.youtube.com/embed/..."
-    className="absolute inset-0 w-full h-full"
-    loading="lazy"
-  />
+	<iframe
+		src="https://www.youtube.com/embed/..."
+		className="absolute inset-0 h-full w-full"
+		loading="lazy"
+	/>
 </div>
 ```
 
@@ -450,23 +429,23 @@ The `sizes` prop is critical for responsive images. It tells the browser which i
 import { Inter, JetBrains_Mono } from "next/font/google";
 
 const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-sans",
+	subsets: ["latin"],
+	display: "swap",
+	variable: "--font-sans",
 });
 
 const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-mono",
+	subsets: ["latin"],
+	display: "swap",
+	variable: "--font-mono",
 });
 
 export default function RootLayout({ children }) {
-  return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="font-sans">{children}</body>
-    </html>
-  );
+	return (
+		<html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+			<body className="font-sans">{children}</body>
+		</html>
+	);
 }
 ```
 
@@ -480,33 +459,30 @@ Control when third-party scripts load:
 import Script from "next/script";
 
 export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-      <body>
-        {children}
+	return (
+		<html lang="en">
+			<body>
+				{children}
 
-        {/* Analytics - load after page is interactive */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=GA_ID"
-          strategy="afterInteractive"
-        />
+				{/* Analytics - load after page is interactive */}
+				<Script
+					src="https://www.googletagmanager.com/gtag/js?id=GA_ID"
+					strategy="afterInteractive"
+				/>
 
-        {/* Chat widget - load during idle time */}
-        <Script
-          src="https://widget.intercom.io/widget/APP_ID"
-          strategy="lazyOnload"
-        />
+				{/* Chat widget - load during idle time */}
+				<Script src="https://widget.intercom.io/widget/APP_ID" strategy="lazyOnload" />
 
-        {/* Inline script with worker offload */}
-        <Script strategy="worker">
-          {`
+				{/* Inline script with worker offload */}
+				<Script strategy="worker">
+					{`
             // Heavy analytics processing
             // Runs in a web worker, doesn't block main thread
           `}
-        </Script>
-      </body>
-    </html>
-  );
+				</Script>
+			</body>
+		</html>
+	);
 }
 ```
 
@@ -531,17 +507,17 @@ For dynamic pages that need personalization, use streaming:
 import { Suspense } from "react";
 
 export default function DashboardPage() {
-  return (
-    <main>
-      {/* Static shell renders immediately */}
-      <Header />
+	return (
+		<main>
+			{/* Static shell renders immediately */}
+			<Header />
 
-      {/* Personalized content streams when ready */}
-      <Suspense fallback={<DashboardSkeleton />}>
-        <PersonalizedDashboard />
-      </Suspense>
-    </main>
-  );
+			{/* Personalized content streams when ready */}
+			<Suspense fallback={<DashboardSkeleton />}>
+				<PersonalizedDashboard />
+			</Suspense>
+		</main>
+	);
 }
 ```
 
@@ -564,38 +540,38 @@ import { onCLS, onINP, onLCP, onFCP, onTTFB } from "web-vitals";
 type MetricName = "CLS" | "INP" | "LCP" | "FCP" | "TTFB";
 
 interface Metric {
-  name: MetricName;
-  value: number;
-  rating: "good" | "needs-improvement" | "poor";
-  delta: number;
-  id: string;
+	name: MetricName;
+	value: number;
+	rating: "good" | "needs-improvement" | "poor";
+	delta: number;
+	id: string;
 }
 
 function sendToAnalytics(metric: Metric) {
-  // Send to your analytics endpoint
-  const body = JSON.stringify({
-    name: metric.name,
-    value: Math.round(metric.value),
-    rating: metric.rating,
-    path: window.location.pathname,
-    // Include user agent for debugging
-    ua: navigator.userAgent,
-  });
+	// Send to your analytics endpoint
+	const body = JSON.stringify({
+		name: metric.name,
+		value: Math.round(metric.value),
+		rating: metric.rating,
+		path: window.location.pathname,
+		// Include user agent for debugging
+		ua: navigator.userAgent,
+	});
 
-  // Use sendBeacon for reliability on page unload
-  if (navigator.sendBeacon) {
-    navigator.sendBeacon("/api/vitals", body);
-  } else {
-    fetch("/api/vitals", { body, method: "POST", keepalive: true });
-  }
+	// Use sendBeacon for reliability on page unload
+	if (navigator.sendBeacon) {
+		navigator.sendBeacon("/api/vitals", body);
+	} else {
+		fetch("/api/vitals", { body, method: "POST", keepalive: true });
+	}
 }
 
 export function reportWebVitals() {
-  onCLS(sendToAnalytics);
-  onINP(sendToAnalytics);
-  onLCP(sendToAnalytics);
-  onFCP(sendToAnalytics);
-  onTTFB(sendToAnalytics);
+	onCLS(sendToAnalytics);
+	onINP(sendToAnalytics);
+	onLCP(sendToAnalytics);
+	onFCP(sendToAnalytics);
+	onTTFB(sendToAnalytics);
 }
 ```
 
@@ -609,15 +585,15 @@ import { useEffect } from "react";
 import { reportWebVitals } from "@/lib/web-vitals";
 
 export function WebVitalsReporter() {
-  useEffect(() => {
-    reportWebVitals();
-  }, []);
+	useEffect(() => {
+		reportWebVitals();
+	}, []);
 
-  return null;
+	return null;
 }
 
 // In your client wrapper or layout
-<WebVitalsReporter />
+<WebVitalsReporter />;
 ```
 
 ### Field Data vs Lab Data
@@ -635,11 +611,13 @@ Both matter, but field data is the ranking signal. A page can score 100 in Light
 ### Tools Setup
 
 **Development:**
+
 - Chrome DevTools Performance tab
 - Lighthouse (in DevTools or CI)
 - Web Vitals extension for Chrome
 
 **Production monitoring:**
+
 - Google Search Console (Core Web Vitals report)
 - PageSpeed Insights (combines lab + field data)
 - Vercel Analytics (if deployed on Vercel)
@@ -678,20 +656,18 @@ Define acceptable thresholds and alert on violations:
 ```json
 // lighthouse-budget.json
 [
-  {
-    "path": "/*",
-    "resourceSizes": [
-      { "resourceType": "script", "budget": 300 },
-      { "resourceType": "total", "budget": 500 }
-    ],
-    "resourceCounts": [
-      { "resourceType": "third-party", "budget": 5 }
-    ],
-    "timings": [
-      { "metric": "interactive", "budget": 3000 },
-      { "metric": "largest-contentful-paint", "budget": 2500 }
-    ]
-  }
+	{
+		"path": "/*",
+		"resourceSizes": [
+			{ "resourceType": "script", "budget": 300 },
+			{ "resourceType": "total", "budget": 500 }
+		],
+		"resourceCounts": [{ "resourceType": "third-party", "budget": 5 }],
+		"timings": [
+			{ "metric": "interactive", "budget": 3000 },
+			{ "metric": "largest-contentful-paint", "budget": 2500 }
+		]
+	}
 ]
 ```
 

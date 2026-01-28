@@ -45,6 +45,7 @@ Standard product research asks "what do users want?" AI feature research must as
 Not every problem benefits from AI. Before writing a single prompt, validate that AI is appropriate for your use case:
 
 **AI excels at:**
+
 - Pattern recognition across large datasets
 - Summarizing or transforming content
 - Generating starting points that humans refine
@@ -52,6 +53,7 @@ Not every problem benefits from AI. Before writing a single prompt, validate tha
 - Handling ambiguous inputs with reasonable defaults
 
 **AI struggles with:**
+
 - Precision-critical calculations (use deterministic code)
 - Legal or compliance determinations (liability issues)
 - Tasks requiring perfect accuracy (one error destroys trust)
@@ -71,6 +73,7 @@ Users almost always say yes. It is the novelty effect combined with politeness. 
 **Ask instead:** "Walk me through the last time you did [task]. What was the hardest part?"
 
 Listen for:
+
 - Time-consuming repetitive steps (automation candidates)
 - Decisions made with incomplete information (augmentation candidates)
 - Tasks they delegate but wish they could verify (analysis candidates)
@@ -84,12 +87,12 @@ This reveals whether the pain point actually matters. Users complain about many 
 
 Map user jobs to AI capability categories:
 
-| User Job | AI Capability | Validation Question |
-|----------|---------------|---------------------|
-| "I spend 2 hours summarizing meeting notes" | Summarization | "Would a draft summary that needs 10 min editing help?" |
-| "I search through 1000 tickets to find patterns" | Pattern recognition | "Would you trust AI to surface the top 5 issues without reading all tickets?" |
-| "I write similar emails 20 times a day" | Generation with templates | "Would you use a draft if you could edit before sending?" |
-| "I manually categorize every incoming request" | Classification | "What happens when the category is wrong?" |
+| User Job                                         | AI Capability             | Validation Question                                                           |
+| ------------------------------------------------ | ------------------------- | ----------------------------------------------------------------------------- |
+| "I spend 2 hours summarizing meeting notes"      | Summarization             | "Would a draft summary that needs 10 min editing help?"                       |
+| "I search through 1000 tickets to find patterns" | Pattern recognition       | "Would you trust AI to surface the top 5 issues without reading all tickets?" |
+| "I write similar emails 20 times a day"          | Generation with templates | "Would you use a draft if you could edit before sending?"                     |
+| "I manually categorize every incoming request"   | Classification            | "What happens when the category is wrong?"                                    |
 
 The validation questions are critical. They surface whether users will trust AI output and whether errors are recoverable.
 
@@ -117,12 +120,14 @@ After validating that AI is appropriate for your use case, categorize the featur
 The user is removed from the loop entirely. AI performs a task end-to-end without human intervention.
 
 **Examples:**
+
 - Auto-tagging incoming support tickets
 - Spam filtering
 - Image optimization during upload
 - Duplicate detection and merging
 
 **Requirements for Automation:**
+
 - Error tolerance is high (wrong tags are corrected; wrong spam filtering is visible)
 - The task is clearly defined with limited scope
 - Users can verify outputs without re-doing the work
@@ -136,12 +141,14 @@ The best automation is invisible. Users should not know AI is involved unless so
 The user remains in control. AI provides suggestions, drafts, or analysis that the user reviews and modifies.
 
 **Examples:**
+
 - Writing suggestions and autocomplete
 - Recommended next actions
 - Draft responses to customer inquiries
 - Highlighted anomalies in data
 
 **Requirements for Augmentation:**
+
 - Clear visual distinction between AI suggestions and user content
 - Easy acceptance and rejection of suggestions
 - Graceful degradation if AI is slow or unavailable
@@ -155,12 +162,14 @@ Augmentation must be interruptible. Users should be able to ignore suggestions w
 AI processes data to identify patterns, trends, or risks that users would not find manually.
 
 **Examples:**
+
 - Churn prediction scores
 - Revenue forecasting
 - Content performance analysis
 - Security threat detection
 
 **Requirements for Analysis:**
+
 - Explainability—users need to understand why the AI reached its conclusion
 - Confidence indicators—not all predictions are equal
 - Action pathways—what should the user do with this information?
@@ -192,6 +201,7 @@ A B2B SaaS with 5,000 MAU wants to add AI-powered document summarization. Each u
 Monthly API volume: 5,000 × 10 × 5,500 = 275 million tokens
 
 At $0.002 per 1K tokens (input) and $0.006 per 1K tokens (output):
+
 - Input cost: 250M × $0.002 = $500
 - Output cost: 25M × $0.006 = $150
 - **Total: $650/month**
@@ -246,19 +256,19 @@ Every AI feature should be behind a feature flag with multiple levels:
 
 ```typescript
 interface AIFeatureConfig {
-  enabled: boolean;
-  rolloutPercentage: number; // 0-100
-  userSegments: string[]; // 'beta', 'enterprise', 'free', etc.
-  fallbackBehavior: 'hide' | 'manual' | 'cached';
-  confidenceThreshold: number; // 0-1, hide results below this
+	enabled: boolean;
+	rolloutPercentage: number; // 0-100
+	userSegments: string[]; // 'beta', 'enterprise', 'free', etc.
+	fallbackBehavior: "hide" | "manual" | "cached";
+	confidenceThreshold: number; // 0-1, hide results below this
 }
 
 const aiSummarization: AIFeatureConfig = {
-  enabled: true,
-  rolloutPercentage: 10,
-  userSegments: ['beta', 'enterprise'],
-  fallbackBehavior: 'manual',
-  confidenceThreshold: 0.85,
+	enabled: true,
+	rolloutPercentage: 10,
+	userSegments: ["beta", "enterprise"],
+	fallbackBehavior: "manual",
+	confidenceThreshold: 0.85,
 };
 ```
 
@@ -269,6 +279,7 @@ const aiSummarization: AIFeatureConfig = {
 Ship to internal users only. Instrument heavily. Collect explicit feedback.
 
 Watch for:
+
 - Latency issues (AI operations can be slow)
 - Error rates (API failures, timeout, malformed responses)
 - Quality complaints (wrong or unhelpful output)
@@ -281,6 +292,7 @@ Do not proceed until internal users are satisfied.
 Invite power users to opt in. These users are forgiving and provide detailed feedback.
 
 Provide a clear feedback mechanism:
+
 - Thumbs up/down on AI outputs
 - "This was wrong" with optional explanation
 - "This was exactly what I needed"
@@ -301,6 +313,7 @@ Compare metrics between segments. If enterprise users love it but free users ign
 **Phase 4: General Availability (Week 9+)**
 
 Roll out to remaining users. Monitor for:
+
 - Support ticket volume related to the feature
 - Feature discovery (are users finding it?)
 - Retention impact (are users who use the feature more engaged?)
@@ -316,12 +329,12 @@ Engagement metrics lie. A user who clicks on AI-generated suggestions twenty tim
 
 Measure what the AI feature is supposed to accomplish, not interactions with it.
 
-| Feature Type | Vanity Metric | Outcome Metric |
-|--------------|---------------|----------------|
-| AI writing assistant | "Used AI suggestions 50 times" | "Published 30% more content" |
-| Smart search | "Made 1,000 AI searches" | "Found answer 40% faster" |
-| Auto-categorization | "Categorized 10,000 items" | "Reduced manual categorization by 85%" |
-| Recommendations | "Showed 5,000 recommendations" | "Recommendations clicked + used: 23%" |
+| Feature Type         | Vanity Metric                  | Outcome Metric                         |
+| -------------------- | ------------------------------ | -------------------------------------- |
+| AI writing assistant | "Used AI suggestions 50 times" | "Published 30% more content"           |
+| Smart search         | "Made 1,000 AI searches"       | "Found answer 40% faster"              |
+| Auto-categorization  | "Categorized 10,000 items"     | "Reduced manual categorization by 85%" |
+| Recommendations      | "Showed 5,000 recommendations" | "Recommendations clicked + used: 23%"  |
 
 ### The Accuracy-Utility Gap
 
@@ -354,6 +367,7 @@ Use propensity score matching or diff-in-diff analysis to isolate the feature im
 AI features have a unique failure mode: users try them, find them unhelpful, and never return.
 
 Track:
+
 - **First-to-second use rate**: What percentage of users who try the feature once try it again?
 - **Time between uses**: Increasing gaps suggest declining utility
 - **Feature dormancy**: Users who used the feature regularly and stopped
@@ -392,26 +406,26 @@ When AI fails—and it will—the error experience determines whether users try 
 
 ```typescript
 async function getAISummary(document: Document): Promise<SummaryResult> {
-  try {
-    const summary = await aiService.summarize(document);
+	try {
+		const summary = await aiService.summarize(document);
 
-    if (summary.confidence < 0.7) {
-      return {
-        type: 'low-confidence',
-        content: summary.text,
-        message: "This summary may be incomplete. Review the original document.",
-      };
-    }
+		if (summary.confidence < 0.7) {
+			return {
+				type: "low-confidence",
+				content: summary.text,
+				message: "This summary may be incomplete. Review the original document.",
+			};
+		}
 
-    return { type: 'success', content: summary.text };
-  } catch (error) {
-    // AI service unavailable - fall back gracefully
-    return {
-      type: 'unavailable',
-      message: "AI summary temporarily unavailable. Try again in a few minutes.",
-      fallbackAction: 'show-manual-summary-option',
-    };
-  }
+		return { type: "success", content: summary.text };
+	} catch (error) {
+		// AI service unavailable - fall back gracefully
+		return {
+			type: "unavailable",
+			message: "AI summary temporarily unavailable. Try again in a few minutes.",
+			fallbackAction: "show-manual-summary-option",
+		};
+	}
 }
 ```
 
@@ -422,6 +436,7 @@ async function getAISummary(document: Document): Promise<SummaryResult> {
 Users who provide feedback expect it to matter. If feedback does not influence the system, stop collecting it.
 
 Useful feedback patterns:
+
 - Thumbs up/down that trains a reranking model
 - "Wrong" reports that flag for human review and model retraining
 - Explicit corrections that become training data
@@ -474,6 +489,7 @@ Tune your AI for the error type that matters, not overall accuracy.
 Adding features because competitors have them. "Competitor X added AI summarization. We need AI summarization."
 
 Competitors may be:
+
 - AI washing (the feature is not actually AI)
 - Failing (the feature is not working)
 - Serving different users (their users want it; yours may not)
