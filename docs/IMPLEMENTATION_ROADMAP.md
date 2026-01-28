@@ -224,15 +224,18 @@ Fetch Post Content
 
 ### 3.2 Weekly Posting Schedule
 
-| Day           | Platform   | Content           | Time      |
-| ------------- | ---------- | ----------------- | --------- |
-| **Monday**    | Blog       | Publish new post  | -         |
-| **Tuesday**   | Newsletter | Weekly issue      | 9 AM EST  |
-| **Tuesday**   | Twitter    | Thread from post  | 10 AM EST |
-| **Wednesday** | LinkedIn   | Carousel          | 10 AM EST |
-| **Thursday**  | Twitter    | Hot take          | 10 AM EST |
-| **Thursday**  | Bluesky    | Cross-post thread | 11 AM EST |
-| **Friday**    | LinkedIn   | Text post         | 10 AM EST |
+| Day           | Platform   | Content                    | Time      |
+| ------------- | ---------- | -------------------------- | --------- |
+| **Monday**    | Blog       | Publish new post           | -         |
+| **Monday**    | Dev.to     | Cross-post (canonical URL) | 2 PM EST  |
+| **Tuesday**   | Newsletter | Weekly issue               | 9 AM EST  |
+| **Tuesday**   | Twitter    | Thread from post           | 10 AM EST |
+| **Wednesday** | LinkedIn   | Carousel                   | 10 AM EST |
+| **Thursday**  | Twitter    | Hot take                   | 10 AM EST |
+| **Thursday**  | Bluesky    | Cross-post thread          | 11 AM EST |
+| **Friday**    | LinkedIn   | Text post                  | 10 AM EST |
+
+**Discord Strategy:** Help-first engagement in Reactiflux, Next.js Discord, Python Discord. No self-promotion until established reputation (30+ helpful answers).
 
 ---
 
@@ -360,11 +363,12 @@ Alex
 
 ### Distribution
 
-| Tool       | Purpose             | Cost                 |
-| ---------- | ------------------- | -------------------- |
-| Buttondown | Newsletter          | Free → $29/mo at 10K |
-| Typefully  | Twitter scheduling  | Free (15/mo)         |
-| n8n        | Workflow automation | Free (self-hosted)   |
+| Tool       | Purpose                       | Cost                 |
+| ---------- | ----------------------------- | -------------------- |
+| Buttondown | Newsletter                    | Free → $29/mo at 10K |
+| Postiz     | Social scheduling (self-host) | Free                 |
+| Dev.to     | Developer blog cross-post     | Free                 |
+| n8n        | Workflow automation           | Free (self-hosted)   |
 
 ### Analytics
 
