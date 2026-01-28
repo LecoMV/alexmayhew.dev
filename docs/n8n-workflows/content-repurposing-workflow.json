@@ -85,9 +85,7 @@
 		},
 		{
 			"parameters": {
-				"mode": "combine",
-				"combinationMode": "multiplex",
-				"options": {}
+				"mode": "append"
 			},
 			"id": "merge-all",
 			"name": "Wait For All",
