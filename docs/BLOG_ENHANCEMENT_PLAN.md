@@ -15,7 +15,7 @@ The blog currently has:
 - ✅ Featured images
 - ✅ Category display per post
 - ✅ Tag display
-- ❌ No category filtering
+- ✅ Category filtering with post counts (Phase 1 complete)
 - ❌ No search functionality
 - ❌ No hub page links
 - ❌ No "series" or "cluster" navigation
@@ -65,28 +65,23 @@ Sources: [BlogTyrant](https://www.blogtyrant.com/blog-design/), [Powered by Sear
 
 ## Enhancement Plan
 
-### Phase 1: Category Filtering (High Priority)
+### Phase 1: Category Filtering ✅ COMPLETE
 
 **Goal:** Allow users to filter posts by category
 
 **Categories (from existing posts):**
 
-- `architecture` (9 posts)
+- `architecture` (7 posts)
 - `business` (11 posts)
-- `frontend` (6 posts)
+- `frontend` (7 posts)
 - `infrastructure` (5 posts)
 
-**Implementation:**
+**Implementation:** Added to `blog-list.tsx` on 2026-01-28
 
-```tsx
-// Add to blog-list.tsx
-const categories = ["all", "architecture", "business", "frontend", "infrastructure"];
-
-const [activeCategory, setActiveCategory] = useState("all");
-
-const filteredPosts =
-	activeCategory === "all" ? posts : posts.filter((p) => p.data.category === activeCategory);
-```
+- Pill-style filter tabs with post counts
+- Active state uses cyber-lime accent color
+- Empty state shows "View all posts" link
+- Filters use useMemo for performance
 
 **UI:** Horizontal pill tabs at top of blog page, showing post count per category.
 
@@ -203,21 +198,21 @@ Every spoke post should include:
 
 ## Implementation Priority
 
-| Phase | Feature            | Effort  | Impact | Priority |
-| ----- | ------------------ | ------- | ------ | -------- |
-| 1     | Category filtering | 2-3 hrs | High   | P1       |
-| 2     | Hub highlighting   | 2-3 hrs | High   | P1       |
-| 3     | Series navigation  | 4-6 hrs | Medium | P2       |
-| 4     | Search             | 3-4 hrs | Medium | P2       |
-| 5     | Featured section   | 1-2 hrs | Low    | P3       |
+| Phase | Feature            | Effort  | Impact | Priority | Status      |
+| ----- | ------------------ | ------- | ------ | -------- | ----------- |
+| 1     | Category filtering | 2-3 hrs | High   | P1       | ✅ Complete |
+| 2     | Hub highlighting   | 2-3 hrs | High   | P1       | Pending     |
+| 3     | Series navigation  | 4-6 hrs | Medium | P2       | Pending     |
+| 4     | Search             | 3-4 hrs | Medium | P2       | Pending     |
+| 5     | Featured section   | 1-2 hrs | Low    | P3       | Pending     |
 
 ---
 
 ## Immediate Actions
 
-1. **Add category filter tabs** to blog-list.tsx
+1. ~~**Add category filter tabs** to blog-list.tsx~~ ✅ Done 2026-01-28
 2. **Update existing posts** with series tags (see CONTENT_CLUSTER_PLAN.md)
-3. **Create hub pages** (amdev-8pb, amdev-ary, amdev-n68, amdev-cnm beads)
+3. **Create hub pages** (amdev-ary, amdev-n68 beads - amdev-8pb and amdev-cnm closed)
 4. **Add "Part of" callouts** to spoke posts
 
 ---
