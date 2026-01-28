@@ -8,6 +8,7 @@ import { NoiseOverlay } from "@/components/ui/noise-overlay";
 import { ChatWidget } from "@/components/chat";
 import { JsonLd, LocalBusinessJsonLd } from "@/components/seo";
 import { CloudflareAnalytics, GoogleAnalytics } from "@/components/analytics";
+import { PageAnalytics } from "@/components/analytics/page-analytics";
 import { WebVitalsReporter } from "@/components/analytics/web-vitals";
 import { CookieConsent } from "@/components/ui/cookie-consent";
 import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
@@ -132,6 +133,7 @@ export default function RootLayout({
 				</MotionProvider>
 				<ServiceWorkerRegister />
 				<GoogleAnalytics />
+				<PageAnalytics />
 				<CloudflareAnalytics />
 				<WebVitalsReporter />
 			</body>

@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { submitContactForm } from "@/app/actions/contact";
 import { type ContactFormValues } from "@/lib/schemas/contact";
 import { Turnstile, type TurnstileRef } from "@/components/ui/turnstile";
-import { trackEvent } from "@/components/analytics";
+import { trackLeadEvent } from "@/components/analytics";
 
 const springTransition = {
 	type: "spring" as const,
@@ -70,10 +70,12 @@ export function ContactPage() {
 
 		if (result.success) {
 			setFormStatus("success");
-			// Track conversion in GA4
-			trackEvent("contact_form_submit", {
+			// Track lead generation using GA4 2026 best practices
+			trackLeadEvent("generate_lead", {
+				lead_source: "contact_form",
 				project_type: formData.projectType,
 				budget_range: formData.budget,
+				form_type: "consultation_request",
 			});
 		} else {
 			setFormStatus("error");

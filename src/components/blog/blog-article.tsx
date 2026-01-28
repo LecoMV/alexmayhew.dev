@@ -8,6 +8,7 @@ import { ArrowLeft, Calendar, Tag } from "lucide-react";
 import { useBlogTheme } from "@/lib/blog-themes";
 import { ShareButtons } from "./share-buttons";
 import { NewsletterSignup } from "@/components/newsletter";
+import { useContentAnalytics } from "@/lib/hooks/use-content-analytics";
 import type { Post } from "./types";
 
 interface BlogArticleProps {
@@ -18,6 +19,13 @@ interface BlogArticleProps {
 export function BlogArticle({ post, children }: BlogArticleProps) {
 	const { theme, springTransition } = useBlogTheme();
 	const [articleUrl, setArticleUrl] = useState("");
+
+	// Track content analytics for blog posts
+	useContentAnalytics({
+		contentId: post.slug,
+		contentType: "blog_post",
+		contentCategory: post.data.category || "technical",
+	});
 
 	useEffect(() => {
 		setArticleUrl(window.location.href);

@@ -5,6 +5,7 @@ import { m } from "framer-motion";
 import { Mail, CheckCircle, AlertCircle, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { subscribeToNewsletter } from "@/app/actions/newsletter";
+import { trackNewsletterEvent } from "@/components/analytics";
 
 const springTransition = {
 	type: "spring" as const,
@@ -54,6 +55,12 @@ export function NewsletterSignup({
 			if (result.success) {
 				setStatus("success");
 				setEmail("");
+				// Track newsletter signup for GA4 lead generation reports
+				trackNewsletterEvent("newsletter_subscribe", {
+					method: "email",
+					source: source,
+					location: variant,
+				});
 			} else {
 				setStatus("error");
 				setErrorMessage(result.error || "Something went wrong. Please try again.");

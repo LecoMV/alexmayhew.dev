@@ -18,6 +18,7 @@ import { useState } from "react";
 import type { PseoPage, ExpertApproach } from "@/data/pseo";
 import { TECHNOLOGY_LABELS, INDUSTRY_LABELS } from "@/data/pseo";
 import { TopicClusterNav } from "@/components/seo";
+import { useContentAnalytics } from "@/lib/hooks/use-content-analytics";
 import { cn } from "@/lib/utils";
 
 const springTransition = {
@@ -55,6 +56,16 @@ interface ServicePageContentProps {
 export function ServicePageContent({ page, relatedPages }: ServicePageContentProps) {
 	const techLabel = TECHNOLOGY_LABELS[page.technology];
 	const industryLabel = INDUSTRY_LABELS[page.industry];
+
+	// Track service page analytics
+	useContentAnalytics({
+		contentId: page.slug,
+		contentType: "service_page",
+		contentCategory: "service",
+		serviceType: "consulting",
+		technology: page.technology,
+		industry: page.industry,
+	});
 
 	return (
 		<main className="min-h-screen px-6 pt-44 pb-24 sm:px-12 md:px-24">
