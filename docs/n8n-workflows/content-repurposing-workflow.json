@@ -1,5 +1,5 @@
 {
-	"name": "Blog to Multi-Platform Content",
+	"name": "Blog to Postiz Auto-Schedule",
 	"nodes": [
 		{
 			"parameters": {
@@ -21,13 +21,13 @@
 				"url": "http://host.containers.internal:11434/api/generate",
 				"sendBody": true,
 				"specifyBody": "json",
-				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and authoritative—take clear positions, no hedging\n- Technical but always tied to business outcomes\n- Use specific numbers (40%, 10x, 100k+)—never vague\n- Dense—every sentence carries weight, no filler\n\nNEVER use emojis. Ever.\n\n<task>Convert this blog post into a LinkedIn carousel with 10-12 slides</task>\n\n<rules>\n- Slide 1: Hook (5-10 words, contrarian claim)\n- Slide 2: The problem\n- Slides 3-8: Key insights (max 25 words each, include numbers)\n- Slide 9: Code example or additional insight\n- Slide 10: Actionable takeaway\n- Slide 11: CTA \"Follow for more architecture insights\"\n- NO emojis, NO hashtags, NO hedging\n</rules>\n\n<input>\nTitle: ${$json.body.title}\n\n${$json.body.content}\n</input>\n\nOutput ONLY the slides, numbered SLIDE 1, SLIDE 2, etc.`, stream: false, options: { temperature: 0.7, num_predict: 1200 } }) }}",
+				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and authoritative—take clear positions, no hedging\n- Technical but always tied to business outcomes\n- Use specific numbers (40%, 10x, 100k+)—never vague\n- Dense—every sentence carries weight, no filler\n\nNEVER use emojis. Ever.\n\n<task>Convert this blog post into a LinkedIn text post (NOT a carousel)</task>\n\n<rules>\n- 150-250 words total\n- First line MUST stop the scroll (bold claim or counterintuitive statement)\n- Use line breaks every 1-2 sentences\n- Include 3-4 concrete insights with specific numbers\n- End with a question to drive engagement\n- Add 3-5 relevant hashtags at the very end after two line breaks\n- NO emojis, NO hedging\n- Use arrows or bullet points for lists\n</rules>\n\n<input>\nTitle: ${$json.body.title}\n\n${$json.body.content}\n</input>\n\nOutput ONLY the LinkedIn post text, ready to publish.`, stream: false, options: { temperature: 0.7, num_predict: 600 } }) }}",
 				"options": {
 					"timeout": 180000
 				}
 			},
 			"id": "ollama-linkedin",
-			"name": "LinkedIn Carousel",
+			"name": "Generate LinkedIn",
 			"type": "n8n-nodes-base.httpRequest",
 			"typeVersion": 4.2,
 			"position": [500, 100]
@@ -38,16 +38,16 @@
 				"url": "http://host.containers.internal:11434/api/generate",
 				"sendBody": true,
 				"specifyBody": "json",
-				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and authoritative—take clear positions\n- Specific numbers (40%, 10x, 100k+)—never vague\n- Experience-backed (\"I've advised 30+ startups...\")\n- Punchy and dense\n\nNEVER use emojis.\n\n<task>Convert this into a Twitter thread of 8-10 tweets</task>\n\n<rules>\n- Tweet 1: Standalone hook (contrarian)\n- Tweets 2-9: One insight each, max 270 chars\n- Final tweet: [LINK] placeholder\n- Format: \"1/\" not \"(1)\"\n- Use arrow to continue\n- NO hashtags, NO emojis\n</rules>\n\n<input>\nTitle: ${$json.body.title}\n\n${$json.body.content}\n</input>\n\nOutput ONLY the tweets, numbered 1/, 2/, etc.`, stream: false, options: { temperature: 0.6, num_predict: 800 } }) }}",
+				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and authoritative—take clear positions\n- Specific numbers (40%, 10x, 100k+)—never vague\n- Experience-backed (\"I've advised 30+ startups...\")\n- Punchy and dense\n\nNEVER use emojis.\n\n<task>Convert this into a Twitter thread of 6-8 tweets</task>\n\n<rules>\n- Tweet 1: Standalone hook (contrarian)\n- Tweets 2-6: One insight each, max 270 chars each\n- Final tweet: Summary with link to full article\n- NO hashtags, NO emojis\n- Output as JSON array of strings\n</rules>\n\n<output_format>\n[\"Tweet 1 text here\", \"Tweet 2 text here\", \"Tweet 3 text here\"]\n</output_format>\n\n<input>\nTitle: ${$json.body.title}\nURL: https://alexmayhew.dev/blog/${$json.body.slug || 'post'}\n\n${$json.body.content}\n</input>\n\nOutput ONLY the JSON array of tweets. No other text.`, stream: false, options: { temperature: 0.6, num_predict: 1000 } }) }}",
 				"options": {
 					"timeout": 180000
 				}
 			},
 			"id": "ollama-twitter",
-			"name": "Twitter Thread",
+			"name": "Generate Twitter",
 			"type": "n8n-nodes-base.httpRequest",
 			"typeVersion": 4.2,
-			"position": [500, 250]
+			"position": [500, 300]
 		},
 		{
 			"parameters": {
@@ -55,53 +55,146 @@
 				"url": "http://host.containers.internal:11434/api/generate",
 				"sendBody": true,
 				"specifyBody": "json",
-				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and prescriptive—no hedging\n- Use specific numbers (40%, 10x, 100k+)\n- Experience-backed\n- Dense—every sentence carries weight\n\nNEVER use emojis.\n\n<task>Create a newsletter section for \"The Architect's Brief\"</task>\n\n<structure>\n## This Week's Decision\n\n**The Situation:**\n[2-3 sentences: When does this decision come up?]\n\n**The Insight:**\n[100-150 words with specific numbers. Be prescriptive.]\n\n**When to Apply This:**\n- [Condition 1]\n- [Condition 2]\n- [Condition 3]\n\n**When NOT to Apply This:**\n- [Counter-condition]\n</structure>\n\n<input>\nTitle: ${$json.body.title}\n\n${$json.body.content}\n</input>\n\nOutput the newsletter section now.`, stream: false, options: { temperature: 0.7, num_predict: 800 } }) }}",
-				"options": {
-					"timeout": 180000
-				}
-			},
-			"id": "ollama-newsletter",
-			"name": "Newsletter Section",
-			"type": "n8n-nodes-base.httpRequest",
-			"typeVersion": 4.2,
-			"position": [500, 400]
-		},
-		{
-			"parameters": {
-				"method": "POST",
-				"url": "http://host.containers.internal:11434/api/generate",
-				"sendBody": true,
-				"specifyBody": "json",
-				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and authoritative\n- Technical depth for developers\n- Use specific numbers (40%, 10x, 100k+)\n- Experience-backed\n- Conversational for Dev.to community\n\nNEVER use emojis in the body.\n\n<task>Adapt this blog post for Dev.to</task>\n\n<structure>\n---\ntitle: ${$json.body.title}\npublished: true\ntags: architecture, webdev, programming, startup\n---\n\n## TL;DR\n[2-3 bullet points]\n\n## [Hook paragraph]\n\n## The Problem\n[Why this matters]\n\n## [Main content with code blocks]\n\n## Key Takeaways\n[3-5 bullets]\n\n---\nOriginally published on [alexmayhew.dev](https://alexmayhew.dev/blog/${$json.body.slug || 'post'}). Follow me for more architecture insights.\n</structure>\n\n<input>\n${$json.body.content}\n</input>\n\nOutput the Dev.to article now.`, stream: false, options: { temperature: 0.7, num_predict: 2000 } }) }}",
+				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and authoritative\n- Technical depth for developers\n- Use specific numbers (40%, 10x, 100k+)\n- Experience-backed\n- Conversational for Dev.to community\n\nNEVER use emojis in the body.\n\n<task>Create a Dev.to article summary</task>\n\n<rules>\n- Start with TL;DR (2-3 bullet points)\n- Then 3-4 key sections with headers\n- Include code blocks if relevant\n- End with Key Takeaways (3-5 bullets)\n- Add canonical link note at end\n- 500-800 words total\n</rules>\n\n<input>\nTitle: ${$json.body.title}\nSlug: ${$json.body.slug || 'post'}\n\n${$json.body.content}\n</input>\n\nOutput the Dev.to article body (no frontmatter, just content).`, stream: false, options: { temperature: 0.7, num_predict: 1500 } }) }}",
 				"options": {
 					"timeout": 180000
 				}
 			},
 			"id": "ollama-devto",
-			"name": "Dev.to Article",
+			"name": "Generate DevTo",
 			"type": "n8n-nodes-base.httpRequest",
 			"typeVersion": 4.2,
-			"position": [500, 550]
+			"position": [500, 500]
 		},
 		{
 			"parameters": {
 				"mode": "append"
 			},
-			"id": "merge-all",
-			"name": "Wait For All",
+			"id": "merge-generated",
+			"name": "Wait For Generation",
 			"type": "n8n-nodes-base.merge",
 			"typeVersion": 3,
 			"position": [750, 300]
 		},
 		{
 			"parameters": {
-				"jsCode": "// Get results from all branches\nconst webhook = $('Webhook').first().json;\nconst linkedin = $('LinkedIn Carousel').first().json;\nconst twitter = $('Twitter Thread').first().json;\nconst newsletter = $('Newsletter Section').first().json;\nconst devto = $('Dev.to Article').first().json;\n\nreturn [{\n  json: {\n    success: true,\n    title: webhook.body?.title || 'Unknown',\n    generated_at: new Date().toISOString(),\n    content: {\n      linkedin_carousel: linkedin?.response || 'Generation failed',\n      twitter_thread: twitter?.response || 'Generation failed',\n      newsletter_section: newsletter?.response || 'Generation failed',\n      devto_article: devto?.response || 'Generation failed'\n    }\n  }\n}];"
+				"jsCode": "// Get webhook input and generated content\nconst webhook = $('Webhook').first().json;\nconst linkedinRaw = $('Generate LinkedIn').first().json;\nconst twitterRaw = $('Generate Twitter').first().json;\nconst devtoRaw = $('Generate DevTo').first().json;\n\n// Parse content\nconst linkedinContent = linkedinRaw?.response || '';\nlet twitterTweets = [];\ntry {\n  // Extract JSON array from response\n  const twitterResponse = twitterRaw?.response || '[]';\n  const jsonMatch = twitterResponse.match(/\\[.*\\]/s);\n  if (jsonMatch) {\n    twitterTweets = JSON.parse(jsonMatch[0]);\n  }\n} catch (e) {\n  twitterTweets = [twitterRaw?.response || 'Thread generation failed'];\n}\nconst devtoContent = devtoRaw?.response || '';\n\n// Get scheduling info from webhook\nconst scheduleConfig = webhook.body?.schedule || {};\nconst linkedinDate = scheduleConfig.linkedin || new Date(Date.now() + 24*60*60*1000).toISOString();\nconst twitterDate = scheduleConfig.twitter || new Date(Date.now() + 48*60*60*1000).toISOString();\nconst devtoDate = scheduleConfig.devto || new Date(Date.now() + 24*60*60*1000).toISOString();\n\n// Prepare Postiz payloads\nconst linkedinPayload = {\n  type: 'schedule',\n  date: linkedinDate,\n  shortLink: false,\n  tags: [],\n  posts: [{\n    integration: { id: 'cmky9rja60001oc82ci8qle6v' },\n    value: [{ content: linkedinContent, image: [] }],\n    settings: { __type: 'linkedin' }\n  }]\n};\n\n// Twitter thread - each tweet is a value item\nconst twitterValue = twitterTweets.map(tweet => ({ content: tweet, image: [] }));\nconst twitterPayload = {\n  type: 'schedule',\n  date: twitterDate,\n  shortLink: false,\n  tags: [],\n  posts: [{\n    integration: { id: 'cmkxmmwlk0001mj96243heh2y' },\n    value: twitterValue,\n    settings: { __type: 'x', who_can_reply_post: 'everyone' }\n  }]\n};\n\n// Dev.to payload\nconst devtoPayload = {\n  type: 'schedule',\n  date: devtoDate,\n  shortLink: false,\n  tags: [],\n  posts: [{\n    integration: { id: 'cmky5o54e0001p397fhvbi0pp' },\n    value: [{ content: devtoContent, image: [] }],\n    settings: { \n      __type: 'devto', \n      title: webhook.body?.title || 'New Post'\n    }\n  }]\n};\n\nreturn [{\n  json: {\n    title: webhook.body?.title,\n    linkedinPayload,\n    twitterPayload,\n    devtoPayload,\n    generatedContent: {\n      linkedin: linkedinContent,\n      twitter: twitterTweets,\n      devto: devtoContent\n    }\n  }\n}];"
 			},
-			"id": "format-output",
-			"name": "Format Output",
+			"id": "prepare-postiz",
+			"name": "Prepare Postiz Payloads",
 			"type": "n8n-nodes-base.code",
 			"typeVersion": 2,
 			"position": [950, 300]
+		},
+		{
+			"parameters": {
+				"method": "POST",
+				"url": "https://postiz.alexmayhew.dev/api/public/v1/posts",
+				"sendHeaders": true,
+				"headerParameters": {
+					"parameters": [
+						{
+							"name": "Authorization",
+							"value": "89fe6989c73476046100c9b0ffe2522b118ba8a8100b35ef07e919ecebceb6c3"
+						},
+						{
+							"name": "Content-Type",
+							"value": "application/json"
+						}
+					]
+				},
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify($json.linkedinPayload) }}",
+				"options": {
+					"timeout": 30000
+				}
+			},
+			"id": "postiz-linkedin",
+			"name": "Post to LinkedIn",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [1200, 100]
+		},
+		{
+			"parameters": {
+				"method": "POST",
+				"url": "https://postiz.alexmayhew.dev/api/public/v1/posts",
+				"sendHeaders": true,
+				"headerParameters": {
+					"parameters": [
+						{
+							"name": "Authorization",
+							"value": "89fe6989c73476046100c9b0ffe2522b118ba8a8100b35ef07e919ecebceb6c3"
+						},
+						{
+							"name": "Content-Type",
+							"value": "application/json"
+						}
+					]
+				},
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify($json.twitterPayload) }}",
+				"options": {
+					"timeout": 30000
+				}
+			},
+			"id": "postiz-twitter",
+			"name": "Post to Twitter",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [1200, 300]
+		},
+		{
+			"parameters": {
+				"method": "POST",
+				"url": "https://postiz.alexmayhew.dev/api/public/v1/posts",
+				"sendHeaders": true,
+				"headerParameters": {
+					"parameters": [
+						{
+							"name": "Authorization",
+							"value": "89fe6989c73476046100c9b0ffe2522b118ba8a8100b35ef07e919ecebceb6c3"
+						},
+						{
+							"name": "Content-Type",
+							"value": "application/json"
+						}
+					]
+				},
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify($json.devtoPayload) }}",
+				"options": {
+					"timeout": 30000
+				}
+			},
+			"id": "postiz-devto",
+			"name": "Post to DevTo",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [1200, 500]
+		},
+		{
+			"parameters": {
+				"mode": "append"
+			},
+			"id": "merge-posted",
+			"name": "Wait For Posts",
+			"type": "n8n-nodes-base.merge",
+			"typeVersion": 3,
+			"position": [1450, 300]
+		},
+		{
+			"parameters": {
+				"jsCode": "// Collect results\nconst prepared = $('Prepare Postiz Payloads').first().json;\nconst linkedinResult = $('Post to LinkedIn').first().json;\nconst twitterResult = $('Post to Twitter').first().json;\nconst devtoResult = $('Post to DevTo').first().json;\n\nreturn [{\n  json: {\n    success: true,\n    title: prepared.title,\n    generated_at: new Date().toISOString(),\n    scheduled: {\n      linkedin: {\n        success: !linkedinResult?.error,\n        response: linkedinResult\n      },\n      twitter: {\n        success: !twitterResult?.error,\n        response: twitterResult\n      },\n      devto: {\n        success: !devtoResult?.error,\n        response: devtoResult\n      }\n    },\n    content_preview: {\n      linkedin: prepared.generatedContent?.linkedin?.substring(0, 200) + '...',\n      twitter_tweets: prepared.generatedContent?.twitter?.length || 0,\n      devto: prepared.generatedContent?.devto?.substring(0, 200) + '...'\n    }\n  }\n}];"
+			},
+			"id": "format-response",
+			"name": "Format Response",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [1650, 300]
 		},
 		{
 			"parameters": {
@@ -113,7 +206,7 @@
 			"name": "Respond to Webhook",
 			"type": "n8n-nodes-base.respondToWebhook",
 			"typeVersion": 1.1,
-			"position": [1150, 300]
+			"position": [1850, 300]
 		}
 	],
 	"connections": {
@@ -121,84 +214,133 @@
 			"main": [
 				[
 					{
-						"node": "LinkedIn Carousel",
+						"node": "Generate LinkedIn",
 						"type": "main",
 						"index": 0
 					},
 					{
-						"node": "Twitter Thread",
+						"node": "Generate Twitter",
 						"type": "main",
 						"index": 0
 					},
 					{
-						"node": "Newsletter Section",
-						"type": "main",
-						"index": 0
-					},
-					{
-						"node": "Dev.to Article",
+						"node": "Generate DevTo",
 						"type": "main",
 						"index": 0
 					}
 				]
 			]
 		},
-		"LinkedIn Carousel": {
+		"Generate LinkedIn": {
 			"main": [
 				[
 					{
-						"node": "Wait For All",
+						"node": "Wait For Generation",
 						"type": "main",
 						"index": 0
 					}
 				]
 			]
 		},
-		"Twitter Thread": {
+		"Generate Twitter": {
 			"main": [
 				[
 					{
-						"node": "Wait For All",
+						"node": "Wait For Generation",
 						"type": "main",
 						"index": 1
 					}
 				]
 			]
 		},
-		"Newsletter Section": {
+		"Generate DevTo": {
 			"main": [
 				[
 					{
-						"node": "Wait For All",
+						"node": "Wait For Generation",
 						"type": "main",
 						"index": 2
 					}
 				]
 			]
 		},
-		"Dev.to Article": {
+		"Wait For Generation": {
 			"main": [
 				[
 					{
-						"node": "Wait For All",
-						"type": "main",
-						"index": 3
-					}
-				]
-			]
-		},
-		"Wait For All": {
-			"main": [
-				[
-					{
-						"node": "Format Output",
+						"node": "Prepare Postiz Payloads",
 						"type": "main",
 						"index": 0
 					}
 				]
 			]
 		},
-		"Format Output": {
+		"Prepare Postiz Payloads": {
+			"main": [
+				[
+					{
+						"node": "Post to LinkedIn",
+						"type": "main",
+						"index": 0
+					},
+					{
+						"node": "Post to Twitter",
+						"type": "main",
+						"index": 0
+					},
+					{
+						"node": "Post to DevTo",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Post to LinkedIn": {
+			"main": [
+				[
+					{
+						"node": "Wait For Posts",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Post to Twitter": {
+			"main": [
+				[
+					{
+						"node": "Wait For Posts",
+						"type": "main",
+						"index": 1
+					}
+				]
+			]
+		},
+		"Post to DevTo": {
+			"main": [
+				[
+					{
+						"node": "Wait For Posts",
+						"type": "main",
+						"index": 2
+					}
+				]
+			]
+		},
+		"Wait For Posts": {
+			"main": [
+				[
+					{
+						"node": "Format Response",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Format Response": {
 			"main": [
 				[
 					{

@@ -1,9 +1,26 @@
 # n8n Content Repurposing Setup Guide
 
 > **Created:** 2026-01-27
-> **Updated:** 2026-01-28 (Research-based best practices)
+> **Updated:** 2026-01-28 (Postiz auto-scheduling integration)
 > **Status:** Ready for setup
 > **Container:** Podman at http://localhost:5678
+
+## What Changed (2026-01-28)
+
+The workflow now **automatically schedules posts to Postiz** instead of just returning generated content. When you trigger the webhook, it:
+
+1. Generates LinkedIn, Twitter, and Dev.to content via Ollama
+2. Formats the content for Postiz API
+3. Schedules all three posts to Postiz
+4. Returns a summary of what was scheduled
+
+### Integration IDs (Updated 2026-01-28)
+
+After re-authenticating LinkedIn, the integration IDs are:
+
+- **LinkedIn:** `cmky9rja60001oc82ci8qle6v`
+- **Twitter/X:** `cmkxmmwlk0001mj96243heh2y`
+- **Dev.to:** `cmky5o54e0001p397fhvbi0pp`
 
 ---
 
