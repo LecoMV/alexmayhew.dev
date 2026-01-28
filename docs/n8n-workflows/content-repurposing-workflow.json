@@ -1,18 +1,19 @@
 {
-	"name": "Blog to Social Content Suite",
+	"name": "Blog to Multi-Platform Content",
 	"nodes": [
 		{
 			"parameters": {
 				"httpMethod": "POST",
-				"path": "blog-published",
-				"responseMode": "onReceived",
+				"path": "content-repurpose",
+				"responseMode": "responseNode",
 				"options": {}
 			},
 			"id": "webhook-trigger",
-			"name": "Blog Published Webhook",
+			"name": "Webhook",
 			"type": "n8n-nodes-base.webhook",
 			"typeVersion": 2,
-			"position": [250, 300]
+			"position": [250, 300],
+			"webhookId": "content-repurpose-webhook"
 		},
 		{
 			"parameters": {
@@ -20,16 +21,16 @@
 				"url": "http://host.containers.internal:11434/api/generate",
 				"sendBody": true,
 				"specifyBody": "json",
-				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `<task>Convert a technical blog post into a LinkedIn carousel</task>\\n\\n<persona>\\nYou are a B2B content strategist creating carousel content for Alex Mayhew, a Technical Advisor who helps CTOs make better architecture decisions. His tone is confident, direct, and technically precise without being condescending.\\n</persona>\\n\\n<rules>\\n- Create exactly 10-12 slides\\n- Slide 1: Hook (5-10 words, create curiosity or state a contrarian view)\\n- Slide 2: The problem or common misconception\\n- Slides 3-8: One key insight per slide (max 25 words each)\\n- Slide 9: Code example if applicable (5-10 lines max), otherwise another insight\\n- Slide 10: The main takeaway (actionable)\\n- Slide 11: CTA \"Follow @alexmayhew for more architecture insights\"\\n- NO emojis, NO hashtags\\n- Use active voice, present tense\\n</rules>\\n\\n<input>\\n${$json.content}\\n</input>\\n\\nGenerate the carousel now.`, stream: false, options: { temperature: 0.7, top_p: 0.9, num_predict: 1200 } }) }}",
+				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and authoritative—take clear positions, no hedging\n- Technical but always tied to business outcomes\n- Use specific numbers (40%, 10x, 100k+)—never vague\n- Dense—every sentence carries weight, no filler\n\nNEVER use emojis. Ever.\n\n<task>Convert this blog post into a LinkedIn carousel with 10-12 slides</task>\n\n<rules>\n- Slide 1: Hook (5-10 words, contrarian claim)\n- Slide 2: The problem\n- Slides 3-8: Key insights (max 25 words each, include numbers)\n- Slide 9: Code example or additional insight\n- Slide 10: Actionable takeaway\n- Slide 11: CTA \"Follow for more architecture insights\"\n- NO emojis, NO hashtags, NO hedging\n</rules>\n\n<input>\nTitle: ${$json.body.title}\n\n${$json.body.content}\n</input>\n\nOutput ONLY the slides, numbered SLIDE 1, SLIDE 2, etc.`, stream: false, options: { temperature: 0.7, num_predict: 1200 } }) }}",
 				"options": {
-					"timeout": 120000
+					"timeout": 180000
 				}
 			},
-			"id": "ollama-linkedin-carousel",
-			"name": "Generate LinkedIn Carousel",
+			"id": "ollama-linkedin",
+			"name": "LinkedIn Carousel",
 			"type": "n8n-nodes-base.httpRequest",
 			"typeVersion": 4.2,
-			"position": [500, 150]
+			"position": [500, 100]
 		},
 		{
 			"parameters": {
@@ -37,16 +38,16 @@
 				"url": "http://host.containers.internal:11434/api/generate",
 				"sendBody": true,
 				"specifyBody": "json",
-				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `<task>Convert a blog post into a Twitter thread</task>\\n\\n<constraints>\\n- Thread length: 8-12 tweets\\n- Each tweet: Maximum 270 characters (leave room for engagement)\\n- Tweet 1: Must work as a standalone hook\\n- Final tweet: Include [LINK] placeholder for the full article\\n</constraints>\\n\\n<formatting>\\n- Number format: \"1/\" not \"(1)\"\\n- Use \"→\" to indicate thread continues\\n- NO hashtags\\n- NO emojis\\n- Use line breaks within tweets for emphasis\\n</formatting>\\n\\n<input>\\n${$json.content}\\n</input>\\n\\nGenerate the thread now. Number each tweet.`, stream: false, options: { temperature: 0.6, top_p: 0.9, num_predict: 800 } }) }}",
+				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and authoritative—take clear positions\n- Specific numbers (40%, 10x, 100k+)—never vague\n- Experience-backed (\"I've advised 30+ startups...\")\n- Punchy and dense\n\nNEVER use emojis.\n\n<task>Convert this into a Twitter thread of 8-10 tweets</task>\n\n<rules>\n- Tweet 1: Standalone hook (contrarian)\n- Tweets 2-9: One insight each, max 270 chars\n- Final tweet: [LINK] placeholder\n- Format: \"1/\" not \"(1)\"\n- Use arrow to continue\n- NO hashtags, NO emojis\n</rules>\n\n<input>\nTitle: ${$json.body.title}\n\n${$json.body.content}\n</input>\n\nOutput ONLY the tweets, numbered 1/, 2/, etc.`, stream: false, options: { temperature: 0.6, num_predict: 800 } }) }}",
 				"options": {
-					"timeout": 120000
+					"timeout": 180000
 				}
 			},
-			"id": "ollama-twitter-thread",
-			"name": "Generate Twitter Thread",
+			"id": "ollama-twitter",
+			"name": "Twitter Thread",
 			"type": "n8n-nodes-base.httpRequest",
 			"typeVersion": 4.2,
-			"position": [500, 300]
+			"position": [500, 250]
 		},
 		{
 			"parameters": {
@@ -54,95 +55,141 @@
 				"url": "http://host.containers.internal:11434/api/generate",
 				"sendBody": true,
 				"specifyBody": "json",
-				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `<task>Create a newsletter section for \"The Architect's Brief\"</task>\\n\\n<newsletter_context>\\n\"The Architect's Brief\" is a weekly newsletter for CTOs and engineering leaders. Each issue features a \"This Week's Decision\" section that breaks down a real technical decision with practical guidance.\\n</newsletter_context>\\n\\n<section_structure>\\n## This Week's Decision\\n\\n**The Situation:**\\n[2-3 sentences: When does this decision come up? What triggers it?]\\n\\n**The Insight:**\\n[100-150 words: What's the right approach? Include specific numbers, examples, or code if relevant. Be prescriptive, not wishy-washy.]\\n\\n**When to Apply This:**\\n- [Specific condition 1]\\n- [Specific condition 2]\\n- [Specific condition 3]\\n</section_structure>\\n\\n<tone>\\nWrite like a senior engineer giving advice to a peer over coffee. Friendly but direct. Use \"you\" not \"one\" or \"developers.\"\\n</tone>\\n\\n<input>\\n${$json.content}\\n</input>\\n\\nGenerate the newsletter section now.`, stream: false, options: { temperature: 0.7, top_p: 0.9, num_predict: 800 } }) }}",
+				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and prescriptive—no hedging\n- Use specific numbers (40%, 10x, 100k+)\n- Experience-backed\n- Dense—every sentence carries weight\n\nNEVER use emojis.\n\n<task>Create a newsletter section for \"The Architect's Brief\"</task>\n\n<structure>\n## This Week's Decision\n\n**The Situation:**\n[2-3 sentences: When does this decision come up?]\n\n**The Insight:**\n[100-150 words with specific numbers. Be prescriptive.]\n\n**When to Apply This:**\n- [Condition 1]\n- [Condition 2]\n- [Condition 3]\n\n**When NOT to Apply This:**\n- [Counter-condition]\n</structure>\n\n<input>\nTitle: ${$json.body.title}\n\n${$json.body.content}\n</input>\n\nOutput the newsletter section now.`, stream: false, options: { temperature: 0.7, num_predict: 800 } }) }}",
 				"options": {
-					"timeout": 120000
+					"timeout": 180000
 				}
 			},
 			"id": "ollama-newsletter",
-			"name": "Generate Newsletter Section",
+			"name": "Newsletter Section",
 			"type": "n8n-nodes-base.httpRequest",
 			"typeVersion": 4.2,
-			"position": [500, 450]
+			"position": [500, 400]
 		},
 		{
 			"parameters": {
-				"jsCode": "// Parse Ollama responses and format for output\nconst items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  if (item.json.response) {\n    results.push({\n      json: {\n        content: item.json.response,\n        type: item.json.type || 'unknown',\n        generatedAt: new Date().toISOString()\n      }\n    });\n  }\n}\n\nreturn results;"
+				"method": "POST",
+				"url": "http://host.containers.internal:11434/api/generate",
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and authoritative\n- Technical depth for developers\n- Use specific numbers (40%, 10x, 100k+)\n- Experience-backed\n- Conversational for Dev.to community\n\nNEVER use emojis in the body.\n\n<task>Adapt this blog post for Dev.to</task>\n\n<structure>\n---\ntitle: ${$json.body.title}\npublished: true\ntags: architecture, webdev, programming, startup\n---\n\n## TL;DR\n[2-3 bullet points]\n\n## [Hook paragraph]\n\n## The Problem\n[Why this matters]\n\n## [Main content with code blocks]\n\n## Key Takeaways\n[3-5 bullets]\n\n---\nOriginally published on [alexmayhew.dev](https://alexmayhew.dev/blog/${$json.body.slug || 'post'}). Follow me for more architecture insights.\n</structure>\n\n<input>\n${$json.body.content}\n</input>\n\nOutput the Dev.to article now.`, stream: false, options: { temperature: 0.7, num_predict: 2000 } }) }}",
+				"options": {
+					"timeout": 180000
+				}
 			},
-			"id": "parse-responses",
-			"name": "Parse LLM Responses",
-			"type": "n8n-nodes-base.code",
-			"typeVersion": 2,
+			"id": "ollama-devto",
+			"name": "Dev.to Article",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [500, 550]
+		},
+		{
+			"parameters": {
+				"mode": "combine",
+				"combinationMode": "multiplex",
+				"options": {}
+			},
+			"id": "merge-all",
+			"name": "Wait For All",
+			"type": "n8n-nodes-base.merge",
+			"typeVersion": 3,
 			"position": [750, 300]
 		},
 		{
 			"parameters": {
-				"operation": "toJson",
-				"options": {}
+				"jsCode": "// Get results from all branches\nconst webhook = $('Webhook').first().json;\nconst linkedin = $('LinkedIn Carousel').first().json;\nconst twitter = $('Twitter Thread').first().json;\nconst newsletter = $('Newsletter Section').first().json;\nconst devto = $('Dev.to Article').first().json;\n\nreturn [{\n  json: {\n    success: true,\n    title: webhook.body?.title || 'Unknown',\n    generated_at: new Date().toISOString(),\n    content: {\n      linkedin_carousel: linkedin?.response || 'Generation failed',\n      twitter_thread: twitter?.response || 'Generation failed',\n      newsletter_section: newsletter?.response || 'Generation failed',\n      devto_article: devto?.response || 'Generation failed'\n    }\n  }\n}];"
 			},
 			"id": "format-output",
 			"name": "Format Output",
-			"type": "n8n-nodes-base.convertToFile",
-			"typeVersion": 1,
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
 			"position": [950, 300]
+		},
+		{
+			"parameters": {
+				"respondWith": "json",
+				"responseBody": "={{ $json }}",
+				"options": {}
+			},
+			"id": "respond-webhook",
+			"name": "Respond to Webhook",
+			"type": "n8n-nodes-base.respondToWebhook",
+			"typeVersion": 1.1,
+			"position": [1150, 300]
 		}
 	],
 	"connections": {
-		"Blog Published Webhook": {
+		"Webhook": {
 			"main": [
 				[
 					{
-						"node": "Generate LinkedIn Carousel",
+						"node": "LinkedIn Carousel",
 						"type": "main",
 						"index": 0
 					},
 					{
-						"node": "Generate Twitter Thread",
+						"node": "Twitter Thread",
 						"type": "main",
 						"index": 0
 					},
 					{
-						"node": "Generate Newsletter Section",
+						"node": "Newsletter Section",
+						"type": "main",
+						"index": 0
+					},
+					{
+						"node": "Dev.to Article",
 						"type": "main",
 						"index": 0
 					}
 				]
 			]
 		},
-		"Generate LinkedIn Carousel": {
+		"LinkedIn Carousel": {
 			"main": [
 				[
 					{
-						"node": "Parse LLM Responses",
+						"node": "Wait For All",
 						"type": "main",
 						"index": 0
 					}
 				]
 			]
 		},
-		"Generate Twitter Thread": {
+		"Twitter Thread": {
 			"main": [
 				[
 					{
-						"node": "Parse LLM Responses",
+						"node": "Wait For All",
 						"type": "main",
-						"index": 0
+						"index": 1
 					}
 				]
 			]
 		},
-		"Generate Newsletter Section": {
+		"Newsletter Section": {
 			"main": [
 				[
 					{
-						"node": "Parse LLM Responses",
+						"node": "Wait For All",
 						"type": "main",
-						"index": 0
+						"index": 2
 					}
 				]
 			]
 		},
-		"Parse LLM Responses": {
+		"Dev.to Article": {
+			"main": [
+				[
+					{
+						"node": "Wait For All",
+						"type": "main",
+						"index": 3
+					}
+				]
+			]
+		},
+		"Wait For All": {
 			"main": [
 				[
 					{
@@ -152,14 +199,20 @@
 					}
 				]
 			]
+		},
+		"Format Output": {
+			"main": [
+				[
+					{
+						"node": "Respond to Webhook",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
 		}
 	},
 	"settings": {
 		"executionOrder": "v1"
-	},
-	"staticData": null,
-	"tags": [],
-	"triggerCount": 0,
-	"updatedAt": "2026-01-27T00:00:00.000Z",
-	"versionId": "1"
+	}
 }
