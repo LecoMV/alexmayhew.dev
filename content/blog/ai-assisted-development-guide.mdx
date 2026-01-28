@@ -1,0 +1,483 @@
+---
+title: "AI-Assisted Development Guide: From Code Generation to Production LLMs"
+description: "A comprehensive framework for integrating AI into software development. Covers code generation, LLM architecture, prompt engineering, cost optimization, and team workflow changes."
+date: "2026-01-28"
+author: "Alex Mayhew"
+category: "architecture"
+tags: ["ai", "llm", "code-generation", "prompt-engineering", "software-development"]
+featured: true
+isHub: true
+series: "ai-development"
+readingTime: "14 min read"
+image: "/images/blog/ai-assisted-development-guide-featured.webp"
+---
+
+## TL;DR
+
+AI integration in software development is an engineering discipline, not a feature checkbox. Code generation accelerates the cheap part (writing) while potentially increasing the expensive parts (verification, maintenance). LLM architecture requires infrastructure thinking: vector databases, caching, fallback chains. Prompt engineering is programming with different syntax. Cost optimization determines whether AI features survive past launch. Build for the 80% of AI features that fail to reach adoption thresholds by starting with user problems, not AI capabilities.
+
+---
+
+## The AI Multiplier Effect
+
+AI in software development is a multiplier, not a replacement. Multiply a good process by AI and you get acceleration. Multiply a bad process by AI and you get faster failure.
+
+I've integrated LLMs into production systems serving 100K+ daily queries. I've conducted post-mortems on 12 AI feature launches, eight of which were rolled back within six months. The pattern separating success from failure is consistent: teams that treat AI as an engineering discipline ship features that work. Teams that treat AI as magic ship demos that break.
+
+This guide consolidates the frameworks, patterns, and hard-won lessons from building AI-assisted development workflows and LLM-powered features. It serves as the hub for a series of deep dives into specific topics, each linked throughout.
+
+The goal is not to convince you to use AI. The goal is to help you use it effectively when the use case warrants it.
+
+---
+
+## AI Integration Strategy
+
+Before writing a single prompt, validate that AI is the appropriate tool for your problem.
+
+### When AI Adds Value
+
+AI excels at specific categories of work:
+
+**Pattern recognition at scale** - Analyzing thousands of support tickets to surface themes, detecting anomalies in data, identifying similar code patterns across a codebase.
+
+**Content transformation** - Summarizing documents, translating between formats, generating drafts from structured inputs.
+
+**Repetitive cognitive tasks** - Classification, extraction, categorization where the rules are implicit in examples rather than explicit in code.
+
+**Starting points for human refinement** - Code scaffolding, first-draft documentation, initial responses that humans review and edit.
+
+### When AI Creates Problems
+
+AI struggles—and often makes things worse—in other categories:
+
+**Precision-critical operations** - Invoice calculations, financial transactions, anything where one error destroys trust. Use deterministic code.
+
+**Novel problem-solving** - Architecture decisions, security design, business strategy. AI can inform these decisions; it cannot make them.
+
+**Tasks requiring perfect accuracy** - Users forgive occasional errors in suggestions. They do not forgive errors in authoritative answers.
+
+**Decisions users want to control** - Autonomy matters. AI that removes choices rather than enhancing them creates frustration.
+
+### The Build vs Buy Decision Matrix
+
+| Scenario | Recommendation | Threshold |
+|----------|---------------|-----------|
+| Commodity capability (summarization, classification) | API | < $5K/month at scale |
+| Domain-specific patterns, have labeled data | Fine-tuning | > 1,000 labeled examples |
+| Unique training data = competitive moat | Custom model | AI IS the product |
+| Speed-to-market critical, no ML team | API | Always start here |
+
+For a deeper dive into product strategy for AI features, including user research frameworks and rollout strategies, see [Building AI Features Users Actually Want](/blog/building-ai-features-users-want).
+
+---
+
+## The Code Generation Reality
+
+AI-assisted code generation is the most visible and most misunderstood application of AI in development.
+
+### What Works
+
+**Boilerplate generation** - React components, API route handlers, database models. The structure is predictable; AI handles the repetition.
+
+**Test generation** - Unit tests for existing functions, especially when you provide examples of your testing patterns.
+
+**Documentation** - JSDoc comments, README sections, changelog entries. Low-risk outputs where errors are inconvenient, not catastrophic.
+
+**Language translation** - Converting code from one language or framework to another. The logic is verified; AI handles syntax.
+
+**Refactoring patterns** - Extracting functions, converting callbacks to async/await, applying consistent formatting.
+
+### What Fails
+
+**Architecture decisions** - AI generates plausible code that violates your patterns. It has no visibility into your service layer, your caching strategy, or your team's conventions.
+
+**Security-critical code** - Research shows developers using AI assistants write more security vulnerabilities while feeling more confident in their code's security. The combination of more errors and less vigilance is dangerous.
+
+**Business logic** - AI generates syntactically correct code that handles the happy path. Edge cases, error handling, and domain-specific requirements are omitted.
+
+**Novel problem-solving** - AI remixes patterns from training data. It does not reason about problems it has not seen.
+
+### The Verification Imperative
+
+The fundamental insight: AI code is untrusted input until verified.
+
+I cover this in depth in [AI-Assisted Development: Navigating the Generative Debt Crisis](/blog/ai-assisted-development-generative-debt). The key points:
+
+**The productivity paradox** - GitHub research shows 55% faster task completion with Copilot. GitClear data shows 23.7% higher bug-fix ratios in AI-heavy codebases. Velocity is up; net productivity is ambiguous.
+
+**The verification gap** - 96% of developers do not fully trust AI-generated code. 50%+ merge it with cursory review. The gap between stated trust and actual verification is where bugs enter production.
+
+**The verification-first workflow** - Write specifications and tests first. Ask AI for implementation. AI code must pass existing tests. Human reviews understanding, not just correctness.
+
+AI should fill in implementation details for a human-designed system, not design the system.
+
+---
+
+## LLM Architecture for Production
+
+Building LLM-powered features requires infrastructure thinking. The gap between demo and production is wider than most teams expect.
+
+### Vector Database Selection
+
+The vector database is the foundation of any retrieval-augmented generation (RAG) system.
+
+**pgvector (< 1M vectors)** - If you are already running PostgreSQL, start here. Single database, ACID transactions, familiar tooling. HNSW indexes consume roughly 1.5GB per million 1536-dimensional vectors.
+
+**Qdrant (1-10M vectors)** - Best balance of performance, features, and operational complexity. Native metadata filtering, self-hostable, binary quantization reduces memory 4-32x.
+
+**Pinecone (> 10M vectors or managed preference)** - Zero ops overhead, linear cost scaling. At 100 million queries/month, expect $9,600 for reads alone.
+
+**Decision framework:**
+
+```
+< 500K vectors, already on PostgreSQL → pgvector
+500K - 10M vectors, ops capability → Qdrant (self-hosted)
+> 10M vectors, enterprise budget → Pinecone or Milvus
+Development/prototyping → Chroma (embedded)
+```
+
+### Retrieval Quality
+
+Retrieval quality matters more than model choice. A mediocre LLM with excellent retrieval beats a great LLM with poor retrieval.
+
+**Embedding model selection** - text-embedding-3-small ($0.02/1M tokens) beats ada-002 at half the cost. For maximum quality, Voyage AI's voyage-large-2 wins benchmarks consistently.
+
+**Chunking strategy** - Naive chunking (fixed character splits) fails. Semantic chunking with overlap prevents context from splitting mid-sentence. Optimal chunk size: 512-1024 tokens for technical docs, 256-512 for legal documents, 128-256 for conversational content.
+
+**Re-ranking** - Retrieve more candidates than needed (top-20), re-rank with a cross-encoder to the final top-5. Adds 50-200ms latency but dramatically improves precision.
+
+For the complete architecture patterns—including query expansion, HyDE, parent document retrieval, and cost optimization—see [LLM Integration Architecture: From Vector Databases to Production](/blog/llm-integration-architecture).
+
+### Reliability Patterns
+
+Production LLM systems fail in novel ways.
+
+**Fallback chains** - Never depend on a single LLM provider. OpenAI has outages. Rate limits hit at the worst times. Primary → Fallback → Local model keeps your application running.
+
+**Semantic caching** - Many queries are semantically equivalent. Cache responses and match on embedding similarity. This can reduce LLM calls by 40-60% for repetitive workloads.
+
+**Graceful degradation** - When vector DB times out, fall back to LLM without context. When LLM times out, return relevant documents without synthesis. Something is always better than an error page.
+
+---
+
+## Prompt Engineering as Programming
+
+Prompts are code. Treat them accordingly.
+
+### The Five Components
+
+Every effective prompt has five components. Omitting any forces the LLM to guess—and its guesses will not match your expectations.
+
+**Role** - Who the AI should be. "You are a senior code reviewer at a fintech company with 15 years of TypeScript experience."
+
+**Context** - What the AI needs to know. Project-specific information, domain constraints, relevant background.
+
+**Task** - What the AI should do. Specific, scoped, measurable.
+
+**Format** - How the AI should structure output. Exact schemas for parsing, markdown structures for human reading.
+
+**Constraints** - What the AI must avoid. Exclusions focus attention on what matters.
+
+### Few-Shot Learning
+
+Few-shot prompting provides examples of desired input-output pairs. It is more effective than lengthy explanations because LLMs learn patterns better than they follow instructions.
+
+**Optimal examples: 1-3.** More examples do not linearly improve quality. After 3-5, you are burning context window on redundancy.
+
+**Example selection matters** - Cover edge cases, represent distribution, show boundary cases, vary surface features.
+
+### Chain-of-Thought
+
+Chain-of-thought prompting asks the model to show reasoning before producing an answer. This technique dramatically improves performance on multi-step logic.
+
+For code analysis, structured CoT forces systematic analysis:
+
+```
+Analyze using these steps:
+1. SCAN ANALYSIS: What table scans does this query require?
+2. INDEX CHECK: What indexes would help?
+3. JOIN COST: Is the join efficient with current keys?
+4. RESULT SET: How large is the intermediate result?
+5. VERDICT: Critical issues and recommended fixes.
+```
+
+For the complete framework—including temperature tuning, output format control, and prompt testing—see [Prompt Engineering for Developers](/blog/prompt-engineering-developers).
+
+### Prompt Testing
+
+Run prompt tests on every deployment. LLM behavior changes with model updates—catch regressions early.
+
+Build an evaluation suite:
+
+```typescript
+interface PromptEval {
+  name: string;
+  prompt: string;
+  testCases: Array<{
+    input: string;
+    expectedOutput: string | RegExp | ((output: string) => boolean);
+  }>;
+}
+```
+
+Version prompts in source control. Track prompt versions in logs. When quality degrades, you need to know which prompt version was active.
+
+---
+
+## Cost and Performance Optimization
+
+LLM costs compound faster than most teams expect. A "reasonable" $50/day prototype becomes $1,500/month becomes $18,000/year.
+
+### Token Optimization
+
+Every token costs money. Optimize aggressively.
+
+- Truncate context to fit token budgets, prioritizing by relevance
+- Use smaller models for simple tasks (model routing)
+- Batch requests where latency permits
+- Compress system prompts
+
+### The Semantic Cache
+
+Many queries are semantically equivalent. "What is the return policy?" and "How do I return an item?" should hit the same cache.
+
+Implementation: embed the query, search your cache vector collection with high similarity threshold (0.95+), return cached response if match found.
+
+Semantic caching can reduce LLM calls by 40-60% for applications with repetitive query patterns—support chatbots, FAQ systems, documentation search.
+
+### Model Routing
+
+Not every query needs GPT-4.
+
+Train a small classifier on query complexity. Route simple queries to cheap models (GPT-3.5-turbo at $0.50/1M tokens). Reserve expensive models (GPT-4o at $2.50/1M tokens) for complex reasoning.
+
+### Cost Breakdown
+
+Typical RAG system cost distribution:
+
+| Component | Cost Share | Optimization Lever |
+|-----------|-----------|-------------------|
+| LLM calls | 60-70% | Caching, model routing, truncation |
+| Embeddings | 15-25% | Batch, self-host, cache |
+| Vector DB | 5-15% | Self-host, right-size |
+| Infrastructure | 5-10% | Standard optimization |
+
+Focus optimization effort proportional to cost share. LLM calls dominate—optimize there first.
+
+For detailed cost analysis including API vs self-hosted decision matrices, see the upcoming [AI Cost Optimization: APIs, Self-Hosting, and Fine-Tuning Economics](/blog/ai-cost-optimization).
+
+---
+
+## Code Review in the AI Era
+
+AI code review changes what developers do—it does not replace them.
+
+### What LLMs Excel At
+
+**Style consistency** - Configure rules once, AI enforces them across every PR. Human reviewers get tired and develop blind spots. AI applies the same standard to the first PR of Monday morning and the last PR of Friday evening.
+
+**Common bug patterns** - Off-by-one errors, null references, race conditions, resource leaks. These bugs are well-documented in training data. AI has seen them thousands of times.
+
+**Documentation gaps** - Functions without JSDoc, missing parameter descriptions, undocumented return types. AI notices what is missing as effectively as what is wrong.
+
+### What LLMs Miss
+
+**Business logic correctness** - AI cannot evaluate whether your code does what the business needs. It validates code against patterns—not against intent.
+
+**Security edge cases** - AI recognizes common vulnerabilities. It misses domain-specific threats like missing authorization checks in financial transfer logic.
+
+**Architectural fit** - AI trained on general code patterns has no visibility into your specific patterns. It cannot enforce your hexagonal architecture or domain-driven design boundaries.
+
+**Performance at scale** - AI reviews code in isolation. It cannot assess whether your five sequential database calls will timeout under production load.
+
+### The Hybrid Workflow
+
+The solution is AI then humans, with clear boundaries.
+
+**Stage 1: AI pre-review** - Before a PR reaches human reviewers, AI scans for style violations, common bug patterns, missing documentation, dependency vulnerabilities.
+
+**Stage 2: Human review** - Humans focus on business logic, architecture fit, domain-specific security, performance at scale, test quality. The mechanical checks are already resolved.
+
+**Stage 3: Merge gate** - All AI issues resolved or explicitly overridden, human approval recorded, tests pass, security scan passes.
+
+For the complete hybrid review workflow, including validation frameworks for AI-generated code and security considerations, see [AI Code Review: Catching What LLMs Miss](/blog/ai-code-review).
+
+---
+
+## Team and Process Evolution
+
+AI integration changes development workflows, skill requirements, and quality assurance patterns.
+
+### Skill Requirements Shift
+
+**Before AI** - Senior developers spent 15-25% of time on mechanical review. Style violations, null checks, documentation gaps all required human attention.
+
+**After AI** - Seniors shift to higher-value work: architecture review, security analysis, performance assessment, mentorship. The 10x developer is not someone who writes 10x more code. It is someone whose reviews prevent 10x the problems.
+
+**New skills required:**
+
+- Prompt engineering and testing
+- LLM observability and debugging
+- Cost modeling for AI features
+- Validation framework design
+
+### Quality Assurance Changes
+
+AI-generated code requires higher test coverage than human-written code because nobody fully understands it.
+
+**Minimum requirements for AI-generated code:**
+
+- 90%+ branch coverage (not line coverage)
+- Explicit edge case tests
+- Failure mode tests
+- Integration tests verifying context
+
+**Property-based testing** catches edge cases AI did not consider. Generate thousands of inputs. Find the edge cases nobody—human or AI—anticipated.
+
+### The Governance Framework
+
+Teams need policies for AI-assisted development.
+
+**Human-in-the-loop mandatory** - Every AI-generated code block requires human review (not just approval), tests covering the generated code, and understanding of what the code does (not just that it works).
+
+**Architectural linters** - Pre-commit hooks that block violations. If AI generates code that violates your architecture, CI fails before merge.
+
+**New KPIs:**
+
+- Code churn rate (lines changed within 2 weeks)
+- Review time per PR (should shift to architectural concerns)
+- Bug escape rate (bugs found in production vs. development)
+- AI code ratio (correlate with quality metrics over time)
+
+---
+
+## The AI Feature Lifecycle
+
+80% of AI features fail to reach adoption thresholds. The survivors share common patterns.
+
+### Start With the User Problem
+
+The graveyard is full of features that started with "we should add AI" and worked backward to find a use case.
+
+**AI-powered search** that returned worse results than keyword matching. **Smart recommendations** that users learned to ignore after three irrelevant suggestions. **Auto-complete** that completed to wrong answers faster than users could type correct ones.
+
+The successful features start with a user problem and evaluate whether AI is the right tool to solve it.
+
+### Validate Before Engineering
+
+**The AI appropriateness filter:**
+
+- Does the task involve pattern recognition at scale?
+- Is error tolerance high enough for probabilistic output?
+- Would a draft that needs editing be valuable?
+- Can users verify outputs without re-doing the work?
+
+If the answers are no, AI is the wrong tool.
+
+### Gradual Rollout
+
+AI features are probabilistic. They will behave differently than users expect at least some of the time.
+
+**Phase 1: Internal dogfooding** - Ship to internal users only. Instrument heavily.
+
+**Phase 2: Opt-in beta** - Invite power users. Provide clear feedback mechanisms. Thumbs-down ratio above 15% indicates not ready.
+
+**Phase 3: Segment rollout** - Roll out by user segment, not random percentage. Compare metrics between segments.
+
+**Phase 4: General availability** - Monitor support tickets, feature discovery, retention impact, revenue impact.
+
+### Measure Outcomes, Not Engagement
+
+Engagement metrics lie. A user who clicks on AI suggestions twenty times and ignores all of them is not getting value.
+
+| Vanity Metric | Outcome Metric |
+|--------------|----------------|
+| "Used AI suggestions 50 times" | "Published 30% more content" |
+| "Made 1,000 AI searches" | "Found answer 40% faster" |
+| "Showed 5,000 recommendations" | "Recommendations clicked + used: 23%" |
+
+For the complete product strategy framework, see [Building AI Features Users Actually Want](/blog/building-ai-features-users-want).
+
+---
+
+## The AI Integration Checklist
+
+Before shipping any AI feature, verify:
+
+### Strategy
+
+- [ ] User problem validated through research, not assumed
+- [ ] AI is the appropriate solution (not just a possible solution)
+- [ ] Build vs buy decision made explicitly with cost modeling
+- [ ] Success metrics defined as outcomes, not engagement
+
+### Architecture
+
+- [ ] Vector database appropriate for scale (pgvector < 1M, Qdrant 1-10M)
+- [ ] Embedding strategy defined (model, chunking, update patterns)
+- [ ] Fallback chains implemented (no single points of failure)
+- [ ] Cost controls in place (caching, model routing, token limits)
+
+### Engineering
+
+- [ ] Prompts structured (role, context, task, format, constraints)
+- [ ] Prompt tests in CI pipeline
+- [ ] Prompts versioned in source control
+- [ ] AI-generated code has stricter test coverage requirements
+
+### Reliability
+
+- [ ] Rate limiting implemented client-side
+- [ ] Graceful degradation defined for each failure mode
+- [ ] Monitoring in place (latency, cost, cache hit rate, error rate)
+- [ ] Hallucination detection and user feedback loops
+
+### Launch
+
+- [ ] Gradual rollout plan with feature flags
+- [ ] Feedback mechanism (thumbs up/down, "this was wrong")
+- [ ] Expectations communicated (confidence indicators, limitations)
+- [ ] Override workflow defined for AI pre-review
+
+---
+
+## Conclusion
+
+AI integration is an engineering discipline, not a feature checkbox.
+
+The teams that ship AI features successfully:
+
+1. **Validate the use case** - Start with user problems, not AI capabilities. 80% of AI features fail to reach adoption.
+
+2. **Treat AI code as untrusted input** - Verification workflows, stricter test coverage, human-in-the-loop mandatory.
+
+3. **Build infrastructure, not demos** - Vector databases, caching layers, fallback chains, monitoring. The gap between demo and production is wider than expected.
+
+4. **Apply software engineering to prompts** - Structure, testing, version control, A/B testing. Prompts are code.
+
+5. **Optimize costs from day one** - Semantic caching, model routing, token limits. AI costs compound faster than anticipated.
+
+6. **Measure outcomes** - Time saved, errors reduced, decisions improved. Not clicks, not engagement, not "AI interactions."
+
+AI multiplies your development process. Make sure you are multiplying something worth multiplying.
+
+---
+
+## Series Deep Dives
+
+This guide provides the framework. The following posts provide the depth:
+
+- [AI-Assisted Development: Navigating the Generative Debt Crisis](/blog/ai-assisted-development-generative-debt) - The hidden costs of AI-generated code and the verification-first workflow
+- [LLM Integration Architecture: From Vector Databases to Production](/blog/llm-integration-architecture) - Building production-ready AI features with proper infrastructure
+- [Prompt Engineering for Developers](/blog/prompt-engineering-developers) - Systematic approaches to consistent, testable prompts
+- [AI Code Review: Catching What LLMs Miss](/blog/ai-code-review) - Hybrid review workflows and validating AI-generated code
+- [Building AI Features Users Actually Want](/blog/building-ai-features-users-want) - Product strategy for AI integration
+- AI Cost Optimization: APIs, Self-Hosting, and Fine-Tuning Economics (coming soon) - Decision frameworks for AI infrastructure costs
+
+---
+
+**Integrating AI into your development workflow or product?** I help teams build AI features that actually work in production—reliable, cost-effective, and solving real user problems.
+
+- [AI/ML Integration for SaaS](/services/ai-ml-developer-for-saas) - Production AI that scales
+- [AI/ML Integration for Fintech](/services/ai-ml-developer-for-fintech) - Compliant AI systems
+- [AI/ML Integration for Healthcare](/services/ai-ml-developer-for-healthcare) - HIPAA-ready AI infrastructure
