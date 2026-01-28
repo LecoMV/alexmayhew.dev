@@ -1,0 +1,797 @@
+---
+title: "LLM Integration Architecture: From Vector Databases to Production"
+description: "Build production-ready AI features without the hype. Covers vector database selection, RAG architecture, embedding strategies, and the infrastructure that makes LLM integrations reliable and cost-effective."
+date: "2026-01-28"
+author: "Alex Mayhew"
+tags: ["ai", "llm", "vector-database", "rag", "architecture"]
+category: "architecture"
+readingTime: "15 min read"
+featured: false
+series: "ai-development"
+image: "/images/blog/llm-integration-architecture-featured.webp"
+---
+
+## TL;DR
+
+Vector databases: pgvector for < 1M vectors, Qdrant for 1-10M, Pinecone for > 10M or managed preference. RAG retrieval quality matters more than model choice. Embedding models: text-embedding-3-small ($0.02/1M tokens) beats ada-002 at half the cost. Prompt versioning is non-negotiable. Cache aggressively—semantic caching can cut LLM costs by 40-60%. Build fallback chains, not single points of failure.
+
+---
+
+## Beyond the Demo
+
+Every AI demo looks impressive. GPT-4 answering questions about your documents. Semantic search finding relevant content. Chatbots that seem to understand context.
+
+Then you deploy to production.
+
+Latency spikes to 3 seconds. Costs hit $500/day. Users report hallucinations. Rate limits throttle your application. The vector database times out under load.
+
+The gap between "working demo" and "production system" in LLM integration is wider than most teams expect. This post covers the architecture decisions that bridge that gap—the infrastructure choices, retrieval strategies, and reliability patterns that separate AI features that ship from AI features that get reverted.
+
+I've built LLM integrations serving 100K+ daily queries. The patterns here come from production incidents, cost optimization sessions, and the slow accumulation of what actually works versus what looks good in a pitch deck.
+
+---
+
+## Vector Database Selection
+
+The vector database is the foundation of any retrieval-augmented generation (RAG) system. Choose wrong and you're either over-paying or under-performing.
+
+### The Options
+
+| Database     | Type              | Max Vectors | Query Latency | Cost Model           |
+| ------------ | ----------------- | ----------- | ------------- | -------------------- |
+| **pgvector** | Extension         | ~5M         | 10-50ms       | PostgreSQL hosting   |
+| **Qdrant**   | Purpose-built     | 100M+       | 5-20ms        | Self-host or cloud   |
+| **Weaviate** | Purpose-built     | 100M+       | 5-20ms        | Self-host or cloud   |
+| **Pinecone** | Managed SaaS      | Unlimited   | 10-30ms       | $0.096/1M reads      |
+| **Milvus**   | Purpose-built     | 1B+         | 5-15ms        | Self-host or Zilliz  |
+| **Chroma**   | Embedded/Dev      | ~1M         | 20-100ms      | Free                 |
+
+### pgvector: The Boring Choice That Works
+
+If you're already running PostgreSQL—and you should be—pgvector is the default choice up to about 1 million vectors.
+
+```sql
+-- Enable the extension
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- Create a table with embeddings
+CREATE TABLE documents (
+  id SERIAL PRIMARY KEY,
+  content TEXT NOT NULL,
+  embedding vector(1536),  -- OpenAI ada-002 dimension
+  metadata JSONB
+);
+
+-- Create an HNSW index for fast similarity search
+CREATE INDEX ON documents
+USING hnsw (embedding vector_cosine_ops)
+WITH (m = 16, ef_construction = 64);
+```
+
+The advantages are substantial:
+
+- **Single database**: No additional infrastructure to manage
+- **ACID transactions**: Embeddings and metadata stay consistent
+- **Familiar tooling**: Standard SQL, Prisma support, existing backups
+- **Cost**: Already paying for PostgreSQL
+
+The limitations become apparent at scale. HNSW indexes consume significant memory—roughly 1.5GB per million 1536-dimensional vectors. Query performance degrades as you approach the memory limit.
+
+**Recommendation**: Start with pgvector. Migrate when you hit performance walls or exceed 1-2 million vectors.
+
+### Qdrant: The Performance Sweet Spot
+
+Qdrant offers the best balance of performance, features, and operational complexity for medium-scale deployments.
+
+```python
+from qdrant_client import QdrantClient
+from qdrant_client.models import Distance, VectorParams, PointStruct
+
+client = QdrantClient("localhost", port=6333)
+
+# Create collection with optimized settings
+client.create_collection(
+    collection_name="documents",
+    vectors_config=VectorParams(
+        size=1536,
+        distance=Distance.COSINE,
+    ),
+    optimizers_config={
+        "memmap_threshold": 20000,  # Use disk for large segments
+        "indexing_threshold": 10000,
+    }
+)
+```
+
+Key advantages:
+
+- **Filtering during search**: Native support for metadata filtering without post-processing
+- **Payload storage**: Store full documents alongside vectors
+- **Quantization**: Binary and scalar quantization reduce memory by 4-32x
+- **Self-hostable**: Run on your infrastructure with Docker
+
+Self-hosting Qdrant on a $40/month Hetzner box handles 10 million vectors with sub-20ms queries. Compare that to Pinecone's pricing at scale.
+
+### Pinecone: Pay for Simplicity
+
+Pinecone makes sense when:
+
+- You need > 10 million vectors
+- You want zero ops overhead
+- Your budget accommodates $0.096 per million read units
+
+The managed service handles scaling, replication, and monitoring. You get a REST API and move on with your life.
+
+The tradeoff: vendor lock-in and costs that scale linearly with usage. At 100 million queries/month, you're looking at $9,600 just for reads.
+
+### The Decision Framework
+
+```
+< 500K vectors, already on PostgreSQL → pgvector
+500K - 10M vectors, ops capability → Qdrant (self-hosted)
+500K - 10M vectors, no ops team → Qdrant Cloud or Weaviate Cloud
+> 10M vectors, enterprise budget → Pinecone or Milvus
+Development/prototyping → Chroma (embedded)
+```
+
+---
+
+## Embedding Strategy
+
+Your embedding model and chunking strategy determine retrieval quality more than any other factor. A mediocre LLM with excellent retrieval beats a great LLM with poor retrieval.
+
+### Model Selection
+
+| Model                       | Dimensions | Cost (per 1M tokens) | Performance |
+| --------------------------- | ---------- | -------------------- | ----------- |
+| text-embedding-3-small      | 1536       | $0.02                | Good        |
+| text-embedding-3-large      | 3072       | $0.13                | Better      |
+| text-embedding-ada-002      | 1536       | $0.10                | Legacy      |
+| Cohere embed-v3             | 1024       | $0.10                | Good        |
+| Voyage AI voyage-large-2    | 1536       | $0.12                | Excellent   |
+| Open-source (BGE, E5)       | 768-1024   | Compute only         | Good        |
+
+**Default choice**: text-embedding-3-small. Half the cost of ada-002 with better performance. The 1536 dimensions are sufficient for most use cases.
+
+**For maximum quality**: Voyage AI's voyage-large-2 consistently wins benchmarks. Worth the extra $0.02/1M tokens for high-stakes retrieval.
+
+**For cost-sensitive applications**: Self-host BGE-large-en or E5-large. A single A10G GPU handles 100+ embeddings/second. Monthly cost: ~$150 vs. thousands for API calls at scale.
+
+### Chunking Strategy
+
+Chunking is where most RAG implementations fail. The wrong chunk size means retrieving irrelevant context or missing critical information.
+
+```python
+# Naive chunking - DON'T DO THIS
+chunks = [text[i:i+1000] for i in range(0, len(text), 1000)]
+
+# Better: Semantic chunking with overlap
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=512,
+    chunk_overlap=50,
+    separators=["\n\n", "\n", ". ", " ", ""]
+)
+chunks = splitter.split_text(document)
+```
+
+Optimal chunk size depends on content type:
+
+| Content Type       | Recommended Size | Overlap |
+| ------------------ | ---------------- | ------- |
+| Technical docs     | 512-1024 tokens  | 50-100  |
+| Legal documents    | 256-512 tokens   | 50      |
+| Conversational     | 128-256 tokens   | 25      |
+| Code               | Function/class   | 0       |
+
+The overlap prevents context from being split mid-sentence. Without overlap, you get chunks that end "The key consideration is" and start "implementing proper authentication"—neither useful alone.
+
+### Update Patterns
+
+Production systems need incremental updates. Re-embedding your entire corpus for every change doesn't scale.
+
+```python
+class EmbeddingManager:
+    def __init__(self, db, embedder):
+        self.db = db
+        self.embedder = embedder
+
+    def upsert_document(self, doc_id: str, content: str, metadata: dict):
+        # Hash content to detect changes
+        content_hash = hashlib.sha256(content.encode()).hexdigest()
+
+        existing = self.db.get_document(doc_id)
+        if existing and existing.content_hash == content_hash:
+            return  # No change, skip embedding
+
+        # Generate embedding only for changed content
+        embedding = self.embedder.embed(content)
+
+        self.db.upsert(
+            id=doc_id,
+            embedding=embedding,
+            metadata={**metadata, "content_hash": content_hash}
+        )
+
+    def delete_document(self, doc_id: str):
+        self.db.delete(doc_id)
+```
+
+Track content hashes to avoid re-embedding unchanged documents. Batch updates during off-peak hours. Use queues for async embedding of new content.
+
+---
+
+## RAG Architecture Patterns
+
+Retrieval-Augmented Generation comes in levels of sophistication. Most tutorials show naive RAG. Production requires more.
+
+### Naive RAG
+
+```
+Query → Embed → Vector Search → Top-K Results → LLM → Response
+```
+
+Works for demos. Falls apart when:
+
+- Users ask compound questions
+- Relevant information spans multiple documents
+- Query terms don't match document vocabulary
+- Top-K results are semantically similar but redundant
+
+### Advanced RAG with Re-ranking
+
+```
+Query → Embed → Vector Search (Top-20) → Re-ranker → Top-5 → LLM → Response
+```
+
+The re-ranker is a cross-encoder that scores query-document pairs with higher accuracy than vector similarity.
+
+```python
+from sentence_transformers import CrossEncoder
+
+# Load re-ranker
+reranker = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-12-v2')
+
+def retrieve_with_rerank(query: str, k: int = 5):
+    # Retrieve more candidates than needed
+    candidates = vector_db.search(query, limit=20)
+
+    # Score each candidate with the re-ranker
+    pairs = [(query, doc.content) for doc in candidates]
+    scores = reranker.predict(pairs)
+
+    # Sort by re-ranker score and take top-k
+    ranked = sorted(zip(candidates, scores), key=lambda x: x[1], reverse=True)
+    return [doc for doc, score in ranked[:k]]
+```
+
+Re-ranking adds 50-200ms latency but dramatically improves precision. For queries where accuracy matters more than speed, it's non-negotiable.
+
+### Query Expansion
+
+Users don't always phrase queries optimally. Query expansion generates variations to improve recall.
+
+```python
+def expand_query(query: str) -> list[str]:
+    expansion_prompt = f"""Generate 3 alternative phrasings of this query
+    that might match relevant documents:
+
+    Query: {query}
+
+    Return as JSON array of strings."""
+
+    response = llm.generate(expansion_prompt)
+    variations = json.loads(response)
+
+    return [query] + variations
+
+def retrieve_expanded(query: str, k: int = 5):
+    expanded = expand_query(query)
+
+    all_results = []
+    for q in expanded:
+        results = vector_db.search(q, limit=k)
+        all_results.extend(results)
+
+    # Deduplicate and rank
+    return deduplicate_and_rank(all_results)[:k]
+```
+
+### Hypothetical Document Embedding (HyDE)
+
+Instead of embedding the query, embed a hypothetical answer—then find documents similar to that answer.
+
+```python
+def hyde_retrieve(query: str, k: int = 5):
+    # Generate hypothetical answer
+    hypothesis_prompt = f"""Write a detailed paragraph that would answer
+    this question. Do not say "I don't know" - provide a plausible answer:
+
+    Question: {query}"""
+
+    hypothesis = llm.generate(hypothesis_prompt)
+
+    # Embed the hypothesis, not the query
+    hypothesis_embedding = embedder.embed(hypothesis)
+
+    # Search for documents similar to the hypothesis
+    return vector_db.search_by_vector(hypothesis_embedding, limit=k)
+```
+
+HyDE works remarkably well for technical domains where query vocabulary differs from document vocabulary. The LLM bridges the semantic gap.
+
+### Parent Document Retrieval
+
+Retrieve small chunks for precision, but return larger context for the LLM.
+
+```python
+class ParentDocumentRetriever:
+    def __init__(self, chunk_db, parent_db):
+        self.chunk_db = chunk_db
+        self.parent_db = parent_db
+
+    def retrieve(self, query: str, k: int = 5):
+        # Search in chunk database for precision
+        chunks = self.chunk_db.search(query, limit=k * 2)
+
+        # Get unique parent documents
+        parent_ids = list(set(c.parent_id for c in chunks))
+
+        # Return full parent documents for context
+        return [self.parent_db.get(pid) for pid in parent_ids[:k]]
+```
+
+Small chunks (128-256 tokens) embed with higher specificity. But feeding the LLM a 128-token snippet loses surrounding context. Parent retrieval solves this: search on chunks, return the full document or section.
+
+---
+
+## Prompt Engineering at Scale
+
+Prompts are code. Treat them accordingly.
+
+### Version Control
+
+```python
+# prompts/rag_answer_v3.py
+RAG_ANSWER_PROMPT = """You are a helpful assistant answering questions based
+on the provided context.
+
+Context:
+{context}
+
+Question: {question}
+
+Instructions:
+- Answer based ONLY on the provided context
+- If the context doesn't contain the answer, say "I don't have information about that"
+- Cite specific parts of the context when relevant
+- Be concise but complete
+
+Answer:"""
+
+PROMPT_VERSION = "v3.2.1"
+PROMPT_HASH = hashlib.sha256(RAG_ANSWER_PROMPT.encode()).hexdigest()[:8]
+```
+
+Track prompt versions in logs. When quality degrades, you need to know which prompt version was active.
+
+### A/B Testing Prompts
+
+```python
+class PromptRouter:
+    def __init__(self):
+        self.prompts = {
+            "control": RAG_ANSWER_PROMPT_V3,
+            "variant_a": RAG_ANSWER_PROMPT_V4_CONCISE,
+            "variant_b": RAG_ANSWER_PROMPT_V4_DETAILED,
+        }
+        self.weights = {"control": 0.8, "variant_a": 0.1, "variant_b": 0.1}
+
+    def get_prompt(self, user_id: str) -> tuple[str, str]:
+        # Deterministic assignment based on user
+        bucket = hash(user_id) % 100
+
+        if bucket < 80:
+            variant = "control"
+        elif bucket < 90:
+            variant = "variant_a"
+        else:
+            variant = "variant_b"
+
+        return self.prompts[variant], variant
+```
+
+Log the variant with every response. Measure quality metrics (thumbs up/down, task completion) per variant. Promote winners, iterate on losers.
+
+### Prompt Testing
+
+Unit tests for prompts:
+
+```python
+def test_rag_prompt_handles_no_context():
+    context = "The document discusses weather patterns in Antarctica."
+    question = "What is the capital of France?"
+
+    response = llm.generate(RAG_ANSWER_PROMPT.format(
+        context=context,
+        question=question
+    ))
+
+    assert "don't have information" in response.lower() or \
+           "not in the context" in response.lower()
+
+def test_rag_prompt_cites_context():
+    context = "The Eiffel Tower is 330 meters tall."
+    question = "How tall is the Eiffel Tower?"
+
+    response = llm.generate(RAG_ANSWER_PROMPT.format(
+        context=context,
+        question=question
+    ))
+
+    assert "330" in response
+```
+
+Run prompt tests on every deployment. LLM behavior changes with model updates—catch regressions early.
+
+---
+
+## Cost Management
+
+LLM costs compound faster than most teams expect. A "reasonable" $50/day prototype becomes $1,500/month becomes $18,000/year.
+
+### Token Optimization
+
+Every token costs money. Optimize aggressively.
+
+```python
+def optimize_context(documents: list[str], max_tokens: int = 4000) -> str:
+    # Sort by relevance (assuming already ranked)
+    # Truncate to fit token budget
+
+    token_count = 0
+    selected = []
+
+    for doc in documents:
+        doc_tokens = count_tokens(doc)
+        if token_count + doc_tokens > max_tokens:
+            # Truncate this document to fit
+            remaining = max_tokens - token_count
+            truncated = truncate_to_tokens(doc, remaining)
+            if truncated:
+                selected.append(truncated)
+            break
+
+        selected.append(doc)
+        token_count += doc_tokens
+
+    return "\n\n".join(selected)
+```
+
+### Semantic Caching
+
+Many queries are semantically equivalent. "What is the return policy?" and "How do I return an item?" should hit the same cache.
+
+```python
+class SemanticCache:
+    def __init__(self, vector_db, similarity_threshold: float = 0.95):
+        self.db = vector_db
+        self.threshold = similarity_threshold
+
+    def get(self, query: str) -> Optional[str]:
+        query_embedding = embedder.embed(query)
+
+        results = self.db.search(
+            vector=query_embedding,
+            limit=1,
+            filter={"type": "cache"}
+        )
+
+        if results and results[0].score > self.threshold:
+            return results[0].payload["response"]
+
+        return None
+
+    def set(self, query: str, response: str):
+        query_embedding = embedder.embed(query)
+
+        self.db.upsert(
+            id=f"cache_{hashlib.sha256(query.encode()).hexdigest()[:16]}",
+            vector=query_embedding,
+            payload={"query": query, "response": response, "type": "cache"}
+        )
+```
+
+Semantic caching can reduce LLM calls by 40-60% for applications with repetitive query patterns—support chatbots, FAQ systems, documentation search.
+
+### Model Routing
+
+Not every query needs GPT-4.
+
+```python
+class ModelRouter:
+    def __init__(self):
+        self.classifier = load_complexity_classifier()
+
+    def route(self, query: str, context: str) -> str:
+        complexity = self.classifier.predict(query, context)
+
+        if complexity < 0.3:
+            return "gpt-3.5-turbo"  # $0.50/1M tokens
+        elif complexity < 0.7:
+            return "gpt-4o-mini"    # $0.15/1M tokens
+        else:
+            return "gpt-4o"         # $2.50/1M tokens
+```
+
+Train a small classifier on query complexity. Route simple queries to cheap models. Reserve expensive models for complex reasoning.
+
+### Cost Breakdown by Component
+
+Typical RAG system cost distribution:
+
+| Component      | Cost Share | Optimization Lever               |
+| -------------- | ---------- | -------------------------------- |
+| LLM calls      | 60-70%     | Caching, model routing, truncate |
+| Embeddings     | 15-25%     | Batch, self-host, cache          |
+| Vector DB      | 5-15%      | Self-host, right-size            |
+| Infrastructure | 5-10%      | Standard optimization            |
+
+Focus optimization effort proportional to cost share. LLM calls dominate—optimize there first.
+
+---
+
+## Reliability Patterns
+
+Production LLM systems fail in novel ways. Plan for it.
+
+### Fallback Chains
+
+```python
+class LLMClient:
+    def __init__(self):
+        self.primary = OpenAIClient()
+        self.fallback = AnthropicClient()
+        self.emergency = LocalLlamaClient()
+
+    async def generate(self, prompt: str) -> str:
+        try:
+            return await asyncio.wait_for(
+                self.primary.generate(prompt),
+                timeout=10.0
+            )
+        except (TimeoutError, RateLimitError, APIError) as e:
+            logger.warning(f"Primary LLM failed: {e}")
+
+        try:
+            return await asyncio.wait_for(
+                self.fallback.generate(prompt),
+                timeout=15.0
+            )
+        except (TimeoutError, RateLimitError, APIError) as e:
+            logger.warning(f"Fallback LLM failed: {e}")
+
+        # Emergency: local model, slower but always available
+        return await self.emergency.generate(prompt)
+```
+
+Never depend on a single LLM provider. OpenAI has outages. Rate limits hit at the worst times. A fallback chain keeps your application running.
+
+### Rate Limiting
+
+```python
+from asyncio import Semaphore
+from collections import defaultdict
+import time
+
+class RateLimiter:
+    def __init__(self, rpm: int = 60, tpm: int = 100000):
+        self.rpm = rpm
+        self.tpm = tpm
+        self.request_times = []
+        self.token_counts = []
+        self.semaphore = Semaphore(10)  # Max concurrent requests
+
+    async def acquire(self, estimated_tokens: int):
+        async with self.semaphore:
+            now = time.time()
+
+            # Clean old entries
+            self.request_times = [t for t in self.request_times if now - t < 60]
+            self.token_counts = [
+                (t, c) for t, c in self.token_counts if now - t < 60
+            ]
+
+            # Check limits
+            if len(self.request_times) >= self.rpm:
+                wait_time = 60 - (now - self.request_times[0])
+                await asyncio.sleep(wait_time)
+
+            total_tokens = sum(c for _, c in self.token_counts)
+            if total_tokens + estimated_tokens > self.tpm:
+                await asyncio.sleep(1)  # Back off
+
+            self.request_times.append(now)
+            self.token_counts.append((now, estimated_tokens))
+```
+
+Implement client-side rate limiting. Don't rely on hitting API limits—you'll get errors and degraded service.
+
+### Graceful Degradation
+
+```python
+class RAGService:
+    async def answer(self, query: str) -> Response:
+        try:
+            # Full RAG pipeline
+            context = await self.retrieve(query)
+            answer = await self.llm.generate(query, context)
+            return Response(answer=answer, source="rag")
+
+        except VectorDBTimeout:
+            # Fallback: LLM without context
+            answer = await self.llm.generate(query, context=None)
+            return Response(
+                answer=answer,
+                source="llm_only",
+                warning="Could not retrieve context"
+            )
+
+        except LLMTimeout:
+            # Fallback: return relevant documents without synthesis
+            context = await self.retrieve(query)
+            return Response(
+                answer=None,
+                documents=context,
+                source="retrieval_only",
+                warning="Could not generate answer"
+            )
+
+        except Exception:
+            # Last resort: canned response
+            return Response(
+                answer="I'm having trouble processing your request. Please try again.",
+                source="fallback"
+            )
+```
+
+Define degradation tiers. Something is always better than an error page.
+
+---
+
+## Monitoring and Observability
+
+LLMs fail silently. Quality degrades without errors. You need specialized monitoring.
+
+### Key Metrics
+
+```python
+# Track these for every LLM call
+metrics = {
+    "latency_ms": response_time,
+    "tokens_input": prompt_tokens,
+    "tokens_output": completion_tokens,
+    "cost_usd": calculate_cost(prompt_tokens, completion_tokens, model),
+    "model": model_name,
+    "prompt_version": prompt_hash,
+    "cache_hit": was_cached,
+    "fallback_used": used_fallback,
+}
+```
+
+Dashboard essentials:
+
+- **P50/P95/P99 latency** by endpoint
+- **Token usage** over time (cost proxy)
+- **Cache hit rate** (should be > 40% for repetitive use cases)
+- **Fallback rate** (spikes indicate provider issues)
+- **Error rate** by error type
+
+### Hallucination Detection
+
+Automated hallucination detection is imperfect but necessary.
+
+```python
+class HallucinationDetector:
+    def check(self, query: str, context: str, response: str) -> float:
+        # Check 1: Does response contain claims not in context?
+        claims = self.extract_claims(response)
+        unsupported = [c for c in claims if not self.claim_in_context(c, context)]
+        unsupported_ratio = len(unsupported) / max(len(claims), 1)
+
+        # Check 2: Confidence calibration
+        confidence_prompt = f"""Rate your confidence that this answer is
+        correct based ONLY on the provided context.
+
+        Context: {context}
+        Answer: {response}
+
+        Return only a number 0-100."""
+
+        confidence = self.llm.generate(confidence_prompt)
+
+        # Check 3: Self-consistency (generate multiple times, check agreement)
+        variants = [self.regenerate(query, context) for _ in range(3)]
+        consistency = self.measure_consistency([response] + variants)
+
+        # Combine signals
+        hallucination_score = (
+            0.4 * unsupported_ratio +
+            0.3 * (1 - float(confidence) / 100) +
+            0.3 * (1 - consistency)
+        )
+
+        return hallucination_score
+```
+
+Flag responses with high hallucination scores for human review. Track hallucination rate over time as a quality metric.
+
+### User Feedback Loop
+
+```python
+@app.post("/api/feedback")
+async def submit_feedback(
+    response_id: str,
+    helpful: bool,
+    feedback_text: Optional[str] = None
+):
+    # Store feedback
+    await db.feedback.create({
+        "response_id": response_id,
+        "helpful": helpful,
+        "feedback_text": feedback_text,
+        "timestamp": datetime.utcnow()
+    })
+
+    # Update quality metrics
+    await metrics.increment(
+        "feedback_thumbs_up" if helpful else "feedback_thumbs_down"
+    )
+
+    # Flag for review if negative
+    if not helpful:
+        response = await db.responses.get(response_id)
+        await review_queue.add({
+            "response": response,
+            "feedback": feedback_text
+        })
+```
+
+Thumbs up/down on every response. Review negative feedback weekly. This is your ground truth for quality.
+
+---
+
+## Conclusion
+
+Production LLM integration is infrastructure engineering, not prompt magic.
+
+The systems that work:
+
+1. **Choose boring vector databases** until you have data proving you need exotic ones. pgvector handles most use cases.
+
+2. **Invest in retrieval quality**. Re-ranking, query expansion, and parent document retrieval matter more than model selection.
+
+3. **Version everything**. Prompts, embeddings, models. When quality degrades, you need to know what changed.
+
+4. **Cache aggressively**. Semantic caching cuts costs by 40-60% for repetitive workloads.
+
+5. **Build fallback chains**. Single points of failure become actual failures.
+
+6. **Monitor for silent degradation**. Hallucination rates, user feedback, latency percentiles.
+
+The teams that ship AI features successfully treat LLM integration as a systems problem, not a prompting problem. They build infrastructure for reliability, observability, and cost control first—then iterate on quality.
+
+Start with the simplest architecture that works: pgvector + text-embedding-3-small + GPT-4o-mini + basic RAG. Add complexity only when you have data showing you need it.
+
+Everything else is engineering theater.
+
+---
+
+**Building LLM-powered features?** I help teams architect AI integrations that actually work in production—reliable, cost-effective, and observable.
+
+- [AI/ML Integration for SaaS](/services/ai-ml-developer-for-saas) — Production AI that scales
+- [AI/ML Integration for Fintech](/services/ai-ml-developer-for-fintech) — Compliant AI systems
+- [AI/ML Integration for Healthcare](/services/ai-ml-developer-for-healthcare) — HIPAA-ready AI infrastructure
+
+_This is part of a series on AI development. Related: [AI-Assisted Development: Navigating the Generative Debt Crisis](/blog/ai-assisted-development-generative-debt) and [Your Tech Stack is a Capital Allocation Decision](/blog/tech-stack-capital-allocation). For the case against over-engineering, see [Why Boring Technology Wins](/blog/boring-technology-wins)._

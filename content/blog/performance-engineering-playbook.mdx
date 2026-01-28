@@ -1,0 +1,565 @@
+---
+title: "Performance Engineering Playbook: From TTFB to TTI"
+description: "A comprehensive framework for web performance optimization—from server response to user interaction. Covers Core Web Vitals, database optimization, edge computing, and cost-effective scaling strategies."
+date: "2026-01-28"
+author: "Alex Mayhew"
+tags: ["performance", "core-web-vitals", "optimization", "scaling", "infrastructure"]
+category: "architecture"
+readingTime: "18 min read"
+featured: true
+isHub: true
+series: "performance-engineering"
+image: "/images/blog/performance-engineering-playbook-featured.webp"
+---
+
+## TL;DR
+
+Performance is a business metric, not a technical vanity project. Every 100ms of latency costs 1% in conversions. This playbook covers the full stack: TTFB under 200ms via edge computing and CDN strategy, database query optimization that drops P99 from 800ms to 45ms, frontend rendering that hits all Core Web Vitals thresholds, and monitoring that catches regressions before users notice. The architecture that serves 1,000 users will not serve 100,000—plan for the transitions.
+
+---
+
+## Why Performance is Business-Critical
+
+I've optimized systems across industries—fintech dashboards, e-commerce checkouts, SaaS applications with 100,000+ monthly active users. The pattern is consistent: performance directly correlates with revenue.
+
+The data is unambiguous:
+
+| Improvement | Business Impact |
+| --- | --- |
+| 100ms faster load | +1% conversion rate (Vodafone study) |
+| 1 second delay | 7% reduction in conversions (Aberdeen) |
+| 400ms faster page load | 9% increase in traffic (Yahoo) |
+| 2.2 second improvement | 15.4% more conversions (Walmart) |
+
+When Vodafone improved their LCP by 31%, sales increased by 8%—measured through controlled A/B tests, not correlation. Pinterest reduced perceived wait times by 40% and saw a 15% increase in organic traffic and signups.
+
+The inverse is equally brutal. A client came to me with a dashboard that loaded in 4.2 seconds. Their trial-to-paid conversion was 12%. After optimization—LCP down to 1.8 seconds—conversion jumped to 26%. Same product, same pricing, same sales process. The only variable was load time.
+
+Performance isn't about making developers feel good about clean code. It's about whether users complete their intended actions before patience expires.
+
+---
+
+## The Performance Metrics Hierarchy
+
+Understanding what to measure—and why—separates informed optimization from random changes.
+
+### The Request Lifecycle
+
+Every user interaction traverses a predictable path:
+
+```
+User Click → DNS → TCP → TLS → TTFB → FCP → LCP → TTI → INP
+```
+
+Each stage has different optimization strategies and different impact on user experience.
+
+### Time to First Byte (TTFB)
+
+TTFB measures server responsiveness—from request initiation to first byte received.
+
+| TTFB | Rating |
+| --- | --- |
+| < 200ms | Good |
+| 200-500ms | Needs Improvement |
+| > 500ms | Poor |
+
+TTFB is your ceiling. If the server takes 800ms to respond, no amount of frontend optimization will achieve sub-second LCP. This is where [CDN strategy](/blog/cdn-caching-strategy) and edge computing pay dividends.
+
+### First Contentful Paint (FCP)
+
+FCP marks when the browser renders the first piece of DOM content—text, image, or SVG. It signals to users that the page is loading.
+
+| FCP | Rating |
+| --- | --- |
+| < 1.8s | Good |
+| 1.8-3.0s | Needs Improvement |
+| > 3.0s | Poor |
+
+FCP is primarily affected by render-blocking resources: CSS and synchronous JavaScript in the `<head>` that delay first paint.
+
+### Largest Contentful Paint (LCP)
+
+LCP measures when the largest visible element renders—typically a hero image, heading, or large text block.
+
+| LCP | Rating |
+| --- | --- |
+| < 2.5s | Good (Green) |
+| 2.5-4.0s | Needs Improvement (Yellow) |
+| > 4.0s | Poor (Red) |
+
+LCP is the primary Core Web Vital for perceived load speed. It's also where most sites fail. Common culprits: unoptimized hero images, slow server response, late-discovered resources, and render-blocking CSS.
+
+For a deep dive into LCP optimization—including preload strategies, image optimization, and server response time improvements—see the [Core Web Vitals Deep Dive](/blog/core-web-vitals-optimization).
+
+### Interaction to Next Paint (INP)
+
+INP replaced First Input Delay in March 2024. It measures the entire interaction lifecycle—from user input through processing to the next paint.
+
+| INP | Rating |
+| --- | --- |
+| < 200ms | Good (Green) |
+| 200-500ms | Needs Improvement (Yellow) |
+| > 500ms | Poor (Red) |
+
+INP is harder to pass than FID was. FID only measured the delay before processing started. INP captures the full cycle, including long JavaScript tasks and rendering time. A click handler that takes 500ms to execute will tank your INP score.
+
+### Cumulative Layout Shift (CLS)
+
+CLS measures visual stability—unexpected layout changes that frustrate users.
+
+| CLS | Rating |
+| --- | --- |
+| < 0.1 | Good (Green) |
+| 0.1-0.25 | Needs Improvement (Yellow) |
+| > 0.25 | Poor (Red) |
+
+CLS issues typically stem from images without dimensions, late-loading fonts, dynamically injected content, and ads without reserved space.
+
+---
+
+## Server-Side Performance
+
+The fastest frontend optimization is irrelevant if your server takes 2 seconds to respond.
+
+### Database Query Optimization
+
+I've seen N+1 queries turn a 50ms dashboard into a 5-second nightmare. The pattern is predictable: code that works fine with 100 rows becomes unusable at 100,000 rows.
+
+The systematic approach I use on every engagement:
+
+1. **Enable pg_stat_statements** from day one—track what's actually running
+2. **Identify hot queries** by total execution time, not just per-query duration
+3. **Run EXPLAIN ANALYZE** on anything touching production
+4. **Add composite indexes** with tenant_id leading for multi-tenant applications
+5. **Implement connection pooling** before serverless functions exhaust connections
+
+A properly designed index reduced one client's P99 latency from 800ms to 45ms—a 17x improvement from a single SQL statement. The full methodology is documented in [Database Query Optimization for Scale](/blog/database-query-optimization).
+
+### Connection Pooling
+
+If you're running Prisma on serverless infrastructure—Vercel, AWS Lambda, Cloudflare Workers—connection pooling isn't optional. PostgreSQL defaults to 100 connections. Fifty concurrent Lambda invocations with three connections each exhausts the pool.
+
+The symptom: `FATAL: too many connections for role`. The fix: PgBouncer or Supavisor sitting between your application and the database, multiplexing thousands of client connections onto a smaller pool of database connections.
+
+For multi-tenant applications, the architecture becomes more nuanced. Row-Level Security policies, when combined with connection pooling, require careful session variable management. I covered this extensively in [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls)—the patterns there directly impact query performance.
+
+### Caching Layers
+
+Not every request needs to hit the database. Implement caching at multiple levels:
+
+**Application-level caching**: Redis or in-memory caches for hot data. User sessions, frequently accessed configurations, materialized aggregations. A cache hit that returns in 1ms versus a database query that takes 50ms is a 50x improvement—and that compounds across every request.
+
+**HTTP caching**: `Cache-Control` headers that let CDNs and browsers serve cached responses. The difference between `max-age=0` and `max-age=3600` is the difference between hammering your origin server and letting the edge handle 90% of requests. Proper caching configuration can reduce origin load by 80-95% for content-heavy applications.
+
+**Query result caching**: For expensive queries that don't need real-time accuracy—dashboards, reports, analytics—cache the results with a TTL that matches business requirements. A dashboard that aggregates 50 million rows doesn't need to recompute every page load. A 60-second cache serves 95% of use cases.
+
+The cache invalidation problem—ensuring stale data doesn't persist—requires explicit strategy. Use cache tags or surrogate keys for targeted invalidation. Never rely on "purge everything" as a strategy; that approach creates thundering herd problems when the cache refills.
+
+### Response Compression
+
+Modern compression algorithms significantly reduce payload sizes:
+
+| Algorithm | Compression Ratio | CPU Cost | Browser Support |
+| --- | --- | --- | --- |
+| gzip | 70-80% reduction | Low | Universal |
+| Brotli | 80-85% reduction | Medium | Modern browsers |
+| Zstandard | 80-90% reduction | Low | Emerging |
+
+Enable Brotli for text-based responses (HTML, CSS, JS, JSON). The additional 5-10% reduction over gzip matters when you're serving thousands of requests per second. Most CDNs and edge providers handle compression automatically, but verify it's configured correctly—I've seen misconfigured servers sending uncompressed 2MB JSON payloads.
+
+---
+
+## Edge Computing Strategy
+
+Physics sets a hard limit: light travels at 299,792 km/s through fiber optic cables. A request from Sydney to Virginia takes 150ms round trip—just for photons to travel.
+
+Edge computing solves the distance problem by running code closer to users.
+
+### The Edge Advantage
+
+| User Location | Origin (Virginia) | Edge (Nearest PoP) |
+| --- | --- | --- |
+| New York | ~20ms | ~5ms |
+| London | ~80ms | ~10ms |
+| Sydney | ~150ms | ~15ms |
+| Tokyo | ~120ms | ~10ms |
+
+Sub-50ms TTFB becomes achievable globally when your code runs in 300+ locations worldwide.
+
+### React Server Components + Edge
+
+The combination of RSC and edge deployment eliminates the traditional SPA waterfall entirely. Instead of:
+
+```
+HTML → JS → Render → Fetch → Render (850ms+ total)
+```
+
+You get:
+
+```
+Edge renders → Streams HTML → Minimal JS hydrates (200ms total)
+```
+
+The edge function fetches data and renders HTML in one step. The browser receives streamable HTML immediately. No second round trip for data.
+
+This architecture is detailed in [RSC, The Edge, and the Death of the Waterfall](/blog/rsc-edge-death-of-waterfall)—including trade-offs around cold starts, database connections, and when to stay on origin.
+
+### CDN Configuration
+
+A properly configured CDN reduces origin load by 90%+ and cuts TTFB from 800ms to 50ms. The strategy differs by content type:
+
+**Static assets** (JS, CSS, images): Cache aggressively with content hashing. One year TTL, `immutable` flag. The hash changes when content changes; old URLs are never reused.
+
+**API responses**: `stale-while-revalidate` for content that can tolerate brief staleness. Serve cached content immediately, revalidate in background.
+
+**Personalized content**: Never cache without `Vary` headers. Or better: use edge compute to personalize cached base responses.
+
+The full caching taxonomy—including invalidation strategies and common mistakes—is in [CDN Strategy: When to Cache, What to Cache, How to Invalidate](/blog/cdn-caching-strategy).
+
+---
+
+## Frontend Performance
+
+Server-side optimization sets the floor. Frontend optimization determines whether users can interact before their patience expires.
+
+### JavaScript Bundle Size
+
+RSC dramatically reduces JavaScript sent to the browser. A traditional SPA ships 400KB+ before the page is interactive. With Server Components, only Client Components contribute to bundle size—often 100KB or less.
+
+The rules:
+
+1. **Default to Server Components**—only add `'use client'` when you need interactivity
+2. **Lazy load below-the-fold components**—`React.lazy` with Suspense boundaries
+3. **Audit third-party scripts**—that chat widget adds 200KB and blocks the main thread
+4. **Use Next.js Script strategically**—`afterInteractive` for analytics, `lazyOnload` for non-critical
+
+### Render Optimization
+
+Heavy computation during render blocks the main thread and tanks INP scores.
+
+**Memoize expensive calculations**:
+
+```typescript
+const filtered = useMemo(
+  () => products.filter(p => expensiveFilterLogic(p, filter)),
+  [products, filter]
+);
+```
+
+**Virtualize long lists**: React-window or TanStack Virtual render only visible items. A list of 10,000 items shouldn't mean 10,000 DOM nodes.
+
+**Avoid layout thrashing**: Reading layout properties (offsetHeight, getBoundingClientRect) forces browser recalculation. Batch reads, then batch writes.
+
+### Optimistic UI
+
+The user perceives 100ms as instant. Beyond that, the experience degrades. But network round trips are often 200-500ms.
+
+Optimistic UI bridges the gap: update the UI immediately, sync in the background, rollback on failure. The user sees instant response; the network latency becomes invisible.
+
+The pattern works for likes, comments, form submissions—low-stakes operations where speed matters more than certainty. It should never be used for financial transactions, scarce inventory, or irreversible actions.
+
+The full implementation—React Query mutations, SWR patterns, conflict resolution strategies—is in [Optimistic UI: Making Apps Feel Faster Than Physics Allows](/blog/optimistic-ui).
+
+### Image Optimization
+
+Images are the largest contributor to page weight for most sites. A single unoptimized hero image can add 2+ seconds to LCP.
+
+The optimization stack:
+
+1. **Modern formats**: WebP offers 25-35% smaller files than JPEG at equivalent quality. AVIF offers another 20% reduction, with slightly less browser support.
+
+2. **Responsive sizing**: Serve different image sizes based on viewport. A mobile device doesn't need a 4000px wide hero image. Use `srcset` and `sizes` attributes, or let Next.js `Image` component handle it automatically.
+
+3. **Lazy loading**: Below-the-fold images should load on scroll, not on initial page load. The `loading="lazy"` attribute handles this natively.
+
+4. **Priority hints**: The LCP image should have `fetchpriority="high"` or Next.js `priority` prop to signal browser prioritization.
+
+5. **Preloading**: For critical images that aren't discoverable in initial HTML (CSS backgrounds, dynamically constructed URLs), use `<link rel="preload">` in the document head.
+
+I've achieved 40%+ LCP improvements from image optimization alone—often the single highest-impact change available.
+
+### Font Performance
+
+Custom fonts introduce complexity: Flash of Invisible Text (FOIT) or Flash of Unstyled Text (FOUT), both of which affect CLS and user experience.
+
+The solution stack:
+
+- **Font subsetting**: Strip unused characters. A full Google Font family might be 500KB; the Latin subset is 20KB.
+- **Self-hosting**: Eliminate the round trip to Google Fonts. Next.js `next/font` does this automatically.
+- **`font-display: swap`**: Show fallback font immediately, swap when custom font loads. Prevents invisible text.
+- **Preload critical fonts**: Add `<link rel="preload" as="font">` for fonts used above the fold.
+
+---
+
+## Monitoring and Alerting
+
+You can't optimize what you don't measure. You can't maintain gains without continuous monitoring.
+
+### The Three Pillars
+
+**Logs**: Discrete events for debugging after the fact. Structure them as JSON from day one. A busy API generating 1KB per request at 1,000 req/s produces 86GB daily—plan accordingly.
+
+**Metrics**: Numeric values aggregated over time. P50/P95/P99 latency, requests per second, error rates. These power dashboards and alerts.
+
+**Traces**: Request journeys across services. Essential for debugging distributed system latency. Sample them—100% trace collection is economically impractical.
+
+### The Golden Signals
+
+Four metrics capture system health:
+
+1. **Latency**: Not average—percentiles. P99 is where problems hide.
+2. **Traffic**: Requests per second. Your baseline for everything else.
+3. **Errors**: Error rate as percentage. Alert at 1% server errors.
+4. **Saturation**: How full is the system? Alert before you hit limits.
+
+### Alert Design
+
+Alert on symptoms, not causes. "P99 latency above 500ms" is actionable—users are suffering. "CPU above 80%" might just mean you're successfully handling a traffic spike.
+
+The 5-minute rule: don't alert on instantaneous spikes. Require conditions to persist. Critical alerts after 1-2 minutes, warnings after 5 minutes.
+
+Every alert needs a runbook. If you can't write remediation steps, you can't meaningfully alert on it.
+
+The full observability framework—OpenTelemetry setup, incident response, tool recommendations by company stage—is in [SaaS Reliability at Scale](/blog/saas-reliability-monitoring).
+
+---
+
+## Cost vs Performance Trade-offs
+
+Performance optimization is not free. Understand where to invest at each stage.
+
+### Infrastructure by Revenue Stage
+
+| Stage | Monthly Spend | Priority |
+| --- | --- | --- |
+| Pre-revenue | $0-50 | Ship features, don't optimize |
+| $0-10k MRR | $50-200 | Basic observability, obvious fixes |
+| $10k-50k MRR | $200-1,000 | CDN, caching, database indexes |
+| $50k-100k MRR | $1,000-5,000 | Edge deployment, APM, dedicated SRE time |
+| $100k+ MRR | $5,000+ | Full observability stack, performance budgets in CI |
+
+At pre-revenue, every hour spent on performance is an hour not spent validating product-market fit. Ship fast, fix later. The patterns in [Zero to 10K MRR](/blog/zero-to-10k-mrr-saas-playbook) are intentionally minimal—infrastructure complexity should match revenue.
+
+As you scale, the math inverts. A 10% improvement in conversion rate at $100k MRR is $10k/month. That justifies significant engineering investment.
+
+### The Vercel to AWS Migration
+
+Most Next.js applications start on Vercel. It's the right choice until the economics flip.
+
+Vercel includes 1TB bandwidth on Pro. Overage costs $0.15/GB. At 50,000 monthly active users with document-heavy features, you can hit 3TB monthly—$300+ in overages trending upward.
+
+The migration triggers:
+
+- Bandwidth exceeds 1.5TB/month
+- Cold starts violate SLA requirements
+- Enterprise compliance requires static IPs
+- Background jobs exceed 60-second limits
+
+The full infrastructure economics analysis—including the Cloudflare Workers alternative—is covered in [Anatomy of a High-Precision SaaS](/blog/anatomy-of-high-precision-saas).
+
+### Serverless Trade-offs
+
+Serverless (Lambda, Vercel Functions, Cloudflare Workers) excels for bursty, unpredictable traffic. It fails for latency-critical APIs with consistent traffic.
+
+Cold starts add 100-500ms to requests. For a user-facing API where P99 must stay under 200ms, those cold starts are unacceptable.
+
+The decision framework:
+
+| Workload | Recommendation |
+| --- | --- |
+| Bursty, unpredictable traffic | Serverless |
+| Consistent high traffic | Containers/VMs |
+| Background jobs | Serverless |
+| Latency-critical APIs | Containers with load balancer |
+
+The full cost analysis—including when provisioned concurrency makes sense—is in [The Lambda Tax](/blog/lambda-tax-cold-starts).
+
+---
+
+## Performance Audit Checklist
+
+Use this when auditing an application or starting optimization work.
+
+### Server-Side
+
+- [ ] TTFB < 200ms from primary user locations
+- [ ] pg_stat_statements enabled and reviewed weekly
+- [ ] No N+1 queries in hot paths
+- [ ] Composite indexes lead with tenant_id (multi-tenant)
+- [ ] Connection pooling configured for serverless
+- [ ] Cache hit ratio > 85% on CDN
+- [ ] Database connection count < 70% of max
+
+### Frontend
+
+- [ ] LCP < 2.5s on mobile
+- [ ] INP < 200ms on interaction-heavy pages
+- [ ] CLS < 0.1
+- [ ] Hero image preloaded with priority
+- [ ] Third-party scripts using afterInteractive or lazyOnload
+- [ ] No long tasks > 50ms on main thread
+- [ ] JavaScript bundle < 200KB (excluding framework)
+
+### Infrastructure
+
+- [ ] CDN configured with appropriate cache headers
+- [ ] Static assets using content hashing + immutable
+- [ ] Error rate monitoring with < 1% threshold
+- [ ] P99 latency monitoring with alerting
+- [ ] Deployment includes Lighthouse CI checks
+- [ ] Real User Monitoring in production
+
+### Edge Cases
+
+- [ ] Performance under 3G network conditions
+- [ ] Mobile device performance (not just desktop)
+- [ ] Cold start behavior documented and acceptable
+- [ ] Geographic latency for international users
+- [ ] Performance under 2x normal traffic load
+
+---
+
+## The Performance Maturity Model
+
+Performance optimization is not a one-time project. It's a capability that matures over time.
+
+### Level 1: Reactive
+
+You fix performance problems when users complain. No systematic measurement. No performance budgets. Optimization is ad-hoc.
+
+### Level 2: Measured
+
+You have Core Web Vitals dashboards. You know your P99 latency. You can identify which pages are slow. But optimization is still reactive—you respond to degradation rather than preventing it.
+
+### Level 3: Proactive
+
+Performance budgets are enforced in CI. Lighthouse scores must pass before deployment. You catch regressions before they reach production. New features include performance impact assessment.
+
+### Level 4: Optimized
+
+Performance is a product feature. You A/B test performance changes. You understand the revenue impact of latency. Engineering decisions explicitly weigh performance trade-offs. Your P99 is someone else's P50.
+
+Most teams operate at Level 1 or 2. Reaching Level 3 requires cultural shift—performance must be a first-class concern, not an afterthought.
+
+---
+
+## Real-World Optimization Case Studies
+
+Abstract principles matter less than concrete examples. Here are three optimization projects that illustrate the playbook in action.
+
+### Case Study 1: SaaS Dashboard—4.2s to 1.8s LCP
+
+**Initial state**: B2B SaaS dashboard with 4.2 second LCP on desktop, 7+ seconds on mobile. Trial-to-paid conversion at 12%. Users complained about "sluggish" feel.
+
+**Root causes identified**:
+1. N+1 queries loading dashboard widgets (47 database queries per page load)
+2. Unoptimized hero chart image (2.3MB PNG)
+3. Synchronous third-party analytics script blocking render
+4. No CDN caching on API responses
+
+**Optimizations applied**:
+- Consolidated queries using Prisma `include` with selective `select`—reduced to 4 queries
+- Converted chart to WebP with responsive sizing—reduced to 180KB
+- Moved analytics to `afterInteractive` strategy
+- Added `stale-while-revalidate` caching with 60-second TTL on dashboard data
+
+**Results**: LCP dropped to 1.8 seconds. Trial-to-paid conversion increased to 26%—more than doubling. The engineering investment was approximately 40 hours; the revenue impact was immediate and sustained.
+
+### Case Study 2: E-commerce Checkout—Reducing Abandonment
+
+**Initial state**: Checkout flow with 68% abandonment rate. Page load time was acceptable (2.1s LCP), but INP was 480ms on the payment step.
+
+**Root causes identified**:
+1. Payment form validation running synchronously on every keystroke
+2. Address autocomplete library blocking main thread during initialization
+3. Layout shift from dynamically loaded shipping options
+
+**Optimizations applied**:
+- Debounced validation with 300ms delay, moved complex validation to blur events
+- Lazy-loaded address library only when address field focused
+- Reserved space for shipping options with skeleton placeholder
+
+**Results**: INP dropped to 120ms. Checkout abandonment decreased to 54%—a 14 percentage point improvement. At $2M monthly GMV, this represented approximately $280k in recovered annual revenue.
+
+### Case Study 3: Content Platform—Global Performance
+
+**Initial state**: Media company with 40% international traffic experiencing 3+ second TTFB for users outside US. Origin servers in Virginia.
+
+**Root causes identified**:
+1. All requests hitting origin regardless of cachability
+2. Database queries for article metadata on every request
+3. Large JavaScript bundles with poor code splitting
+
+**Optimizations applied**:
+- Deployed to Cloudflare with edge caching for article pages (1-hour TTL)
+- Implemented ISR (Incremental Static Regeneration) for article pages
+- Added cache tags for granular invalidation when articles update
+- Split JavaScript bundles by route
+
+**Results**: TTFB dropped to under 100ms globally. Cache hit ratio reached 94%. Origin traffic reduced by 88%, cutting infrastructure costs by $4,200/month. International session duration increased 23%.
+
+---
+
+## Summary: The Performance Stack
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  MONITORING & ALERTING                                       │
+│  RUM → OpenTelemetry → Grafana/Datadog → PagerDuty          │
+├─────────────────────────────────────────────────────────────┤
+│  FRONTEND                                                    │
+│  RSC → Suspense → Optimistic UI → Virtual Lists             │
+├─────────────────────────────────────────────────────────────┤
+│  EDGE LAYER                                                  │
+│  CDN (Cloudflare/Fastly) → Edge Functions → Streaming       │
+├─────────────────────────────────────────────────────────────┤
+│  API LAYER                                                   │
+│  Connection Pooling → Response Caching → Query Optimization │
+├─────────────────────────────────────────────────────────────┤
+│  DATA LAYER                                                  │
+│  PostgreSQL + RLS → Composite Indexes → pg_stat_statements  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+Each layer builds on the one below. Database optimization creates headroom for API performance. API performance enables edge caching. Edge caching reduces frontend dependency on network speed. Frontend optimization makes the difference between "fast" and "instant."
+
+The architecture that serves 1,000 users will not serve 100,000. Plan for transitions: Vercel to AWS, serverless to containers, single database to read replicas. Each transition has a trigger point—know yours before you hit it.
+
+Performance engineering is not about achieving perfect scores. It's about understanding the relationship between technical metrics and business outcomes, then optimizing the metrics that matter for your specific users and use case.
+
+Every 100ms of latency costs revenue. Every second of downtime costs trust. The playbook exists—execution is what separates fast applications from slow ones.
+
+---
+
+## Further Reading
+
+This hub page synthesizes patterns from across my performance engineering work. For implementation details on specific topics:
+
+**Core Web Vitals**: [LCP, INP, CLS Optimization](/blog/core-web-vitals-optimization) — The metrics Google uses for ranking, with concrete optimization strategies.
+
+**Server Performance**: [Database Query Optimization](/blog/database-query-optimization) — From N+1 detection to composite index design for multi-tenant systems.
+
+**Edge Computing**: [RSC and the Death of the Waterfall](/blog/rsc-edge-death-of-waterfall) — How React Server Components + edge deployment collapse traditional loading patterns.
+
+**Caching**: [CDN Strategy](/blog/cdn-caching-strategy) — When to cache, how to invalidate, and the edge computing trade-offs.
+
+**Frontend Speed**: [Optimistic UI](/blog/optimistic-ui) — Making applications feel faster than network physics allows.
+
+**Architecture**: [Anatomy of High-Precision SaaS](/blog/anatomy-of-high-precision-saas) — Full-stack architecture patterns from MVP to 100,000 users.
+
+**Reliability**: [SaaS Reliability Monitoring](/blog/saas-reliability-monitoring) — Observability infrastructure that catches problems before users notice.
+
+**Infrastructure Economics**: [The Lambda Tax](/blog/lambda-tax-cold-starts) — When serverless helps and when it hurts.
+
+**Multi-tenancy**: [Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls) — Row-Level Security patterns that affect query performance.
+
+**Bootstrapping**: [Zero to 10K MRR Playbook](/blog/zero-to-10k-mrr-saas-playbook) — Minimum viable architecture before performance optimization matters.
+
+---
+
+**Need help optimizing your application's performance?** I work with SaaS companies to achieve and maintain excellent Core Web Vitals while shipping features fast. The two aren't mutually exclusive—they're complementary when the architecture is right.
+
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Performance-first architecture
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Strategic guidance on infrastructure decisions
+
+_This is a hub page in the Performance Engineering series, connecting detailed guides on every aspect of web application performance._

@@ -1,0 +1,909 @@
+---
+title: "Component API Design: Props, Variants, and Composition Patterns"
+description: "Design component APIs that developers love to use. Covers prop design, variant patterns, compound components, and building APIs that scale from simple use cases to complex customization."
+date: "2026-01-28"
+author: "Alex Mayhew"
+tags: ["react", "design-systems", "components", "api-design", "typescript"]
+category: "frontend"
+readingTime: "12 min read"
+featured: false
+series: "frontend-architecture"
+image: "/images/blog/component-api-design-featured.webp"
+---
+
+## TL;DR
+
+A component's API is a contract with future developers. Get it wrong and you create friction on every usage. Get it right and components become intuitive to consume. The patterns that matter: required props first, discriminated unions for variants, compound components for complex structures, composition over configuration for flexibility, and controlled vs uncontrolled as an explicit choice. I've built component libraries consumed by 50+ developers—the difference between a frustrating API and an intuitive one is deliberate design, not accident.
+
+---
+
+## Why API Design Matters More Than Implementation
+
+The implementation of a component lives in one file. The API surfaces across every file that uses it.
+
+I've audited codebases where the Button component was well-implemented internally but had an API so confusing that developers created wrapper components to avoid dealing with it. The implementation was correct. The API was hostile.
+
+Consider the cost:
+
+- **API friction** multiplies across every usage
+- **Incorrect API design** creates inconsistent usage patterns
+- **Poor TypeScript integration** eliminates IDE assistance
+- **Breaking changes** require updating every consumer
+
+A component might exist for years. Its API will be invoked thousands of times. Investing in API design pays compound returns.
+
+The inverse is also true: rushing the API to ship faster creates compounding friction. Every developer who touches that component pays the tax.
+
+---
+
+## The Props Hierarchy
+
+Props are the API. Their organization determines usability.
+
+### Required vs Optional
+
+Required props should be obvious, minimal, and essential to the component's function:
+
+```tsx
+// Good: Required props are essential
+interface ButtonProps {
+  children: React.ReactNode; // Required: What does the button say?
+  onClick?: () => void;      // Optional: Not all buttons need handlers
+  variant?: 'primary' | 'secondary' | 'ghost';  // Optional: Has default
+  size?: 'sm' | 'md' | 'lg'; // Optional: Has default
+  disabled?: boolean;        // Optional: Defaults to false
+}
+
+// Bad: Too many required props
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick: () => void;       // Why required? Submit buttons don't need it
+  variant: 'primary' | 'secondary' | 'ghost';  // Why required? Should default
+  ariaLabel: string;         // Why required? children often suffices
+}
+```
+
+The rule: **if a prop has a sensible default, make it optional**. Requiring unnecessary props creates boilerplate at every usage site.
+
+### Primitives vs Objects
+
+Prefer primitive props for simple values. Objects add cognitive overhead:
+
+```tsx
+// Good: Primitives are explicit
+<Button size="lg" variant="primary" disabled>
+  Submit
+</Button>
+
+// Bad: Object props obscure what's being configured
+<Button config={{ size: 'lg', variant: 'primary', disabled: true }}>
+  Submit
+</Button>
+```
+
+Object props make sense when values are semantically grouped:
+
+```tsx
+// Good: Logically grouped data
+interface AvatarProps {
+  user: {
+    name: string;
+    imageUrl: string;
+    status: 'online' | 'offline' | 'away';
+  };
+  size?: 'sm' | 'md' | 'lg';
+}
+
+// Usage is clear
+<Avatar user={currentUser} size="md" />
+```
+
+### Boolean Props: The Naming Convention
+
+Boolean props should read naturally:
+
+```tsx
+// Good: Reads as English
+<Button disabled>Submit</Button>
+<Input readOnly />
+<Modal open />
+<Checkbox checked />
+
+// Bad: Negative booleans are confusing
+<Button notClickable>Submit</Button>  // Double negatives ahead
+<Input nonEditable />
+<Modal visible={false} />  // "visible={false}" vs "hidden"
+```
+
+Avoid boolean props that require `false` to achieve common behavior. If you're often writing `someProp={false}`, the API is inverted.
+
+---
+
+## Variant Patterns with TypeScript
+
+Variants control appearance and behavior. TypeScript makes them type-safe.
+
+### The Basic Variant Pattern
+
+```tsx
+const buttonVariants = {
+  primary: 'bg-cyber-lime text-void-navy',
+  secondary: 'bg-gunmetal-glass text-mist-white border border-white/10',
+  ghost: 'bg-transparent text-mist-white hover:bg-white/5',
+  danger: 'bg-burnt-ember text-white',
+} as const;
+
+interface ButtonProps {
+  variant?: keyof typeof buttonVariants;
+  // ...
+}
+```
+
+The `keyof typeof` pattern derives the type from the implementation. Add a variant to the object, and the type updates automatically.
+
+### Discriminated Unions for Complex Variants
+
+When variants change which props are valid, use discriminated unions:
+
+```tsx
+// Different button types have different valid props
+type ButtonProps =
+  | {
+      as: 'button';
+      onClick?: () => void;
+      type?: 'button' | 'submit' | 'reset';
+    }
+  | {
+      as: 'a';
+      href: string;
+      target?: '_blank' | '_self';
+    }
+  | {
+      as: 'link'; // React Router
+      to: string;
+    };
+
+// TypeScript enforces correct prop combinations
+<Button as="a" href="/about" />          // Valid
+<Button as="a" onClick={() => {}} />     // Error: onClick not valid for 'a'
+<Button as="button" type="submit" />     // Valid
+<Button as="button" href="/about" />     // Error: href not valid for 'button'
+```
+
+This pattern eliminates entire categories of runtime errors. The compiler prevents invalid combinations.
+
+### Compound Variants with CVA
+
+For complex variant combinations, [class-variance-authority](https://cva.style) is the standard:
+
+```tsx
+import { cva, type VariantProps } from 'class-variance-authority';
+
+const button = cva(
+  // Base styles applied to all variants
+  'inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-2',
+  {
+    variants: {
+      variant: {
+        primary: 'bg-cyber-lime text-void-navy hover:bg-cyber-lime/90',
+        secondary: 'bg-gunmetal-glass text-mist-white border border-white/10',
+        ghost: 'bg-transparent text-mist-white hover:bg-white/5',
+        danger: 'bg-burnt-ember text-white hover:bg-burnt-ember/90',
+      },
+      size: {
+        sm: 'h-8 px-3 text-sm',
+        md: 'h-10 px-4 text-base',
+        lg: 'h-12 px-6 text-lg',
+      },
+    },
+    compoundVariants: [
+      // Specific combinations get specific styles
+      {
+        variant: 'primary',
+        size: 'lg',
+        className: 'font-bold uppercase tracking-wide',
+      },
+    ],
+    defaultVariants: {
+      variant: 'primary',
+      size: 'md',
+    },
+  }
+);
+
+// Extract types from the CVA definition
+type ButtonVariants = VariantProps<typeof button>;
+
+interface ButtonProps extends ButtonVariants {
+  children: React.ReactNode;
+  // ...
+}
+```
+
+CVA handles the combinatorial explosion of variants. Define the matrix once; the library generates the correct classes.
+
+---
+
+## Compound Components
+
+Simple components take props. Complex components need structure.
+
+### The Problem with Prop-Heavy APIs
+
+```tsx
+// This API doesn't scale
+<Tabs
+  tabs={[
+    { id: 'tab1', label: 'Overview', content: <Overview />, icon: <IconInfo /> },
+    { id: 'tab2', label: 'Settings', content: <Settings />, icon: <IconGear /> },
+    { id: 'tab3', label: 'Billing', content: <Billing />, icon: <IconCard />, disabled: true },
+  ]}
+  defaultTab="tab1"
+  onChange={handleTabChange}
+  variant="underline"
+/>
+```
+
+Problems:
+- Configuration and content are mixed in objects
+- Adding features means adding properties to objects
+- The structure is opaque—hard to see what's actually rendered
+- Styling individual tabs requires escape hatches
+
+### The Compound Component Solution
+
+```tsx
+<Tabs defaultValue="overview" onValueChange={handleTabChange}>
+  <Tabs.List variant="underline">
+    <Tabs.Trigger value="overview">
+      <IconInfo className="mr-2 h-4 w-4" />
+      Overview
+    </Tabs.Trigger>
+    <Tabs.Trigger value="settings">
+      <IconGear className="mr-2 h-4 w-4" />
+      Settings
+    </Tabs.Trigger>
+    <Tabs.Trigger value="billing" disabled>
+      <IconCard className="mr-2 h-4 w-4" />
+      Billing
+    </Tabs.Trigger>
+  </Tabs.List>
+
+  <Tabs.Content value="overview">
+    <Overview />
+  </Tabs.Content>
+  <Tabs.Content value="settings">
+    <Settings />
+  </Tabs.Content>
+  <Tabs.Content value="billing">
+    <Billing />
+  </Tabs.Content>
+</Tabs>
+```
+
+The structure is visible. Adding icons, custom styling, or conditional rendering is straightforward. The API scales.
+
+### Implementing Compound Components
+
+The pattern uses React Context to share state:
+
+```tsx
+import { createContext, useContext, useState } from 'react';
+
+// Context for shared state
+interface TabsContextValue {
+  value: string;
+  onValueChange: (value: string) => void;
+}
+
+const TabsContext = createContext<TabsContextValue | null>(null);
+
+function useTabsContext() {
+  const context = useContext(TabsContext);
+  if (!context) {
+    throw new Error('Tabs components must be used within <Tabs>');
+  }
+  return context;
+}
+
+// Root component provides context
+interface TabsProps {
+  defaultValue: string;
+  onValueChange?: (value: string) => void;
+  children: React.ReactNode;
+}
+
+function Tabs({ defaultValue, onValueChange, children }: TabsProps) {
+  const [value, setValue] = useState(defaultValue);
+
+  const handleValueChange = (newValue: string) => {
+    setValue(newValue);
+    onValueChange?.(newValue);
+  };
+
+  return (
+    <TabsContext.Provider value={{ value, onValueChange: handleValueChange }}>
+      <div className="w-full">{children}</div>
+    </TabsContext.Provider>
+  );
+}
+
+// Child components consume context
+interface TriggerProps {
+  value: string;
+  disabled?: boolean;
+  children: React.ReactNode;
+}
+
+function Trigger({ value, disabled, children }: TriggerProps) {
+  const { value: selectedValue, onValueChange } = useTabsContext();
+  const isSelected = value === selectedValue;
+
+  return (
+    <button
+      role="tab"
+      aria-selected={isSelected}
+      disabled={disabled}
+      onClick={() => onValueChange(value)}
+      className={cn(
+        'px-4 py-2 transition-colors',
+        isSelected && 'border-b-2 border-cyber-lime text-cyber-lime',
+        disabled && 'opacity-50 cursor-not-allowed'
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
+// Attach subcomponents to root
+Tabs.List = TabsList;
+Tabs.Trigger = Trigger;
+Tabs.Content = TabsContent;
+```
+
+The error message in `useTabsContext` is important. When developers misuse the API, they get a clear explanation.
+
+---
+
+## Composition Over Configuration
+
+The React philosophy: small components that compose, not large components that configure.
+
+### The Configuration Approach (Avoid)
+
+```tsx
+// Over-configured component
+<Card
+  title="User Profile"
+  titleSize="lg"
+  titleIcon={<IconUser />}
+  subtitle="Manage your account"
+  subtitleColor="muted"
+  headerActions={<Button size="sm">Edit</Button>}
+  footer={<CardFooter />}
+  footerAlignment="right"
+  padding="lg"
+  border="subtle"
+  shadow="md"
+  onClick={handleClick}
+>
+  <UserDetails user={user} />
+</Card>
+```
+
+Problems:
+- 13 props and counting
+- Every new requirement adds a prop
+- TypeScript definitions become unwieldy
+- Customization requires escape hatches
+
+### The Composition Approach (Prefer)
+
+```tsx
+<Card padding="lg" border="subtle" shadow="md" onClick={handleClick}>
+  <Card.Header>
+    <div className="flex items-center gap-2">
+      <IconUser className="h-5 w-5" />
+      <Card.Title size="lg">User Profile</Card.Title>
+    </div>
+    <Card.Description>Manage your account</Card.Description>
+    <Card.Actions>
+      <Button size="sm">Edit</Button>
+    </Card.Actions>
+  </Card.Header>
+
+  <Card.Body>
+    <UserDetails user={user} />
+  </Card.Body>
+
+  <Card.Footer alignment="right">
+    <Button variant="ghost">Cancel</Button>
+    <Button>Save Changes</Button>
+  </Card.Footer>
+</Card>
+```
+
+Each subcomponent is simple. Customization is just... writing JSX. No escape hatches needed.
+
+### Slots for Flexible Injection
+
+When composition isn't enough, slots provide injection points:
+
+```tsx
+interface AlertProps {
+  variant?: 'info' | 'warning' | 'error' | 'success';
+  children: React.ReactNode;
+  icon?: React.ReactNode;      // Slot: override default icon
+  action?: React.ReactNode;    // Slot: optional action button
+}
+
+function Alert({ variant = 'info', children, icon, action }: AlertProps) {
+  const defaultIcon = {
+    info: <IconInfo />,
+    warning: <IconWarning />,
+    error: <IconError />,
+    success: <IconCheck />,
+  }[variant];
+
+  return (
+    <div className={cn('flex items-start gap-3 p-4 rounded-md', variantStyles[variant])}>
+      <span className="flex-shrink-0">{icon ?? defaultIcon}</span>
+      <div className="flex-1">{children}</div>
+      {action && <div className="flex-shrink-0">{action}</div>}
+    </div>
+  );
+}
+
+// Usage with defaults
+<Alert variant="warning">Check your network connection</Alert>
+
+// Usage with overrides
+<Alert
+  variant="error"
+  icon={<CustomErrorIcon />}
+  action={<Button size="sm">Retry</Button>}
+>
+  Payment failed
+</Alert>
+```
+
+Slots are explicit. Developers see `icon` and understand: "I can pass my own."
+
+### Render Props for Maximum Flexibility
+
+When slots aren't flexible enough, render props give full control:
+
+```tsx
+interface DataTableProps<T> {
+  data: T[];
+  columns: Column<T>[];
+  renderRow?: (item: T, index: number) => React.ReactNode;
+  renderEmpty?: () => React.ReactNode;
+  renderLoading?: () => React.ReactNode;
+}
+
+function DataTable<T>({
+  data,
+  columns,
+  renderRow,
+  renderEmpty = () => <div>No data</div>,
+  renderLoading,
+}: DataTableProps<T>) {
+  if (renderLoading) return renderLoading();
+  if (data.length === 0) return renderEmpty();
+
+  return (
+    <table>
+      <thead>
+        <tr>
+          {columns.map(col => <th key={col.key}>{col.header}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((item, index) =>
+          renderRow ? renderRow(item, index) : (
+            <tr key={index}>
+              {columns.map(col => (
+                <td key={col.key}>{col.render(item)}</td>
+              ))}
+            </tr>
+          )
+        )}
+      </tbody>
+    </table>
+  );
+}
+```
+
+Render props are the escape hatch when standard composition fails.
+
+---
+
+## Controlled vs Uncontrolled
+
+State ownership is a design decision, not an implementation detail.
+
+### Uncontrolled: Component Owns State
+
+```tsx
+// Component manages its own state
+function Accordion({ defaultOpen = false, children }: AccordionProps) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  return (
+    <div>
+      <button onClick={() => setIsOpen(!isOpen)}>
+        Toggle
+      </button>
+      {isOpen && <div>{children}</div>}
+    </div>
+  );
+}
+
+// Consumer has no control after mount
+<Accordion defaultOpen>Content</Accordion>
+```
+
+Use uncontrolled when:
+- Consumer doesn't need to read or modify state
+- State is purely presentational
+- Simplicity is more valuable than control
+
+### Controlled: Consumer Owns State
+
+```tsx
+// Consumer manages state
+interface AccordionProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  children: React.ReactNode;
+}
+
+function Accordion({ open, onOpenChange, children }: AccordionProps) {
+  return (
+    <div>
+      <button onClick={() => onOpenChange(!open)}>
+        Toggle
+      </button>
+      {open && <div>{children}</div>}
+    </div>
+  );
+}
+
+// Consumer has full control
+const [isOpen, setIsOpen] = useState(false);
+<Accordion open={isOpen} onOpenChange={setIsOpen}>
+  Content
+</Accordion>
+```
+
+Use controlled when:
+- Consumer needs to read state (e.g., conditionally render other UI)
+- Consumer needs to programmatically modify state
+- State needs to sync with external systems
+
+### The Dual API Pattern
+
+Best practice: support both modes.
+
+```tsx
+interface AccordionProps {
+  // Controlled mode
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  // Uncontrolled mode
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}
+
+function Accordion({
+  open: controlledOpen,
+  onOpenChange,
+  defaultOpen = false,
+  children
+}: AccordionProps) {
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+
+  // Determine which mode we're in
+  const isControlled = controlledOpen !== undefined;
+  const isOpen = isControlled ? controlledOpen : uncontrolledOpen;
+
+  const handleToggle = () => {
+    if (isControlled) {
+      onOpenChange?.(!isOpen);
+    } else {
+      setUncontrolledOpen(!isOpen);
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={handleToggle}>Toggle</button>
+      {isOpen && <div>{children}</div>}
+    </div>
+  );
+}
+
+// Uncontrolled usage (simple)
+<Accordion defaultOpen>Content</Accordion>
+
+// Controlled usage (when needed)
+<Accordion open={isOpen} onOpenChange={setIsOpen}>Content</Accordion>
+```
+
+Simple use cases stay simple. Complex use cases get the control they need.
+
+---
+
+## TypeScript Integration
+
+TypeScript transforms API design. Use it.
+
+### Generics for Type-Safe Data
+
+```tsx
+interface SelectProps<T> {
+  options: T[];
+  value: T | null;
+  onChange: (value: T) => void;
+  getOptionLabel: (option: T) => string;
+  getOptionValue: (option: T) => string;
+}
+
+function Select<T>({ options, value, onChange, getOptionLabel, getOptionValue }: SelectProps<T>) {
+  return (
+    <select
+      value={value ? getOptionValue(value) : ''}
+      onChange={(e) => {
+        const selected = options.find(opt => getOptionValue(opt) === e.target.value);
+        if (selected) onChange(selected);
+      }}
+    >
+      {options.map(option => (
+        <option key={getOptionValue(option)} value={getOptionValue(option)}>
+          {getOptionLabel(option)}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+// Usage with type inference
+interface User { id: string; name: string; email: string; }
+
+<Select<User>
+  options={users}
+  value={selectedUser}
+  onChange={setSelectedUser}        // Typed as (value: User) => void
+  getOptionLabel={u => u.name}      // u is inferred as User
+  getOptionValue={u => u.id}
+/>
+```
+
+The generic propagates through the entire API. Type safety without annotation.
+
+### Discriminated Unions for Conditional Props
+
+From the [TypeScript business case](/blog/typescript-business-case), discriminated unions eliminate invalid states:
+
+```tsx
+type InputProps =
+  | {
+      type: 'text' | 'email' | 'password';
+      value: string;
+      onChange: (value: string) => void;
+      maxLength?: number;
+    }
+  | {
+      type: 'number';
+      value: number;
+      onChange: (value: number) => void;
+      min?: number;
+      max?: number;
+      step?: number;
+    }
+  | {
+      type: 'checkbox';
+      checked: boolean;
+      onChange: (checked: boolean) => void;
+    };
+
+// Each type has exactly the props it needs
+<Input type="number" value={42} onChange={n => setCount(n)} min={0} max={100} />
+<Input type="checkbox" checked={agreed} onChange={setAgreed} />
+<Input type="text" value={name} onChange={setName} maxLength={50} />
+```
+
+No runtime checks needed. The compiler ensures correctness.
+
+### Inference Over Annotation
+
+Design APIs so types infer correctly:
+
+```tsx
+// Bad: Requires explicit type annotation
+const columns: Column<User>[] = [
+  { key: 'name', header: 'Name', render: (user) => user.name },
+  { key: 'email', header: 'Email', render: (user) => user.email },
+];
+<DataTable columns={columns} data={users} />
+
+// Good: Type infers from data
+function createColumns<T>(data: T[], columns: Column<T>[]): Column<T>[] {
+  return columns;
+}
+
+const columns = createColumns(users, [
+  { key: 'name', header: 'Name', render: (user) => user.name },  // user inferred as User
+  { key: 'email', header: 'Email', render: (user) => user.email },
+]);
+```
+
+When developers don't need to write types, they can't write them wrong.
+
+---
+
+## Anti-Patterns to Avoid
+
+### Boolean Explosion
+
+```tsx
+// Bad: Boolean props multiply
+<Button
+  primary        // or secondary?
+  large          // or small? or medium?
+  outlined       // or filled?
+  loading        // but also disabled?
+  iconLeft       // or iconRight?
+>
+  Submit
+</Button>
+
+// Which combinations are valid?
+// Is primary + secondary an error?
+// What happens with loading + disabled?
+```
+
+Solution: Use variants and compound props.
+
+```tsx
+// Good: Explicit variants
+<Button
+  variant="primary"  // Union: 'primary' | 'secondary' | 'ghost'
+  size="lg"          // Union: 'sm' | 'md' | 'lg'
+  state="loading"    // Union: 'idle' | 'loading' | 'disabled'
+  iconPosition="left" // Union: 'left' | 'right' | 'none'
+>
+  Submit
+</Button>
+```
+
+### Prop Drilling
+
+```tsx
+// Bad: Passing props through intermediate components
+<Form onSubmit={handleSubmit} validationSchema={schema} initialValues={initial}>
+  <FormSection>
+    <FormGroup>
+      <FormField
+        name="email"
+        onSubmit={handleSubmit}  // Why does FormField need this?
+        validationSchema={schema} // Or this?
+      />
+    </FormGroup>
+  </FormSection>
+</Form>
+```
+
+Solution: Context for shared state.
+
+```tsx
+// Good: Context eliminates drilling
+const FormContext = createContext<FormContextValue | null>(null);
+
+<Form onSubmit={handleSubmit} validationSchema={schema}>
+  <FormSection>
+    <FormGroup>
+      <FormField name="email" />  {/* Gets what it needs from context */}
+    </FormGroup>
+  </FormSection>
+</Form>
+```
+
+### The God Component
+
+```tsx
+// Bad: One component does everything
+<DataGrid
+  data={data}
+  columns={columns}
+  sortable
+  filterable
+  paginated
+  pageSize={20}
+  onSort={handleSort}
+  onFilter={handleFilter}
+  onPageChange={handlePage}
+  selectable
+  onSelect={handleSelect}
+  editable
+  onEdit={handleEdit}
+  onSave={handleSave}
+  onDelete={handleDelete}
+  exportable
+  onExport={handleExport}
+  // 47 more props...
+/>
+```
+
+Solution: Compose smaller components.
+
+```tsx
+// Good: Composition of focused components
+<DataGrid data={data} columns={columns}>
+  <DataGrid.Toolbar>
+    <DataGrid.Filter />
+    <DataGrid.Export />
+  </DataGrid.Toolbar>
+  <DataGrid.Selection onSelect={handleSelect} />
+  <DataGrid.Sort onSort={handleSort} />
+  <DataGrid.Pagination pageSize={20} onPageChange={handlePage} />
+</DataGrid>
+```
+
+### String Soup
+
+```tsx
+// Bad: Arbitrary strings
+<Icon name="user-profile-circle-outlined-large" />
+<Button variant="primary-dark-elevated-hover" />
+
+// Typos silently fail or crash at runtime
+<Icon name="user-proflie-circle" />  // Typo: no error until runtime
+```
+
+Solution: Union types, not strings.
+
+```tsx
+// Good: Constrained types
+type IconName = 'user' | 'settings' | 'mail' | 'home';
+<Icon name="user" />        // Valid
+<Icon name="proflie" />     // Compile error
+
+type ButtonVariant = 'primary' | 'secondary' | 'ghost';
+<Button variant="primary" />  // Valid
+```
+
+---
+
+## Conclusion
+
+Component API design is a discipline. It requires the same rigor as system architecture—because that's what it is. Your component library is the architecture of your UI layer.
+
+The patterns that work:
+- **Required props are minimal**; everything with a sensible default is optional
+- **Variants use TypeScript unions**, not boolean explosions
+- **Compound components** scale better than prop-heavy APIs
+- **Composition beats configuration**; slots and render props provide escape hatches
+- **Controlled and uncontrolled** are explicit choices, and the best APIs support both
+- **Generics and discriminated unions** make TypeScript work for you
+
+The patterns to avoid:
+- Boolean props that multiply into invalid combinations
+- Prop drilling through component trees
+- God components with dozens of props
+- String-typed values that fail silently
+
+I've built component libraries used by 50+ developers. The ones that succeeded had APIs designed deliberately. The ones that became friction points had APIs that "just evolved." The difference was intentionality.
+
+Design your API. Document it. Type it. Then implement it.
+
+---
+
+**Building a component library or design system?** I help teams create APIs that developers love to use.
+
+- [Design Tokens Beyond Color](/blog/design-tokens-comprehensive) — The token layer beneath components
+- [Tailwind vs Component Libraries](/blog/tailwind-vs-component-libraries) — Styling decisions that affect API design
+- [TypeScript: The Business Case](/blog/typescript-business-case) — Why types matter for component APIs
+- [Full-Stack Development for Startups](/services/fullstack-developer-for-startups) — Design systems from the ground up

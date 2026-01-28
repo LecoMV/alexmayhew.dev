@@ -1,0 +1,734 @@
+---
+title: "Multi-Region SaaS Architecture: Global Replication and Data Residency"
+description: "Scale your SaaS globally without compliance nightmares. Covers data residency requirements, replication strategies, latency optimization, and the architecture patterns that make global distribution work."
+date: "2026-01-28"
+author: "Alex Mayhew"
+tags: ["architecture", "saas", "multi-region", "compliance", "scaling"]
+category: "architecture"
+readingTime: "14 min read"
+featured: false
+series: "saas-architecture"
+image: "/images/blog/multi-region-saas-architecture-featured.webp"
+---
+
+## TL;DR
+
+Single-region works until you hit 200ms latency for half your users or a GDPR Article 44 violation. Multi-region isn't about scale—it's about latency and compliance. Active-active replication sounds ideal but introduces conflict resolution complexity that breaks most teams. Start with read replicas and edge caching, graduate to active-passive for writes, and only move to active-active when you have the engineering capacity to handle CRDTs or application-level conflict resolution. Data residency isn't optional—it's a regulatory requirement with fines up to 4% of global revenue.
+
+---
+
+## When Single-Region Stops Working
+
+I've watched startups hit this wall repeatedly. The pattern is always the same: you launch in us-east-1 because that's where the tutorials told you to deploy. Your first European customers complain about "slowness." Your first Australian customers churn.
+
+The math is simple. Light travels at 299,792 km/s through fiber. New York to London is 5,500 km. That's 18ms one way, 36ms round trip—in perfect conditions. Real-world internet routing adds another 30-50ms. Your API response time is now 80-120ms before your server even processes the request.
+
+For users in Singapore connecting to us-east-1? 250-300ms round trip. For every database query, every API call, every WebSocket ping. Your snappy 50ms API becomes a 350ms slog.
+
+### The Latency Threshold
+
+User perception research is consistent: anything under 100ms feels instant. 100-300ms feels responsive. Over 300ms feels slow. Over 1 second feels broken.
+
+| User Location | Single US Region | With Edge Caching | Multi-Region |
+|---------------|------------------|-------------------|--------------|
+| US East       | 20-50ms          | 20-50ms           | 20-50ms      |
+| US West       | 60-80ms          | 30-40ms           | 20-50ms      |
+| EU            | 100-150ms        | 50-80ms           | 20-50ms      |
+| APAC          | 200-300ms        | 100-150ms         | 20-50ms      |
+| Australia     | 250-350ms        | 150-200ms         | 30-60ms      |
+
+Edge caching helps for read-heavy workloads—and I've covered that extensively in [CDN Strategy: When to Cache, What to Cache, How to Invalidate](/blog/cdn-caching-strategy). But writes still hit origin. Real-time features like chat, notifications, and collaborative editing need multi-region infrastructure.
+
+### The Compliance Trigger
+
+Latency is annoying. Compliance violations are existential.
+
+Three scenarios force multi-region regardless of latency:
+
+**1. You sign an enterprise contract with data residency requirements**
+
+A Fortune 500 company wants to use your SaaS. Their legal team requires that EU employee data never leaves EU infrastructure. Your us-east-1 deployment means "no deal" or a 6-month scramble to deploy a separate EU instance.
+
+**2. You cross the GDPR adequacy decision boundary**
+
+The EU-US Data Privacy Framework (as of 2023) provides some protection for US companies, but it's been invalidated twice before. Many EU enterprises don't trust it and require explicit EU data residency regardless of framework status.
+
+**3. You expand into regulated industries**
+
+Healthcare (HIPAA), finance (various), government (FedRAMP, ITAR)—each has data locality requirements that trump your preference for operational simplicity.
+
+---
+
+## Data Residency Requirements by Region
+
+This is the regulatory landscape that drives multi-region architecture decisions. I'm going to be specific because vague compliance guidance is useless.
+
+### European Union (GDPR)
+
+**Key Requirement**: Personal data of EU residents cannot be transferred outside the EU/EEA unless the destination country has an "adequacy decision" or appropriate safeguards are in place.
+
+**Adequacy Decisions** (data can flow freely): UK, Switzerland, Japan, South Korea, Canada, New Zealand, Argentina, Israel, Uruguay.
+
+**Non-Adequate Countries** (requires additional safeguards): United States, India, China, Brazil, Australia.
+
+**Fines**: Up to €20 million or 4% of annual global turnover, whichever is higher. Meta was fined €1.2 billion in 2023 for EU-US data transfers. Not a theoretical risk.
+
+**Practical Impact**: If you have EU customers and store personal data, you need EU infrastructure or ironclad legal agreements (Standard Contractual Clauses) plus technical measures. Many enterprise customers skip the complexity and require EU-only storage.
+
+### United Kingdom (UK GDPR)
+
+Post-Brexit, the UK has its own GDPR implementation. The EU granted the UK adequacy status, so EU-UK data flows are unrestricted. But UK-US transfers have the same challenges as EU-US.
+
+**Practical Impact**: If you're deploying EU infrastructure, it typically covers UK as well. But some UK customers specifically require UK-based infrastructure for sovereignty reasons.
+
+### Germany (Specific Requirements)
+
+Germany interprets GDPR strictly. German enterprises often require:
+
+- Data stored on German soil (not just EU)
+- German-language data processing agreements
+- Specific certifications (BSI C5 for cloud services)
+
+**Practical Impact**: A Frankfurt deployment satisfies most German requirements. If you're targeting German enterprise customers, plan for this.
+
+### Australia (Privacy Act 1988)
+
+Australia's privacy law allows overseas transfers but requires the recipient to provide substantially similar protections. In practice, enterprise customers often require Australian data residency.
+
+**Practical Impact**: Sydney region deployment for Australian enterprise customers. The regulatory requirement is softer than GDPR, but customer expectations are similar.
+
+### Singapore (PDPA)
+
+The Personal Data Protection Act requires consent for overseas transfers and accountability for protection of transferred data. Financial services have additional requirements under MAS guidelines.
+
+**Practical Impact**: Singapore deployment for APAC customers, especially in financial services.
+
+### China (PIPL and DSL)
+
+China's Personal Information Protection Law (2021) and Data Security Law require:
+
+- Personal information of Chinese residents stored in China
+- Security assessments for any cross-border transfer
+- Explicit government approval for "important data"
+
+**Practical Impact**: If you have Chinese customers, you need Chinese infrastructure. This typically means partnering with a local provider (AWS China regions are operated by Sinnet, not AWS directly). Many SaaS companies simply don't serve China due to complexity.
+
+### India (DPDP Act 2023)
+
+India's Digital Personal Data Protection Act requires "critical personal data" to be stored only in India. The definition of "critical" is still being clarified by regulation.
+
+**Practical Impact**: Mumbai deployment for Indian enterprise customers. The regulatory landscape is evolving—expect requirements to tighten.
+
+---
+
+## Replication Strategies
+
+Once you've accepted that multi-region is necessary, the question is how to implement it. There are three fundamental approaches, each with distinct trade-offs.
+
+### Active-Passive (Primary-Replica)
+
+One region handles all writes. Other regions have read replicas. Writes are asynchronous replicated to replicas.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│   US-EAST (Primary)              EU-WEST (Replica)          │
+│   ┌─────────────┐                ┌─────────────┐            │
+│   │  App Server │                │  App Server │            │
+│   └──────┬──────┘                └──────┬──────┘            │
+│          │                              │                    │
+│          ▼                              ▼                    │
+│   ┌─────────────┐    Async       ┌─────────────┐            │
+│   │  PostgreSQL │ ───────────────│  PostgreSQL │            │
+│   │  (Primary)  │    Replication │  (Replica)  │            │
+│   └─────────────┘                └─────────────┘            │
+│                                                             │
+│   Reads: Local                   Reads: Local               │
+│   Writes: Local                  Writes: Proxied to US-EAST │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Advantages**:
+
+- Simple conflict resolution (there are no conflicts—one source of truth)
+- Works with any database
+- Standard PostgreSQL logical replication handles this
+- Read latency is local; only writes pay cross-region cost
+
+**Disadvantages**:
+
+- Write latency for non-primary regions (100-200ms added)
+- Primary region failure requires manual failover
+- Replication lag means reads can be stale (typically 50-500ms)
+
+**When to use**: Most SaaS applications. If your workload is 90%+ reads (which is typical), active-passive gives you most of the latency benefit with minimal complexity.
+
+### Active-Active (Multi-Primary)
+
+Multiple regions accept writes. Changes are replicated bidirectionally.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│   US-EAST (Primary)              EU-WEST (Primary)          │
+│   ┌─────────────┐                ┌─────────────┐            │
+│   │  App Server │                │  App Server │            │
+│   └──────┬──────┘                └──────┬──────┘            │
+│          │                              │                    │
+│          ▼                              ▼                    │
+│   ┌─────────────┐    Bidirectional ┌─────────────┐          │
+│   │  CockroachDB│ ◄───────────────►│  CockroachDB│          │
+│   │  (Primary)  │    Replication   │  (Primary)  │          │
+│   └─────────────┘                  └─────────────┘          │
+│                                                             │
+│   Reads: Local                     Reads: Local             │
+│   Writes: Local                    Writes: Local            │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Advantages**:
+
+- All operations are local latency
+- No single point of failure
+- Automatic failover
+
+**Disadvantages**:
+
+- Conflict resolution is genuinely hard
+- Requires distributed database (CockroachDB, Spanner, YugabyteDB) or custom solution
+- Higher operational complexity
+- Consistency trade-offs (CAP theorem is real)
+
+**When to use**: Real-time collaborative applications, global write-heavy workloads, or when you have dedicated database engineering capacity.
+
+### Read Replicas with Regional Routing
+
+A simpler variant of active-passive: read replicas in each region, writes always go to primary.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        Load Balancer                         │
+│                             │                                │
+│         ┌───────────────────┼───────────────────┐           │
+│         ▼                   ▼                   ▼           │
+│   ┌───────────┐       ┌───────────┐       ┌───────────┐    │
+│   │  US-EAST  │       │  EU-WEST  │       │  AP-SOUTH │    │
+│   │  Primary  │       │  Replica  │       │  Replica  │    │
+│   │           │       │           │       │           │    │
+│   │  R + W    │◄──────│  R only   │       │  R only   │    │
+│   └───────────┘  Async └───────────┘       └───────────┘    │
+│                  Repl         ▲                   ▲         │
+│                               │                   │         │
+│                               └───────────────────┘         │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+This works with standard PostgreSQL streaming replication. No special databases required. I've implemented this pattern for SaaS applications with 100,000+ monthly active users—it handles substantial scale with minimal complexity.
+
+---
+
+## Database Architecture Options
+
+The database choice constrains your replication strategy. Here are the realistic options.
+
+### PostgreSQL with Logical Replication
+
+PostgreSQL's built-in logical replication can publish changes to multiple subscribers. It's proven technology but requires careful configuration.
+
+```sql
+-- On primary
+CREATE PUBLICATION all_tables FOR ALL TABLES;
+
+-- On replica
+CREATE SUBSCRIPTION eu_replica
+  CONNECTION 'host=us-primary.example.com dbname=app'
+  PUBLICATION all_tables;
+```
+
+**Capabilities**:
+
+- Asynchronous replication (typically 50-500ms lag)
+- Selective table replication
+- Different indexes on replicas
+- Works with standard PostgreSQL
+
+**Limitations**:
+
+- No automatic failover
+- Sequences need special handling
+- Large transactions can cause replication delays
+- DDL changes require manual coordination
+
+**Best for**: Active-passive deployments where you control the application layer and can tolerate replication lag.
+
+### CockroachDB
+
+A distributed SQL database designed for multi-region deployment. It handles replication, conflict resolution, and automatic failover at the database layer.
+
+```sql
+-- Configure region for data residency
+ALTER DATABASE app PRIMARY REGION "us-east1";
+ALTER DATABASE app ADD REGION "eu-west1";
+ALTER DATABASE app ADD REGION "asia-southeast1";
+
+-- Tables can specify regional requirements
+ALTER TABLE users SET LOCALITY REGIONAL BY ROW;
+ALTER TABLE eu_users SET LOCALITY REGIONAL IN "eu-west1";
+```
+
+**Capabilities**:
+
+- Automatic multi-region replication
+- ACID transactions across regions (with latency cost)
+- Configurable data locality (critical for compliance)
+- Automatic failover and recovery
+
+**Limitations**:
+
+- More expensive than PostgreSQL
+- Global transactions add 100-200ms latency
+- Learning curve for distributed database patterns
+- Some PostgreSQL extensions not supported
+
+**Best for**: Applications requiring global writes with strong consistency, or strict data residency requirements baked into the database layer.
+
+### PlanetScale (Vitess)
+
+MySQL-compatible with built-in sharding and replication. A good middle ground between PostgreSQL simplicity and CockroachDB capabilities.
+
+```sql
+-- Create read-only replica in EU
+pscale branch create app eu-replica --region eu-west
+
+-- Route EU traffic to EU replica
+-- (handled at application layer with connection strings)
+```
+
+**Capabilities**:
+
+- Schema changes without downtime
+- Read replicas with automatic routing
+- Good developer experience
+- MySQL compatibility
+
+**Limitations**:
+
+- MySQL, not PostgreSQL
+- No true multi-primary (active-passive only)
+- Foreign key limitations on sharded deployments
+
+**Best for**: Teams already on MySQL who want managed multi-region with minimal operational burden.
+
+### Neon (Serverless Postgres)
+
+Neon separates storage from compute, which enables interesting multi-region patterns.
+
+```typescript
+// Read replicas can be created in different regions
+const neonConfig = {
+  primaryRegion: 'us-east-1',
+  readReplicas: ['eu-west-1', 'ap-southeast-1'],
+}
+```
+
+**Capabilities**:
+
+- PostgreSQL compatible
+- Branching for development/testing
+- Read replicas in multiple regions
+- Serverless scaling
+
+**Limitations**:
+
+- Newer technology (less battle-tested)
+- Write operations still hit primary region
+- Some PostgreSQL extensions unavailable
+
+**Best for**: Serverless deployments (Vercel, Cloudflare Workers) that need multi-region reads with PostgreSQL compatibility.
+
+---
+
+## Edge vs. Origin: What Goes Where
+
+Multi-region doesn't mean putting everything everywhere. Some data should live at the edge; some must stay at origin.
+
+### Edge Layer (CDN/Edge Compute)
+
+**Put these at the edge**:
+
+- Static assets (JS, CSS, images, fonts)
+- Public marketing pages
+- Cached API responses (with appropriate TTL)
+- Authentication token validation (JWTs)
+- Rate limiting and DDoS protection
+- Geographic routing decisions
+
+```typescript
+// Cloudflare Worker at edge
+export default {
+  async fetch(request: Request, env: Env) {
+    // JWT validation at edge - no origin round trip
+    const token = request.headers.get('Authorization')
+    const valid = await validateJWT(token, env.JWT_SECRET)
+
+    if (!valid) {
+      return new Response('Unauthorized', { status: 401 })
+    }
+
+    // Only hit origin if authenticated
+    return fetch(request)
+  }
+}
+```
+
+I've covered edge caching patterns in detail in [CDN Strategy](/blog/cdn-caching-strategy)—the key insight is that edge can handle 90%+ of requests for many applications.
+
+### Origin Layer (Regional Databases)
+
+**These must be regional or primary**:
+
+- Transactional data (orders, payments, subscriptions)
+- User authentication data (passwords, sessions)
+- Audit logs and compliance data
+- Real-time collaboration state
+- Business logic requiring consistency
+
+The line between edge and origin is determined by consistency requirements. If you can tolerate staleness (even 1 second), put it at the edge. If you need read-your-writes consistency, it stays at origin.
+
+### The Hybrid Pattern
+
+Most applications benefit from a hybrid approach:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│   EDGE (300+ locations)                                     │
+│   ├─ Static assets (cached forever)                         │
+│   ├─ Authentication (JWT validation)                        │
+│   ├─ Rate limiting                                          │
+│   └─ Cached API responses (products, content)               │
+│                                                             │
+│   REGIONAL (3-5 locations)                                  │
+│   ├─ Read replicas (user dashboards, reports)               │
+│   ├─ Session storage (Redis)                                │
+│   └─ Real-time connections (WebSockets)                     │
+│                                                             │
+│   PRIMARY (1-2 locations)                                   │
+│   ├─ Write operations                                       │
+│   ├─ Transactional processing                               │
+│   └─ Source of truth for all data                           │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Conflict Resolution
+
+If you choose active-active replication, you will have conflicts. Two users in different regions updating the same row at the same time. Two systems creating records with the same ID. The distributed systems literature has spent decades on this problem.
+
+### Last-Write-Wins (LWW)
+
+The simplest approach: timestamp every write, keep the latest.
+
+```typescript
+interface Record {
+  id: string
+  data: any
+  updatedAt: Date  // Used for conflict resolution
+}
+
+function resolveConflict(local: Record, remote: Record): Record {
+  return local.updatedAt > remote.updatedAt ? local : remote
+}
+```
+
+**Problem**: You lose data. If two users edit the same document, one edit disappears. Acceptable for some use cases (user preferences, analytics), catastrophic for others (financial transactions, medical records).
+
+**When to use**: Non-critical data where any valid value is acceptable.
+
+### CRDTs (Conflict-free Replicated Data Types)
+
+Data structures designed to merge automatically without conflicts. The academic solution to distributed consensus.
+
+```typescript
+// G-Counter: A CRDT for counting that never loses increments
+interface GCounter {
+  counts: Record<string, number>  // Node ID -> local count
+}
+
+function increment(counter: GCounter, nodeId: string): GCounter {
+  return {
+    counts: {
+      ...counter.counts,
+      [nodeId]: (counter.counts[nodeId] || 0) + 1,
+    },
+  }
+}
+
+function merge(a: GCounter, b: GCounter): GCounter {
+  const allNodes = new Set([...Object.keys(a.counts), ...Object.keys(b.counts)])
+  const counts: Record<string, number> = {}
+
+  for (const node of allNodes) {
+    counts[node] = Math.max(a.counts[node] || 0, b.counts[node] || 0)
+  }
+
+  return { counts }
+}
+
+function value(counter: GCounter): number {
+  return Object.values(counter.counts).reduce((a, b) => a + b, 0)
+}
+```
+
+CRDTs guarantee that all nodes converge to the same state regardless of message ordering. But they're complex to implement correctly, and not all data structures have CRDT equivalents.
+
+**When to use**: Collaborative editing (text, drawings), counters, sets. Libraries like Yjs and Automerge implement CRDTs for common use cases.
+
+### Application-Level Resolution
+
+For complex business logic, handle conflicts in your application code.
+
+```typescript
+async function resolveOrderConflict(
+  localOrder: Order,
+  remoteOrder: Order
+): Promise<Order> {
+  // Business rules for order conflicts
+
+  // Rule 1: Canceled orders take precedence
+  if (remoteOrder.status === 'canceled') return remoteOrder
+  if (localOrder.status === 'canceled') return localOrder
+
+  // Rule 2: Shipped orders can't be modified
+  if (localOrder.status === 'shipped') return localOrder
+  if (remoteOrder.status === 'shipped') return remoteOrder
+
+  // Rule 3: Merge line items (keep both, flag for review)
+  const mergedItems = mergeLineItems(localOrder.items, remoteOrder.items)
+
+  // Rule 4: Flag for manual review
+  return {
+    ...localOrder,
+    items: mergedItems,
+    conflictDetected: true,
+    conflictDetails: {
+      localVersion: localOrder,
+      remoteVersion: remoteOrder,
+      resolvedAt: new Date(),
+    },
+  }
+}
+```
+
+This is more work but lets you encode domain-specific logic. Most real-world applications end up here because business rules don't fit neatly into CRDTs.
+
+**When to use**: Any domain where conflicts have business meaning and require human judgment or specific rules.
+
+---
+
+## Cost Modeling
+
+Multi-region architecture costs more. Here's what to expect at different scales.
+
+### Infrastructure Costs
+
+| Scale | Single Region | Read Replicas (3 regions) | Active-Active (3 regions) |
+|-------|---------------|---------------------------|---------------------------|
+| 10K MAU | $500-1K/mo | $1.5-3K/mo | $3-6K/mo |
+| 100K MAU | $2-5K/mo | $6-15K/mo | $15-30K/mo |
+| 1M MAU | $10-25K/mo | $30-75K/mo | $75-150K/mo |
+
+**Read replicas** (3x): You're roughly tripling database costs, plus cross-region data transfer ($0.02-0.09/GB depending on provider).
+
+**Active-active** (5-6x): Distributed databases like CockroachDB cost more per node, plus you need more nodes for quorum requirements, plus cross-region transaction overhead.
+
+### Data Transfer Costs
+
+Cross-region data transfer is often the hidden cost that surprises teams.
+
+| Provider | Same Region | Cross-Region | Cross-Continent |
+|----------|-------------|--------------|-----------------|
+| AWS | Free | $0.02/GB | $0.02-0.09/GB |
+| GCP | Free | $0.01/GB | $0.05-0.08/GB |
+| Cloudflare | Free | Free* | Free* |
+
+*Cloudflare doesn't charge for egress on Workers/R2, which makes them attractive for multi-region deployments.
+
+### When Multi-Region Pays for Itself
+
+The cost math changes when you factor in:
+
+**1. Customer acquisition**: If 40% of your market is outside your primary region and churn is 10% higher due to latency, you're losing revenue.
+
+**2. Compliance requirements**: Losing a $500K enterprise deal because you can't meet data residency requirements costs more than $50K/year in infrastructure.
+
+**3. Availability**: Multi-region with automatic failover provides 99.99% availability vs. 99.9% for single-region. For a SaaS doing $1M ARR, that's the difference between 52 minutes and 8 hours of downtime per year.
+
+---
+
+## Migration Strategy: Single to Multi-Region
+
+You don't need to go multi-region overnight. Here's the incremental path.
+
+### Phase 1: Edge Caching (Week 1-2)
+
+Before touching databases, add CDN caching. This gives global performance improvements for read-heavy workloads with minimal risk.
+
+```typescript
+// Add cache headers to API responses
+export async function GET(request: Request) {
+  const data = await fetchProducts()
+
+  return Response.json(data, {
+    headers: {
+      'Cache-Control': 'public, max-age=60, stale-while-revalidate=300',
+      'CDN-Cache-Control': 'max-age=300',  // Longer CDN cache
+    },
+  })
+}
+```
+
+**Result**: 50-80% reduction in origin requests, global latency improvements for cached content.
+
+### Phase 2: Read Replicas (Week 2-4)
+
+Add read replicas in your secondary regions. Route read queries to the nearest replica.
+
+```typescript
+// Database routing based on request region
+function getDatabaseConnection(isWrite: boolean, region: string) {
+  if (isWrite) {
+    return connections.primary  // Always write to primary
+  }
+
+  // Read from nearest replica
+  const replicaMap = {
+    'us': connections.usReplica,
+    'eu': connections.euReplica,
+    'ap': connections.apReplica,
+  }
+
+  return replicaMap[region] || connections.primary
+}
+```
+
+**Result**: Local read latency for all regions. Writes still pay cross-region cost.
+
+### Phase 3: Regional Write Routing (Week 4-8)
+
+For applications where most writes are tenant-scoped, route tenants to their designated region.
+
+```typescript
+// Tenant-based region routing
+const tenantRegions: Record<string, string> = {
+  'tenant-eu-123': 'eu-west-1',
+  'tenant-us-456': 'us-east-1',
+  // Assigned at tenant creation based on billing address
+}
+
+function getWriteRegion(tenantId: string): string {
+  return tenantRegions[tenantId] || 'us-east-1'
+}
+```
+
+This works for multi-tenant SaaS where cross-tenant operations are rare. Each tenant's data lives in one region, eliminating cross-region write latency for most operations.
+
+If you're not already thinking about multi-tenancy at the database level, see [Multi-Tenancy Done Right: A Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls) for the foundation.
+
+### Phase 4: Active-Active (Month 2-6)
+
+If you genuinely need global write performance, migrate to a distributed database or implement custom replication with conflict resolution.
+
+This is the expensive step. Budget 2-6 months depending on data complexity and team experience with distributed systems.
+
+---
+
+## The Mistakes That Cost $500K
+
+I've seen multi-region migrations go wrong in predictable ways. These are the patterns from [The $500K Architecture Mistake I Helped a Startup Avoid](/blog/500k-architecture-mistake) applied to global distribution.
+
+### Mistake 1: Going Active-Active Too Early
+
+Active-active looks attractive on paper. Local latency everywhere. But the operational complexity is substantial:
+
+- Every table needs conflict resolution strategy
+- Cross-region transactions add 100-200ms latency anyway
+- Debugging distributed state is genuinely hard
+- Your team needs distributed systems expertise
+
+**The fix**: Start with active-passive. Most SaaS is 90%+ reads. Solve the read latency problem first. Only add active-active when write latency becomes the bottleneck.
+
+### Mistake 2: Ignoring Replication Lag
+
+Read replicas are asynchronously replicated. There's a delay—typically 50-500ms, but it can spike to seconds under load.
+
+```typescript
+// BUG: User creates order, immediately reads it, gets 404
+await db.order.create({ data: orderData })
+const order = await replicaDb.order.findUnique({ where: { id: orderId } })
+// order might be null if replica hasn't caught up
+```
+
+**The fix**: Read-your-writes consistency. After writes, subsequent reads for that user go to primary for a short window.
+
+```typescript
+// Set a cookie/header indicating "just wrote"
+response.headers.set('X-Read-Primary-Until', Date.now() + 5000)
+
+// On subsequent requests, check the header
+if (request.headers.get('X-Read-Primary-Until') > Date.now()) {
+  return primaryDb
+}
+return replicaDb
+```
+
+### Mistake 3: Forgetting About Sequences and UUIDs
+
+PostgreSQL sequences don't replicate well. If you have `SERIAL` primary keys, two regions will generate conflicting IDs.
+
+**The fix**: Use UUIDs for primary keys. Or use composite keys with region prefix. Or implement a distributed ID generator (Snowflake IDs).
+
+```typescript
+// UUID v7 - time-ordered and globally unique
+import { uuidv7 } from 'uuidv7'
+
+const orderId = uuidv7()  // 0190a523-1234-7abc-...
+```
+
+This is also covered in [Database Query Optimization for Scale](/blog/database-query-optimization)—proper indexing on UUIDs matters.
+
+---
+
+## Conclusion
+
+Multi-region architecture isn't about scale—it's about latency and compliance. The decision is driven by:
+
+1. **User location**: If 40%+ of users are outside your primary region, they're experiencing 200ms+ latency.
+2. **Regulatory requirements**: GDPR, data residency laws, and enterprise compliance requirements.
+3. **Availability targets**: Multi-region enables 99.99% availability with automatic failover.
+
+The implementation path:
+
+1. **Start with edge caching** for immediate latency wins
+2. **Add read replicas** for local read performance
+3. **Implement tenant-based routing** for regional write locality
+4. **Graduate to active-active** only when you have the engineering capacity for conflict resolution
+
+The cost is real—expect 3-6x infrastructure costs for true multi-region. But losing enterprise deals or churning international users costs more.
+
+Most startups don't need active-active on day one. They need smart caching, read replicas, and a clear migration path for when compliance requirements force their hand.
+
+---
+
+**Architecting a multi-region SaaS?** I help companies navigate the complexity of global distribution—from initial edge caching through full active-active deployment. Whether you're facing compliance requirements or latency complaints, I can help you find the right approach for your scale.
+
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Architecture review and guidance
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Multi-tenant global architecture
+- [PostgreSQL Development for SaaS](/services/postgresql-developer-for-saas) — Replication and optimization
+
+_This is part of a series on SaaS architecture. Related: [Multi-Tenancy Done Right](/blog/multi-tenancy-prisma-rls) covers the tenant isolation patterns that make regional routing possible._
