@@ -6,6 +6,7 @@ author: "Alex Mayhew"
 tags: ["architecture", "saas", "postgresql", "nextjs", "infrastructure"]
 category: "architecture"
 featured: true
+series: "SaaS Architecture"
 image: "/images/blog/anatomy-of-high-precision-saas-featured.webp"
 ---
 
@@ -14,6 +15,8 @@ image: "/images/blog/anatomy-of-high-precision-saas-featured.webp"
 ## TL;DR
 
 Building a B2B SaaS to 100,000 users isn't about choosing the "best" technology—it's about choosing the right constraints at the right time. Start on Vercel, implement Row-Level Security from day one, use tRPC for internal APIs, and plan your escape to AWS when bandwidth costs exceed $500/month. The architecture that gets you to 10k users is not the architecture that gets you to 100k.
+
+> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — a comprehensive guide to architecture decisions from MVP to scale.
 
 ---
 
@@ -575,3 +578,18 @@ If you want to go deeper on specific topics covered here:
 - [TypeScript Development for SaaS](/services/typescript-developer-for-saas) — Type-safe, production-ready code
 
 _Have questions about implementing this architecture? I work with 3-4 clients per year on projects like this. [Get in touch](/contact)._
+
+---
+
+## Continue Reading
+
+**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+
+### More in This Series
+
+- [The $500K Architecture Mistake](/blog/500k-architecture-mistake) — Why microservices aren't the answer
+- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) — Database isolation patterns
+- [Zero to 10K MRR SaaS Playbook](/blog/zero-to-10k-mrr-saas-playbook) — Early-stage architecture
+- [Boring Technology Wins](/blog/boring-technology-wins) — Technology selection philosophy
+
+**Ready to make better architecture decisions?** [Work with me](/services/technical-advisor-for-startups) on your SaaS architecture.

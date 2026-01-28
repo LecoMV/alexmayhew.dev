@@ -7,12 +7,15 @@ tags: ["architecture", "microservices", "startups", "monolith", "war-stories"]
 category: "architecture"
 readingTime: "11 min"
 featured: true
+series: "SaaS Architecture"
 image: "/images/blog/500k-architecture-mistake-featured.webp"
 ---
 
 ## TL;DR
 
 A fintech startup with 8 engineers and $3M ARR was planning a 6-month microservices migration. The "problems" they were solving—deployment coupling, scaling issues, team autonomy—had simpler solutions. We implemented those instead: feature flags, database read replicas, and team-based code ownership. Total time: 3 weeks. They're at $12M ARR now, still on the monolith, shipping features 4x faster than competitors who went microservices.
+
+> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — a comprehensive guide to architecture decisions from MVP to scale.
 
 ---
 
@@ -387,4 +390,17 @@ Usually, the answer isn't a 6-month migration. It's a 3-week improvement to what
 - [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Architecture review and guidance
 - [Full-Stack Development for Startups](/services/fullstack-developer-for-startups) — Building scalable monoliths
 
-_This is part of a series on practical architecture decisions. Related: [Why Boring Technology Wins](/blog/boring-technology-wins) makes the case for proven solutions over shiny new ones._
+---
+
+## Continue Reading
+
+**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+
+### More in This Series
+
+- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) — Database isolation patterns
+- [Zero to 10K MRR SaaS Playbook](/blog/zero-to-10k-mrr-saas-playbook) — Early-stage architecture
+- [Boring Technology Wins](/blog/boring-technology-wins) — Technology selection philosophy
+- [Tech Stack as Capital Allocation](/blog/tech-stack-capital-allocation) — Making stack decisions like investments
+
+**Ready to make better architecture decisions?** [Work with me](/services/technical-advisor-for-startups) on your SaaS architecture.

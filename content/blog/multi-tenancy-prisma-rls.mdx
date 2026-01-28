@@ -7,12 +7,15 @@ tags: ["postgresql", "prisma", "multi-tenancy", "security", "saas"]
 category: "architecture"
 readingTime: "16 min"
 featured: true
+series: "SaaS Architecture"
 image: "/images/blog/multi-tenancy-prisma-rls-featured.webp"
 ---
 
 ## TL;DR
 
 Schema-per-tenant breaks at 200-300 tenants (Prisma limitation). Database-per-tenant costs $50-100+/month per tenant. Shared tables + Row-Level Security scales indefinitely with negligible overhead. RLS from day one prevents the painful migration later. Pattern: Set `app.current_tenant_id` per-transaction, let Postgres enforce isolation at the query planner level.
+
+> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — a comprehensive guide to architecture decisions from MVP to scale.
 
 ---
 
@@ -620,4 +623,17 @@ Start with RLS. You can always scale up to more isolation. Scaling down from sch
 - [PostgreSQL Development for SaaS](/services/postgresql-developer-for-saas) — Database design and optimization
 - [TypeScript Development for SaaS](/services/typescript-developer-for-saas) — Type-safe tenant isolation
 
-_This is part of a series on building production SaaS applications. Next up: [Hunting Memory Leaks in Node.js: A Forensic Guide](/blog/nodejs-memory-leaks)._
+---
+
+## Continue Reading
+
+**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+
+### More in This Series
+
+- [The $500K Architecture Mistake](/blog/500k-architecture-mistake) — Why microservices aren't the answer
+- [Zero to 10K MRR SaaS Playbook](/blog/zero-to-10k-mrr-saas-playbook) — Early-stage architecture
+- [Boring Technology Wins](/blog/boring-technology-wins) — Technology selection philosophy
+- [Database Query Optimization](/blog/database-query-optimization) — From N+1 to optimal
+
+**Ready to make better architecture decisions?** [Work with me](/services/technical-advisor-for-startups) on your SaaS architecture.

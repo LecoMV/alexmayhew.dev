@@ -7,12 +7,15 @@ tags: ["observability", "monitoring", "sre", "devops", "infrastructure"]
 category: "infrastructure"
 readingTime: "14 min"
 featured: false
+series: "SaaS Architecture"
 image: "/images/blog/saas-reliability-monitoring-featured.webp"
 ---
 
 ## TL;DR
 
 Three pillars: logs for debugging, metrics for dashboards, traces for request flows. Golden signals: latency (P50/P95/P99), traffic (requests/sec), errors (rate and types), saturation (CPU/memory/connections). Alert on symptoms (user impact), not causes (high CPU). Build runbooks before you need them. Seed stage: Sentry + Checkly + PagerDuty. Series A: add Grafana Cloud. Series B+: evaluate Datadog or self-host with OpenTelemetry Collector.
+
+> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — a comprehensive guide to architecture decisions from MVP to scale.
 
 ---
 
@@ -661,3 +664,18 @@ For deeper dives into related topics, see my posts on [the Lambda tax and cold s
 ## Next Steps
 
 If you're building a SaaS and want to get observability right from the start—or you're struggling with alert fatigue and unclear incident response—I work with startups as a [technical advisor](/services/technical-advisor-for-startups). The cost of getting this wrong is measured in customer churn and engineer burnout. The cost of getting it right is a few hours of architectural guidance.
+
+---
+
+## Continue Reading
+
+**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+
+### More in This Series
+
+- [The $500K Architecture Mistake](/blog/500k-architecture-mistake) — Why microservices aren't the answer
+- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) — Database isolation patterns
+- [Zero to 10K MRR SaaS Playbook](/blog/zero-to-10k-mrr-saas-playbook) — Early-stage architecture
+- [Boring Technology Wins](/blog/boring-technology-wins) — Technology selection philosophy
+
+**Ready to make better architecture decisions?** [Work with me](/services/technical-advisor-for-startups) on your SaaS architecture.

@@ -7,12 +7,15 @@ tags: ["serverless", "aws", "performance", "devops"]
 category: "infrastructure"
 readingTime: "10 min"
 featured: false
+series: "SaaS Architecture"
 image: "/images/blog/lambda-tax-cold-starts-featured.webp"
 ---
 
 ## TL;DR
 
 Cold start: 100-500ms+ penalty (new container creation). Warm start: `<20ms` (reused container). Provisioned concurrency eliminates cold starts but adds cost. Go/Rust cold start ~100ms; Java/C# cold start ~1-2 seconds. Serverless wins for bursty workloads; loses for consistent traffic with latency requirements.
+
+> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — a comprehensive guide to architecture decisions from MVP to scale.
 
 ---
 
@@ -483,4 +486,17 @@ Measure before deciding. Measure after deploying. The data will tell you if serv
 - [Node.js Development for SaaS](/services/nodejs-developer-for-saas) — Serverless-optimized backends
 - [Python/FastAPI Development for SaaS](/services/python-developer-for-saas) — High-performance API design
 
-_This is part of a series on building production SaaS applications. Next up: [AI-Assisted Development: Navigating the Generative Debt Crisis](/blog/ai-assisted-development-generative-debt)._
+---
+
+## Continue Reading
+
+**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+
+### More in This Series
+
+- [The $500K Architecture Mistake](/blog/500k-architecture-mistake) — Why microservices aren't the answer
+- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) — Database isolation patterns
+- [Zero to 10K MRR SaaS Playbook](/blog/zero-to-10k-mrr-saas-playbook) — Early-stage architecture
+- [Boring Technology Wins](/blog/boring-technology-wins) — Technology selection philosophy
+
+**Ready to make better architecture decisions?** [Work with me](/services/technical-advisor-for-startups) on your SaaS architecture.

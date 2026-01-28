@@ -7,12 +7,15 @@ tags: ["saas", "architecture", "bootstrapping", "startup"]
 category: "business"
 readingTime: "11 min"
 featured: false
+series: "SaaS Architecture"
 image: "/images/blog/zero-to-10k-mrr-saas-playbook-featured.webp"
 ---
 
 ## TL;DR
 
 Your first $10k MRR requires customers, not Kubernetes. Database: Postgres on Neon ($0 to start). Backend: Hono on Cloudflare Workers ($0-5/month). Frontend: Next.js on Vercel (free tier). Auth: Clerk ($0 to 10k MAU). Payments: Stripe ($0 until revenue). Total infrastructure cost at launch: approximately $0. Stop building infrastructure and start building product.
+
+> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — a comprehensive guide to architecture decisions from MVP to scale.
 
 ---
 
@@ -352,4 +355,17 @@ Answer these questions before making any infrastructure decisions at scale. The 
 - [React Development for Startups](/services/react-developer-for-startups) — MVP to production-ready
 - [PostgreSQL Development for SaaS](/services/postgresql-developer-for-saas) — Scalable database architecture
 
-_This is part of a series on building production SaaS applications. Next up: [The Senior Developer Paradox: Why Expensive Talent Saves Money](/blog/senior-developer-paradox)._
+---
+
+## Continue Reading
+
+**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+
+### More in This Series
+
+- [The $500K Architecture Mistake](/blog/500k-architecture-mistake) — Why microservices aren't the answer
+- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) — Database isolation patterns
+- [Boring Technology Wins](/blog/boring-technology-wins) — Technology selection philosophy
+- [Build vs. Buy](/blog/build-vs-buy) — When free actually costs more
+
+**Ready to make better architecture decisions?** [Work with me](/services/technical-advisor-for-startups) on your SaaS architecture.
