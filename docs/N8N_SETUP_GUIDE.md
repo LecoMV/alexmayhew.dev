@@ -268,7 +268,10 @@ All prompts in this workflow follow the brand voice from `docs/VOICE_GUIDE.md`:
 - Workflow JSON: `docs/n8n-workflows/content-repurposing-workflow.json`
 - Voice Guide: `docs/VOICE_GUIDE.md`
 - LLM Prompts Reference: `docs/LLM_REPURPOSING_PROMPTS.md`
+- Content System Overview: `docs/CONTENT_REPURPOSING_SYSTEM.md`
+- LLM Stack Guide: `docs/SELF_HOSTED_LLM_GUIDE.md`
 - Implementation Roadmap: `docs/IMPLEMENTATION_ROADMAP.md`
+- Claude Config Guide: `docs/CLAUDE_CODE_CONFIG.md`
 
 ---
 

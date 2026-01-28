@@ -72,18 +72,51 @@ docs/                       # Implementation docs
 # LLM APIs for content repurposing
 pass show claude/groq/api-key           # Groq (Llama 3.3 70B, 14,400 req/day free)
 pass show claude/cloudflare/api-token   # Cloudflare Workers AI (already in wrangler)
+pass show claude/n8n/api-key            # n8n workflow automation
+pass show claude/buttondown/api-key     # Newsletter platform
 ```
 
-**LLM Stack:** See @docs/SELF_HOSTED_LLM_GUIDE.md
+## Content Repurposing Pipeline
 
-- Local: Ollama + Gemma 2 9B (RTX 3080 10GB)
-- Cloud: Groq API (free), Cloudflare Workers AI (free 10K neurons/day)
+**n8n Webhook:** `http://localhost:5678/webhook/content-repurpose`
+
+```bash
+# Test the pipeline
+curl -X POST http://localhost:5678/webhook/content-repurpose \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Post Title", "slug": "url-slug", "content": "Blog content..."}'
+```
+
+**Output:** LinkedIn carousel, Twitter thread, Newsletter section, Dev.to article
+
+See @docs/N8N_SETUP_GUIDE.md for full setup and troubleshooting.
+
+## LLM Stack
+
+See @docs/SELF_HOSTED_LLM_GUIDE.md for details.
+
+- **Local:** Ollama + Gemma 2 9B (RTX 3080 10GB)
+- **Cloud:** Groq API (free), Cloudflare Workers AI (free 10K neurons/day)
+- **Automation:** n8n (Podman container at localhost:5678)
 
 ## References
 
+### Core
+
 - Architecture: @docs/IMPLEMENTATION_PLAN.md
 - Deployment: @docs/DEPLOYMENT.md
-- Copy guidelines: @docs/COPY_AUDIT_REPORT.md
-- Marketing: @MARKETING_PLAN_2026.md
-- LLM Setup: @docs/SELF_HOSTED_LLM_GUIDE.md
+- Claude Config: @docs/CLAUDE_CODE_CONFIG.md
+
+### Content & Marketing
+
+- Voice Guide: @docs/VOICE_GUIDE.md (brand voice for all content)
+- n8n Setup: @docs/N8N_SETUP_GUIDE.md
+- LLM Prompts: @docs/LLM_REPURPOSING_PROMPTS.md
+- Content System: @docs/CONTENT_REPURPOSING_SYSTEM.md
 - Implementation Roadmap: @docs/IMPLEMENTATION_ROADMAP.md
+- Marketing Plan: @MARKETING_PLAN_2026.md
+
+### Technical
+
+- LLM Stack: @docs/SELF_HOSTED_LLM_GUIDE.md
+- Copy Audit: @docs/COPY_AUDIT_REPORT.md

@@ -433,8 +433,12 @@ use_when:
 ### Automation
 | Tool | Purpose | Cost |
 |------|---------|------|
-| **N8N** (self-hosted) | Cross-posting automation | Free |
+| **n8n** (Podman) | Content repurposing pipeline | Free |
 | **GitHub Actions** | Blog → notification workflows | Free |
+
+**n8n Webhook:** `http://localhost:5678/webhook/content-repurpose`
+- Input: `{title, slug, content}` → Output: LinkedIn, Twitter, Newsletter, Dev.to
+- See [N8N_SETUP_GUIDE.md](./N8N_SETUP_GUIDE.md) for full setup
 
 ---
 
