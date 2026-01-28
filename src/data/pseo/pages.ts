@@ -216,6 +216,8 @@ export const pseoPages: PseoPage[] = [
 			"postgresql-developer-for-saas",
 		],
 		relatedBlogPosts: [
+			"saas-architecture-decision-framework",
+			"modern-frontend-architecture",
 			"multi-tenancy-prisma-rls",
 			"rsc-edge-death-of-waterfall",
 			"zero-to-10k-mrr-saas-playbook",
@@ -402,7 +404,13 @@ export const pseoPages: PseoPage[] = [
 			"react-developer-for-saas",
 			"nodejs-developer-for-fintech",
 		],
-		relatedBlogPosts: ["optimistic-ui", "typescript-business-case", "lambda-tax-cold-starts"],
+		relatedBlogPosts: [
+			"modern-frontend-architecture",
+			"performance-engineering-playbook",
+			"optimistic-ui",
+			"typescript-business-case",
+			"lambda-tax-cold-starts",
+		],
 	},
 
 	// ===========================================================================
@@ -622,6 +630,8 @@ export const pseoPages: PseoPage[] = [
 			"typescript-developer-for-healthcare",
 		],
 		relatedBlogPosts: [
+			"ai-assisted-development-guide",
+			"saas-architecture-decision-framework",
 			"ai-assisted-development-generative-debt",
 			"multi-tenancy-prisma-rls",
 			"boring-technology-wins",
@@ -809,6 +819,8 @@ export const pseoPages: PseoPage[] = [
 			"technical-advisor-for-startups",
 		],
 		relatedBlogPosts: [
+			"saas-architecture-decision-framework",
+			"engineering-leadership-founder-to-cto",
 			"zero-to-10k-mrr-saas-playbook",
 			"boring-technology-wins",
 			"tech-stack-capital-allocation",
@@ -958,6 +970,8 @@ export const pseoPages: PseoPage[] = [
 			"technical-due-diligence-services",
 		],
 		relatedBlogPosts: [
+			"engineering-leadership-founder-to-cto",
+			"saas-architecture-decision-framework",
 			"senior-developer-paradox",
 			"technical-hiring-framework",
 			"build-vs-buy",
@@ -1146,6 +1160,8 @@ export const pseoPages: PseoPage[] = [
 			"technical-advisor-for-startups",
 		],
 		relatedBlogPosts: [
+			"modern-frontend-architecture",
+			"performance-engineering-playbook",
 			"lambda-tax-cold-starts",
 			"rsc-edge-death-of-waterfall",
 			"typescript-business-case",
@@ -1345,6 +1361,8 @@ export const pseoPages: PseoPage[] = [
 			"technical-advisor-for-startups",
 		],
 		relatedBlogPosts: [
+			"saas-architecture-decision-framework",
+			"modern-frontend-architecture",
 			"multi-tenancy-prisma-rls",
 			"boring-technology-wins",
 			"ai-assisted-development-generative-debt",
@@ -1557,7 +1575,13 @@ export const pseoPages: PseoPage[] = [
 			"fullstack-developer-for-startups",
 			"technical-advisor-for-startups",
 		],
-		relatedBlogPosts: ["rsc-edge-death-of-waterfall", "optimistic-ui", "boring-technology-wins"],
+		relatedBlogPosts: [
+			"modern-frontend-architecture",
+			"performance-engineering-playbook",
+			"rsc-edge-death-of-waterfall",
+			"optimistic-ui",
+			"boring-technology-wins",
+		],
 	},
 
 	// ===========================================================================
@@ -1753,7 +1777,13 @@ export const pseoPages: PseoPage[] = [
 			"typescript-developer-for-saas",
 			"fullstack-developer-for-startups",
 		],
-		relatedBlogPosts: ["optimistic-ui", "typescript-business-case", "rsc-edge-death-of-waterfall"],
+		relatedBlogPosts: [
+			"modern-frontend-architecture",
+			"saas-architecture-decision-framework",
+			"optimistic-ui",
+			"typescript-business-case",
+			"rsc-edge-death-of-waterfall",
+		],
 	},
 
 	// ===========================================================================
@@ -1948,7 +1978,13 @@ export const pseoPages: PseoPage[] = [
 			"react-developer-for-fintech",
 			"technical-advisor-for-startups",
 		],
-		relatedBlogPosts: ["boring-technology-wins", "typescript-business-case", "optimistic-ui"],
+		relatedBlogPosts: [
+			"modern-frontend-architecture",
+			"saas-architecture-decision-framework",
+			"boring-technology-wins",
+			"typescript-business-case",
+			"optimistic-ui",
+		],
 	},
 
 	// ===========================================================================
@@ -2144,7 +2180,13 @@ export const pseoPages: PseoPage[] = [
 			"fullstack-developer-for-startups",
 			"technical-advisor-for-startups",
 		],
-		relatedBlogPosts: ["lambda-tax-cold-starts", "boring-technology-wins", "build-vs-buy"],
+		relatedBlogPosts: [
+			"performance-engineering-playbook",
+			"saas-architecture-decision-framework",
+			"lambda-tax-cold-starts",
+			"boring-technology-wins",
+			"build-vs-buy",
+		],
 	},
 
 	// ===========================================================================
@@ -2341,6 +2383,8 @@ export const pseoPages: PseoPage[] = [
 			"technical-advisor-for-startups",
 		],
 		relatedBlogPosts: [
+			"performance-engineering-playbook",
+			"saas-architecture-decision-framework",
 			"typescript-business-case",
 			"boring-technology-wins",
 			"lambda-tax-cold-starts",
@@ -2551,6 +2595,8 @@ export const pseoPages: PseoPage[] = [
 			"technical-advisor-for-startups",
 		],
 		relatedBlogPosts: [
+			"ai-assisted-development-guide",
+			"saas-architecture-decision-framework",
 			"ai-assisted-development-generative-debt",
 			"boring-technology-wins",
 			"build-vs-buy",
@@ -2750,6 +2796,8 @@ export const pseoPages: PseoPage[] = [
 			"technical-advisor-for-startups",
 		],
 		relatedBlogPosts: [
+			"ai-assisted-development-guide",
+			"saas-architecture-decision-framework",
 			"ai-assisted-development-generative-debt",
 			"boring-technology-wins",
 			"multi-tenancy-prisma-rls",
@@ -2917,6 +2965,8 @@ export const pseoPages: PseoPage[] = [
 			"technical-advisor-for-startups",
 		],
 		relatedBlogPosts: [
+			"saas-architecture-decision-framework",
+			"performance-engineering-playbook",
 			"multi-tenancy-prisma-rls",
 			"boring-technology-wins",
 			"typescript-business-case",
@@ -3064,7 +3114,13 @@ export const pseoPages: PseoPage[] = [
 			"react-developer-for-saas",
 			"nextjs-developer-for-saas",
 		],
-		relatedBlogPosts: ["senior-developer-paradox", "boring-technology-wins", "build-vs-buy"],
+		relatedBlogPosts: [
+			"engineering-leadership-founder-to-cto",
+			"saas-architecture-decision-framework",
+			"senior-developer-paradox",
+			"boring-technology-wins",
+			"build-vs-buy",
+		],
 	},
 
 	// ===========================================================================
@@ -3208,6 +3264,8 @@ export const pseoPages: PseoPage[] = [
 			"technical-advisor-for-startups",
 		],
 		relatedBlogPosts: [
+			"engineering-leadership-founder-to-cto",
+			"saas-architecture-decision-framework",
 			"senior-developer-paradox",
 			"boring-technology-wins",
 			"technical-hiring-framework",
@@ -3353,7 +3411,13 @@ export const pseoPages: PseoPage[] = [
 			"fractional-cto-for-startups",
 			"performance-optimization-consultant",
 		],
-		relatedBlogPosts: ["boring-technology-wins", "build-vs-buy", "technical-hiring-framework"],
+		relatedBlogPosts: [
+			"saas-architecture-decision-framework",
+			"engineering-leadership-founder-to-cto",
+			"boring-technology-wins",
+			"build-vs-buy",
+			"technical-hiring-framework",
+		],
 	},
 
 	// ===========================================================================
@@ -3525,6 +3589,8 @@ export const pseoPages: PseoPage[] = [
 			"technical-due-diligence-consultant",
 		],
 		relatedBlogPosts: [
+			"performance-engineering-playbook",
+			"modern-frontend-architecture",
 			"lambda-tax-cold-starts",
 			"rsc-edge-death-of-waterfall",
 			"boring-technology-wins",
