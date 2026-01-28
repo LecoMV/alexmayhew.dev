@@ -37,14 +37,14 @@ The default choice for most teams. Pay per token, no infrastructure to manage.
 
 **Current Pricing (January 2026):**
 
-| Provider | Model | Input (per 1M tokens) | Output (per 1M tokens) |
-|----------|-------|----------------------|------------------------|
-| OpenAI | GPT-4o | $2.50 | $10.00 |
-| OpenAI | GPT-4o-mini | $0.15 | $0.60 |
-| Anthropic | Claude 3.5 Sonnet | $3.00 | $15.00 |
-| Anthropic | Claude 3.5 Haiku | $0.25 | $1.25 |
-| Groq | Llama 3.3 70B | $0.59 | $0.79 |
-| Google | Gemini 1.5 Pro | $1.25 | $5.00 |
+| Provider  | Model             | Input (per 1M tokens) | Output (per 1M tokens) |
+| --------- | ----------------- | --------------------- | ---------------------- |
+| OpenAI    | GPT-4o            | $2.50                 | $10.00                 |
+| OpenAI    | GPT-4o-mini       | $0.15                 | $0.60                  |
+| Anthropic | Claude 3.5 Sonnet | $3.00                 | $15.00                 |
+| Anthropic | Claude 3.5 Haiku  | $0.25                 | $1.25                  |
+| Groq      | Llama 3.3 70B     | $0.59                 | $0.79                  |
+| Google    | Gemini 1.5 Pro    | $1.25                 | $5.00                  |
 
 **When APIs Win:**
 
@@ -62,12 +62,12 @@ Run open-source models on your infrastructure. Fixed cost regardless of usage.
 
 **Infrastructure Options:**
 
-| Setup | Hardware | Monthly Cost | Capacity |
-|-------|----------|--------------|----------|
-| Development | RTX 3080 (10GB) | ~$0 (owned) | Llama 3.1 8B, ~100 tok/s |
-| Production (entry) | A10G (24GB) | $150-300 | Llama 3.1 70B Q4, ~30 tok/s |
-| Production (mid) | A100 40GB | $800-1,200 | Llama 3.1 70B FP16, ~50 tok/s |
-| Production (high) | 2x A100 80GB | $2,000-3,000 | Multiple models, high throughput |
+| Setup              | Hardware        | Monthly Cost | Capacity                         |
+| ------------------ | --------------- | ------------ | -------------------------------- |
+| Development        | RTX 3080 (10GB) | ~$0 (owned)  | Llama 3.1 8B, ~100 tok/s         |
+| Production (entry) | A10G (24GB)     | $150-300     | Llama 3.1 70B Q4, ~30 tok/s      |
+| Production (mid)   | A100 40GB       | $800-1,200   | Llama 3.1 70B FP16, ~50 tok/s    |
+| Production (high)  | 2x A100 80GB    | $2,000-3,000 | Multiple models, high throughput |
 
 **Amortized Cost per Token:**
 
@@ -89,11 +89,11 @@ Train a base model on your domain-specific data. Lower inference costs, higher q
 
 **Fine-Tuning Costs:**
 
-| Provider | Training Cost | Base Model | Notes |
-|----------|--------------|------------|-------|
-| OpenAI | $25/1M tokens | GPT-4o-mini | Managed, limited customization |
-| Together.ai | $0.002/1K tokens | Llama 3.1 | Full control, self-serve |
-| Self-hosted | GPU time only | Any open model | Maximum control |
+| Provider    | Training Cost    | Base Model     | Notes                          |
+| ----------- | ---------------- | -------------- | ------------------------------ |
+| OpenAI      | $25/1M tokens    | GPT-4o-mini    | Managed, limited customization |
+| Together.ai | $0.002/1K tokens | Llama 3.1      | Full control, self-serve       |
+| Self-hosted | GPU time only    | Any open model | Maximum control                |
 
 **When Fine-Tuning Wins:**
 
@@ -465,23 +465,25 @@ class BatchProcessor:
 ### Scenario 1: 10K Requests/Day (Early-Stage SaaS)
 
 **Usage Profile:**
+
 - 10,000 LLM requests/day
 - Average 800 tokens/request (input + output)
 - Mix: 70% simple, 20% moderate, 10% complex
 
 **API-Only Approach:**
 
-| Model | Token Volume | Cost/Month |
-|-------|--------------|------------|
-| GPT-4o (all) | 240M tokens | $2,400 |
-| GPT-4o-mini (all) | 240M tokens | $144 |
-| Hybrid (70/20/10 split) | 240M tokens | $264 |
+| Model                   | Token Volume | Cost/Month |
+| ----------------------- | ------------ | ---------- |
+| GPT-4o (all)            | 240M tokens  | $2,400     |
+| GPT-4o-mini (all)       | 240M tokens  | $144       |
+| Hybrid (70/20/10 split) | 240M tokens  | $264       |
 
 **Recommendation:** Use GPT-4o-mini for everything at this scale. $144/month doesn't justify self-hosting complexity.
 
 ### Scenario 2: 100K Requests/Day (Growth-Stage SaaS)
 
 **Usage Profile:**
+
 - 100,000 LLM requests/day
 - Average 1,200 tokens/request
 - Latency requirement: < 500ms P95
@@ -489,19 +491,20 @@ class BatchProcessor:
 
 **Cost Comparison:**
 
-| Approach | Monthly Cost | Notes |
-|----------|--------------|-------|
-| GPT-4o (all) | $36,000 | Simple but expensive |
-| GPT-4o-mini (all) | $2,160 | Acceptable quality for most tasks |
-| GPT-4o-mini + caching | $1,200 | 45% cache hit rate |
-| Self-hosted + API fallback | $2,800 | A100 + 20% API traffic |
-| Hybrid (local + caching + API) | $1,600 | Optimal for this profile |
+| Approach                       | Monthly Cost | Notes                             |
+| ------------------------------ | ------------ | --------------------------------- |
+| GPT-4o (all)                   | $36,000      | Simple but expensive              |
+| GPT-4o-mini (all)              | $2,160       | Acceptable quality for most tasks |
+| GPT-4o-mini + caching          | $1,200       | 45% cache hit rate                |
+| Self-hosted + API fallback     | $2,800       | A100 + 20% API traffic            |
+| Hybrid (local + caching + API) | $1,600       | Optimal for this profile          |
 
 **Recommendation:** Hybrid architecture with semantic caching. Self-hosted Llama 3.1 70B handles 80% of traffic. API fallback for complex queries. Semantic caching cuts remaining costs by 40%.
 
 ### Scenario 3: 1M Requests/Day (Enterprise Scale)
 
 **Usage Profile:**
+
 - 1,000,000 LLM requests/day
 - Average 1,500 tokens/request
 - Strict latency: < 200ms P99
@@ -510,13 +513,13 @@ class BatchProcessor:
 
 **Cost Comparison:**
 
-| Approach | Monthly Cost | Feasibility |
-|----------|--------------|-------------|
-| GPT-4o (all) | $450,000 | Not viable |
-| GPT-4o-mini (all) | $27,000 | Rate limits problematic |
-| Self-hosted cluster | $12,000 | 4x A100 cluster |
-| Self-hosted + caching | $7,000 | Reduced compute requirement |
-| Fine-tuned + self-hosted | $5,500 | Smaller model, same quality |
+| Approach                 | Monthly Cost | Feasibility                 |
+| ------------------------ | ------------ | --------------------------- |
+| GPT-4o (all)             | $450,000     | Not viable                  |
+| GPT-4o-mini (all)        | $27,000      | Rate limits problematic     |
+| Self-hosted cluster      | $12,000      | 4x A100 cluster             |
+| Self-hosted + caching    | $7,000       | Reduced compute requirement |
+| Fine-tuned + self-hosted | $5,500       | Smaller model, same quality |
 
 **Recommendation:** Fine-tuned Llama 3.1 8B (distilled from 70B behavior) running on 2x A100. Semantic caching reduces load by 60%. Total infrastructure: $5,500/month plus one-time $15K fine-tuning investment. Break-even vs API approach: 2 weeks.
 

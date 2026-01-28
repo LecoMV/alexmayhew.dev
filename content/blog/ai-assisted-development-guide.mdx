@@ -60,12 +60,12 @@ AI struggles—and often makes things worse—in other categories:
 
 ### The Build vs Buy Decision Matrix
 
-| Scenario | Recommendation | Threshold |
-|----------|---------------|-----------|
-| Commodity capability (summarization, classification) | API | < $5K/month at scale |
-| Domain-specific patterns, have labeled data | Fine-tuning | > 1,000 labeled examples |
-| Unique training data = competitive moat | Custom model | AI IS the product |
-| Speed-to-market critical, no ML team | API | Always start here |
+| Scenario                                             | Recommendation | Threshold                |
+| ---------------------------------------------------- | -------------- | ------------------------ |
+| Commodity capability (summarization, classification) | API            | < $5K/month at scale     |
+| Domain-specific patterns, have labeled data          | Fine-tuning    | > 1,000 labeled examples |
+| Unique training data = competitive moat              | Custom model   | AI IS the product        |
+| Speed-to-market critical, no ML team                 | API            | Always start here        |
 
 For a deeper dive into product strategy for AI features, including user research frameworks and rollout strategies, see [Building AI Features Users Actually Want](/blog/building-ai-features-users-want).
 
@@ -211,12 +211,12 @@ Build an evaluation suite:
 
 ```typescript
 interface PromptEval {
-  name: string;
-  prompt: string;
-  testCases: Array<{
-    input: string;
-    expectedOutput: string | RegExp | ((output: string) => boolean);
-  }>;
+	name: string;
+	prompt: string;
+	testCases: Array<{
+		input: string;
+		expectedOutput: string | RegExp | ((output: string) => boolean);
+	}>;
 }
 ```
 
@@ -255,12 +255,12 @@ Train a small classifier on query complexity. Route simple queries to cheap mode
 
 Typical RAG system cost distribution:
 
-| Component | Cost Share | Optimization Lever |
-|-----------|-----------|-------------------|
-| LLM calls | 60-70% | Caching, model routing, truncation |
-| Embeddings | 15-25% | Batch, self-host, cache |
-| Vector DB | 5-15% | Self-host, right-size |
-| Infrastructure | 5-10% | Standard optimization |
+| Component      | Cost Share | Optimization Lever                 |
+| -------------- | ---------- | ---------------------------------- |
+| LLM calls      | 60-70%     | Caching, model routing, truncation |
+| Embeddings     | 15-25%     | Batch, self-host, cache            |
+| Vector DB      | 5-15%      | Self-host, right-size              |
+| Infrastructure | 5-10%      | Standard optimization              |
 
 Focus optimization effort proportional to cost share. LLM calls dominate—optimize there first.
 
@@ -390,10 +390,10 @@ AI features are probabilistic. They will behave differently than users expect at
 
 Engagement metrics lie. A user who clicks on AI suggestions twenty times and ignores all of them is not getting value.
 
-| Vanity Metric | Outcome Metric |
-|--------------|----------------|
-| "Used AI suggestions 50 times" | "Published 30% more content" |
-| "Made 1,000 AI searches" | "Found answer 40% faster" |
+| Vanity Metric                  | Outcome Metric                        |
+| ------------------------------ | ------------------------------------- |
+| "Used AI suggestions 50 times" | "Published 30% more content"          |
+| "Made 1,000 AI searches"       | "Found answer 40% faster"             |
 | "Showed 5,000 recommendations" | "Recommendations clicked + used: 23%" |
 
 For the complete product strategy framework, see [Building AI Features Users Actually Want](/blog/building-ai-features-users-want).

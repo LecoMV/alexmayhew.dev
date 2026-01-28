@@ -36,13 +36,13 @@ This framework is the decision tree I use when advising startups. It maps each c
 
 SaaS architecture decisions fall into five categories, each with different reversibility profiles:
 
-| Decision Category    | Reversibility | Cost to Change at $1M ARR | When to Decide |
-| -------------------- | ------------- | ------------------------- | -------------- |
-| Multi-tenancy model  | Very Low      | 6-12 months engineering   | Day 1          |
-| Database selection   | Low           | 3-6 months + data risk    | Day 1          |
+| Decision Category    | Reversibility | Cost to Change at $1M ARR | When to Decide      |
+| -------------------- | ------------- | ------------------------- | ------------------- |
+| Multi-tenancy model  | Very Low      | 6-12 months engineering   | Day 1               |
+| Database selection   | Low           | 3-6 months + data risk    | Day 1               |
 | Deployment model     | High          | 2-4 weeks                 | When economics flip |
-| Framework/language   | Medium        | 2-6 months selective      | Day 1, evolve  |
-| Caching/optimization | Very High     | Days to weeks             | When measured  |
+| Framework/language   | Medium        | 2-6 months selective      | Day 1, evolve       |
+| Caching/optimization | Very High     | Days to weeks             | When measured       |
 
 The irreversible decisions must be made correctly from the start. The reversible ones can evolve as your understanding deepens.
 
@@ -113,14 +113,14 @@ The detailed stack breakdown—what to use at each revenue milestone and why—i
 
 ### The MVP Cost Structure
 
-| Service            | Cost   | Purpose                       |
-| ------------------ | ------ | ----------------------------- |
-| Neon (Postgres)    | $0     | Database with RLS             |
-| Cloudflare Workers | $0     | API layer                     |
-| Vercel             | $0     | Next.js frontend              |
-| Clerk              | $0     | Auth (free to 10k MAU)        |
+| Service            | Cost   | Purpose                          |
+| ------------------ | ------ | -------------------------------- |
+| Neon (Postgres)    | $0     | Database with RLS                |
+| Cloudflare Workers | $0     | API layer                        |
+| Vercel             | $0     | Next.js frontend                 |
+| Clerk              | $0     | Auth (free to 10k MAU)           |
 | Stripe             | $0     | Payments (only costs at revenue) |
-| **Total**          | **$0** | Until you have paying customers |
+| **Total**          | **$0** | Until you have paying customers  |
 
 Yes, you can run production SaaS for free until revenue justifies infrastructure investment. The cloud providers want you to succeed so you'll scale with them.
 
@@ -146,13 +146,13 @@ For latency-critical paths, provisioned concurrency eliminates cold starts but a
 
 ### The Migration Decision Matrix
 
-| Trigger                           | Threshold            | Action                |
-| --------------------------------- | -------------------- | --------------------- |
-| Bandwidth cost                    | >1.5TB/month         | Evaluate AWS          |
-| Cold start latency                | P99 > 500ms          | Provisioned concurrency or containers |
-| Function timeout                  | Jobs >60 seconds     | Dedicated workers     |
-| Compliance requirement            | Static IP needed     | AWS migration         |
-| Database connections              | >200 concurrent      | Connection pooler     |
+| Trigger                | Threshold        | Action                                |
+| ---------------------- | ---------------- | ------------------------------------- |
+| Bandwidth cost         | >1.5TB/month     | Evaluate AWS                          |
+| Cold start latency     | P99 > 500ms      | Provisioned concurrency or containers |
+| Function timeout       | Jobs >60 seconds | Dedicated workers                     |
+| Compliance requirement | Static IP needed | AWS migration                         |
+| Database connections   | >200 concurrent  | Connection pooler                     |
 
 The detailed migration playbook—including the 4-week cutover timeline—is in [The Anatomy of a High-Precision SaaS: From Zero to 100k Users](/blog/anatomy-of-high-precision-saas).
 
@@ -214,12 +214,12 @@ Early-stage advice is "buy everything that isn't core differentiation." At scale
 
 **When Buy Becomes Build**
 
-| Component    | Buy Threshold      | Build Trigger                      |
-| ------------ | ------------------ | ---------------------------------- |
-| Auth         | Under $50k MRR     | Custom requirements, over $500/month |
-| Billing      | Under $10M GMV     | Complex usage-based, 2.9% matters  |
-| Email        | Under $100k MRR    | Deliverability becomes competitive |
-| Search       | Under $100k MRR    | Search IS the product              |
+| Component | Buy Threshold   | Build Trigger                        |
+| --------- | --------------- | ------------------------------------ |
+| Auth      | Under $50k MRR  | Custom requirements, over $500/month |
+| Billing   | Under $10M GMV  | Complex usage-based, 2.9% matters    |
+| Email     | Under $100k MRR | Deliverability becomes competitive   |
+| Search    | Under $100k MRR | Search IS the product                |
 
 The decision framework—including the true cost calculation for auth and billing—is in [The Build vs. Buy Decision: When Free Actually Costs More](/blog/build-vs-buy).
 
@@ -284,11 +284,11 @@ This is the most consequential decision you'll make, and it must be made correct
 
 ### Model Comparison
 
-| Model                 | Tenant Limit | Migration Complexity | Isolation Level | Monthly Cost (500 tenants) |
-| --------------------- | ------------ | -------------------- | --------------- | -------------------------- |
-| Database-per-tenant   | ~50          | Per-tenant           | Maximum         | $25,000-50,000             |
-| Schema-per-tenant     | ~200-300     | Per-schema           | High            | $500-1,000                 |
-| Shared tables + RLS   | Unlimited    | Single migration     | Database-enforced | $200-500                 |
+| Model               | Tenant Limit | Migration Complexity | Isolation Level   | Monthly Cost (500 tenants) |
+| ------------------- | ------------ | -------------------- | ----------------- | -------------------------- |
+| Database-per-tenant | ~50          | Per-tenant           | Maximum           | $25,000-50,000             |
+| Schema-per-tenant   | ~200-300     | Per-schema           | High              | $500-1,000                 |
+| Shared tables + RLS | Unlimited    | Single migration     | Database-enforced | $200-500                   |
 
 **Database-per-tenant** offers maximum isolation but impossible operations at scale. Running a migration across 5,000 databases is a multi-day operation requiring custom tooling.
 
@@ -323,11 +323,11 @@ Deployment architecture should evolve with your economics, not your ego.
 
 ### Phase-Based Deployment Strategy
 
-| Phase    | Revenue      | Model                        | Infrastructure Cost |
-| -------- | ------------ | ---------------------------- | ------------------- |
-| Phase 1  | $0-50k MRR   | Vercel Pro                   | $100-500/month      |
-| Phase 2  | $50k-200k    | Vercel + selective edge      | $500-2,000/month    |
-| Phase 3  | $200k+       | AWS ECS/Fargate or hybrid    | $300-800 + labor    |
+| Phase   | Revenue    | Model                     | Infrastructure Cost |
+| ------- | ---------- | ------------------------- | ------------------- |
+| Phase 1 | $0-50k MRR | Vercel Pro                | $100-500/month      |
+| Phase 2 | $50k-200k  | Vercel + selective edge   | $500-2,000/month    |
+| Phase 3 | $200k+     | AWS ECS/Fargate or hybrid | $300-800 + labor    |
 
 The counterintuitive insight: AWS is often cheaper at scale but more expensive at the start. A minimal high-availability AWS setup (NAT Gateway, ALB, monitoring) runs $150/month before deploying code. On Vercel, that's $0.
 
@@ -345,12 +345,12 @@ The complete RSC and edge deployment guide—including the migration strategy fr
 
 ### Cold Start Mitigation
 
-| Runtime    | Cold Start | Strategy                     |
-| ---------- | ---------- | ---------------------------- |
-| Go/Rust    | 100-200ms  | Acceptable for most paths    |
-| Node.js    | 200-400ms  | Provisioned concurrency for critical paths |
-| Java       | 500ms-2s   | SnapStart required           |
-| Python+ML  | 5-30s      | Always-on containers         |
+| Runtime   | Cold Start | Strategy                                   |
+| --------- | ---------- | ------------------------------------------ |
+| Go/Rust   | 100-200ms  | Acceptable for most paths                  |
+| Node.js   | 200-400ms  | Provisioned concurrency for critical paths |
+| Java      | 500ms-2s   | SnapStart required                         |
+| Python+ML | 5-30s      | Always-on containers                       |
 
 For user-facing APIs where P99 latency must stay under 200ms, serverless is the wrong model. You need always-on containers or provisioned concurrency.
 
@@ -424,11 +424,11 @@ Not all migrations are equal. Understanding which changes are strategic versus o
 
 ### Migration Type Matrix
 
-| Type           | Trigger                       | Timeline    | Risk Level |
-| -------------- | ----------------------------- | ----------- | ---------- |
-| Strategic      | Architecture limits business  | 3-12 months | High       |
-| Optimization   | Performance/cost threshold    | 2-6 weeks   | Medium     |
-| Maintenance    | Security/EOL/compliance       | 1-4 weeks   | Low        |
+| Type         | Trigger                      | Timeline    | Risk Level |
+| ------------ | ---------------------------- | ----------- | ---------- |
+| Strategic    | Architecture limits business | 3-12 months | High       |
+| Optimization | Performance/cost threshold   | 2-6 weeks   | Medium     |
+| Maintenance  | Security/EOL/compliance      | 1-4 weeks   | Low        |
 
 **Strategic migrations** (monolith → microservices, cloud → on-prem) consume 12-24 months of engineering capacity. The bar should be very high—clear evidence that current architecture blocks business goals, not theoretical concerns.
 
@@ -455,30 +455,30 @@ If you can't answer these confidently, you're not ready to migrate. Optimize wit
 
 ### Day 1 Decisions (Irreversible)
 
-| Decision             | Correct Choice                    | Cost of Changing Later |
-| -------------------- | --------------------------------- | ---------------------- |
-| Multi-tenancy        | Shared tables + RLS               | 6-12 months            |
-| Database             | PostgreSQL                        | 3-6 months + data risk |
-| Tenant isolation     | tenant_id in every table          | 2-4 months             |
-| Index strategy       | Tenant-leading composite indexes  | Ongoing performance debt |
+| Decision         | Correct Choice                   | Cost of Changing Later   |
+| ---------------- | -------------------------------- | ------------------------ |
+| Multi-tenancy    | Shared tables + RLS              | 6-12 months              |
+| Database         | PostgreSQL                       | 3-6 months + data risk   |
+| Tenant isolation | tenant_id in every table         | 2-4 months               |
+| Index strategy   | Tenant-leading composite indexes | Ongoing performance debt |
 
 ### Stage-Dependent Decisions (Evolve with Revenue)
 
-| Decision             | $0-10k MRR        | $10k-100k MRR     | $100k+ MRR         |
-| -------------------- | ----------------- | ----------------- | ------------------ |
-| Deployment           | Vercel            | Evaluate cliffs   | AWS if economics flip |
-| Caching              | None              | Database level    | Redis + CDN        |
-| Connection pooling   | Managed (Supabase)| Supavisor/PgBouncer | Dedicated cluster |
-| Background jobs      | Trigger.dev       | Same + workers    | Dedicated queues   |
+| Decision           | $0-10k MRR         | $10k-100k MRR       | $100k+ MRR            |
+| ------------------ | ------------------ | ------------------- | --------------------- |
+| Deployment         | Vercel             | Evaluate cliffs     | AWS if economics flip |
+| Caching            | None               | Database level      | Redis + CDN           |
+| Connection pooling | Managed (Supabase) | Supavisor/PgBouncer | Dedicated cluster     |
+| Background jobs    | Trigger.dev        | Same + workers      | Dedicated queues      |
 
 ### Never Decisions (At Most Scales)
 
-| Temptation           | Reality                           | Exception             |
-| -------------------- | --------------------------------- | --------------------- |
-| Microservices        | Overhead exceeds benefit          | >50 engineers         |
-| Kubernetes           | Operational complexity too high   | Dedicated platform team |
-| Custom auth          | 6 weeks + ongoing patches         | Auth IS the product   |
-| GraphQL for internal | Ceremony without benefit          | Mobile apps + third-party devs |
+| Temptation           | Reality                         | Exception                      |
+| -------------------- | ------------------------------- | ------------------------------ |
+| Microservices        | Overhead exceeds benefit        | >50 engineers                  |
+| Kubernetes           | Operational complexity too high | Dedicated platform team        |
+| Custom auth          | 6 weeks + ongoing patches       | Auth IS the product            |
+| GraphQL for internal | Ceremony without benefit        | Mobile apps + third-party devs |
 
 ---
 
@@ -501,22 +501,27 @@ The companies that reach $1M ARR aren't the ones with the most sophisticated arc
 This hub connects to the complete SaaS Architecture series:
 
 ### Foundation
+
 - [From Zero to $10k MRR: The SaaS Bootstrapper's Technical Playbook](/blog/zero-to-10k-mrr-saas-playbook) — Stage-specific stack recommendations
 - [The Anatomy of a High-Precision SaaS: From Zero to 100k Users](/blog/anatomy-of-high-precision-saas) — Complete architecture deep-dive
 
 ### Multi-Tenancy
+
 - [Multi-Tenancy Done Right: A Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls) — Implementation patterns with code
 
 ### Technology Selection
+
 - [Choosing Your Startup's Tech Stack: A Capital Allocation Framework](/blog/tech-stack-capital-allocation) — TCO and hiring liquidity analysis
 - [Why Boring Technology Wins: Lessons from Unicorn Migrations](/blog/boring-technology-wins) — Case studies from Segment, Prime Video, Discord
 - [The Build vs. Buy Decision: When Free Actually Costs More](/blog/build-vs-buy) — True cost calculation framework
 
 ### Infrastructure
+
 - [The Lambda Tax: Cold Starts and the True Cost of Serverless](/blog/lambda-tax-cold-starts) — Serverless economics analysis
 - [RSC, The Edge, and the Death of the Waterfall](/blog/rsc-edge-death-of-waterfall) — Modern deployment patterns
 
 ### Architecture Decisions
+
 - [The $500K Architecture Mistake I Helped a Startup Avoid](/blog/500k-architecture-mistake) — When not to migrate to microservices
 
 ---
