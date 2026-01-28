@@ -8,11 +8,14 @@ category: "frontend"
 readingTime: "14 min"
 featured: false
 image: "/images/blog/core-web-vitals-optimization-featured.webp"
+series: "Performance Engineering"
 ---
 
 ## TL;DR
 
 LCP < 2.5s, INP < 200ms, CLS < 0.1. That's the target. The quick wins: preload LCP images, defer third-party scripts, use `next/font` with `display: swap`, reserve space for dynamic content. I've seen LCP improvements of 40% just from fixing image preloading and font loading strategies. INP—the FID replacement since March 2024—requires attention to JavaScript execution time, not just initial load. Every 100ms of delay costs 1% in conversions.
+
+> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — from TTFB to TTI optimization.
 
 ---
 
@@ -695,4 +698,16 @@ The business case is clear: faster sites convert better. Every 100ms you shave o
 - [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Performance-first architecture
 - [React Development for SaaS](/services/react-developer-for-saas) — Component optimization and rendering strategies
 
-_This is part of a series on building production SaaS applications. Related posts: [RSC, The Edge, and the Death of the Waterfall](/blog/rsc-edge-death-of-waterfall), [Optimistic UI: Making Apps Feel Faster Than Physics Allows](/blog/optimistic-ui), [Tailwind vs Component Libraries: A Measured Comparison](/blog/tailwind-vs-component-libraries)._
+---
+
+## Continue Reading
+
+**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — covering Core Web Vitals, database optimization, edge computing, and monitoring.
+
+### More in This Series
+
+- [CDN Caching Strategy](/blog/cdn-caching-strategy) — Edge caching patterns
+- [RSC Edge: Death of the Waterfall](/blog/rsc-edge-death-of-waterfall) — Server Components performance
+- [Node.js Memory Leaks](/blog/nodejs-memory-leaks) — Detection and prevention
+
+**Need performance optimization?** [Work with me](/services/performance-optimization-consultant) on your web performance.

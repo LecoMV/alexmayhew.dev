@@ -8,11 +8,14 @@ category: "infrastructure"
 readingTime: "13 min"
 featured: false
 image: "/images/blog/nodejs-memory-leaks-featured.webp"
+series: "Performance Engineering"
 ---
 
 ## TL;DR
 
 New Space (Scavenger): fast, small objects—where most allocations happen. Old Space (Mark-Sweep-Compact): long-lived objects—where leaks hide. Three-Snapshot Technique: Baseline → Action → Compare. Container rule: `--max-old-space-size` = container RAM × 0.75. Leaks are bugs with systematic causes, not mysteries.
+
+> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — from TTFB to TTI optimization.
 
 ---
 
@@ -507,4 +510,16 @@ Set up production monitoring before you need it. When heap usage starts climbing
 - [Node.js Development for Fintech](/services/nodejs-developer-for-fintech) — High-reliability backends
 - [Node.js Development for E-commerce](/services/nodejs-developer-for-ecommerce) — Performance at scale
 
-_This is part of a series on building production SaaS applications. Next up: [Optimistic UI: Making Apps Feel Faster Than Physics Allows](/blog/optimistic-ui)._
+---
+
+## Continue Reading
+
+**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — covering Core Web Vitals, database optimization, edge computing, and monitoring.
+
+### More in This Series
+
+- [Core Web Vitals Optimization](/blog/core-web-vitals-optimization) — LCP, INP, CLS deep dive
+- [CDN Caching Strategy](/blog/cdn-caching-strategy) — Edge caching patterns
+- [RSC Edge: Death of the Waterfall](/blog/rsc-edge-death-of-waterfall) — Server Components performance
+
+**Need performance optimization?** [Work with me](/services/performance-optimization-consultant) on your web performance.

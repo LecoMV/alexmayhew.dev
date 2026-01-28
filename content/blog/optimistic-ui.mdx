@@ -8,11 +8,14 @@ category: "frontend"
 readingTime: "12 min"
 featured: false
 image: "/images/blog/optimistic-ui-featured.webp"
+series: "Frontend Architecture"
 ---
 
 ## TL;DR
 
 100ms feels instant; 1 second breaks flow. Optimistic UI updates the client immediately while the server processes. React Query: `onMutate` for cache manipulation, `onError` for rollback. SWR: `optimisticData` parameter. Next.js: `useOptimistic` hook. Don't use for financial transactions or scarce inventory.
+
+> **Part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** — design systems, component patterns, and Server Components.
 
 ---
 
@@ -433,4 +436,17 @@ Don't use it for money, scarcity, or irreversibility—where the cost of false c
 - [React Development for E-commerce](/services/react-developer-for-ecommerce) — Fast, conversion-optimized UIs
 - [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Full-stack performance
 
-_This is part of a series on building production SaaS applications. Next up: [The Designer-Developer Handoff: From Friction to Flow](/blog/designer-developer-handoff)._
+---
+
+## Continue Reading
+
+**This post is part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** — covering design systems, component APIs, CSS strategy, and React Server Components.
+
+### More in This Series
+
+- [Neo-Brutalism Developer Guide](/blog/neo-brutalism-developer-guide) — Design philosophy implementation
+- [Component API Design](/blog/component-api-design) — Props, variants, composition
+- [Design Tokens Beyond Color](/blog/design-tokens-comprehensive) — Typography, spacing, elevation
+- [Tailwind vs Component Libraries](/blog/tailwind-vs-component-libraries) — CSS strategy comparison
+
+**Building a design system?** [Work with me](/services/react-developer-for-saas) on your frontend architecture.

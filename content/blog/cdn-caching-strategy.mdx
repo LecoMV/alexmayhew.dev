@@ -8,11 +8,14 @@ category: "infrastructure"
 readingTime: "12 min"
 featured: false
 image: "/images/blog/cdn-caching-strategy-featured.webp"
+series: "Performance Engineering"
 ---
 
 ## TL;DR
 
 Cache static assets aggressively (1 year with content hashing). Cache API responses cautiously (stale-while-revalidate patterns). Never cache authenticated responses without Vary headers. Use version strings or tag-based purging—never purge everything. Edge computing beats traditional CDN when you need personalization without sacrificing cache hits. A properly tuned CDN delivers 90%+ cache hit ratios and sub-50ms TTFB globally.
+
+> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — from TTFB to TTI optimization.
 
 ---
 
@@ -617,4 +620,16 @@ The decision framework is straightforward: aggressive caching for static assets,
 - [High-Precision SaaS Architecture](/blog/anatomy-of-high-precision-saas) — Building performant production systems
 - [The Lambda Tax](/blog/lambda-tax-cold-starts) — When serverless caching decisions matter most
 
-_This is part of a series on building production SaaS applications. Related: [RSC, The Edge, and the Death of the Waterfall](/blog/rsc-edge-death-of-waterfall)._
+---
+
+## Continue Reading
+
+**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — covering Core Web Vitals, database optimization, edge computing, and monitoring.
+
+### More in This Series
+
+- [Core Web Vitals Optimization](/blog/core-web-vitals-optimization) — LCP, INP, CLS deep dive
+- [RSC Edge: Death of the Waterfall](/blog/rsc-edge-death-of-waterfall) — Server Components performance
+- [Node.js Memory Leaks](/blog/nodejs-memory-leaks) — Detection and prevention
+
+**Need performance optimization?** [Work with me](/services/performance-optimization-consultant) on your web performance.

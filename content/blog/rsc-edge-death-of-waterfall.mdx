@@ -8,11 +8,14 @@ category: "architecture"
 readingTime: "12 min"
 featured: false
 image: "/images/blog/rsc-edge-death-of-waterfall-featured.webp"
+series: "Performance Engineering"
 ---
 
 ## TL;DR
 
 Traditional SPA: HTML → JS → Render → Fetch → Render (waterfall). RSC + Edge: Server renders at edge (300+ locations), streams HTML immediately, ships minimal JS. Result: sub-50ms Time to First Byte globally, zero client-side fetch waterfall. The mental model: Server Components for data, Client Components for interactivity.
+
+> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — from TTFB to TTI optimization.
 
 ---
 
@@ -415,4 +418,16 @@ Start with your next feature. Build it with RSC. Measure the difference. The wat
 - [React Development for SaaS](/services/react-developer-for-saas) — Server Components and streaming
 - [Next.js Development for E-commerce](/services/nextjs-developer-for-ecommerce) — Edge-optimized storefronts
 
-_This is part of a series on building production SaaS applications. Next up: [Multi-Tenancy Done Right: A Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls)._
+---
+
+## Continue Reading
+
+**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — covering Core Web Vitals, database optimization, edge computing, and monitoring.
+
+### More in This Series
+
+- [Core Web Vitals Optimization](/blog/core-web-vitals-optimization) — LCP, INP, CLS deep dive
+- [CDN Caching Strategy](/blog/cdn-caching-strategy) — Edge caching patterns
+- [Node.js Memory Leaks](/blog/nodejs-memory-leaks) — Detection and prevention
+
+**Need performance optimization?** [Work with me](/services/performance-optimization-consultant) on your web performance.
