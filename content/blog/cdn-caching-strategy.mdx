@@ -1,0 +1,620 @@
+---
+title: "CDN Strategy: When to Cache, What to Cache, How to Invalidate"
+description: "A properly configured CDN reduces origin load by 90%+ and cuts TTFB from 800ms to 50ms. Here's the caching strategy that actually works—without serving stale data to your users."
+date: "2026-01-28"
+author: "Alex Mayhew"
+tags: ["cdn", "caching", "performance", "infrastructure", "cloudflare"]
+category: "infrastructure"
+readingTime: "12 min"
+featured: false
+image: "/images/blog/cdn-caching-strategy-featured.webp"
+---
+
+## TL;DR
+
+Cache static assets aggressively (1 year with content hashing). Cache API responses cautiously (stale-while-revalidate patterns). Never cache authenticated responses without Vary headers. Use version strings or tag-based purging—never purge everything. Edge computing beats traditional CDN when you need personalization without sacrificing cache hits. A properly tuned CDN delivers 90%+ cache hit ratios and sub-50ms TTFB globally.
+
+---
+
+## The Caching Hierarchy
+
+Every request to your application traverses multiple cache layers. Understanding this hierarchy is the difference between serving content in 50ms and 800ms.
+
+### Layer 1: Browser Cache
+
+The browser maintains its own cache, controlled by response headers. This is the fastest cache—zero network latency.
+
+```
+Cache-Control: max-age=31536000, immutable
+```
+
+With `immutable`, the browser won't even revalidate. The asset serves instantly from disk.
+
+**Limitation**: You control what gets cached, but you can't invalidate it. Once a browser has a cached asset, only its expiration or a URL change will refresh it.
+
+### Layer 2: CDN Edge Cache
+
+CDN nodes (Cloudflare, Fastly, CloudFront) cache responses at 300+ locations globally. The nearest edge serves the response—typically 10-50ms latency instead of 100-300ms to origin.
+
+I've seen CDN optimization reduce bandwidth costs by 73% while simultaneously improving TTFB from 800ms to 50ms. The key is understanding what to cache and for how long.
+
+### Layer 3: Origin Cache
+
+Your origin server can implement its own cache layer—Redis, Varnish, or application-level caching. This reduces database load but still requires the network round trip to origin.
+
+**The pattern**: Browser cache for static assets, CDN cache for shared responses, origin cache for expensive computations.
+
+---
+
+## What to Cache: The Decision Framework
+
+Not everything should be cached. Not everything should be uncached. Here's the framework I use.
+
+### Tier 1: Cache Aggressively (Static Assets)
+
+These never change for a given URL:
+
+| Asset Type       | Cache Duration | Strategy                |
+| ---------------- | -------------- | ----------------------- |
+| JS bundles       | 1 year         | Content hash in URL     |
+| CSS files        | 1 year         | Content hash in URL     |
+| Images           | 1 year         | Content hash or version |
+| Fonts            | 1 year         | Immutable               |
+| Favicon/manifest | 1 week         | Short TTL, small files  |
+
+```typescript
+// Next.js automatically handles this
+// _next/static/chunks/main-[hash].js
+// Cache-Control: public, max-age=31536000, immutable
+```
+
+The hash changes when content changes. Old URLs are never reused. Cache forever.
+
+### Tier 2: Cache with Revalidation (Dynamic but Stable)
+
+Content that changes occasionally but can tolerate brief staleness:
+
+| Content Type     | Cache Duration | Strategy                     |
+| ---------------- | -------------- | ---------------------------- |
+| Product listings | 1-5 minutes    | stale-while-revalidate       |
+| Blog posts       | 1 hour         | Cache tags for invalidation  |
+| Marketing pages  | 5 minutes      | ISR (Incremental Static Regen) |
+| API responses    | 30-60 seconds  | stale-while-revalidate       |
+
+```typescript
+// stale-while-revalidate pattern
+// Serve stale content immediately, revalidate in background
+res.setHeader(
+  "Cache-Control",
+  "public, max-age=60, stale-while-revalidate=300"
+);
+```
+
+This header says: serve cached content for 60 seconds, then revalidate in the background while still serving stale content for up to 5 minutes.
+
+### Tier 3: Cache Carefully (Personalized Content)
+
+Content that varies by user or session requires special handling:
+
+| Content Type        | Approach                          |
+| ------------------- | --------------------------------- |
+| User dashboards     | No CDN cache, origin cache only   |
+| Authenticated APIs  | Vary by Authorization header      |
+| A/B test variants   | Vary by cookie or edge compute    |
+| Geo-personalized    | Edge compute or Vary by geography |
+
+```typescript
+// NEVER cache without Vary header
+res.setHeader("Cache-Control", "private, max-age=0, must-revalidate");
+res.setHeader("Vary", "Authorization, Accept-Encoding");
+```
+
+The `Vary` header tells CDNs that the response differs based on specific request headers. Without it, User A might see User B's cached dashboard.
+
+### Tier 4: Never Cache
+
+Some responses should never touch a cache:
+
+- Authentication endpoints (`/login`, `/logout`, `/oauth/*`)
+- Payment processing
+- Real-time data (WebSocket fallbacks, live prices)
+- Form submissions (POST/PUT/DELETE responses)
+
+```typescript
+res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+res.setHeader("Pragma", "no-cache");
+```
+
+---
+
+## Cache-Control Deep Dive
+
+The `Cache-Control` header is the primary mechanism for controlling caching behavior. Understanding its directives is essential.
+
+### Header Anatomy
+
+```
+Cache-Control: public, max-age=31536000, immutable
+             ^       ^                 ^
+             |       |                 +-- Never revalidate
+             |       +-- Cache for 1 year
+             +-- CDN can cache (not just browser)
+```
+
+### Common Directives
+
+| Directive             | Meaning                                           |
+| --------------------- | ------------------------------------------------- |
+| `public`              | Any cache (browser, CDN) can store                |
+| `private`             | Only browser can cache, not CDN                   |
+| `max-age=N`           | Cache for N seconds                               |
+| `s-maxage=N`          | CDN cache duration (overrides max-age for CDN)    |
+| `no-cache`            | Cache but revalidate before using                 |
+| `no-store`            | Don't cache at all                                |
+| `must-revalidate`     | Don't serve stale content                         |
+| `stale-while-revalidate=N` | Serve stale for N seconds while revalidating |
+| `stale-if-error=N`    | Serve stale for N seconds if origin fails         |
+| `immutable`           | Content will never change, don't revalidate       |
+
+### Pattern: Different TTLs for Browser vs CDN
+
+Sometimes you want aggressive CDN caching with shorter browser caching:
+
+```typescript
+// CDN caches for 1 hour, browser for 5 minutes
+res.setHeader("Cache-Control", "public, max-age=300, s-maxage=3600");
+```
+
+This lets you purge the CDN cache without waiting for browser caches to expire.
+
+### Pattern: Resilient Caching
+
+For critical content, serve stale data during origin failures:
+
+```typescript
+res.setHeader(
+  "Cache-Control",
+  "public, max-age=60, stale-while-revalidate=300, stale-if-error=86400"
+);
+```
+
+If origin is down, the CDN serves day-old content rather than errors.
+
+---
+
+## Implementation: Cloudflare Configuration
+
+Cloudflare is my go-to CDN for most projects. Here's how to configure it properly.
+
+### Page Rules (Legacy but Still Works)
+
+```plaintext
+# Static assets - cache everything forever
+URL Pattern: alexmayhew.dev/_next/static/*
+Cache Level: Cache Everything
+Edge Cache TTL: 1 month
+Browser Cache TTL: 1 year
+
+# API routes - respect origin headers
+URL Pattern: alexmayhew.dev/api/*
+Cache Level: Standard (respect origin)
+
+# HTML pages - short cache with revalidation
+URL Pattern: alexmayhew.dev/*
+Cache Level: Cache Everything
+Edge Cache TTL: 1 hour
+Origin Cache Control: On
+```
+
+### Cache Rules (Modern Approach)
+
+```javascript
+// Cloudflare Workers for fine-grained control
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+
+    // Static assets - aggressive caching
+    if (url.pathname.startsWith('/_next/static/')) {
+      const response = await fetch(request);
+      const headers = new Headers(response.headers);
+      headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+      return new Response(response.body, { headers });
+    }
+
+    // API routes - stale-while-revalidate
+    if (url.pathname.startsWith('/api/')) {
+      const response = await fetch(request);
+      const headers = new Headers(response.headers);
+      headers.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
+      return new Response(response.body, { headers });
+    }
+
+    return fetch(request);
+  }
+};
+```
+
+### Vercel Configuration
+
+Vercel handles much of this automatically, but you can override:
+
+```typescript
+// pages/api/products.ts
+export default function handler(req, res) {
+  const products = await getProducts();
+
+  // ISR-style caching for API routes
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=60, stale-while-revalidate=300'
+  );
+
+  res.json(products);
+}
+```
+
+```typescript
+// app/products/page.tsx (App Router)
+export const revalidate = 60; // Revalidate every 60 seconds
+
+async function ProductsPage() {
+  const products = await getProducts();
+  return <ProductList products={products} />;
+}
+```
+
+---
+
+## Cache Invalidation Strategies
+
+Phil Karlton said there are only two hard things in computer science: cache invalidation and naming things. Here's how to make invalidation less painful.
+
+### Strategy 1: Content Hashing (Best for Static Assets)
+
+Never invalidate—change the URL instead.
+
+```typescript
+// Build output with content hash
+// main-abc123.js → main-def456.js when content changes
+
+// Next.js does this automatically
+// _next/static/chunks/main-abc123def456.js
+```
+
+Old URLs remain cached forever (no one requests them). New URLs are cache misses that populate fresh. Zero invalidation needed.
+
+### Strategy 2: Version Strings (Good for APIs)
+
+Include version in the URL or query parameter:
+
+```typescript
+// Version in path
+const response = await fetch('/api/v2/products');
+
+// Or version as query param (less clean but works)
+const response = await fetch('/api/products?v=1643234567');
+```
+
+When you deploy new code, bump the version. Old URLs serve old content (acceptable during rollout); new URLs fetch fresh.
+
+### Strategy 3: Cache Tags (Best for Dynamic Content)
+
+Cloudflare, Fastly, and other CDNs support cache tags:
+
+```typescript
+// Tag responses during render
+res.setHeader('Cache-Tag', 'product-123, category-electronics');
+```
+
+```bash
+# Purge all responses tagged with product-123
+curl -X POST "https://api.cloudflare.com/client/v4/zones/{zone}/purge_cache" \
+  -H "Authorization: Bearer {token}" \
+  -d '{"tags": ["product-123"]}'
+```
+
+When product 123 changes, purge that tag. All pages containing that product refresh.
+
+### Strategy 4: Surrogate Keys (Fastly Pattern)
+
+Similar to cache tags, but Fastly-specific:
+
+```typescript
+res.setHeader('Surrogate-Key', 'product-123 category-electronics homepage');
+```
+
+```bash
+# Purge by surrogate key
+curl -X POST "https://api.fastly.com/service/{service}/purge/product-123" \
+  -H "Fastly-Key: {api_key}"
+```
+
+### Strategy 5: Time-Based Expiration
+
+The simplest approach—let content expire naturally:
+
+```typescript
+// Content auto-expires after 5 minutes
+res.setHeader('Cache-Control', 'public, max-age=300');
+```
+
+No active invalidation needed. The trade-off is stale content for up to 5 minutes after changes.
+
+### What NOT to Do
+
+**Never purge everything.** A full cache purge:
+
+- Hammers your origin with traffic
+- Increases latency for all users temporarily
+- Is a sign of poor cache design
+
+If you need to purge everything, your caching strategy is wrong.
+
+---
+
+## Edge Computing vs Traditional CDN
+
+Traditional CDNs cache static responses. Edge computing runs code at the edge, enabling dynamic responses without origin round trips.
+
+### When Traditional CDN Wins
+
+- Static assets (JS, CSS, images)
+- Shared content (blog posts, product pages)
+- Simple personalization (geo-based redirects)
+
+Traditional CDN is simpler and cheaper for these cases.
+
+### When Edge Computing Wins
+
+**A/B Testing Without Cache Fragmentation**
+
+```typescript
+// Cloudflare Worker for A/B testing
+export default {
+  async fetch(request) {
+    const url = new URL(request.url);
+
+    // Determine variant at the edge
+    const variant = await getVariant(request);
+
+    // Fetch from origin with variant header
+    const response = await fetch(url, {
+      headers: { 'X-Variant': variant }
+    });
+
+    // Cache per variant
+    const headers = new Headers(response.headers);
+    headers.set('Vary', 'X-Variant');
+
+    return new Response(response.body, { headers });
+  }
+};
+```
+
+Without edge computing, you'd either fragment your cache (one entry per variant per URL) or give up CDN caching entirely.
+
+**Personalization at Scale**
+
+```typescript
+// Edge function that personalizes without origin
+export default {
+  async fetch(request, env) {
+    // Get cached base response
+    const baseResponse = await caches.default.match(request);
+
+    if (baseResponse) {
+      // Personalize at edge using KV store
+      const userId = getUserIdFromCookie(request);
+      const preferences = await env.USER_PREFS.get(userId);
+
+      return injectPersonalization(baseResponse, preferences);
+    }
+
+    return fetch(request);
+  }
+};
+```
+
+The base content is cached. Personalization happens at the edge with no origin round trip.
+
+**Authentication and Authorization**
+
+```typescript
+// Validate JWT at the edge
+export default {
+  async fetch(request) {
+    const token = request.headers.get('Authorization')?.replace('Bearer ', '');
+
+    if (!token || !await verifyJWT(token)) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+
+    // Token valid, proceed with cached response
+    return fetch(request);
+  }
+};
+```
+
+Unauthenticated requests are rejected at the edge—origin never sees them.
+
+For a deeper look at edge deployment patterns, see [RSC, The Edge, and the Death of the Waterfall](/blog/rsc-edge-death-of-waterfall).
+
+---
+
+## Cost Optimization
+
+CDN caching directly impacts your infrastructure costs. Here's how to calculate the savings.
+
+### Bandwidth Calculation
+
+Assume:
+- 10 million requests/month
+- Average response size: 50KB
+- Origin bandwidth cost: $0.085/GB (AWS)
+- CDN bandwidth cost: $0.02/GB (Cloudflare Enterprise) or $0 (Cloudflare Free/Pro)
+
+**Without CDN (0% cache hit):**
+```
+10M requests × 50KB = 500GB
+500GB × $0.085 = $42.50/month origin bandwidth
+```
+
+**With CDN (90% cache hit):**
+```
+1M requests × 50KB = 50GB origin bandwidth
+50GB × $0.085 = $4.25/month origin bandwidth
+9M requests served from CDN edge = $0 additional (Cloudflare)
+```
+
+**Savings: 90% reduction in origin bandwidth costs.**
+
+But bandwidth is only part of the equation.
+
+### Origin Compute Savings
+
+Each request to origin requires compute:
+- Lambda/serverless: ~$0.20 per million requests + compute time
+- Container/EC2: Provisioned for peak load
+
+With 90% cache hit ratio, you need 90% fewer origin instances.
+
+**Example:**
+- Without CDN: 4 × m5.large instances ($140/month each) = $560/month
+- With CDN: 1 × m5.large instance = $140/month
+- **Savings: $420/month in compute alone**
+
+### Database Load Reduction
+
+This is often the biggest win. Database connections are expensive—both in licensing (PostgreSQL connections) and performance (connection overhead).
+
+If 90% of requests hit CDN cache, your database sees 90% fewer queries. For a Postgres instance hitting connection limits, this is the difference between scaling vertically ($$$) or not.
+
+---
+
+## Implementation Checklist
+
+Use this checklist when implementing CDN caching for a new project.
+
+### Static Assets
+
+- [ ] All JS/CSS bundles have content hashes in filenames
+- [ ] Cache-Control: `public, max-age=31536000, immutable`
+- [ ] Images served through CDN with long TTL
+- [ ] Fonts cached with CORS headers if cross-origin
+
+### API Responses
+
+- [ ] GET endpoints have appropriate Cache-Control headers
+- [ ] stale-while-revalidate for non-critical freshness
+- [ ] Vary header includes all headers that affect response
+- [ ] POST/PUT/DELETE responses are `no-store`
+
+### HTML Pages
+
+- [ ] Static pages cached at edge with ISR or similar
+- [ ] Dynamic pages have appropriate short TTL or no-cache
+- [ ] Authenticated pages are `private` or `no-store`
+- [ ] Error pages cached appropriately
+
+### Invalidation
+
+- [ ] Cache tags or surrogate keys for dynamic content
+- [ ] Version strings for API endpoints if needed
+- [ ] Never rely on full cache purge
+- [ ] Deployment process includes targeted invalidation
+
+### Monitoring
+
+- [ ] Cache hit ratio tracked (target: 85%+)
+- [ ] Origin traffic monitored for unexpected spikes
+- [ ] TTFB measured from multiple geographic locations
+- [ ] Cache invalidation events logged
+
+### Security
+
+- [ ] Authenticated content never served from shared cache
+- [ ] API keys and tokens not exposed in cached responses
+- [ ] Cache poisoning mitigations in place
+- [ ] CORS headers properly set for cross-origin assets
+
+---
+
+## Common Mistakes
+
+I've seen CDN configurations go wrong in predictable ways.
+
+### Mistake 1: Caching Authenticated Responses
+
+```typescript
+// WRONG - User B might see User A's dashboard
+res.setHeader('Cache-Control', 'public, max-age=3600');
+res.json(await getUserDashboard(userId));
+```
+
+**Fix**: Either `private` cache or add `Vary: Authorization`.
+
+### Mistake 2: Forgetting Vary Headers
+
+```typescript
+// WRONG - Same URL, different responses, but CDN doesn't know
+if (req.headers['accept-language'].includes('es')) {
+  res.json(spanishContent);
+} else {
+  res.json(englishContent);
+}
+```
+
+**Fix**: Add `Vary: Accept-Language` header.
+
+### Mistake 3: Cache-Control on POST Responses
+
+```typescript
+// WRONG - Browsers might cache form submissions
+app.post('/api/submit', (req, res) => {
+  res.setHeader('Cache-Control', 'public, max-age=300');
+  // ...
+});
+```
+
+**Fix**: POST responses should be `no-store`.
+
+### Mistake 4: Relying on CDN Defaults
+
+CDN defaults are conservative—often shorter TTLs than optimal. Explicitly set Cache-Control headers on every response.
+
+---
+
+## Measuring Success
+
+Track these metrics to validate your caching strategy:
+
+| Metric            | Target        | Tool                              |
+| ----------------- | ------------- | --------------------------------- |
+| Cache Hit Ratio   | 85%+          | Cloudflare Analytics, Fastly Stats |
+| TTFB (P50)        | Under 100ms global | WebPageTest, Lighthouse           |
+| Origin Requests   | Down 80%+     | Origin server metrics             |
+| Bandwidth Cost    | Down 70%+     | Cloud provider billing            |
+
+If cache hit ratio drops unexpectedly, check for:
+- New query parameters fragmenting cache
+- Cookies being forwarded unnecessarily
+- Vary headers that are too broad
+
+---
+
+A well-configured CDN is one of the highest-impact infrastructure investments you can make. The difference between 800ms origin requests and 50ms edge responses compounds across every user, every request, every day.
+
+Get the caching strategy right once, and you reduce costs while improving performance. Get it wrong, and you either serve stale data or pay for unnecessary origin traffic.
+
+The decision framework is straightforward: aggressive caching for static assets, careful caching for dynamic content, and never cache what's personalized or authenticated without proper headers.
+
+---
+
+**Need help optimizing your CDN configuration?** I help teams implement caching strategies that reduce infrastructure costs while improving global performance.
+
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Edge-first deployment with proper caching
+- [High-Precision SaaS Architecture](/blog/anatomy-of-high-precision-saas) — Building performant production systems
+- [The Lambda Tax](/blog/lambda-tax-cold-starts) — When serverless caching decisions matter most
+
+_This is part of a series on building production SaaS applications. Related: [RSC, The Edge, and the Death of the Waterfall](/blog/rsc-edge-death-of-waterfall)._

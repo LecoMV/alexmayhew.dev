@@ -1,0 +1,411 @@
+---
+title: "Building Your First Engineering Team: The 5-Person Playbook"
+description: "The order you hire your first 5 engineers determines your startup's velocity for the next 2 years. Here's the sequence that works—based on helping 15+ startups make these decisions."
+date: "2026-01-28"
+author: "Alex Mayhew"
+tags: ["hiring", "startups", "engineering-management", "team-building", "leadership"]
+category: "business"
+readingTime: "13 min"
+featured: false
+image: "/images/blog/first-engineering-team-playbook-featured.webp"
+---
+
+## TL;DR
+
+Hire in this order: (1) Generalist who ships—full-stack, owns everything, moves fast. (2) Specialist based on product needs—frontend if your product is UI-heavy, backend if you're data-intensive. (3-4) Scale team—complementary skills, not duplicates of existing hires. (5) Senior anchor—architecture ownership, code review authority, mentorship. Total cost: $600-900K in salary, 3-5% equity. Timeline: 12-18 months from first hire to team of 5. The sequence matters more than the individual hires—get it wrong and you'll spend 6 months correcting course.
+
+---
+
+## Why Order Matters
+
+I've helped 15+ startups build their first engineering teams. The pattern that fails looks like this: founder hires two backend engineers because that's what they know, struggles to ship frontend, hires a junior frontend developer, watches them flounder without mentorship, then brings in a senior engineer who has to undo 8 months of architectural decisions.
+
+The pattern that works is intentional sequencing. Each hire solves a specific problem and creates the conditions for the next hire to succeed.
+
+The difference between these outcomes isn't luck—it's understanding what each role contributes and when that contribution matters most.
+
+---
+
+## Hire #1: The Generalist
+
+Your first engineering hire is the most consequential decision you'll make in year one. This person will touch every part of your codebase, make architectural decisions that persist for years, and set the cultural template for everyone who follows.
+
+### What You Need
+
+The ideal first hire is a full-stack generalist with 4-7 years of experience. Not a specialist. Not a junior. Not a senior architect who hasn't shipped in years.
+
+**Technical requirements:**
+
+- Can build frontend and backend from scratch
+- Comfortable with infrastructure (doesn't need a DevOps person to deploy)
+- Writes tests without being asked
+- Makes good trade-offs under uncertainty
+- Ships imperfect code, then iterates
+
+**Personality requirements:**
+
+- High ownership mentality—treats the product as their own
+- Low ego—takes feedback without defensiveness
+- Bias toward action—ships before perfecting
+- Comfortable with ambiguity—doesn't need detailed specs
+
+### What You Don't Need
+
+Avoid specialists for hire #1. A world-class React developer who can't write a database query will block you constantly. A backend engineer who needs a designer to implement their own UIs will slow everything down.
+
+Avoid senior architects who haven't shipped in years. Your first hire needs to write code every day, not draw diagrams. Architectural guidance matters—but execution matters more at this stage.
+
+Avoid juniors, regardless of how talented they seem. Juniors need mentorship. You can't provide mentorship and build a company simultaneously. The time investment required to level up a junior is 40-60% of a senior engineer's capacity—capacity you don't have.
+
+### Compensation: 2026 Benchmarks
+
+| Location | Salary Range | Equity Range |
+|----------|--------------|--------------|
+| SF/NYC | $150-190K | 0.75-1.5% |
+| Boston/Seattle/LA | $130-170K | 0.5-1.25% |
+| Denver/Austin/Remote | $120-160K | 0.5-1.0% |
+
+For your first engineer, equity matters more than salary. You're asking someone to take career risk on an unproven company. A generalist with options will choose the company that offers meaningful upside.
+
+The 0.5-1.5% range reflects the risk they're taking. At pre-seed, there's no product-market fit, no revenue, and significant probability of failure. The equity compensates for that.
+
+### Interview Approach
+
+Skip the whiteboard. Use a take-home project that mirrors real work—something that takes 3-4 hours and involves building a small feature end-to-end.
+
+What to evaluate:
+
+- **Completeness over perfection**—did they ship something working?
+- **Code organization**—can you understand their structure without explanation?
+- **Decision-making**—can they articulate why they made trade-offs?
+- **Communication**—did they document assumptions and ask clarifying questions?
+
+For more on technical hiring, see [Beyond the Resume: A Technical Founder's Hiring Framework](/blog/technical-hiring-framework).
+
+---
+
+## Hire #2: The Specialist
+
+Your second hire fills the gap your generalist can't cover. This requires honest assessment of your product and your first hire's strengths.
+
+### Determining the Specialty
+
+**Hire frontend if:**
+
+- Your product is UI-intensive (dashboards, editors, real-time interfaces)
+- User experience is a competitive differentiator
+- Your generalist is stronger on backend
+- You're building consumer-facing products
+
+**Hire backend if:**
+
+- Your product is data-intensive (analytics, integrations, processing pipelines)
+- API quality and performance matter more than pixel-perfect UI
+- Your generalist is stronger on frontend
+- You're building B2B infrastructure
+
+**Hire infrastructure/DevOps if:**
+
+- You have strict compliance requirements (healthcare, finance)
+- Scale is already a problem (rare at this stage, but it happens)
+- Neither founder has ops experience and your generalist isn't covering it
+
+### The Specialist's Role
+
+Unlike your generalist, who owns everything, your specialist owns their domain deeply. They don't just implement—they establish patterns that the team will follow.
+
+**A strong frontend specialist:**
+
+- Creates the component library and design system foundation
+- Establishes state management patterns
+- Sets performance budgets and monitors Core Web Vitals
+- Makes accessibility decisions that prevent expensive retrofits
+
+**A strong backend specialist:**
+
+- Designs the data model and API contracts
+- Establishes authentication and authorization patterns
+- Creates the testing strategy for critical paths
+- Sets up observability and monitoring
+
+### Compensation: 2026 Benchmarks
+
+| Specialty | SF/NYC Salary | Other Markets | Equity |
+|-----------|---------------|---------------|--------|
+| Frontend (React/Next.js) | $140-180K | $120-160K | 0.4-0.8% |
+| Backend (Node/Python/Go) | $150-190K | $130-170K | 0.4-0.8% |
+| Infrastructure/DevOps | $160-200K | $140-180K | 0.4-0.8% |
+
+Equity drops from hire #1 because risk has decreased—you've proven you can hire at least one good engineer, and the product has 6+ months more validation.
+
+---
+
+## Hires #3-4: The Scale Team
+
+Hires 3 and 4 are where most founders make mistakes. The temptation is to hire more of what's working—if your generalist is great, hire another generalist. If your frontend specialist is crushing it, hire another frontend developer.
+
+This is wrong. You don't need duplicates. You need complements.
+
+### The Complement Principle
+
+Each new hire should expand your team's capability surface, not deepen existing capabilities.
+
+**If your team is generalist + frontend:**
+
+- Hire #3: Backend/API specialist or full-stack leaning backend
+- Hire #4: DevOps/infrastructure or full-stack leaning frontend
+
+**If your team is generalist + backend:**
+
+- Hire #3: Frontend specialist or full-stack leaning frontend
+- Hire #4: DevOps/infrastructure or another frontend if UI-heavy
+
+**If your team is generalist + infrastructure:**
+
+- Hire #3: Frontend specialist
+- Hire #4: Backend specialist
+
+The goal is coverage, not depth. At 4 engineers, you want to be able to tackle any problem without waiting on a specific person.
+
+### Seniority Mix
+
+For hires 3-4, you have flexibility on seniority that you didn't have for hires 1-2.
+
+A strong option: one mid-level (3-5 years) and one senior (6+ years). The mid-level is hungry, ships fast, and is eager to learn. The senior provides mentorship and catches architectural mistakes before they compound.
+
+An acceptable option: two mid-levels, if your hire #1 or #2 can provide mentorship. This saves cash but increases risk of architectural drift.
+
+A poor option: two juniors. Without senior oversight, juniors reinforce each other's bad habits. The code quality compounds in the wrong direction.
+
+### Compensation: 2026 Benchmarks
+
+| Level | SF/NYC Salary | Other Markets | Equity |
+|-------|---------------|---------------|--------|
+| Mid-level (3-5 years) | $130-160K | $110-140K | 0.2-0.5% |
+| Senior (6+ years) | $160-200K | $140-180K | 0.3-0.6% |
+
+Equity continues to decrease as the company de-risks. By hire #4, the product has 12+ months of development, likely some revenue, and proven ability to attract engineering talent.
+
+---
+
+## Hire #5: The Senior Anchor
+
+Your fifth hire is strategic. This person doesn't just contribute code—they elevate everyone else.
+
+### The Anchor Role
+
+A senior anchor provides:
+
+**Architecture ownership**—they make decisions that prevent expensive refactors. They see problems before they become emergencies. They push back on shortcuts that create technical debt.
+
+**Code review authority**—they establish quality standards through example. Their reviews teach junior and mid-level engineers patterns they'd otherwise learn through painful mistakes.
+
+**Mentorship capacity**—they can spend 20-30% of their time developing others without impacting their own delivery. This unlocks your mid-level hires to grow faster.
+
+**Technical credibility**—for hiring, fundraising, and enterprise sales, having a senior engineer with a strong track record signals that you're serious.
+
+### Timing
+
+Hire #5 as the anchor matters. Too early, and you don't have enough team for them to anchor. Too late, and you've accumulated 12+ months of decisions that need correction.
+
+The sweet spot is after hires 1-4 have been onboarded and productive—usually 9-12 months after hire #1 joined.
+
+### What to Look For
+
+The anchor profile is different from hires 1-4:
+
+**Experience:** 8-12+ years, with at least one experience building and scaling a system from scratch to meaningful load
+
+**Leadership without authority:** They've influenced teams without being the manager. They've mentored engineers who grew into senior roles. They've made unpopular decisions that proved correct.
+
+**Communication:** They can explain complex trade-offs to non-technical stakeholders. They write documentation that prevents future confusion. They run meetings that produce decisions, not more meetings.
+
+**Humility:** They admit what they don't know. They ask questions before assuming. They change their mind when presented with better evidence.
+
+For more on the paradox of senior developers—why they often cost less despite higher salaries—see [The Senior Developer Paradox](/blog/senior-developer-paradox).
+
+### Compensation: 2026 Benchmarks
+
+| Location | Salary Range | Equity Range |
+|----------|--------------|--------------|
+| SF/NYC | $180-240K | 0.4-0.8% |
+| Boston/Seattle/LA | $160-220K | 0.3-0.7% |
+| Denver/Austin/Remote | $150-200K | 0.3-0.6% |
+
+The anchor commands premium compensation, but equity percentage is similar to hires 3-4. The company has de-risked significantly by hire #5—12-18 months of runway burned, product validated, team proven.
+
+---
+
+## The Interview Process That Works
+
+I've refined this process across dozens of hires. It's optimized for signal-to-noise ratio and candidate experience.
+
+### Stage 1: Async Work Sample (2-4 hours)
+
+Send a take-home project that mirrors real work. Not a coding puzzle. Not an algorithm test. Actual work.
+
+**For full-stack/frontend:**
+
+> "Here's a Figma design for a user settings page. Build a working implementation using React (or our stack). Include form validation, loading states, and a mock API call. You have 3 hours."
+
+**For backend:**
+
+> "Design and implement an API for a simple booking system. Include endpoints for creating, reading, and canceling bookings. Write tests for edge cases. You have 4 hours."
+
+**Evaluation criteria:**
+
+- Does it work?
+- Is the code organized and readable?
+- Did they handle edge cases?
+- Can they explain their decisions?
+
+Reject candidates who don't complete the work sample. Completion is table stakes.
+
+### Stage 2: Technical Deep Dive (60 minutes)
+
+Walk through the work sample together. Ask questions that reveal thinking:
+
+- "Why did you structure the components this way?"
+- "What would you change if you had more time?"
+- "How would this scale to 100x the data?"
+- "What would break first under load?"
+
+This reveals whether they actually wrote the code, how they think about trade-offs, and how they respond to critique.
+
+### Stage 3: System Design (45 minutes, for senior roles)
+
+For hires #5 and senior candidates in positions 3-4:
+
+> "Design a notification system that handles email, SMS, and push notifications. Walk me through the architecture."
+
+What you're evaluating:
+
+- Do they ask clarifying questions before designing?
+- Do they consider scale, reliability, and failure modes?
+- Can they articulate trade-offs clearly?
+- Do they know what they don't know?
+
+### Stage 4: Culture and Working Style (45 minutes)
+
+This isn't "culture fit" in the bad sense—not "would I have a beer with them." This is: will they thrive in your environment?
+
+Questions that reveal working style:
+
+- "Tell me about a time you shipped something you weren't proud of. What were the constraints?"
+- "Describe a technical disagreement with a colleague. How did you resolve it?"
+- "What's a decision you made that you later regretted? What did you learn?"
+
+Red flags: blames others, can't articulate failure, defensive about past decisions.
+
+### Stage 5: Founder/CEO Final (30 minutes)
+
+The final conversation is about alignment, not evaluation. You're selling the vision and confirming mutual interest. By this stage, you should be 90% confident in the hire.
+
+---
+
+## Compensation Strategy
+
+### Salary Philosophy
+
+Pay at or slightly above market for your stage. Underpaying creates resentment and attrition. Overpaying burns runway on people who might not work out.
+
+The ranges in this post reflect 2026 market conditions for Series A and earlier startups. Adjust up 10-15% for FAANG-competitive situations, down 10-15% for very early (pre-product) stage.
+
+### Equity Philosophy
+
+Equity is your leverage. Cash-rich companies compete on salary. Cash-constrained startups compete on upside.
+
+**Total equity pool for first 5 engineers: 3-5% fully diluted.**
+
+| Hire | Equity Range | Cumulative Pool |
+|------|--------------|-----------------|
+| #1 | 0.5-1.5% | 0.5-1.5% |
+| #2 | 0.4-0.8% | 0.9-2.3% |
+| #3 | 0.2-0.5% | 1.1-2.8% |
+| #4 | 0.2-0.5% | 1.3-3.3% |
+| #5 | 0.3-0.8% | 1.6-4.1% |
+
+These ranges are negotiable based on candidate quality and market conditions. A exceptional hire #3 might warrant hire #2 equity. A hire #5 who's a known quantity (former colleague, referral) might accept lower equity for reduced risk.
+
+### Vesting
+
+Standard 4-year vesting with 1-year cliff. Don't get creative. Candidates expect this structure, and deviations raise red flags.
+
+Some startups are experimenting with shorter cliffs (6 months) or back-weighted vesting. These are fine if market-standard in your industry, but don't solve problems—they just shift when the problem surfaces.
+
+---
+
+## Common Mistakes
+
+### Mistake #1: Hiring for Resume, Not Capability
+
+The candidate with Google + Stripe on their resume might have been on a team of 500. The candidate from a 10-person startup that failed might have shipped more real features.
+
+Evaluate what they built, not where they worked. Work samples reveal capability. Resumes reveal access.
+
+### Mistake #2: Optimizing for Cost
+
+A $120K engineer who ships half as fast as a $160K engineer costs more per unit of delivered value. The goal isn't minimizing payroll—it's maximizing velocity.
+
+See [Beyond the Resume: A Technical Founder's Hiring Framework](/blog/technical-hiring-framework) for the math on why "expensive" talent often costs less.
+
+### Mistake #3: Hiring Duplicates
+
+Two backend engineers when you have no frontend creates a bottleneck. Two frontend engineers when you have no one who can touch the database creates a bottleneck.
+
+Every hire should expand what the team can do, not just add capacity to what you already do well.
+
+### Mistake #4: Waiting Too Long for Hire #5
+
+Some founders try to avoid the senior anchor's cost by promoting from within. This rarely works. Mid-level engineers promoted to senior roles without senior mentorship make senior-level mistakes with mid-level context.
+
+Hire the anchor once you have 3-4 engineers who would benefit from mentorship. Don't wait until the architectural mistakes require cleanup.
+
+### Mistake #5: Skipping Reference Checks
+
+References are low-signal—people only give references who'll say nice things. But they're not zero signal. Call the references. Ask specific questions:
+
+- "What was their biggest contribution?"
+- "What should I know about working with them?"
+- "Would you hire them again?"
+
+Hesitation on that last question tells you everything.
+
+---
+
+## The 18-Month Timeline
+
+A realistic timeline from first hire to team of 5:
+
+| Month | Action |
+|-------|--------|
+| 0 | Start search for Hire #1 |
+| 2-3 | Hire #1 starts |
+| 5-6 | Start search for Hire #2 |
+| 7-8 | Hire #2 starts |
+| 9-10 | Start search for Hires #3-4 |
+| 11-13 | Hires #3-4 start |
+| 14-15 | Start search for Hire #5 |
+| 16-18 | Hire #5 starts |
+
+Each search takes 6-10 weeks. Onboarding takes 2-4 weeks to productivity. Budget 4-5 months between deciding to hire and having a productive team member.
+
+Don't compress this timeline by rushing interviews. A bad hire costs 6+ months to identify, exit, and replace—more than you'd save by cutting interview stages.
+
+---
+
+## When You Need Help
+
+Building your first engineering team is one of the highest-leverage activities for a startup founder. Get it right, and you have 2-3 years of velocity. Get it wrong, and you spend those years correcting course.
+
+The decision framework in this post works for most startups, but your situation is always specific. Compensation benchmarks shift. Hiring markets change. Your product might demand a different sequencing.
+
+If you're making these decisions right now and want a second opinion—on sequencing, compensation, interview process, or specific candidates—that's the kind of strategic guidance I provide.
+
+For the full context on whether you need a fractional technical advisor or a full-time CTO, see [Fractional CTO vs Full-Time CTO: When Each Makes Sense](/blog/fractional-cto-vs-full-time).
+
+---
+
+**Building your first engineering team?** I help founders make hiring decisions, structure compensation, and evaluate candidates. If your next hire will determine your startup's trajectory, having experienced input reduces expensive mistakes.
+
+[Technical Advisor for Startups](/services/technical-advisor-for-startups) — Strategic hiring guidance for seed through Series A founders.

@@ -1,0 +1,643 @@
+---
+title: "SaaS Reliability at Scale: Monitoring, Alerting, and Incident Response"
+description: "99.9% uptime means 8.7 hours of downtime per year. 99.99% means 52 minutes. Here's the observability infrastructure that gets you there—without alert fatigue burning out your team."
+date: "2026-01-28"
+author: "Alex Mayhew"
+tags: ["observability", "monitoring", "sre", "devops", "infrastructure"]
+category: "infrastructure"
+readingTime: "14 min"
+featured: false
+image: "/images/blog/saas-reliability-monitoring-featured.webp"
+---
+
+## TL;DR
+
+Three pillars: logs for debugging, metrics for dashboards, traces for request flows. Golden signals: latency (P50/P95/P99), traffic (requests/sec), errors (rate and types), saturation (CPU/memory/connections). Alert on symptoms (user impact), not causes (high CPU). Build runbooks before you need them. Seed stage: Sentry + Checkly + PagerDuty. Series A: add Grafana Cloud. Series B+: evaluate Datadog or self-host with OpenTelemetry Collector.
+
+---
+
+## The Uptime Math
+
+Let's establish what we're actually talking about:
+
+| SLA     | Annual Downtime | Monthly Downtime | Daily Downtime |
+| ------- | --------------- | ---------------- | -------------- |
+| 99%     | 87.6 hours      | 7.3 hours        | 14.4 minutes   |
+| 99.9%   | 8.76 hours      | 43.8 minutes     | 1.44 minutes   |
+| 99.95%  | 4.38 hours      | 21.9 minutes     | 43 seconds     |
+| 99.99%  | 52.6 minutes    | 4.38 minutes     | 8.6 seconds    |
+| 99.999% | 5.26 minutes    | 26.3 seconds     | 0.86 seconds   |
+
+Most B2B SaaS products target 99.9% as the contractual SLA—which sounds impressive until you realize it's nearly 9 hours of downtime per year. I've built observability stacks for systems running at 99.95% actual uptime, and the difference between 99.9% and 99.95% isn't just 0.05%—it's a fundamentally different operational posture.
+
+The infrastructure that gets you to 99.9% will not get you to 99.99%. This guide focuses on the practical middle ground: building observability that catches problems before users notice them, without creating an alert storm that burns out your on-call engineers.
+
+---
+
+## The Three Pillars of Observability
+
+Everyone talks about logs, metrics, and traces. Few explain when to use each.
+
+### Logs: The Forensic Record
+
+Logs answer "what happened?" They're discrete events with timestamps and context. Use logs when:
+
+- Debugging specific errors after the fact
+- Understanding the sequence of events in a request
+- Auditing user actions for compliance
+- Investigating security incidents
+
+Logs are expensive at scale. A busy API generating 1KB per request at 1,000 req/s produces 86GB daily. Structure your logs from day one—JSON, not plaintext.
+
+```typescript
+// Bad: Unstructured logging
+console.log(`User ${userId} created order ${orderId}`);
+
+// Good: Structured logging
+logger.info({
+  event: 'order.created',
+  userId,
+  orderId,
+  amount: order.total,
+  items: order.items.length,
+  latencyMs: Date.now() - startTime,
+});
+```
+
+### Metrics: The Vital Signs
+
+Metrics answer "how is the system performing?" They're numeric values aggregated over time. Use metrics for:
+
+- Dashboards and real-time visibility
+- Alerting on thresholds
+- Capacity planning
+- SLA tracking
+
+Metrics are cheap to store and query. A 1-minute resolution metric costs roughly 1,440 data points per day—trivial compared to logs.
+
+### Traces: The Request Journey
+
+Traces answer "why was this request slow?" They track a single request across services. Use traces when:
+
+- Debugging distributed system latency
+- Understanding service dependencies
+- Identifying which service caused a timeout
+- Profiling request paths for optimization
+
+Traces are expensive but essential for microservices. Sample them—100% trace collection is neither necessary nor economical.
+
+---
+
+## The Four Golden Signals
+
+Google's SRE book introduced the golden signals. I've seen teams implement all four correctly exactly twice in my career. Most monitor the wrong things.
+
+### 1. Latency
+
+Not just average latency—percentiles matter.
+
+| Percentile | Meaning                   | Alert Threshold (typical API) |
+| ---------- | ------------------------- | ----------------------------- |
+| P50        | Median experience         | Monitor, don't alert          |
+| P95        | 1 in 20 users affected    | Warning at 200ms              |
+| P99        | 1 in 100 users affected   | Alert at 500ms                |
+| P99.9      | 1 in 1,000 users affected | Alert at 2,000ms              |
+
+The P99 is where problems hide. An API with 50ms P50 and 3,000ms P99 has a 3-second tail that's ruining 1% of user experiences.
+
+```typescript
+// Instrument latency with histogram buckets
+import { Histogram } from 'prom-client';
+
+const httpRequestDuration = new Histogram({
+  name: 'http_request_duration_seconds',
+  help: 'Duration of HTTP requests in seconds',
+  labelNames: ['method', 'route', 'status_code'],
+  buckets: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
+});
+
+// In your middleware
+const end = httpRequestDuration.startTimer();
+await next();
+end({ method: req.method, route: req.route.path, status_code: res.statusCode });
+```
+
+### 2. Traffic
+
+Requests per second, broken down by endpoint and status.
+
+This is your baseline for everything else. A 50% traffic drop at 2am on a Tuesday is normal. A 50% traffic drop at 2pm on a weekday is an outage.
+
+### 3. Errors
+
+Error rate as a percentage of total traffic. Types of errors matter:
+
+- **4xx (Client errors)**: Usually not your fault, but track spikes
+- **5xx (Server errors)**: Your fault. Alert at 1% error rate
+- **Timeouts**: Often worse than crashes—they tie up resources
+
+```yaml
+# Prometheus alerting rule
+groups:
+  - name: api-errors
+    rules:
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(http_requests_total{status_code=~"5.."}[5m]))
+          /
+          sum(rate(http_requests_total[5m]))
+          > 0.01
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Error rate above 1% for 2 minutes"
+          description: "{{ $value | humanizePercentage }} of requests returning 5xx"
+```
+
+### 4. Saturation
+
+How full is your system? This is about capacity headroom:
+
+- **CPU utilization**: Alert at 80%, page at 90%
+- **Memory utilization**: Alert at 85%, page at 95%
+- **Connection pool usage**: Alert at 70%, page at 85%
+- **Disk I/O**: Alert when queue depth exceeds core count
+
+Saturation alerts are predictive. High CPU usage at 2am gives you time to scale before the 9am traffic spike hits.
+
+---
+
+## OpenTelemetry Instrumentation
+
+OpenTelemetry is the standard. Vendor-specific SDKs lock you in. I've helped three companies migrate away from proprietary instrumentation—it's painful and expensive.
+
+### Node.js/Next.js Setup
+
+```typescript
+// instrumentation.ts (Next.js 14+)
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
+import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
+import { Resource } from '@opentelemetry/resources';
+import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+
+const sdk = new NodeSDK({
+  resource: new Resource({
+    [SemanticResourceAttributes.SERVICE_NAME]: 'my-saas-api',
+    [SemanticResourceAttributes.SERVICE_VERSION]: process.env.GIT_SHA || 'unknown',
+    [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV,
+  }),
+  traceExporter: new OTLPTraceExporter({
+    url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT + '/v1/traces',
+  }),
+  metricReader: new PeriodicExportingMetricReader({
+    exporter: new OTLPMetricExporter({
+      url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT + '/v1/metrics',
+    }),
+    exportIntervalMillis: 15000, // 15 second resolution
+  }),
+  instrumentations: [
+    getNodeAutoInstrumentations({
+      '@opentelemetry/instrumentation-fs': { enabled: false }, // Too noisy
+      '@opentelemetry/instrumentation-http': {
+        ignoreIncomingPaths: ['/health', '/ready', '/metrics'],
+      },
+    }),
+  ],
+});
+
+sdk.start();
+
+process.on('SIGTERM', () => {
+  sdk.shutdown()
+    .then(() => console.log('Tracing terminated'))
+    .catch((error) => console.error('Error terminating tracing', error))
+    .finally(() => process.exit(0));
+});
+```
+
+### Custom Business Metrics
+
+Auto-instrumentation catches HTTP and database calls. Business metrics require manual instrumentation:
+
+```typescript
+// metrics/business.ts
+import { metrics } from '@opentelemetry/api';
+
+const meter = metrics.getMeter('business-metrics');
+
+// Counter for events
+const ordersCreated = meter.createCounter('orders_created_total', {
+  description: 'Total number of orders created',
+});
+
+// Histogram for values
+const orderValue = meter.createHistogram('order_value_dollars', {
+  description: 'Value of orders in dollars',
+  unit: 'dollars',
+});
+
+// Gauge for current state
+const activeSubscriptions = meter.createObservableGauge('active_subscriptions', {
+  description: 'Number of active subscriptions',
+});
+
+// Usage
+export function recordOrderCreated(order: Order) {
+  ordersCreated.add(1, {
+    plan: order.plan,
+    source: order.source,
+  });
+  orderValue.record(order.total, {
+    plan: order.plan,
+    currency: order.currency,
+  });
+}
+
+// For gauges, register a callback
+activeSubscriptions.addCallback(async (result) => {
+  const count = await db.subscription.count({ where: { status: 'active' } });
+  result.observe(count, { tier: 'all' });
+});
+```
+
+---
+
+## Alert Design: Avoiding Alert Fatigue
+
+I've audited on-call setups where engineers received 200+ alerts weekly. Actual incidents: 3. That's a 98.5% false positive rate. Those engineers were burned out within 6 months.
+
+### Symptom-Based vs. Cause-Based Alerts
+
+**Cause-based (wrong):** "CPU above 80%"
+**Symptom-based (right):** "P99 latency above 500ms"
+
+High CPU might mean your service is successfully handling a traffic spike. High latency means users are suffering. Alert on user impact, investigate causes.
+
+### Alert Hierarchy
+
+```yaml
+# Three severity levels are enough
+groups:
+  - name: api-availability
+    rules:
+      # Critical: Page immediately
+      - alert: APIDown
+        expr: probe_success{job="api-blackbox"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "API is unreachable"
+          runbook_url: "https://runbooks.internal/api-down"
+
+      # Warning: Notify Slack, review during business hours
+      - alert: HighLatency
+        expr: histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m])) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "P99 latency above 500ms"
+
+      # Info: Dashboard only, no notification
+      - alert: ElevatedErrorRate
+        expr: |
+          sum(rate(http_requests_total{status_code=~"5.."}[5m]))
+          /
+          sum(rate(http_requests_total[5m]))
+          > 0.005
+        for: 5m
+        labels:
+          severity: info
+        annotations:
+          summary: "Error rate slightly elevated (0.5%)"
+```
+
+### The 5-Minute Rule
+
+Don't alert on instantaneous spikes. Require conditions to persist:
+
+- **Critical alerts:** 1-2 minutes (real outages are sustained)
+- **Warning alerts:** 5 minutes (filter transient noise)
+- **Info alerts:** 10 minutes (trend indicators only)
+
+A 30-second CPU spike during deployment isn't an incident. A 5-minute CPU spike during steady state might be.
+
+---
+
+## On-Call Setup
+
+### Rotation Design
+
+For teams of 4-8 engineers, a weekly rotation works. For larger teams, use sub-teams with 2-week rotations.
+
+```yaml
+# PagerDuty schedule example
+schedules:
+  primary:
+    type: weekly
+    rotation_virtual_start: "2026-01-06T09:00:00-05:00"  # Monday 9am EST
+    users:
+      - alice@company.com
+      - bob@company.com
+      - carol@company.com
+      - dave@company.com
+
+  secondary:
+    type: weekly
+    rotation_virtual_start: "2026-01-13T09:00:00-05:00"  # Offset by one week
+    users:
+      - alice@company.com
+      - bob@company.com
+      - carol@company.com
+      - dave@company.com
+
+escalation_policy:
+  - targets:
+      - schedule: primary
+    escalation_timeout: 10  # minutes
+  - targets:
+      - schedule: secondary
+    escalation_timeout: 15
+  - targets:
+      - user: engineering-manager@company.com
+```
+
+### Escalation Policies
+
+1. **Primary on-call:** 10 minutes to acknowledge
+2. **Secondary on-call:** 15 minutes (if primary doesn't respond)
+3. **Engineering manager:** 20 minutes (if both fail)
+4. **CTO:** 30 minutes (nuclear option)
+
+If an alert escalates to the CTO, something is broken beyond the incident itself.
+
+### Runbook Template
+
+Every alert should link to a runbook. Here's the template I use:
+
+```markdown
+# Runbook: High Error Rate
+
+## Alert Condition
+Error rate > 1% for 2+ minutes
+
+## Impact
+Users experiencing failed requests. API returning 5xx errors.
+
+## Immediate Actions
+1. Check deployment status: Did we just deploy?
+   ```bash
+   kubectl rollout history deployment/api
+   ```
+
+2. Check database connectivity:
+   ```bash
+   curl -s https://api.internal/health | jq .database
+   ```
+
+3. Check downstream dependencies:
+   ```bash
+   curl -s https://api.internal/health | jq .dependencies
+   ```
+
+## Diagnostic Commands
+```bash
+# Error distribution by endpoint
+kubectl logs -l app=api --since=5m | grep "level\":\"error" | jq .path | sort | uniq -c
+
+# Recent deployments
+kubectl get pods -o wide | grep api
+
+# Database connection pool
+kubectl exec -it deployment/api -- node -e "require('./db').pool.totalCount"
+```
+
+## Mitigation Steps
+
+### If recent deployment caused it:
+```bash
+kubectl rollout undo deployment/api
+```
+
+### If database connection issues:
+1. Check connection pool exhaustion
+2. Restart pods if pool is corrupted
+3. Scale up if load is legitimate
+
+### If downstream dependency failure:
+1. Enable circuit breaker
+2. Return cached/degraded response
+3. Notify dependency team
+
+## Escalation Criteria
+- Error rate > 5% for 5 minutes: Escalate to secondary
+- Complete outage: Escalate to engineering manager
+- Data corruption suspected: Escalate to CTO immediately
+
+## Post-Incident
+- Create incident ticket
+- Update this runbook if steps were missing
+- Schedule blameless postmortem
+```
+
+---
+
+## Incident Response Framework
+
+I've been through enough 2am incidents to know that having a framework matters. Panic is the enemy of resolution.
+
+### The DTMRR Framework
+
+**Detect:** Alert fires, human acknowledges
+**Triage:** Assess severity, determine blast radius
+**Mitigate:** Stop the bleeding, restore service
+**Resolve:** Fix root cause properly
+**Review:** Blameless postmortem, improve systems
+
+### Detection (Minutes 0-5)
+
+1. Acknowledge the alert
+2. Join the incident channel (Slack: `#incident-YYYYMMDD-NNN`)
+3. Announce you're investigating
+4. Open relevant dashboards
+
+```
+@here Incident declared. High error rate on API.
+Status: Investigating
+Impact: Estimated 5% of requests failing
+Incident Commander: @alice
+```
+
+### Triage (Minutes 5-15)
+
+Ask three questions:
+1. **What's broken?** (Specific symptom)
+2. **Who's affected?** (Blast radius)
+3. **When did it start?** (Correlate with changes)
+
+Severity levels:
+
+| Level | Definition                           | Response Time |
+| ----- | ------------------------------------ | ------------- |
+| SEV1  | Complete outage, all users affected  | All hands     |
+| SEV2  | Major feature down, many users       | On-call + 1   |
+| SEV3  | Minor feature impacted, some users   | On-call only  |
+| SEV4  | Degraded but functional, few notices | Next business |
+
+### Mitigation (Minutes 15-60)
+
+This is not debugging. This is restoring service.
+
+**Common mitigation actions:**
+- Rollback recent deployment
+- Scale up infrastructure
+- Enable circuit breakers
+- Failover to secondary region
+- Disable problematic feature flag
+- Restart affected services
+
+The goal is mean time to restore (MTTR), not mean time to root cause.
+
+### Resolution (Hours to Days)
+
+After service is restored, fix the underlying issue properly. This might involve:
+- Code fix with proper testing
+- Infrastructure changes
+- Dependency updates
+- Architecture improvements
+
+### Review (Within 48 Hours)
+
+Blameless postmortem template:
+
+```markdown
+# Incident Postmortem: [Date] [Brief Title]
+
+## Summary
+- Duration: [Start time] to [End time] (X hours, Y minutes)
+- Severity: SEV[N]
+- Impact: [User-facing impact]
+- Root Cause: [One sentence]
+
+## Timeline
+- HH:MM Alert fired
+- HH:MM Engineer acknowledged
+- HH:MM Root cause identified
+- HH:MM Mitigation applied
+- HH:MM Service restored
+
+## Root Cause Analysis
+[Detailed technical explanation]
+
+## What Went Well
+- [Thing that worked]
+- [Thing that worked]
+
+## What Went Poorly
+- [Thing that failed or was missing]
+- [Thing that failed or was missing]
+
+## Action Items
+| Action | Owner | Due Date |
+| ------ | ----- | -------- |
+| Add missing metric | @alice | 2026-02-01 |
+| Update runbook | @bob | 2026-02-03 |
+| Implement circuit breaker | @carol | 2026-02-15 |
+
+## Lessons Learned
+[One paragraph summary]
+```
+
+---
+
+## Tool Stack by Company Stage
+
+Observability tooling should match your scale and budget. I've seen seed-stage startups blow $3,000/month on Datadog for a system that could run on $200/month of tooling.
+
+### Seed Stage ($0-50K MRR)
+
+**Stack:**
+- **Error Tracking:** Sentry ($26/month)
+- **Uptime Monitoring:** Checkly or Better Uptime ($20/month)
+- **Alerting:** PagerDuty free tier (up to 5 users)
+- **Logs:** Console logs → CloudWatch/Vercel (included)
+- **APM:** None yet—premature optimization
+
+**Total:** ~$50/month
+
+Focus on knowing when you're down and capturing errors. Deep observability can wait.
+
+### Series A ($50K-500K MRR)
+
+**Stack:**
+- **Metrics + Logs + Traces:** Grafana Cloud ($50-200/month)
+- **Error Tracking:** Sentry Team ($80/month)
+- **Uptime + API Monitoring:** Checkly ($40/month)
+- **Alerting:** PagerDuty Professional ($25/user/month)
+- **Status Page:** Instatus or Statuspage ($29/month)
+
+**Total:** ~$300-500/month
+
+At this stage, you need dashboards, historical data, and proper on-call rotation.
+
+### Series B+ ($500K+ MRR)
+
+**Option A: Managed (Datadog)**
+- Full Datadog suite: $1,500-5,000/month
+- Pros: Everything integrated, great UX
+- Cons: Expensive, vendor lock-in
+
+**Option B: Self-Managed (OpenTelemetry + OSS)**
+- OpenTelemetry Collector → Grafana Mimir/Tempo/Loki
+- Hosted on Kubernetes
+- Pros: No vendor lock-in, unlimited scale
+- Cons: Requires dedicated SRE time
+
+**My recommendation:** Datadog until your monthly bill exceeds the cost of an SRE (roughly $15K/month in tooling = one headcount). Then evaluate self-hosting.
+
+---
+
+## The Cold Start Problem
+
+Monitoring systems have their own reliability requirements. I've seen companies discover their alerting was down—after a 4-hour outage.
+
+### Monitor Your Monitoring
+
+1. **Heartbeat checks:** Send a test alert every hour
+2. **Alert delivery verification:** Use a separate channel (SMS backup)
+3. **Dashboard access:** Can you access Grafana during an AWS outage?
+
+### Multi-Provider Strategy
+
+For critical alerting, use two providers:
+- Primary: PagerDuty
+- Backup: Opsgenie or plain SMS via Twilio
+
+If PagerDuty is down during your incident, you need a fallback.
+
+---
+
+## What Actually Matters
+
+I've built observability for systems with 99.95% uptime over 12 months. The difference between mediocre and excellent reliability isn't tooling—it's discipline:
+
+1. **Alert on symptoms, not causes**—High CPU isn't an incident; high latency is
+2. **Every alert needs a runbook**—If you can't write remediation steps, you can't alert on it
+3. **Page only for user impact**—Everything else is a Slack notification
+4. **Measure what matters to customers**—Latency, errors, availability
+5. **Practice incident response**—Game days reveal process gaps before real incidents
+
+The goal isn't zero downtime. It's predictable, managed downtime with fast recovery.
+
+For deeper dives into related topics, see my posts on [the Lambda tax and cold starts](/blog/lambda-tax-cold-starts), [architecting SaaS for scale](/blog/anatomy-of-high-precision-saas), and [hunting Node.js memory leaks](/blog/nodejs-memory-leaks).
+
+---
+
+## Next Steps
+
+If you're building a SaaS and want to get observability right from the start—or you're struggling with alert fatigue and unclear incident response—I work with startups as a [technical advisor](/services/technical-advisor-for-startups). The cost of getting this wrong is measured in customer churn and engineer burnout. The cost of getting it right is a few hours of architectural guidance.
