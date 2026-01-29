@@ -90,7 +90,7 @@ export async function subscribeToNewsletter(data: NewsletterFormValues): Promise
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
-				email,
+				email_address: email,
 				metadata: {
 					source,
 					subscribed_at: new Date().toISOString(),
