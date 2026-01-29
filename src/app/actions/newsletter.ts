@@ -109,11 +109,21 @@ export async function subscribeToNewsletter(data: NewsletterFormValues): Promise
 			return { success: true };
 		}
 
-		const errorData = await response.json().catch(() => ({}));
-		console.error("Buttondown API error:", response.status, errorData);
+		const errorData = (await response.json().catch(() => ({}))) as Record<string, unknown>;
+		const errorCode = String(errorData?.code ?? "");
+		const errorDetail = String(errorData?.detail ?? "");
+		console.error("Buttondown API error:", response.status, JSON.stringify(errorData));
+
+		// Subscriber blocked by firewall — treat as success to avoid leaking info
+		if (errorCode === "subscriber_blocked") {
+			return { success: true };
+		}
 
 		if (response.status === 400) {
-			return { success: false, error: "Invalid email address." };
+			if (errorDetail.includes("email") || errorDetail.includes("valid")) {
+				return { success: false, error: "Please enter a valid email address." };
+			}
+			return { success: false, error: "Unable to subscribe. Please try again." };
 		}
 
 		return { success: false, error: "Failed to subscribe. Please try again." };
