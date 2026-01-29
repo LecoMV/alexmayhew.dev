@@ -91,8 +91,9 @@ test.describe("Accessibility - Contact Form", () => {
 		await page.goto("/contact");
 		await page.waitForLoadState("networkidle");
 
-		// Try to submit empty form to trigger validation
-		const submitButton = page.locator('button[type="submit"]');
+		// Try to submit empty form to trigger validation (scope to contact form)
+		const contactForm = page.locator("form", { has: page.locator('textarea[name="message"]') });
+		const submitButton = contactForm.locator('button[type="submit"]');
 		await submitButton.scrollIntoViewIfNeeded();
 		await submitButton.click();
 
