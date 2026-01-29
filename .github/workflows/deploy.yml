@@ -44,6 +44,8 @@ jobs:
 
       - name: Build OpenNext for Cloudflare
         run: npx opennextjs-cloudflare build
+        env:
+          NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
 
       - name: Verify build output
         run: |
