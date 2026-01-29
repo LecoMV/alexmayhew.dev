@@ -6,6 +6,7 @@ import { ContactNotification } from "@/components/emails/contact-notification";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
 import { contactFormSchema, type ContactFormValues } from "@/lib/schemas/contact";
+import { getEnv } from "@/lib/cloudflare-env";
 
 // Dependency Injection container for testing
 let dependencies = {
@@ -15,10 +16,10 @@ let dependencies = {
 	getIP: getClientIP,
 };
 
-// Lazy init for resend to avoid errors during E2E tests
-function getResend(): Resend {
+// Lazy init for resend — accepts API key at call time
+function getResend(apiKey?: string): Resend {
 	if (!dependencies.resend) {
-		dependencies.resend = new Resend(process.env.RESEND_API_KEY);
+		dependencies.resend = new Resend(apiKey);
 	}
 	return dependencies.resend;
 }
@@ -81,12 +82,15 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 		};
 	}
 
+	// Get environment variables from Cloudflare context
+	const env = await getEnv();
+
 	// 3. Security (Turnstile)
-	if (process.env.NODE_ENV === "production" || turnstileToken) {
+	if (env.NODE_ENV === "production" || turnstileToken) {
 		if (!turnstileToken) {
 			return { success: false, error: "Security check required." };
 		}
-		const isValid = await dependencies.verifyTurnstile(turnstileToken);
+		const isValid = await dependencies.verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET_KEY);
 		if (!isValid) {
 			return { success: false, error: "Security check failed." };
 		}
@@ -104,10 +108,10 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 	});
 
 	try {
-		const resend = getResend();
+		const resend = getResend(env.RESEND_API_KEY);
 		const { error } = await resend.emails.send({
 			from: "alexmayhew.dev <noreply@alexmayhew.dev>",
-			to: process.env.CONTACT_EMAIL || "alex@alexmayhew.dev",
+			to: env.CONTACT_EMAIL || "alex@alexmayhew.dev",
 			replyTo: email,
 			subject: `[INCOMING_TRANSMISSION] ${name} - ${formatProjectType(projectType)}`,
 			react: ContactNotification({

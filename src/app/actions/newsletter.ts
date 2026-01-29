@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { z } from "zod";
 import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
+import { getEnv } from "@/lib/cloudflare-env";
 
 // Validation schema
 const newsletterSchema = z.object({
@@ -70,7 +71,8 @@ export async function subscribeToNewsletter(data: NewsletterFormValues): Promise
 	}
 
 	// 3. Subscribe via Buttondown API
-	const apiKey = process.env.BUTTONDOWN_API_KEY;
+	const env = await getEnv();
+	const apiKey = env.BUTTONDOWN_API_KEY;
 
 	if (!apiKey) {
 		console.error("BUTTONDOWN_API_KEY not configured");

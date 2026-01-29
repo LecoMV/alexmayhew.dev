@@ -10,37 +10,27 @@ describe("verifyTurnstileToken", () => {
 	});
 
 	afterEach(() => {
-		vi.unstubAllEnvs();
 		vi.unstubAllGlobals();
 		vi.restoreAllMocks();
 	});
 
 	describe("without secret key", () => {
-		it("should return true in development without key", async () => {
-			vi.stubEnv("NODE_ENV", "development");
-			vi.stubEnv("TURNSTILE_SECRET_KEY", "");
-
-			const result = await verifyTurnstileToken("test-token");
-
-			expect(result).toBe(true);
-			expect(mockFetch).not.toHaveBeenCalled();
-		});
-
-		it("should return false in production without key", async () => {
-			vi.stubEnv("NODE_ENV", "production");
-			vi.stubEnv("TURNSTILE_SECRET_KEY", "");
-
+		it("should return false when no secret key provided", async () => {
 			const result = await verifyTurnstileToken("test-token");
 
 			expect(result).toBe(false);
 			expect(mockFetch).not.toHaveBeenCalled();
 		});
 
-		it("should return false in test without key (non-development)", async () => {
-			vi.stubEnv("NODE_ENV", "test");
-			vi.stubEnv("TURNSTILE_SECRET_KEY", "");
+		it("should return false with undefined secret key", async () => {
+			const result = await verifyTurnstileToken("test-token", undefined);
 
-			const result = await verifyTurnstileToken("test-token");
+			expect(result).toBe(false);
+			expect(mockFetch).not.toHaveBeenCalled();
+		});
+
+		it("should return false with empty secret key", async () => {
+			const result = await verifyTurnstileToken("test-token", "");
 
 			expect(result).toBe(false);
 			expect(mockFetch).not.toHaveBeenCalled();
@@ -48,16 +38,14 @@ describe("verifyTurnstileToken", () => {
 	});
 
 	describe("with secret key", () => {
-		beforeEach(() => {
-			vi.stubEnv("TURNSTILE_SECRET_KEY", "test-secret-key");
-		});
+		const secretKey = "test-secret-key";
 
 		it("should return true for valid token", async () => {
 			mockFetch.mockResolvedValue({
 				json: () => Promise.resolve({ success: true }),
 			});
 
-			const result = await verifyTurnstileToken("valid-token");
+			const result = await verifyTurnstileToken("valid-token", secretKey);
 
 			expect(result).toBe(true);
 			expect(mockFetch).toHaveBeenCalledWith(
@@ -78,7 +66,7 @@ describe("verifyTurnstileToken", () => {
 					}),
 			});
 
-			const result = await verifyTurnstileToken("invalid-token");
+			const result = await verifyTurnstileToken("invalid-token", secretKey);
 
 			expect(result).toBe(false);
 		});
@@ -88,7 +76,7 @@ describe("verifyTurnstileToken", () => {
 				json: () => Promise.resolve({ success: true }),
 			});
 
-			await verifyTurnstileToken("my-test-token");
+			await verifyTurnstileToken("my-test-token", secretKey);
 
 			const callArgs = mockFetch.mock.calls[0];
 			const body = callArgs[1].body;
@@ -102,7 +90,7 @@ describe("verifyTurnstileToken", () => {
 				json: () => Promise.resolve({ success: true }),
 			});
 
-			await verifyTurnstileToken("token");
+			await verifyTurnstileToken("token", secretKey);
 
 			expect(mockFetch).toHaveBeenCalledWith(
 				"https://challenges.cloudflare.com/turnstile/v0/siteverify",
@@ -112,14 +100,12 @@ describe("verifyTurnstileToken", () => {
 	});
 
 	describe("error handling", () => {
-		beforeEach(() => {
-			vi.stubEnv("TURNSTILE_SECRET_KEY", "test-secret-key");
-		});
+		const secretKey = "test-secret-key";
 
 		it("should return false on network error", async () => {
 			mockFetch.mockRejectedValue(new Error("Network error"));
 
-			const result = await verifyTurnstileToken("token");
+			const result = await verifyTurnstileToken("token", secretKey);
 
 			expect(result).toBe(false);
 		});
@@ -129,7 +115,7 @@ describe("verifyTurnstileToken", () => {
 				json: () => Promise.reject(new Error("Invalid JSON")),
 			});
 
-			const result = await verifyTurnstileToken("token");
+			const result = await verifyTurnstileToken("token", secretKey);
 
 			expect(result).toBe(false);
 		});
@@ -137,7 +123,7 @@ describe("verifyTurnstileToken", () => {
 		it("should return false on fetch timeout", async () => {
 			mockFetch.mockRejectedValue(new Error("Timeout"));
 
-			const result = await verifyTurnstileToken("token");
+			const result = await verifyTurnstileToken("token", secretKey);
 
 			expect(result).toBe(false);
 		});

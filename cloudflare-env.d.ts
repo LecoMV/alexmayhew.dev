@@ -10,6 +10,9 @@ declare namespace Cloudflare {
 		NEXT_PUBLIC_TURNSTILE_SITE_KEY: string;
 		TURNSTILE_SECRET_KEY: string;
 		NEXT_PUBLIC_SENTRY_DSN: string;
+		BUTTONDOWN_API_KEY: string;
+		RESEND_API_KEY: string;
+		CONTACT_EMAIL: string;
 		NEXT_CACHE: R2Bucket;
 		WORKER_SELF_REFERENCE: Service<typeof import("./.open-next/worker").default>;
 		AI: Ai;

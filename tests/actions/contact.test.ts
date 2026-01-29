@@ -1,10 +1,23 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { submitContactForm, __setDependencies, __resetDependencies } from "@/app/actions/contact";
+import { getEnv } from "@/lib/cloudflare-env";
 
 // Mock next/headers
 vi.mock("next/headers", () => ({
 	headers: vi.fn().mockResolvedValue(new Headers()),
 }));
+
+// Mock cloudflare-env to return test values
+vi.mock("@/lib/cloudflare-env", () => ({
+	getEnv: vi.fn().mockResolvedValue({
+		RESEND_API_KEY: "test-resend-key",
+		CONTACT_EMAIL: "test@example.com",
+		TURNSTILE_SECRET_KEY: "test-turnstile-key",
+		NODE_ENV: "test",
+	}),
+}));
+
+const mockGetEnv = vi.mocked(getEnv);
 
 // Mock Data
 const validData = {
@@ -139,7 +152,7 @@ describe("submitContactForm", () => {
 	describe("Turnstile verification", () => {
 		it("should pass with valid token", async () => {
 			const result = await submitContactForm(validData);
-			expect(mockVerify).toHaveBeenCalledWith("valid-token");
+			expect(mockVerify).toHaveBeenCalledWith("valid-token", "test-turnstile-key");
 			expect(result.success).toBe(true);
 		});
 
@@ -151,7 +164,12 @@ describe("submitContactForm", () => {
 		});
 
 		it("should require token in production", async () => {
-			vi.stubEnv("NODE_ENV", "production");
+			mockGetEnv.mockResolvedValueOnce({
+				RESEND_API_KEY: "test-resend-key",
+				CONTACT_EMAIL: "test@example.com",
+				TURNSTILE_SECRET_KEY: "test-turnstile-key",
+				NODE_ENV: "production",
+			});
 
 			const result = await submitContactForm({
 				...validData,
@@ -159,12 +177,15 @@ describe("submitContactForm", () => {
 			});
 			expect(result.success).toBe(false);
 			expect(result.error).toContain("Security check required");
-
-			vi.unstubAllEnvs();
 		});
 
 		it("should skip verification when no token in development", async () => {
-			vi.stubEnv("NODE_ENV", "development");
+			mockGetEnv.mockResolvedValueOnce({
+				RESEND_API_KEY: "test-resend-key",
+				CONTACT_EMAIL: "test@example.com",
+				TURNSTILE_SECRET_KEY: "test-turnstile-key",
+				NODE_ENV: "development",
+			});
 
 			const result = await submitContactForm({
 				...validData,
@@ -172,8 +193,6 @@ describe("submitContactForm", () => {
 			});
 			expect(result.success).toBe(true);
 			expect(mockVerify).not.toHaveBeenCalled();
-
-			vi.unstubAllEnvs();
 		});
 	});
 

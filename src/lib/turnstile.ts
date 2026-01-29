@@ -9,15 +9,8 @@ interface TurnstileVerifyResponse {
 	hostname?: string;
 }
 
-export async function verifyTurnstileToken(token: string): Promise<boolean> {
-	const secretKey = process.env.TURNSTILE_SECRET_KEY;
-
+export async function verifyTurnstileToken(token: string, secretKey?: string): Promise<boolean> {
 	if (!secretKey) {
-		// In development without key, allow through
-		if (process.env.NODE_ENV === "development") {
-			console.warn("[Turnstile] No secret key configured, skipping verification");
-			return true;
-		}
 		console.error("[Turnstile] TURNSTILE_SECRET_KEY is not configured");
 		return false;
 	}
