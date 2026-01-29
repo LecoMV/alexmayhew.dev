@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { trackPageView } from "./google-analytics";
 
@@ -17,6 +17,18 @@ import { trackPageView } from "./google-analytics";
  * - Referrer tracking
  */
 export function PageAnalytics() {
+	return (
+		<Suspense fallback={null}>
+			<PageAnalyticsInner />
+		</Suspense>
+	);
+}
+
+/**
+ * Inner component that uses useSearchParams
+ * Must be wrapped in Suspense for static generation
+ */
+function PageAnalyticsInner() {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
@@ -57,6 +69,8 @@ export function PageAnalytics() {
 
 	return null;
 }
+
+// Helper functions moved outside components for cleaner code
 
 /**
  * Determine page category based on pathname for analytics segmentation
