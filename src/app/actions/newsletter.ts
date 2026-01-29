@@ -73,13 +73,8 @@ export async function subscribeToNewsletter(data: NewsletterFormValues): Promise
 	const apiKey = process.env.BUTTONDOWN_API_KEY;
 
 	if (!apiKey) {
-		// In development, log and return success for testing UI
-		if (process.env.NODE_ENV === "development") {
-			console.log(`[Newsletter] Would subscribe: ${email} (source: ${source})`);
-			return { success: true };
-		}
 		console.error("BUTTONDOWN_API_KEY not configured");
-		return { success: false, error: "Newsletter service not configured." };
+		return { success: false, error: "Newsletter signup is temporarily unavailable." };
 	}
 
 	try {
