@@ -30,7 +30,7 @@ export async function getEnv(): Promise<CloudflareSecrets> {
 			TURNSTILE_SECRET_KEY: env.TURNSTILE_SECRET_KEY || process.env.TURNSTILE_SECRET_KEY,
 			NODE_ENV: process.env.NODE_ENV,
 		};
-	} catch (e) {
+	} catch {
 		// getCloudflareContext() throws in local dev (next dev without wrangler)
 		return {
 			BUTTONDOWN_API_KEY: process.env.BUTTONDOWN_API_KEY,
