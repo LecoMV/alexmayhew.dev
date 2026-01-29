@@ -33,7 +33,7 @@ bd sync               # Session end
 git add <files> && git commit -m "..." && git push origin main
 ```
 
-See @.claude/rules/deployment.md for critical requirements.
+See `.claude/rules/deployment.md` for critical requirements.
 
 ## Design System
 
@@ -89,7 +89,7 @@ The blog uses a hub-and-spoke model with 5 comprehensive guide hubs and 39 spoke
 - Cross-cluster linking for meta-framework posts
 - All pSEO service pages link to relevant hubs
 
-See @docs/CONTENT_STATUS.md for full content inventory and linking structure.
+See `docs/CONTENT_STATUS.md` for full content inventory and linking structure.
 
 ## Credentials
 
@@ -114,11 +114,11 @@ curl -X POST http://localhost:5678/webhook/content-repurpose \
 
 **Output:** LinkedIn carousel, Twitter thread, Newsletter section, Dev.to article
 
-See @docs/N8N_SETUP_GUIDE.md for full setup and troubleshooting.
+See `docs/N8N_SETUP_GUIDE.md` for full setup and troubleshooting.
 
 ## LLM Stack
 
-See @docs/SELF_HOSTED_LLM_GUIDE.md for details.
+See `docs/SELF_HOSTED_LLM_GUIDE.md` for details.
 
 - **Local:** Ollama + Gemma 2 9B (RTX 3080 10GB)
 - **Cloud:** Groq API (free), Cloudflare Workers AI (free 10K neurons/day)
@@ -128,25 +128,25 @@ See @docs/SELF_HOSTED_LLM_GUIDE.md for details.
 
 ### Core
 
-- Architecture: @docs/IMPLEMENTATION_PLAN.md
-- Deployment: @docs/DEPLOYMENT.md
-- Claude Config: @docs/CLAUDE_CODE_CONFIG.md
+- Architecture: `docs/IMPLEMENTATION_PLAN.md`
+- Deployment: `docs/DEPLOYMENT.md`
+- Claude Config: `docs/CLAUDE_CODE_CONFIG.md`
 
 ### Content (Start Here for Content Work)
 
-- **Content Status: @docs/CONTENT_STATUS.md** (source of truth for blog content)
-- Voice Guide: @docs/VOICE_GUIDE.md (brand voice for all content)
-- Hub Strategy: @docs/HUB_AND_SPOKE_CONTENT_STRATEGY.md (best practices reference)
+- **Content Status: `docs/CONTENT_STATUS.md`** (source of truth for blog content)
+- Voice Guide: `docs/VOICE_GUIDE.md` (brand voice for all content)
+- Hub Strategy: `docs/HUB_AND_SPOKE_CONTENT_STRATEGY.md` (best practices reference)
 
 ### Marketing & Repurposing
 
-- n8n Setup: @docs/N8N_SETUP_GUIDE.md
-- LLM Prompts: @docs/LLM_REPURPOSING_PROMPTS.md
-- Content System: @docs/CONTENT_REPURPOSING_SYSTEM.md
-- Implementation Roadmap: @docs/IMPLEMENTATION_ROADMAP.md
-- Marketing Plan: @MARKETING_PLAN_2026.md
+- n8n Setup: `docs/N8N_SETUP_GUIDE.md`
+- LLM Prompts: `docs/LLM_REPURPOSING_PROMPTS.md`
+- Content System: `docs/CONTENT_REPURPOSING_SYSTEM.md`
+- Implementation Roadmap: `docs/IMPLEMENTATION_ROADMAP.md`
+- Marketing Plan: `MARKETING_PLAN_2026.md`
 
 ### Technical
 
-- LLM Stack: @docs/SELF_HOSTED_LLM_GUIDE.md
-- Copy Audit: @docs/COPY_AUDIT_REPORT.md
+- LLM Stack: `docs/SELF_HOSTED_LLM_GUIDE.md`
+- Copy Audit: `docs/COPY_AUDIT_REPORT.md`

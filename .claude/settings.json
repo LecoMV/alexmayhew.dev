@@ -49,8 +49,5 @@
 			"Edit(.env*)",
 			"Edit(.dev.vars)"
 		]
-	},
-	"context": {
-		"include": ["CLAUDE.md", ".context/design-manifesto.md", "package.json", "tsconfig.json"]
 	}
 }
