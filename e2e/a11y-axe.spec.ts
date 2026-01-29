@@ -93,6 +93,7 @@ test.describe("Accessibility - Contact Form", () => {
 
 		// Try to submit empty form to trigger validation
 		const submitButton = page.locator('button[type="submit"]');
+		await submitButton.scrollIntoViewIfNeeded();
 		await submitButton.click();
 
 		// Wait for validation states

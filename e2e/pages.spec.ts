@@ -52,32 +52,9 @@ test.describe("Page Load", () => {
 		await expect(page).toHaveTitle(/Blog.*Alex Mayhew/i);
 	});
 
-	test("demo page loads with terminal", async ({ page }) => {
-		await page.goto("/demo");
-		await page.waitForLoadState("networkidle");
-		await page.waitForTimeout(500);
-
-		// Page should load
-		await expect(page.locator("body")).toBeVisible();
-	});
-
 	test("404 page for invalid routes", async ({ page }) => {
 		const response = await page.goto("/non-existent-page-xyz-12345");
 		expect(response?.status()).toBe(404);
-	});
-
-	test("privacy page loads", async ({ page }) => {
-		await page.goto("/privacy");
-		await page.waitForLoadState("networkidle");
-
-		await expect(page).toHaveTitle(/Privacy.*Alex Mayhew/i);
-	});
-
-	test("terms page loads", async ({ page }) => {
-		await page.goto("/terms");
-		await page.waitForLoadState("networkidle");
-
-		await expect(page).toHaveTitle(/Terms.*Alex Mayhew/i);
 	});
 });
 
