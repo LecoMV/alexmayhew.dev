@@ -74,12 +74,15 @@ export async function subscribeToNewsletter(data: NewsletterFormValues): Promise
 	const env = await getEnv();
 	const apiKey = env.BUTTONDOWN_API_KEY;
 
+	console.log("[Newsletter] API key present:", !!apiKey, "length:", apiKey?.length ?? 0);
+
 	if (!apiKey) {
-		console.error("BUTTONDOWN_API_KEY not configured");
+		console.error("[Newsletter] BUTTONDOWN_API_KEY not configured");
 		return { success: false, error: "Newsletter signup is temporarily unavailable." };
 	}
 
 	try {
+		console.log("[Newsletter] Calling Buttondown API for:", email);
 		const response = await dependencies.fetch("https://api.buttondown.email/v1/subscribers", {
 			method: "POST",
 			headers: {
@@ -96,13 +99,16 @@ export async function subscribeToNewsletter(data: NewsletterFormValues): Promise
 			}),
 		});
 
+		console.log("[Newsletter] Buttondown response status:", response.status);
+
 		if (response.ok) {
+			console.log("[Newsletter] Success - subscriber added");
 			return { success: true };
 		}
 
 		// Handle specific Buttondown errors
 		if (response.status === 409) {
-			// Already subscribed - treat as success
+			console.log("[Newsletter] Already subscribed (409)");
 			return { success: true };
 		}
 
