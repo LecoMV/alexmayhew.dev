@@ -23,8 +23,6 @@ interface CloudflareSecrets {
 export async function getEnv(): Promise<CloudflareSecrets> {
 	try {
 		const { env } = await getCloudflareContext();
-		const keys = Object.keys(env).filter((k) => !k.startsWith("_"));
-		console.log("[getEnv] Cloudflare context available. Env keys:", keys.join(", "));
 		return {
 			BUTTONDOWN_API_KEY: env.BUTTONDOWN_API_KEY || process.env.BUTTONDOWN_API_KEY,
 			RESEND_API_KEY: env.RESEND_API_KEY || process.env.RESEND_API_KEY,
@@ -34,10 +32,6 @@ export async function getEnv(): Promise<CloudflareSecrets> {
 		};
 	} catch (e) {
 		// getCloudflareContext() throws in local dev (next dev without wrangler)
-		console.log(
-			"[getEnv] Cloudflare context NOT available, falling back to process.env. Error:",
-			String(e)
-		);
 		return {
 			BUTTONDOWN_API_KEY: process.env.BUTTONDOWN_API_KEY,
 			RESEND_API_KEY: process.env.RESEND_API_KEY,

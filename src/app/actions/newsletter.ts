@@ -74,15 +74,12 @@ export async function subscribeToNewsletter(data: NewsletterFormValues): Promise
 	const env = await getEnv();
 	const apiKey = env.BUTTONDOWN_API_KEY;
 
-	console.log("[Newsletter] API key present:", !!apiKey, "length:", apiKey?.length ?? 0);
-
 	if (!apiKey) {
 		console.error("[Newsletter] BUTTONDOWN_API_KEY not configured");
 		return { success: false, error: "Newsletter signup is temporarily unavailable." };
 	}
 
 	try {
-		console.log("[Newsletter] Calling Buttondown API for:", email);
 		const response = await dependencies.fetch("https://api.buttondown.email/v1/subscribers", {
 			method: "POST",
 			headers: {
@@ -91,6 +88,7 @@ export async function subscribeToNewsletter(data: NewsletterFormValues): Promise
 			},
 			body: JSON.stringify({
 				email_address: email,
+				referrer_url: "https://alexmayhew.dev",
 				metadata: {
 					source,
 					subscribed_at: new Date().toISOString(),
@@ -99,16 +97,12 @@ export async function subscribeToNewsletter(data: NewsletterFormValues): Promise
 			}),
 		});
 
-		console.log("[Newsletter] Buttondown response status:", response.status);
-
 		if (response.ok) {
-			console.log("[Newsletter] Success - subscriber added");
 			return { success: true };
 		}
 
 		// Handle specific Buttondown errors
 		if (response.status === 409) {
-			console.log("[Newsletter] Already subscribed (409)");
 			return { success: true };
 		}
 
@@ -117,9 +111,8 @@ export async function subscribeToNewsletter(data: NewsletterFormValues): Promise
 		const errorDetail = String(errorData?.detail ?? "");
 		console.error("Buttondown API error:", response.status, JSON.stringify(errorData));
 
-		// Subscriber blocked by firewall — treat as success to avoid leaking info
 		if (errorCode === "subscriber_blocked") {
-			return { success: true };
+			return { success: false, error: "Unable to subscribe. Please try again later." };
 		}
 
 		if (response.status === 400) {
