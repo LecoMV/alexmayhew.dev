@@ -7,16 +7,17 @@
 
 ## 1. Infrastructure
 
-| Component  | Details                                                        |
-| ---------- | -------------------------------------------------------------- |
-| Container  | `docker.io/listmonk/listmonk:v6.0.0` via Podman                |
-| Database   | PostgreSQL on port 5433 (shared instance, `listmonk` database) |
-| Config     | `/data/listmonk/config.toml`                                   |
-| Compose    | `/data/listmonk/podman-compose.yml`                            |
-| Uploads    | `/data/listmonk/uploads/`                                      |
-| Local URL  | `http://localhost:9000`                                        |
-| Public URL | `https://listmonk.alexmayhew.dev` (Cloudflare Tunnel)          |
-| Systemd    | `~/.config/systemd/user/listmonk.service` (auto-start)         |
+| Component    | Details                                                        |
+| ------------ | -------------------------------------------------------------- |
+| Container    | `docker.io/listmonk/listmonk:v6.0.0` via Podman                |
+| Database     | PostgreSQL on port 5433 (shared instance, `listmonk` database) |
+| Config       | `/data/listmonk/config.toml`                                   |
+| Compose      | `/data/listmonk/podman-compose.yml`                            |
+| Uploads      | `/data/listmonk/uploads/`                                      |
+| Custom Theme | `/data/listmonk/custom-static/` (branded templates + CSS)      |
+| Local URL    | `http://localhost:9000`                                        |
+| Public URL   | `https://listmonk.alexmayhew.dev` (Cloudflare Tunnel)          |
+| Systemd      | `~/.config/systemd/user/listmonk.service` (auto-start)         |
 
 ### Starting/Stopping
 
@@ -110,7 +111,28 @@ Content-Type: application/json
 
 ---
 
-## 4. Email Templates
+## 4. Email Templates & Branding
+
+### Custom Static Directory
+
+All email templates and public page styling are customized via `--static-dir=/listmonk/custom-static`:
+
+```
+/data/listmonk/custom-static/
+├── email-templates/
+│   ├── base.html                         # Branded header/footer (void-navy, cyber-lime)
+│   ├── subscriber-optin.html             # Double opt-in confirmation email
+│   └── subscriber-optin-campaign.html    # Campaign variant of opt-in
+└── public/
+    ├── static/
+    │   └── style.css                     # Branded public page styles
+    └── templates/
+        └── index.html                    # Public page header/footer
+```
+
+**Design tokens used:** `#0B0E14` (void-navy bg), `#1E293B` (gunmetal-glass surfaces), `#E2E8F0` (mist-white text), `#94A3B8` (slate-text secondary), `#CCF381` (cyber-lime accents), `#FF6B6B` (burnt-ember errors).
+
+**To edit:** Modify files in `/data/listmonk/custom-static/`, then restart: `cd /data/listmonk && podman-compose restart`
 
 ### Campaign Template (ID 5)
 
