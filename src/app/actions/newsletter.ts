@@ -70,43 +70,32 @@ export async function subscribeToNewsletter(data: NewsletterFormValues): Promise
 		};
 	}
 
-	// 3. Subscribe via Listmonk API
+	// 3. Subscribe via Listmonk public subscription API
 	const env = await getEnv();
 	const apiUrl = env.LISTMONK_API_URL;
-	const apiUser = env.LISTMONK_API_USER;
-	const apiKey = env.LISTMONK_API_KEY;
 
-	if (!apiUrl || !apiUser || !apiKey) {
-		console.error("[Newsletter] Listmonk API credentials not configured");
+	if (!apiUrl) {
+		console.error("[Newsletter] LISTMONK_API_URL not configured");
 		return { success: false, error: "Newsletter signup is temporarily unavailable." };
 	}
 
+	// "The Architects Brief" mailing list UUID (public, double opt-in)
+	const listUuid = "41e24d1e-f13b-45b5-8a73-483ffe85def2";
+
 	try {
-		const response = await dependencies.fetch(`${apiUrl}/api/subscribers`, {
+		const response = await dependencies.fetch(`${apiUrl}/api/public/subscription`, {
 			method: "POST",
 			headers: {
-				Authorization: `Basic ${btoa(`${apiUser}:${apiKey}`)}`,
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
 				email,
 				name: "",
-				status: "enabled",
-				lists: [3],
-				preconfirm_subscriptions: false,
-				attribs: {
-					source,
-					subscribed_at: new Date().toISOString(),
-				},
+				list_uuids: [listUuid],
 			}),
 		});
 
 		if (response.ok) {
-			return { success: true };
-		}
-
-		// Handle duplicate subscriber (already exists)
-		if (response.status === 409) {
 			return { success: true };
 		}
 
@@ -115,7 +104,10 @@ export async function subscribeToNewsletter(data: NewsletterFormValues): Promise
 		console.error("Listmonk API error:", response.status, JSON.stringify(errorData));
 
 		if (response.status === 400) {
-			if (errorMessage.includes("email") || errorMessage.includes("valid")) {
+			if (
+				errorMessage.toLowerCase().includes("email") ||
+				errorMessage.toLowerCase().includes("valid")
+			) {
 				return { success: false, error: "Please enter a valid email address." };
 			}
 			return { success: false, error: "Unable to subscribe. Please try again." };

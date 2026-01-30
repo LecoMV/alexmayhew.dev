@@ -68,7 +68,9 @@ cd /data/listmonk && podman-compose down
 
 ## 3. API Integration
 
-The website integrates with Listmonk via a server action using Basic Auth.
+The website integrates with Listmonk via the **public subscription API** (no auth required).
+
+> **Note:** Listmonk v6 RBAC restricts the admin API (`/api/subscribers`) from managing list assignments. The public endpoint (`/api/public/subscription`) correctly handles subscriber creation, list assignment, and double opt-in confirmation emails.
 
 **Key files:**
 
@@ -76,39 +78,35 @@ The website integrates with Listmonk via a server action using Basic Auth.
 - Env config: `src/lib/cloudflare-env.ts`
 - Component: `src/components/newsletter/newsletter-signup.tsx`
 
-**Credentials:**
+**Environment:**
 
 ```bash
-# Admin credentials
-pass show claude/listmonk/admin-password
-
 # Local development (.env.local)
 LISTMONK_API_URL=http://localhost:9000
-LISTMONK_API_USER=admin
-LISTMONK_API_KEY=<admin-password>
+
+# Admin credentials (for admin UI and n8n, NOT used by website signup)
+pass show claude/listmonk/admin-password
 ```
 
 **Subscriber creation payload:**
 
-```json
+```
+POST /api/public/subscription
+Content-Type: application/json
+
 {
 	"email": "subscriber@example.com",
 	"name": "",
-	"status": "enabled",
-	"lists": [3],
-	"preconfirm_subscriptions": false,
-	"attribs": {
-		"source": "website",
-		"subscribed_at": "2026-02-01T12:00:00Z"
-	}
+	"list_uuids": ["41e24d1e-f13b-45b5-8a73-483ffe85def2"]
 }
 ```
 
+**List UUID:** `41e24d1e-f13b-45b5-8a73-483ffe85def2` (The Architects Brief, ID 3)
+
 **API response codes:**
 
-- `200` — Success (subscriber created)
-- `409` — Already exists (treated as success)
-- `400` — Invalid email
+- `200` — Success (subscriber created or already exists, `has_optin: true` for double opt-in)
+- `400` — Invalid email or missing list UUIDs
 
 ---
 
