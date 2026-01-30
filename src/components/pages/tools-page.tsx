@@ -1,7 +1,7 @@
 "use client";
 
 import { m } from "framer-motion";
-import { ArrowUpRight, Sparkles, Terminal, Layers, Download } from "lucide-react";
+import { ArrowUpRight, Sparkles, Terminal, Layers, Download, Mic } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -35,6 +35,19 @@ const tools: Tool[] = [
 		href: "/tools/traceforge",
 		icon: <Layers className="h-6 w-6" strokeWidth={1.5} />,
 		badge: "Demo",
+		badgeColor: "lime",
+		status: "demo",
+		featured: true,
+	},
+	{
+		id: "voice-cloner",
+		name: "Voice Cloner",
+		tagline: "AI Text-to-Speech with Voice Cloning",
+		description:
+			"Neural text-to-speech powered by Qwen3-TTS with zero-shot voice cloning. Type any text, pick a voice, and generate natural speech in seconds. GPU-accelerated on RTX 3080.",
+		href: "/tools/voice-cloner",
+		icon: <Mic className="h-6 w-6" strokeWidth={1.5} />,
+		badge: "Live",
 		badgeColor: "lime",
 		status: "demo",
 		featured: true,
