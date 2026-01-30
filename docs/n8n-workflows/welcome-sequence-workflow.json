@@ -50,7 +50,7 @@
 			"position": [460, 300],
 			"credentials": {
 				"httpBasicAuth": {
-					"id": "listmonk-api",
+					"id": "WEgVcMFrGE8GTJVi",
 					"name": "Listmonk API"
 				}
 			}
@@ -98,18 +98,12 @@
 		{
 			"parameters": {
 				"method": "PUT",
-				"url": "=http://localhost:9000/api/subscribers/{{ $json.id }}/attributes",
+				"url": "=http://localhost:9000/api/subscribers/{{ $('Split Subscribers').item.json.id }}",
 				"authentication": "genericCredentialType",
 				"genericAuthType": "httpBasicAuth",
 				"sendBody": true,
-				"bodyParameters": {
-					"parameters": [
-						{
-							"name": "attribs",
-							"value": "={{ JSON.stringify({ ...$json.attribs, welcome_started: new Date().toISOString(), welcome_step: 1 }) }}"
-						}
-					]
-				},
+				"specifyBody": "json",
+				"jsonBody": "={{\n  JSON.stringify({\n    email: $('Split Subscribers').item.json.email,\n    name: $('Split Subscribers').item.json.name || \"\",\n    status: $('Split Subscribers').item.json.status || \"enabled\",\n    lists: ($('Split Subscribers').item.json.lists || []).map(l => l.id),\n    preconfirm_subscriptions: true,\n    attribs: Object.assign({}, $('Split Subscribers').item.json.attribs || {}, {\n      welcome_started: new Date().toISOString(),\n      welcome_step: 1\n    })\n  })\n}}",
 				"options": {}
 			},
 			"id": "mark-welcome-started",
@@ -119,7 +113,7 @@
 			"position": [1120, 200],
 			"credentials": {
 				"httpBasicAuth": {
-					"id": "listmonk-api",
+					"id": "WEgVcMFrGE8GTJVi",
 					"name": "Listmonk API"
 				}
 			}
@@ -132,7 +126,7 @@
 				"genericAuthType": "httpBasicAuth",
 				"sendBody": true,
 				"specifyBody": "json",
-				"jsonBody": "={\n  \"subscriber_email\": \"{{ $json.email }}\",\n  \"template_id\": 6,\n  \"from_email\": \"Alex Mayhew <alex@alexmayhew.dev>\",\n  \"data\": {}\n}",
+				"jsonBody": "={\n  \"subscriber_email\": \"{{ $('Split Subscribers').item.json.email }}\",\n  \"template_id\": 6,\n  \"from_email\": \"Alex Mayhew <alex@alexmayhew.dev>\",\n  \"data\": {}\n}",
 				"options": {}
 			},
 			"id": "send-welcome-01",
@@ -142,7 +136,7 @@
 			"position": [1340, 200],
 			"credentials": {
 				"httpBasicAuth": {
-					"id": "listmonk-api",
+					"id": "WEgVcMFrGE8GTJVi",
 					"name": "Listmonk API"
 				}
 			}
@@ -166,7 +160,7 @@
 				"genericAuthType": "httpBasicAuth",
 				"sendBody": true,
 				"specifyBody": "json",
-				"jsonBody": "={\n  \"subscriber_email\": \"{{ $json.email }}\",\n  \"template_id\": 7,\n  \"from_email\": \"Alex Mayhew <alex@alexmayhew.dev>\",\n  \"data\": {}\n}",
+				"jsonBody": "={\n  \"subscriber_email\": \"{{ $('Split Subscribers').item.json.email }}\",\n  \"template_id\": 7,\n  \"from_email\": \"Alex Mayhew <alex@alexmayhew.dev>\",\n  \"data\": {}\n}",
 				"options": {}
 			},
 			"id": "send-welcome-02",
@@ -176,7 +170,7 @@
 			"position": [1780, 200],
 			"credentials": {
 				"httpBasicAuth": {
-					"id": "listmonk-api",
+					"id": "WEgVcMFrGE8GTJVi",
 					"name": "Listmonk API"
 				}
 			}
@@ -200,7 +194,7 @@
 				"genericAuthType": "httpBasicAuth",
 				"sendBody": true,
 				"specifyBody": "json",
-				"jsonBody": "={\n  \"subscriber_email\": \"{{ $json.email }}\",\n  \"template_id\": 8,\n  \"from_email\": \"Alex Mayhew <alex@alexmayhew.dev>\",\n  \"data\": {}\n}",
+				"jsonBody": "={\n  \"subscriber_email\": \"{{ $('Split Subscribers').item.json.email }}\",\n  \"template_id\": 8,\n  \"from_email\": \"Alex Mayhew <alex@alexmayhew.dev>\",\n  \"data\": {}\n}",
 				"options": {}
 			},
 			"id": "send-welcome-03",
@@ -210,7 +204,7 @@
 			"position": [2220, 200],
 			"credentials": {
 				"httpBasicAuth": {
-					"id": "listmonk-api",
+					"id": "WEgVcMFrGE8GTJVi",
 					"name": "Listmonk API"
 				}
 			}
@@ -234,7 +228,7 @@
 				"genericAuthType": "httpBasicAuth",
 				"sendBody": true,
 				"specifyBody": "json",
-				"jsonBody": "={\n  \"subscriber_email\": \"{{ $json.email }}\",\n  \"template_id\": 9,\n  \"from_email\": \"Alex Mayhew <alex@alexmayhew.dev>\",\n  \"data\": {}\n}",
+				"jsonBody": "={\n  \"subscriber_email\": \"{{ $('Split Subscribers').item.json.email }}\",\n  \"template_id\": 9,\n  \"from_email\": \"Alex Mayhew <alex@alexmayhew.dev>\",\n  \"data\": {}\n}",
 				"options": {}
 			},
 			"id": "send-welcome-04",
@@ -244,7 +238,7 @@
 			"position": [2660, 200],
 			"credentials": {
 				"httpBasicAuth": {
-					"id": "listmonk-api",
+					"id": "WEgVcMFrGE8GTJVi",
 					"name": "Listmonk API"
 				}
 			}
@@ -268,7 +262,7 @@
 				"genericAuthType": "httpBasicAuth",
 				"sendBody": true,
 				"specifyBody": "json",
-				"jsonBody": "={\n  \"subscriber_email\": \"{{ $json.email }}\",\n  \"template_id\": 10,\n  \"from_email\": \"Alex Mayhew <alex@alexmayhew.dev>\",\n  \"data\": {}\n}",
+				"jsonBody": "={\n  \"subscriber_email\": \"{{ $('Split Subscribers').item.json.email }}\",\n  \"template_id\": 10,\n  \"from_email\": \"Alex Mayhew <alex@alexmayhew.dev>\",\n  \"data\": {}\n}",
 				"options": {}
 			},
 			"id": "send-welcome-05",
@@ -278,7 +272,7 @@
 			"position": [3100, 200],
 			"credentials": {
 				"httpBasicAuth": {
-					"id": "listmonk-api",
+					"id": "WEgVcMFrGE8GTJVi",
 					"name": "Listmonk API"
 				}
 			}
@@ -286,18 +280,12 @@
 		{
 			"parameters": {
 				"method": "PUT",
-				"url": "=http://localhost:9000/api/subscribers/{{ $json.id }}/attributes",
+				"url": "=http://localhost:9000/api/subscribers/{{ $('Split Subscribers').item.json.id }}",
 				"authentication": "genericCredentialType",
 				"genericAuthType": "httpBasicAuth",
 				"sendBody": true,
-				"bodyParameters": {
-					"parameters": [
-						{
-							"name": "attribs",
-							"value": "={{ JSON.stringify({ ...$json.attribs, welcome_complete: new Date().toISOString(), welcome_step: 5 }) }}"
-						}
-					]
-				},
+				"specifyBody": "json",
+				"jsonBody": "={{\n  JSON.stringify({\n    email: $('Split Subscribers').item.json.email,\n    name: $('Split Subscribers').item.json.name || \"\",\n    status: $('Split Subscribers').item.json.status || \"enabled\",\n    lists: ($('Split Subscribers').item.json.lists || []).map(l => l.id),\n    preconfirm_subscriptions: true,\n    attribs: Object.assign({}, $('Split Subscribers').item.json.attribs || {}, {\n      welcome_complete: new Date().toISOString(),\n      welcome_step: 5\n    })\n  })\n}}",
 				"options": {}
 			},
 			"id": "mark-welcome-complete",
@@ -307,7 +295,7 @@
 			"position": [3320, 200],
 			"credentials": {
 				"httpBasicAuth": {
-					"id": "listmonk-api",
+					"id": "WEgVcMFrGE8GTJVi",
 					"name": "Listmonk API"
 				}
 			}
