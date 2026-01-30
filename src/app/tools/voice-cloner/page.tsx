@@ -204,7 +204,7 @@ export default function VoiceClonerPage() {
 							href="https://voicecloner.alexmayhew.dev"
 							target="_blank"
 							rel="noopener noreferrer"
-							className="bg-cyber-lime text-gunmetal-base hover:bg-cyber-lime/90 flex items-center gap-2 px-6 py-3 font-mono text-sm font-bold tracking-tight transition-colors"
+							className="bg-cyber-lime text-void-navy hover:bg-cyber-lime/90 flex items-center gap-2 px-6 py-3 font-mono text-sm font-bold tracking-tight transition-colors"
 						>
 							<span>Try Voice Cloner</span>
 							<ExternalLink className="h-4 w-4" strokeWidth={2} />

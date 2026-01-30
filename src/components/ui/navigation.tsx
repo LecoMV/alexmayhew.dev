@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { m, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { Menu, X, ChevronDown, Layers, Terminal } from "lucide-react";
+import { Menu, X, ChevronDown, Layers, Terminal, Mic } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -35,6 +35,14 @@ const navItems: NavItem[] = [
 ];
 
 const toolsDropdown: ToolItem[] = [
+	{
+		href: "/tools/voice-cloner",
+		label: "Voice Cloner",
+		description: "AI text-to-speech with voice cloning",
+		icon: <Mic className="h-4 w-4" strokeWidth={1.5} />,
+		badge: "Live",
+		badgeColor: "lime",
+	},
 	{
 		href: "/tools/traceforge",
 		label: "TraceForge",
