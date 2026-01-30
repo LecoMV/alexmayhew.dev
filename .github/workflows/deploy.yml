@@ -170,7 +170,9 @@ jobs:
 
       - name: Set Worker secrets
         run: |
-          echo "${{ secrets.BUTTONDOWN_API_KEY }}" | npx wrangler secret put BUTTONDOWN_API_KEY
+          echo "${{ secrets.LISTMONK_API_URL }}" | npx wrangler secret put LISTMONK_API_URL
+          echo "${{ secrets.LISTMONK_API_USER }}" | npx wrangler secret put LISTMONK_API_USER
+          echo "${{ secrets.LISTMONK_API_KEY }}" | npx wrangler secret put LISTMONK_API_KEY
           echo "${{ secrets.RESEND_API_KEY }}" | npx wrangler secret put RESEND_API_KEY
           echo "${{ secrets.CONTACT_EMAIL }}" | npx wrangler secret put CONTACT_EMAIL
         env:

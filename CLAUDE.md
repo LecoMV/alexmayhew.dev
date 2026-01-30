@@ -98,7 +98,10 @@ See `docs/CONTENT_STATUS.md` for full content inventory and linking structure.
 pass show claude/groq/api-key           # Groq (Llama 3.3 70B, 14,400 req/day free)
 pass show claude/cloudflare/api-token   # Cloudflare Workers AI (already in wrangler)
 pass show claude/n8n/api-key            # n8n workflow automation
-pass show claude/buttondown/api-key     # Newsletter platform
+
+# Newsletter (Listmonk — self-hosted at localhost:9000)
+pass show claude/listmonk/admin-password  # Listmonk admin + API password
+pass show claude/resend/api-key           # Resend SMTP (used by Listmonk)
 ```
 
 ## Content Repurposing Pipeline
@@ -124,6 +127,23 @@ See `docs/SELF_HOSTED_LLM_GUIDE.md` for details.
 - **Cloud:** Groq API (free), Cloudflare Workers AI (free 10K neurons/day)
 - **Automation:** n8n (Podman container at localhost:5678)
 
+## Content Operations
+
+**Cadence:** 2 blog posts/month (spokes) + weekly newsletter + automated social distribution.
+**Rhythm:** Week A = blog + newsletter. Week B = newsletter only. See `docs/CONTENT_OPERATIONS.md`.
+
+**Start here for content work:**
+
+- **Operations workflow:** `docs/CONTENT_OPERATIONS.md` (end-to-end process)
+- **Editorial calendar:** `docs/EDITORIAL_CALENDAR_2026.md` (what to write and when)
+- **Content inventory:** `docs/CONTENT_STATUS.md` (hub-and-spoke status)
+
+**Quality gates:**
+
+- Blog posts: `content/blog/QUALITY_CHECKLIST.md`
+- Newsletter issues: `content/newsletter/QUALITY_CHECKLIST.md`
+- Voice reference: `docs/VOICE_GUIDE.md`
+
 ## References
 
 ### Core
@@ -132,11 +152,13 @@ See `docs/SELF_HOSTED_LLM_GUIDE.md` for details.
 - Deployment: `docs/DEPLOYMENT.md`
 - Claude Config: `docs/CLAUDE_CODE_CONFIG.md`
 
-### Content (Start Here for Content Work)
+### Content
 
-- **Content Status: `docs/CONTENT_STATUS.md`** (source of truth for blog content)
+- Content Status: `docs/CONTENT_STATUS.md` (hub-and-spoke inventory)
 - Voice Guide: `docs/VOICE_GUIDE.md` (brand voice for all content)
-- Hub Strategy: `docs/HUB_AND_SPOKE_CONTENT_STRATEGY.md` (best practices reference)
+- Hub Strategy: `docs/HUB_AND_SPOKE_CONTENT_STRATEGY.md`
+- Newsletter Strategy: `docs/NEWSLETTER_STRATEGY.md`
+- Listmonk Setup: `docs/LISTMONK_SETUP.md`
 
 ### Marketing & Repurposing
 

@@ -9,7 +9,9 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 interface CloudflareSecrets {
-	BUTTONDOWN_API_KEY?: string;
+	LISTMONK_API_URL?: string;
+	LISTMONK_API_USER?: string;
+	LISTMONK_API_KEY?: string;
 	RESEND_API_KEY?: string;
 	CONTACT_EMAIL?: string;
 	TURNSTILE_SECRET_KEY?: string;
@@ -24,7 +26,9 @@ export async function getEnv(): Promise<CloudflareSecrets> {
 	try {
 		const { env } = await getCloudflareContext();
 		return {
-			BUTTONDOWN_API_KEY: env.BUTTONDOWN_API_KEY || process.env.BUTTONDOWN_API_KEY,
+			LISTMONK_API_URL: env.LISTMONK_API_URL || process.env.LISTMONK_API_URL,
+			LISTMONK_API_USER: env.LISTMONK_API_USER || process.env.LISTMONK_API_USER,
+			LISTMONK_API_KEY: env.LISTMONK_API_KEY || process.env.LISTMONK_API_KEY,
 			RESEND_API_KEY: env.RESEND_API_KEY || process.env.RESEND_API_KEY,
 			CONTACT_EMAIL: env.CONTACT_EMAIL || process.env.CONTACT_EMAIL,
 			TURNSTILE_SECRET_KEY: env.TURNSTILE_SECRET_KEY || process.env.TURNSTILE_SECRET_KEY,
@@ -33,7 +37,9 @@ export async function getEnv(): Promise<CloudflareSecrets> {
 	} catch {
 		// getCloudflareContext() throws in local dev (next dev without wrangler)
 		return {
-			BUTTONDOWN_API_KEY: process.env.BUTTONDOWN_API_KEY,
+			LISTMONK_API_URL: process.env.LISTMONK_API_URL,
+			LISTMONK_API_USER: process.env.LISTMONK_API_USER,
+			LISTMONK_API_KEY: process.env.LISTMONK_API_KEY,
 			RESEND_API_KEY: process.env.RESEND_API_KEY,
 			CONTACT_EMAIL: process.env.CONTACT_EMAIL,
 			TURNSTILE_SECRET_KEY: process.env.TURNSTILE_SECRET_KEY,

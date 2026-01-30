@@ -70,30 +70,34 @@ export async function subscribeToNewsletter(data: NewsletterFormValues): Promise
 		};
 	}
 
-	// 3. Subscribe via Buttondown API
+	// 3. Subscribe via Listmonk API
 	const env = await getEnv();
-	const apiKey = env.BUTTONDOWN_API_KEY;
+	const apiUrl = env.LISTMONK_API_URL;
+	const apiUser = env.LISTMONK_API_USER;
+	const apiKey = env.LISTMONK_API_KEY;
 
-	if (!apiKey) {
-		console.error("[Newsletter] BUTTONDOWN_API_KEY not configured");
+	if (!apiUrl || !apiUser || !apiKey) {
+		console.error("[Newsletter] Listmonk API credentials not configured");
 		return { success: false, error: "Newsletter signup is temporarily unavailable." };
 	}
 
 	try {
-		const response = await dependencies.fetch("https://api.buttondown.email/v1/subscribers", {
+		const response = await dependencies.fetch(`${apiUrl}/api/subscribers`, {
 			method: "POST",
 			headers: {
-				Authorization: `Token ${apiKey}`,
+				Authorization: `Basic ${btoa(`${apiUser}:${apiKey}`)}`,
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
-				email_address: email,
-				referrer_url: "https://alexmayhew.dev",
-				metadata: {
+				email,
+				name: "",
+				status: "enabled",
+				lists: [3],
+				preconfirm_subscriptions: false,
+				attribs: {
 					source,
 					subscribed_at: new Date().toISOString(),
 				},
-				tags: [source],
 			}),
 		});
 
@@ -101,22 +105,17 @@ export async function subscribeToNewsletter(data: NewsletterFormValues): Promise
 			return { success: true };
 		}
 
-		// Handle specific Buttondown errors
+		// Handle duplicate subscriber (already exists)
 		if (response.status === 409) {
 			return { success: true };
 		}
 
 		const errorData = (await response.json().catch(() => ({}))) as Record<string, unknown>;
-		const errorCode = String(errorData?.code ?? "");
-		const errorDetail = String(errorData?.detail ?? "");
-		console.error("Buttondown API error:", response.status, JSON.stringify(errorData));
-
-		if (errorCode === "subscriber_blocked") {
-			return { success: false, error: "Unable to subscribe. Please try again later." };
-		}
+		const errorMessage = String(errorData?.message ?? "");
+		console.error("Listmonk API error:", response.status, JSON.stringify(errorData));
 
 		if (response.status === 400) {
-			if (errorDetail.includes("email") || errorDetail.includes("valid")) {
+			if (errorMessage.includes("email") || errorMessage.includes("valid")) {
 				return { success: false, error: "Please enter a valid email address." };
 			}
 			return { success: false, error: "Unable to subscribe. Please try again." };

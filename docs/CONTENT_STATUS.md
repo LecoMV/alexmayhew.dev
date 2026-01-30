@@ -1,7 +1,7 @@
 # Content Status - alexmayhew.dev
 
-> **Last Updated:** 2026-01-28
-> **Status:** Hub-and-Spoke Implementation Complete
+> **Last Updated:** 2026-01-29
+> **Status:** Hub-and-Spoke Complete + Newsletter System Implemented
 
 ---
 
@@ -9,7 +9,80 @@
 
 The alexmayhew.dev blog has been restructured into a **hub-and-spoke content architecture** with 5 comprehensive guide hubs and 39 spoke posts. All internal linking, cross-cluster linking, and featured images are complete.
 
-**Total Content:** 44 blog posts (5 hubs + 39 spokes)
+**Total Content:** 44 blog posts (5 hubs + 39 spokes) + 9 newsletter emails (5 welcome + 4 issues)
+
+---
+
+## Newsletter System — The Architect's Brief
+
+**Status:** Deployed on Listmonk (self-hosted)
+
+### Newsletter Identity
+
+| Attribute | Value                                                    |
+| --------- | -------------------------------------------------------- |
+| Name      | The Architect's Brief                                    |
+| Schedule  | Every Tuesday, 9 AM EST                                  |
+| Platform  | Listmonk v6.0.0 (self-hosted at listmonk.alexmayhew.dev) |
+| Sender    | Alex Mayhew (alex@alexmayhew.dev)                        |
+| Format    | Markdown, 500-700 words per issue                        |
+| SMTP      | Resend (smtp.resend.com)                                 |
+
+### Content Infrastructure
+
+```
+content/newsletter/
+├── buttondown-template.css        # Custom email CSS (neo-brutalist dark theme)
+├── TEMPLATE.md                    # Issue template with frontmatter schema
+├── QUALITY_CHECKLIST.md           # Pre-send quality gate
+├── welcome/                       # 5-email automated welcome sequence
+│   ├── 01-welcome.md             # Day 0: Welcome + top 3 blog hubs
+│   ├── 02-first-insight.md       # Day 3: Architecture mistake pattern
+│   ├── 03-how-i-help.md          # Day 7: Advisory services intro
+│   ├── 04-engagement-check.md    # Day 14: Topic preference survey
+│   └── 05-case-study.md          # Day 21: Architecture review case study
+└── issues/                        # Regular weekly issues
+    ├── 001-monolith-first.md     # 2026-02-04 (architecture)
+    ├── 002-microservices-cost.md  # 2026-02-11 (architecture)
+    ├── 003-postgresql-rls.md     # 2026-02-18 (saas-patterns)
+    └── 004-when-not-nextjs.md    # 2026-02-25 (contrarian)
+```
+
+### Issue Status
+
+| Issue | Send Date  | Title                                | Pillar        | Status |
+| ----- | ---------- | ------------------------------------ | ------------- | ------ |
+| #1    | 2026-02-04 | Why Your SaaS Needs a Monolith First | architecture  | Draft  |
+| #2    | 2026-02-11 | The Hidden Cost of Microservices     | architecture  | Draft  |
+| #3    | 2026-02-18 | PostgreSQL RLS for Multi-Tenancy     | saas-patterns | Draft  |
+| #4    | 2026-02-25 | When NOT to Use Next.js              | contrarian    | Draft  |
+
+### Welcome Sequence Status
+
+| Email | Delay     | Subject                                                  | Status |
+| ----- | --------- | -------------------------------------------------------- | ------ |
+| 1     | Immediate | Welcome to The Architect's Brief                         | Draft  |
+| 2     | Day 3     | The architecture mistake I see in every early-stage SaaS | Draft  |
+| 3     | Day 7     | How I help CTOs make better architecture decisions       | Draft  |
+| 4     | Day 14    | Quick question (2 weeks in)                              | Draft  |
+| 5     | Day 21    | The architecture review that saved 6 months              | Draft  |
+
+### Blog Cross-Links from Newsletter
+
+Newsletter content links back to these blog hubs and spokes:
+
+- `saas-architecture-decision-framework` — Issues #1, #2, #3; Welcome #1, #2
+- `multi-tenancy-prisma-rls` — Issue #3; Welcome #3, #5
+- `performance-engineering-playbook` — Welcome #1
+- `ai-assisted-development-guide` — Welcome #1
+- `modern-frontend-architecture` — Issue #4
+
+### Documentation
+
+- Setup guide: `docs/LISTMONK_SETUP.md`
+- Strategy: `docs/NEWSLETTER_STRATEGY.md`
+- Content calendar: `docs/NEWSLETTER_CONTENT_CALENDAR.md`
+- Voice guide: `docs/VOICE_GUIDE.md`
 
 ---
 
