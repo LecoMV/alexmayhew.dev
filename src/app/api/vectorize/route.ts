@@ -1,23 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { proxyFetch, validateFile } from "@/lib/vectorizer";
-
-/**
- * Upload response from vectorizer API
- */
-interface UploadResponse {
-	task_id: string;
-	filename: string;
-	status: string;
-}
+import { VECTORIZER_CONFIG, validateFile } from "@/lib/vectorizer";
 
 /**
  * POST /api/vectorize
  * Proxy upload requests to vectorizer API with validation
- *
- * Implements BFF (Backend-for-Frontend) pattern:
- * - Validates file before forwarding
- * - Handles auth automatically via proxyFetch
- * - Returns typed response
  */
 export async function POST(request: NextRequest) {
 	try {
@@ -38,16 +24,28 @@ export async function POST(request: NextRequest) {
 		const uploadFormData = new FormData();
 		uploadFormData.append("file", file);
 
-		const result = await proxyFetch<UploadResponse>("/upload", {
+		const headers: HeadersInit = {};
+		if (VECTORIZER_CONFIG.apiKey) {
+			headers["X-API-Key"] = VECTORIZER_CONFIG.apiKey;
+		}
+
+		const response = await fetch(`${VECTORIZER_CONFIG.apiUrl}/upload`, {
 			method: "POST",
+			headers,
 			body: uploadFormData,
 		});
 
-		if (result.ok) {
-			return NextResponse.json(result.data);
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({ detail: "Upload failed" }));
+			const detail =
+				errorData && typeof errorData === "object" && "detail" in errorData
+					? String(errorData.detail)
+					: "Upload failed";
+			return NextResponse.json({ error: detail }, { status: response.status });
 		}
 
-		return NextResponse.json({ error: result.error }, { status: result.status });
+		const data = await response.json();
+		return NextResponse.json(data);
 	} catch (error) {
 		// Log error securely without exposing details to client
 		console.error(
