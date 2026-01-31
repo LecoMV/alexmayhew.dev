@@ -13,15 +13,16 @@
  * Immutable configuration object
  * Uses simple fallbacks for edge runtime compatibility
  */
+const apiUrl = process.env.VECTORIZER_API_URL || "https://api.alexmayhew.dev";
+const apiKey = process.env.VECTORIZER_API_KEY;
+
 export const VECTORIZER_CONFIG = {
 	/** Backend API URL */
-	apiUrl: process.env.VECTORIZER_API_URL || "https://api.alexmayhew.dev",
+	apiUrl,
 	/** API key (undefined if auth disabled on backend) */
-	apiKey: process.env.VECTORIZER_API_KEY || undefined,
+	apiKey,
 	/** Whether authentication is enabled (API key is configured) */
-	get authEnabled(): boolean {
-		return Boolean(this.apiKey);
-	},
+	authEnabled: Boolean(apiKey),
 } as const;
 
 /**
