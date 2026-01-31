@@ -1,72 +1,33 @@
 /**
  * TraceForge Vectorizer Configuration
  *
- * Centralized configuration with runtime validation following 2026 best practices:
- * - Zod schema validation for type safety at runtime
+ * Centralized configuration following 2026 best practices:
  * - Explicit auth mode detection (auth-enabled vs auth-disabled)
  * - Helper functions for DRY authenticated requests
+ * - Edge-compatible (no heavy dependencies at module init)
  *
  * @see https://nextjs.org/docs/app/getting-started/proxy
  */
 
-import { z } from "zod";
-
-/**
- * Configuration schema with runtime validation
- * API key is optional - only required when backend has auth enabled
- */
-const configSchema = z.object({
-	apiUrl: z.string().url().default("https://api.alexmayhew.dev"),
-	apiKey: z.string().min(1).optional(),
-});
-
-/**
- * Parse and validate configuration from environment
- */
-function parseConfig() {
-	const result = configSchema.safeParse({
-		apiUrl: process.env.VECTORIZER_API_URL,
-		apiKey: process.env.VECTORIZER_API_KEY,
-	});
-
-	if (!result.success) {
-		// Log validation errors but use defaults
-		console.warn("[TraceForge] Config validation warning:", result.error.format());
-		return {
-			apiUrl: "https://api.alexmayhew.dev",
-			apiKey: undefined,
-		};
-	}
-
-	return result.data;
-}
-
-const parsedConfig = parseConfig();
-
 /**
  * Immutable configuration object
+ * Uses simple fallbacks for edge runtime compatibility
  */
 export const VECTORIZER_CONFIG = {
 	/** Backend API URL */
-	apiUrl: parsedConfig.apiUrl,
+	apiUrl: process.env.VECTORIZER_API_URL || "https://api.alexmayhew.dev",
 	/** API key (undefined if auth disabled on backend) */
-	apiKey: parsedConfig.apiKey,
+	apiKey: process.env.VECTORIZER_API_KEY || undefined,
 	/** Whether authentication is enabled (API key is configured) */
-	authEnabled: Boolean(parsedConfig.apiKey),
+	get authEnabled(): boolean {
+		return Boolean(this.apiKey);
+	},
 } as const;
 
 /**
  * Type for the vectorizer configuration
  */
 export type VectorizerConfig = typeof VECTORIZER_CONFIG;
-
-// Log configuration status (not secrets) in development
-if (process.env.NODE_ENV === "development") {
-	console.info("[TraceForge] Config loaded:", {
-		apiUrl: VECTORIZER_CONFIG.apiUrl,
-		authEnabled: VECTORIZER_CONFIG.authEnabled,
-	});
-}
 
 /**
  * Create authentication headers for API requests
