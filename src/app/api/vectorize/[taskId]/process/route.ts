@@ -15,12 +15,6 @@ export async function POST(
 	{ params }: { params: Promise<{ taskId: string }> }
 ) {
 	try {
-		// Validate API key is configured
-		if (!VECTORIZER_CONFIG.apiKey) {
-			console.error("[TraceForge] API key not configured");
-			return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
-		}
-
 		const { taskId } = await params;
 
 		// Validate taskId format (prevents path traversal and injection)
@@ -39,12 +33,16 @@ export async function POST(
 
 		const options = optionsResult.data;
 
+		const headers: HeadersInit = {
+			"Content-Type": "application/json",
+		};
+		if (VECTORIZER_CONFIG.apiKey) {
+			headers["X-API-Key"] = VECTORIZER_CONFIG.apiKey;
+		}
+
 		const response = await fetch(`${VECTORIZER_CONFIG.apiUrl}/process/${taskIdResult.data}`, {
 			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"X-API-Key": VECTORIZER_CONFIG.apiKey,
-			},
+			headers,
 			body: JSON.stringify({
 				generator: options.generator,
 				preset: options.preset,

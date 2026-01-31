@@ -7,12 +7,6 @@ import { VECTORIZER_CONFIG, validateFile } from "@/lib/vectorizer";
  */
 export async function POST(request: NextRequest) {
 	try {
-		// Validate API key is configured
-		if (!VECTORIZER_CONFIG.apiKey) {
-			console.error("[TraceForge] API key not configured");
-			return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
-		}
-
 		const formData = await request.formData();
 		const file = formData.get("file") as File | null;
 
@@ -30,11 +24,14 @@ export async function POST(request: NextRequest) {
 		const uploadFormData = new FormData();
 		uploadFormData.append("file", file);
 
+		const headers: HeadersInit = {};
+		if (VECTORIZER_CONFIG.apiKey) {
+			headers["X-API-Key"] = VECTORIZER_CONFIG.apiKey;
+		}
+
 		const response = await fetch(`${VECTORIZER_CONFIG.apiUrl}/upload`, {
 			method: "POST",
-			headers: {
-				"X-API-Key": VECTORIZER_CONFIG.apiKey,
-			},
+			headers,
 			body: uploadFormData,
 		});
 

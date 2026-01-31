@@ -8,14 +8,10 @@ export const VECTORIZER_CONFIG = {
 	apiKey: process.env.VECTORIZER_API_KEY,
 } as const;
 
-// Validate API key is configured (warn in development, error in production)
-if (!VECTORIZER_CONFIG.apiKey) {
-	const message = "VECTORIZER_API_KEY environment variable is not set";
-	if (process.env.NODE_ENV === "production") {
-		console.error(`[TraceForge] CRITICAL: ${message}`);
-	} else {
-		console.warn(`[TraceForge] Warning: ${message}`);
-	}
+// API key is optional - only needed if backend has auth enabled
+// Log for debugging but don't treat as critical error
+if (!VECTORIZER_CONFIG.apiKey && process.env.NODE_ENV === "development") {
+	console.info("[TraceForge] Note: VECTORIZER_API_KEY not set. Backend auth must be disabled.");
 }
 
 export const ALLOWED_IMAGE_TYPES = [
