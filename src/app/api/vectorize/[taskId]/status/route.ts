@@ -1,9 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import { VECTORIZER_CONFIG, taskIdSchema } from "@/lib/vectorizer";
+import { proxyFetch, taskIdSchema } from "@/lib/vectorizer";
+
+/**
+ * Status response from vectorizer API
+ */
+interface StatusResponse {
+	task_id: string;
+	status: "pending" | "processing" | "completed" | "failed";
+	progress?: number;
+	error?: string;
+	files?: string[];
+	quality_score?: number;
+}
 
 /**
  * GET /api/vectorize/[taskId]/status
  * Check processing status with validated task ID
+ *
+ * Implements BFF pattern with automatic auth handling
  */
 export async function GET(
 	_request: NextRequest,
@@ -18,24 +32,16 @@ export async function GET(
 			return NextResponse.json({ error: "Invalid task ID format" }, { status: 400 });
 		}
 
-		const response = await fetch(`${VECTORIZER_CONFIG.apiUrl}/status/${taskIdResult.data}`, {
+		const result = await proxyFetch<StatusResponse>(`/status/${taskIdResult.data}`, {
 			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
+			headers: { "Content-Type": "application/json" },
 		});
 
-		if (!response.ok) {
-			const errorData = await response.json().catch(() => ({ detail: "Status check failed" }));
-			const detail =
-				errorData && typeof errorData === "object" && "detail" in errorData
-					? String(errorData.detail)
-					: "Status check failed";
-			return NextResponse.json({ error: detail }, { status: response.status });
+		if (result.ok) {
+			return NextResponse.json(result.data);
 		}
 
-		const data = await response.json();
-		return NextResponse.json(data);
+		return NextResponse.json({ error: result.error }, { status: result.status });
 	} catch (error) {
 		console.error(
 			"[TraceForge] Status error:",

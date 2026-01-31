@@ -1,17 +1,147 @@
 /**
  * TraceForge Vectorizer Configuration
- * Centralized configuration to eliminate duplication across API routes
+ *
+ * Centralized configuration with runtime validation following 2026 best practices:
+ * - Zod schema validation for type safety at runtime
+ * - Explicit auth mode detection (auth-enabled vs auth-disabled)
+ * - Helper functions for DRY authenticated requests
+ *
+ * @see https://nextjs.org/docs/app/getting-started/proxy
  */
 
+import { z } from "zod";
+
+/**
+ * Configuration schema with runtime validation
+ * API key is optional - only required when backend has auth enabled
+ */
+const configSchema = z.object({
+	apiUrl: z.string().url().default("https://api.alexmayhew.dev"),
+	apiKey: z.string().min(1).optional(),
+});
+
+/**
+ * Parse and validate configuration from environment
+ */
+function parseConfig() {
+	const result = configSchema.safeParse({
+		apiUrl: process.env.VECTORIZER_API_URL,
+		apiKey: process.env.VECTORIZER_API_KEY,
+	});
+
+	if (!result.success) {
+		// Log validation errors but use defaults
+		console.warn("[TraceForge] Config validation warning:", result.error.format());
+		return {
+			apiUrl: "https://api.alexmayhew.dev",
+			apiKey: undefined,
+		};
+	}
+
+	return result.data;
+}
+
+const parsedConfig = parseConfig();
+
+/**
+ * Immutable configuration object
+ */
 export const VECTORIZER_CONFIG = {
-	apiUrl: process.env.VECTORIZER_API_URL || "https://api.alexmayhew.dev",
-	apiKey: process.env.VECTORIZER_API_KEY,
+	/** Backend API URL */
+	apiUrl: parsedConfig.apiUrl,
+	/** API key (undefined if auth disabled on backend) */
+	apiKey: parsedConfig.apiKey,
+	/** Whether authentication is enabled (API key is configured) */
+	authEnabled: Boolean(parsedConfig.apiKey),
 } as const;
 
-// API key is optional - only needed if backend has auth enabled
-// Log for debugging but don't treat as critical error
-if (!VECTORIZER_CONFIG.apiKey && process.env.NODE_ENV === "development") {
-	console.info("[TraceForge] Note: VECTORIZER_API_KEY not set. Backend auth must be disabled.");
+/**
+ * Type for the vectorizer configuration
+ */
+export type VectorizerConfig = typeof VECTORIZER_CONFIG;
+
+// Log configuration status (not secrets) in development
+if (process.env.NODE_ENV === "development") {
+	console.info("[TraceForge] Config loaded:", {
+		apiUrl: VECTORIZER_CONFIG.apiUrl,
+		authEnabled: VECTORIZER_CONFIG.authEnabled,
+	});
+}
+
+/**
+ * Create authentication headers for API requests
+ * Returns empty object if auth is disabled
+ *
+ * @example
+ * const headers = createAuthHeaders();
+ * fetch(url, { headers: { ...headers, "Content-Type": "application/json" } });
+ */
+export function createAuthHeaders(): HeadersInit {
+	if (!VECTORIZER_CONFIG.authEnabled || !VECTORIZER_CONFIG.apiKey) {
+		return {};
+	}
+	return { "X-API-Key": VECTORIZER_CONFIG.apiKey };
+}
+
+/**
+ * Result type for proxy fetch operations
+ */
+export type ProxyResult<T> =
+	| { ok: true; data: T; status: number }
+	| { ok: false; error: string; status: number };
+
+/**
+ * Proxy fetch wrapper with automatic auth header injection
+ * Implements BFF (Backend-for-Frontend) pattern per Next.js 2026 guidelines
+ *
+ * @param path - API path (appended to apiUrl)
+ * @param options - Fetch options (headers are merged with auth headers)
+ * @returns Typed result with success/error state
+ *
+ * @example
+ * const result = await proxyFetch<UploadResponse>("/upload", {
+ *   method: "POST",
+ *   body: formData,
+ * });
+ * if (result.ok) {
+ *   return NextResponse.json(result.data);
+ * }
+ * return NextResponse.json({ error: result.error }, { status: result.status });
+ */
+export async function proxyFetch<T>(
+	path: string,
+	options: RequestInit = {}
+): Promise<ProxyResult<T>> {
+	const url = `${VECTORIZER_CONFIG.apiUrl}${path}`;
+	const authHeaders = createAuthHeaders();
+
+	try {
+		const response = await fetch(url, {
+			...options,
+			headers: {
+				...authHeaders,
+				...options.headers,
+			},
+		});
+
+		if (!response.ok) {
+			const errorData = await response.json().catch(() => ({ detail: "Request failed" }));
+			const detail =
+				errorData && typeof errorData === "object" && "detail" in errorData
+					? String(errorData.detail)
+					: "Request failed";
+			return { ok: false, error: detail, status: response.status };
+		}
+
+		const data = (await response.json()) as T;
+		return { ok: true, data, status: response.status };
+	} catch (error) {
+		console.error(
+			"[TraceForge] Proxy fetch error:",
+			error instanceof Error ? error.message : "Unknown error"
+		);
+		return { ok: false, error: "Service temporarily unavailable", status: 503 };
+	}
 }
 
 export const ALLOWED_IMAGE_TYPES = [

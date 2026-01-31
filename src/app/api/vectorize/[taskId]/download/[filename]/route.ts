@@ -1,21 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import { VECTORIZER_CONFIG, taskIdSchema, filenameSchema } from "@/lib/vectorizer";
+import {
+	VECTORIZER_CONFIG,
+	createAuthHeaders,
+	taskIdSchema,
+	filenameSchema,
+} from "@/lib/vectorizer";
 
 /**
  * GET /api/vectorize/[taskId]/download/[filename]
  * Download processed files with validated parameters
+ *
+ * Note: Uses createAuthHeaders() instead of proxyFetch() because
+ * we need to return raw binary data, not JSON
  */
 export async function GET(
 	_request: NextRequest,
 	{ params }: { params: Promise<{ taskId: string; filename: string }> }
 ) {
 	try {
-		// Validate API key is configured
-		if (!VECTORIZER_CONFIG.apiKey) {
-			console.error("[TraceForge] API key not configured");
-			return NextResponse.json({ error: "Service temporarily unavailable" }, { status: 503 });
-		}
-
 		const { taskId, filename } = await params;
 
 		// Validate taskId format (prevents path traversal and injection)
@@ -34,9 +36,7 @@ export async function GET(
 			`${VECTORIZER_CONFIG.apiUrl}/download/${taskIdResult.data}/${filenameResult.data}`,
 			{
 				method: "GET",
-				headers: {
-					"X-API-Key": VECTORIZER_CONFIG.apiKey,
-				},
+				headers: createAuthHeaders(),
 			}
 		);
 

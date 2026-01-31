@@ -1,14 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-	VECTORIZER_CONFIG,
-	taskIdSchema,
-	processOptionsSchema,
-	formatZodError,
-} from "@/lib/vectorizer";
+import { proxyFetch, taskIdSchema, processOptionsSchema, formatZodError } from "@/lib/vectorizer";
+
+/**
+ * Process response from vectorizer API
+ */
+interface ProcessResponse {
+	task_id: string;
+	status: string;
+	message?: string;
+}
 
 /**
  * POST /api/vectorize/[taskId]/process
  * Start vectorization processing with validated options
+ *
+ * Implements BFF (Backend-for-Frontend) pattern:
+ * - Validates taskId format (prevents path traversal)
+ * - Validates process options with Zod schema
+ * - Handles auth automatically via proxyFetch
  */
 export async function POST(
 	request: NextRequest,
@@ -33,16 +42,9 @@ export async function POST(
 
 		const options = optionsResult.data;
 
-		const headers: HeadersInit = {
-			"Content-Type": "application/json",
-		};
-		if (VECTORIZER_CONFIG.apiKey) {
-			headers["X-API-Key"] = VECTORIZER_CONFIG.apiKey;
-		}
-
-		const response = await fetch(`${VECTORIZER_CONFIG.apiUrl}/process/${taskIdResult.data}`, {
+		const result = await proxyFetch<ProcessResponse>(`/process/${taskIdResult.data}`, {
 			method: "POST",
-			headers,
+			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
 				generator: options.generator,
 				preset: options.preset,
@@ -51,17 +53,11 @@ export async function POST(
 			}),
 		});
 
-		if (!response.ok) {
-			const errorData = await response.json().catch(() => ({ detail: "Process request failed" }));
-			const detail =
-				errorData && typeof errorData === "object" && "detail" in errorData
-					? String(errorData.detail)
-					: "Process failed";
-			return NextResponse.json({ error: detail }, { status: response.status });
+		if (result.ok) {
+			return NextResponse.json(result.data);
 		}
 
-		const data = await response.json();
-		return NextResponse.json(data);
+		return NextResponse.json({ error: result.error }, { status: result.status });
 	} catch (error) {
 		console.error(
 			"[TraceForge] Process error:",
