@@ -60,9 +60,9 @@ const features = [
 	},
 	{
 		icon: <Users className="h-5 w-5" strokeWidth={1.5} />,
-		title: "Free Tier Available",
+		title: "Free During Beta",
 		description:
-			"Access curated pre-cloned voices at no cost. Premium tier unlocks custom voice uploads and higher usage limits.",
+			"Full access to all curated voices at no cost. Premium tiers with custom voice uploads coming soon.",
 	},
 ];
 
@@ -195,9 +195,9 @@ export default function VoiceClonerPage() {
 				<section className="border-t border-white/10 pt-12">
 					<div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
 						<div>
-							<h3 className="text-mist-white mb-2 font-mono text-lg">Ready to try it?</h3>
+							<h3 className="text-mist-white mb-2 font-mono text-lg">Try it free during beta</h3>
 							<p className="text-slate-text text-sm">
-								Generate AI speech with any voice. Free tier available.
+								Sign up and start generating. No payment required.
 							</p>
 						</div>
 						<a
