@@ -74,7 +74,7 @@ describe("submitContactForm", () => {
 		it("should fail validation with short name", async () => {
 			const result = await submitContactForm({ ...validData, name: "A" });
 			expect(result.success).toBe(false);
-			expect(result.error).toBe("Validation failed");
+			expect(result.error).toBe("Name must be at least 2 characters");
 			expect(result.fieldErrors?.name).toBeDefined();
 			expect(mockResend.emails.send).not.toHaveBeenCalled();
 		});
