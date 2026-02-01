@@ -58,10 +58,17 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 	// 1. Zod Validation
 	const validation = contactFormSchema.safeParse(data);
 	if (!validation.success) {
+		const fieldErrors = validation.error.flatten().fieldErrors as Record<string, string[]>;
+		// Build a user-friendly error message from field errors
+		const errorMessages = Object.entries(fieldErrors)
+			.map(([field, errors]) => errors?.[0])
+			.filter(Boolean);
+		const errorMessage =
+			errorMessages.length > 0 ? errorMessages[0] : "Please fill in all required fields";
 		return {
 			success: false,
-			error: "Validation failed",
-			fieldErrors: validation.error.flatten().fieldErrors as Record<string, string[]>,
+			error: errorMessage,
+			fieldErrors,
 		};
 	}
 
