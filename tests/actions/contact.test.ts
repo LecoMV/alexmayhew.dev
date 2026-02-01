@@ -246,14 +246,14 @@ describe("submitContactForm", () => {
 			});
 			const result = await submitContactForm(validData);
 			expect(result.success).toBe(false);
-			expect(result.error).toContain("Failed to send message");
+			expect(result.error).toContain("Failed to send: API Error");
 		});
 
 		it("should handle network errors", async () => {
 			mockResend.emails.send.mockRejectedValue(new Error("Network error"));
 			const result = await submitContactForm(validData);
 			expect(result.success).toBe(false);
-			expect(result.error).toContain("unexpected error");
+			expect(result.error).toContain("Send failed: Network error");
 		});
 
 		it("should use default Resend instance if dependency not injected", async () => {
