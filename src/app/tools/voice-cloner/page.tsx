@@ -62,7 +62,7 @@ const features = [
 		icon: <Users className="h-5 w-5" strokeWidth={1.5} />,
 		title: "Free During Beta",
 		description:
-			"Full access to all curated voices at no cost. Premium tiers with custom voice uploads coming soon.",
+			"Full access to 40+ curated voices plus 3 custom voice uploads — all free during beta. Upload your own voice samples!",
 	},
 ];
 
