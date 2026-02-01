@@ -1,0 +1,94 @@
+---
+issue: 2
+title: "The Hidden Cost of Microservices"
+subject: "The 73% overhead nobody warns you about"
+sendDate: "2026-02-11"
+status: "draft"
+pillar: "architecture"
+---
+
+Subject: The 73% overhead nobody warns you about
+
+Hey {first_name},
+
+Last week I shared why your SaaS needs a monolith first. This week, the other side: what microservices actually cost when you adopt them too early. Not the AWS bill — the costs that don't show up on any dashboard.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your engineering team pushes for microservices because "Netflix does it." Leadership wants to know the real cost before approving.
+
+**The Insight:**
+Across the startups I've advised, premature microservices adoption follows a predictable cost pattern. I call it the TCO Triangle — three categories of overhead that compound:
+
+**1. Infrastructure Tax (30-40% of codebase)**
+
+```yaml
+# What "simple" microservices actually require
+services:
+  - api-gateway # Route and authenticate requests
+  - auth-service # JWT/session management
+  - user-service # User CRUD and profiles
+  - billing-service # Stripe integration
+  - notification-svc # Email, push, webhooks
+
+infrastructure:
+  - consul # Service discovery
+  - envoy # Service mesh / sidecar proxy
+  - jaeger # Distributed tracing
+  - prometheus # Metrics collection
+  - grafana # Dashboards and alerting
+  - elasticsearch # Log aggregation
+  - kafka # Event streaming between services
+```
+
+Count them. 12 systems before you ship a single business feature.
+
+**2. Cognitive Load Tax (2-3x debugging time)**
+A bug in a monolith: read the stack trace, find the function, fix it. A bug across services: correlate trace IDs across 4 services, check 3 log streams, reproduce timing-dependent failures. The median debugging session goes from 30 minutes to 90+ minutes.
+
+**3. Hiring Tax ($50-100K/year additional)**
+You need at least one infrastructure-focused engineer to maintain the platform. At seed stage, that's 20-25% of your engineering headcount dedicated to keeping the lights on, not building product.
+
+**The Team-Size Breakpoint Framework:**
+
+| Team Size          | Architecture                      | Rationale                                                                                                      |
+| ------------------ | --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Under 10 engineers | Monolith                          | One team, one codebase, one deployment. Cognitive overhead of distributed systems isn't worth it.              |
+| 10-30 engineers    | Monolith + 1-3 extracted services | Extract only what has genuinely different scaling or deployment needs.                                         |
+| 30-50 engineers    | Domain-aligned services           | Team boundaries now match service boundaries. Conway's Law works in your favor.                                |
+| 50+ engineers      | Microservices                     | You have the headcount to absorb operational overhead and the organizational need for independent deployments. |
+
+**When to Apply This:**
+
+- Under $1M ARR with fewer than 10 engineers — the monolith is your competitive advantage, not your technical debt
+- $1-5M ARR — audit your services, calculate your infrastructure-to-feature ratio, and consolidate if it exceeds 30%
+- $5M+ ARR — now microservices might be the right call, but only where team boundaries genuinely require independent deployment
+
+---
+
+## Worth Your Time
+
+1. **[Martin Fowler: Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)** — Fowler's argument has a nuance most people miss: you can't draw service boundaries correctly until you understand the domain. Starting with a monolith is how you learn where the real seams are.
+
+2. **[Shopify's Modular Monolith](https://shopify.engineering/shopify-monolith)** — Shopify processes $7.5B+ in GMV on a Rails monolith. Their approach — componentized modules within a single deployment — is the pattern I recommend most often. Black Friday at scale, one deployment pipeline.
+
+3. **[Local-First Software](https://www.inkandswitch.com/local-first/)** — A paradigm that sidesteps the distributed systems question entirely. Worth understanding as the complexity pendulum swings back toward simplicity.
+
+---
+
+## Tool of the Week
+
+**[k6](https://k6.io/)** — Before you add horizontal scaling, know your actual limits. k6 lets you write load tests in JavaScript, and the results consistently surprise teams: most well-tuned monoliths on a single beefy server handle 5-10x the traffic founders assume. Start with `k6 run --vus 100 --duration 30s` against your staging environment and see where you actually stand.
+
+---
+
+That's it for this week.
+
+Hit reply if you've calculated your infrastructure-to-feature ratio. I'm curious what number you're at. I read every response.
+
+– Alex
+
+P.S. Last week's issue on [why monoliths win at early stage](https://alexmayhew.dev/blog/saas-architecture-decision-framework) pairs well with this one — the decision framework for when to actually make the switch.

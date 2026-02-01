@@ -35,6 +35,7 @@
 		"@marsidev/react-turnstile": "^1.4.1",
 		"@opennextjs/cloudflare": "^1.14.4",
 		"@react-email/components": "^1.0.4",
+		"@react-email/render": "^2.0.4",
 		"@sentry/nextjs": "^10.34.0",
 		"@types/mdx": "^2.0.13",
 		"clsx": "^2.1.1",

@@ -17,6 +17,11 @@ vi.mock("@/lib/cloudflare-env", () => ({
 	}),
 }));
 
+// Mock @react-email/render
+vi.mock("@react-email/render", () => ({
+	render: vi.fn().mockResolvedValue("<html>Mocked Email</html>"),
+}));
+
 const mockGetEnv = vi.mocked(getEnv);
 
 // Mock Data
@@ -30,30 +35,19 @@ const validData = {
 };
 
 describe("submitContactForm", () => {
-	// We mock the module to intercept the constructor for coverage of the lazy init
-	vi.mock("resend", () => {
-		return {
-			Resend: vi.fn(function () {
-				return {
-					emails: { send: vi.fn().mockResolvedValue({ error: null }) },
-				};
-			}),
-		};
-	});
-
-	const mockResend = { emails: { send: vi.fn() } };
+	const mockSendEmail = vi.fn();
 	const mockVerify = vi.fn();
 	const mockRateLimit = vi.fn();
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
 		// Reset default mocks
-		mockResend.emails.send.mockResolvedValue({ error: null });
+		mockSendEmail.mockResolvedValue({ success: true });
 		mockVerify.mockResolvedValue(true);
 		mockRateLimit.mockReturnValue({ success: true, resetIn: 0 });
 
 		await __setDependencies({
-			resend: mockResend as unknown as import("resend").Resend,
+			sendEmail: mockSendEmail,
 			verifyTurnstile: mockVerify,
 			rateLimit: mockRateLimit,
 			getIP: () => "127.0.0.1",
@@ -68,7 +62,7 @@ describe("submitContactForm", () => {
 		it("should succeed with valid data", async () => {
 			const result = await submitContactForm(validData);
 			expect(result.success).toBe(true);
-			expect(mockResend.emails.send).toHaveBeenCalled();
+			expect(mockSendEmail).toHaveBeenCalled();
 		});
 
 		it("should fail validation with short name", async () => {
@@ -76,14 +70,14 @@ describe("submitContactForm", () => {
 			expect(result.success).toBe(false);
 			expect(result.error).toBe("Name must be at least 2 characters");
 			expect(result.fieldErrors?.name).toBeDefined();
-			expect(mockResend.emails.send).not.toHaveBeenCalled();
+			expect(mockSendEmail).not.toHaveBeenCalled();
 		});
 
 		it("should fail validation with invalid email", async () => {
 			const result = await submitContactForm({ ...validData, email: "invalid" });
 			expect(result.success).toBe(false);
 			expect(result.fieldErrors?.email).toBeDefined();
-			expect(mockResend.emails.send).not.toHaveBeenCalled();
+			expect(mockSendEmail).not.toHaveBeenCalled();
 		});
 
 		it("should fail validation with long email", async () => {
@@ -197,14 +191,17 @@ describe("submitContactForm", () => {
 	});
 
 	describe("Email sending", () => {
-		it("should call Resend with correct parameters", async () => {
+		it("should call sendEmail with correct parameters", async () => {
 			await submitContactForm(validData);
 
-			expect(mockResend.emails.send).toHaveBeenCalledWith(
+			expect(mockSendEmail).toHaveBeenCalledWith(
 				expect.objectContaining({
+					apiKey: "test-resend-key",
 					from: "alexmayhew.dev <noreply@alexmayhew.dev>",
+					to: "test@example.com",
 					replyTo: validData.email,
 					subject: expect.stringContaining(validData.name),
+					html: expect.any(String),
 				})
 			);
 		});
@@ -214,7 +211,6 @@ describe("submitContactForm", () => {
 			it(`should format subject correctly for project type: ${type}`, async () => {
 				await submitContactForm({ ...validData, projectType: type });
 
-				// Verify the subject formatting logic in the action
 				let expectedLabel: string = type;
 				if (type === "web-app") expectedLabel = "Web Application";
 				if (type === "saas") expectedLabel = "SaaS Platform";
@@ -222,7 +218,7 @@ describe("submitContactForm", () => {
 				if (type === "consulting") expectedLabel = "Technical Consulting";
 				if (type === "other") expectedLabel = "Other";
 
-				expect(mockResend.emails.send).toHaveBeenCalledWith(
+				expect(mockSendEmail).toHaveBeenCalledWith(
 					expect.objectContaining({
 						subject: expect.stringContaining(expectedLabel),
 					})
@@ -235,14 +231,13 @@ describe("submitContactForm", () => {
 			it(`should accept budget: ${budget}`, async () => {
 				const result = await submitContactForm({ ...validData, budget });
 				expect(result.success).toBe(true);
-				// Implicitly covers the formatBudget helper in the email component
-				// since the component is rendered (executed) by the action.
 			});
 		});
 
-		it("should handle Resend API errors", async () => {
-			mockResend.emails.send.mockResolvedValue({
-				error: { message: "API Error" },
+		it("should handle API errors", async () => {
+			mockSendEmail.mockResolvedValue({
+				success: false,
+				error: "API Error",
 			});
 			const result = await submitContactForm(validData);
 			expect(result.success).toBe(false);
@@ -250,25 +245,54 @@ describe("submitContactForm", () => {
 		});
 
 		it("should handle network errors", async () => {
-			mockResend.emails.send.mockRejectedValue(new Error("Network error"));
+			mockSendEmail.mockRejectedValue(new Error("Network error"));
 			const result = await submitContactForm(validData);
 			expect(result.success).toBe(false);
 			expect(result.error).toContain("Send failed: Network error");
 		});
 
-		it("should use default Resend instance if dependency not injected", async () => {
-			// Clear dependencies to force lazy init path (line 21 coverage)
+		it("should fail when RESEND_API_KEY is not configured", async () => {
+			mockGetEnv.mockResolvedValueOnce({
+				RESEND_API_KEY: undefined,
+				CONTACT_EMAIL: "test@example.com",
+				TURNSTILE_SECRET_KEY: "test-turnstile-key",
+				NODE_ENV: "test",
+			});
+
+			const result = await submitContactForm(validData);
+			expect(result.success).toBe(false);
+			expect(result.error).toBe("Email service not configured.");
+		});
+
+		it("should use default sendEmail function if dependency not injected", async () => {
+			// Reset to defaults
 			await __resetDependencies();
 
-			// We rely on the module mock above to handle the 'new Resend()' call
-			// so it doesn't actually try to make a network request
-			// and we verify that the instance created by the mock works (returns success)
+			// Mock global fetch for the direct API call
+			const originalFetch = global.fetch;
+			global.fetch = vi.fn().mockResolvedValue({
+				ok: true,
+				json: () => Promise.resolve({ id: "test-id" }),
+			});
 
 			const result = await submitContactForm({
 				...validData,
 				turnstileToken: undefined,
 			});
+
 			expect(result.success).toBe(true);
+			expect(global.fetch).toHaveBeenCalledWith(
+				"https://api.resend.com/emails",
+				expect.objectContaining({
+					method: "POST",
+					headers: expect.objectContaining({
+						"Content-Type": "application/json",
+						Authorization: "Bearer test-resend-key",
+					}),
+				})
+			);
+
+			global.fetch = originalFetch;
 		});
 	});
 });

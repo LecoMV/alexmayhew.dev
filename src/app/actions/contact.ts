@@ -1,34 +1,68 @@
 "use server";
 
 import { headers } from "next/headers";
-import { Resend } from "resend";
+import { render } from "@react-email/render";
 import { ContactNotification } from "@/components/emails/contact-notification";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
 import { contactFormSchema, type ContactFormValues } from "@/lib/schemas/contact";
 import { getEnv } from "@/lib/cloudflare-env";
 
+// Email sending function type for dependency injection
+type SendEmailFn = (params: {
+	apiKey: string;
+	from: string;
+	to: string;
+	replyTo: string;
+	subject: string;
+	html: string;
+}) => Promise<{ success: boolean; error?: string }>;
+
+// Direct fetch to Resend API (avoids SDK bundling issues on Cloudflare Workers)
+async function sendEmailViaResend(params: {
+	apiKey: string;
+	from: string;
+	to: string;
+	replyTo: string;
+	subject: string;
+	html: string;
+}): Promise<{ success: boolean; error?: string }> {
+	const response = await fetch("https://api.resend.com/emails", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${params.apiKey}`,
+		},
+		body: JSON.stringify({
+			from: params.from,
+			to: params.to,
+			reply_to: params.replyTo,
+			subject: params.subject,
+			html: params.html,
+		}),
+	});
+
+	if (!response.ok) {
+		const errorData = await response.json().catch(() => ({}));
+		const errorMessage = (errorData as { message?: string }).message || `HTTP ${response.status}`;
+		return { success: false, error: errorMessage };
+	}
+
+	return { success: true };
+}
+
 // Dependency Injection container for testing
 let dependencies = {
-	resend: null as Resend | null,
+	sendEmail: sendEmailViaResend as SendEmailFn,
 	verifyTurnstile: verifyTurnstileToken,
 	rateLimit: checkRateLimit,
 	getIP: getClientIP,
 };
 
-// Lazy init for resend — accepts API key at call time
-function getResend(apiKey?: string): Resend {
-	if (!dependencies.resend) {
-		dependencies.resend = new Resend(apiKey);
-	}
-	return dependencies.resend;
-}
-
 // Internal method to swap dependencies during tests
-// Note: Must be async to satisfy Next.js Server Actions requirement
 export const __setDependencies = async (
 	deps: Partial<{
-		resend: Resend;
+		sendEmail: SendEmailFn;
 		verifyTurnstile: typeof verifyTurnstileToken;
 		rateLimit: typeof checkRateLimit;
 		getIP: typeof getClientIP;
@@ -38,10 +72,9 @@ export const __setDependencies = async (
 };
 
 // Reset dependencies (for testing cleanup)
-// Note: Must be async to satisfy Next.js Server Actions requirement
 export const __resetDependencies = async () => {
 	dependencies = {
-		resend: null,
+		sendEmail: sendEmailViaResend,
 		verifyTurnstile: verifyTurnstileToken,
 		rateLimit: checkRateLimit,
 		getIP: getClientIP,
@@ -59,9 +92,8 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 	const validation = contactFormSchema.safeParse(data);
 	if (!validation.success) {
 		const fieldErrors = validation.error.flatten().fieldErrors as Record<string, string[]>;
-		// Build a user-friendly error message from field errors
 		const errorMessages = Object.entries(fieldErrors)
-			.map(([field, errors]) => errors?.[0])
+			.map(([, errors]) => errors?.[0])
 			.filter(Boolean);
 		const errorMessage =
 			errorMessages.length > 0 ? errorMessages[0] : "Please fill in all required fields";
@@ -120,25 +152,31 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 			return { success: false, error: "Email service not configured." };
 		}
 
-		const resend = getResend(env.RESEND_API_KEY);
-		const { error } = await resend.emails.send({
-			from: "alexmayhew.dev <noreply@alexmayhew.dev>",
-			to: env.CONTACT_EMAIL || "alex@alexmayhew.dev",
-			replyTo: email,
-			subject: `[INCOMING_TRANSMISSION] ${name} - ${formatProjectType(projectType)}`,
-			react: ContactNotification({
+		// Render React email to HTML string
+		const emailHtml = await render(
+			ContactNotification({
 				name,
 				email,
 				projectType,
 				budget,
 				message,
 				timestamp,
-			}),
+			})
+		);
+
+		// Send via direct API call (avoids SDK bundling issues on Cloudflare Workers)
+		const result = await dependencies.sendEmail({
+			apiKey: env.RESEND_API_KEY,
+			from: "alexmayhew.dev <noreply@alexmayhew.dev>",
+			to: env.CONTACT_EMAIL || "alex@alexmayhew.dev",
+			replyTo: email,
+			subject: `[INCOMING_TRANSMISSION] ${name} - ${formatProjectType(projectType)}`,
+			html: emailHtml,
 		});
 
-		if (error) {
-			console.error("Resend error:", error);
-			return { success: false, error: `Failed to send: ${error.message}` };
+		if (!result.success) {
+			console.error("Resend API error:", result.error);
+			return { success: false, error: `Failed to send: ${result.error}` };
 		}
 
 		return { success: true };
