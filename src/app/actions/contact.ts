@@ -115,6 +115,11 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 	});
 
 	try {
+		if (!env.RESEND_API_KEY) {
+			console.error("RESEND_API_KEY not configured");
+			return { success: false, error: "Email service not configured." };
+		}
+
 		const resend = getResend(env.RESEND_API_KEY);
 		const { error } = await resend.emails.send({
 			from: "alexmayhew.dev <noreply@alexmayhew.dev>",
@@ -133,13 +138,14 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 
 		if (error) {
 			console.error("Resend error:", error);
-			return { success: false, error: "Failed to send message." };
+			return { success: false, error: `Failed to send: ${error.message}` };
 		}
 
 		return { success: true };
 	} catch (err) {
+		const errorMessage = err instanceof Error ? err.message : "Unknown error";
 		console.error("Contact form error:", err);
-		return { success: false, error: "An unexpected error occurred." };
+		return { success: false, error: `Send failed: ${errorMessage}` };
 	}
 }
 
