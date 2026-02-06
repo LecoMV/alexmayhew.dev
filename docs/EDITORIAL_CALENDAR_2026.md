@@ -1,7 +1,7 @@
 # Editorial Calendar 2026 — alexmayhew.dev
 
 > Master plan for blog posts, newsletters, and content themes.
-> Cadence: 2 blog posts/month (spokes) + 4 newsletters/month (weekly)
+> Cadence: 2 blog posts/month (spokes) + 4 newsletters/month (weekly) + 4 LinkedIn/week + 3 X/week
 > See `docs/CONTENT_OPERATIONS.md` for the full workflow.
 
 ---
@@ -169,16 +169,39 @@ These don't need a full blog post — they're 500-700 word decision frameworks:
 
 ## Social Calendar Alignment
 
-Every blog post generates a week of social content via n8n + Postiz:
+### LinkedIn (4 posts/week, Mon-Thu at 10:00 AM EST / 15:00 UTC)
+
+Every blog post generates 4 LinkedIn posts per week. Non-blog weeks use repurposed content from the existing 44-post blog library.
+
+- **Monday:** Architecture/strategy post (contrarian hook + evidence)
+- **Tuesday:** Framework/decision post (specific numbers, cost analysis)
+- **Wednesday:** Leadership/hiring post (experience lens)
+- **Thursday:** Technical deep-dive or AI/performance post
+
+Format: 1,000-1,300 chars, no hashtags, no links in body, ends with specific question.
+
+### X/Twitter (3 posts/week, Tue/Wed/Thu at 12:00 PM EST / 17:00 UTC)
+
+Standalone tweets from blog insights. Different angle than LinkedIn — punchier, more direct.
+
+Format: Under 280 chars, no links (270% reach penalty), no hashtags, standalone insights.
+
+### Dev.to (bi-weekly, Monday at 9:00 AM EST)
+
+Full cross-post of blog content with canonical URL back to alexmayhew.dev.
+
+### Current Schedule (Feb 9 - Mar 5, 2026)
+
+16 LinkedIn posts + 13 X tweets + 4 Dev.to cross-posts scheduled in Postiz.
+See Postiz DB or dashboard for full schedule. Generated from existing blog library.
+
+### Pipeline
 
 ```
-Blog (Monday) → Twitter thread (Tuesday) → LinkedIn carousel (Wednesday)
-                                         → Dev.to article (Monday)
-                                         → Hot take (Thursday)
-                                         → LinkedIn text (Friday)
+Blog push to main
+  → n8n webhook → Ollama (Gemma 2 9B) generates variants
+  → Claude reviews/rewrites for voice compliance
+  → Postiz API schedules to correct day/time
 ```
 
-Non-blog weeks use repurposed content from existing posts or newsletter insights.
-
-See `docs/FEBRUARY_2026_CONTENT_CALENDAR.md` for the February-specific Postiz schedule.
 See `docs/CONTENT_REPURPOSING_SYSTEM.md` for generation templates and prompts.

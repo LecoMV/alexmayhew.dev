@@ -129,8 +129,8 @@ See `docs/SELF_HOSTED_LLM_GUIDE.md` for details.
 
 ## Content Operations
 
-**Cadence:** 2 blog posts/month (spokes) + weekly newsletter + automated social distribution.
-**Rhythm:** Week A = blog + newsletter. Week B = newsletter only. See `docs/CONTENT_OPERATIONS.md`.
+**Cadence:** 2 blog posts/month (spokes) + weekly newsletter + 4 LinkedIn/week (Mon-Thu) + 3 X tweets/week (Tue-Thu) + bi-weekly Dev.to.
+**Rhythm:** Week A = blog + newsletter + social. Week B = newsletter + repurposed social. See `docs/CONTENT_OPERATIONS.md`.
 
 **Start here for content work:** `docs/CONTENT_PLATFORM_REFERENCE.md` (master reference — infrastructure, brand voice, scheduling, all doc links)
 
@@ -194,9 +194,9 @@ See `docs/SELF_HOSTED_LLM_GUIDE.md` for details.
 
 **Never use:** Emojis, "game-changer", "perhaps/maybe", "just/simply", exclamation points
 
-**LinkedIn:** 1,000-1,300 chars, short paragraphs, no links in body, end with specific question
+**LinkedIn:** 4 posts/week (Mon-Thu, 10:00 AM EST). 1,000-1,300 chars, short paragraphs, no links in body, end with specific question.
 
-**X/Twitter:** 70-80% engagement, 20-30% posting for new accounts. Join Communities. Replies > original posts.
+**X/Twitter:** 3 tweets/week (Tue-Thu, 12:00 PM EST). Under 280 chars, no links, no hashtags. 70-80% engagement, 20-30% posting for new accounts. Join Communities. Replies > original posts.
 
 **Cross-Platform Rule:** Same source material, different voice per platform. Never post the same content verbatim across platforms. See `docs/CROSS_PLATFORM_CONTENT_STRATEGY.md`.
 

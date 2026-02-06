@@ -228,12 +228,12 @@ pass show claude/n8n/api-key              # n8n workflow API
 
 ### Platform Strategy
 
-| Platform      | Purpose                               | Cadence                        | Current Status            |
-| ------------- | ------------------------------------- | ------------------------------ | ------------------------- |
-| **LinkedIn**  | Primary lead gen, authority building  | 2-3 posts/week                 | Active, ~growing          |
-| **X/Twitter** | Reach, engagement, community building | 1-2 posts/week + daily replies | New account (~1 follower) |
-| **Dev.to**    | SEO + cross-posting full articles     | Bi-weekly (auto via Postiz)    | Active                    |
-| **Bluesky**   | Secondary reach                       | Weekly cross-post              | Not yet active            |
+| Platform      | Purpose                               | Cadence                                | Current Status            |
+| ------------- | ------------------------------------- | -------------------------------------- | ------------------------- |
+| **LinkedIn**  | Primary lead gen, authority building  | 4 posts/week (Mon-Thu)                 | Active, ~growing          |
+| **X/Twitter** | Reach, engagement, community building | 3 posts/week (Tue-Thu) + daily replies | New account (~1 follower) |
+| **Dev.to**    | SEO + cross-posting full articles     | Bi-weekly (auto via Postiz)            | Active                    |
+| **Bluesky**   | Secondary reach                       | Weekly cross-post                      | Not yet active            |
 
 ### LinkedIn Strategy
 
@@ -419,34 +419,36 @@ API: POST to Listmonk `/api/subscribers` with Basic auth
 
 ## Content Repurposing Pipeline
 
-### The 1-to-10 Framework
+### The Blog-to-Social Pipeline
 
-One blog post becomes 10+ content pieces:
+One blog post generates a full week of social content:
 
 ```
 1 Blog Post (Monday)
-  ├─ Newsletter section (Tuesday, 9 AM)
-  ├─ Twitter/X thread (Tuesday, 10 AM)
-  ├─ LinkedIn carousel (Wednesday, 10 AM)
-  ├─ Dev.to cross-post (Monday, 9 AM — bi-weekly)
-  ├─ Twitter hot take (Thursday, 10 AM)
-  ├─ Bluesky cross-post (Thursday, 11 AM)
-  ├─ LinkedIn text post (Friday, 10 AM)
+  ├─ Newsletter section (Tuesday, 9 AM EST)
+  ├─ 4 LinkedIn posts (Mon-Thu, 10 AM EST / 15:00 UTC)
+  ├─ 3 X/Twitter tweets (Tue-Thu, 12 PM EST / 17:00 UTC)
+  ├─ Dev.to cross-post (Monday, 9 AM EST — bi-weekly)
   └─ Community answers (async, reactive)
 ```
+
+Non-blog weeks use the existing 44-post blog library as source material for repurposed LinkedIn + X content.
 
 ### Automation Flow
 
 ```
 Blog push to main → manual n8n trigger
   → n8n reads post content
-    → 3 parallel LLM generations:
-        ├─ LinkedIn text post (Ollama/Groq)
-        ├─ X standalone tweet (Ollama/Groq)
-        └─ Dev.to article (Ollama/Groq)
+    → 3 parallel LLM generations (Ollama Gemma 2 9B):
+        ├─ LinkedIn text post (1,000-1,300 chars target)
+        ├─ X standalone tweet (under 280 chars)
+        └─ Dev.to article (full cross-post)
+    → Claude reviews all output for voice/accuracy
     → Postiz API schedules to correct day/time
     → Response logged
 ```
+
+**Quality note:** Gemma 2 9B output requires Claude review. Expect ~90% rewrite rate for LinkedIn (model generates 650-850 chars vs 1,000-1,300 target, voice issues). X tweets are closer to usable but still need accuracy checks.
 
 **Manual trigger:**
 
@@ -488,41 +490,66 @@ docs/n8n-workflows/welcome-sequence-workflow.json
 
 ## Posting Schedule & Cadence
 
-### Week A / Week B Rhythm
+### Weekly Rhythm (Updated 2026-02-05)
 
-**Week A (Blog Week):**
+LinkedIn and X now post at higher frequency to accelerate authority building.
 
-- Monday: New blog post publishes, n8n generates variants
-- Tuesday: Newsletter features blog insight + Twitter thread
-- Wednesday: LinkedIn carousel
-- Thursday: Twitter hot take + Bluesky
-- Friday: LinkedIn text post
+**Every Week (Blog or Non-Blog):**
 
-**Week B (Newsletter-Only Week):**
+- Monday: LinkedIn post (10:00 AM EST / 15:00 UTC)
+- Tuesday: LinkedIn post + X tweet (10:00 AM / 12:00 PM EST)
+- Wednesday: LinkedIn post + X tweet (10:00 AM / 12:00 PM EST)
+- Thursday: LinkedIn post + X tweet (10:00 AM / 12:00 PM EST)
 
-- Tuesday: Standalone newsletter insight
-- Wednesday: LinkedIn post (repurposed from existing content)
-- Thursday: Twitter post (repurposed)
-- Friday: LinkedIn text post
+**Blog Weeks (Every 2 Weeks) Add:**
 
-**Monthly Output:** 2 blog posts + 4 newsletters + ~12 social posts = ~18 pieces from 2 core articles.
+- Monday: Blog post publishes + Dev.to cross-post (9:00 AM EST)
+- Tuesday: Newsletter features blog insight (9:00 AM EST)
 
-### Postiz Auto-Schedule (Current)
+**Monthly Output:** 2 blog posts + 4 newsletters + ~16 LinkedIn posts + ~12 X tweets + 2 Dev.to = ~36 pieces.
 
-Posts are queued in Postiz with specific dates:
+### Postiz Schedule (Current: Feb 9 - Mar 5, 2026)
 
-| Cycle  | Dev.to (Monday)   | X/Twitter (Tuesday) | LinkedIn (Wednesday) |
-| ------ | ----------------- | ------------------- | -------------------- |
-| Week 1 | Feb 3 (PUBLISHED) | Feb 4 (ERROR)       | Feb 5 (PUBLISHED)    |
-| Week 2 | Feb 10            | Feb 11              | Feb 12               |
-| Week 3 | Feb 17            | Feb 18              | Feb 19               |
-| Week 4 | Feb 24            | Feb 25              | Feb 26               |
+38 total queued posts across all platforms:
+
+**LinkedIn (Mon-Thu, 15:00 UTC):**
+
+- Feb 9-12, 16-19, 23-26, Mar 2-5 (16 posts)
+- All 1,000-1,300 chars, brand voice compliant
+
+**X/Twitter (Tue-Thu, 17:00 UTC):**
+
+- Feb 9-27, Mar 3-5 (13 tweets from new batch + legacy posts)
+- All new tweets under 280 chars, no links, no hashtags
+
+**Dev.to (Monday, bi-weekly):**
+
+- Feb 10, 17, 24, Mar 3 (4 cross-posts)
+
+### Content Generation Process
+
+1. Source: Existing 44-post blog library or new blog posts
+2. Generate: Ollama (Gemma 2 9B) creates initial drafts via n8n pipeline
+3. Review: Claude checks voice compliance, factual accuracy, format rules
+4. Rewrite: ~90% of LinkedIn posts need rewriting (model output typically too short)
+5. Schedule: Postiz API or direct DB insert (API rate limits at ~3 requests/minute)
 
 ### Known Issues
 
-**Feb 4 X post failed:** `ApplicationFailure: Unknown Error` at `XProvider.post`. Content (~800 chars) is within Premium's 4,000 char limit. Likely API integration issue. Needs investigation before Feb 11 X post.
+**Postiz API rate limiting:** 429 ThrottlerException after ~3-4 rapid requests. For bulk scheduling (10+ posts), use direct DB inserts:
+
+```sql
+PGPASSWORD=postiz_secure_2026 psql -h localhost -p 5433 -U postiz_user -d postiz_app -c "
+  INSERT INTO \"Post\" (id, state, \"publishDate\", \"integrationId\", content, settings, \"organizationId\", \"group\", image, \"createdAt\", \"updatedAt\")
+  VALUES ('cuid', 'QUEUE', 'date', 'integration_id', 'content', 'settings_json', 'org_id', 'uuid', '', NOW(), NOW());
+"
+```
+
+**X/Twitter API settings:** X posts REQUIRE `{"__type":"x","who_can_reply_post":"everyone"}` in settings field or API rejects with validation error.
 
 **Postiz health check:** Shows "unhealthy" because container lacks `curl`/`wget`. Cosmetic — app is functional on port 4007.
+
+**Old X posts over 280 chars:** 5 legacy X posts (Feb 4, 11, 18, Mar 6) are 600-800 chars. May work with X Premium (4,000 char limit) or may fail depending on API tier.
 
 ---
 

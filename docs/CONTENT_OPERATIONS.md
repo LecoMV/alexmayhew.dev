@@ -1,24 +1,21 @@
 # Content Operations — alexmayhew.dev
 
 > Single source of truth for the content creation and distribution workflow.
-> Last Updated: 2026-01-29
+> Last Updated: 2026-02-05
 
 ---
 
 ## Cadence
 
-| Content Type       | Frequency             | Day       | Time (EST) | Owner                       |
-| ------------------ | --------------------- | --------- | ---------- | --------------------------- |
-| Blog post (spoke)  | Every 2 weeks         | Monday    | —          | Claude drafts, Alex reviews |
-| Newsletter         | Weekly                | Tuesday   | 9:00 AM    | Claude drafts, Alex reviews |
-| Twitter/X thread   | Weekly                | Tuesday   | 10:00 AM   | Auto via n8n → Postiz       |
-| LinkedIn carousel  | Weekly                | Wednesday | 10:00 AM   | Auto via n8n → Postiz       |
-| Dev.to cross-post  | Bi-weekly (with blog) | Monday    | 9:00 AM    | Auto via n8n → Postiz       |
-| Twitter/X hot take | Weekly                | Thursday  | 10:00 AM   | Auto via n8n → Postiz       |
-| Bluesky cross-post | Weekly                | Thursday  | 11:00 AM   | Manual                      |
-| LinkedIn text post | Weekly                | Friday    | 10:00 AM   | Auto via n8n → Postiz       |
+| Content Type      | Frequency             | Days    | Time (EST) | Owner                               |
+| ----------------- | --------------------- | ------- | ---------- | ----------------------------------- |
+| Blog post (spoke) | Every 2 weeks         | Monday  | —          | Claude drafts, Alex reviews         |
+| Newsletter        | Weekly                | Tuesday | 9:00 AM    | Claude drafts, Alex reviews         |
+| LinkedIn post     | 4x/week               | Mon-Thu | 10:00 AM   | Claude generates + reviews → Postiz |
+| X/Twitter tweet   | 3x/week               | Tue-Thu | 12:00 PM   | Claude generates + reviews → Postiz |
+| Dev.to cross-post | Bi-weekly (with blog) | Monday  | 9:00 AM    | Auto via n8n → Postiz               |
 
-**Monthly output:** 2 blog posts + 4 newsletters + ~12 social posts = ~18 pieces from 2 core articles.
+**Monthly output:** 2 blog posts + 4 newsletters + ~16 LinkedIn posts + ~12 X tweets + 2 Dev.to = ~36 pieces from 2 core articles + blog library.
 
 ---
 
@@ -28,24 +25,32 @@
 
 ```
 Monday:    New blog post publishes (push to main → CI/CD deploys)
-           └─ n8n webhook fires → generates social variants → Postiz schedules
+           └─ n8n webhook fires → generates social variants
+           LinkedIn post (10:00 AM EST, blog-derived)
+           Dev.to cross-post (9:00 AM EST)
 Tuesday:   Newsletter issue (features the blog post's core insight)
-           Twitter/X thread (auto-scheduled from blog)
-Wednesday: LinkedIn carousel (auto-scheduled from blog)
-Thursday:  Twitter/X hot take (auto-scheduled) + Bluesky cross-post (manual)
-Friday:    LinkedIn text post (auto-scheduled from blog)
+           LinkedIn post (10:00 AM EST, blog-derived)
+           X/Twitter tweet (12:00 PM EST, blog-derived)
+Wednesday: LinkedIn post (10:00 AM EST, blog-derived)
+           X/Twitter tweet (12:00 PM EST, blog-derived)
+Thursday:  LinkedIn post (10:00 AM EST, blog-derived)
+           X/Twitter tweet (12:00 PM EST, blog-derived)
 ```
 
 ### Week B — Newsletter-Only Week
 
 ```
+Monday:    LinkedIn post (10:00 AM EST, repurposed from blog library)
 Tuesday:   Newsletter issue (standalone insight — no new blog post)
-Wednesday: LinkedIn post (repurposed from newsletter or existing blog content)
-Thursday:  Twitter/X post (repurposed)
-Friday:    LinkedIn text post (repurposed)
+           LinkedIn post (10:00 AM EST, repurposed)
+           X/Twitter tweet (12:00 PM EST, repurposed)
+Wednesday: LinkedIn post (10:00 AM EST, repurposed)
+           X/Twitter tweet (12:00 PM EST, repurposed)
+Thursday:  LinkedIn post (10:00 AM EST, repurposed)
+           X/Twitter tweet (12:00 PM EST, repurposed)
 ```
 
-**Repeat.** This gives 24 blog posts/year, 52 newsletters/year, 100+ social posts/year.
+**Repeat.** This gives 24 blog posts/year, 52 newsletters/year, ~200 LinkedIn posts/year, ~150 X tweets/year.
 
 ---
 
@@ -81,19 +86,26 @@ At the start of each month, decide:
 
 ### Step 3: Distribute (Automatic)
 
-**Automated flow (n8n):**
+**Automated flow (n8n + Claude review):**
 
 ```
 Blog push to main
   → GitHub webhook (or manual n8n trigger)
     → n8n reads post content
       → 3 parallel Ollama (Gemma 2 9B) generations:
-          ├─ LinkedIn text post
-          ├─ X standalone tweet
-          └─ Dev.to article
+          ├─ LinkedIn text post (1,000-1,300 chars)
+          ├─ X standalone tweet (under 280 chars)
+          └─ Dev.to article (full cross-post)
+      → Claude reviews all generated content for:
+          ├─ Voice compliance (6 pillars)
+          ├─ Factual accuracy against source
+          ├─ Platform format rules (no links, no hashtags)
+          └─ Character count targets
       → Postiz API schedules each to correct day/time
       → Response logged
 ```
+
+**Note:** Ollama (Gemma 2 9B) output quality requires manual review. Expect rewrites for ~90% of LinkedIn posts (typically too short, wrong voice).
 
 **Manual trigger (if webhook doesn't fire):**
 
@@ -205,14 +217,13 @@ Content goes out on different days, not all at once:
 - **Template:** `content/newsletter/TEMPLATE.md`
 - **Quality gate:** `content/newsletter/QUALITY_CHECKLIST.md`
 
-### Social Posts (Auto-Generated)
+### Social Posts (LLM-Generated + Claude-Reviewed)
 
-- **LinkedIn carousel:** 10-12 slides, 1,200-1,800 chars
-- **Twitter thread:** 8-12 tweets
+- **LinkedIn text post:** 1,000-1,300 chars, no hashtags, no links in body, ends with specific question
+- **X/Twitter tweet:** Max 280 chars, standalone insight, no links, no hashtags
 - **Dev.to article:** Full markdown with canonical URL back to alexmayhew.dev
-- **LinkedIn text:** 150-300 words
-- **Twitter hot take:** Max 280 chars, contrarian angle
 - **Generation prompts:** `docs/LLM_REPURPOSING_PROMPTS.md`
+- **Quality note:** All LLM output must be reviewed for voice compliance and factual accuracy before scheduling
 
 ---
 
