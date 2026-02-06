@@ -87,11 +87,10 @@ At the start of each month, decide:
 Blog push to main
   → GitHub webhook (or manual n8n trigger)
     → n8n reads post content
-      → 4 parallel Ollama (Gemma 2 9B) generations:
-          ├─ LinkedIn carousel
-          ├─ Twitter thread
-          ├─ Dev.to article
-          └─ Newsletter section
+      → 3 parallel Ollama (Gemma 2 9B) generations:
+          ├─ LinkedIn text post
+          ├─ X standalone tweet
+          └─ Dev.to article
       → Postiz API schedules each to correct day/time
       → Response logged
 ```

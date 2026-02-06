@@ -101,7 +101,7 @@ POST /webhook/content-repurpose
 **Key Design Decisions:**
 
 - Uses `responseMode: "responseNode"` for async webhook response
-- 4 parallel HTTP requests to Ollama for speed
+- 3 parallel HTTP requests to Ollama for speed
 - Merge node waits for all branches to complete
 - "Respond to Webhook" node returns structured JSON
 

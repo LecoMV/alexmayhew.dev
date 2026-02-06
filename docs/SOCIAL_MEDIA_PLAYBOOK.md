@@ -98,7 +98,7 @@
 - **Paragraphs:** Short, lots of white space
 - **Line breaks:** Between every 1-2 sentences
 - **Arrows/bullets:** Use sparingly for lists
-- **Hashtags:** 3-4 at the end only, or skip entirely (algorithm uses keyword detection now)
+- **Hashtags:** None (LinkedIn algorithm no longer boosts them in 2026 — uses keyword detection)
 - **Links:** NEVER in post body (kills reach) — add in first comment if needed
 
 ### Best Posting Times
@@ -196,8 +196,8 @@
 [What to do instead]
 ```
 
-- Max 280 characters (Premium: 4,000)
-- 1-2 hashtags only if directly relevant
+- Max 280 characters (Premium: up to 25,000)
+- No hashtags (no algorithm boost in 2026, triggers spam filters at 5+)
 
 **Thread:**
 

@@ -47,13 +47,15 @@ For accounts with 0-500 followers, **posting into the void doesn't work**. The a
 
 **X Communities are the growth hack for new accounts.** Your posts appear in a dedicated feed all members see.
 
+**As of February 2026:** Community posts now surface in the For You feed, significantly expanding reach beyond community members.
+
 ### Communities to Join
 
 - **Build in Public** (~180K members)
 - **Indie Hackers / Bootstrapped Founders**
 - **Tech Startups**
 - **SaaS Founders**
-- **Engineering Leadership** (if exists)
+- **Engineering Leadership**
 
 ### Community Posting Strategy
 
@@ -61,6 +63,7 @@ For accounts with 0-500 followers, **posting into the void doesn't work**. The a
 2. Content gets seen by community members regardless of follower count
 3. Engagement in Communities builds your algorithm credibility
 4. Viral Community posts drive followers to your profile
+5. **Community post format:** longer (1,000+ characters), ends with specific question to drive engagement
 
 ---
 
@@ -282,6 +285,78 @@ Tweet 8: Summary + CTA/link
 - Impressions on original posts
 - Engagement rate on threads
 - DMs from target audience
+
+---
+
+## X Premium Benefits
+
+**Worth considering after building initial momentum (100+ followers):**
+
+- **Edit link:** Modify posts after publishing (critical for fixing typos, refining wording)
+- **Longer posts:** Up to 25,000 characters with Premium+ (vs 280 for free accounts)
+- **Bookmark folders:** Organize research threads, save high-value content for later reference
+- **Priority ranking:** Your replies appear higher in conversations
+- **Creator Subscriptions:** Eligibility to monetize your audience (requires 500+ followers, 5M impressions/3 months)
+
+**Not essential for Phase 1 (0-100 followers)**, but useful once you're posting consistently and engagement is growing.
+
+---
+
+## Automation Safety Rules
+
+**The X algorithm uses behavioral profiling to detect automation. Post carelessly and you'll be restricted.**
+
+### What You Can Automate
+
+- **Scheduled posts only** via Postiz
+- Maximum 3-5 posts/day, spaced 2-3 hours apart
+- Vary content format: some short insight tweets, some longer breakdowns, some questions
+
+### What You MUST Do Manually
+
+- **All engagement:** replies, quote tweets, likes
+- **Reply to EVERY reply** on your posts within the same day (+75 algorithm signal)
+- Posting times should vary (don't post at exactly 9:00 AM every day)
+
+### What NOT to Automate
+
+- Automated replies or likes
+- Posting at exact intervals (e.g., every 3 hours on the dot)
+- Following/unfollowing scripts
+- Mass DMs
+
+**Golden rule:** If it feels like bot behavior, the algorithm will flag it as bot behavior.
+
+---
+
+## Error 226 Awareness
+
+**X uses behavioral profiling to detect automation.** Posting too frequently at exact intervals triggers Error 226 (temporary restriction).
+
+### What Triggers It
+
+- Posting at identical times daily
+- Exact interval spacing (e.g., every 180 minutes)
+- High posting volume with low engagement
+- Rapid follow/unfollow activity
+- Copy-paste content patterns
+
+### Mitigation
+
+- Vary posting times by 15-30 minutes
+- Use different content lengths (mix short and long posts)
+- Mix original posts with replies and quote tweets
+- Space posts 2-3 hours apart minimum
+- Never post more than 5 times in a single day
+
+### If Restricted
+
+1. **Stop all posting** for 24-48 hours
+2. **Do NOT appeal immediately** (looks defensive)
+3. Resume with manual posting only, 1 post/day for a week
+4. Gradually increase to 2-3 posts/day with varied timing
+
+**Prevention > cure.** Act human, not automated.
 
 ---
 

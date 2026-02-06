@@ -243,7 +243,7 @@ pass show claude/n8n/api-key              # n8n workflow API
 - Short paragraphs, lots of white space
 - Line breaks every 1-2 sentences
 - NEVER put links in post body (kills reach) — add in first comment
-- 3-4 hashtags at end or skip entirely (algorithm uses keyword detection now)
+- No hashtags (LinkedIn algorithm no longer boosts them in 2026 — uses keyword detection)
 - End with a specific question (never generic "thoughts?")
 
 **Post Structure:**
@@ -440,11 +440,10 @@ One blog post becomes 10+ content pieces:
 ```
 Blog push to main → manual n8n trigger
   → n8n reads post content
-    → 4 parallel LLM generations:
-        ├─ LinkedIn carousel (Ollama/Groq)
-        ├─ Twitter thread (Ollama/Groq)
-        ├─ Dev.to article (Ollama/Groq)
-        └─ Newsletter section (Ollama/Groq)
+    → 3 parallel LLM generations:
+        ├─ LinkedIn text post (Ollama/Groq)
+        ├─ X standalone tweet (Ollama/Groq)
+        └─ Dev.to article (Ollama/Groq)
     → Postiz API schedules to correct day/time
     → Response logged
 ```
