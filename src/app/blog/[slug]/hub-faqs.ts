@@ -1,6 +1,6 @@
 /**
- * FAQ data for hub posts — rendered as FAQPage JSON-LD schema.
- * Each key is the blog post slug. Only hub posts need FAQs.
+ * FAQ data for blog posts — rendered as FAQPage JSON-LD schema.
+ * Each key is the blog post slug. Hub posts and high-value spokes get FAQs.
  * Answers are concise (2-4 sentences) for AI citation optimization.
  */
 export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
@@ -146,6 +146,98 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 			question: "What AI features do users actually want in SaaS products?",
 			answer:
 				"Users want AI that saves them time on repetitive tasks, not AI that replaces their judgment. The highest-adoption AI features are: smart search (natural language queries over structured data), content generation drafts (not final versions), anomaly detection (alerting on unusual patterns), and auto-categorization. Features that try to make decisions for users (auto-approve, auto-respond) consistently see low adoption and high churn.",
+		},
+	],
+
+	// --- High-value spoke posts ---
+
+	"monolith-first-architecture": [
+		{
+			question: "How long should a SaaS stay on a monolith before splitting into microservices?",
+			answer:
+				"Most SaaS products should stay on a monolith until $5-10M ARR or 15+ engineers. The transition trigger is team coordination cost, not technical limits. A well-structured monolith with clear module boundaries can serve millions of users. Premature decomposition adds 6-12 months of distributed systems complexity without proportional benefit.",
+		},
+		{
+			question: "What is a modular monolith and how does it differ from microservices?",
+			answer:
+				"A modular monolith is a single deployable application with strictly enforced module boundaries — modules communicate through defined interfaces, not direct database access. Unlike microservices, it avoids network latency, distributed transactions, and deployment orchestration. You get most of the organizational benefits of microservices (team autonomy, clear ownership) without the operational overhead.",
+		},
+		{
+			question: "What are the signs that a monolith needs to be broken apart?",
+			answer:
+				"The three reliable signals are: deployment frequency drops below weekly because changes require full-system testing, two or more teams regularly block each other on the same codebase, and a single module's scaling requirements differ dramatically from the rest (e.g., video processing alongside CRUD operations). If none of these apply, your monolith is fine.",
+		},
+	],
+
+	"react-server-components-practical-guide": [
+		{
+			question: "What is the difference between Server Components and Client Components in React?",
+			answer:
+				"Server Components render on the server and send zero JavaScript to the browser — they can directly access databases, file systems, and APIs. Client Components render on both server (for HTML) and client (for interactivity) and include JavaScript bundles. The rule: use Server Components by default, add 'use client' only when you need hooks, event handlers, or browser APIs.",
+		},
+		{
+			question: "Can Server Components and Client Components be mixed in the same page?",
+			answer:
+				"Yes. Server Components can render Client Components as children, but Client Components cannot import Server Components directly. The pattern is to pass Server Components as props (children or render props) to Client Components. This lets you keep data-fetching on the server while adding interactivity where needed.",
+		},
+		{
+			question: "Do React Server Components replace API routes?",
+			answer:
+				"For read operations, yes. Server Components can query databases directly without API endpoints, eliminating client-server waterfalls. For mutations (form submissions, updates), you still need Server Actions or API routes. The net effect is fewer API endpoints, less client-side data fetching code, and simpler architectures for read-heavy applications.",
+		},
+	],
+
+	"technical-debt-strategy": [
+		{
+			question: "How do you measure technical debt?",
+			answer:
+				"Measure technical debt through its impact, not its existence. Track deployment frequency (how often you can ship), change failure rate (what percentage of deployments cause incidents), and time-to-implement for new features versus historical baselines. When a feature that took 2 days a year ago now takes 2 weeks, that delta is the cost of accumulated debt.",
+		},
+		{
+			question: "How much time should engineering teams spend on technical debt?",
+			answer:
+				"Allocate 15-20% of sprint capacity to debt reduction as a baseline. Teams that allocate 0% slow down by approximately 25% per year as debt compounds. The most effective approach is not dedicated 'tech debt sprints' but embedding debt work into feature development — when you touch a module for a feature, also clean up that module.",
+		},
+		{
+			question: "How do you prioritize which technical debt to pay down first?",
+			answer:
+				"Prioritize by blast radius multiplied by change frequency. Debt in code that changes weekly costs more than debt in code that hasn't been touched in a year. Map your debt items on a 2x2 matrix: high-change-frequency + high-blast-radius items go first. Debt in stable, rarely-modified code can wait indefinitely — it costs nothing if nobody touches it.",
+		},
+	],
+
+	"database-query-optimization": [
+		{
+			question: "How do I find slow database queries in production?",
+			answer:
+				"Enable pg_stat_statements in PostgreSQL to track all queries with execution times, call counts, and I/O statistics. Sort by total_exec_time (not mean) to find queries that consume the most aggregate resources. A query running 10,000 times at 50ms each costs more than a query running once at 5 seconds. Use EXPLAIN ANALYZE on the top offenders to see their execution plans.",
+		},
+		{
+			question: "When should I add a database index?",
+			answer:
+				"Add an index when a query scans more than 5-10% of a table's rows to return its results (visible in EXPLAIN as sequential scans on large tables). Focus on columns used in WHERE clauses, JOIN conditions, and ORDER BY. Every index speeds up reads but slows down writes — on write-heavy tables, only index columns that appear in your most frequent queries.",
+		},
+		{
+			question: "What is the N+1 query problem and how do I fix it?",
+			answer:
+				"The N+1 problem occurs when code fetches a list of N items, then makes one additional query per item to load related data — resulting in N+1 total queries instead of 2. Fix it by using JOINs or batch loading (WHERE id IN (...)) to fetch related data in a single query. ORMs often hide N+1 problems behind lazy loading — use query logging to detect them.",
+		},
+	],
+
+	"typescript-business-case": [
+		{
+			question: "Is TypeScript worth the overhead for a startup?",
+			answer:
+				"Yes. TypeScript adds approximately 10-15% more code volume but reduces production bugs by 15-25% according to studies of open-source projects. For startups, the real value is faster onboarding (types are documentation), safer refactoring (the compiler catches breaking changes), and better IDE support (autocomplete reduces context-switching to documentation).",
+		},
+		{
+			question: "How long does it take to migrate from JavaScript to TypeScript?",
+			answer:
+				"A gradual migration takes 2-6 months for a medium-sized codebase (50K-200K lines). Start by renaming .js files to .ts with strict mode disabled, then incrementally add types to files as you modify them. The key insight: you don't need to migrate everything at once. TypeScript's allowJs flag lets JavaScript and TypeScript coexist indefinitely.",
+		},
+		{
+			question: "What TypeScript features should every developer know?",
+			answer:
+				"Focus on five features: union types for modeling states (type Status = 'loading' | 'success' | 'error'), generics for reusable utilities, discriminated unions for type-safe branching, utility types (Pick, Omit, Partial), and type narrowing with typeof/instanceof guards. These cover 90% of real-world TypeScript usage. Avoid overusing advanced features like conditional types and template literal types — they hurt readability.",
 		},
 	],
 };

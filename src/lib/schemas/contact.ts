@@ -13,6 +13,11 @@ export const contactFormSchema = z.object({
 		.string()
 		.min(10, "Message must be at least 10 characters")
 		.max(5000, "Message is too long"),
+	referralSource: z
+		.enum(["google", "blog", "linkedin", "x-twitter", "referral", "devto", "other"], {
+			message: "Please select how you heard about us",
+		})
+		.optional(),
 	turnstileToken: z.string().optional(),
 });
 

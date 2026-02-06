@@ -140,7 +140,7 @@ See `docs/SELF_HOSTED_LLM_GUIDE.md` for details.
 
 **Quality gates:**
 
-- Blog posts: `content/blog/QUALITY_CHECKLIST.md`
+- Blog posts: `docs/BLOG_QUALITY_CHECKLIST.md`
 - Newsletter issues: `content/newsletter/QUALITY_CHECKLIST.md`
 - Voice reference: `docs/VOICE_GUIDE.md`
 

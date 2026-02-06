@@ -16,8 +16,19 @@ interface ContactNotificationProps {
 	projectType: string;
 	budget: string;
 	message: string;
+	referralSource?: string;
 	timestamp: string;
 }
+
+const referralLabels: Record<string, string> = {
+	google: "Google Search",
+	blog: "Blog Post",
+	linkedin: "LinkedIn",
+	"x-twitter": "X/Twitter",
+	referral: "Referral",
+	devto: "Dev.to",
+	other: "Other",
+};
 
 export function ContactNotification({
 	name,
@@ -25,6 +36,7 @@ export function ContactNotification({
 	projectType,
 	budget,
 	message,
+	referralSource,
 	timestamp,
 }: ContactNotificationProps) {
 	return (
@@ -56,6 +68,13 @@ export function ContactNotification({
 
 						<Text style={label}>BUDGET_RANGE</Text>
 						<Text style={value}>{formatBudget(budget)}</Text>
+
+						{referralSource && (
+							<>
+								<Text style={label}>REFERRAL_SOURCE</Text>
+								<Text style={value}>{referralLabels[referralSource] || referralSource}</Text>
+							</>
+						)}
 					</Section>
 
 					<Hr style={divider} />

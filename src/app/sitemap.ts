@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { blog } from "@/../.source/server";
+import { blog, newsletter } from "@/../.source/server";
 import {
 	getPublishedPages,
 	getAllMigrationPages,
@@ -161,6 +161,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		})),
 	];
 
+	// Newsletter archive pages
+	const newsletterPages: MetadataRoute.Sitemap = [
+		{
+			url: `${siteUrl}/newsletter`,
+			lastModified: siteLastUpdated,
+			changeFrequency: "monthly" as const,
+			priority: 0.7,
+		},
+		...newsletter.map((issue) => ({
+			url: `${siteUrl}/newsletter/${getSlug(issue.info.path)}`,
+			lastModified: issue.publishedAt,
+			changeFrequency: "yearly" as const,
+			priority: 0.5,
+		})),
+	];
+
 	// Role-based pages (for CTOs, founders, etc.)
 	const rolePages: MetadataRoute.Sitemap = [
 		{
@@ -186,5 +202,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		...comparisonPages,
 		...technologyPages,
 		...rolePages,
+		...newsletterPages,
 	];
 }

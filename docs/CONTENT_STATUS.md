@@ -1,6 +1,6 @@
 # Content Status - alexmayhew.dev
 
-> **Last Updated:** 2026-01-29
+> **Last Updated:** 2026-02-06
 > **Status:** Hub-and-Spoke Complete + Newsletter System Implemented
 
 ---
@@ -10,6 +10,7 @@
 The alexmayhew.dev blog has been restructured into a **hub-and-spoke content architecture** with 5 comprehensive guide hubs and 39 spoke posts. All internal linking, cross-cluster linking, and featured images are complete.
 
 **Total Content:** 44 blog posts (5 hubs + 39 spokes) + 9 newsletter emails (5 welcome + 4 issues)
+**Note:** Spoke counts reflect actual MDX frontmatter `series` values, not topical overlap.
 
 ---
 
@@ -101,7 +102,7 @@ Newsletter content links back to these blog hubs and spokes:
    ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐
    │  SaaS   │ │ Eng     │ │Frontend │ │ Perf    │ │   AI    │
    │  Arch   │ │ Leader  │ │  Arch   │ │  Eng    │ │  Dev    │
-   │  (11)   │ │  (6)    │ │  (8)    │ │  (8)    │ │  (6)    │
+   │  (14)   │ │  (6)    │ │  (9)    │ │  (4)    │ │  (6)    │
    └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘
         │           │             │             │           │
         ▼           ▼             ▼             ▼           ▼
@@ -119,7 +120,7 @@ All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Gui
 
 - **Slug:** `saas-architecture-decision-framework`
 - **Series:** `saas-architecture`
-- **Spoke Count:** 11 posts
+- **Spoke Count:** 14 posts
 - **Featured Image:** ✅ `saas-architecture-decision-framework-featured.webp`
 - **Status:** ✅ Complete
 
@@ -135,7 +136,7 @@ All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Gui
 
 - **Slug:** `modern-frontend-architecture`
 - **Series:** `frontend-architecture`
-- **Spoke Count:** 8 posts
+- **Spoke Count:** 9 posts
 - **Featured Image:** ✅ `modern-frontend-architecture-featured.webp`
 - **Status:** ✅ Complete
 
@@ -143,7 +144,7 @@ All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Gui
 
 - **Slug:** `performance-engineering-playbook`
 - **Series:** `performance-engineering`
-- **Spoke Count:** 8 posts
+- **Spoke Count:** 4 posts
 - **Featured Image:** ✅ `performance-engineering-playbook-featured.webp`
 - **Status:** ✅ Complete
 
@@ -159,7 +160,7 @@ All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Gui
 
 ## Spoke Posts by Cluster
 
-### SaaS Architecture (11 posts)
+### SaaS Architecture (14 posts)
 
 | Post                            | Status                    |
 | ------------------------------- | ------------------------- |
@@ -173,7 +174,10 @@ All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Gui
 | tech-stack-capital-allocation   | ✅ Linked + Cross-cluster |
 | build-vs-buy                    | ✅ Linked + Cross-cluster |
 | boring-technology-wins          | ✅ Linked + Cross-cluster |
-| technical-debt-strategy         | ✅ Linked + Cross-cluster |
+| lambda-tax-cold-starts          | ✅ Linked                 |
+| database-query-optimization     | ✅ Linked                 |
+| event-driven-architecture-saas  | ✅ Linked                 |
+| saas-reliability-monitoring     | ✅ Linked                 |
 
 ### Engineering Leadership (6 posts)
 
@@ -184,9 +188,9 @@ All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Gui
 | senior-developer-paradox        | ✅ Linked + Cross-cluster |
 | first-engineering-team-playbook | ✅ Linked                 |
 | technical-hiring-framework      | ✅ Linked                 |
-| typescript-business-case        | ✅ Linked                 |
+| technical-debt-strategy         | ✅ Linked + Cross-cluster |
 
-### Frontend Architecture (8 posts)
+### Frontend Architecture (9 posts)
 
 | Post                                 | Status                    |
 | ------------------------------------ | ------------------------- |
@@ -197,21 +201,17 @@ All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Gui
 | designer-developer-handoff           | ✅ Linked                 |
 | tailwind-vs-component-libraries      | ✅ Linked                 |
 | optimistic-ui                        | ✅ Linked                 |
-| rsc-edge-death-of-waterfall          | ✅ Linked + Cross-cluster |
 | atmospheric-animations-framer-motion | ✅ Linked                 |
+| typescript-business-case             | ✅ Linked + Cross-cluster |
 
-### Performance Engineering (8 posts)
+### Performance Engineering (4 posts)
 
-| Post                             | Status    |
-| -------------------------------- | --------- |
-| core-web-vitals-optimization     | ✅ Linked |
-| cdn-caching-strategy             | ✅ Linked |
-| lambda-tax-cold-starts           | ✅ Linked |
-| edge-computing-when-worth-it     | ✅ Linked |
-| database-connection-pooling      | ✅ Linked |
-| frontend-bundle-optimization     | ✅ Linked |
-| api-response-time-optimization   | ✅ Linked |
-| monitoring-observability-startup | ✅ Linked |
+| Post                         | Status                    |
+| ---------------------------- | ------------------------- |
+| core-web-vitals-optimization | ✅ Linked                 |
+| cdn-caching-strategy         | ✅ Linked                 |
+| rsc-edge-death-of-waterfall  | ✅ Linked + Cross-cluster |
+| nodejs-memory-leaks          | ✅ Linked                 |
 
 ### AI Development (6 posts)
 

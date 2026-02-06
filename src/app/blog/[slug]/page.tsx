@@ -79,9 +79,13 @@ export default async function BlogArticlePage({ params }: PageProps) {
 			title: post.title,
 			description: post.description,
 			publishedAt: post.publishedAt,
+			updatedAt: post.updatedAt,
+			readingTime: post.readingTime,
 			category: post.category,
 			tags: post.tags,
 			image: post.image,
+			isHub: post.isHub,
+			series: post.series,
 		},
 	};
 

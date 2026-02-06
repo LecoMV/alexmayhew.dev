@@ -45,6 +45,7 @@ export function ContactPage() {
 		projectType: "",
 		budget: "",
 		message: "",
+		referralSource: "",
 	});
 	const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 	const turnstileRef = useRef<TurnstileRef>(null);
@@ -75,6 +76,7 @@ export function ContactPage() {
 
 		const result = await submitContactForm({
 			...formData,
+			referralSource: formData.referralSource || undefined,
 			turnstileToken,
 		} as ContactFormValues);
 
@@ -86,6 +88,7 @@ export function ContactPage() {
 				project_type: formData.projectType,
 				budget_range: formData.budget,
 				form_type: "consultation_request",
+				referral_source: formData.referralSource || "not_specified",
 			});
 		} else {
 			setFormStatus("error");
@@ -250,6 +253,48 @@ export function ContactPage() {
 										</option>
 									</select>
 								</div>
+							</div>
+
+							{/* Referral Source */}
+							<div>
+								<label
+									htmlFor="referralSource"
+									className="text-slate-text mb-2 block font-mono text-xs tracking-wider uppercase"
+								>
+									How did you hear about us?
+								</label>
+								<select
+									id="referralSource"
+									name="referralSource"
+									value={formData.referralSource}
+									onChange={handleChange}
+									className="bg-gunmetal-glass/20 focus:border-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none"
+								>
+									<option value="" className="bg-void-navy">
+										Select source...
+									</option>
+									<option value="google" className="bg-void-navy">
+										Google Search
+									</option>
+									<option value="blog" className="bg-void-navy">
+										Blog Post
+									</option>
+									<option value="linkedin" className="bg-void-navy">
+										LinkedIn
+									</option>
+									<option value="x-twitter" className="bg-void-navy">
+										X/Twitter
+									</option>
+									<option value="referral" className="bg-void-navy">
+										Referral
+									</option>
+									<option value="devto" className="bg-void-navy">
+										Dev.to
+									</option>
+									<option value="other" className="bg-void-navy">
+										Other
+									</option>
+								</select>
 							</div>
 
 							{/* Message */}

@@ -79,6 +79,7 @@ export function trackLeadEvent(
 		project_type?: string;
 		budget_range?: string;
 		form_type?: string;
+		referral_source?: string;
 		lead_value?: number;
 		currency?: string;
 		qualified_reason?: string;

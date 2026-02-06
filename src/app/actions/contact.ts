@@ -104,7 +104,8 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 		};
 	}
 
-	const { name, email, projectType, budget, message, turnstileToken } = validation.data;
+	const { name, email, projectType, budget, message, referralSource, turnstileToken } =
+		validation.data;
 
 	// 2. Rate Limiting
 	const headersList = await headers();
@@ -160,6 +161,7 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 				projectType,
 				budget,
 				message,
+				referralSource,
 				timestamp,
 			})
 		);

@@ -21,6 +21,7 @@ export const blog = defineCollections({
 			category: z.enum(["engineering", "architecture", "business", "frontend", "infrastructure"]),
 			tags: z.array(z.string()).default([]),
 			image: z.string().optional(),
+			readingTime: z.string().optional(),
 			draft: z.boolean().default(false),
 			// Hub and series fields for content clusters
 			isHub: z.boolean().default(false),
@@ -34,6 +35,25 @@ export const blog = defineCollections({
 			updatedAt: data.updatedAt
 				? new Date(data.updatedAt)
 				: new Date(data.publishedAt || data.date || ""),
+		})),
+});
+
+// Newsletter collection
+export const newsletter = defineCollections({
+	type: "doc",
+	dir: "content/newsletter/issues",
+	schema: z
+		.object({
+			issue: z.number(),
+			title: z.string(),
+			subject: z.string(),
+			sendDate: z.string(),
+			status: z.enum(["draft", "reviewed", "scheduled", "sent"]).default("draft"),
+			pillar: z.string().optional(),
+		})
+		.transform((data) => ({
+			...data,
+			publishedAt: new Date(data.sendDate),
 		})),
 });
 
