@@ -1,0 +1,375 @@
+---
+title: "Event-Driven Architecture for SaaS at Scale"
+description: "Most SaaS teams adopt event-driven architecture too early or too late. Here's the decision framework, pattern comparison, and cost analysis for getting the timing right."
+date: "2026-02-17"
+author: "Alex Mayhew"
+tags: ["architecture", "saas", "event-driven", "kafka", "microservices"]
+category: "architecture"
+readingTime: "16 min"
+featured: false
+series: "saas-architecture"
+image: "/images/blog/event-driven-architecture-saas-featured.webp"
+---
+
+## TL;DR
+
+Event-driven architecture solves real problems—decoupling services, handling bursty workloads, enabling independent team deployment. But I've watched teams adopt it 18 months too early and spend $50-100K/year on infrastructure they didn't need. The decision threshold isn't about ARR—it's about pain: cascading failures from synchronous calls, database locks from concurrent writes, and cross-team deployment bottlenecks. Start with the outbox pattern and a single event flow before migrating your entire architecture. Kafka handles 500K-1M messages/second but requires 8+ cores and 64-128GB RAM per broker. NATS JetStream delivers sub-millisecond latency at a fraction of the operational cost. Choose based on your actual throughput requirements, not your aspirational ones.
+
+> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — a comprehensive guide to architecture decisions from MVP to scale.
+
+---
+
+## The Timing Problem
+
+Every SaaS architecture conversation about events follows the same trajectory. At 5 engineers and $500K ARR, someone reads about how LinkedIn processes 1 trillion messages per day through Kafka and decides the team needs event-driven architecture. Six months later, they have a Kafka cluster nobody fully understands, an event schema that breaks every sprint, and debugging sessions that take 3x longer than the synchronous version.
+
+I've advised companies on both sides of this mistake. The ones who adopted EDA too early spent 20-25% of their engineering headcount managing infrastructure instead of shipping features. The ones who waited too long suffered cascading failures that took down production for hours because a single downstream service was slow.
+
+The right answer is neither "always events" nor "never events." It's knowing when the pain of synchronous communication exceeds the complexity cost of asynchronous messaging.
+
+---
+
+## When Synchronous Breaks
+
+Before discussing patterns and technologies, understand what actually forces the transition.
+
+### Cascading Failures
+
+Your order service calls the payment service, which calls the fraud service, which calls the risk scoring service. Each call adds latency and a failure point. When the risk scoring service has a bad deploy and responds in 30 seconds instead of 300ms, every upstream service backs up. Connection pools saturate. Your entire checkout flow goes down because one service is slow.
+
+This isn't theoretical. I've seen this exact pattern take down production at three different B2B SaaS companies.
+
+### Database Lock Contention
+
+Multiple services writing to the same database—or even the same tables—create lock contention under load. An inventory update blocks an order creation. A reporting query locks a table that the billing service needs. At 100 concurrent users, this is invisible. At 1,000, your p99 latency spikes from 200ms to 5 seconds.
+
+### Team Coupling
+
+This is the one nobody talks about in architecture diagrams. When three teams share synchronous APIs, every deployment requires coordination. Team A can't ship their payment refactoring because Team B's invoice service depends on the exact response format. Release cycles slow from weekly to monthly. Your best engineers spend more time in cross-team sync meetings than writing code.
+
+---
+
+## Core Patterns You Actually Need
+
+EDA isn't one pattern—it's a family of patterns solving different problems. Most teams need two or three, not all of them.
+
+### The Outbox Pattern: Start Here
+
+The outbox pattern solves the fundamental consistency problem: how do you update your database and publish an event atomically?
+
+```sql
+-- Single transaction: business logic + event publishing
+BEGIN;
+
+UPDATE orders SET status = 'confirmed' WHERE id = $1;
+
+INSERT INTO outbox (event_type, payload, created_at)
+VALUES ('order.confirmed', $2, NOW());
+
+COMMIT;
+```
+
+A separate relay process polls the outbox table and publishes events to your broker. The database transaction guarantees both the state change and the event record succeed or fail together.
+
+This gives you at-least-once delivery. Your consumers must be idempotent—processing the same event twice should produce the same result. This sounds like a constraint, but it forces better design. Every event handler that can safely retry is an event handler that recovers from failures automatically.
+
+**Two implementation approaches:**
+
+| Approach | Mechanism | Latency | Complexity |
+|----------|-----------|---------|------------|
+| **Polling** | Scheduled job queries outbox table | 100ms-5s | Low—any team can implement |
+| **CDC (Change Data Capture)** | PostgreSQL logical replication streams WAL changes | 10-50ms | Medium—requires WAL configuration |
+
+For most SaaS applications under 10,000 events per minute, polling every 500ms is sufficient and dramatically simpler.
+
+### Choreography vs. Orchestration
+
+Two fundamentally different approaches to coordinating multi-service workflows.
+
+**Choreography** (decentralized): Each service reacts to events independently. No central coordinator. The order service publishes `order.created`, the payment service consumes it and publishes `payment.processed`, the inventory service consumes that and publishes `inventory.reserved`.
+
+**Orchestration** (centralized): A coordinator service manages the workflow. The order orchestrator explicitly calls the payment service, waits for confirmation, then calls the inventory service.
+
+The decision matrix isn't about preference—it's about the workflow characteristics:
+
+| Factor | Choreography | Orchestration |
+|--------|-------------|---------------|
+| **Services involved** | 2-3 | 4+ |
+| **Failure handling** | Compensating events | Centralized rollback |
+| **Visibility** | Distributed tracing required | Orchestrator holds full state |
+| **Team autonomy** | High—teams own their reactions | Lower—orchestrator team is bottleneck |
+| **Debugging** | Harder—follow event chain | Easier—single coordinator log |
+
+Most SaaS applications benefit from a hybrid: choreography for simple, fire-and-forget flows (notifications, analytics, audit logging) and orchestration for critical business transactions (order fulfillment, payment processing, provisioning).
+
+### The Saga Pattern: Distributed Transactions
+
+Sagas manage multi-step business transactions across services where you need rollback capability. An order saga might:
+
+1. Reserve inventory
+2. Process payment
+3. Generate invoice
+4. Send confirmation
+
+If step 3 fails, the saga executes compensation: refund the payment, release the inventory.
+
+**Where sagas go wrong:**
+
+- **Undefined compensation actions.** Every forward step needs a reverse step. "Release inventory" isn't always the reverse of "reserve inventory" if another order claimed the freed units in the meantime.
+- **Isolation violations.** Two concurrent sagas modifying the same data can cause lost updates. Saga A reads inventory count, Saga B reads the same count, both decrement—you've oversold.
+- **Orchestrator as single point of failure.** If your saga coordinator goes down mid-transaction, you need recovery logic to resume or roll back incomplete sagas.
+
+The honest recommendation: don't implement sagas until you have a specific multi-service transaction that's causing data inconsistency problems. Sagas are the most complex EDA pattern and the one most often adopted prematurely.
+
+---
+
+## Technology Selection
+
+I'll compare the three technologies I recommend to SaaS teams, along with the managed alternative that makes sense for AWS-native architectures.
+
+### Performance Comparison (2025 Benchmarks)
+
+| Technology | Throughput | Latency | Min. Resources | Best For |
+|-----------|-----------|---------|----------------|----------|
+| **Apache Kafka** | 500K-1M+ msg/sec | 10-50ms | 8 cores, 64GB RAM, 10Gig NIC | High-volume streaming, event sourcing, analytics pipelines |
+| **NATS JetStream** | 200K-400K msg/sec | Sub-ms (memory), 1-5ms (disk) | 2 cores, 4GB RAM | Low-latency microservices, IoT, edge deployments |
+| **RabbitMQ** | 50K-100K msg/sec | 5-20ms | 4 cores, 8GB RAM | Task queues, request-reply patterns, moderate throughput |
+| **AWS EventBridge** | Scales automatically | 50-200ms | None (serverless) | AWS-native routing, low-volume event-driven workflows |
+
+These numbers are from 2025 VPS benchmarks on standardized 4 vCPU, 8GB RAM, NVMe configurations. Production numbers vary based on message size, replication factor, and network topology.
+
+### Cost Analysis
+
+Cost is where the technology decision gets real.
+
+**Apache Kafka (Self-Hosted)**
+- Software: $0 (open source)
+- Infrastructure: 3-node cluster minimum. On AWS, three m7g.xlarge instances run ~$1,200/month
+- Operations: Requires distributed systems expertise. Budget 10-20% of one senior engineer's time for cluster management
+- Hidden cost: ZooKeeper management (or KRaft migration), partition rebalancing, schema registry operations
+
+**Apache Kafka (AWS MSK)**
+- Brokers: $0.15-0.20/hour per m7g.large (~$330-440/month per broker)
+- Storage: $0.10/GB-month (EBS)
+- 3-broker minimum: ~$1,000-1,300/month before storage and data transfer
+- Eliminates operational overhead but less flexible than self-hosted
+
+**Confluent Cloud**
+- Compute: CKU-based pricing (varies by throughput)
+- Networking: $0.025/GB (US regions)
+- Connectors: $0.20/task/hour
+- Generally 40-60% more expensive than MSK but includes Schema Registry, ksqlDB, and managed connectors
+
+**NATS JetStream (Self-Hosted)**
+- Software: $0 (open source)
+- Infrastructure: Runs on significantly smaller instances. Three t3.medium instances handle most SaaS workloads (~$120/month)
+- Operations: Minimal. No ZooKeeper, no partition management, no JVM tuning
+- Cloud IOPS: Dramatically lower than Kafka—significant cost difference on AWS/GCP
+
+**AWS EventBridge**
+- ~$1.00 per million events published
+- Example: 5M events/month = ~$5.40 total
+- Zero operational overhead
+- Limitation: AWS-only, not suitable for high-throughput streaming
+
+### The Decision Framework
+
+**Choose Kafka when:**
+- You process more than 100K messages/second sustained
+- You need event replay and long-term event storage
+- You're building analytics pipelines or event sourcing systems
+- You have (or will hire) engineers with Kafka operational experience
+
+**Choose NATS JetStream when:**
+- Latency matters more than maximum throughput
+- Your team is under 20 engineers and operational simplicity is critical
+- You're running at the edge or in resource-constrained environments
+- Your sustained throughput is under 100K messages/second
+
+**Choose EventBridge when:**
+- You're fully committed to AWS
+- Event volume is under 1M events/day
+- You want zero infrastructure management
+- You're routing events between AWS services, not building streaming pipelines
+
+**Choose RabbitMQ when:**
+- You need request-reply messaging patterns
+- Your workload is task distribution (job queues, background processing)
+- You're already running RabbitMQ and your throughput needs are under 50K/second
+
+---
+
+## Event Schema Design
+
+Schema evolution is where most EDA implementations accumulate technical debt. Get this wrong and every consumer breaks when you add a field.
+
+### Rules That Prevent Breaking Changes
+
+**1. Always add, never remove or rename fields.**
+
+```typescript
+// Version 1
+interface OrderCreated {
+	orderId: string;
+	customerId: string;
+	total: number;
+}
+
+// Version 2 — backward compatible
+interface OrderCreated {
+	orderId: string;
+	customerId: string;
+	total: number;
+	currency?: string; // New field, optional
+	lineItems?: LineItem[]; // New field, optional
+}
+```
+
+New fields must have default values or be optional. Old consumers ignore fields they don't recognize. New consumers handle missing optional fields.
+
+**2. Version your events explicitly.**
+
+```typescript
+interface EventEnvelope {
+	eventType: string;
+	version: number;
+	timestamp: string;
+	correlationId: string;
+	payload: unknown;
+}
+```
+
+When a breaking change is unavoidable (rare, but it happens), publish both versions simultaneously during the migration period. Old consumers read v1, new consumers read v2. Decommission v1 after all consumers migrate.
+
+**3. Events should be autonomous.**
+
+Every event must contain all information the consumer needs. Don't publish `{ orderId: "123" }` and force consumers to call back to the order service for details. That re-introduces the synchronous coupling you were trying to eliminate.
+
+---
+
+## Eventual Consistency: The Part Nobody Warns You About
+
+Eventual consistency is the tax you pay for event-driven architecture. Organizations transitioning from ACID databases underestimate the business impact by roughly 3.7x on average, based on post-implementation surveys.
+
+### The Stale Read Problem
+
+User creates an order. Your API returns 201 Created. User immediately refreshes the orders page. The order isn't there—the read model hasn't caught up to the write.
+
+This doesn't manifest in development because your event bus and read model are on the same machine. In production, event processing lag of 200ms-2 seconds is normal. Under load, it can spike to 10+ seconds.
+
+**Mitigation strategies:**
+
+1. **Read-your-writes consistency.** After a write, read from the primary (not the eventual read model) for that specific user's subsequent requests. Adds complexity but eliminates the most jarring UX issue.
+
+2. **Optimistic UI updates.** The frontend assumes the write succeeded and shows the result immediately, reconciling when the read model catches up. Works for most CRUD-style operations.
+
+3. **Polling with backoff.** After a write, the client polls the read model with exponential backoff until the change appears. Simple to implement, slightly worse UX.
+
+### Processing Lag Between Services
+
+Two services consuming the same event stream process at different rates. The billing service is 30 seconds behind the notification service. A customer gets a "payment confirmed" email before the billing dashboard shows the payment. Your support team gets confused calls.
+
+There is no silver bullet for this. You manage it with:
+
+- SLA-based monitoring on consumer lag
+- Correlation IDs that let you trace an event across every service
+- Circuit breakers that prevent a slow consumer from falling infinitely behind
+
+---
+
+## Migration Strategy: The Strangler Fig Approach
+
+Don't migrate your entire architecture to events simultaneously. The strangler fig pattern works: wrap existing synchronous calls with event publishing, migrate consumers one at a time.
+
+### Step 1: Single Event Flow
+
+Pick one low-risk event. User signup is ideal—it's well-understood, low-volume, and failures are non-critical.
+
+```typescript
+// Before: synchronous call chain
+async function createUser(data: UserData) {
+	const user = await db.users.create(data);
+	await emailService.sendWelcome(user); // Sync call
+	await analyticsService.track(user); // Sync call
+	return user;
+}
+
+// After: publish event, let consumers handle side effects
+async function createUser(data: UserData) {
+	const user = await db.users.create(data);
+	await outbox.publish('user.created', {
+		userId: user.id,
+		email: user.email,
+		plan: user.plan,
+	});
+	return user;
+}
+```
+
+The email and analytics services become event consumers. The user creation endpoint returns faster. If the email service is down, the event waits in the queue instead of failing the signup.
+
+### Step 2: Monitor and Validate
+
+Run the event-driven path alongside the synchronous path for two weeks. Compare:
+
+- Event delivery success rate (target: 99.9%+)
+- End-to-end latency (event published to consumer processed)
+- Consumer error rates
+- Message ordering correctness
+
+### Step 3: Incremental Migration
+
+Once the first flow is stable, migrate the next most-critical workflow. For most SaaS applications, the priority order is:
+
+1. **Notifications** (email, push, in-app) — lowest risk, highest decoupling benefit
+2. **Analytics and audit logging** — fire-and-forget, no business logic dependency
+3. **Billing events** — higher stakes, but well-bounded domain
+4. **Core business workflows** — only after the team has 3-6 months of event-driven operational experience
+
+---
+
+## The Adoption Checklist
+
+Before committing to event-driven architecture, verify these conditions:
+
+**You should adopt EDA when:**
+- Synchronous calls between services cause cascading failures monthly
+- Database lock contention is measurable and increasing
+- Three or more teams coordinate deployments weekly
+- You need independent scaling of read and write workloads
+- Audit trail requirements exceed what application-level logging provides
+
+**You should not adopt EDA when:**
+- Your entire team fits in one standup (under 8 engineers)
+- Synchronous API calls handle your current and 12-month projected load
+- You're pre-product-market-fit and pivoting quarterly
+- Nobody on the team has operated a message broker in production
+
+**The honest rule of thumb:** If you're asking "should we adopt EDA?", you probably don't need it yet. The teams that need it know they need it because they're already suffering from the problems it solves.
+
+---
+
+**Building a SaaS that's hitting the synchronous wall?** I help teams plan and execute the migration to event-driven architecture without the 18-month learning curve.
+
+- [SaaS Architecture Advisory](/services/saas-architecture-advisor) — Architecture decisions from MVP to scale
+- [Node.js Development for SaaS](/services/nodejs-developer-for-saas) — Production-grade Node.js systems
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) — Pre-investment architecture assessment
+
+---
+
+## Continue Reading
+
+**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — covering database design, multi-region deployment, API strategy, and infrastructure patterns.
+
+### More in This Series
+
+- [Database Query Optimization for Scale](/blog/database-query-optimization) — From N+1 to Optimal
+- [Multi-Region SaaS Architecture](/blog/multi-region-saas-architecture) — Global replication and data residency
+- [Build vs. Buy: The SaaS Engineering Decision](/blog/build-vs-buy) — When to build custom vs. adopt SaaS tools
+- [SaaS Reliability Monitoring](/blog/saas-reliability-monitoring) — Observability that catches issues before customers do
+
+### Related Guides
+
+- [Boring Technology Wins](/blog/boring-technology-wins) — Why mature tech stacks outperform cutting-edge ones
+- [Anatomy of a High-Precision SaaS](/blog/anatomy-of-high-precision-saas) — Building systems that handle mission-critical data
+- [Performance Engineering Playbook](/blog/performance-engineering-playbook) — From TTFB to TTI optimization

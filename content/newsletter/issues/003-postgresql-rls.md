@@ -1,17 +1,19 @@
 ---
 issue: 3
 title: "PostgreSQL RLS for Multi-Tenancy"
-subject: "The Postgres feature that replaces thousands of lines of code"
+subject: "The Postgres feature replacing thousands of lines of code"
 sendDate: "2026-02-18"
 status: "draft"
 pillar: "saas-patterns"
 ---
 
-Subject: The Postgres feature that replaces thousands of lines of code
+Subject: The Postgres feature replacing thousands of lines of code
 
 Hey {first_name},
 
-A client's security audit flagged 3 API endpoints last quarter. The issue: missing `WHERE tenant_id = ?` clauses. Three places across 200+ queries where a developer forgot the filter. In a multi-tenant SaaS, that's 3 potential data breaches — caught in audit, not in production. They were lucky.
+A client's security audit flagged 3 API endpoints last quarter. The issue: missing `WHERE tenant_id = ?` clauses. Three places across 200+ queries where a developer forgot the filter.
+
+In a multi-tenant SaaS, that's 3 potential data breaches — caught in audit, not in production. They were lucky.
 
 There's a way to make "forgetting" impossible.
 
@@ -54,15 +56,14 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 prisma.$use(async (params, next) => {
-	// Set the tenant context before every query
-	const tenantId = getTenantFromRequest(); // your auth layer
+	const tenantId = getTenantFromRequest();
 	await prisma.$executeRawUnsafe(`SET LOCAL app.tenant_id = '${tenantId}'`);
 	return next(params);
 });
 
 // Now every query is automatically filtered
 const projects = await prisma.project.findMany();
-// Returns ONLY the current tenant's projects — guaranteed by Postgres
+// Returns ONLY current tenant's projects
 ```
 
 No more `WHERE tenant_id = ?` scattered across your codebase. No more security audit findings. The database enforces isolation — your application code focuses on business logic.
@@ -93,7 +94,7 @@ No more `WHERE tenant_id = ?` scattered across your codebase. No more security a
 
 ## Tool of the Week
 
-**[pgAudit](https://www.pgaudit.org/)** — Once you have RLS enforcing isolation, add pgAudit for compliance logging. It records who accessed what data, when, and through which policy. For SOC 2 and HIPAA audits, this combination — RLS for enforcement, pgAudit for evidence — is the most cost-effective approach I've implemented. Setup takes under an hour.
+**[pgAudit](https://www.pgaudit.org/)** — Once you have RLS enforcing isolation, add pgAudit for compliance logging. It records who accessed what data, when, and through which policy. For SOC 2 and HIPAA audits, RLS for enforcement plus pgAudit for evidence is the most cost-effective approach I've implemented.
 
 ---
 

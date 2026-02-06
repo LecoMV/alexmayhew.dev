@@ -35,16 +35,16 @@ The companies that ship fastest? A well-structured monolith with clear module bo
 ```
 src/
 ├── modules/
-│   ├── auth/              # Clean boundary → future auth service
+│   ├── auth/              # → future auth svc
 │   │   ├── auth.service.ts
 │   │   ├── auth.controller.ts
 │   │   └── auth.repository.ts
-│   ├── billing/           # Clean boundary → future billing service
+│   ├── billing/           # → future billing svc
 │   │   ├── billing.service.ts
 │   │   └── stripe.adapter.ts
-│   └── notifications/     # Clean boundary → future notification service
+│   └── notifications/     # → future notif svc
 ├── shared/
-│   └── database/          # Single DB until you prove you need more
+│   └── database/          # Single DB for now
 └── main.ts
 ```
 

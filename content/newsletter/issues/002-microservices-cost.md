@@ -47,25 +47,27 @@ infrastructure:
 Count them. 12 systems before you ship a single business feature.
 
 **2. Cognitive Load Tax (2-3x debugging time)**
-A bug in a monolith: read the stack trace, find the function, fix it. A bug across services: correlate trace IDs across 4 services, check 3 log streams, reproduce timing-dependent failures. The median debugging session goes from 30 minutes to 90+ minutes.
+A bug in a monolith: read the stack trace, find the function, fix it.
+
+A bug across services: correlate trace IDs across 4 services, check 3 log streams, reproduce timing-dependent failures. The median debugging session goes from 30 minutes to 90+ minutes.
 
 **3. Hiring Tax ($50-100K/year additional)**
 You need at least one infrastructure-focused engineer to maintain the platform. At seed stage, that's 20-25% of your engineering headcount dedicated to keeping the lights on, not building product.
 
 **The Team-Size Breakpoint Framework:**
 
-| Team Size          | Architecture                      | Rationale                                                                                                      |
-| ------------------ | --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Under 10 engineers | Monolith                          | One team, one codebase, one deployment. Cognitive overhead of distributed systems isn't worth it.              |
-| 10-30 engineers    | Monolith + 1-3 extracted services | Extract only what has genuinely different scaling or deployment needs.                                         |
-| 30-50 engineers    | Domain-aligned services           | Team boundaries now match service boundaries. Conway's Law works in your favor.                                |
-| 50+ engineers      | Microservices                     | You have the headcount to absorb operational overhead and the organizational need for independent deployments. |
+| Team Size | Architecture            | Rationale                            |
+| --------- | ----------------------- | ------------------------------------ |
+| Under 10  | Monolith                | One team, one codebase, one deploy   |
+| 10-30     | Monolith + 1-3 services | Extract only different scaling needs |
+| 30-50     | Domain-aligned services | Team boundaries match service bounds |
+| 50+       | Microservices           | Headcount absorbs operational cost   |
 
 **When to Apply This:**
 
 - Under $1M ARR with fewer than 10 engineers — the monolith is your competitive advantage, not your technical debt
 - $1-5M ARR — audit your services, calculate your infrastructure-to-feature ratio, and consolidate if it exceeds 30%
-- $5M+ ARR — now microservices might be the right call, but only where team boundaries genuinely require independent deployment
+- $5M+ ARR — now microservices earn their operational cost, but only where team boundaries genuinely require independent deployment
 
 ---
 
@@ -73,7 +75,7 @@ You need at least one infrastructure-focused engineer to maintain the platform. 
 
 1. **[Martin Fowler: Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)** — Fowler's argument has a nuance most people miss: you can't draw service boundaries correctly until you understand the domain. Starting with a monolith is how you learn where the real seams are.
 
-2. **[Shopify's Modular Monolith](https://shopify.engineering/shopify-monolith)** — Shopify processes $7.5B+ in GMV on a Rails monolith. Their approach — componentized modules within a single deployment — is the pattern I recommend most often. Black Friday at scale, one deployment pipeline.
+2. **[Shopify's Modular Monolith](https://shopify.engineering/shopify-monolith)** — Shopify processes $7.5B+ in GMV on a Rails monolith. Componentized modules within a single deployment — Black Friday at scale, one pipeline.
 
 3. **[Local-First Software](https://www.inkandswitch.com/local-first/)** — A paradigm that sidesteps the distributed systems question entirely. Worth understanding as the complexity pendulum swings back toward simplicity.
 
