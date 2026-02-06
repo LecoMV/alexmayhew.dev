@@ -132,7 +132,7 @@ See `docs/SELF_HOSTED_LLM_GUIDE.md` for details.
 **Cadence:** 2 blog posts/month (spokes) + weekly newsletter + automated social distribution.
 **Rhythm:** Week A = blog + newsletter. Week B = newsletter only. See `docs/CONTENT_OPERATIONS.md`.
 
-**Start here for content work:**
+**Start here for content work:** `docs/CONTENT_PLATFORM_REFERENCE.md` (master reference — infrastructure, brand voice, scheduling, all doc links)
 
 - **Operations workflow:** `docs/CONTENT_OPERATIONS.md` (end-to-end process)
 - **Editorial calendar:** `docs/EDITORIAL_CALENDAR_2026.md` (what to write and when)
@@ -154,6 +154,7 @@ See `docs/SELF_HOSTED_LLM_GUIDE.md` for details.
 
 ### Content
 
+- **Content Platform Reference:** `docs/CONTENT_PLATFORM_REFERENCE.md` (master doc — start here)
 - Content Status: `docs/CONTENT_STATUS.md` (hub-and-spoke inventory)
 - Voice Guide: `docs/VOICE_GUIDE.md` (brand voice for all content)
 - Hub Strategy: `docs/HUB_AND_SPOKE_CONTENT_STRATEGY.md`
@@ -168,7 +169,38 @@ See `docs/SELF_HOSTED_LLM_GUIDE.md` for details.
 - Implementation Roadmap: `docs/IMPLEMENTATION_ROADMAP.md`
 - Marketing Plan: `MARKETING_PLAN_2026.md`
 
+### Social Media
+
+- **Cross-Platform Strategy:** `docs/CROSS_PLATFORM_CONTENT_STRATEGY.md` (master plan — how X, LinkedIn, Dev.to work together)
+- **Social Media Playbook:** `docs/SOCIAL_MEDIA_PLAYBOOK.md` (brand voice, posting guidelines, engagement strategy)
+- **LinkedIn Reply Examples:** `docs/LINKEDIN_REPLY_EXAMPLES.md` (real examples for consistency)
+- **X/Twitter Guide:** `docs/X_TWITTER_ENGAGEMENT_GUIDE.md` (growth strategy for new account)
+
 ### Technical
 
 - LLM Stack: `docs/SELF_HOSTED_LLM_GUIDE.md`
 - Copy Audit: `docs/COPY_AUDIT_REPORT.md`
+
+## Social Media Quick Reference
+
+**Brand Voice (6 Pillars):**
+
+1. Technical Precision (specific numbers, never vague)
+2. Direct & Authoritative (clear positions, no hedging)
+3. Business Context First (every tech point ties to outcomes)
+4. Experienced Perspective ("I've advised...", "I've seen...")
+5. Dense Information (no filler)
+6. Contrarian When Warranted (backed by evidence)
+
+**Never use:** Emojis, "game-changer", "perhaps/maybe", "just/simply", exclamation points
+
+**LinkedIn:** 1,000-1,300 chars, short paragraphs, no links in body, end with specific question
+
+**X/Twitter:** 70-80% engagement, 20-30% posting for new accounts. Join Communities. Replies > original posts.
+
+**Cross-Platform Rule:** Same source material, different voice per platform. Never post the same content verbatim across platforms. See `docs/CROSS_PLATFORM_CONTENT_STRATEGY.md`.
+
+**Automation:**
+
+- Postiz: `http://localhost:4007` (scheduling)
+- n8n: `http://localhost:5678` (content repurposing + welcome sequence)
