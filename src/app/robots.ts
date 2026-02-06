@@ -8,20 +8,53 @@ export default function robots(): MetadataRoute.Robots {
 				allow: "/",
 				disallow: ["/api/", "/keystatic/", "/demo/"],
 			},
+			// OpenAI crawlers
 			{
-				userAgent: "PerplexityBot",
+				userAgent: "GPTBot",
+				allow: "/",
+			},
+			{
+				userAgent: "OAI-SearchBot",
 				allow: "/",
 			},
 			{
 				userAgent: "ChatGPT-User",
 				allow: "/",
 			},
+			// Anthropic crawlers
 			{
-				userAgent: "Claude-Web",
+				userAgent: "ClaudeBot",
 				allow: "/",
 			},
 			{
+				userAgent: "Claude-SearchBot",
+				allow: "/",
+			},
+			// Google AI crawlers
+			{
 				userAgent: "Google-Extended",
+				allow: "/",
+			},
+			{
+				userAgent: "GoogleOther",
+				allow: "/",
+			},
+			// Perplexity crawlers
+			{
+				userAgent: "PerplexityBot",
+				allow: "/",
+			},
+			{
+				userAgent: "Perplexity-User",
+				allow: "/",
+			},
+			// Other AI crawlers
+			{
+				userAgent: "CCBot",
+				allow: "/",
+			},
+			{
+				userAgent: "Meta-ExternalAgent",
 				allow: "/",
 			},
 			{

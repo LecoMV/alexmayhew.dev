@@ -1,6 +1,11 @@
 import type { MetadataRoute } from "next";
 import { blog } from "@/../.source/server";
-import { getPublishedPages, getAllMigrationPages, getAllIntegrationPages } from "@/data/pseo";
+import {
+	getPublishedPages,
+	getAllMigrationPages,
+	getAllIntegrationPages,
+	getAllComparisonPages,
+} from "@/data/pseo";
 import { getTechnologyIds } from "@/data/pseo/technologies";
 import { getPublishedRolePages } from "@/data/roles";
 
@@ -12,79 +17,81 @@ function getSlug(path: string): string {
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-	// Static pages
+	// Static pages — use fixed dates to avoid Google distrust of constantly-changing lastmod
+	const siteLastUpdated = new Date("2026-02-06");
+
 	const staticPages: MetadataRoute.Sitemap = [
 		{
 			url: siteUrl,
-			lastModified: new Date(),
+			lastModified: siteLastUpdated,
 			changeFrequency: "monthly",
 			priority: 1,
 		},
 		{
 			url: `${siteUrl}/work`,
-			lastModified: new Date(),
+			lastModified: siteLastUpdated,
 			changeFrequency: "monthly",
 			priority: 0.9,
 		},
 		{
 			url: `${siteUrl}/about`,
-			lastModified: new Date(),
+			lastModified: siteLastUpdated,
 			changeFrequency: "monthly",
 			priority: 0.8,
 		},
 		{
 			url: `${siteUrl}/contact`,
-			lastModified: new Date(),
+			lastModified: siteLastUpdated,
 			changeFrequency: "yearly",
 			priority: 0.7,
 		},
 		// Services hub page
 		{
 			url: `${siteUrl}/services`,
-			lastModified: new Date(),
+			lastModified: siteLastUpdated,
 			changeFrequency: "monthly",
 			priority: 0.95,
 		},
 		{
 			url: `${siteUrl}/blog`,
-			lastModified: new Date(),
+			lastModified: siteLastUpdated,
 			changeFrequency: "weekly",
 			priority: 0.9,
 		},
 		{
 			url: `${siteUrl}/docs`,
-			lastModified: new Date(),
+			lastModified: siteLastUpdated,
 			changeFrequency: "monthly",
 			priority: 0.6,
 		},
 		// Tools pages
 		{
 			url: `${siteUrl}/tools`,
-			lastModified: new Date(),
+			lastModified: siteLastUpdated,
 			changeFrequency: "monthly",
 			priority: 0.9,
 		},
 		{
 			url: `${siteUrl}/tools/traceforge`,
-			lastModified: new Date(),
+			lastModified: siteLastUpdated,
 			changeFrequency: "monthly",
 			priority: 0.95,
 		},
 		{
 			url: `${siteUrl}/tools/pilot`,
-			lastModified: new Date(),
+			lastModified: siteLastUpdated,
 			changeFrequency: "monthly",
 			priority: 0.9,
 		},
 		{
 			url: `${siteUrl}/privacy`,
-			lastModified: new Date(),
+			lastModified: new Date("2026-01-01"),
 			changeFrequency: "yearly",
 			priority: 0.3,
 		},
 		{
 			url: `${siteUrl}/terms`,
-			lastModified: new Date(),
+			lastModified: new Date("2026-01-01"),
 			changeFrequency: "yearly",
 			priority: 0.3,
 		},
@@ -103,7 +110,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 	// Service pages (pSEO)
 	const servicePages: MetadataRoute.Sitemap = getPublishedPages().map((page) => ({
 		url: `${siteUrl}/services/${page.slug}`,
-		lastModified: page.lastUpdated ?? new Date(),
+		lastModified: page.lastUpdated ?? siteLastUpdated,
 		changeFrequency: "monthly" as const,
 		priority: 0.9,
 	}));
@@ -113,7 +120,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		.filter((page) => page.published)
 		.map((page) => ({
 			url: `${siteUrl}/services/migrations/${page.slug}`,
-			lastModified: new Date(),
+			lastModified: siteLastUpdated,
 			changeFrequency: "monthly" as const,
 			priority: 0.85,
 		}));
@@ -123,7 +130,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		.filter((page) => page.published)
 		.map((page) => ({
 			url: `${siteUrl}/services/integrations/${page.slug}`,
-			lastModified: new Date(),
+			lastModified: siteLastUpdated,
+			changeFrequency: "monthly" as const,
+			priority: 0.85,
+		}));
+
+	// Comparison pages (Tech A vs Tech B)
+	const comparisonPages: MetadataRoute.Sitemap = getAllComparisonPages()
+		.filter((page) => page.published)
+		.map((page) => ({
+			url: `${siteUrl}/services/comparisons/${page.slug}`,
+			lastModified: siteLastUpdated,
 			changeFrequency: "monthly" as const,
 			priority: 0.85,
 		}));
@@ -132,13 +149,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
 	const technologyPages: MetadataRoute.Sitemap = [
 		{
 			url: `${siteUrl}/technologies`,
-			lastModified: new Date(),
+			lastModified: siteLastUpdated,
 			changeFrequency: "monthly" as const,
 			priority: 0.9,
 		},
 		...getTechnologyIds().map((techId) => ({
 			url: `${siteUrl}/technologies/${techId}`,
-			lastModified: new Date(),
+			lastModified: siteLastUpdated,
 			changeFrequency: "monthly" as const,
 			priority: 0.85,
 		})),
@@ -148,13 +165,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
 	const rolePages: MetadataRoute.Sitemap = [
 		{
 			url: `${siteUrl}/for`,
-			lastModified: new Date(),
+			lastModified: siteLastUpdated,
 			changeFrequency: "monthly" as const,
 			priority: 0.9,
 		},
 		...getPublishedRolePages().map((page) => ({
 			url: `${siteUrl}/for/${page.slug}`,
-			lastModified: page.lastUpdated ?? new Date(),
+			lastModified: page.lastUpdated ?? siteLastUpdated,
 			changeFrequency: "monthly" as const,
 			priority: 0.9,
 		})),
@@ -166,6 +183,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		...servicePages,
 		...migrationPages,
 		...integrationPages,
+		...comparisonPages,
 		...technologyPages,
 		...rolePages,
 	];
