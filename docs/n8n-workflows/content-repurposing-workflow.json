@@ -95,7 +95,7 @@
 					"parameters": [
 						{
 							"name": "Authorization",
-							"value": "89fe6989c73476046100c9b0ffe2522b118ba8a8100b35ef07e919ecebceb6c3"
+							"value": "YOUR_POSTIZ_API_TOKEN_HERE"
 						},
 						{
 							"name": "Content-Type",
@@ -125,7 +125,7 @@
 					"parameters": [
 						{
 							"name": "Authorization",
-							"value": "89fe6989c73476046100c9b0ffe2522b118ba8a8100b35ef07e919ecebceb6c3"
+							"value": "YOUR_POSTIZ_API_TOKEN_HERE"
 						},
 						{
 							"name": "Content-Type",
@@ -155,7 +155,7 @@
 					"parameters": [
 						{
 							"name": "Authorization",
-							"value": "89fe6989c73476046100c9b0ffe2522b118ba8a8100b35ef07e919ecebceb6c3"
+							"value": "YOUR_POSTIZ_API_TOKEN_HERE"
 						},
 						{
 							"name": "Content-Type",
