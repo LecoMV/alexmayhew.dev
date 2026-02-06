@@ -425,12 +425,12 @@ Use this when auditing an application or starting optimization work.
 
 Performance optimization is not a one-time project. It's a capability that matures over time.
 
-| Level | Name | Measurement | Optimization Approach | Characteristics |
-|---|---|---|---|---|
-| 1 | Reactive | No systematic measurement | Ad-hoc | Fix performance problems when users complain. No performance budgets. |
-| 2 | Measured | Core Web Vitals dashboards, P99 latency tracked | Responsive to degradation | Can identify which pages are slow, but optimization is still reactive rather than preventive. |
-| 3 | Proactive | Performance budgets enforced in CI | Preventive | Lighthouse scores must pass before deployment. Regressions caught before production. New features include performance impact assessment. |
-| 4 | Optimized | A/B testing performance changes | Strategic | Performance is a product feature. Revenue impact of latency is understood. Engineering decisions explicitly weigh performance trade-offs. Your P99 is someone else's P50. |
+| Level | Name      | Measurement                                     | Optimization Approach     | Characteristics                                                                                                                                                           |
+| ----- | --------- | ----------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | Reactive  | No systematic measurement                       | Ad-hoc                    | Fix performance problems when users complain. No performance budgets.                                                                                                     |
+| 2     | Measured  | Core Web Vitals dashboards, P99 latency tracked | Responsive to degradation | Can identify which pages are slow, but optimization is still reactive rather than preventive.                                                                             |
+| 3     | Proactive | Performance budgets enforced in CI              | Preventive                | Lighthouse scores must pass before deployment. Regressions caught before production. New features include performance impact assessment.                                  |
+| 4     | Optimized | A/B testing performance changes                 | Strategic                 | Performance is a product feature. Revenue impact of latency is understood. Engineering decisions explicitly weigh performance trade-offs. Your P99 is someone else's P50. |
 
 Most teams operate at Level 1 or 2. Reaching Level 3 requires cultural shift—performance must be a first-class concern, not an afterthought.
 

@@ -123,12 +123,12 @@ Building LLM-powered features requires infrastructure thinking. The gap between 
 
 The vector database is the foundation of any retrieval-augmented generation (RAG) system.
 
-| Database | Scale | Ops Overhead | Key Advantages | Key Considerations |
-|---|---|---|---|---|
-| pgvector | < 1M vectors | None (existing PostgreSQL) | Single database, ACID transactions, familiar tooling | HNSW indexes consume ~1.5GB per million 1536-dim vectors |
-| Qdrant | 1-10M vectors | Self-hosted | Best balance of performance and features, native metadata filtering | Binary quantization reduces memory 4-32x |
-| Pinecone | > 10M vectors | Fully managed | Zero ops overhead, linear cost scaling | At 100M queries/month, expect $9,600 for reads alone |
-| Chroma | Development/prototyping | Embedded | Fast local development, no infrastructure needed | Not designed for production scale |
+| Database | Scale                   | Ops Overhead               | Key Advantages                                                      | Key Considerations                                       |
+| -------- | ----------------------- | -------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------- |
+| pgvector | < 1M vectors            | None (existing PostgreSQL) | Single database, ACID transactions, familiar tooling                | HNSW indexes consume ~1.5GB per million 1536-dim vectors |
+| Qdrant   | 1-10M vectors           | Self-hosted                | Best balance of performance and features, native metadata filtering | Binary quantization reduces memory 4-32x                 |
+| Pinecone | > 10M vectors           | Fully managed              | Zero ops overhead, linear cost scaling                              | At 100M queries/month, expect $9,600 for reads alone     |
+| Chroma   | Development/prototyping | Embedded                   | Fast local development, no infrastructure needed                    | Not designed for production scale                        |
 
 **Quick decision guide:**
 
@@ -275,25 +275,25 @@ For detailed cost analysis including API vs self-hosted decision matrices, see t
 
 AI code review changes what developers do—it does not replace them.
 
-| Review Area | LLM Capability | Details |
-|---|---|---|
-| Style consistency | Strong | Configure rules once, AI enforces across every PR. Human reviewers develop blind spots; AI applies the same standard Monday morning and Friday evening. |
-| Common bug patterns | Strong | Off-by-one errors, null references, race conditions, resource leaks. Well-documented in training data. |
-| Documentation gaps | Strong | Missing JSDoc, parameter descriptions, undocumented return types. AI notices what is missing as effectively as what is wrong. |
-| Business logic correctness | Weak | AI validates code against patterns, not intent. It cannot evaluate whether code does what the business needs. |
-| Security edge cases | Weak | Recognizes common vulnerabilities but misses domain-specific threats like missing authorization checks in financial transfer logic. |
-| Architectural fit | Weak | No visibility into your specific patterns. Cannot enforce hexagonal architecture or domain-driven design boundaries. |
-| Performance at scale | Weak | Reviews code in isolation. Cannot assess whether sequential database calls will timeout under production load. |
+| Review Area                | LLM Capability | Details                                                                                                                                                 |
+| -------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Style consistency          | Strong         | Configure rules once, AI enforces across every PR. Human reviewers develop blind spots; AI applies the same standard Monday morning and Friday evening. |
+| Common bug patterns        | Strong         | Off-by-one errors, null references, race conditions, resource leaks. Well-documented in training data.                                                  |
+| Documentation gaps         | Strong         | Missing JSDoc, parameter descriptions, undocumented return types. AI notices what is missing as effectively as what is wrong.                           |
+| Business logic correctness | Weak           | AI validates code against patterns, not intent. It cannot evaluate whether code does what the business needs.                                           |
+| Security edge cases        | Weak           | Recognizes common vulnerabilities but misses domain-specific threats like missing authorization checks in financial transfer logic.                     |
+| Architectural fit          | Weak           | No visibility into your specific patterns. Cannot enforce hexagonal architecture or domain-driven design boundaries.                                    |
+| Performance at scale       | Weak           | Reviews code in isolation. Cannot assess whether sequential database calls will timeout under production load.                                          |
 
 ### The Hybrid Workflow
 
 The solution is AI then humans, with clear boundaries.
 
-| Stage | Reviewer | Focus Areas |
-|---|---|---|
-| 1. AI pre-review | Automated LLM | Style violations, common bug patterns, missing documentation, dependency vulnerabilities |
-| 2. Human review | Senior engineers | Business logic, architecture fit, domain-specific security, performance at scale, test quality |
-| 3. Merge gate | CI/CD pipeline | All AI issues resolved or overridden, human approval recorded, tests pass, security scan passes |
+| Stage            | Reviewer         | Focus Areas                                                                                     |
+| ---------------- | ---------------- | ----------------------------------------------------------------------------------------------- |
+| 1. AI pre-review | Automated LLM    | Style violations, common bug patterns, missing documentation, dependency vulnerabilities        |
+| 2. Human review  | Senior engineers | Business logic, architecture fit, domain-specific security, performance at scale, test quality  |
+| 3. Merge gate    | CI/CD pipeline   | All AI issues resolved or overridden, human approval recorded, tests pass, security scan passes |
 
 For the complete hybrid review workflow, including validation frameworks for AI-generated code and security considerations, see [AI Code Review: Catching What LLMs Miss](/blog/ai-code-review).
 

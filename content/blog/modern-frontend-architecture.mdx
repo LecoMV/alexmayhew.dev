@@ -254,12 +254,12 @@ CSS architecture is often treated as an afterthought. This is a mistake. Your CS
 
 ### The Four Approaches
 
-| Approach | Bundle Size | Runtime Overhead | Customization | Best For |
-|---|---|---|---|---|
-| Utility-first (Tailwind) | ~10KB (purged) | Zero | Full | Teams with design system discipline |
-| CSS-in-JS (Emotion, Styled Components) | Medium | 150-300ms added TTI | Full (dynamic styles) | Complex dynamic styling, at the cost of SSR complexity |
-| CSS Modules | Small | Zero | Good encapsulation | Teams wanting scoped styles without runtime cost |
-| Component libraries (Material UI, Chakra) | 50-200KB+ | Varies | Low-medium | Fast starts, but expensive to customize later |
+| Approach                                  | Bundle Size    | Runtime Overhead    | Customization         | Best For                                               |
+| ----------------------------------------- | -------------- | ------------------- | --------------------- | ------------------------------------------------------ |
+| Utility-first (Tailwind)                  | ~10KB (purged) | Zero                | Full                  | Teams with design system discipline                    |
+| CSS-in-JS (Emotion, Styled Components)    | Medium         | 150-300ms added TTI | Full (dynamic styles) | Complex dynamic styling, at the cost of SSR complexity |
+| CSS Modules                               | Small          | Zero                | Good encapsulation    | Teams wanting scoped styles without runtime cost       |
+| Component libraries (Material UI, Chakra) | 50-200KB+      | Varies              | Low-medium            | Fast starts, but expensive to customize later          |
 
 ### The Decision Framework
 
@@ -288,12 +288,12 @@ For the complete comparison with benchmarks and migration strategies, see [Tailw
 
 Let me share concrete numbers from a recent migration I led:
 
-| Metric | Before (Ant Design + Emotion) | After (Tailwind + Radix + Custom) | Improvement |
-|---|---|---|---|
-| CSS bundle (gzipped) | 187KB | 12KB | 93% smaller |
-| JavaScript bundle (gzipped) | 312KB | 89KB | 71% smaller |
-| Time to Interactive (4G) | 2.4 seconds | 0.8 seconds | 3x faster |
-| First Contentful Paint | 1.8 seconds | 0.6 seconds | 3x faster |
+| Metric                      | Before (Ant Design + Emotion) | After (Tailwind + Radix + Custom) | Improvement |
+| --------------------------- | ----------------------------- | --------------------------------- | ----------- |
+| CSS bundle (gzipped)        | 187KB                         | 12KB                              | 93% smaller |
+| JavaScript bundle (gzipped) | 312KB                         | 89KB                              | 71% smaller |
+| Time to Interactive (4G)    | 2.4 seconds                   | 0.8 seconds                       | 3x faster   |
+| First Contentful Paint      | 1.8 seconds                   | 0.6 seconds                       | 3x faster   |
 
 The migration took 6 weeks with a team of 3. The performance gains were permanent. Every page, every user, forever.
 
@@ -443,14 +443,14 @@ For implementation details, migration strategies, and edge deployment patterns, 
 
 The key to Server Components is understanding what runs where:
 
-| Capability | Server Components (default) | Client Components ('use client') |
-|---|---|---|
-| Execution | Runs during server render | Runs in the browser |
-| Data fetching | Can fetch directly from databases, file systems, or APIs | Requires useEffect or data fetching library |
-| React hooks | Cannot use useState, useEffect, etc. | Full hook support |
-| Browser APIs | Cannot access window, document | Full browser API access |
-| JavaScript shipped | Zero JS sent to browser | Ships JavaScript to browser |
-| Usage guidance | Default for all components | Use sparingly---only where interactivity requires it |
+| Capability         | Server Components (default)                              | Client Components ('use client')                     |
+| ------------------ | -------------------------------------------------------- | ---------------------------------------------------- |
+| Execution          | Runs during server render                                | Runs in the browser                                  |
+| Data fetching      | Can fetch directly from databases, file systems, or APIs | Requires useEffect or data fetching library          |
+| React hooks        | Cannot use useState, useEffect, etc.                     | Full hook support                                    |
+| Browser APIs       | Cannot access window, document                           | Full browser API access                              |
+| JavaScript shipped | Zero JS sent to browser                                  | Ships JavaScript to browser                          |
+| Usage guidance     | Default for all components                               | Use sparingly---only where interactivity requires it |
 
 The composition pattern is powerful:
 
