@@ -37,6 +37,22 @@ function getSectionColor(index: number): string {
 
 // --- Hooks ---
 
+// Extract visible text from a heading, excluding aria-hidden decorators (e.g. the ● bullet)
+function getHeadingText(el: Element): string {
+	let text = "";
+	el.childNodes.forEach((node) => {
+		if (node.nodeType === Node.TEXT_NODE) {
+			text += node.textContent || "";
+		} else if (
+			node.nodeType === Node.ELEMENT_NODE &&
+			(node as Element).getAttribute("aria-hidden") !== "true"
+		) {
+			text += (node as Element).textContent || "";
+		}
+	});
+	return text.trim();
+}
+
 function useHeadings(): TocSection[] {
 	const [sections, setSections] = useState<TocSection[]>([]);
 
@@ -55,7 +71,7 @@ function useHeadings(): TocSection[] {
 			if (tag === "h2") {
 				currentSection = {
 					id: el.id,
-					text: el.textContent || "",
+					text: getHeadingText(el),
 					sectionIndex: result.length,
 					children: [],
 				};
@@ -63,7 +79,7 @@ function useHeadings(): TocSection[] {
 			} else if (tag === "h3" && currentSection) {
 				currentSection.children.push({
 					id: el.id,
-					text: el.textContent || "",
+					text: getHeadingText(el),
 					subIndex: currentSection.children.length + 1,
 					parentId: currentSection.id,
 				});

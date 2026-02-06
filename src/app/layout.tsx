@@ -131,7 +131,7 @@ export default function RootLayout({
 				<JsonLd />
 				<LocalBusinessJsonLd />
 			</head>
-			<body className="relative min-h-screen overflow-x-hidden">
+			<body className="relative min-h-screen overflow-x-clip">
 				<MotionProvider>
 					<NoiseOverlay />
 					<SmoothScroll>
