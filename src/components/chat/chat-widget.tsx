@@ -170,6 +170,8 @@ export function ChatWidget() {
 						animate={{ opacity: 1, y: 0, scale: 1 }}
 						exit={{ opacity: 0, y: 20, scale: 0.95 }}
 						transition={springTransition}
+						role="dialog"
+						aria-label="Chat with AI assistant"
 						className="bg-void-navy/95 fixed right-6 bottom-24 z-50 flex h-[500px] w-[380px] flex-col border border-white/10 backdrop-blur-xl"
 					>
 						{/* Header */}

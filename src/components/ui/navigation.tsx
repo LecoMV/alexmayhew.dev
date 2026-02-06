@@ -255,6 +255,7 @@ export function Navigation() {
 						onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
 						className="hover:border-cyber-lime border border-white/20 p-3 transition-colors duration-300 md:hidden"
 						aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+						aria-expanded={mobileMenuOpen}
 					>
 						{mobileMenuOpen ? (
 							<X className="text-cyber-lime h-6 w-6" strokeWidth={1.5} />

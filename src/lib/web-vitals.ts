@@ -1,5 +1,5 @@
 import { onCLS, onINP, onLCP, onFCP, onTTFB, type Metric } from "web-vitals";
-import * as Sentry from "@sentry/nextjs";
+import { setMeasurement, addBreadcrumb, captureMessage } from "@sentry/nextjs";
 
 // Core Web Vitals thresholds per Google/Atmospheric standards
 const thresholds = {
@@ -30,10 +30,10 @@ function reportToSentry(metric: Metric) {
 	const rating = getRating(metric);
 
 	// Send as custom measurement to Sentry
-	Sentry.setMeasurement(metric.name, metric.value, "millisecond");
+	setMeasurement(metric.name, metric.value, "millisecond");
 
 	// Add breadcrumb for debugging
-	Sentry.addBreadcrumb({
+	addBreadcrumb({
 		category: "web-vitals",
 		message: `${metric.name}: ${metric.value.toFixed(2)} (${rating})`,
 		level: rating === "poor" ? "warning" : "info",
@@ -48,7 +48,7 @@ function reportToSentry(metric: Metric) {
 
 	// Alert on poor metrics
 	if (rating === "poor") {
-		Sentry.captureMessage(`Poor ${metric.name}: ${metric.value.toFixed(2)}`, {
+		captureMessage(`Poor ${metric.name}: ${metric.value.toFixed(2)}`, {
 			level: "warning",
 			tags: {
 				metric: metric.name,

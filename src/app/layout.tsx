@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import dynamic from "next/dynamic";
 import { inter, jetbrainsMono } from "./fonts";
 import "./globals.css";
 import { SmoothScroll, MotionProvider } from "@/components/providers";
@@ -8,10 +9,19 @@ import { NoiseOverlay } from "@/components/ui/noise-overlay";
 import { JsonLd, LocalBusinessJsonLd } from "@/components/seo";
 import { CloudflareAnalytics, GoogleAnalytics } from "@/components/analytics";
 import { PageAnalytics } from "@/components/analytics/page-analytics";
-import { WebVitalsReporter } from "@/components/analytics/web-vitals";
-import { ChatWidget } from "@/components/chat";
-import { CookieConsent } from "@/components/ui/cookie-consent";
-import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
+
+const WebVitalsReporter = dynamic(() =>
+	import("@/components/analytics/web-vitals").then((mod) => mod.WebVitalsReporter)
+);
+const ChatWidget = dynamic(() =>
+	import("@/components/chat/chat-widget").then((mod) => mod.ChatWidget)
+);
+const CookieConsent = dynamic(() =>
+	import("@/components/ui/cookie-consent").then((mod) => mod.CookieConsent)
+);
+const ServiceWorkerRegister = dynamic(() =>
+	import("@/components/pwa/service-worker-register").then((mod) => mod.ServiceWorkerRegister)
+);
 
 const siteUrl = "https://alexmayhew.dev";
 

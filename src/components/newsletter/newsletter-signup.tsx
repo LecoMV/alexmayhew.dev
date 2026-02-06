@@ -115,12 +115,18 @@ export function NewsletterSignup({
 
 				<form onSubmit={handleSubmit} className="space-y-3">
 					<div className="relative">
+						<label htmlFor="newsletter-email-card" className="sr-only">
+							Email address
+						</label>
 						<input
+							id="newsletter-email-card"
 							type="email"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
 							placeholder="you@company.com"
 							disabled={status === "submitting"}
+							aria-invalid={status === "error" ? true : undefined}
+							aria-describedby={status === "error" ? "newsletter-error-card" : undefined}
 							className={cn(
 								"w-full border bg-transparent px-4 py-3 font-mono text-sm transition-colors",
 								"placeholder:text-slate-text/50",
@@ -131,7 +137,11 @@ export function NewsletterSignup({
 					</div>
 
 					{status === "error" && errorMessage && (
-						<div className="text-burnt-ember flex items-center gap-2 text-sm">
+						<div
+							id="newsletter-error-card"
+							role="alert"
+							className="text-burnt-ember flex items-center gap-2 text-sm"
+						>
 							<AlertCircle className="h-4 w-4 shrink-0" />
 							<span>{errorMessage}</span>
 						</div>
@@ -180,12 +190,18 @@ export function NewsletterSignup({
 					</div>
 
 					<form onSubmit={handleSubmit} className="flex gap-2">
+						<label htmlFor="newsletter-email-inline" className="sr-only">
+							Email address
+						</label>
 						<input
+							id="newsletter-email-inline"
 							type="email"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
 							placeholder="you@company.com"
 							disabled={status === "submitting"}
+							aria-invalid={status === "error" ? true : undefined}
+							aria-describedby={status === "error" ? "newsletter-error-inline" : undefined}
 							className={cn(
 								"w-full border bg-transparent px-4 py-2 font-mono text-sm md:w-64",
 								"placeholder:text-slate-text/50",
@@ -208,7 +224,11 @@ export function NewsletterSignup({
 				</div>
 
 				{status === "error" && errorMessage && (
-					<div className="text-burnt-ember mt-2 flex items-center gap-2 text-sm">
+					<div
+						id="newsletter-error-inline"
+						role="alert"
+						className="text-burnt-ember mt-2 flex items-center gap-2 text-sm"
+					>
 						<AlertCircle className="h-4 w-4 shrink-0" />
 						<span>{errorMessage}</span>
 					</div>
@@ -220,12 +240,17 @@ export function NewsletterSignup({
 	// Minimal variant (for footer)
 	return (
 		<form onSubmit={handleSubmit} className={cn("flex gap-2", className)}>
+			<label htmlFor="newsletter-email-minimal" className="sr-only">
+				Email address
+			</label>
 			<input
+				id="newsletter-email-minimal"
 				type="email"
 				value={email}
 				onChange={(e) => setEmail(e.target.value)}
 				placeholder="you@company.com"
 				disabled={status === "submitting"}
+				aria-invalid={status === "error" ? true : undefined}
 				className={cn(
 					"w-full border bg-transparent px-3 py-2 font-mono text-sm",
 					"placeholder:text-slate-text/50",

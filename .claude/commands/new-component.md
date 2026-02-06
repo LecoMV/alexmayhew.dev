@@ -41,7 +41,7 @@ Create `src/components/ui/$ARGUMENTS.tsx`:
 ```tsx
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface ComponentNameProps {
@@ -51,14 +51,14 @@ interface ComponentNameProps {
 
 export function ComponentName({ className, children }: ComponentNameProps) {
 	return (
-		<motion.div
+		<m.div
 			className={cn("bg-gunmetal-glass/20 border border-white/10 p-6 backdrop-blur-md", className)}
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ type: "spring", stiffness: 100, damping: 20 }}
 		>
 			{children}
-		</motion.div>
+		</m.div>
 	);
 }
 ```

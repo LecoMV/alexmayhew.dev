@@ -53,7 +53,7 @@ export async function subscribeToNewsletter(data: NewsletterFormValues): Promise
 		};
 	}
 
-	const { email, source } = validation.data;
+	const { email } = validation.data;
 
 	// 2. Rate limiting - 3 attempts per hour per IP
 	const headersList = await headers();

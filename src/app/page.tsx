@@ -68,15 +68,15 @@ export default function Home() {
 						animate="visible"
 					>
 						<m.div className="flex flex-col gap-2" variants={fadeInUp}>
-							<h1 className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase sm:text-sm">
+							<p className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase sm:text-sm">
 								<span className="mr-2 animate-pulse">●</span>
 								Technical Advisor
-							</h1>
-							<h2 className="text-4xl leading-[1.1] font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+							</p>
+							<h1 className="text-4xl leading-[1.1] font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
 								Strategic
 								<br />
 								<span className="text-slate-text">Architecture.</span>
-							</h2>
+							</h1>
 						</m.div>
 
 						<m.div className="my-4 h-px w-full bg-white/10" variants={fadeInUp} />
