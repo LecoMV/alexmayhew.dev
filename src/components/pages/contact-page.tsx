@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { submitContactForm } from "@/app/actions/contact";
 import { type ContactFormValues } from "@/lib/schemas/contact";
 import { Turnstile, type TurnstileRef } from "@/components/ui/turnstile";
-import { trackLeadEvent } from "@/components/analytics";
+import { trackLeadEvent, trackEvent } from "@/components/analytics";
 
 const springTransition = {
 	type: "spring" as const,
@@ -48,8 +48,18 @@ export function ContactPage() {
 	});
 	const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 	const turnstileRef = useRef<TurnstileRef>(null);
+	const formStartTracked = useRef(false);
 
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+	const handleFormStart = () => {
+		if (formStartTracked.current) return;
+		formStartTracked.current = true;
+		trackEvent("form_start", {
+			form_id: "contact",
+			form_name: "consultation_request",
+		});
+	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -130,7 +140,7 @@ export function ContactPage() {
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ ...springTransition, delay: 0.1 }}
 					>
-						<form onSubmit={handleSubmit} className="space-y-6">
+						<form onSubmit={handleSubmit} onFocus={handleFormStart} className="space-y-6">
 							{/* Name & Email Row */}
 							<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 								<div>

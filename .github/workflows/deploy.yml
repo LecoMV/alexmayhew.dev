@@ -42,12 +42,16 @@ jobs:
           NEXT_PUBLIC_BUILD_TIME: ${{ github.event.head_commit.timestamp || github.event.pull_request.updated_at }}
           NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
           NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
+          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+          NEXT_PUBLIC_CF_BEACON_TOKEN: ${{ secrets.NEXT_PUBLIC_CF_BEACON_TOKEN }}
 
       - name: Build OpenNext for Cloudflare
         run: npx opennextjs-cloudflare build
         env:
           NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
           NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
+          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+          NEXT_PUBLIC_CF_BEACON_TOKEN: ${{ secrets.NEXT_PUBLIC_CF_BEACON_TOKEN }}
 
       - name: Verify build output
         run: |

@@ -77,9 +77,27 @@ function logToDev(metric: Metric) {
 	console.log(`${color}[CWV] ${metric.name}: ${metric.value.toFixed(2)} (${rating})\x1b[0m`);
 }
 
+function reportToGA4(metric: Metric) {
+	if (typeof window === "undefined" || !window.gtag) return;
+
+	const rating = getRating(metric);
+
+	// GA4 recommended web vitals event structure
+	window.gtag("event", "web_vitals", {
+		event_category: "Web Vitals",
+		event_label: metric.id,
+		metric_name: metric.name,
+		metric_value: Math.round(metric.name === "CLS" ? metric.value * 1000 : metric.value),
+		metric_rating: rating,
+		metric_delta: Math.round(metric.name === "CLS" ? metric.delta * 1000 : metric.delta),
+		non_interaction: true,
+	});
+}
+
 function handleMetric(metric: Metric) {
 	logToDev(metric);
 	reportToSentry(metric);
+	reportToGA4(metric);
 }
 
 export function reportWebVitals() {

@@ -2,19 +2,13 @@
 
 import { Suspense, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { trackPageView } from "./google-analytics";
+import { trackEvent } from "./google-analytics";
 
 /**
  * Page Analytics Component for Next.js App Router
  *
- * Automatically tracks page views and URL changes for SPA navigation.
- * Should be included in the root layout for app-wide page tracking.
- *
- * Handles:
- * - Route changes in App Router
- * - Search parameter changes
- * - UTM parameter tracking
- * - Referrer tracking
+ * Tracks SPA page views via gtag event (not config call, to avoid duplicate PVs).
+ * Custom dimensions are sent as event parameters — register them in GA4 admin.
  */
 export function PageAnalytics() {
 	return (
@@ -24,10 +18,6 @@ export function PageAnalytics() {
 	);
 }
 
-/**
- * Inner component that uses useSearchParams
- * Must be wrapped in Suspense for static generation
- */
 function PageAnalyticsInner() {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
@@ -35,36 +25,24 @@ function PageAnalyticsInner() {
 	useEffect(() => {
 		const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : "");
 
-		// Extract UTM parameters for campaign tracking
-		const utm_source = searchParams?.get("utm_source");
-		const utm_medium = searchParams?.get("utm_medium");
-		const utm_campaign = searchParams?.get("utm_campaign");
-		const utm_content = searchParams?.get("utm_content");
-		const utm_term = searchParams?.get("utm_term");
+		if (typeof window === "undefined" || !window.gtag) return;
 
-		// Track page view with enhanced parameters
-		if (typeof window !== "undefined" && window.gtag) {
-			window.gtag("config", process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!, {
-				page_path: url,
-				page_title: document.title,
-				page_location: window.location.href,
-				// Campaign parameters
-				campaign_source: utm_source || undefined,
-				campaign_medium: utm_medium || undefined,
-				campaign_name: utm_campaign || undefined,
-				campaign_content: utm_content || undefined,
-				campaign_term: utm_term || undefined,
-				// Custom dimensions for technical content site
-				custom_map: {
-					page_category: getPageCategory(pathname),
-					content_type: getContentType(pathname),
-					user_type: getUserType(),
-				},
-			});
-		}
-
-		// Also call the legacy trackPageView for compatibility
-		trackPageView(url);
+		// Send page_view event with custom dimensions as parameters
+		window.gtag("event", "page_view", {
+			page_path: url,
+			page_title: document.title,
+			page_location: window.location.href,
+			// UTM campaign parameters
+			campaign_source: searchParams?.get("utm_source") || undefined,
+			campaign_medium: searchParams?.get("utm_medium") || undefined,
+			campaign_name: searchParams?.get("utm_campaign") || undefined,
+			campaign_content: searchParams?.get("utm_content") || undefined,
+			campaign_term: searchParams?.get("utm_term") || undefined,
+			// Custom dimensions (register in GA4 Admin > Custom definitions)
+			page_category: getPageCategory(pathname),
+			content_type: getContentType(pathname),
+			user_type: getUserType(),
+		});
 	}, [pathname, searchParams]);
 
 	return null;

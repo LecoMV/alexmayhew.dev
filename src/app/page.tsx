@@ -4,6 +4,7 @@ import { m } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Terminal, Layers, Zap } from "lucide-react";
 import { NewsletterSignup } from "@/components/newsletter";
+import { trackCTAClick } from "@/components/analytics";
 
 const springTransition = {
 	type: "spring" as const,
@@ -92,6 +93,7 @@ export default function Home() {
 						<m.div className="mt-4 flex items-center gap-6" variants={fadeInUp}>
 							<Link
 								href="/contact"
+								onClick={() => trackCTAClick("start_conversation", { cta_location: "hero" })}
 								className="group hover:border-cyber-lime relative border border-white/20 px-6 py-3 transition-colors duration-300"
 							>
 								<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">
@@ -273,6 +275,9 @@ export default function Home() {
 
 							<Link
 								href="/contact"
+								onClick={() =>
+									trackCTAClick("initiate_partnership", { cta_location: "bottom_cta" })
+								}
 								className="group hover:border-cyber-lime relative flex items-center gap-3 border border-white/20 px-6 py-4 transition-colors duration-300"
 							>
 								<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">

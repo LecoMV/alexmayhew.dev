@@ -3,23 +3,49 @@ import Script from "next/script";
 /**
  * Google Analytics 4 (GA4) via gtag.js
  *
- * Implements GA4 tracking optimized for B2B lead generation and technical content.
- * Includes enhanced ecommerce events and lead lifecycle tracking.
- * The measurement ID should be set via NEXT_PUBLIC_GA_MEASUREMENT_ID.
+ * Implements GA4 tracking with Consent Mode v2 for GDPR compliance.
+ * PageAnalytics component handles SPA page views — initial page view disabled here.
  *
  * @see https://developers.google.com/analytics/devguides/collection/ga4
- * @see https://support.google.com/analytics/answer/12944921 (Lead Generation)
+ * @see https://developers.google.com/tag-platform/security/guides/consent
  */
 export function GoogleAnalytics() {
 	const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
-	// Don't render in development or if no measurement ID
 	if (!measurementId || process.env.NODE_ENV === "development") {
 		return null;
 	}
 
 	return (
 		<>
+			<Script id="ga-consent-default" strategy="beforeInteractive">
+				{`
+					window.dataLayer = window.dataLayer || [];
+					function gtag(){dataLayer.push(arguments);}
+
+					// Consent Mode v2 — deny by default, update on user choice
+					gtag('consent', 'default', {
+						analytics_storage: 'denied',
+						ad_storage: 'denied',
+						ad_user_data: 'denied',
+						ad_personalization: 'denied',
+						wait_for_update: 500
+					});
+
+					// Check for existing consent
+					try {
+						var stored = localStorage.getItem('cookie-consent');
+						if (stored) {
+							var consent = JSON.parse(stored);
+							if (consent.version === '1' && consent.analytics) {
+								gtag('consent', 'update', {
+									analytics_storage: 'granted'
+								});
+							}
+						}
+					} catch(e) {}
+				`}
+			</Script>
 			<Script
 				src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
 				strategy="afterInteractive"
@@ -31,30 +57,10 @@ export function GoogleAnalytics() {
 					gtag('js', new Date());
 
 					gtag('config', '${measurementId}', {
-						page_path: window.location.pathname,
-						send_page_view: true,
-						// Enhanced measurement for B2B sites
-						enhanced_measurement_settings: {
-							scrolls: true,
-							outbound_clicks: true,
-							site_search: true,
-							video_engagement: true,
-							file_downloads: true
-						},
-						// Lead generation optimizations
+						send_page_view: false,
 						conversion_linker: true,
 						allow_google_signals: true,
-						allow_ad_personalization_signals: true
-					});
-
-					// Set up enhanced ecommerce for consultation funnel
-					gtag('config', '${measurementId}', {
-						custom_map: {
-							'custom_parameter_1': 'project_type',
-							'custom_parameter_2': 'budget_range',
-							'custom_parameter_3': 'lead_source',
-							'custom_parameter_4': 'content_category'
-						}
+						allow_ad_personalization_signals: false
 					});
 				`}
 			</Script>
@@ -167,13 +173,23 @@ export function trackEvent(
 }
 
 /**
- * Track page views (for SPA navigation)
- * Next.js App Router handles this automatically, but available if needed
+ * Track CTA button clicks for conversion funnel analysis.
+ * Use on "Book a Call", "Contact", and other conversion-intent clicks.
  */
-export function trackPageView(url: string) {
+export function trackCTAClick(
+	ctaName: string,
+	params: {
+		cta_location?: string;
+		cta_url?: string;
+		page_path?: string;
+	} = {}
+) {
 	if (typeof window !== "undefined" && window.gtag) {
-		window.gtag("config", process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!, {
-			page_path: url,
+		window.gtag("event", "cta_click", {
+			event_category: "conversion",
+			cta_name: ctaName,
+			page_path: params.page_path || window.location.pathname,
+			...params,
 		});
 	}
 }

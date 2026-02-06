@@ -73,6 +73,13 @@ export function CookieConsent() {
 		};
 		localStorage.setItem(CONSENT_KEY, JSON.stringify(consent));
 		setShowBanner(false);
+
+		// Update GA4 Consent Mode v2
+		if (typeof window !== "undefined" && window.gtag) {
+			window.gtag("consent", "update", {
+				analytics_storage: "granted",
+			});
+		}
 	};
 
 	const handleDecline = () => {
@@ -83,8 +90,13 @@ export function CookieConsent() {
 		};
 		localStorage.setItem(CONSENT_KEY, JSON.stringify(consent));
 		setShowBanner(false);
-		// Note: Cloudflare Analytics is privacy-friendly and doesn't require consent
-		// but we respect user choice anyway
+
+		// Explicitly deny GA4 analytics storage
+		if (typeof window !== "undefined" && window.gtag) {
+			window.gtag("consent", "update", {
+				analytics_storage: "denied",
+			});
+		}
 	};
 
 	// Don't render anything during loading or if not EU

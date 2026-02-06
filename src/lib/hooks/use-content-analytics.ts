@@ -63,6 +63,8 @@ export function useContentAnalytics(options: UseContentAnalyticsOptions = {}) {
 	}, [contentId, contentType, contentCategory, pathname, serviceType, technology, industry]);
 
 	// Track scroll depth
+	const trackedMilestones = useRef<Set<number>>(new Set());
+
 	const trackScrollDepth = useCallback(() => {
 		const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 		const windowHeight = window.innerHeight;
@@ -75,12 +77,13 @@ export function useContentAnalytics(options: UseContentAnalyticsOptions = {}) {
 
 		if (scrollPercent > maxScrollDepth.current) {
 			maxScrollDepth.current = scrollPercent;
+		}
 
-			// Track scroll milestones (25%, 50%, 75%, 90%)
-			const milestones = [25, 50, 75, 90];
-			const milestone = milestones.find((m) => scrollPercent >= m && maxScrollDepth.current < m);
-
-			if (milestone) {
+		// Track scroll milestones (25%, 50%, 75%, 90%)
+		const milestones = [25, 50, 75, 90];
+		for (const milestone of milestones) {
+			if (scrollPercent >= milestone && !trackedMilestones.current.has(milestone)) {
+				trackedMilestones.current.add(milestone);
 				trackContentEvent("scroll", {
 					content_id: contentId,
 					content_type: contentType,
@@ -91,26 +94,21 @@ export function useContentAnalytics(options: UseContentAnalyticsOptions = {}) {
 		}
 	}, [contentId, contentType, contentCategory]);
 
-	// Track engagement time at intervals
-	const trackEngagementTime = useCallback(() => {
-		const engagementTime = Date.now() - startTime.current;
-
-		// Track engagement milestones (30s, 60s, 2min, 5min)
+	// Track engagement time at milestones (30s, 60s, 2min, 5min)
+	const setupEngagementTracking = useCallback(() => {
 		const milestones = [30000, 60000, 120000, 300000];
 
 		milestones.forEach((milestone) => {
-			if (engagementTime >= milestone) {
-				const timeoutId = setTimeout(() => {
-					trackContentEvent("engagement_time", {
-						content_id: contentId,
-						content_type: contentType,
-						engagement_time_msec: milestone,
-						content_category: contentCategory,
-					});
-				}, milestone);
+			const timeoutId = setTimeout(() => {
+				trackContentEvent("engagement_time", {
+					content_id: contentId,
+					content_type: contentType,
+					engagement_time_msec: milestone,
+					content_category: contentCategory,
+				});
+			}, milestone);
 
-				engagementIntervals.current.push(timeoutId);
-			}
+			engagementIntervals.current.push(timeoutId);
 		});
 	}, [contentId, contentType, contentCategory]);
 
@@ -133,13 +131,13 @@ export function useContentAnalytics(options: UseContentAnalyticsOptions = {}) {
 
 	// Set up engagement time tracking
 	useEffect(() => {
-		trackEngagementTime();
+		setupEngagementTracking();
 
 		return () => {
 			engagementIntervals.current.forEach(clearTimeout);
 			engagementIntervals.current = [];
 		};
-	}, [trackEngagementTime]);
+	}, [setupEngagementTracking]);
 
 	// Track exit engagement time on unmount
 	useEffect(() => {
