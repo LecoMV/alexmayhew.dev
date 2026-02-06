@@ -2,7 +2,8 @@ import { blog } from "@/../.source/server";
 import { notFound } from "next/navigation";
 import { BlogArticle } from "@/components/blog/blog-article";
 import { mdxComponents } from "@/components/mdx/mdx-components";
-import { ArticleJsonLd } from "@/components/seo";
+import { ArticleJsonLd, BreadcrumbJsonLd, FaqJsonLd } from "@/components/seo";
+import { hubFaqs } from "./hub-faqs";
 import type { Metadata } from "next";
 
 const siteUrl = "https://alexmayhew.dev";
@@ -36,6 +37,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			description: post.description,
 			type: "article",
 			publishedTime: post.publishedAt.toISOString(),
+			modifiedTime: post.updatedAt.toISOString(),
 			authors: ["Alex Mayhew"],
 			section: post.category,
 			tags: post.tags,
@@ -54,6 +56,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			description: post.description,
 			images: [ogImage],
 			creator: "@alexmayhewdev",
+		},
+		alternates: {
+			types: {
+				"application/rss+xml": `${siteUrl}/feed.xml`,
+			},
 		},
 	};
 }
@@ -78,17 +85,29 @@ export default async function BlogArticlePage({ params }: PageProps) {
 		},
 	};
 
+	const faqs = hubFaqs[slug];
+
 	return (
 		<>
 			<ArticleJsonLd
 				title={post.title}
 				description={post.description}
 				publishedAt={post.publishedAt}
+				updatedAt={post.updatedAt}
 				image={post.image}
 				slug={slug}
 				category={post.category}
 				tags={post.tags}
+				isHub={post.isHub}
 			/>
+			<BreadcrumbJsonLd
+				items={[
+					{ name: "Home", url: "/" },
+					{ name: "Blog", url: "/blog" },
+					{ name: post.title, url: `/blog/${slug}` },
+				]}
+			/>
+			{faqs && <FaqJsonLd faqs={faqs} />}
 			<BlogArticle post={postData}>
 				<MDX components={mdxComponents} />
 			</BlogArticle>

@@ -18,6 +18,8 @@ Frontend architecture is the difference between shipping features and fighting y
 
 ---
 
+> **Key Takeaways:** Design system investment reduces design-to-code translation time by 70%. React Server Components cut JavaScript bundles from 400KB+ to under 100KB, dropping Time to Interactive from 2.4 seconds to 0.8 seconds. Migrating from CSS-in-JS to Tailwind plus headless primitives reduced one team's CSS bundle from 187KB to 12KB. Retrofitting accessibility costs 10x what building it in from day one costs. Use headless primitives (Radix) plus Tailwind for the best balance of performance, customization, and accessibility.
+
 ## Why Frontend Architecture Matters
 
 Here is a pattern I see repeatedly: a startup ships an MVP in 3 months. By month 12, feature velocity has dropped 60%. By month 18, developers are spending more time fighting the codebase than building features. By month 24, someone proposes a rewrite.
@@ -252,13 +254,12 @@ CSS architecture is often treated as an afterthought. This is a mistake. Your CS
 
 ### The Four Approaches
 
-**Utility-first (Tailwind)**: Generates thousands of utility classes, purges unused ones to ~10KB. Zero runtime overhead. Full customization. Requires design system discipline to avoid chaos.
-
-**CSS-in-JS (Emotion, Styled Components)**: Styles computed at runtime, injected into DOM. Adds 150-300ms to TTI. Powerful for dynamic styles. Complex SSR setup.
-
-**CSS Modules**: Scoped class names at build time. Zero runtime. Good encapsulation. Manual class management.
-
-**Component libraries (Material UI, Chakra)**: Pre-built styled components. Fast to start, expensive to customize. 50-200KB+ bundle impact.
+| Approach | Bundle Size | Runtime Overhead | Customization | Best For |
+|---|---|---|---|---|
+| Utility-first (Tailwind) | ~10KB (purged) | Zero | Full | Teams with design system discipline |
+| CSS-in-JS (Emotion, Styled Components) | Medium | 150-300ms added TTI | Full (dynamic styles) | Complex dynamic styling, at the cost of SSR complexity |
+| CSS Modules | Small | Zero | Good encapsulation | Teams wanting scoped styles without runtime cost |
+| Component libraries (Material UI, Chakra) | 50-200KB+ | Varies | Low-medium | Fast starts, but expensive to customize later |
 
 ### The Decision Framework
 
@@ -287,19 +288,12 @@ For the complete comparison with benchmarks and migration strategies, see [Tailw
 
 Let me share concrete numbers from a recent migration I led:
 
-**Before (Ant Design + Emotion):**
-
-- CSS bundle: 187KB (gzipped)
-- JavaScript bundle: 312KB (gzipped)
-- Time to Interactive: 2.4 seconds on 4G
-- First Contentful Paint: 1.8 seconds
-
-**After (Tailwind + Radix + custom components):**
-
-- CSS bundle: 12KB (gzipped, purged Tailwind)
-- JavaScript bundle: 89KB (gzipped)
-- Time to Interactive: 0.8 seconds on 4G
-- First Contentful Paint: 0.6 seconds
+| Metric | Before (Ant Design + Emotion) | After (Tailwind + Radix + Custom) | Improvement |
+|---|---|---|---|
+| CSS bundle (gzipped) | 187KB | 12KB | 93% smaller |
+| JavaScript bundle (gzipped) | 312KB | 89KB | 71% smaller |
+| Time to Interactive (4G) | 2.4 seconds | 0.8 seconds | 3x faster |
+| First Contentful Paint | 1.8 seconds | 0.6 seconds | 3x faster |
 
 The migration took 6 weeks with a team of 3. The performance gains were permanent. Every page, every user, forever.
 
@@ -449,20 +443,14 @@ For implementation details, migration strategies, and edge deployment patterns, 
 
 The key to Server Components is understanding what runs where:
 
-**Server Components (default):**
-
-- Run during server render
-- Can fetch data directly from databases, file systems, or APIs
-- Cannot use React hooks (useState, useEffect, etc.)
-- Cannot use browser APIs (window, document)
-- Ship zero JavaScript to the browser
-
-**Client Components (opt-in with 'use client'):**
-
-- Ship JavaScript to the browser
-- Can use React hooks
-- Can use browser APIs
-- Should be used sparingly---only where interactivity requires it
+| Capability | Server Components (default) | Client Components ('use client') |
+|---|---|---|
+| Execution | Runs during server render | Runs in the browser |
+| Data fetching | Can fetch directly from databases, file systems, or APIs | Requires useEffect or data fetching library |
+| React hooks | Cannot use useState, useEffect, etc. | Full hook support |
+| Browser APIs | Cannot access window, document | Full browser API access |
+| JavaScript shipped | Zero JS sent to browser | Ships JavaScript to browser |
+| Usage guidance | Default for all components | Use sparingly---only where interactivity requires it |
 
 The composition pattern is powerful:
 
@@ -679,6 +667,30 @@ These are not theoretical preferences. They are patterns distilled from building
 The investment in architecture pays for itself. 2-3 weeks of foundation work returns months of accelerated delivery. Design-to-code translation time drops 70%. Accessibility issues drop 40%. Bundle sizes shrink by 4x.
 
 Build the foundation. Make the decisions explicit. Then ship features.
+
+---
+
+## Frequently Asked Questions
+
+### Should I use React Server Components in production?
+
+Yes, if you are on Next.js 14+. React Server Components reduce client-side JavaScript by 30-60% by rendering data-fetching components on the server. They eliminate client-server waterfalls for data loading. The main constraint is that Server Components cannot use hooks, browser APIs, or event handlers — those require Client Components with the 'use client' directive.
+
+### How do I choose between Tailwind CSS and component libraries?
+
+Use Tailwind CSS when you need full design control and have designers creating custom interfaces. Use component libraries (Radix, shadcn/ui) when you need accessible, tested components without building from scratch. The best approach for most teams: Tailwind for styling + headless component libraries (Radix primitives) for complex interactive patterns like modals, dropdowns, and comboboxes.
+
+### What is a design token system and when do I need one?
+
+Design tokens are the single source of truth for visual design decisions: colors, spacing, typography, shadows, and animations stored as platform-agnostic variables. You need a token system when your design starts having inconsistencies across components, or when you have 2+ developers touching UI code. Tokens reduce design debt by making it impossible to use unauthorized values.
+
+### How do I improve Core Web Vitals for a React application?
+
+Focus on the three metrics: LCP (Largest Contentful Paint) under 2.5 seconds, INP (Interaction to Next Paint) under 200ms, and CLS (Cumulative Layout Shift) under 0.1. The highest-impact fixes are: lazy-load below-fold images, use next/image for automatic optimization, code-split routes with dynamic imports, and set explicit dimensions on images and embeds to prevent layout shifts.
+
+### What is the best state management approach for React in 2026?
+
+Server state (TanStack Query or SWR) for API data, URL state for navigation and filters, and minimal client state (Zustand or React Context) for UI-only concerns. Most applications over-use global state. If your data comes from an API, it is server state and should be managed by a server-state library that handles caching, revalidation, and optimistic updates automatically.
 
 ---
 

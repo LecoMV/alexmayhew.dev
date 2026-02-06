@@ -18,6 +18,8 @@ Architecture decisions compound. A 2-hour choice at $0 MRR becomes a 6-month mig
 
 ---
 
+> **Key Takeaways:** Start with a monolith until $5M ARR or 15+ engineers. Use PostgreSQL with Row-Level Security from day one -- retrofitting tenant isolation costs 10x the upfront investment. Most startups overspend on infrastructure by 40-60% in year one; a $0 stack can serve through first $10K MRR. Microservices solve organizational problems, not technical ones -- avoid them under 50 engineers. Build what differentiates your product; buy everything else.
+
 ## Why Architecture Decisions Compound
 
 Every architecture decision you make at $0 MRR will cost 10-100x more to change at $1M ARR.
@@ -260,19 +262,12 @@ Discord didn't rewrite their entire platform in Rust. They rewrote the "Read Sta
 
 Microservices solve organizational problems, not technical problems.
 
-**When Microservices Make Sense**
-
-- Team size exceeds 50 engineers
-- Different components have genuinely different scaling requirements
-- Teams need to deploy independently without coordination
-- You have dedicated platform engineering capacity
-
-**When Microservices Hurt**
-
-- Team size under 30
-- Single business domain
-- No dedicated platform engineering
-- Problems solvable with feature flags, better testing, or code organization
+| Factor | Microservices Make Sense | Microservices Hurt |
+|---|---|---|
+| Team size | Exceeds 50 engineers | Under 30 engineers |
+| Domain complexity | Different components have genuinely different scaling requirements | Single business domain |
+| Deployment needs | Teams need to deploy independently without coordination | Problems solvable with feature flags, better testing, or code organization |
+| Platform capacity | Dedicated platform engineering team available | No dedicated platform engineering |
 
 The detailed case study—including the $500k a startup saved by not migrating to microservices—is in [The $500K Architecture Mistake I Helped a Startup Avoid](/blog/500k-architecture-mistake).
 
@@ -523,6 +518,34 @@ This hub connects to the complete SaaS Architecture series:
 ### Architecture Decisions
 
 - [The $500K Architecture Mistake I Helped a Startup Avoid](/blog/500k-architecture-mistake) — When not to migrate to microservices
+
+---
+
+## Frequently Asked Questions
+
+### Should my SaaS start with a monolith or microservices?
+
+Start with a monolith. At pre-PMF and early growth stages (under $2M ARR), a well-structured monolith lets you iterate 3-5x faster than microservices. The transition point to microservices is typically $5-10M ARR or 15+ engineers, when team coordination costs exceed the overhead of service boundaries.
+
+### When should a SaaS switch from single-tenant to multi-tenant architecture?
+
+Move to multi-tenant when you have 10+ customers and operational overhead of managing separate instances becomes unsustainable. Multi-tenancy with PostgreSQL Row-Level Security (RLS) gives you data isolation at the database level without separate infrastructure per tenant. The migration typically takes 2-4 months for a small team.
+
+### How much should a startup spend on infrastructure in year one?
+
+Most startups overspend on infrastructure by 40-60% in year one. A typical SaaS serving under 10,000 users can run on $200-500/month of cloud infrastructure. The $0 infrastructure stack (Cloudflare Pages, Supabase free tier, Vercel) can handle MVP through first $10K MRR with zero hosting costs.
+
+### What are the biggest SaaS architecture mistakes that cost startups money?
+
+The three most expensive mistakes are: premature microservices (adds 6-12 months of complexity before product-market fit), over-provisioned infrastructure (spending $3,000/month when $300 would suffice), and choosing the wrong database for your access patterns (relational for graph-heavy data, or NoSQL when you need complex joins). Each mistake typically costs $200K-500K in wasted engineering time.
+
+### How do I choose between building custom features or buying third-party tools?
+
+Build what differentiates your product. Buy everything else. Authentication, payments, email, analytics, and monitoring are solved problems with mature vendors. The build-vs-buy calculation changes at scale: a $50/month Stripe fee becomes significant at $1M+ MRR, but building payment processing from scratch before that point wastes 3-6 months of engineering time.
+
+### What database should I use for a new SaaS product?
+
+PostgreSQL covers 90% of SaaS use cases. It handles relational queries, JSON documents, full-text search, and geospatial data in a single database. Add Redis for caching and session management. Only consider specialized databases (MongoDB, DynamoDB, or a graph database) when PostgreSQL demonstrably cannot meet a specific access pattern requirement.
 
 ---
 

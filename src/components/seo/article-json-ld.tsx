@@ -2,10 +2,12 @@ interface ArticleJsonLdProps {
 	title: string;
 	description: string;
 	publishedAt: Date;
+	updatedAt?: Date;
 	image?: string;
 	slug: string;
 	category: string;
 	tags?: string[];
+	isHub?: boolean;
 }
 
 const siteUrl = "https://alexmayhew.dev";
@@ -14,23 +16,31 @@ export function ArticleJsonLd({
 	title,
 	description,
 	publishedAt,
+	updatedAt,
 	image,
 	slug,
 	category,
 	tags = [],
+	isHub = false,
 }: ArticleJsonLdProps) {
 	const articleSchema = {
 		"@context": "https://schema.org",
-		"@type": "Article",
+		"@type": isHub ? "TechArticle" : "Article",
 		headline: title,
 		description: description,
 		image: image ? `${siteUrl}${image}` : `${siteUrl}/og-image.png`,
 		datePublished: publishedAt.toISOString(),
-		dateModified: publishedAt.toISOString(),
+		dateModified: (updatedAt ?? publishedAt).toISOString(),
 		author: {
 			"@type": "Person",
 			name: "Alex Mayhew",
 			url: siteUrl,
+			jobTitle: "Technical Advisor & Systems Architect",
+			sameAs: [
+				"https://github.com/alexmayhew",
+				"https://linkedin.com/in/alexmayhew",
+				"https://x.com/alexmayhewdev",
+			],
 		},
 		publisher: {
 			"@type": "Person",
@@ -48,6 +58,7 @@ export function ArticleJsonLd({
 		articleSection: category,
 		keywords: tags.join(", "),
 		inLanguage: "en-US",
+		isAccessibleForFree: true,
 	};
 
 	return (

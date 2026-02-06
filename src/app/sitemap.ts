@@ -90,14 +90,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		},
 	];
 
-	// Blog posts
+	// Blog posts — use updatedAt for recency signals (critical for AI citation)
 	const blogPosts: MetadataRoute.Sitemap = blog
 		.filter((post) => !post.draft)
 		.map((post) => ({
 			url: `${siteUrl}/blog/${getSlug(post.info.path)}`,
-			lastModified: post.publishedAt,
+			lastModified: post.updatedAt ?? post.publishedAt,
 			changeFrequency: "monthly" as const,
-			priority: 0.7,
+			priority: post.isHub ? 0.9 : 0.7,
 		}));
 
 	// Service pages (pSEO)

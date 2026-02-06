@@ -18,6 +18,8 @@ AI integration in software development is an engineering discipline, not a featu
 
 ---
 
+> **Key Takeaways:** GitHub Copilot shows 55% faster task completion but 23.7% higher bug-fix ratios -- velocity is up, net productivity is ambiguous. 80% of AI features fail to reach adoption thresholds. Semantic caching reduces LLM API calls by 40-60% for repetitive workloads. Retrieval quality matters more than model choice: a mediocre LLM with excellent retrieval beats a great LLM with poor retrieval. Treat AI-generated code as untrusted input -- 96% of developers do not fully trust it, yet 50%+ merge it with cursory review.
+
 ## The AI Multiplier Effect
 
 AI in software development is a multiplier, not a replacement. Multiply a good process by AI and you get acceleration. Multiply a bad process by AI and you get faster failure.
@@ -121,13 +123,14 @@ Building LLM-powered features requires infrastructure thinking. The gap between 
 
 The vector database is the foundation of any retrieval-augmented generation (RAG) system.
 
-**pgvector (< 1M vectors)** - If you are already running PostgreSQL, start here. Single database, ACID transactions, familiar tooling. HNSW indexes consume roughly 1.5GB per million 1536-dimensional vectors.
+| Database | Scale | Ops Overhead | Key Advantages | Key Considerations |
+|---|---|---|---|---|
+| pgvector | < 1M vectors | None (existing PostgreSQL) | Single database, ACID transactions, familiar tooling | HNSW indexes consume ~1.5GB per million 1536-dim vectors |
+| Qdrant | 1-10M vectors | Self-hosted | Best balance of performance and features, native metadata filtering | Binary quantization reduces memory 4-32x |
+| Pinecone | > 10M vectors | Fully managed | Zero ops overhead, linear cost scaling | At 100M queries/month, expect $9,600 for reads alone |
+| Chroma | Development/prototyping | Embedded | Fast local development, no infrastructure needed | Not designed for production scale |
 
-**Qdrant (1-10M vectors)** - Best balance of performance, features, and operational complexity. Native metadata filtering, self-hostable, binary quantization reduces memory 4-32x.
-
-**Pinecone (> 10M vectors or managed preference)** - Zero ops overhead, linear cost scaling. At 100 million queries/month, expect $9,600 for reads alone.
-
-**Decision framework:**
+**Quick decision guide:**
 
 ```
 < 500K vectors, already on PostgreSQL → pgvector
@@ -272,33 +275,25 @@ For detailed cost analysis including API vs self-hosted decision matrices, see t
 
 AI code review changes what developers do—it does not replace them.
 
-### What LLMs Excel At
-
-**Style consistency** - Configure rules once, AI enforces them across every PR. Human reviewers get tired and develop blind spots. AI applies the same standard to the first PR of Monday morning and the last PR of Friday evening.
-
-**Common bug patterns** - Off-by-one errors, null references, race conditions, resource leaks. These bugs are well-documented in training data. AI has seen them thousands of times.
-
-**Documentation gaps** - Functions without JSDoc, missing parameter descriptions, undocumented return types. AI notices what is missing as effectively as what is wrong.
-
-### What LLMs Miss
-
-**Business logic correctness** - AI cannot evaluate whether your code does what the business needs. It validates code against patterns—not against intent.
-
-**Security edge cases** - AI recognizes common vulnerabilities. It misses domain-specific threats like missing authorization checks in financial transfer logic.
-
-**Architectural fit** - AI trained on general code patterns has no visibility into your specific patterns. It cannot enforce your hexagonal architecture or domain-driven design boundaries.
-
-**Performance at scale** - AI reviews code in isolation. It cannot assess whether your five sequential database calls will timeout under production load.
+| Review Area | LLM Capability | Details |
+|---|---|---|
+| Style consistency | Strong | Configure rules once, AI enforces across every PR. Human reviewers develop blind spots; AI applies the same standard Monday morning and Friday evening. |
+| Common bug patterns | Strong | Off-by-one errors, null references, race conditions, resource leaks. Well-documented in training data. |
+| Documentation gaps | Strong | Missing JSDoc, parameter descriptions, undocumented return types. AI notices what is missing as effectively as what is wrong. |
+| Business logic correctness | Weak | AI validates code against patterns, not intent. It cannot evaluate whether code does what the business needs. |
+| Security edge cases | Weak | Recognizes common vulnerabilities but misses domain-specific threats like missing authorization checks in financial transfer logic. |
+| Architectural fit | Weak | No visibility into your specific patterns. Cannot enforce hexagonal architecture or domain-driven design boundaries. |
+| Performance at scale | Weak | Reviews code in isolation. Cannot assess whether sequential database calls will timeout under production load. |
 
 ### The Hybrid Workflow
 
 The solution is AI then humans, with clear boundaries.
 
-**Stage 1: AI pre-review** - Before a PR reaches human reviewers, AI scans for style violations, common bug patterns, missing documentation, dependency vulnerabilities.
-
-**Stage 2: Human review** - Humans focus on business logic, architecture fit, domain-specific security, performance at scale, test quality. The mechanical checks are already resolved.
-
-**Stage 3: Merge gate** - All AI issues resolved or explicitly overridden, human approval recorded, tests pass, security scan passes.
+| Stage | Reviewer | Focus Areas |
+|---|---|---|
+| 1. AI pre-review | Automated LLM | Style violations, common bug patterns, missing documentation, dependency vulnerabilities |
+| 2. Human review | Senior engineers | Business logic, architecture fit, domain-specific security, performance at scale, test quality |
+| 3. Merge gate | CI/CD pipeline | All AI issues resolved or overridden, human approval recorded, tests pass, security scan passes |
 
 For the complete hybrid review workflow, including validation frameworks for AI-generated code and security considerations, see [AI Code Review: Catching What LLMs Miss](/blog/ai-code-review).
 
@@ -473,6 +468,30 @@ This guide provides the framework. The following posts provide the depth:
 - [AI Code Review: Catching What LLMs Miss](/blog/ai-code-review) - Hybrid review workflows and validating AI-generated code
 - [Building AI Features Users Actually Want](/blog/building-ai-features-users-want) - Product strategy for AI integration
 - AI Cost Optimization: APIs, Self-Hosting, and Fine-Tuning Economics (coming soon) - Decision frameworks for AI infrastructure costs
+
+---
+
+## Frequently Asked Questions
+
+### What is generative debt in AI-assisted development?
+
+Generative debt is technical debt created when developers accept AI-generated code without fully understanding it. Unlike traditional technical debt (conscious trade-offs), generative debt accumulates invisibly because the code works but nobody on the team understands why. It compounds when AI-generated code calls other AI-generated code, creating layers of opaque logic that become unmaintainable.
+
+### Can AI replace human code review?
+
+AI catches 60-80% of style violations, formatting issues, and common bug patterns. It cannot reliably evaluate architecture decisions, business logic correctness, or security implications that require domain context. The optimal approach: AI handles the first pass (style, patterns, known anti-patterns), freeing senior reviewers to focus exclusively on architecture, business logic, and security.
+
+### How do I integrate LLMs into a production SaaS product?
+
+Start with a retrieval-augmented generation (RAG) architecture: your data stays in a vector database, the LLM generates responses grounded in your specific content. This avoids hallucination on domain-specific questions. Key decisions: choose an embedding model (OpenAI ada-002 or open-source alternatives), a vector store (pgvector for PostgreSQL users, Pinecone for managed), and implement guardrails for output validation.
+
+### How much does it cost to run AI features in production?
+
+LLM API costs range from $0.01 to $0.10 per request depending on model and context length. At 10,000 daily active users making 5 AI requests each, expect $500-5,000/month in API costs. Cost optimization strategies: use smaller models for simple tasks (GPT-4o-mini instead of GPT-4o), cache common responses, batch requests, and truncate context to only relevant information.
+
+### What AI features do users actually want in SaaS products?
+
+Users want AI that saves them time on repetitive tasks, not AI that replaces their judgment. The highest-adoption AI features are: smart search (natural language queries over structured data), content generation drafts (not final versions), anomaly detection (alerting on unusual patterns), and auto-categorization. Features that try to make decisions for users (auto-approve, auto-respond) consistently see low adoption and high churn.
 
 ---
 

@@ -18,6 +18,8 @@ Performance is a business metric, not a technical vanity project. Every 100ms of
 
 ---
 
+> **Key Takeaways:** Every 100ms of latency costs 1% in conversions. A properly designed database index reduced one client's P99 latency from 800ms to 45ms -- a 17x improvement from a single SQL statement. Edge computing cuts TTFB from 200ms+ to under 50ms globally by running code in 300+ locations. A SaaS dashboard optimization from 4.2s to 1.8s LCP more than doubled trial-to-paid conversion (12% to 26%). CDN caching reduces origin server load by 80-95% for content-heavy applications.
+
 ## Why Performance is Business-Critical
 
 I've optimized systems across industries—fintech dashboards, e-commerce checkouts, SaaS applications with 100,000+ monthly active users. The pattern is consistent: performance directly correlates with revenue.
@@ -423,21 +425,12 @@ Use this when auditing an application or starting optimization work.
 
 Performance optimization is not a one-time project. It's a capability that matures over time.
 
-### Level 1: Reactive
-
-You fix performance problems when users complain. No systematic measurement. No performance budgets. Optimization is ad-hoc.
-
-### Level 2: Measured
-
-You have Core Web Vitals dashboards. You know your P99 latency. You can identify which pages are slow. But optimization is still reactive—you respond to degradation rather than preventing it.
-
-### Level 3: Proactive
-
-Performance budgets are enforced in CI. Lighthouse scores must pass before deployment. You catch regressions before they reach production. New features include performance impact assessment.
-
-### Level 4: Optimized
-
-Performance is a product feature. You A/B test performance changes. You understand the revenue impact of latency. Engineering decisions explicitly weigh performance trade-offs. Your P99 is someone else's P50.
+| Level | Name | Measurement | Optimization Approach | Characteristics |
+|---|---|---|---|---|
+| 1 | Reactive | No systematic measurement | Ad-hoc | Fix performance problems when users complain. No performance budgets. |
+| 2 | Measured | Core Web Vitals dashboards, P99 latency tracked | Responsive to degradation | Can identify which pages are slow, but optimization is still reactive rather than preventive. |
+| 3 | Proactive | Performance budgets enforced in CI | Preventive | Lighthouse scores must pass before deployment. Regressions caught before production. New features include performance impact assessment. |
+| 4 | Optimized | A/B testing performance changes | Strategic | Performance is a product feature. Revenue impact of latency is understood. Engineering decisions explicitly weigh performance trade-offs. Your P99 is someone else's P50. |
 
 Most teams operate at Level 1 or 2. Reaching Level 3 requires cultural shift—performance must be a first-class concern, not an afterthought.
 
@@ -560,6 +553,30 @@ This hub page synthesizes patterns from across my performance engineering work. 
 **Multi-tenancy**: [Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls) — Row-Level Security patterns that affect query performance.
 
 **Bootstrapping**: [Zero to 10K MRR Playbook](/blog/zero-to-10k-mrr-saas-playbook) — Minimum viable architecture before performance optimization matters.
+
+---
+
+## Frequently Asked Questions
+
+### What is a good Time to First Byte (TTFB) for a web application?
+
+Target TTFB under 800ms for a good user experience, under 200ms for excellent. The biggest TTFB improvements come from edge caching (CDN), database query optimization (adding indexes), and reducing server-side computation. Moving static pages to a CDN can reduce TTFB from 500ms to under 50ms globally.
+
+### How do serverless cold starts affect application performance?
+
+Cold starts add 100-500ms latency on the first request after idle periods. Go and Rust functions cold start in approximately 100ms, while Java functions take 1-2 seconds. Mitigation strategies include provisioned concurrency (keeps functions warm), smaller deployment packages, and choosing lightweight runtimes. The 'Lambda Tax' means serverless is not always cheaper than containers for steady-traffic workloads.
+
+### What CDN caching strategy should I use for a SaaS application?
+
+Use a three-tier caching strategy: CDN edge cache for static assets (CSS, JS, images) with long TTLs (1 year with content hashing), short CDN cache for API responses (30-60 seconds with stale-while-revalidate), and application-level cache (Redis) for database query results. This combination typically reduces origin server load by 80-90%.
+
+### How do I reduce frontend JavaScript bundle size?
+
+Start with analysis: run your bundler's analyzer to identify the largest dependencies. The highest-impact techniques are: code splitting by route (dynamic imports), replacing heavy libraries with lighter alternatives (date-fns instead of moment.js saves 60KB), tree-shaking unused exports, and lazy-loading components below the fold. Target under 200KB of JavaScript for initial page load.
+
+### When is edge computing worth the complexity?
+
+Edge computing is worth it when your users are geographically distributed and latency directly impacts revenue. E-commerce sites see 1-2% conversion improvement per 100ms of latency reduction. Edge is not worth it for internal tools, admin panels, or applications where all users are in one region. The complexity cost includes managing distributed state, debugging across regions, and dealing with cold starts at each edge location.
 
 ---
 
