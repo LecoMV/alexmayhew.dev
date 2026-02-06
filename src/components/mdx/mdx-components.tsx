@@ -13,7 +13,7 @@ export const mdxComponents = {
 	h2: ({ className, children, ...props }: ComponentProps<"h2">) => (
 		<h2
 			className={cn(
-				"text-mist-white mt-10 mb-4 font-mono text-xl font-semibold tracking-tight",
+				"text-mist-white mt-10 mb-4 scroll-mt-28 font-mono text-xl font-semibold tracking-tight",
 				className
 			)}
 			{...props}
@@ -26,7 +26,10 @@ export const mdxComponents = {
 	),
 
 	h3: ({ className, ...props }: ComponentProps<"h3">) => (
-		<h3 className={cn("mt-8 mb-3 font-mono text-lg tracking-tight", className)} {...props} />
+		<h3
+			className={cn("mt-8 mb-3 scroll-mt-28 font-mono text-lg tracking-tight", className)}
+			{...props}
+		/>
 	),
 
 	p: ({ className, ...props }: ComponentProps<"p">) => (
