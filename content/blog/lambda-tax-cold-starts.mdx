@@ -2,12 +2,13 @@
 title: "The Lambda Tax: Cold Starts and the True Cost of Serverless"
 description: "Cold starts add 100-500ms+ to user requests. Know when serverless helps and when it hurts—the math might surprise you."
 date: "2025-08-26"
+updatedAt: "2026-02-06"
 author: "Alex Mayhew"
 tags: ["serverless", "aws", "performance", "devops"]
 category: "infrastructure"
-readingTime: "10 min"
+readingTime: "10 min read"
 featured: false
-series: "saas-architecture"
+series: "performance-engineering"
 image: "/images/blog/lambda-tax-cold-starts-featured.webp"
 ---
 
@@ -15,7 +16,7 @@ image: "/images/blog/lambda-tax-cold-starts-featured.webp"
 
 Cold start: 100-500ms+ penalty (new container creation). Warm start: `<20ms` (reused container). Provisioned concurrency eliminates cold starts but adds cost. Go/Rust cold start ~100ms; Java/C# cold start ~1-2 seconds. Serverless wins for bursty workloads; loses for consistent traffic with latency requirements.
 
-> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — a comprehensive guide to architecture decisions from MVP to scale.
+> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — a comprehensive guide to web performance from TTFB to TTI.
 
 ---
 

@@ -85,7 +85,7 @@
 
 New blog posts should extend existing hubs. Prioritize clusters with fewer spokes or higher business relevance.
 
-### SaaS Architecture (currently 11 spokes)
+### SaaS Architecture (currently 13 spokes)
 
 - [ ] Database migration patterns for multi-tenant SaaS
 - [ ] Event-driven architecture for SaaS at scale
@@ -99,14 +99,14 @@ New blog posts should extend existing hubs. Prioritize clusters with fewer spoke
 - [ ] Documentation that engineers actually read
 - [ ] Hiring your first staff engineer
 
-### Frontend Architecture (currently 8 spokes)
+### Frontend Architecture (currently 9 spokes)
 
 - [ ] Testing strategies for React Server Components
 - [ ] Monorepo patterns with Turborepo
 - [ ] State management: Zustand vs signals vs server state
 - [ ] Progressive Web Apps for SaaS
 
-### Performance Engineering (currently 8 spokes)
+### Performance Engineering (currently 5 spokes — needs 3 more in Q2-Q3)
 
 - [ ] Core Web Vitals audit checklist (2026 update)
 - [ ] Edge computing deep-dive

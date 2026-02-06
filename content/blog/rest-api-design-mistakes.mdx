@@ -5,7 +5,7 @@ date: "2026-01-28"
 author: "Alex Mayhew"
 tags: ["api", "rest", "architecture", "backend", "best-practices"]
 category: "architecture"
-readingTime: "13 min"
+readingTime: "13 min read"
 featured: false
 series: "saas-architecture"
 image: "/images/blog/rest-api-design-mistakes-featured.webp"
@@ -14,6 +14,8 @@ image: "/images/blog/rest-api-design-mistakes-featured.webp"
 ## TL;DR
 
 The seven deadly sins: (1) Inconsistent naming conventions across endpoints, (2) Leaking database IDs instead of using stable identifiers, (3) Missing or broken pagination, (4) Ignoring idempotency for mutating operations, (5) Poor error responses that don't help clients recover, (6) No versioning strategy until it's too late, (7) Authentication bolted on instead of designed in. Each one is a time bomb. Fix them before you have customers who depend on the broken behavior.
+
+> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — a comprehensive guide to architecture decisions from MVP to scale.
 
 ---
 

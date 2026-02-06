@@ -9,8 +9,8 @@
 
 The alexmayhew.dev blog has been restructured into a **hub-and-spoke content architecture** with 5 comprehensive guide hubs and 39 spoke posts. All internal linking, cross-cluster linking, and featured images are complete.
 
-**Total Content:** 44 blog posts (5 hubs + 39 spokes) + 9 newsletter emails (5 welcome + 4 issues)
-**Note:** Spoke counts reflect actual MDX frontmatter `series` values, not topical overlap.
+**Total Content:** 45 blog posts (5 hubs + 39 spokes + 1 standalone) + 9 newsletter emails (5 welcome + 4 issues)
+**Note:** Spoke counts reflect actual MDX frontmatter `series` values, not topical overlap. `hello-world` is a standalone post (no series).
 
 ---
 
@@ -102,7 +102,7 @@ Newsletter content links back to these blog hubs and spokes:
    ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐
    │  SaaS   │ │ Eng     │ │Frontend │ │ Perf    │ │   AI    │
    │  Arch   │ │ Leader  │ │  Arch   │ │  Eng    │ │  Dev    │
-   │  (14)   │ │  (6)    │ │  (9)    │ │  (4)    │ │  (6)    │
+   │  (13)   │ │  (6)    │ │  (9)    │ │  (5)    │ │  (6)    │
    └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘
         │           │             │             │           │
         ▼           ▼             ▼             ▼           ▼
@@ -120,7 +120,7 @@ All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Gui
 
 - **Slug:** `saas-architecture-decision-framework`
 - **Series:** `saas-architecture`
-- **Spoke Count:** 14 posts
+- **Spoke Count:** 13 posts
 - **Featured Image:** ✅ `saas-architecture-decision-framework-featured.webp`
 - **Status:** ✅ Complete
 
@@ -144,7 +144,7 @@ All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Gui
 
 - **Slug:** `performance-engineering-playbook`
 - **Series:** `performance-engineering`
-- **Spoke Count:** 4 posts
+- **Spoke Count:** 5 posts
 - **Featured Image:** ✅ `performance-engineering-playbook-featured.webp`
 - **Status:** ✅ Complete
 
@@ -160,7 +160,7 @@ All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Gui
 
 ## Spoke Posts by Cluster
 
-### SaaS Architecture (14 posts)
+### SaaS Architecture (13 posts)
 
 | Post                            | Status                    |
 | ------------------------------- | ------------------------- |
@@ -174,7 +174,6 @@ All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Gui
 | tech-stack-capital-allocation   | ✅ Linked + Cross-cluster |
 | build-vs-buy                    | ✅ Linked + Cross-cluster |
 | boring-technology-wins          | ✅ Linked + Cross-cluster |
-| lambda-tax-cold-starts          | ✅ Linked                 |
 | database-query-optimization     | ✅ Linked                 |
 | event-driven-architecture-saas  | ✅ Linked                 |
 | saas-reliability-monitoring     | ✅ Linked                 |
@@ -204,7 +203,7 @@ All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Gui
 | atmospheric-animations-framer-motion | ✅ Linked                 |
 | typescript-business-case             | ✅ Linked + Cross-cluster |
 
-### Performance Engineering (4 posts)
+### Performance Engineering (5 posts)
 
 | Post                         | Status                    |
 | ---------------------------- | ------------------------- |
@@ -212,6 +211,7 @@ All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Gui
 | cdn-caching-strategy         | ✅ Linked                 |
 | rsc-edge-death-of-waterfall  | ✅ Linked + Cross-cluster |
 | nodejs-memory-leaks          | ✅ Linked                 |
+| lambda-tax-cold-starts       | ✅ Linked                 |
 
 ### AI Development (6 posts)
 
