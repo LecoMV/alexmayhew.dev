@@ -14,8 +14,8 @@ export default function GlobalError({
 	}, [error]);
 	return (
 		<html lang="en">
-			<body className="bg-void-navy min-h-screen">
-				<main className="flex min-h-screen flex-col items-center justify-center px-6">
+			<body className="bg-void-navy min-h-dvh">
+				<main className="flex min-h-dvh flex-col items-center justify-center px-6">
 					<div className="text-center">
 						<h1 className="text-burnt-ember mb-4 font-mono text-6xl font-bold">500</h1>
 						<p className="text-mist-white mb-2 font-mono text-xl">Internal Server Error</p>

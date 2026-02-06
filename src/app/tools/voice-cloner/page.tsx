@@ -85,7 +85,7 @@ const specs = [
 
 export default function VoiceClonerPage() {
 	return (
-		<main id="main-content" className="min-h-screen px-6 pt-32 pb-24 sm:px-12 md:px-24">
+		<main id="main-content" className="min-h-dvh px-6 pt-32 pb-24 sm:px-12 md:px-24">
 			<div className="mx-auto max-w-[1400px]">
 				{/* Breadcrumb */}
 				<nav className="mb-8">

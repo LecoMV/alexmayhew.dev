@@ -114,7 +114,7 @@ export function Footer() {
 									target="_blank"
 									rel="noopener noreferrer"
 									aria-label={social.label}
-									className="group hover:border-cyber-lime border border-white/10 p-2.5 transition-colors duration-300"
+									className="group hover:border-cyber-lime border border-white/10 p-3 transition-colors duration-300"
 								>
 									<social.icon
 										className="text-slate-text group-hover:text-cyber-lime h-4 w-4 transition-colors duration-300"

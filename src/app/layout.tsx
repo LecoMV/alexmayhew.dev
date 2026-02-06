@@ -131,12 +131,12 @@ export default function RootLayout({
 				<JsonLd />
 				<LocalBusinessJsonLd />
 			</head>
-			<body className="relative min-h-screen overflow-x-clip">
+			<body className="relative min-h-dvh overflow-x-clip">
 				<MotionProvider>
 					<NoiseOverlay />
 					<SmoothScroll>
 						<Navigation />
-						<main id="main-content" className="relative z-10 flex min-h-screen flex-col">
+						<main id="main-content" className="relative z-10 flex min-h-dvh flex-col">
 							{children}
 							<Footer />
 						</main>

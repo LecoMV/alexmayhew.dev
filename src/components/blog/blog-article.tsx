@@ -46,10 +46,10 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 		<>
 			<ReadingProgress />
 			<main
-				className="min-h-screen px-6 pt-44 pb-24 sm:px-12 md:px-24"
+				className="min-h-dvh px-6 pt-44 pb-24 sm:px-12 md:px-24"
 				style={{ backgroundColor: theme.colors.background }}
 			>
-				<div className="mx-auto max-w-[1200px]">
+				<div className="mx-auto max-w-[1280px]">
 					{/* Back Link */}
 					<m.div
 						initial={{ opacity: 0, x: -20 }}
@@ -76,7 +76,7 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 					</m.div>
 
 					{/* Grid: Content + TOC sidebar */}
-					<div className="grid grid-cols-1 gap-12 xl:grid-cols-[1fr_220px]">
+					<div className="grid grid-cols-1 gap-12 xl:grid-cols-[1fr_280px]">
 						{/* Main Content Column */}
 						<div className="min-w-0">
 							{/* Header */}

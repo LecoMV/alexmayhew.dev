@@ -105,7 +105,10 @@ export const mdxComponents = {
 
 	table: ({ className, ...props }: ComponentProps<"table">) => (
 		<div className="my-6 overflow-x-auto">
-			<table className={cn("w-full border-collapse font-mono text-sm", className)} {...props} />
+			<table
+				className={cn("w-full border-collapse font-mono text-xs sm:text-sm", className)}
+				{...props}
+			/>
 		</div>
 	),
 

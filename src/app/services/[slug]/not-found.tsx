@@ -3,7 +3,7 @@ import { ArrowLeft, Search } from "lucide-react";
 
 export default function ServiceNotFound() {
 	return (
-		<main className="flex min-h-screen flex-col items-center justify-center px-6 py-24">
+		<main className="flex min-h-dvh flex-col items-center justify-center px-6 py-24">
 			<div className="text-center">
 				<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
 					<span className="mr-2 animate-pulse">●</span>
