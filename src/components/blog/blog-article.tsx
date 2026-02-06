@@ -277,7 +277,7 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 						</div>
 
 						{/* TOC Sidebar (desktop only) */}
-						<aside className="hidden self-start xl:block">
+						<aside className="hidden xl:block">
 							<TableOfContents variant="desktop" />
 						</aside>
 					</div>

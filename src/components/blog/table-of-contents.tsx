@@ -355,7 +355,7 @@ export function TableOfContents({ variant = "mobile" }: { variant?: "mobile" | "
 									<span className="truncate">{section.text}</span>
 								</button>
 
-								{/* H3 children — progressive disclosure */}
+								{/* H3 children — expand active section, collapse others */}
 								{section.children.length > 0 && (
 									<AnimatePresence initial={false}>
 										{isExpanded && (
