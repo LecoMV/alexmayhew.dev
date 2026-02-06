@@ -75,10 +75,10 @@ This gives you at-least-once delivery. Your consumers must be idempotent—proce
 
 **Two implementation approaches:**
 
-| Approach | Mechanism | Latency | Complexity |
-|----------|-----------|---------|------------|
-| **Polling** | Scheduled job queries outbox table | 100ms-5s | Low—any team can implement |
-| **CDC (Change Data Capture)** | PostgreSQL logical replication streams WAL changes | 10-50ms | Medium—requires WAL configuration |
+| Approach                      | Mechanism                                          | Latency  | Complexity                        |
+| ----------------------------- | -------------------------------------------------- | -------- | --------------------------------- |
+| **Polling**                   | Scheduled job queries outbox table                 | 100ms-5s | Low—any team can implement        |
+| **CDC (Change Data Capture)** | PostgreSQL logical replication streams WAL changes | 10-50ms  | Medium—requires WAL configuration |
 
 For most SaaS applications under 10,000 events per minute, polling every 500ms is sufficient and dramatically simpler.
 
@@ -92,13 +92,13 @@ Two fundamentally different approaches to coordinating multi-service workflows.
 
 The decision matrix isn't about preference—it's about the workflow characteristics:
 
-| Factor | Choreography | Orchestration |
-|--------|-------------|---------------|
-| **Services involved** | 2-3 | 4+ |
-| **Failure handling** | Compensating events | Centralized rollback |
-| **Visibility** | Distributed tracing required | Orchestrator holds full state |
-| **Team autonomy** | High—teams own their reactions | Lower—orchestrator team is bottleneck |
-| **Debugging** | Harder—follow event chain | Easier—single coordinator log |
+| Factor                | Choreography                   | Orchestration                         |
+| --------------------- | ------------------------------ | ------------------------------------- |
+| **Services involved** | 2-3                            | 4+                                    |
+| **Failure handling**  | Compensating events            | Centralized rollback                  |
+| **Visibility**        | Distributed tracing required   | Orchestrator holds full state         |
+| **Team autonomy**     | High—teams own their reactions | Lower—orchestrator team is bottleneck |
+| **Debugging**         | Harder—follow event chain      | Easier—single coordinator log         |
 
 Most SaaS applications benefit from a hybrid: choreography for simple, fire-and-forget flows (notifications, analytics, audit logging) and orchestration for critical business transactions (order fulfillment, payment processing, provisioning).
 
@@ -129,12 +129,12 @@ I'll compare the three technologies I recommend to SaaS teams, along with the ma
 
 ### Performance Comparison (2025 Benchmarks)
 
-| Technology | Throughput | Latency | Min. Resources | Best For |
-|-----------|-----------|---------|----------------|----------|
-| **Apache Kafka** | 500K-1M+ msg/sec | 10-50ms | 8 cores, 64GB RAM, 10Gig NIC | High-volume streaming, event sourcing, analytics pipelines |
-| **NATS JetStream** | 200K-400K msg/sec | Sub-ms (memory), 1-5ms (disk) | 2 cores, 4GB RAM | Low-latency microservices, IoT, edge deployments |
-| **RabbitMQ** | 50K-100K msg/sec | 5-20ms | 4 cores, 8GB RAM | Task queues, request-reply patterns, moderate throughput |
-| **AWS EventBridge** | Scales automatically | 50-200ms | None (serverless) | AWS-native routing, low-volume event-driven workflows |
+| Technology          | Throughput           | Latency                       | Min. Resources               | Best For                                                   |
+| ------------------- | -------------------- | ----------------------------- | ---------------------------- | ---------------------------------------------------------- |
+| **Apache Kafka**    | 500K-1M+ msg/sec     | 10-50ms                       | 8 cores, 64GB RAM, 10Gig NIC | High-volume streaming, event sourcing, analytics pipelines |
+| **NATS JetStream**  | 200K-400K msg/sec    | Sub-ms (memory), 1-5ms (disk) | 2 cores, 4GB RAM             | Low-latency microservices, IoT, edge deployments           |
+| **RabbitMQ**        | 50K-100K msg/sec     | 5-20ms                        | 4 cores, 8GB RAM             | Task queues, request-reply patterns, moderate throughput   |
+| **AWS EventBridge** | Scales automatically | 50-200ms                      | None (serverless)            | AWS-native routing, low-volume event-driven workflows      |
 
 These numbers are from 2025 VPS benchmarks on standardized 4 vCPU, 8GB RAM, NVMe configurations. Production numbers vary based on message size, replication factor, and network topology.
 
@@ -143,30 +143,35 @@ These numbers are from 2025 VPS benchmarks on standardized 4 vCPU, 8GB RAM, NVMe
 Cost is where the technology decision gets real.
 
 **Apache Kafka (Self-Hosted)**
+
 - Software: $0 (open source)
 - Infrastructure: 3-node cluster minimum. On AWS, three m7g.xlarge instances run ~$1,200/month
 - Operations: Requires distributed systems expertise. Budget 10-20% of one senior engineer's time for cluster management
 - Hidden cost: ZooKeeper management (or KRaft migration), partition rebalancing, schema registry operations
 
 **Apache Kafka (AWS MSK)**
+
 - Brokers: $0.15-0.20/hour per m7g.large (~$330-440/month per broker)
 - Storage: $0.10/GB-month (EBS)
 - 3-broker minimum: ~$1,000-1,300/month before storage and data transfer
 - Eliminates operational overhead but less flexible than self-hosted
 
 **Confluent Cloud**
+
 - Compute: CKU-based pricing (varies by throughput)
 - Networking: $0.025/GB (US regions)
 - Connectors: $0.20/task/hour
 - Generally 40-60% more expensive than MSK but includes Schema Registry, ksqlDB, and managed connectors
 
 **NATS JetStream (Self-Hosted)**
+
 - Software: $0 (open source)
 - Infrastructure: Runs on significantly smaller instances. Three t3.medium instances handle most SaaS workloads (~$120/month)
 - Operations: Minimal. No ZooKeeper, no partition management, no JVM tuning
 - Cloud IOPS: Dramatically lower than Kafka—significant cost difference on AWS/GCP
 
 **AWS EventBridge**
+
 - ~$1.00 per million events published
 - Example: 5M events/month = ~$5.40 total
 - Zero operational overhead
@@ -175,24 +180,28 @@ Cost is where the technology decision gets real.
 ### The Decision Framework
 
 **Choose Kafka when:**
+
 - You process more than 100K messages/second sustained
 - You need event replay and long-term event storage
 - You're building analytics pipelines or event sourcing systems
 - You have (or will hire) engineers with Kafka operational experience
 
 **Choose NATS JetStream when:**
+
 - Latency matters more than maximum throughput
 - Your team is under 20 engineers and operational simplicity is critical
 - You're running at the edge or in resource-constrained environments
 - Your sustained throughput is under 100K messages/second
 
 **Choose EventBridge when:**
+
 - You're fully committed to AWS
 - Event volume is under 1M events/day
 - You want zero infrastructure management
 - You're routing events between AWS services, not building streaming pipelines
 
 **Choose RabbitMQ when:**
+
 - You need request-reply messaging patterns
 - Your workload is task distribution (job queues, background processing)
 - You're already running RabbitMQ and your throughput needs are under 50K/second
@@ -297,7 +306,7 @@ async function createUser(data: UserData) {
 // After: publish event, let consumers handle side effects
 async function createUser(data: UserData) {
 	const user = await db.users.create(data);
-	await outbox.publish('user.created', {
+	await outbox.publish("user.created", {
 		userId: user.id,
 		email: user.email,
 		plan: user.plan,
@@ -333,6 +342,7 @@ Once the first flow is stable, migrate the next most-critical workflow. For most
 Before committing to event-driven architecture, verify these conditions:
 
 **You should adopt EDA when:**
+
 - Synchronous calls between services cause cascading failures monthly
 - Database lock contention is measurable and increasing
 - Three or more teams coordinate deployments weekly
@@ -340,6 +350,7 @@ Before committing to event-driven architecture, verify these conditions:
 - Audit trail requirements exceed what application-level logging provides
 
 **You should not adopt EDA when:**
+
 - Your entire team fits in one standup (under 8 engineers)
 - Synchronous API calls handle your current and 12-month projected load
 - You're pre-product-market-fit and pivoting quarterly
