@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Users, Briefcase, Rocket, Building2 } from "lucide-react";
 import type { RolePage, Role } from "@/data/roles";
 import { ROLE_LABELS } from "@/data/roles";
+import { trackCTAClick } from "@/components/analytics";
 
 const springTransition = {
 	type: "spring" as const,
@@ -196,6 +197,7 @@ export function ForHubPage({ pages }: ForHubPageProps) {
 
 							<Link
 								href="/contact"
+								onClick={() => trackCTAClick("start_conversation", { cta_location: "for_hub_cta" })}
 								className="group hover:border-cyber-lime relative flex shrink-0 items-center gap-3 border border-white/20 px-6 py-4 transition-colors duration-300"
 							>
 								<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">

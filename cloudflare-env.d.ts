@@ -10,6 +10,8 @@ declare namespace Cloudflare {
 		NEXT_PUBLIC_TURNSTILE_SITE_KEY: string;
 		TURNSTILE_SECRET_KEY: string;
 		NEXT_PUBLIC_SENTRY_DSN: string;
+		NEXT_PUBLIC_GA_MEASUREMENT_ID: string;
+		NEXT_PUBLIC_CF_BEACON_TOKEN: string;
 		LISTMONK_API_URL: string;
 		LISTMONK_API_USER: string;
 		LISTMONK_API_KEY: string;
@@ -27,7 +29,7 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "NEXTJS_ENV" | "NEXT_PUBLIC_TURNSTILE_SITE_KEY" | "TURNSTILE_SECRET_KEY" | "NEXT_PUBLIC_SENTRY_DSN">> {}
+	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "NEXTJS_ENV" | "NEXT_PUBLIC_TURNSTILE_SITE_KEY" | "TURNSTILE_SECRET_KEY" | "NEXT_PUBLIC_SENTRY_DSN" | "NEXT_PUBLIC_GA_MEASUREMENT_ID" | "NEXT_PUBLIC_CF_BEACON_TOKEN">> {}
 }
 
 // Begin runtime types

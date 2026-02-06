@@ -18,6 +18,7 @@ import { useState } from "react";
 import type { PseoPage, ExpertApproach } from "@/data/pseo";
 import { TECHNOLOGY_LABELS, INDUSTRY_LABELS } from "@/data/pseo";
 import { TopicClusterNav } from "@/components/seo";
+import { trackCTAClick } from "@/components/analytics";
 import { useContentAnalytics } from "@/lib/hooks/use-content-analytics";
 import { cn } from "@/lib/utils";
 
@@ -199,6 +200,7 @@ function HeroSection({
 			<m.div className="flex flex-wrap items-center gap-4" variants={fadeInUp}>
 				<Link
 					href="/contact"
+					onClick={() => trackCTAClick("schedule_consultation", { cta_location: "service_hero" })}
 					className="group hover:border-cyber-lime relative border border-white/20 px-6 py-3 transition-colors duration-300"
 				>
 					<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">
@@ -829,6 +831,9 @@ function CtaSection() {
 
 					<Link
 						href="/contact"
+						onClick={() =>
+							trackCTAClick("start_conversation", { cta_location: "service_bottom_cta" })
+						}
 						className="group hover:border-cyber-lime relative flex shrink-0 items-center gap-3 border border-white/20 px-6 py-4 transition-colors duration-300"
 					>
 						<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">

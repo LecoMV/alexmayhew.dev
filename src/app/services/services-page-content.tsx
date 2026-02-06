@@ -6,6 +6,7 @@ import { ArrowRight, Code2, Building2, CheckCircle2, ChevronRight } from "lucide
 import type { PseoPage } from "@/data/pseo";
 import { TECHNOLOGY_LABELS, INDUSTRY_LABELS } from "@/data/pseo";
 import { cn } from "@/lib/utils";
+import { trackCTAClick } from "@/components/analytics";
 
 const springTransition = {
 	type: "spring" as const,
@@ -355,6 +356,9 @@ export function ServicesPage({ pages }: ServicesPageProps) {
 					</p>
 					<Link
 						href="/contact"
+						onClick={() =>
+							trackCTAClick("schedule_consultation", { cta_location: "services_bottom_cta" })
+						}
 						className="group border-cyber-lime bg-cyber-lime/10 hover:bg-cyber-lime/20 inline-flex items-center gap-2 border px-8 py-4 font-mono text-sm transition-colors"
 					>
 						<span className="text-cyber-lime">Schedule_Consultation()</span>

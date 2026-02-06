@@ -17,6 +17,7 @@ import { useState } from "react";
 import type { ComparisonPage, PseoPage } from "@/data/pseo";
 import { INDUSTRY_LABELS, getPageBySlug } from "@/data/pseo";
 import { cn } from "@/lib/utils";
+import { trackCTAClick } from "@/components/analytics";
 
 const springTransition = {
 	type: "spring" as const,
@@ -924,6 +925,9 @@ function CtaSection({ page }: { page: ComparisonPage }) {
 					</p>
 					<Link
 						href="/contact"
+						onClick={() =>
+							trackCTAClick("schedule_consultation", { cta_location: "comparison_bottom_cta" })
+						}
 						className="group hover:border-cyber-lime inline-flex items-center gap-2 border border-white/20 px-8 py-4 transition-colors"
 					>
 						<span className="group-hover:text-cyber-lime font-mono tracking-tight transition-colors">

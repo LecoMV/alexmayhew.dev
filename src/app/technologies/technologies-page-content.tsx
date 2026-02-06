@@ -14,6 +14,7 @@ import {
 	Layers,
 } from "lucide-react";
 import { technologies, getTechnologyIds } from "@/data/pseo/technologies";
+import { trackCTAClick } from "@/components/analytics";
 
 const springTransition = {
 	type: "spring" as const,
@@ -196,6 +197,9 @@ export function TechnologiesPageContent() {
 						<div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
 							<Link
 								href="/contact"
+								onClick={() =>
+									trackCTAClick("start_conversation", { cta_location: "technologies_hub_cta" })
+								}
 								className="group hover:border-cyber-lime relative inline-flex items-center gap-3 border border-white/20 px-8 py-4 transition-colors duration-300"
 							>
 								<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">

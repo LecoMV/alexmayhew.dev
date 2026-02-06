@@ -118,9 +118,9 @@ export function CookieConsent() {
 							<div className="flex-1">
 								<h3 className="mb-2 font-mono text-sm font-medium">Cookie Notice</h3>
 								<p className="text-slate-text mb-4 text-sm leading-relaxed">
-									We use privacy-friendly analytics (Cloudflare Web Analytics) to understand how
-									visitors interact with this site. No personal data is collected or shared with
-									third parties.{" "}
+									We use analytics to understand how visitors interact with this site. If you
+									accept, Google Analytics will collect anonymous usage data. We also use Cloudflare
+									Web Analytics (privacy-friendly, no cookies) and Sentry for error monitoring.{" "}
 									<Link href="/privacy" className="text-cyber-lime hover:underline">
 										Learn more
 									</Link>

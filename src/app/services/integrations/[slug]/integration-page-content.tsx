@@ -26,6 +26,7 @@ import { useState } from "react";
 import type { IntegrationPage, PseoPage } from "@/data/pseo";
 import { INDUSTRY_LABELS, TECHNOLOGY_LABELS, getPageBySlug } from "@/data/pseo";
 import { cn } from "@/lib/utils";
+import { trackCTAClick } from "@/components/analytics";
 
 const springTransition = {
 	type: "spring" as const,
@@ -1003,6 +1004,9 @@ function CtaSection({ page }: { page: IntegrationPage }) {
 
 				<Link
 					href="/contact"
+					onClick={() =>
+						trackCTAClick("scope_integration", { cta_location: "integration_bottom_cta" })
+					}
 					className="group hover:border-cyber-lime relative inline-flex items-center gap-2 border border-white/20 px-8 py-4 transition-colors duration-300"
 				>
 					<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">
