@@ -18,6 +18,7 @@ export function GoogleAnalytics() {
 
 	return (
 		<>
+			{/* eslint-disable-next-line @next/next/no-before-interactive-script-outside-document -- App Router: rendered in root layout, no _document.js exists */}
 			<Script id="ga-consent-default" strategy="beforeInteractive">
 				{`
 					window.dataLayer = window.dataLayer || [];

@@ -2,7 +2,6 @@
 
 import { Suspense, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { trackEvent } from "./google-analytics";
 
 /**
  * Page Analytics Component for Next.js App Router
