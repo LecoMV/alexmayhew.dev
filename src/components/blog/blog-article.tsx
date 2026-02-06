@@ -4,12 +4,23 @@ import { ReactNode, useEffect, useState } from "react";
 import { m } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Calendar, Tag } from "lucide-react";
+import { ArrowLeft, Calendar, Tag, ArrowRight } from "lucide-react";
 import { useBlogTheme } from "@/lib/blog-themes";
 import { ShareButtons } from "./share-buttons";
 import { NewsletterSignup } from "@/components/newsletter";
 import { useContentAnalytics } from "@/lib/hooks/use-content-analytics";
+import { trackCTAClick } from "@/components/analytics";
 import type { Post } from "./types";
+
+const seriesTopics: Record<string, string> = {
+	"saas-architecture": "SaaS architecture",
+	"SaaS Architecture": "SaaS architecture",
+	"engineering-leadership": "engineering leadership",
+	"frontend-architecture": "frontend architecture",
+	"Frontend Architecture": "frontend architecture",
+	"performance-engineering": "performance",
+	"ai-development": "AI-assisted development",
+};
 
 interface BlogArticleProps {
 	post: Post;
@@ -174,6 +185,46 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 				>
 					<NewsletterSignup variant="inline" source={`blog-${post.slug}`} />
 				</m.div>
+
+				{/* Consultation CTA — secondary to newsletter */}
+				{!post.data.isHub && (
+					<m.div
+						className="mt-6 border-t border-white/10 pt-6"
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ ...springTransition, delay: 0.45 }}
+					>
+						<div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+							<p className="text-sm" style={{ color: theme.colors.textMuted }}>
+								{post.data.series && seriesTopics[post.data.series]
+									? `Need help with ${seriesTopics[post.data.series]}?`
+									: "Need expert guidance on a technical challenge?"}
+							</p>
+							<Link
+								href="/contact"
+								onClick={() =>
+									trackCTAClick("schedule_consultation", {
+										cta_location: "blog_post_secondary",
+									})
+								}
+								className="group inline-flex items-center gap-2 font-mono text-xs transition-colors"
+								style={{ color: theme.colors.textMuted }}
+								onMouseEnter={(e) => {
+									e.currentTarget.style.color = theme.colors.accent;
+								}}
+								onMouseLeave={(e) => {
+									e.currentTarget.style.color = theme.colors.textMuted;
+								}}
+							>
+								Let&apos;s talk strategy
+								<ArrowRight
+									className="h-3 w-3 transition-transform group-hover:translate-x-0.5"
+									strokeWidth={1.5}
+								/>
+							</Link>
+						</div>
+					</m.div>
+				)}
 
 				{/* Share Buttons */}
 				{articleUrl && (
