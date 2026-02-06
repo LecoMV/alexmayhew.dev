@@ -52,7 +52,7 @@ function StatusItem({ label, status, icon, detail }: StatusItemProps) {
 					<span
 						className={cn(
 							"h-2 w-2 rounded-full transition-colors",
-							status === "online" && "bg-cyber-lime shadow-[0_0_8px_rgba(204,243,129,0.5)]",
+							status === "online" && "bg-cyber-lime",
 							status === "offline" && "bg-burnt-ember",
 							status === "checking" && "bg-slate-text animate-pulse"
 						)}
@@ -314,12 +314,7 @@ export function SystemStatus({ apiUrl, onStatusChange }: SystemStatusProps) {
 					)}
 				>
 					<span
-						className={cn(
-							"h-2 w-2 rounded-full",
-							isOnline
-								? "bg-cyber-lime shadow-[0_0_8px_rgba(204,243,129,0.5)]"
-								: "bg-burnt-ember shadow-[0_0_8px_rgba(255,107,107,0.3)]"
-						)}
+						className={cn("h-2 w-2 rounded-full", isOnline ? "bg-cyber-lime" : "bg-burnt-ember")}
 					/>
 					{isChecking
 						? "Checking systems..."

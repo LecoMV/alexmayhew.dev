@@ -18,7 +18,9 @@ export const mdxComponents = {
 			)}
 			{...props}
 		>
-			<span className="text-cyber-lime mr-3 text-sm">●</span>
+			<span className="text-cyber-lime mr-3 text-sm" aria-hidden="true">
+				●
+			</span>
 			{children}
 		</h2>
 	),

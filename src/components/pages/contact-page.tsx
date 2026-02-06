@@ -106,7 +106,9 @@ export function ContactPage() {
 					transition={springTransition}
 				>
 					<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-						<span className="mr-2 animate-pulse">●</span>
+						<span className="mr-2 animate-pulse" aria-hidden="true">
+							●
+						</span>
 						Contact
 					</h1>
 					<h2 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
@@ -341,6 +343,7 @@ export function ContactPage() {
 									initial={{ opacity: 0, y: 10 }}
 									animate={{ opacity: 1, y: 0 }}
 									className="flex items-center gap-4"
+									role="alert"
 								>
 									<p className="text-burnt-ember font-mono text-sm">{errorMessage}</p>
 									<button
@@ -367,7 +370,9 @@ export function ContactPage() {
 							<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b border-l" />
 
 							<h3 className="text-cyber-lime mb-6 font-mono text-xs tracking-wider uppercase">
-								<span className="mr-2">●</span>
+								<span className="mr-2" aria-hidden="true">
+									●
+								</span>
 								Direct Channels
 							</h3>
 
@@ -397,7 +402,7 @@ export function ContactPage() {
 							{/* Availability Status */}
 							<div className="mt-8 border-t border-white/10 pt-6">
 								<div className="flex items-center gap-3">
-									<div className="bg-cyber-lime h-2 w-2 animate-pulse" />
+									<div className="bg-cyber-lime h-2 w-2 animate-pulse" aria-hidden="true" />
 									<p className="text-slate-text font-mono text-xs">Accepting select engagements</p>
 								</div>
 							</div>

@@ -170,7 +170,7 @@ export function ChatWidget() {
 						animate={{ opacity: 1, y: 0, scale: 1 }}
 						exit={{ opacity: 0, y: 20, scale: 0.95 }}
 						transition={springTransition}
-						className="bg-void-navy/95 fixed right-6 bottom-24 z-50 flex h-[500px] w-[380px] flex-col border border-white/10 shadow-2xl backdrop-blur-xl"
+						className="bg-void-navy/95 fixed right-6 bottom-24 z-50 flex h-[500px] w-[380px] flex-col border border-white/10 backdrop-blur-xl"
 					>
 						{/* Header */}
 						<div className="border-b border-white/10 p-4">

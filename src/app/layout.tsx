@@ -5,11 +5,11 @@ import { SmoothScroll, MotionProvider } from "@/components/providers";
 import { Navigation } from "@/components/ui/navigation";
 import { Footer } from "@/components/ui/footer";
 import { NoiseOverlay } from "@/components/ui/noise-overlay";
-import { ChatWidget } from "@/components/chat";
 import { JsonLd, LocalBusinessJsonLd } from "@/components/seo";
 import { CloudflareAnalytics, GoogleAnalytics } from "@/components/analytics";
 import { PageAnalytics } from "@/components/analytics/page-analytics";
 import { WebVitalsReporter } from "@/components/analytics/web-vitals";
+import { ChatWidget } from "@/components/chat";
 import { CookieConsent } from "@/components/ui/cookie-consent";
 import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
 

@@ -153,15 +153,15 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 					style={{ backgroundColor: theme.colors.border }}
 					initial={{ scaleX: 0 }}
 					animate={{ scaleX: 1 }}
-					transition={{ ...springTransition, delay: 0.3 }}
+					transition={{ ...springTransition, delay: 0.15 }}
 				/>
 
 				{/* Content */}
 				<m.article
 					className="prose-void"
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ ...springTransition, delay: 0.3 }}
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{ duration: 0.2, delay: 0.05 }}
 				>
 					{children}
 				</m.article>

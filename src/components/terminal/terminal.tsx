@@ -192,7 +192,7 @@ export function Terminal({
 	return (
 		<m.div
 			ref={terminalRef}
-			className={`bg-void-navy/95 flex w-full max-w-3xl flex-col overflow-hidden border border-white/20 shadow-2xl backdrop-blur-md ${className}`}
+			className={`bg-void-navy/95 flex w-full max-w-3xl flex-col overflow-hidden border border-white/10 backdrop-blur-md ${className}`}
 			initial={{ opacity: 0, y: 20, scale: 0.95 }}
 			animate={{ opacity: 1, y: 0, scale: 1 }}
 			exit={{ opacity: 0, y: 20, scale: 0.95 }}
