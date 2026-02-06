@@ -4,6 +4,7 @@ import { useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { Link2, Check, Share2, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/components/analytics";
 
 interface ShareButtonsProps {
 	title: string;
@@ -57,6 +58,7 @@ export function ShareButtons({ title, url, description, className }: ShareButton
 	const [isNativeShareSupported] = useState(typeof navigator !== "undefined" && !!navigator.share);
 
 	const handleCopyLink = async () => {
+		trackEvent("share", { method: "copy_link", content_type: "article", item_id: url });
 		try {
 			await navigator.clipboard.writeText(url);
 			setCopied(true);
@@ -76,6 +78,7 @@ export function ShareButtons({ title, url, description, className }: ShareButton
 
 	const handleNativeShare = async () => {
 		if (isNativeShareSupported) {
+			trackEvent("share", { method: "native_share", content_type: "article", item_id: url });
 			try {
 				await navigator.share({
 					title,
@@ -92,6 +95,7 @@ export function ShareButtons({ title, url, description, className }: ShareButton
 	};
 
 	const handlePlatformShare = (platform: SharePlatform) => {
+		trackEvent("share", { method: platform.name, content_type: "article", item_id: url });
 		const shareUrl = platform.getUrl(title, url);
 		window.open(shareUrl, "_blank", "noopener,noreferrer,width=600,height=400");
 	};

@@ -5,6 +5,7 @@ import { m } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { useBlogTheme } from "@/lib/blog-themes";
+import { trackEvent } from "@/components/analytics";
 import { CardsLayout, TerminalLayout, DossierLayout } from "./layouts";
 import type { Post } from "./types";
 
@@ -166,7 +167,10 @@ export function BlogList({ posts, hubPosts = [] }: BlogListProps) {
 							return (
 								<button
 									key={category}
-									onClick={() => setActiveCategory(category)}
+									onClick={() => {
+										setActiveCategory(category);
+										trackEvent("blog_filter", { category });
+									}}
 									className="group relative px-4 py-2 font-mono text-xs tracking-wider uppercase transition-all duration-200"
 									style={{
 										backgroundColor: isActive ? theme.colors.accent : "transparent",
