@@ -86,6 +86,18 @@ export function Navigation() {
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
 
+	// Close dropdown and mobile menu on Escape key (WCAG 2.1 SC 1.4.13)
+	useEffect(() => {
+		function handleEscape(event: KeyboardEvent) {
+			if (event.key === "Escape") {
+				setToolsDropdownOpen(false);
+				setMobileMenuOpen(false);
+			}
+		}
+		document.addEventListener("keydown", handleEscape);
+		return () => document.removeEventListener("keydown", handleEscape);
+	}, []);
+
 	const handleDropdownEnter = () => {
 		if (dropdownTimeoutRef.current) {
 			clearTimeout(dropdownTimeoutRef.current);
@@ -102,7 +114,7 @@ export function Navigation() {
 	const isToolsActive = pathname.startsWith("/tools");
 
 	return (
-		<header className="fixed top-0 right-0 left-0 z-40">
+		<header className="fixed inset-x-0 top-0 z-40">
 			{/* Skip to content link - visible on focus for keyboard users */}
 			<a
 				href="#main-content"
@@ -110,7 +122,10 @@ export function Navigation() {
 			>
 				Skip to content
 			</a>
-			<nav className="mx-auto px-6 py-4 sm:px-12 md:px-24">
+			<nav
+				aria-label="Main navigation"
+				className="mx-auto max-w-[1400px] px-6 py-4 sm:px-12 md:px-24"
+			>
 				<div className="bg-gunmetal-glass/20 flex items-center justify-between gap-2 border border-white/10 px-4 py-3 backdrop-blur-md md:gap-3 md:px-5 md:py-4 lg:gap-4 lg:px-6">
 					{/* Logo / Brand */}
 					<Link href="/" className="group flex shrink-0 items-center gap-2 md:gap-3 lg:gap-4">
@@ -151,6 +166,7 @@ export function Navigation() {
 											)}
 											aria-expanded={toolsDropdownOpen}
 											aria-haspopup="true"
+											aria-controls="tools-dropdown-menu"
 										>
 											<span className="mr-1.5 hidden opacity-40 xl:inline" aria-hidden="true">
 												{item.code}
@@ -175,6 +191,9 @@ export function Navigation() {
 										<AnimatePresence>
 											{toolsDropdownOpen && (
 												<m.div
+													id="tools-dropdown-menu"
+													role="menu"
+													aria-label="Tools"
 													initial={{ opacity: 0, y: -10 }}
 													animate={{ opacity: 1, y: 0 }}
 													exit={{ opacity: 0, y: -10 }}
@@ -185,6 +204,7 @@ export function Navigation() {
 														<Link
 															key={tool.href}
 															href={tool.href}
+															role="menuitem"
 															onClick={() => setToolsDropdownOpen(false)}
 															className="group/item flex items-start gap-3 p-3 transition-colors hover:bg-white/5"
 														>
@@ -212,6 +232,7 @@ export function Navigation() {
 													<div className="mt-2 border-t border-white/10 pt-2">
 														<Link
 															href="/tools"
+															role="menuitem"
 															onClick={() => setToolsDropdownOpen(false)}
 															className="text-slate-text hover:text-cyber-lime flex items-center gap-2 p-2 font-mono text-xs transition-colors"
 														>
@@ -311,7 +332,7 @@ export function Navigation() {
 																key={tool.href}
 																href={tool.href}
 																onClick={() => setMobileMenuOpen(false)}
-																className="flex items-center gap-2 py-1 text-xs"
+																className="flex items-center gap-2 py-2 text-xs"
 															>
 																<span className="text-cyber-lime">{tool.icon}</span>
 																<span className="text-slate-text hover:text-mist-white">

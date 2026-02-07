@@ -181,6 +181,10 @@
 		padding-right: env(safe-area-inset-right);
 	}
 
+	header {
+		padding-top: env(safe-area-inset-top);
+	}
+
 	.chat-widget-bottom {
 		padding-bottom: calc(1rem + env(safe-area-inset-bottom));
 	}
@@ -257,8 +261,8 @@ a,
 	}
 }
 
-/* Firefox scrollbar styling */
-* {
+/* Firefox scrollbar styling — scoped to html to avoid applying to every DOM element */
+html {
 	scrollbar-width: thin;
 	scrollbar-color: var(--color-gunmetal-glass) var(--color-void-navy);
 }
@@ -439,6 +443,14 @@ a,
 	.backdrop-blur-sm,
 	[class*="backdrop-blur"] {
 		backdrop-filter: none;
+		background-color: rgba(30, 41, 59, 0.95);
+	}
+}
+
+/* Fallback for browsers without backdrop-filter support */
+@supports not (backdrop-filter: blur(1px)) {
+	[class*="backdrop-blur"] {
+		background-color: rgba(30, 41, 59, 0.95);
 	}
 }
 
