@@ -30,9 +30,8 @@ const navItems: NavItem[] = [
 	{ href: "/services", label: "Services", code: "02" },
 	{ href: "/tools", label: "Tools", code: "03", hasDropdown: true },
 	{ href: "/blog", label: "Blog", code: "04" },
-	{ href: "/docs", label: "Docs", code: "05" },
-	{ href: "/about", label: "About", code: "06" },
-	{ href: "/contact", label: "Contact", code: "07" },
+	{ href: "/about", label: "About", code: "05" },
+	{ href: "/contact", label: "Contact", code: "06" },
 ];
 
 const toolsDropdown: ToolItem[] = [
