@@ -167,7 +167,9 @@ export function NewsletterSignup({
 					</button>
 				</form>
 
-				<p className="text-slate-text/60 mt-3 text-xs">Join 1,000+ CTOs and engineering leaders.</p>
+				<p className="text-slate-text/60 mt-3 text-xs">
+					One actionable architecture decision every week. No fluff.
+				</p>
 			</div>
 		);
 	}

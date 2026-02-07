@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { ExternalLink, Github, ArrowUpRight, Layers } from "lucide-react";
+import { ExternalLink, Github, ArrowUpRight, Layers, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { projects, categories, type Category } from "@/data/projects";
 
@@ -163,6 +163,19 @@ export function WorkPage() {
 													strokeWidth={1.5}
 												/>
 											</a>
+										)}
+										{project.caseStudy?.published && (
+											<Link
+												href={`/work/${project.id}`}
+												className="text-slate-text hover:text-cyber-lime group/link flex items-center gap-2 font-mono text-xs transition-colors duration-300"
+											>
+												<FileText className="h-3 w-3" strokeWidth={1.5} />
+												Case Study
+												<ArrowUpRight
+													className="h-3 w-3 transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
+													strokeWidth={1.5}
+												/>
+											</Link>
 										)}
 									</div>
 

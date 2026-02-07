@@ -8,6 +8,7 @@ import {
 } from "@/data/pseo";
 import { getTechnologyIds } from "@/data/pseo/technologies";
 import { getPublishedRolePages } from "@/data/roles";
+import { getCaseStudyProjects } from "@/data/projects";
 
 const siteUrl = "https://alexmayhew.dev";
 
@@ -193,6 +194,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		})),
 	];
 
+	// Work case study pages
+	const caseStudyPages: MetadataRoute.Sitemap = getCaseStudyProjects().map((project) => ({
+		url: `${siteUrl}/work/${project.id}`,
+		lastModified: siteLastUpdated,
+		changeFrequency: "monthly" as const,
+		priority: 0.8,
+	}));
+
 	return [
 		...staticPages,
 		...blogPosts,
@@ -203,5 +212,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		...technologyPages,
 		...rolePages,
 		...newsletterPages,
+		...caseStudyPages,
 	];
 }
