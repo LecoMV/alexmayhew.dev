@@ -110,7 +110,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Comment Preview URL on PR
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const url = '${{ steps.deploy.outputs.deployment-url }}';
@@ -241,7 +241,7 @@ jobs:
 
       - name: Notify on failure
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const sha = '${{ github.sha }}'.substring(0, 7);
