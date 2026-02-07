@@ -111,7 +111,7 @@ export function Navigation() {
 				Skip to content
 			</a>
 			<nav className="max-w-fd-container mx-auto px-6 py-4 sm:px-12 md:px-24">
-				<div className="bg-gunmetal-glass/20 flex items-center justify-between gap-2 border border-white/10 px-4 py-3 backdrop-blur-md md:gap-3 md:px-5 md:py-4 lg:gap-4 lg:px-6">
+				<div className="bg-gunmetal-glass/20 flex items-center justify-between gap-2 border border-white/10 px-5 py-3 backdrop-blur-md md:gap-3 md:px-6 md:py-4 lg:gap-4 lg:px-8">
 					{/* Logo / Brand */}
 					<Link href="/" className="group flex shrink-0 items-center gap-2 md:gap-3 lg:gap-4">
 						<Image
