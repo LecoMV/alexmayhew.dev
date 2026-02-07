@@ -1,0 +1,303 @@
+---
+title: "Incident Response Playbook for SaaS Teams"
+description: "Most SaaS teams don't have an incident response process until they need one—at 3 AM during a production outage. Here's the playbook I've helped 10+ teams implement before the crisis hits."
+date: "2026-05-19"
+author: "Alex Mayhew"
+tags: ["incident-response", "saas", "operations", "on-call", "leadership"]
+category: "business"
+readingTime: "15 min read"
+featured: false
+draft: true
+series: "engineering-leadership"
+image: "/images/blog/incident-response-saas-featured.webp"
+---
+
+## TL;DR
+
+Every SaaS company will have a production incident. The teams that recover in 10 minutes vs. 4 hours aren't better engineers—they have better processes. The playbook: assign an Incident Commander before you need one, use a severity classification that determines who gets woken up, communicate proactively to customers (silence is worse than bad news), and run blameless postmortems within 48 hours. The biggest mistake I see: teams that conflate "finding the fix" with "restoring service." Restoring service means reverting the last deploy, failing over to a backup, or switching to degraded mode. Finding the root cause happens after the fire is out. The median SaaS company takes 45 minutes from detection to starting mitigation. With this playbook, that drops to under 10 minutes.
+
+> **Part of the [Engineering Leadership: Founder to CTO](/blog/engineering-leadership-founder-to-cto)** — a comprehensive guide to scaling engineering teams and practices.
+
+---
+
+## Why Most Teams Fail at Incident Response
+
+The failure mode is always the same. Production goes down. Three engineers start investigating independently, duplicating work. Nobody communicates with customers. The CEO sends a Slack message asking "is the site down?" The on-call engineer is debugging while also updating stakeholders, context-switching every 2 minutes. An hour later, someone realizes the fix was reverting the deploy that shipped 45 minutes before the incident started.
+
+I've observed this pattern at 10+ companies. The technical capability to fix problems was never the bottleneck—the coordination was.
+
+Incident response is an organizational problem, not a technical one.
+
+---
+
+## Severity Classification
+
+Not every incident deserves the same response. A cosmetic CSS bug on the marketing page and a complete authentication outage require fundamentally different responses.
+
+| Severity | Definition | Response | Notification | SLA |
+|---|---|---|---|---|
+| **SEV-1** | Total service outage or data loss risk | All hands on deck | CEO, all engineers, customers | 5 min to start mitigation |
+| **SEV-2** | Major feature degraded, affecting >20% of users | On-call + relevant team | Engineering lead, support | 15 min to start mitigation |
+| **SEV-3** | Minor feature impact, workaround available | On-call during business hours | Team Slack channel | 4 hours to start mitigation |
+| **SEV-4** | Cosmetic or non-user-facing issue | Normal sprint work | Ticket created | Next sprint |
+
+**The classification rule:** When in doubt, escalate. A SEV-2 that turns out to be a SEV-3 costs you 30 minutes of extra attention. A SEV-3 that's actually a SEV-1 costs you hours of delayed response while customers churn.
+
+---
+
+## Roles During an Incident
+
+### Incident Commander (IC)
+
+The IC doesn't fix the problem. The IC coordinates the response. This distinction is critical—the best debugger on the team should be debugging, not managing communications.
+
+**IC responsibilities:**
+- Declare the incident and assign severity
+- Open the incident channel (Slack, Teams, whatever your team uses)
+- Assign roles (who investigates, who communicates)
+- Make decisions when the team disagrees on approach
+- Track timeline for the postmortem
+- Declare incident resolved
+
+**Who should be IC:** Anyone on the team, rotated weekly. The IC doesn't need to be the most senior engineer—they need to be organized, calm under pressure, and willing to make decisions with incomplete information.
+
+### Technical Lead
+
+The engineer (or engineers) actively investigating and fixing the issue. They communicate findings to the IC, not to stakeholders directly.
+
+### Communications Lead
+
+Responsible for all external communication during the incident:
+- Customer-facing status page updates
+- Internal stakeholder updates (CEO, support, sales)
+- Drafting the initial postmortem summary
+
+---
+
+## The Incident Timeline
+
+### Minute 0-5: Detection and Declaration
+
+```markdown
+## Incident Template
+
+**Declared:** [timestamp]
+**Severity:** SEV-[1/2/3]
+**IC:** [name]
+**Technical Lead:** [name]
+**Communications Lead:** [name]
+
+**Summary:** [one sentence describing what's broken]
+**Impact:** [who is affected and how]
+**Status Page:** [link]
+
+**Timeline:**
+- [HH:MM] Issue detected via [monitoring/customer report/alert]
+- [HH:MM] Incident declared, severity assigned
+```
+
+The template exists so that at 3 AM, the IC doesn't have to think about format. They fill in the blanks and focus on coordination.
+
+### Minute 5-15: Triage and First Response
+
+The IC asks three questions:
+
+1. **What changed recently?** Check the deployment log. In 60-70% of incidents I've been involved with, the root cause was the most recent deploy.
+2. **Is the issue confined or spreading?** Check error rates across services. A single service failure is different from a cascading failure.
+3. **Can we restore service without fixing the root cause?** Revert, failover, or degrade.
+
+```bash
+# Quick triage commands
+# 1. Recent deploys
+git log --oneline --since="2 hours ago" origin/main
+
+# 2. Error rate spike
+curl -s http://prometheus:9090/api/v1/query?query=rate(http_requests_total{status=~"5.."}[5m])
+
+# 3. Service health
+curl -s https://yoursaas.com/api/health | jq
+```
+
+### Minute 15-30: Mitigation
+
+**Restore first, investigate later.** This is the most important principle in incident response.
+
+| Mitigation Option | Time to Restore | Risk |
+|---|---|---|
+| **Revert last deploy** | 2-5 min | Low (proven previous state) |
+| **Feature flag disable** | 30 sec | None (isolated change) |
+| **Failover to backup** | 5-15 min | Medium (backup freshness) |
+| **Scale up resources** | 5-10 min | Low (more capacity) |
+| **Degraded mode** | 1-5 min | Low (reduced functionality) |
+
+The IC decides which mitigation to pursue. If reverting the last deploy doesn't fix it, try the next option. Don't spend 30 minutes debugging when you could restore service in 5 minutes and debug afterward.
+
+### Minute 30+: Root Cause Investigation
+
+Only after service is restored do you investigate the root cause. This investigation can happen during business hours—it doesn't need to happen at 3 AM.
+
+---
+
+## Customer Communication
+
+Silence during an outage is worse than saying "we're investigating." Every minute without communication, customers assume you don't know there's a problem.
+
+### Status Page Templates
+
+**Initial notification (within 5 minutes of detection):**
+
+> We're investigating reports of [specific issue]. Some users may experience [specific impact]. Our team is actively working on this. We'll provide an update within 30 minutes.
+
+**Update (every 30 minutes during SEV-1, every hour during SEV-2):**
+
+> We've identified the cause of [specific issue] and are implementing a fix. [X%] of users are currently affected. We expect to resolve this within [estimated time]. We'll provide another update in [30 minutes/1 hour].
+
+**Resolution:**
+
+> The issue affecting [specific feature] has been resolved. Service has been fully restored as of [time]. We're conducting a thorough investigation and will share findings in our postmortem. We apologize for the disruption.
+
+### Communication Rules
+
+1. **Be specific.** "Some users may experience slow dashboard loading" is better than "we're experiencing issues."
+2. **Give a next update time.** "We'll update again in 30 minutes" sets expectations. Silence creates anxiety.
+3. **Don't promise a fix time you're not confident about.** "We're working to resolve this as quickly as possible" is better than "this will be fixed in 10 minutes" when you don't know that.
+4. **Acknowledge impact.** "We know this affects your ability to [specific workflow]" shows you understand the customer's problem.
+
+---
+
+## Blameless Postmortems
+
+The postmortem is where teams either improve or repeat the same mistakes. The key word is blameless—the goal is to improve the system, not to assign blame.
+
+### The Postmortem Template
+
+```markdown
+## Incident Postmortem: [Title]
+
+**Date:** [date]
+**Duration:** [start time] - [end time] ([total duration])
+**Severity:** SEV-[1/2/3]
+**Impact:** [number of users affected, revenue impact if measurable]
+
+### Summary
+[2-3 sentences describing what happened, in plain language]
+
+### Timeline
+- [HH:MM] [Event]
+- [HH:MM] [Event]
+- ...
+
+### Root Cause
+[Technical explanation of what caused the incident]
+
+### Contributing Factors
+- [Factor 1: e.g., "No automated rollback on error rate spike"]
+- [Factor 2: e.g., "Migration not tested against production-scale data"]
+
+### What Went Well
+- [e.g., "Detection happened within 2 minutes via automated alerting"]
+- [e.g., "Customer communication started within 5 minutes"]
+
+### What Went Poorly
+- [e.g., "Rollback took 15 minutes because CI pipeline was backed up"]
+- [e.g., "No runbook existed for this failure mode"]
+
+### Action Items
+| Action | Owner | Due Date | Priority |
+|--------|-------|----------|----------|
+| Add automated rollback trigger | [name] | [date] | P1 |
+| Create runbook for [scenario] | [name] | [date] | P2 |
+| Add monitoring for [metric] | [name] | [date] | P2 |
+```
+
+### Postmortem Rules
+
+1. **Held within 48 hours.** Memory fades. Details get lost. The postmortem loses value every day it's delayed.
+2. **Attended by everyone involved.** The IC, technical leads, communications lead, and any stakeholder who wants to attend.
+3. **No blame, no punishment.** If someone made a mistake, the question is "why did the system allow this mistake?" not "why did this person make this mistake?"
+4. **Action items have owners and due dates.** Action items without owners don't get done. I've reviewed postmortem archives where the same contributing factor appeared 3 times because the action item was never completed.
+
+---
+
+## On-Call That Doesn't Burn People Out
+
+### Rotation Structure
+
+| Team Size | Rotation Length | On-Call Window |
+|---|---|---|
+| 3-5 engineers | 1 week per person | 24/7 (follow the sun if possible) |
+| 6-10 engineers | 1 week primary + 1 week secondary | 24/7 with secondary backup |
+| 10+ engineers | Per-service ownership | Business hours + escalation |
+
+### On-Call Compensation
+
+I've seen teams lose their best engineers because on-call was unpaid, unrecognized, and unrelenting. At minimum:
+
+- **Stipend:** $500-1,000 per on-call week (adjust for your market)
+- **Time off:** If you're paged overnight, take the next morning off
+- **Recognition:** On-call load visible to leadership, factored into performance reviews
+
+### Reducing On-Call Burden
+
+Every incident should produce action items that make the next incident less likely or less painful:
+
+- **Runbooks** reduce investigation time from 20 minutes to 5 minutes
+- **Automated rollbacks** eliminate the most common mitigation step
+- **Better monitoring** catches issues before customers report them
+- **Feature flags** allow instant mitigation without deploys
+
+Track on-call burden: pages per week, MTTR, and time spent on incidents. If the trend isn't improving quarter over quarter, something in the feedback loop is broken.
+
+---
+
+## The Maturity Model
+
+| Level | Characteristics | MTTR | Incident Rate |
+|---|---|---|---|
+| **Level 1: Reactive** | No process, hero debugging | 2-4 hours | High |
+| **Level 2: Defined** | Severity levels, IC role, postmortems | 30-60 min | Medium |
+| **Level 3: Proactive** | Error budgets, automated rollbacks, runbooks | 10-15 min | Low |
+| **Level 4: Preventive** | Chaos engineering, pre-mortems, SLO-driven development | < 5 min | Rare |
+
+Most SaaS teams are at Level 1 or 2. Moving from Level 1 to Level 2 requires process documentation and role definition—no new tools. Moving from Level 2 to Level 3 requires monitoring investment and automation. Level 4 requires organizational commitment to reliability as a feature.
+
+---
+
+## When to Apply This
+
+- Your team has experienced a production incident and the response was chaotic
+- You're growing past 5 engineers and need structured on-call
+- Customers are churning due to reliability concerns
+- You're pursuing enterprise customers who require incident response SLAs
+
+## When NOT to Apply This
+
+- Solo founder pre-launch—your incident response process is "fix it yourself"
+- Consumer app where 15 minutes of downtime doesn't cause churn
+- Internal tools where the users are your own team
+
+---
+
+**Building an engineering team that handles incidents without panic?** I help CTOs implement incident response processes that reduce MTTR and improve team morale.
+
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Engineering leadership guidance
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Production systems with built-in operational excellence
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) — Operational maturity assessment
+
+---
+
+## Continue Reading
+
+**This post is part of the [Engineering Leadership: Founder to CTO](/blog/engineering-leadership-founder-to-cto)** — covering hiring, team scaling, technical strategy, and operational excellence.
+
+### More in This Series
+
+- [First Engineering Team Playbook](/blog/first-engineering-team-playbook) — Building your first 5 engineering hires
+- [Technical Hiring Framework](/blog/technical-hiring-framework) — Hiring engineers who ship
+- [IC to Tech Lead](/blog/ic-to-tech-lead) — The transition from individual contributor to leader
+- [Technical Debt Strategy](/blog/technical-debt-strategy) — Managing debt without stopping feature work
+
+### Related Guides
+
+- [Real-Time Performance Monitoring](/blog/real-time-performance-monitoring) — Monitoring that detects incidents before users notice
+- [SaaS Reliability Monitoring](/blog/saas-reliability-monitoring) — Uptime and reliability observability

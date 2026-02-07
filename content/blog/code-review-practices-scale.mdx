@@ -1,0 +1,264 @@
+---
+title: "Code Review Practices That Scale"
+description: "Code review at 5 engineers is a conversation. At 50, it's a bottleneck. Here's how to scale review practices without sacrificing quality—from async review protocols to automated gates that catch 80% of issues before a human looks at the PR."
+date: "2026-07-28"
+author: "Alex Mayhew"
+tags: ["code-review", "engineering-culture", "leadership", "automation", "developer-experience"]
+category: "business"
+readingTime: "13 min read"
+featured: false
+draft: true
+series: "engineering-leadership"
+image: "/images/blog/code-review-practices-scale-featured.webp"
+---
+
+## TL;DR
+
+Code review is the highest-leverage quality practice in software engineering—and the easiest to do poorly at scale. The pattern I see in growing teams: reviews become a bottleneck, PRs sit for 2-3 days, context switches kill productivity, and senior engineers spend 30-40% of their time reviewing instead of building. The fix isn't "review faster." It's automating what machines do better than humans (formatting, linting, type checking, test coverage) so human reviewers focus on what they're actually good at: architecture decisions, business logic correctness, and knowledge sharing. Teams that implement automated quality gates reduce review time from 45 minutes to 15 minutes per PR while catching more bugs—because the reviewer isn't fatigued from checking indentation.
+
+> **Part of the [Engineering Leadership: Founder to CTO](/blog/engineering-leadership-founder-to-cto)** — a comprehensive guide to scaling engineering teams and practices.
+
+---
+
+## The Review Bottleneck
+
+At 5 engineers, everyone reviews everyone's code. PRs get reviewed the same day. Knowledge spreads naturally.
+
+At 20 engineers, review becomes a queue management problem. Senior engineers are the bottleneck—they're the only ones qualified to review certain areas. Junior engineers wait 2-3 days for review. PRs grow larger because "while I'm waiting, I'll add more changes." Large PRs take longer to review. The cycle reinforces itself.
+
+I've measured this at 4 companies. The median PR cycle time (open to merge) grows from 4 hours at team size 5 to 52 hours at team size 20. That 48-hour increase isn't review time—it's wait time.
+
+---
+
+## The Automated Quality Gate
+
+Before a human sees the PR, automated checks should validate everything a machine can catch.
+
+### What to Automate
+
+| Check | Tool | What It Catches |
+|---|---|---|
+| **Formatting** | Prettier, Black, gofmt | Style inconsistencies (100% of formatting discussions eliminated) |
+| **Linting** | ESLint, Ruff, Clippy | Common bugs, unused variables, deprecated APIs |
+| **Type checking** | TypeScript strict, mypy | Type errors, null safety violations |
+| **Tests** | Jest, pytest, go test | Regressions, broken contracts |
+| **Test coverage** | Istanbul, Coverage.py | Untested code paths (set minimum: 80% on changed lines) |
+| **Security** | Snyk, CodeQL, Semgrep | Known vulnerabilities, injection patterns |
+| **Bundle size** | Bundlewatch, size-limit | Performance regressions (set a budget) |
+| **PR size** | Custom check | PRs over 400 lines need justification |
+
+```yaml
+# GitHub Actions: automated quality gate
+name: PR Quality Gate
+on: [pull_request]
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Format check
+        run: npx prettier --check .
+
+      - name: Lint
+        run: npx eslint . --max-warnings 0
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Tests with coverage
+        run: npx jest --coverage --changedSince=main
+
+      - name: Coverage threshold
+        run: |
+          COVERAGE=$(npx jest --coverage --changedSince=main --json | jq '.coverageMap | to_entries | map(.value.statementMap | length) | add')
+          if [ "$COVERAGE" -lt 80 ]; then
+            echo "Coverage on changed files below 80%"
+            exit 1
+          fi
+
+      - name: PR size check
+        run: |
+          LINES=$(gh pr diff ${{ github.event.pull_request.number }} --stat | tail -1 | awk '{print $4+$6}')
+          if [ "$LINES" -gt 400 ]; then
+            gh pr comment ${{ github.event.pull_request.number }} --body "This PR has $LINES changed lines. Consider splitting into smaller PRs for faster review."
+          fi
+```
+
+The goal: by the time a human reviewer opens the PR, they know formatting is correct, types check, tests pass, and there are no known security issues. They can focus entirely on logic, architecture, and design.
+
+---
+
+## What Human Reviewers Should Focus On
+
+With automation handling the mechanical checks, human review time is best spent on four areas:
+
+### 1. Architecture and Design Decisions
+
+- Does this approach fit the existing architecture?
+- Will this scale to 10x the current load?
+- Are there simpler ways to achieve the same result?
+- Does this introduce unnecessary coupling between modules?
+
+### 2. Business Logic Correctness
+
+- Does the implementation match the requirements?
+- Are edge cases handled (empty states, null values, concurrent access)?
+- Are the error messages helpful to users?
+- Is the behavior consistent with how similar features work?
+
+### 3. Readability and Maintainability
+
+- Could another engineer understand this code in 6 months?
+- Are names descriptive enough without being verbose?
+- Is the control flow easy to follow?
+- Would a comment help clarify a non-obvious decision?
+
+### 4. Knowledge Sharing
+
+- Point out patterns the author might not know about
+- Explain why an alternative approach would be better
+- Link to internal documentation or past decisions
+- Use the review as a teaching moment, not a gatekeeping exercise
+
+---
+
+## Review Protocol at Scale
+
+### Async-First Reviews
+
+Synchronous review (sitting together, walking through code) doesn't scale past 10 engineers across time zones. Async review with clear conventions scales to hundreds.
+
+**The async review contract:**
+
+| Rule | Detail |
+|---|---|
+| **Review within 4 business hours** | The reviewer commits to providing initial feedback within 4 hours of being assigned |
+| **Author responds within 4 hours** | The author responds to all comments within 4 hours |
+| **Two rounds maximum** | If the PR needs more than 2 rounds of review, have a synchronous conversation instead |
+| **Approval means "ship it"** | An approval is a commitment: "I believe this code is production-ready" |
+
+### Ownership-Based Routing
+
+Don't assign reviews randomly. Route them based on code ownership:
+
+```
+# CODEOWNERS file
+# Core infrastructure
+/src/lib/database/    @team-platform
+/src/lib/auth/        @team-platform
+
+# Feature areas
+/src/app/dashboard/   @team-product
+/src/app/billing/     @team-billing
+
+# Shared components
+/src/components/ui/   @team-frontend
+```
+
+CODEOWNERS ensures the reviewer has context on the code they're reviewing. A frontend engineer reviewing a database migration isn't providing useful feedback—they're rubber-stamping.
+
+### Small PRs by Default
+
+The single most effective change for review speed: smaller PRs.
+
+| PR Size | Review Time | Defect Density | Time to Merge |
+|---|---|---|---|
+| 1-100 lines | 10-15 min | Low | < 4 hours |
+| 100-250 lines | 20-30 min | Low-Medium | < 8 hours |
+| 250-500 lines | 45-60 min | Medium | 1-2 days |
+| 500+ lines | 60-90 min | High | 2-5 days |
+
+Studies from Google and Microsoft show that review quality drops significantly after 200-400 lines. Beyond 500 lines, reviewers miss more defects than they catch—their attention is exhausted.
+
+**How to enforce small PRs:**
+
+1. **Stacked PRs.** Break a feature into 3-5 sequential PRs that each build on the previous one.
+2. **Feature flags.** Ship incomplete features behind flags. Each PR adds one piece of functionality.
+3. **Automated PR size warnings.** The CI check mentioned above flags PRs over 400 lines.
+
+---
+
+## Review Anti-Patterns
+
+### The Rubber Stamp
+
+"LGTM" without substantive feedback. This happens when reviewers are overloaded—they approve to clear their queue, not because they've reviewed the code.
+
+**Fix:** Track approval time. If a PR is approved in under 3 minutes for a 200-line change, the reviewer didn't read it.
+
+### The Nitpick Review
+
+30 comments about naming conventions and zero comments about the actual logic. Nitpick reviews are the leading cause of review resentment.
+
+**Fix:** Automate style enforcement. If a comment could be a linter rule, it should be a linter rule.
+
+### The Architecture Astronaut
+
+"You should rewrite this entire module while you're in here." Scope creep in reviews delays shipping without proportional quality improvement.
+
+**Fix:** The "not in this PR" rule. If a suggestion isn't necessary for the current change to be production-ready, it goes in a follow-up ticket.
+
+### The Gatekeeper
+
+One senior engineer who must approve every PR. Creates a single point of failure and a permanent bottleneck.
+
+**Fix:** Define clear code ownership. Require approval from any member of the owning team, not a specific person. Two approvals from team members carry more confidence than one approval from a gatekeeper.
+
+---
+
+## Measuring Review Health
+
+Track these metrics monthly:
+
+| Metric | Healthy | Warning | Unhealthy |
+|---|---|---|---|
+| **Median time to first review** | < 4 hours | 4-8 hours | > 8 hours |
+| **Median PR cycle time** | < 24 hours | 24-48 hours | > 48 hours |
+| **Median review rounds** | 1.2 | 1.5-2.0 | > 2.0 |
+| **PR size (median lines)** | < 200 | 200-400 | > 400 |
+| **Review comment density** | 2-5 per 100 lines | 1-2 per 100 lines | < 1 per 100 lines |
+
+The last metric is counterintuitive. Too few comments per 100 lines suggests rubber-stamping. Too many suggests nitpicking or inadequate automated checks.
+
+---
+
+## When to Apply This
+
+- Your team is growing past 10 engineers and reviews are becoming a bottleneck
+- Median PR cycle time exceeds 24 hours
+- Senior engineers spend more than 25% of their time reviewing
+- Review quality is inconsistent across the team
+
+## When NOT to Apply This
+
+- Team of 3-5 engineers where everyone reviews everything naturally
+- Early-stage startup where shipping speed matters more than review process
+- Solo developer (code review is a team practice)
+
+---
+
+**Scaling your engineering team and code review is becoming a bottleneck?** I help teams design review processes that improve quality while accelerating delivery.
+
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Engineering team scaling guidance
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Teams with built-in quality practices
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) — Engineering process assessment
+
+---
+
+## Continue Reading
+
+**This post is part of the [Engineering Leadership: Founder to CTO](/blog/engineering-leadership-founder-to-cto)** — covering hiring, team scaling, technical strategy, and operational excellence.
+
+### More in This Series
+
+- [Technical Hiring Framework](/blog/technical-hiring-framework) — Hiring engineers who ship
+- [First Engineering Team Playbook](/blog/first-engineering-team-playbook) — Building your first 5 engineering hires
+- [Documentation That Engineers Actually Read](/blog/documentation-engineers-read) — Documentation as a scaling tool
+- [IC to Tech Lead](/blog/ic-to-tech-lead) — The transition from building to leading
+
+### Related Guides
+
+- [AI Code Review: Catching What LLMs Miss](/blog/ai-code-review) — AI-assisted review as a supplement to human review
+- [Technical Debt Strategy](/blog/technical-debt-strategy) — Managing quality at scale

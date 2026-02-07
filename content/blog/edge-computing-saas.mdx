@@ -1,0 +1,312 @@
+---
+title: "Edge Computing: When Worth the Complexity"
+description: "Edge computing promises sub-50ms latency worldwide. It also promises configuration nightmares, data consistency puzzles, and debugging sessions you'll regret. Here's the decision framework for when edge actually delivers ROI."
+date: "2026-05-05"
+author: "Alex Mayhew"
+tags: ["edge-computing", "performance", "cloudflare", "latency", "saas"]
+category: "infrastructure"
+readingTime: "14 min read"
+featured: false
+draft: true
+series: "performance-engineering"
+image: "/images/blog/edge-computing-saas-featured.webp"
+---
+
+## TL;DR
+
+Edge computing reduces latency by running code closer to users—30-50ms instead of 150-300ms for cross-continent requests. But the complexity cost is real: no persistent connections, cold storage access patterns change, debugging distributed state becomes a daily activity. I've helped 6 SaaS companies evaluate edge deployments. Three moved forward, three stayed on origin servers. The deciding factor wasn't latency—it was data locality. If 80%+ of your requests need data that lives in a single region, edge compute adds complexity without meaningful latency improvement. If your users are globally distributed and your read-to-write ratio exceeds 10:1, edge is worth the investment. The sweet spot: edge for authentication, static content, and read-heavy APIs. Origin for writes, transactions, and anything requiring strong consistency.
+
+> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — a comprehensive guide to building systems that stay fast under real-world load.
+
+---
+
+## The Latency Promise and the Complexity Tax
+
+A request from Tokyo to a us-east-1 origin server takes 150-200ms in network round-trip time alone. Before your application code runs a single line, the user has already waited 200ms. Add database queries, business logic, and response serialization, and you're looking at 400-800ms total.
+
+Move that same code to an edge node in Tokyo—Cloudflare's network has 310+ locations—and the network round-trip drops to 5-15ms. Your total response time falls to 50-150ms.
+
+That 300-500ms improvement sounds transformative. For some applications, it is. For others, it's a 300-500ms improvement that costs 200+ engineering hours to implement and maintain.
+
+The question isn't "is edge faster?" It's "does edge latency improvement justify the complexity cost for your specific use case?"
+
+---
+
+## The Edge Computing Decision Framework
+
+### Factor 1: User Distribution
+
+| User Distribution | Edge Benefit | Recommendation |
+|---|---|---|
+| 90%+ in one region | Minimal | Stay on origin. Use CDN for static assets. |
+| 60-90% in one region, rest scattered | Moderate | Edge for auth + reads, origin for writes |
+| Truly global (no region > 40%) | High | Full edge deployment with regional data stores |
+
+If your analytics show 85% of traffic from North America, deploying to the edge gives your European and Asian users a better experience—but they're 15% of your base. That's a meaningful improvement for a small audience. Whether it justifies the engineering investment depends on your growth plans.
+
+### Factor 2: Read-to-Write Ratio
+
+Edge compute works best for read-heavy workloads because reads can be served from cached or replicated data. Writes need to reach the source of truth.
+
+| Read:Write Ratio | Edge Architecture | Complexity |
+|---|---|---|
+| **50:1 or higher** | Cache everything at edge, async write-back | Low |
+| **10:1 to 50:1** | Edge reads with origin write-through | Medium |
+| **Below 10:1** | Origin for most requests, edge for auth only | Low |
+| **Below 3:1** | Don't use edge compute | None |
+
+SaaS dashboards typically have read:write ratios of 20:1 to 100:1. Users view data far more often than they modify it. This makes dashboards excellent edge candidates.
+
+### Factor 3: Data Consistency Requirements
+
+This is where edge architectures get complicated.
+
+**Strong consistency** (every read returns the latest write): Not possible at the edge without routing through the origin. The speed of light prevents a write in Tokyo and a read in Frankfurt from being consistent without coordination.
+
+**Eventual consistency** (reads may return stale data for a window): Works at the edge. Typical staleness window: 50ms to 5 seconds depending on replication strategy.
+
+**Read-your-writes consistency** (the user who wrote sees their own write immediately): Achievable at the edge by routing that specific user's reads through the origin for a short window after writes.
+
+```typescript
+// Cloudflare Worker: read-your-writes consistency pattern
+export default {
+  async fetch(request: Request, env: Env): Promise<Response> {
+    const userId = getUserId(request);
+    const lastWrite = await env.KV.get(`last-write:${userId}`);
+
+    if (lastWrite && Date.now() - parseInt(lastWrite) < 5000) {
+      // User wrote within 5 seconds — route to origin for consistency
+      return fetch(request, { cf: { resolveOverride: 'origin.yoursaas.com' } });
+    }
+
+    // Safe to serve from edge cache
+    const cached = await env.KV.get(`data:${userId}`, { cacheTtl: 60 });
+    if (cached) return new Response(cached, { headers: { 'Content-Type': 'application/json' } });
+
+    // Cache miss — fetch from origin and cache at edge
+    const response = await fetch(`https://origin.yoursaas.com/api/data/${userId}`);
+    const data = await response.text();
+    await env.KV.put(`data:${userId}`, data, { expirationTtl: 300 });
+
+    return new Response(data, { headers: { 'Content-Type': 'application/json' } });
+  },
+};
+```
+
+---
+
+## Architecture Patterns for Edge SaaS
+
+### Pattern 1: Edge Auth, Origin Everything Else
+
+The simplest edge pattern. Move authentication and session validation to the edge. Everything else stays at the origin.
+
+**Why it works:** Authentication is a read-heavy operation (validate token on every request) with infrequent writes (login, logout, token refresh). JWT validation is purely computational—no database needed.
+
+```typescript
+// Edge middleware: validate JWT without hitting origin
+async function authenticateAtEdge(request: Request): Promise<Response | null> {
+  const token = request.headers.get('Authorization')?.replace('Bearer ', '');
+  if (!token) return new Response('Unauthorized', { status: 401 });
+
+  try {
+    const payload = await verifyJWT(token, env.JWT_PUBLIC_KEY);
+
+    // Add user context to request headers for origin
+    const modifiedRequest = new Request(request, {
+      headers: new Headers({
+        ...Object.fromEntries(request.headers),
+        'X-User-Id': payload.sub,
+        'X-User-Role': payload.role,
+        'X-Tenant-Id': payload.tenantId,
+      }),
+    });
+
+    return fetch(modifiedRequest); // Forward to origin with user context
+  } catch {
+    return new Response('Invalid token', { status: 401 });
+  }
+}
+```
+
+**Latency improvement:** 100-200ms saved per request (eliminates origin round-trip for auth).
+**Complexity cost:** Low. JWT validation is stateless and deterministic.
+
+### Pattern 2: Edge Reads with Write-Through
+
+Read requests served from edge-cached data. Write requests forwarded to origin, with the edge cache invalidated or updated on response.
+
+```typescript
+// Edge worker: read from KV, write through to origin
+async function handleRequest(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url);
+
+  if (request.method === 'GET') {
+    // Try edge cache first
+    const cacheKey = `${url.pathname}:${getUserId(request)}`;
+    const cached = await env.KV.get(cacheKey);
+
+    if (cached) {
+      return new Response(cached, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Cache': 'HIT',
+          'X-Edge-Location': request.cf?.colo || 'unknown',
+        },
+      });
+    }
+
+    // Cache miss — fetch from origin
+    const response = await fetch(request);
+    const data = await response.text();
+
+    // Cache at edge for 5 minutes
+    await env.KV.put(cacheKey, data, { expirationTtl: 300 });
+
+    return new Response(data, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Cache': 'MISS',
+      },
+    });
+  }
+
+  // Writes go to origin, then invalidate edge cache
+  const response = await fetch(request);
+
+  if (response.ok) {
+    const cacheKey = `${url.pathname}:${getUserId(request)}`;
+    await env.KV.delete(cacheKey);
+
+    // Record write timestamp for read-your-writes consistency
+    await env.KV.put(
+      `last-write:${getUserId(request)}`,
+      Date.now().toString(),
+      { expirationTtl: 10 }
+    );
+  }
+
+  return response;
+}
+```
+
+**Latency improvement:** 200-400ms saved on read requests (80-95% of traffic).
+**Complexity cost:** Medium. Cache invalidation logic, consistency windows, and debugging distributed state.
+
+### Pattern 3: Full Edge with Regional Data
+
+For truly global applications, replicate data to regional edge databases. Cloudflare D1, Turso (libSQL), and Neon's edge cache all support this pattern.
+
+| Technology | Replication | Consistency | Read Latency | Write Latency |
+|---|---|---|---|---|
+| **Cloudflare D1** | Global (automatic) | Eventual (single writer) | 1-5ms | 50-200ms (to primary) |
+| **Turso (libSQL)** | Multi-region (configured) | Eventual (single writer) | 1-10ms | 50-150ms (to primary) |
+| **Neon Edge Cache** | Read replicas | Eventual | 5-20ms | Origin round-trip |
+| **PlanetScale** | Multi-region (Vitess) | Eventual | 5-15ms | 50-100ms (to primary) |
+
+The "single writer" constraint is the critical limitation. All writes route to a primary region. Reads serve from the nearest replica. Write latency doesn't improve—it's still an origin round-trip. Read latency drops to near-zero.
+
+For a SaaS dashboard with a 50:1 read:write ratio, this means 98% of requests complete in under 20ms.
+
+---
+
+## Cost Analysis
+
+Edge computing isn't free, and the pricing models are different from traditional compute.
+
+### Cloudflare Workers
+
+- **Free tier:** 100,000 requests/day
+- **Paid:** $0.30 per million requests + $0.02 per million ms CPU time
+- **KV storage:** $0.50/million reads, $5.00/million writes, $0.50/GB stored
+
+### AWS Lambda@Edge
+
+- **Compute:** $0.60 per million requests + $0.00005001 per GB-second
+- **No free tier** for Lambda@Edge (unlike regular Lambda)
+- **Cold starts:** 5-30ms (vs. near-zero for Cloudflare Workers)
+
+### Practical Example
+
+A SaaS with 10M monthly API requests (80% reads, 20% writes):
+
+| Component | Cloudflare Workers | Lambda@Edge | Origin Only (us-east-1) |
+|---|---|---|---|
+| Compute | $3.00/month | $6.00/month | $15.00/month (EC2) |
+| Storage/Cache | $4.50/month (KV) | $12.00/month (DynamoDB DAX) | $0 (in-process) |
+| Total | ~$7.50/month | ~$18.00/month | ~$15.00/month |
+| p50 latency (global) | 30ms | 45ms | 180ms |
+| p99 latency (global) | 80ms | 200ms | 500ms |
+
+The cost difference is negligible. The latency difference is significant. The complexity cost is where the real tradeoff lives—and that's measured in engineering hours, not dollars.
+
+---
+
+## The Edge Debugging Problem
+
+Debugging edge applications is the part that nobody warns you about in the marketing materials.
+
+When a request fails at the edge, you need to answer: Which edge location? What was the cache state? Was the origin reachable? Did the edge function timeout? Was the KV read stale?
+
+### Essential Observability
+
+```typescript
+// Structured logging at the edge
+function logEdgeRequest(request: Request, response: Response, timing: number) {
+  console.log(JSON.stringify({
+    timestamp: new Date().toISOString(),
+    method: request.method,
+    path: new URL(request.url).pathname,
+    status: response.status,
+    colo: request.cf?.colo,
+    country: request.cf?.country,
+    cache: response.headers.get('X-Cache'),
+    duration_ms: timing,
+    user_id: request.headers.get('X-User-Id'),
+  }));
+}
+```
+
+Without structured logging that includes the edge location (`colo`), you'll spend hours trying to reproduce issues that only happen at specific edge nodes.
+
+---
+
+## When to Apply This
+
+- Your users are globally distributed (no single region > 60% of traffic)
+- Your read:write ratio exceeds 10:1
+- Latency is a competitive differentiator (real-time collaboration, trading platforms, gaming)
+- Your team has experience with distributed systems and eventual consistency
+
+## When NOT to Apply This
+
+- 80%+ of users are in one region—use a CDN for static assets instead
+- Your application is write-heavy (CRM data entry, content management)
+- Your team is under 10 engineers and doesn't have distributed systems experience
+- You're pre-product-market-fit—optimize for iteration speed, not latency
+
+---
+
+**Evaluating whether edge computing makes sense for your SaaS?** I help teams make this decision without the 6-month trial-and-error phase.
+
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Architecture decisions from MVP to scale
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Edge-ready frontend architectures
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) — Pre-investment infrastructure assessment
+
+---
+
+## Continue Reading
+
+**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — covering latency optimization, caching strategies, monitoring, and infrastructure patterns.
+
+### More in This Series
+
+- [CDN Caching Strategy](/blog/cdn-caching-strategy) — Multi-layer caching that actually invalidates correctly
+- [The Lambda Tax: Cold Starts and Hidden Costs](/blog/lambda-tax-cold-starts) — When serverless costs more than servers
+- [Core Web Vitals Audit Checklist](/blog/core-web-vitals-2026-audit) — The 2026 update with INP optimization
+- [Database Migration Patterns](/blog/database-migration-patterns) — Zero-downtime operations at scale
+
+### Related Guides
+
+- [Multi-Region SaaS Architecture](/blog/multi-region-saas-architecture) — Global replication and data residency
+- [SaaS Reliability Monitoring](/blog/saas-reliability-monitoring) — Observability across distributed infrastructure

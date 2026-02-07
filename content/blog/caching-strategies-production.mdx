@@ -1,0 +1,401 @@
+---
+title: "Caching Strategies That Actually Work"
+description: "Everyone knows caching improves performance. Few teams implement it correctly. Here's the multi-layer caching architecture I recommend to SaaS teams—with the invalidation strategies that prevent stale data from becoming a support ticket."
+date: "2026-06-02"
+author: "Alex Mayhew"
+tags: ["caching", "redis", "cdn", "performance", "saas"]
+category: "infrastructure"
+readingTime: "15 min read"
+featured: false
+draft: true
+series: "performance-engineering"
+image: "/images/blog/caching-strategies-production-featured.webp"
+---
+
+## TL;DR
+
+Caching is a solved problem that teams keep solving wrong. The pattern I see repeatedly: Redis cache in front of PostgreSQL, no invalidation strategy, stale data for 5-30 minutes after writes, and support tickets asking "why doesn't my change show up?" The fix is a multi-layer caching architecture with explicit invalidation at each layer. Application-level cache with write-through invalidation handles 80% of cases. CDN edge caching handles the other 20%. Redis is rarely the right first choice for SaaS applications—HTTP caching headers and in-process caches (Map, LRU) eliminate 60-80% of database queries without the operational overhead of a cache cluster. When you do need Redis, use it for session state and rate limiting, not as a general-purpose query cache.
+
+> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — a comprehensive guide to building systems that stay fast under real-world load.
+
+---
+
+## The Caching Pyramid
+
+Most teams reach for Redis first. This is backwards. The most effective caching strategy uses multiple layers, each with different performance characteristics and invalidation costs.
+
+```
+┌────────────────────────────┐
+│      Browser Cache         │  ← Fastest (0ms), hardest to invalidate
+├────────────────────────────┤
+│      CDN / Edge Cache      │  ← 5-20ms, stale-while-revalidate
+├────────────────────────────┤
+│   In-Process Cache (LRU)   │  ← 0.01ms, eviction-based
+├────────────────────────────┤
+│   Distributed Cache (Redis)│  ← 1-5ms, explicit invalidation
+├────────────────────────────┤
+│       Database             │  ← 5-50ms, source of truth
+└────────────────────────────┘
+```
+
+Start at the top. Each layer you skip means unnecessary latency and infrastructure.
+
+---
+
+## Layer 1: HTTP Cache Headers (Free Performance)
+
+Before writing a single line of caching code, configure your HTTP cache headers correctly. This alone eliminates 30-60% of requests to your origin server.
+
+### Static Assets
+
+```typescript
+// Next.js: static assets get immutable caching automatically
+// For custom routes serving static content:
+export async function GET() {
+  const data = await getStaticContent();
+
+  return Response.json(data, {
+    headers: {
+      'Cache-Control': 'public, max-age=31536000, immutable',
+      'ETag': generateETag(data),
+    },
+  });
+}
+```
+
+`immutable` tells the browser: this content will never change at this URL. Use content-hashed URLs (`style.a1b2c3.css`) for truly immutable assets. This eliminates revalidation requests entirely.
+
+### Dynamic API Responses
+
+```typescript
+// SaaS dashboard: data that changes infrequently
+export async function GET(request: Request) {
+  const tenantId = getTenantId(request);
+  const dashboardData = await getDashboardMetrics(tenantId);
+
+  return Response.json(dashboardData, {
+    headers: {
+      // Private: only browser caches, not CDN (tenant-specific data)
+      'Cache-Control': 'private, max-age=60, stale-while-revalidate=300',
+      'ETag': generateETag(dashboardData),
+    },
+  });
+}
+```
+
+The `stale-while-revalidate` directive is the most underused caching feature. It tells the browser: "serve the stale response immediately, then revalidate in the background." Users get instant responses while the cache refreshes asynchronously.
+
+### The Cache-Control Decision Matrix
+
+| Content Type | Cache-Control | Max-Age | Invalidation |
+|---|---|---|---|
+| Hashed static assets | `public, immutable` | 1 year | URL change (new hash) |
+| Unhashed static assets | `public, must-revalidate` | 1 hour | ETag comparison |
+| Per-user API data | `private, stale-while-revalidate` | 60s | Time-based + SWR |
+| Shared API data | `public, s-maxage` | 5 min | CDN purge on write |
+| Real-time data | `no-store` | 0 | N/A |
+| Auth tokens | `no-store, no-cache` | 0 | N/A |
+
+---
+
+## Layer 2: In-Process Cache (Zero Latency)
+
+An in-process cache—a Map or LRU cache in your application's memory—has zero network latency. For data that's read frequently and changes infrequently, this is faster than Redis by 100-1000x.
+
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const configCache = new LRUCache<string, TenantConfig>({
+  max: 10000,        // Maximum 10K entries
+  ttl: 1000 * 60 * 5, // 5-minute TTL
+  updateAgeOnGet: true, // Reset TTL on read
+});
+
+async function getTenantConfig(tenantId: string): Promise<TenantConfig> {
+  const cached = configCache.get(tenantId);
+  if (cached) return cached;
+
+  const config = await db.query(
+    'SELECT * FROM tenant_configs WHERE tenant_id = $1',
+    [tenantId]
+  );
+
+  configCache.set(tenantId, config);
+  return config;
+}
+
+// Invalidate on write
+async function updateTenantConfig(tenantId: string, updates: Partial<TenantConfig>) {
+  await db.query(
+    'UPDATE tenant_configs SET config = $1 WHERE tenant_id = $2',
+    [updates, tenantId]
+  );
+
+  // Immediate invalidation — next read hits the database
+  configCache.delete(tenantId);
+}
+```
+
+### When In-Process Cache Fails
+
+**Multi-instance deployments.** If your application runs on 4 instances behind a load balancer, each instance has its own cache. A write on instance 1 doesn't invalidate the cache on instances 2-4. Users get inconsistent data depending on which instance serves their request.
+
+**Solutions by complexity:**
+
+| Approach | Consistency | Complexity |
+|---|---|---|
+| **Short TTL (30-60s)** | Eventually consistent | None |
+| **Redis pub/sub invalidation** | Near-instant | Medium |
+| **Sticky sessions** | Strong for same user | Low |
+
+For most SaaS applications, a 30-60 second TTL is sufficient. Users don't expect real-time updates on configuration pages—they expect changes to take effect "soon."
+
+---
+
+## Layer 3: Redis (When You Actually Need It)
+
+Redis is an excellent tool for specific use cases. It's a terrible general-purpose query cache for SaaS applications.
+
+### Good Redis Use Cases
+
+**Session storage:**
+
+```typescript
+// Session store with Redis — user state across instances
+async function getSession(sessionId: string): Promise<Session | null> {
+  const data = await redis.get(`session:${sessionId}`);
+  if (!data) return null;
+
+  // Extend session TTL on every access
+  await redis.expire(`session:${sessionId}`, 3600);
+  return JSON.parse(data);
+}
+```
+
+**Rate limiting:**
+
+```typescript
+// Sliding window rate limiter
+async function checkRateLimit(
+  userId: string,
+  limit: number,
+  windowMs: number
+): Promise<{ allowed: boolean; remaining: number }> {
+  const key = `rate:${userId}`;
+  const now = Date.now();
+  const windowStart = now - windowMs;
+
+  const pipeline = redis.pipeline();
+  pipeline.zremrangebyscore(key, 0, windowStart);
+  pipeline.zadd(key, now, `${now}`);
+  pipeline.zcard(key);
+  pipeline.expire(key, Math.ceil(windowMs / 1000));
+
+  const results = await pipeline.exec();
+  const count = results[2][1] as number;
+
+  return {
+    allowed: count <= limit,
+    remaining: Math.max(0, limit - count),
+  };
+}
+```
+
+**Pub/sub for cache invalidation:**
+
+```typescript
+// Publisher: invalidate cache across all instances
+async function invalidateCache(key: string) {
+  await redis.publish('cache-invalidation', JSON.stringify({
+    key,
+    timestamp: Date.now(),
+  }));
+}
+
+// Subscriber: each application instance listens
+redis.subscribe('cache-invalidation', (message) => {
+  const { key } = JSON.parse(message);
+  localCache.delete(key);
+});
+```
+
+### Bad Redis Use Cases
+
+**General query caching** where the invalidation logic is more complex than the original query:
+
+```typescript
+// BAD: caching a complex query result in Redis
+async function getOrderSummary(tenantId: string) {
+  const cached = await redis.get(`orders:summary:${tenantId}`);
+  if (cached) return JSON.parse(cached);
+
+  const summary = await db.query(`
+    SELECT status, COUNT(*), SUM(total)
+    FROM orders WHERE tenant_id = $1
+    GROUP BY status
+  `, [tenantId]);
+
+  // How do you invalidate this?
+  // - When an order is created?
+  // - When an order status changes?
+  // - When an order total is modified?
+  // - When an order is deleted?
+  // Every write to the orders table potentially invalidates this cache.
+  await redis.set(`orders:summary:${tenantId}`, JSON.stringify(summary), 'EX', 300);
+
+  return summary;
+}
+```
+
+This creates a cache that's stale 80% of the time and correct 20% of the time. The TTL-based invalidation means users see data that's up to 5 minutes old. Support tickets follow.
+
+**The better approach:** Optimize the query itself. Add appropriate indexes. Use materialized views if the aggregation is expensive. The database is already good at this—you don't need to outsource the problem to Redis.
+
+---
+
+## Cache Invalidation Patterns
+
+Cache invalidation is genuinely hard, but the difficulty is proportional to the pattern you choose.
+
+### Write-Through (Simplest)
+
+Every write updates both the database and the cache atomically. The cache is always current.
+
+```typescript
+async function updateUser(userId: string, data: UserUpdate) {
+  // Update database
+  const user = await db.query(
+    'UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *',
+    [data.name, data.email, userId]
+  );
+
+  // Update cache with fresh data
+  await cache.set(`user:${userId}`, user);
+
+  return user;
+}
+```
+
+**Downside:** Every write pays the cache update cost even if nobody reads the value before the next write.
+
+### Write-Behind (More Complex)
+
+Writes update the cache immediately and asynchronously flush to the database.
+
+**I don't recommend this for SaaS applications.** The risk of data loss during cache failures is too high for business-critical data. Use write-through or invalidate-on-write instead.
+
+### Event-Based Invalidation
+
+For multi-layer caches, use database triggers or application events to invalidate all cache layers:
+
+```typescript
+// Event-based cache invalidation across all layers
+class CacheInvalidator {
+  private layers: CacheLayer[];
+
+  constructor(layers: CacheLayer[]) {
+    this.layers = layers;
+  }
+
+  async invalidate(pattern: string) {
+    await Promise.all(
+      this.layers.map((layer) => layer.invalidate(pattern))
+    );
+  }
+}
+
+// Usage
+const invalidator = new CacheInvalidator([
+  new LocalCacheLayer(localLRU),
+  new RedisCacheLayer(redis),
+  new CDNCacheLayer(cloudflareApi),
+]);
+
+// After any order modification
+orderEvents.on('order.updated', async (orderId, tenantId) => {
+  await invalidator.invalidate(`order:${orderId}`);
+  await invalidator.invalidate(`orders:list:${tenantId}`);
+});
+```
+
+---
+
+## The Metrics That Matter
+
+### Cache Hit Rate
+
+Target: **90%+ for application caches, 95%+ for CDN.**
+
+```typescript
+// Track cache hit/miss rates
+let hits = 0;
+let misses = 0;
+
+function getCached(key: string) {
+  const value = cache.get(key);
+  if (value) {
+    hits++;
+    return value;
+  }
+  misses++;
+  return null;
+}
+
+// Expose as a metric
+function getCacheHitRate(): number {
+  const total = hits + misses;
+  return total === 0 ? 0 : hits / total;
+}
+```
+
+A hit rate below 80% means your TTL is too short, your cache is too small, or you're caching the wrong things.
+
+### Cache Miss Penalty
+
+The time difference between a cache hit and a cache miss. If your cache miss takes 500ms and your cache hit takes 5ms, your cache miss penalty is 495ms. Users who experience a cache miss get a 100x slower response.
+
+### Stale Data Window
+
+The maximum time between a write and when all caches reflect the update. For most SaaS applications, a 5-second stale window is acceptable. For financial data or inventory systems, it needs to be under 1 second.
+
+---
+
+## When to Apply This
+
+- Your database query latency exceeds 50ms on frequently accessed endpoints
+- The same data is read 10x or more for every write
+- Your application serves 1,000+ requests per second on read-heavy endpoints
+- You're hitting database connection limits during traffic spikes
+
+## When NOT to Apply This
+
+- Your application is write-heavy (caches get invalidated faster than they're read)
+- Your data changes every request (real-time streaming, live collaboration)
+- Your database handles the load comfortably with proper indexing
+- You have fewer than 100 concurrent users
+
+---
+
+**Need help designing a caching architecture that doesn't create more problems than it solves?** I help SaaS teams build multi-layer caching that improves performance without sacrificing data consistency.
+
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Architecture decisions from MVP to scale
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Production-grade caching strategies
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) — Performance and architecture assessment
+
+---
+
+## Continue Reading
+
+**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — covering database optimization, edge computing, monitoring, and zero-downtime operations.
+
+### More in This Series
+
+- [CDN Caching Strategy](/blog/cdn-caching-strategy) — CDN-specific caching patterns and invalidation
+- [Edge Computing: When Worth the Complexity](/blog/edge-computing-saas) — Edge caching for global SaaS applications
+- [Node.js Memory Leaks in Production](/blog/nodejs-memory-leaks) — When your in-process cache becomes a memory leak
+- [Database Migration Patterns](/blog/database-migration-patterns) — Zero-downtime operations at scale
+
+### Related Guides
+
+- [Database Query Optimization](/blog/database-query-optimization) — Optimize queries before caching them
+- [SaaS Reliability Monitoring](/blog/saas-reliability-monitoring) — Monitor cache hit rates and miss penalties

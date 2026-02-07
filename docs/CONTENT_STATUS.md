@@ -1,7 +1,7 @@
 # Content Status - alexmayhew.dev
 
-> **Last Updated:** 2026-02-06
-> **Status:** Hub-and-Spoke Complete + Newsletter System Implemented
+> **Last Updated:** 2026-02-07
+> **Status:** Hub-and-Spoke Complete + 16 Drafted Spokes + Newsletter System Implemented
 
 ---
 
@@ -9,8 +9,8 @@
 
 The alexmayhew.dev blog has been restructured into a **hub-and-spoke content architecture** with 5 comprehensive guide hubs and 39 spoke posts. All internal linking, cross-cluster linking, and featured images are complete.
 
-**Total Content:** 45 blog posts (5 hubs + 39 spokes + 1 standalone) + 9 newsletter emails (5 welcome + 4 issues)
-**Note:** Spoke counts reflect actual MDX frontmatter `series` values, not topical overlap. `hello-world` is a standalone post (no series).
+**Total Content:** 61 blog posts (5 hubs + 39 published spokes + 16 drafted spokes + 1 standalone) + 9 newsletter emails (5 welcome + 4 issues)
+**Note:** Spoke counts reflect actual MDX frontmatter `series` values, not topical overlap. `hello-world` is a standalone post (no series). Drafted spokes have `draft: true` in frontmatter and are scheduled for publication Mar 2 – Oct 6, 2026.
 
 ---
 
@@ -102,7 +102,7 @@ Newsletter content links back to these blog hubs and spokes:
    ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐
    │  SaaS   │ │ Eng     │ │Frontend │ │ Perf    │ │   AI    │
    │  Arch   │ │ Leader  │ │  Arch   │ │  Eng    │ │  Dev    │
-   │  (13)   │ │  (6)    │ │  (9)    │ │  (5)    │ │  (6)    │
+   │ (13+2)  │ │ (6+4)   │ │ (9+2)   │ │ (5+5)   │ │ (6+3)   │
    └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘
         │           │             │             │           │
         ▼           ▼             ▼             ▼           ▼
@@ -120,65 +120,67 @@ All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Gui
 
 - **Slug:** `saas-architecture-decision-framework`
 - **Series:** `saas-architecture`
-- **Spoke Count:** 13 posts
+- **Spoke Count:** 13 published + 2 drafted = 15 posts
 - **Featured Image:** ✅ `saas-architecture-decision-framework-featured.webp`
-- **Status:** ✅ Complete
+- **Status:** ✅ Complete (2 drafted spokes publishing Sep–Oct 2026)
 
 ### 2. Engineering Leadership: Founder to CTO
 
 - **Slug:** `engineering-leadership-founder-to-cto`
 - **Series:** `engineering-leadership`
-- **Spoke Count:** 6 posts
+- **Spoke Count:** 6 published + 4 drafted = 10 posts
 - **Featured Image:** ✅ `engineering-leadership-founder-to-cto-featured.webp`
-- **Status:** ✅ Complete
+- **Status:** ✅ Complete (4 drafted spokes publishing May–Sep 2026)
 
 ### 3. Modern Frontend Architecture
 
 - **Slug:** `modern-frontend-architecture`
 - **Series:** `frontend-architecture`
-- **Spoke Count:** 9 posts
+- **Spoke Count:** 9 published + 2 drafted = 11 posts
 - **Featured Image:** ✅ `modern-frontend-architecture-featured.webp`
-- **Status:** ✅ Complete
+- **Status:** ✅ Complete (2 drafted spokes publishing Jul–Aug 2026)
 
 ### 4. Performance Engineering Playbook
 
 - **Slug:** `performance-engineering-playbook`
 - **Series:** `performance-engineering`
-- **Spoke Count:** 5 posts
+- **Spoke Count:** 5 published + 5 drafted = 10 posts
 - **Featured Image:** ✅ `performance-engineering-playbook-featured.webp`
-- **Status:** ✅ Complete
+- **Status:** ✅ Complete (5 drafted spokes publishing Mar–Jul 2026)
 
 ### 5. AI-Assisted Development Guide
 
 - **Slug:** `ai-assisted-development-guide`
 - **Series:** `ai-development`
-- **Spoke Count:** 6 posts
+- **Spoke Count:** 6 published + 3 drafted = 9 posts
 - **Featured Image:** ✅ `ai-assisted-development-guide-featured.webp`
-- **Status:** ✅ Complete
+- **Status:** ✅ Complete (3 drafted spokes publishing Mar–Jun 2026)
 
 ---
 
 ## Spoke Posts by Cluster
 
-### SaaS Architecture (13 posts)
+### SaaS Architecture (13 published + 2 drafted)
 
-| Post                            | Status                    |
-| ------------------------------- | ------------------------- |
-| multi-tenancy-prisma-rls        | ✅ Linked                 |
-| zero-to-10k-mrr-saas-playbook   | ✅ Linked                 |
-| 500k-architecture-mistake       | ✅ Linked                 |
-| anatomy-of-high-precision-saas  | ✅ Linked                 |
-| multi-region-saas-architecture  | ✅ Linked                 |
-| rest-api-design-mistakes        | ✅ Linked                 |
-| soc2-compliance-startup-roadmap | ✅ Linked                 |
-| tech-stack-capital-allocation   | ✅ Linked + Cross-cluster |
-| build-vs-buy                    | ✅ Linked + Cross-cluster |
-| boring-technology-wins          | ✅ Linked + Cross-cluster |
-| database-query-optimization     | ✅ Linked                 |
-| event-driven-architecture-saas  | ✅ Linked                 |
-| saas-reliability-monitoring     | ✅ Linked                 |
+| Post                             | Status                    |
+| -------------------------------- | ------------------------- |
+| multi-tenancy-prisma-rls         | ✅ Linked                 |
+| zero-to-10k-mrr-saas-playbook    | ✅ Linked                 |
+| 500k-architecture-mistake        | ✅ Linked                 |
+| anatomy-of-high-precision-saas   | ✅ Linked                 |
+| multi-region-saas-architecture   | ✅ Linked                 |
+| rest-api-design-mistakes         | ✅ Linked                 |
+| soc2-compliance-startup-roadmap  | ✅ Linked                 |
+| tech-stack-capital-allocation    | ✅ Linked + Cross-cluster |
+| build-vs-buy                     | ✅ Linked + Cross-cluster |
+| boring-technology-wins           | ✅ Linked + Cross-cluster |
+| database-query-optimization      | ✅ Linked                 |
+| event-driven-architecture-saas   | ✅ Linked                 |
+| saas-reliability-monitoring      | ✅ Linked                 |
+| hidden-tax-supporting-both       | 📝 Draft (publish Sep 22) |
+| saas-billing-stripe-architecture | 📝 Draft (publish Oct 6)  |
 
-### Engineering Leadership (6 posts)
+### Engineering Leadership (6 published + 4 drafted)
 
 | Post                            | Status                    |
 | ------------------------------- | ------------------------- |
@@ -188,8 +190,12 @@ All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Gui
 | first-engineering-team-playbook | ✅ Linked                 |
 | technical-hiring-framework      | ✅ Linked                 |
 | technical-debt-strategy         | ✅ Linked + Cross-cluster |
+| incident-response-saas          | 📝 Draft (publish May 19) |
+| code-review-practices-scale     | 📝 Draft (publish Jul 28) |
+| documentation-engineers-read    | 📝 Draft (publish Aug 25) |
+| hiring-first-staff-engineer     | 📝 Draft (publish Sep 8)  |
 
-### Frontend Architecture (9 posts)
+### Frontend Architecture (9 published + 2 drafted)
 
 | Post                                 | Status                    |
 | ------------------------------------ | ------------------------- |
@@ -202,27 +208,37 @@ All hubs marked `isHub: true` in frontmatter and displayed in "Comprehensive Gui
 | optimistic-ui                        | ✅ Linked                 |
 | atmospheric-animations-framer-motion | ✅ Linked                 |
 | typescript-business-case             | ✅ Linked + Cross-cluster |
+| testing-react-server-components      | 📝 Draft (publish Jul 1)  |
+| state-management-2026                | 📝 Draft (publish Aug 11) |
 
-### Performance Engineering (5 posts)
+### Performance Engineering (5 published + 5 drafted)
 
-| Post                         | Status                    |
-| ---------------------------- | ------------------------- |
-| core-web-vitals-optimization | ✅ Linked                 |
-| cdn-caching-strategy         | ✅ Linked                 |
-| rsc-edge-death-of-waterfall  | ✅ Linked + Cross-cluster |
-| nodejs-memory-leaks          | ✅ Linked                 |
-| lambda-tax-cold-starts       | ✅ Linked                 |
+| Post                             | Status                    |
+| -------------------------------- | ------------------------- |
+| core-web-vitals-optimization     | ✅ Linked                 |
+| cdn-caching-strategy             | ✅ Linked                 |
+| rsc-edge-death-of-waterfall      | ✅ Linked + Cross-cluster |
+| nodejs-memory-leaks              | ✅ Linked                 |
+| lambda-tax-cold-starts           | ✅ Linked                 |
+| database-migration-patterns      | 📝 Draft (publish Mar 2)  |
+| core-web-vitals-2026-audit       | 📝 Draft (publish Apr 1)  |
+| edge-computing-saas              | 📝 Draft (publish May 5)  |
+| caching-strategies-production    | 📝 Draft (publish Jun 2)  |
+| real-time-performance-monitoring | 📝 Draft (publish Jul 14) |
 
-### AI Development (6 posts)
+### AI Development (6 published + 3 drafted)
 
-| Post                                    | Status    |
-| --------------------------------------- | --------- |
-| ai-assisted-development-generative-debt | ✅ Linked |
-| ai-code-review                          | ✅ Linked |
-| llm-integration-architecture            | ✅ Linked |
-| prompt-engineering-developers           | ✅ Linked |
-| building-ai-features-users-want         | ✅ Linked |
-| ai-cost-optimization                    | ✅ Linked |
+| Post                                    | Status                    |
+| --------------------------------------- | ------------------------- |
+| ai-assisted-development-generative-debt | ✅ Linked                 |
+| ai-code-review                          | ✅ Linked                 |
+| llm-integration-architecture            | ✅ Linked                 |
+| prompt-engineering-developers           | ✅ Linked                 |
+| building-ai-features-users-want         | ✅ Linked                 |
+| ai-cost-optimization                    | ✅ Linked                 |
+| rag-architecture-saas                   | 📝 Draft (publish Mar 16) |
+| vector-database-selection               | 📝 Draft (publish Apr 14) |
+| llm-cost-optimization-scale             | 📝 Draft (publish Jun 16) |
 
 ---
 

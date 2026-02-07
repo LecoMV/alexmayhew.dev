@@ -1,0 +1,302 @@
+---
+title: "Vector Databases: When to Build vs Buy"
+description: "Every SaaS adding AI features faces the vector database decision. pgvector on your existing PostgreSQL, a managed service like Pinecone, or a dedicated engine like Qdrant? Here's the decision framework based on your data scale, query patterns, and team capacity."
+date: "2026-04-14"
+author: "Alex Mayhew"
+tags: ["vector-database", "ai", "postgresql", "pgvector", "saas"]
+category: "architecture"
+readingTime: "14 min read"
+featured: false
+draft: true
+series: "ai-development"
+image: "/images/blog/vector-database-selection-featured.webp"
+---
+
+## TL;DR
+
+Start with pgvector. For 80% of SaaS AI features, pgvector on your existing PostgreSQL handles the load, keeps your infrastructure simple, and performs well up to 5-10 million vectors. The teams that need a dedicated vector database are processing 10M+ vectors, require sub-10ms query latency at scale, or need advanced filtering that pgvector doesn't support efficiently. Pinecone is the right choice for teams that want zero operational overhead. Qdrant is the right choice for teams that want control and performance. Weaviate is the right choice for teams that need built-in hybrid search. The wrong choice: adopting a dedicated vector database before you need one, adding infrastructure complexity for a feature that might get 100 queries per day.
+
+> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** — a comprehensive guide to building AI features that deliver real value.
+
+---
+
+## The Decision Before the Decision
+
+Before evaluating vector databases, answer two questions:
+
+**1. How many vectors will you store?**
+
+| Scale | Count | Recommendation |
+|---|---|---|
+| Small | Under 100K | pgvector, no question |
+| Medium | 100K - 5M | pgvector with HNSW indexes |
+| Large | 5M - 50M | Dedicated vector database |
+| Massive | 50M+ | Managed service or custom infrastructure |
+
+**2. What's your query latency requirement?**
+
+| Requirement | Latency | Recommendation |
+|---|---|---|
+| Relaxed | < 500ms | pgvector handles this easily |
+| Standard | < 100ms | pgvector with HNSW up to 5M vectors |
+| Strict | < 10ms | Dedicated vector database with in-memory indexes |
+| Real-time | < 5ms | Dedicated vector database, edge deployment |
+
+If both answers point to pgvector, stop reading and use pgvector. Every additional infrastructure component you add is a liability.
+
+---
+
+## Option 1: pgvector (Start Here)
+
+pgvector is a PostgreSQL extension that adds vector data types, similarity search operators, and indexing. It runs on your existing database.
+
+### Setup
+
+```sql
+-- Enable the extension
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- Create a table with vector column
+CREATE TABLE document_embeddings (
+  id BIGSERIAL PRIMARY KEY,
+  document_id BIGINT REFERENCES documents(id),
+  chunk_index INT NOT NULL,
+  content TEXT NOT NULL,
+  embedding vector(1536), -- matches OpenAI text-embedding-3-small dimensions
+  metadata JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Create HNSW index for fast approximate nearest neighbor search
+CREATE INDEX ON document_embeddings
+  USING hnsw (embedding vector_cosine_ops)
+  WITH (m = 16, ef_construction = 200);
+```
+
+### Performance Characteristics
+
+| Vector Count | Query Latency (HNSW) | Recall@10 | Memory Usage |
+|---|---|---|---|
+| 10K | 1-3ms | 99% | 50MB |
+| 100K | 3-8ms | 98% | 500MB |
+| 1M | 8-25ms | 97% | 5GB |
+| 5M | 20-60ms | 95% | 25GB |
+| 10M | 50-150ms | 93% | 50GB |
+
+These benchmarks are on a 4 vCPU, 16GB RAM PostgreSQL instance with 1536-dimensional vectors and HNSW indexing (m=16, ef_construction=200).
+
+### The pgvector Sweet Spot
+
+```typescript
+// Full-stack search with pgvector — no additional infrastructure
+async function searchDocuments(
+  queryEmbedding: number[],
+  tenantId: string,
+  topK: number = 10
+): Promise<SearchResult[]> {
+  const results = await db.query(`
+    SELECT
+      d.id,
+      d.content,
+      d.metadata,
+      1 - (d.embedding <=> $1::vector) AS similarity
+    FROM document_embeddings d
+    WHERE d.metadata->>'tenant_id' = $2
+    ORDER BY d.embedding <=> $1::vector
+    LIMIT $3
+  `, [JSON.stringify(queryEmbedding), tenantId, topK]);
+
+  return results.rows;
+}
+```
+
+The killer advantage: tenant filtering happens in the same query as vector search. No need to coordinate between a vector database and your application database. Multi-tenancy, access control, and vector search in a single SQL query.
+
+### pgvector Limitations
+
+1. **No built-in hybrid search.** You need a separate full-text search (PostgreSQL `tsvector`) and manual result merging.
+2. **Memory pressure.** HNSW indexes live in shared memory. At 10M+ vectors, the index competes with your application queries for RAM.
+3. **No horizontal scaling.** pgvector runs on a single PostgreSQL instance. You can't shard across nodes without a managed PostgreSQL service like Neon or Citus.
+4. **Recall degrades at scale.** Above 5M vectors, HNSW recall drops below 95% without tuning `ef_search` (which increases latency).
+
+---
+
+## Option 2: Dedicated Vector Databases
+
+When pgvector's limitations become real constraints—not hypothetical ones—consider a dedicated vector database.
+
+### Pinecone (Managed, Zero Ops)
+
+| Attribute | Details |
+|---|---|
+| **Hosting** | Fully managed (serverless or dedicated pods) |
+| **Max vectors** | Billions (serverless), limited by pod size (pods) |
+| **Query latency** | 10-50ms (serverless), 5-20ms (pods) |
+| **Pricing** | Serverless: $0.008/1K queries + $0.33/1M vectors stored/month |
+| **Metadata filtering** | Yes, pre-filter before search |
+| **Hybrid search** | Yes (sparse-dense vectors) |
+
+**Best for:** Teams that want zero infrastructure management and are willing to pay a premium for it. Pinecone's serverless tier handles bursty workloads without capacity planning.
+
+```typescript
+import { Pinecone } from '@pinecone-database/pinecone';
+
+const pinecone = new Pinecone({ apiKey: process.env.PINECONE_API_KEY });
+const index = pinecone.index('documents');
+
+async function search(embedding: number[], tenantId: string) {
+  const results = await index.namespace(tenantId).query({
+    vector: embedding,
+    topK: 10,
+    includeMetadata: true,
+    filter: { status: { $eq: 'published' } },
+  });
+
+  return results.matches;
+}
+```
+
+Pinecone's namespace feature maps cleanly to multi-tenant SaaS: one namespace per tenant, isolated vector spaces, no cross-tenant leakage.
+
+### Qdrant (Self-Hosted, High Performance)
+
+| Attribute | Details |
+|---|---|
+| **Hosting** | Self-hosted (Docker/K8s) or Qdrant Cloud |
+| **Max vectors** | Billions (with disk-based storage) |
+| **Query latency** | 3-15ms (memory), 10-50ms (disk) |
+| **Pricing** | Open source (self-hosted), or $0.044/hr (Cloud) |
+| **Metadata filtering** | Advanced (nested, array, geo, full-text) |
+| **Hybrid search** | Yes (sparse vectors + payload filtering) |
+
+**Best for:** Teams that want control over their infrastructure and need advanced filtering capabilities. Qdrant's filtering is the most powerful among dedicated vector databases.
+
+### Weaviate (Hybrid Search Native)
+
+| Attribute | Details |
+|---|---|
+| **Hosting** | Self-hosted (Docker/K8s) or Weaviate Cloud |
+| **Max vectors** | Billions |
+| **Query latency** | 5-25ms |
+| **Pricing** | Open source (self-hosted), or usage-based (Cloud) |
+| **Metadata filtering** | GraphQL-based, object-oriented |
+| **Hybrid search** | Built-in BM25 + vector, single query |
+
+**Best for:** Teams that need hybrid search (BM25 + vector) as a first-class feature without building the merge logic themselves.
+
+---
+
+## Cost Comparison
+
+For a SaaS with 1M vectors and 50K queries/day:
+
+| Solution | Monthly Cost | Includes |
+|---|---|---|
+| **pgvector (existing DB)** | $0 incremental | Runs on existing PostgreSQL |
+| **pgvector (dedicated instance)** | $100-200 | db.m7g.large on RDS |
+| **Pinecone Serverless** | ~$165 | $0.33/M vectors + $0.008/K queries |
+| **Pinecone Pods (s1.x1)** | ~$70/month | Single pod, 1M vectors |
+| **Qdrant Cloud** | ~$150 | 2GB RAM node |
+| **Qdrant (self-hosted)** | ~$40 | t3.medium instance |
+| **Weaviate Cloud** | ~$175 | Standard tier |
+
+pgvector on your existing database costs literally nothing extra. This is why it's the default recommendation.
+
+---
+
+## The Migration Path
+
+Start with pgvector. If and when you hit its limits, migrate to a dedicated vector database. The migration is straightforward because the data model is simple: vectors + metadata.
+
+```typescript
+// Migration script: pgvector → Qdrant
+async function migrateToQdrant() {
+  const batchSize = 1000;
+  let offset = 0;
+
+  while (true) {
+    const rows = await db.query(`
+      SELECT id, content, embedding, metadata
+      FROM document_embeddings
+      ORDER BY id
+      LIMIT $1 OFFSET $2
+    `, [batchSize, offset]);
+
+    if (rows.rowCount === 0) break;
+
+    await qdrantClient.upsert('documents', {
+      points: rows.rows.map((row) => ({
+        id: row.id,
+        vector: row.embedding,
+        payload: {
+          content: row.content,
+          ...row.metadata,
+        },
+      })),
+    });
+
+    offset += batchSize;
+    console.log(`Migrated ${offset} vectors`);
+  }
+}
+```
+
+The migration is a one-time data copy. Your application code changes are minimal—swap the search function implementation, keep the interface the same.
+
+---
+
+## Decision Framework
+
+```
+Do you have > 5M vectors?
+├── No → Use pgvector
+└── Yes → Do you need < 10ms latency?
+    ├── No → pgvector with tuned HNSW (ef_search=200+)
+    └── Yes → Do you want zero ops?
+        ├── Yes → Pinecone
+        └── No → Do you need advanced filtering?
+            ├── Yes → Qdrant
+            └── No → Do you need native hybrid search?
+                ├── Yes → Weaviate
+                └── No → Qdrant (best price/performance)
+```
+
+---
+
+## When to Apply This
+
+- You're building an AI feature that needs semantic search over your product's data
+- You have a knowledge base, documentation set, or customer data that users need to query
+- You need to store and search document embeddings for RAG, recommendation, or similarity features
+
+## When NOT to Apply This
+
+- You need exact keyword search only—use PostgreSQL full-text search or Elasticsearch
+- Your "AI feature" is a single prompt with no retrieval—you don't need a vector database
+- Your dataset fits in memory as a flat list—brute force search is fast enough under 10K vectors
+
+---
+
+**Choosing a vector database for your SaaS AI feature?** I help teams make this decision based on their actual data scale and query requirements—not vendor marketing.
+
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — AI infrastructure decisions
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — AI-powered features in production
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) — AI architecture assessment
+
+---
+
+## Continue Reading
+
+**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** — covering AI integration patterns, cost optimization, and building features users want.
+
+### More in This Series
+
+- [RAG Architecture for SaaS Products](/blog/rag-architecture-saas) — End-to-end retrieval-augmented generation
+- [AI Cost Optimization](/blog/ai-cost-optimization) — Reducing AI infrastructure costs
+- [LLM Integration Architecture](/blog/llm-integration-architecture) — Patterns for integrating LLMs into existing systems
+- [Prompt Engineering for Developers](/blog/prompt-engineering-developers) — Systematic prompt design
+
+### Related Guides
+
+- [Database Query Optimization](/blog/database-query-optimization) — Optimizing PostgreSQL queries including pgvector
+- [LLM Cost Optimization at Scale](/blog/llm-cost-optimization-scale) — Total cost management for AI features

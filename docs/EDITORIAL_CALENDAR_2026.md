@@ -33,14 +33,14 @@
 
 ### March
 
-| Week       | Type          | Title                                           | Hub/Pillar        | Status  |
-| ---------- | ------------- | ----------------------------------------------- | ----------------- | ------- |
-| Mar 2 (A)  | Blog          | Database Migrations That Won't Wake You at 3 AM | SaaS Architecture | Planned |
-| Mar 4      | Newsletter #5 | Database Migrations (feature blog)              | architecture      | Planned |
-| Mar 10 (B) | Newsletter #6 | The Architecture Decision I Regret Most         | architecture      | Planned |
-| Mar 16 (A) | Blog          | RAG Architecture for SaaS Products              | AI Development    | Planned |
-| Mar 18     | Newsletter #7 | RAG Architecture (feature blog)                 | ai-development    | Planned |
-| Mar 24 (B) | Newsletter #8 | How I Replaced $500/mo in API Costs             | performance       | Planned |
+| Week       | Type          | Title                                           | Hub/Pillar              | Status  |
+| ---------- | ------------- | ----------------------------------------------- | ----------------------- | ------- |
+| Mar 2 (A)  | Blog          | Database Migrations That Won't Wake You at 3 AM | Performance Engineering | Drafted |
+| Mar 4      | Newsletter #5 | Database Migrations (feature blog)              | architecture            | Drafted |
+| Mar 10 (B) | Newsletter #6 | The Architecture Decision I Regret Most         | architecture            | Drafted |
+| Mar 16 (A) | Blog          | RAG Architecture for SaaS Products              | AI Development          | Drafted |
+| Mar 18     | Newsletter #7 | RAG Architecture (feature blog)                 | ai-development          | Drafted |
+| Mar 24 (B) | Newsletter #8 | How I Replaced $500/mo in API Costs             | performance             | Drafted |
 
 ---
 
@@ -50,34 +50,88 @@
 
 | Week       | Type           | Title                                         | Hub/Pillar              | Status  |
 | ---------- | -------------- | --------------------------------------------- | ----------------------- | ------- |
-| Apr 1 (A)  | Blog           | Core Web Vitals Audit Checklist (2026 Update) | Performance Engineering | Planned |
-| Apr 1      | Newsletter #9  | Core Web Vitals Audit (feature blog)          | performance             | Planned |
-| Apr 8 (B)  | Newsletter #10 | The Real Cost of Technical Debt               | architecture            | Planned |
-| Apr 14 (A) | Blog           | Vector Databases: When to Build vs Buy        | AI Development          | Planned |
-| Apr 15     | Newsletter #11 | Vector Databases (feature blog)               | ai-development          | Planned |
-| Apr 22 (B) | Newsletter #12 | Code Review That Actually Adds Value          | leadership              | Planned |
+| Apr 1 (A)  | Blog           | Core Web Vitals Audit Checklist (2026 Update) | Performance Engineering | Drafted |
+| Apr 1      | Newsletter #9  | Core Web Vitals Audit (feature blog)          | performance             | Drafted |
+| Apr 8 (B)  | Newsletter #10 | The Real Cost of Technical Debt               | architecture            | Drafted |
+| Apr 14 (A) | Blog           | Vector Databases: When to Build vs Buy        | AI Development          | Drafted |
+| Apr 15     | Newsletter #11 | Vector Databases (feature blog)               | ai-development          | Drafted |
+| Apr 22 (B) | Newsletter #12 | Code Review That Actually Adds Value          | leadership              | Drafted |
 
 ### May
 
 | Week       | Type           | Title                                     | Hub/Pillar              | Status  |
 | ---------- | -------------- | ----------------------------------------- | ----------------------- | ------- |
-| May 5 (A)  | Blog           | Edge Computing: When Worth the Complexity | Performance Engineering | Planned |
-| May 6      | Newsletter #13 | Edge Computing (feature blog)             | performance             | Planned |
-| May 12 (B) | Newsletter #14 | Hiring Your First Staff Engineer          | leadership              | Planned |
-| May 19 (A) | Blog           | Incident Response Playbook for SaaS Teams | Engineering Leadership  | Planned |
-| May 20     | Newsletter #15 | Incident Response (feature blog)          | leadership              | Planned |
-| May 27 (B) | Newsletter #16 | Choosing Between REST and GraphQL in 2026 | architecture            | Planned |
+| May 5 (A)  | Blog           | Edge Computing: When Worth the Complexity | Performance Engineering | Drafted |
+| May 6      | Newsletter #13 | Edge Computing (feature blog)             | performance             | Drafted |
+| May 12 (B) | Newsletter #14 | Hiring Your First Staff Engineer          | leadership              | Drafted |
+| May 19 (A) | Blog           | Incident Response Playbook for SaaS Teams | Engineering Leadership  | Drafted |
+| May 20     | Newsletter #15 | Incident Response (feature blog)          | leadership              | Drafted |
+| May 27 (B) | Newsletter #16 | Choosing Between REST and GraphQL in 2026 | architecture            | Drafted |
 
 ### June
 
 | Week       | Type           | Title                                 | Hub/Pillar              | Status  |
 | ---------- | -------------- | ------------------------------------- | ----------------------- | ------- |
-| Jun 2 (A)  | Blog           | Caching Strategies That Actually Work | Performance Engineering | Planned |
-| Jun 3      | Newsletter #17 | Caching Strategies (feature blog)     | performance             | Planned |
-| Jun 9 (B)  | Newsletter #18 | When to Denormalize Your Database     | saas-patterns           | Planned |
-| Jun 16 (A) | Blog           | LLM Cost Optimization at Scale        | AI Development          | Planned |
-| Jun 23     | Newsletter #19 | LLM Cost Optimization (feature blog)  | ai-development          | Planned |
-| Jun 30 (B) | Newsletter #20 | Q2 Retrospective: What Worked         | —                       | Planned |
+| Jun 2 (A)  | Blog           | Caching Strategies That Actually Work | Performance Engineering | Drafted |
+| Jun 3      | Newsletter #17 | Caching Strategies (feature blog)     | performance             | Drafted |
+| Jun 9 (B)  | Newsletter #18 | When to Denormalize Your Database     | saas-patterns           | Drafted |
+| Jun 16 (A) | Blog           | LLM Cost Optimization at Scale        | AI Development          | Drafted |
+| Jun 23     | Newsletter #19 | LLM Cost Optimization (feature blog)  | ai-development          | Drafted |
+| Jun 30 (B) | Newsletter #20 | Q2 Retrospective: What Worked         | —                       | Drafted |
+
+---
+
+## Q3 2026 (July – September)
+
+### July
+
+| Week       | Type           | Title                                          | Hub/Pillar              | Status  |
+| ---------- | -------------- | ---------------------------------------------- | ----------------------- | ------- |
+| Jul 1 (A)  | Blog           | Testing Strategies for React Server Components | Frontend Architecture   | Drafted |
+| Jul 1      | Newsletter #21 | Testing RSCs (feature blog)                    | frontend                | Drafted |
+| Jul 7 (B)  | Newsletter #22 | The Real Cost of "Write Tests Later"           | leadership              | Drafted |
+| Jul 14 (A) | Blog           | Real-Time Performance Monitoring at Scale      | Performance Engineering | Drafted |
+| Jul 15     | Newsletter #23 | Performance Monitoring (feature blog)          | performance             | Drafted |
+| Jul 21 (B) | Newsletter #24 | When Averages Lie: Percentile Monitoring       | performance             | Drafted |
+| Jul 28 (A) | Blog           | Code Review Practices That Scale               | Engineering Leadership  | Drafted |
+| Jul 29     | Newsletter #25 | Code Review Practices (feature blog)           | leadership              | Drafted |
+
+### August
+
+| Week       | Type           | Title                                        | Hub/Pillar             | Status  |
+| ---------- | -------------- | -------------------------------------------- | ---------------------- | ------- |
+| Aug 4 (B)  | Newsletter #26 | Automating What Humans Shouldn't Review      | leadership             | Drafted |
+| Aug 11 (A) | Blog           | State Management in 2026: Zustand vs Signals | Frontend Architecture  | Drafted |
+| Aug 12     | Newsletter #27 | State Management (feature blog)              | frontend               | Drafted |
+| Aug 18 (B) | Newsletter #28 | Redux Is Dead (For Most Apps)                | frontend               | Drafted |
+| Aug 25 (A) | Blog           | Documentation That Engineers Actually Read   | Engineering Leadership | Drafted |
+| Aug 26     | Newsletter #29 | Documentation (feature blog)                 | leadership             | Drafted |
+
+### September
+
+| Week       | Type           | Title                                 | Hub/Pillar             | Status  |
+| ---------- | -------------- | ------------------------------------- | ---------------------- | ------- |
+| Sep 1 (B)  | Newsletter #30 | The Documentation Half-Life Problem   | leadership             | Drafted |
+| Sep 8 (A)  | Blog           | Hiring Your First Staff Engineer      | Engineering Leadership | Drafted |
+| Sep 9      | Newsletter #31 | Hiring Staff Engineers (feature blog) | leadership             | Drafted |
+| Sep 15 (B) | Newsletter #32 | The $200K Mistake: Supporting "Both"  | architecture           | Drafted |
+| Sep 22 (A) | Blog           | The Hidden Tax of "We Support Both"   | SaaS Architecture      | Drafted |
+| Sep 23     | Newsletter #33 | Hidden Tax (feature blog)             | architecture           | Drafted |
+| Sep 29 (B) | Newsletter #34 | Q3 Retrospective                      | —                      | Drafted |
+
+---
+
+## Q4 2026 (October – December)
+
+### October
+
+| Week       | Type           | Title                                 | Hub/Pillar        | Status  |
+| ---------- | -------------- | ------------------------------------- | ----------------- | ------- |
+| Oct 6 (A)  | Blog           | SaaS Billing Architecture with Stripe | SaaS Architecture | Drafted |
+| Oct 7      | Newsletter #35 | Billing Architecture (feature blog)   | architecture      | Drafted |
+| Oct 13 (B) | Newsletter #36 | Revenue Leakage: The Silent Killer    | architecture      | Drafted |
+
+_Q4 remaining weeks TBD — year-in-review and contrarian series content planned._
 
 ---
 
@@ -85,39 +139,40 @@
 
 New blog posts should extend existing hubs. Prioritize clusters with fewer spokes or higher business relevance.
 
-### SaaS Architecture (currently 13 spokes)
+### SaaS Architecture (currently 11 spokes + 2 drafted)
 
-- [ ] Database migration patterns for multi-tenant SaaS
+- [x] The Hidden Tax of "We Support Both" — `draft: true`, publish Sep 22
+- [x] SaaS Billing Architecture with Stripe — `draft: true`, publish Oct 6
 - [ ] Event-driven architecture for SaaS at scale
 - [ ] Serverless vs containers for SaaS workloads
-- [ ] SaaS billing architecture with Stripe
 
-### Engineering Leadership (currently 6 spokes)
+### Engineering Leadership (currently 6 spokes + 4 drafted)
 
-- [ ] Incident response playbook for SaaS teams
-- [ ] Code review practices that scale
-- [ ] Documentation that engineers actually read
-- [ ] Hiring your first staff engineer
+- [x] Incident Response Playbook for SaaS Teams — `draft: true`, publish May 19
+- [x] Code Review Practices That Scale — `draft: true`, publish Jul 28
+- [x] Documentation That Engineers Actually Read — `draft: true`, publish Aug 25
+- [x] Hiring Your First Staff Engineer — `draft: true`, publish Sep 8
 
-### Frontend Architecture (currently 9 spokes)
+### Frontend Architecture (currently 8 spokes + 2 drafted)
 
-- [ ] Testing strategies for React Server Components
+- [x] Testing Strategies for React Server Components — `draft: true`, publish Jul 1
+- [x] State Management in 2026: Zustand vs Signals vs Server State — `draft: true`, publish Aug 11
 - [ ] Monorepo patterns with Turborepo
-- [ ] State management: Zustand vs signals vs server state
 - [ ] Progressive Web Apps for SaaS
 
-### Performance Engineering (currently 5 spokes — needs 3 more in Q2-Q3)
+### Performance Engineering (currently 5 spokes + 5 drafted)
 
-- [ ] Core Web Vitals audit checklist (2026 update)
-- [ ] Edge computing deep-dive
-- [ ] Caching strategies (Redis, CDN, application-level)
-- [ ] Real-time performance monitoring at scale
+- [x] Database Migrations That Won't Wake You at 3 AM — `draft: true`, publish Mar 2
+- [x] Core Web Vitals Audit Checklist (2026 Update) — `draft: true`, publish Apr 1
+- [x] Edge Computing: When Worth the Complexity — `draft: true`, publish May 5
+- [x] Caching Strategies That Actually Work — `draft: true`, publish Jun 2
+- [x] Real-Time Performance Monitoring at Scale — `draft: true`, publish Jul 14
 
-### AI Development (currently 6 spokes)
+### AI Development (currently 6 spokes + 3 drafted)
 
-- [ ] RAG architecture for SaaS products
-- [ ] Vector database comparison and selection guide
-- [ ] LLM cost optimization at scale
+- [x] RAG Architecture for SaaS Products — `draft: true`, publish Mar 16
+- [x] Vector Databases: When to Build vs Buy — `draft: true`, publish Apr 14
+- [x] LLM Cost Optimization at Scale — `draft: true`, publish Jun 16
 - [ ] Building AI features that users actually adopt
 
 ---
@@ -190,10 +245,23 @@ Format: Under 280 chars, no links (270% reach penalty), no hashtags, standalone 
 
 Full cross-post of blog content with canonical URL back to alexmayhew.dev.
 
-### Current Schedule (Feb 9 - Mar 5, 2026)
+### Current Schedule
 
-16 LinkedIn posts + 13 X tweets + 4 Dev.to cross-posts scheduled in Postiz.
-See Postiz DB or dashboard for full schedule. Generated from existing blog library.
+**Batch 1 (Feb 9 - Mar 6, 2026):** 16 LinkedIn + 13 X + 4 Dev.to = 33 posts. Generated from existing blog library.
+
+**Batch 2 (Mar 9 - Oct 8, 2026):** 64 LinkedIn + 48 X + 8 Dev.to = 120 posts. Pre-generated for all 16 drafted blog posts. Social content files in `content/social/`. SQL insert script: `content/social/postiz-bulk-insert.sql`.
+
+**Total queued:** 164 posts covering Feb 4 through Oct 8, 2026.
+
+### Social Content Files
+
+| File                                        | Cluster                 | Posts | LinkedIn | X   | Dev.to |
+| ------------------------------------------- | ----------------------- | ----- | -------- | --- | ------ |
+| `content/social/performance-engineering.md` | Performance Engineering | 5     | 20       | 15  | 5      |
+| `content/social/engineering-leadership.md`  | Engineering Leadership  | 4     | 16       | 12  | 4      |
+| `content/social/ai-development.md`          | AI Development          | 3     | 12       | 9   | 3      |
+| `content/social/frontend-architecture.md`   | Frontend Architecture   | 2     | 8        | 6   | 2      |
+| `content/social/saas-architecture.md`       | SaaS Architecture       | 2     | 8        | 6   | 2      |
 
 ### Pipeline
 
@@ -204,4 +272,4 @@ Blog push to main
   → Postiz API schedules to correct day/time
 ```
 
-See `docs/CONTENT_REPURPOSING_SYSTEM.md` for generation templates and prompts.
+For the 16 batch posts, social content was pre-generated by Claude (bypassing Gemma 2 9B) and bulk-inserted directly via SQL. See `docs/CONTENT_REPURPOSING_SYSTEM.md` for generation templates and prompts.
