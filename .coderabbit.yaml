@@ -67,4 +67,3 @@ reviews:
 chat:
   # Enable conversational reviews
   auto_reply: true
-
