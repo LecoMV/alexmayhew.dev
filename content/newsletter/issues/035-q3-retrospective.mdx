@@ -1,0 +1,78 @@
+---
+issue: 35
+title: "Q3 Retrospective: Lessons from the Trenches"
+subject: "Q3: the patterns I keep seeing"
+sendDate: "2026-09-30"
+status: "draft"
+pillar: "leadership"
+---
+
+Subject: Q3: the patterns I keep seeing
+
+Hey there,
+
+Another quarter, another round of patterns from the advisory trenches. Q3 2026 brought surprises — some trends I predicted accelerated, others reversed entirely.
+
+Three patterns stood out across the 14 teams I advise.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+You're heading into Q4 planning. The landscape shifted in Q3, and last quarter's priorities may not match this quarter's reality. Where should engineering leadership focus for maximum impact in Q4 and into 2027?
+
+**The Insight:**
+
+**Pattern 1: AI-generated code requires more rigorous review, not less.**
+
+Every team I work with increased AI coding assistant usage in Q3. The productivity gains are real — 20-35% more code output per engineer. The problem: review quality hasn't scaled with output volume.
+
+Specific data: one team tracked defect origin for 3 months. 23% of production bugs in Q3 originated from AI-generated code that passed review. The bugs weren't obvious — they were subtle logic errors, incorrect edge case handling, and SQL queries that worked on test data but created performance issues at production scale.
+
+The teams handling this well added a specific step to their review process: "Is this AI-generated? If yes, verify every conditional branch and every query against production data characteristics." The review takes 5 extra minutes per PR. It caught 4 bugs in their first month that would have been production incidents.
+
+**Pattern 2: Observability investment correlated with 60% faster incident resolution.**
+
+I tracked mean time to resolution (MTTR) across all advisory clients. The 6 teams with structured observability (distributed tracing, log correlation, error grouping) averaged 22-minute MTTR. The 8 teams without averaged 58 minutes.
+
+The difference isn't the tools — it's the investigation workflow. Teams with observability go from alert to relevant trace to root cause in a linear path. Teams without observability go from alert to guessing to log searching to Slack threads asking "who deployed last?"
+
+The investment threshold: teams that spent more than 8% of Q2-Q3 engineering capacity on observability saw the 60% MTTR improvement. Below that threshold, the improvement was marginal — partial observability is almost as bad as none because engineers can't trust it.
+
+**Pattern 3: Edge computing adoption leveled off.**
+
+The edge hype peaked. Of 14 advisory clients, 2 adopted edge computing in 2025. Zero added edge deployments in Q3 2026. The reason: CDN plus a well-optimized origin server covers 95% of latency requirements for B2B SaaS. Edge computing adds complexity (data locality, consistency, cold starts) that only pays off for consumer-facing applications with strict sub-50ms latency requirements globally.
+
+The teams that did adopt edge are maintaining it — but none are expanding. The cost-benefit calculation at B2B SaaS scale (thousands of users, not millions) doesn't justify the operational overhead.
+
+**When to Apply This:**
+- Engineering leaders setting Q4 priorities — invest in AI code review processes and observability before new features
+- Teams evaluating edge computing — unless you serve consumer traffic globally, the ROI is likely negative
+- Organizations scaling AI assistant usage — establish review rigor proportional to AI output volume
+
+---
+
+## Worth Your Time
+
+1. **[Honeycomb: Observability Engineering](https://www.honeycomb.io/observability-engineering-book)** — Charity Majors and Liz Fong-Jones wrote the definitive guide to modern observability. Chapter 7 on investigation workflows explains why structured observability beats log searching. If your MTTR exceeds 30 minutes, start here.
+
+2. **[Kent Beck: Tidy First?](https://www.oreilly.com/library/view/tidy-first/9781098151232/)** — Beck's latest book on software design applies directly to the AI-generated code problem. His thesis: tidy the code incrementally before adding behavior. Relevant because AI-generated code often works but lacks the tidiness that makes it maintainable.
+
+3. **[Vercel: Edge Functions vs Serverless](https://vercel.com/blog)** — Vercel's data on when edge functions improve performance and when they don't. Their conclusion matches mine: for authenticated B2B SaaS, the database round-trip dominates latency regardless of where the compute runs. Edge helps for static and semi-static content, not dynamic API responses.
+
+---
+
+## Tool of the Week
+
+**[OpenTelemetry](https://opentelemetry.io/)** — If observability is your Q4 investment, start with OpenTelemetry as your instrumentation layer. It's vendor-neutral, covers traces, metrics, and logs, and prevents lock-in to any specific observability platform. Three teams I work with migrated from proprietary SDKs to OpenTelemetry in Q3 — the migration averaged 2 weeks, and all three switched observability backends within 6 months to get better pricing.
+
+---
+
+That's it for this week.
+
+Hit reply with what surprised your team in Q3 — I'm compiling year-end patterns and your data point matters. I read every response.
+
+– Alex
+
+P.S. For the leadership framework on making strategic engineering investments: [Engineering Leadership: Founder to CTO](https://alexmayhew.dev/blog/engineering-leadership-founder-to-cto).

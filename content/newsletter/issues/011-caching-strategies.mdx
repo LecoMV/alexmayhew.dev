@@ -1,0 +1,92 @@
+---
+issue: 11
+title: "Where Should You Add Caching First?"
+subject: "Stop reaching for Redis before checking HTTP headers"
+sendDate: "2026-06-03"
+status: "draft"
+pillar: "performance"
+---
+
+Subject: Stop reaching for Redis before checking HTTP headers
+
+Hey there,
+
+A startup I advise was processing 180K API requests per hour. Dashboard load times averaged 3.2 seconds. Their plan: add Redis, cache database queries, deploy a new service. Estimated effort: 3 weeks.
+
+I asked them to add one HTTP header to their three heaviest endpoints. Dashboard load time dropped to 400ms. The Redis project quietly disappeared from the sprint.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your dashboard is slow. Your API handles 180K requests per hour, and response times are climbing. The team proposes Redis. It sounds right — caching is the standard answer to "it's slow."
+
+**The Insight:**
+Redis is layer 4 in a caching hierarchy. Most teams skip layers 1, 2, and 3 — where 80-95% of their performance gains live with zero infrastructure changes.
+
+The caching hierarchy, in order of implementation:
+
+**Layer 1: HTTP Cache-Control headers.** Free. Immediate. No infrastructure.
+
+```
+Cache-Control: public, max-age=60, stale-while-revalidate=300
+```
+
+This single header on read-heavy endpoints means: serve from CDN cache for 60 seconds, then serve stale while revalidating in the background for up to 5 minutes. Your origin server sees 98% fewer requests. No Redis. No new service. No new failure point.
+
+**Layer 2: CDN caching.** You're probably already paying for Cloudflare, Fastly, or CloudFront. Their edge caches respect your Cache-Control headers automatically. Global distribution for free.
+
+**Layer 3: In-process caching.** Node.js `Map`, Python `lru_cache`, Go sync.Map. Local to the process, zero network hops, microsecond access. Perfect for config data, feature flags, or any data that changes less than once per minute.
+
+```javascript
+// In-process cache — no Redis, no network hop
+const cache = new Map();
+
+function getCachedConfig(key) {
+  const entry = cache.get(key);
+  if (entry && Date.now() - entry.timestamp < 60_000) {
+    return entry.value;
+  }
+  const value = db.query('SELECT value FROM config WHERE key = $1', [key]);
+  cache.set(key, { value, timestamp: Date.now() });
+  return value;
+}
+```
+
+**Layer 4: Redis / Memcached.** Now you add distributed caching. But only when: multiple application instances need shared cache state, cache data exceeds process memory, or you need cache invalidation across a cluster.
+
+The mistake I see repeatedly: teams add Redis before they've added a single Cache-Control header. They're solving a distributed systems problem when they have an HTTP configuration problem.
+
+When 60-second staleness is acceptable — and for dashboards, analytics, and reporting endpoints, it almost always is — HTTP caching eliminates the need for application-level caching entirely.
+
+**When to Apply This:**
+- Read-heavy API endpoints where 60-second data staleness is acceptable
+- Dashboard and reporting pages that re-fetch identical data on every load
+- Before proposing Redis or any new caching infrastructure
+
+---
+
+## Worth Your Time
+
+1. **[MDN: HTTP Caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching)** — The definitive reference on Cache-Control, ETag, and conditional requests. Most engineers have a rough mental model of HTTP caching. This fills the gaps — especially around `stale-while-revalidate` and `stale-if-error`, which are underused.
+
+2. **[Cloudflare: Cache Rules](https://developers.cloudflare.com/cache/)** — Practical guide to configuring CDN caching beyond default behavior. The section on cache keys and custom cache rules for API responses is relevant if your endpoints return different data based on auth headers.
+
+3. **[Netflix: EVCache](https://netflixtechblog.com/announcing-evcache-distributed-in-memory-datastore-for-cloud-c26a698c27f)** — When you do need distributed caching, Netflix's EVCache architecture shows what it looks like at true scale. The takeaway for smaller teams: you're not Netflix. Start with layers 1-3.
+
+---
+
+## Tool of the Week
+
+**[Varnish Cache](https://varnish-cache.org/)** — HTTP accelerator that sits in front of your application server. VCL (Varnish Configuration Language) gives you programmable caching logic — custom TTLs by endpoint, grace mode for stale content, and request coalescing. For teams hitting CDN limits but not ready for Redis, Varnish is the missing middle layer.
+
+---
+
+That's it for this week.
+
+Hit reply if your team is evaluating Redis for caching. Tell me your read/write ratio and staleness tolerance — I'll tell you if HTTP headers are enough. I read every response.
+
+– Alex
+
+P.S. For the complete performance optimization playbook — from database tuning to frontend delivery: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).

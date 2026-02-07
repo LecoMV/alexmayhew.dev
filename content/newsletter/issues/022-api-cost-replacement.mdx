@@ -1,0 +1,88 @@
+---
+issue: 22
+title: "How I Replaced $500/mo in API Costs"
+subject: "How I replaced $500/mo in API costs"
+sendDate: "2026-03-25"
+status: "draft"
+pillar: "performance"
+---
+
+Subject: How I replaced $500/mo in API costs
+
+Hey there,
+
+A client's AWS bill had a line item that kept growing: $500/month for a geocoding API. They were processing 180,000 lookups monthly for a logistics feature that converted addresses to coordinates. The API worked perfectly. It was also completely unnecessary.
+
+Most SaaS teams have 3-5 API expenses hiding in plain sight.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your third-party API costs are growing linearly with your user base. The per-request pricing that seemed cheap at 10,000 requests/month becomes a margin problem at 200,000.
+
+**The Insight:**
+I've audited API spend at 6 SaaS companies in the last year. The pattern repeats: teams adopt APIs during early development when per-request pricing is negligible, then never revisit the decision as volume scales.
+
+The geocoding case: replaced a $500/month API with a PostGIS instance running on existing infrastructure. The added compute cost: $15/month. The migration took one engineer 3 days.
+
+Here's the audit framework I use:
+
+```
+API Cost Audit Checklist:
+1. List every third-party API with monthly spend
+2. For each, answer:
+   - Is the response deterministic? (same input = same output)
+   - Is the data source publicly available?
+   - Does it require real-time external data?
+   - What's the caching potential? (TTL > 1 hour?)
+
+Score: If 3+ answers favor self-hosting → evaluate alternatives
+
+Common replacements:
+┌──────────────────┬────────────────────┬───────────────┐
+│ Paid API         │ Self-Hosted Alt    │ Typical Savings│
+├──────────────────┼────────────────────┼───────────────┤
+│ Geocoding        │ PostGIS + OpenData │ 90-95%        │
+│ Email validation │ Local MX + regex   │ 80-90%        │
+│ PDF generation   │ Puppeteer/Gotenberg│ 95%+          │
+│ Image processing │ Sharp/libvips      │ 90%+          │
+│ Currency rates   │ ECB/Fed data feed  │ 100% (free)   │
+└──────────────────┴────────────────────┴───────────────┘
+```
+
+The break-even formula: if self-hosting costs less than 3 months of API spend including engineering time, do it. For the geocoding case: 3 engineer-days ($2,400) vs. $6,000/year in API costs. Break-even in under 2 weeks.
+
+The exceptions: APIs requiring proprietary data (credit scoring), real-time external feeds (stock prices), or APIs where the vendor's ML model is the product (NLP, computer vision). Those are genuine value-adds. A geocoding lookup against freely available geographic data is not.
+
+**When to Apply This:**
+- SaaS spending over $200/month on any single third-party API with deterministic responses
+- Teams at $1M+ ARR where API costs represent more than 5% of infrastructure spend
+- Any API where you're paying per-request for transformations you could run locally
+
+---
+
+## Worth Your Time
+
+1. **[Cloudflare: The Cost of Cloud](https://blog.cloudflare.com/aws-egress-charges/)** — Cloudflare's breakdown of AWS egress pricing reveals how API costs compound. Many third-party APIs run on AWS, meaning you're paying their egress too. The economics of self-hosting improve further when you eliminate the double-margin.
+
+2. **[PostGIS in Action](https://postgis.net/documentation/)** — If you're still paying for geocoding, PostGIS with OpenStreetMap data handles forward and reverse geocoding at machine speed. The documentation covers setup to production in a single afternoon.
+
+3. **[Stripe's API Cost Optimization](https://stripe.com/blog/idempotency-keys)** — Even when you keep third-party APIs, implementing idempotency and caching reduces call volume by 20-40%. Stripe's idempotency pattern prevents duplicate charges and duplicate API calls.
+
+---
+
+## Tool of the Week
+
+**[Infracost](https://www.infracost.io/)** — Estimates cloud infrastructure costs from Terraform files before you deploy. It won't catch third-party API spend directly, but it quantifies the infrastructure cost of self-hosted alternatives so you can make the comparison. I use it to validate break-even calculations before recommending migrations.
+
+---
+
+That's it for this week.
+
+Hit reply with your biggest API line item and I'll tell you whether self-hosting makes sense for your scale. I read every response.
+
+– Alex
+
+P.S. For the full guide on performance optimization including infrastructure cost reduction: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).

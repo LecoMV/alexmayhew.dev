@@ -1,0 +1,77 @@
+---
+issue: 21
+title: "The Architecture Decision I Regret Most"
+subject: "The architecture decision I'd reverse"
+sendDate: "2026-03-11"
+status: "draft"
+pillar: "architecture"
+---
+
+Subject: The architecture decision I'd reverse
+
+Hey there,
+
+Every technical advisor has one decision that keeps them up at night. Not the small stuff — the foundational choice that seemed right at the time and cost a team 6 months to unwind.
+
+This is mine.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+A Series A SaaS startup ($1.2M ARR, 8 engineers) needed to store hierarchical data — nested project structures, recursive permissions, tree-based navigation. They asked me whether to use PostgreSQL or MongoDB.
+
+**The Insight:**
+I recommended MongoDB. The document model mapped perfectly to their tree structures. Nested documents, flexible schemas, no JOINs needed. For 4 months, it was the right call.
+
+Then their first enterprise customer asked for cross-project reporting. Then came audit trails requiring transactional consistency. Then complex search queries spanning multiple document types. Every "just this one query" workaround added 200-400 lines of application-level joining logic.
+
+```javascript
+// What started as clean document queries
+const project = await db.projects.findOne({ _id: projectId });
+
+// Became this — application-level joins across 4 collections
+const project = await db.projects.findOne({ _id: projectId });
+const tasks = await db.tasks.find({ projectId }).toArray();
+const users = await db.users.find({ _id: { $in: tasks.map(t => t.assigneeId) } }).toArray();
+const timeLogs = await db.timeLogs.find({ taskId: { $in: tasks.map(t => t._id) } }).toArray();
+// Then manually stitch everything together...
+```
+
+The migration back to PostgreSQL took 3 engineers 6 months. They rewrote 14,000 lines of data access code, ran dual-write for 8 weeks, and lost a quarter they could have spent on product.
+
+The lesson: PostgreSQL handles 95% of SaaS data patterns. Its `jsonb` type covers document storage. `ltree` handles hierarchies. Recursive CTEs solve tree queries. The 5% where a document database wins rarely justifies the risk of painting yourself into a corner when reporting and relational queries inevitably appear.
+
+My rule now: start with PostgreSQL unless you can prove — with your actual query patterns, not hypothetical ones — that a document database solves a problem PostgreSQL cannot.
+
+**When to Apply This:**
+- Any new SaaS product without a proven, specific need for a document database
+- Teams under 20 engineers where maintaining two data paradigms creates cognitive overhead
+- Products where enterprise customers will eventually demand reporting, audit trails, or complex queries
+
+---
+
+## Worth Your Time
+
+1. **[Uber's Schemaless to MySQL Migration](https://www.uber.com/blog/schemaless-part-three-datastore-triggers/)** — Uber built a custom schemaless datastore, then migrated critical paths back to MySQL. Their lesson mirrors mine: flexibility is seductive until you need consistency guarantees across related data.
+
+2. **[PostgreSQL JSONB Performance](https://www.postgresql.org/docs/current/datatype-json.html)** — The official docs undersell this. PostgreSQL's `jsonb` with GIN indexes matches MongoDB query performance for document lookups while giving you full SQL when you need it. I've benchmarked this across 3 client deployments.
+
+3. **[Martin Fowler: Polyglot Persistence](https://martinfowler.com/bliki/PolyglotPersistence.html)** — Fowler's original argument for multiple databases per application. Still valid in theory, but in practice the operational cost of polyglot persistence at small scale outweighs the architectural purity. Worth reading to understand both sides.
+
+---
+
+## Tool of the Week
+
+**[pgloader](https://pgloader.io/)** — If you're migrating from MongoDB (or MySQL, SQLite, or CSV) to PostgreSQL, pgloader handles the transformation with minimal custom code. It maps document schemas to relational tables, handles type conversion, and runs parallel loads. I've used it on 3 migrations; the largest moved 40M documents in under 2 hours.
+
+---
+
+That's it for this week.
+
+Hit reply if you're debating database choices for a new project — I'll tell you whether PostgreSQL covers your use case (it probably does). I read every response.
+
+– Alex
+
+P.S. For the complete framework on making infrastructure decisions at each revenue stage: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).

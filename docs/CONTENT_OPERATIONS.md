@@ -1,7 +1,7 @@
 # Content Operations — alexmayhew.dev
 
 > Single source of truth for the content creation and distribution workflow.
-> Last Updated: 2026-02-05
+> Last Updated: 2026-02-07
 
 ---
 
@@ -86,26 +86,28 @@ At the start of each month, decide:
 
 ### Step 3: Distribute (Automatic)
 
-**Automated flow (n8n + Claude review):**
+**Automated flow (n8n + Groq + voice validation):**
 
 ```
 Blog push to main
   → GitHub webhook (or manual n8n trigger)
     → n8n reads post content
-      → 3 parallel Ollama (Gemma 2 9B) generations:
+      → 4 parallel Groq (Llama 3.3 70B) generations:
           ├─ LinkedIn text post (1,000-1,300 chars)
           ├─ X standalone tweet (under 280 chars)
-          └─ Dev.to article (full cross-post)
-      → Claude reviews all generated content for:
-          ├─ Voice compliance (6 pillars)
-          ├─ Factual accuracy against source
-          ├─ Platform format rules (no links, no hashtags)
-          └─ Character count targets
-      → Postiz API schedules each to correct day/time
-      → Response logged
+          ├─ Dev.to article (full cross-post)
+          └─ Newsletter section ("This Week's Decision" format)
+      → If Groq fails → fallback to Ollama (Gemma 2 9B)
+      → Voice compliance validation node:
+          ├─ Banned words check (game-changer, delve, etc.)
+          ├─ Emoji detection
+          ├─ Platform-specific length validation
+          └─ Hashtag detection
+      → Postiz API schedules LinkedIn/X/Dev.to to correct day/time
+      → Response includes all content + validation results
 ```
 
-**Note:** Ollama (Gemma 2 9B) output quality requires manual review. Expect rewrites for ~90% of LinkedIn posts (typically too short, wrong voice).
+**Groq upgrade note:** Llama 3.3 70B produces significantly better output than Gemma 2 9B. Expect ~20-30% rewrite rate (down from ~90%). Ollama serves as automatic fallback if Groq is unavailable.
 
 **Manual trigger (if webhook doesn't fire):**
 
@@ -119,12 +121,32 @@ curl -X POST http://localhost:5678/webhook/content-repurpose \
   }'
 ```
 
-**Listmonk newsletter (via admin dashboard):**
+**Newsletter campaign management (`scripts/newsletter-manage.sh`):**
+
+```bash
+# Create all draft campaigns from newsletter markdown files
+./scripts/newsletter-manage.sh create-all
+
+# Show status of all campaigns (draft/scheduled/sent)
+./scripts/newsletter-manage.sh status
+
+# Schedule the next upcoming draft campaign
+./scripts/newsletter-manage.sh schedule-next
+
+# Preview a specific issue's rendered HTML
+./scripts/newsletter-manage.sh preview 005
+```
+
+**Listmonk newsletter (manual fallback):**
 
 1. Create campaign in Listmonk Admin > Campaigns > New
 2. Select "The Architects Brief" template and list
 3. Send test to personal inbox → verify rendering
 4. Schedule for Tuesday 9:00 AM EST
+
+**Blog auto-publish (GitHub Actions):**
+
+The `.github/workflows/publish-scheduled.yml` workflow runs every Monday at 05:00 UTC. It scans `content/blog/*.mdx` for posts where `date <= today` and `draft: true`, flips them to `draft: false`, commits, and pushes — triggering the existing deploy pipeline. Safety guards: max 2 posts per run, only publishes posts within the current week's date range, supports `DRY_RUN` mode via `workflow_dispatch`.
 
 ### Step 4: Measure (Weekly)
 
@@ -149,14 +171,36 @@ Every Friday, check:
 
 ## Automation Infrastructure
 
-| System         | URL/Location                      | Purpose                                |
-| -------------- | --------------------------------- | -------------------------------------- |
-| n8n            | `http://localhost:5678`           | Content generation + Postiz scheduling |
-| Postiz         | `https://postiz.alexmayhew.dev`   | Social media scheduling dashboard      |
-| Listmonk       | `https://listmonk.alexmayhew.dev` | Newsletter delivery (self-hosted)      |
-| Ollama         | Local (Gemma 2 9B)                | Content variant generation             |
-| Groq API       | Cloud (Llama 3.3 70B)             | Hot takes + community answers          |
-| GitHub Actions | `.github/workflows/deploy.yml`    | CI/CD on push to main                  |
+| System         | URL/Location                              | Purpose                                |
+| -------------- | ----------------------------------------- | -------------------------------------- |
+| n8n            | `http://localhost:5678`                   | Content generation + Postiz scheduling |
+| Postiz         | `https://postiz.alexmayhew.dev`           | Social media scheduling dashboard      |
+| Listmonk       | `https://listmonk.alexmayhew.dev`         | Newsletter delivery (self-hosted)      |
+| Groq API       | Cloud (Llama 3.3 70B)                     | Primary content generation             |
+| Ollama         | Local (Gemma 2 9B)                        | Fallback content generation            |
+| GitHub Actions | `.github/workflows/deploy.yml`            | CI/CD on push to main                  |
+| GitHub Actions | `.github/workflows/publish-scheduled.yml` | Auto-publish blog posts on schedule    |
+
+### Content Health Monitor
+
+`scripts/content-health.sh` runs daily checks across all content infrastructure:
+
+```bash
+./scripts/content-health.sh    # Run all checks
+```
+
+**Checks performed:**
+
+1. Postiz container running + posts queued for next 7 days
+2. Listmonk container running + campaign scheduled for next Tuesday
+3. n8n container running + content repurposing workflow active
+4. Ollama service running + model loaded
+5. Blog posts past their date with `draft: true` still set
+6. Social media gaps (days with zero queued posts in next 2 weeks)
+
+**Exit codes:** 0 = healthy, 1 = warnings, 2 = critical failures
+
+Deploy as systemd timer (daily at 08:00 EST) or n8n Schedule Trigger.
 
 ### If Automation Fails
 
@@ -253,16 +297,22 @@ git push origin main              # Triggers CI/CD + n8n distribution
 
 ## Key Documents
 
-| Document                                  | Purpose                              |
-| ----------------------------------------- | ------------------------------------ |
-| `docs/EDITORIAL_CALENDAR_2026.md`         | What to write and when               |
-| `docs/CONTENT_STATUS.md`                  | Hub-and-spoke inventory              |
-| `docs/VOICE_GUIDE.md`                     | Brand voice for all content          |
-| `docs/CONTENT_REPURPOSING_SYSTEM.md`      | 1-to-10 framework and templates      |
-| `docs/LLM_REPURPOSING_PROMPTS.md`         | Prompts for Ollama/Groq generation   |
-| `docs/N8N_SETUP_GUIDE.md`                 | n8n workflow setup and configuration |
-| `docs/NEWSLETTER_STRATEGY.md`             | Newsletter platform, growth targets  |
-| `docs/LISTMONK_SETUP.md`                  | Listmonk configuration guide         |
-| `content/blog/QUALITY_CHECKLIST.md`       | Blog post quality gate               |
-| `content/newsletter/QUALITY_CHECKLIST.md` | Newsletter quality gate              |
-| `content/newsletter/TEMPLATE.md`          | Newsletter issue template            |
+| Document                                               | Purpose                                     |
+| ------------------------------------------------------ | ------------------------------------------- |
+| `docs/EDITORIAL_CALENDAR_2026.md`                      | What to write and when                      |
+| `docs/CONTENT_STATUS.md`                               | Hub-and-spoke inventory                     |
+| `docs/VOICE_GUIDE.md`                                  | Brand voice for all content                 |
+| `docs/CONTENT_REPURPOSING_SYSTEM.md`                   | 1-to-10 framework and templates             |
+| `docs/LLM_REPURPOSING_PROMPTS.md`                      | Prompts for Groq/Ollama generation          |
+| `docs/N8N_SETUP_GUIDE.md`                              | n8n workflow setup and configuration        |
+| `docs/NEWSLETTER_STRATEGY.md`                          | Newsletter platform, growth targets         |
+| `docs/NEWSLETTER_CONTENT_CALENDAR.md`                  | Newsletter schedule (issues 1-36)           |
+| `docs/LISTMONK_SETUP.md`                               | Listmonk configuration guide                |
+| `content/blog/QUALITY_CHECKLIST.md`                    | Blog post quality gate                      |
+| `content/newsletter/QUALITY_CHECKLIST.md`              | Newsletter quality gate                     |
+| `content/newsletter/TEMPLATE.md`                       | Newsletter issue template                   |
+| `content/newsletter/issues/`                           | 36 pre-written newsletter issues (.mdx)     |
+| `scripts/newsletter-manage.sh`                         | Listmonk campaign management CLI            |
+| `scripts/content-health.sh`                            | Daily content infrastructure health check   |
+| `.github/workflows/publish-scheduled.yml`              | Auto-publish blog posts on schedule         |
+| `docs/n8n-workflows/content-repurposing-workflow.json` | n8n workflow (Groq + fallback + validation) |

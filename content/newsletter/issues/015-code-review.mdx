@@ -1,0 +1,91 @@
+---
+issue: 15
+title: "Code Review That Actually Scales"
+subject: "Your code reviews are a bottleneck, not a gate"
+sendDate: "2026-07-29"
+status: "draft"
+pillar: "leadership"
+---
+
+Subject: Your code reviews are a bottleneck, not a gate
+
+Hey there,
+
+A CTO I advise tracked where engineering time went for two weeks. The finding that shocked them: senior engineers spent 40% of their time reviewing PRs. Not writing code. Not designing systems. Reviewing pull requests that sat in queue for an average of 2 days before anyone looked at them.
+
+Their team had grown from 8 to 25 engineers. Their code review process hadn't changed since they were 5.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your team grew from 8 to 25 engineers. PR review time went from 4 hours to 2 days. Senior engineers spend 40% of their time reviewing. Quality is declining despite more review time. The process that worked at 8 is actively hurting you at 25.
+
+**The Insight:**
+Code review doesn't scale linearly. Every new engineer adds review requests to the same pool of senior reviewers. The fix isn't "hire more seniors." It's separating what humans should review from what machines should check, and then structuring the human review to be fast and focused.
+
+**Step 1: Automate everything that doesn't require human judgment.**
+
+Formatting, linting, type checking, test coverage thresholds, dependency security scanning, import order, naming conventions — these are yes/no checks. Machines handle them in seconds. Humans spend 30% of review time on them.
+
+```yaml
+# .github/workflows/pr-checks.yml
+- name: Lint + Format
+  run: npm run lint && npm run format:check
+- name: Type Check
+  run: npx tsc --noEmit
+- name: Test Coverage
+  run: npm test -- --coverage --threshold 80
+- name: Security Audit
+  run: npm audit --production
+```
+
+When these gates pass before a human sees the PR, reviewers focus on architecture, logic correctness, and edge cases — the things that actually need experienced judgment.
+
+**Step 2: PR size limits.**
+
+Research consistently shows review quality degrades sharply above 400 lines. A 1,000-line PR gets rubber-stamped. A 200-line PR gets thoughtful feedback.
+
+Set a 400-line soft limit and an 800-line hard limit. PRs exceeding the hard limit require splitting before review. This feels bureaucratic until you measure: review thoroughness increases 2.5x when PRs are under 400 lines.
+
+**Step 3: CODEOWNERS with team-scoped ownership.**
+
+Stop routing every PR to the same 3 senior engineers. Assign ownership by directory. The billing team reviews billing code. The auth team reviews auth code. Ownership distributes load and improves review quality — domain experts catch domain-specific bugs that generalist reviewers miss.
+
+**Step 4: Async-first with a 4-hour SLA.**
+
+No synchronous review meetings. Reviewers commit to a first response within 4 business hours. Not a complete review — a first response. This prevents the 2-day queue that kills velocity while protecting deep work blocks.
+
+Results from one team: average review time dropped from 45 minutes to 18 minutes. Review thoroughness (measured by bugs caught in review vs. production) increased 2.5x. PR cycle time went from 2 days to 6 hours.
+
+**When to Apply This:**
+- Teams with more than 10 engineers where review queue exceeds 8 hours
+- Senior engineers spending more than 25% of time on reviews
+- Teams where PR size is uncontrolled and reviews are cursory on large PRs
+
+---
+
+## Worth Your Time
+
+1. **[Google: Modern Code Review](https://research.google/pubs/modern-code-review-a-case-study-at-google/)** — Google's research on what makes code review effective at scale. Key finding: the most valuable reviews focus on maintainability, not correctness. Automated checks handle correctness. Humans ensure the code is understandable in 6 months.
+
+2. **[Linear: How We Do Code Review](https://linear.app/blog/code-review)** — Linear's engineering team shares their review process — including auto-assignment based on expertise and a culture of small, frequent PRs. Their approach to "review load balancing" across the team is worth adopting.
+
+3. **[Conventional Comments](https://conventionalcomments.org/)** — Prefixing review comments with `suggestion:`, `issue:`, `nitpick:`, or `praise:` removes ambiguity. The author knows which comments block merge and which are optional. Simple convention, meaningful reduction in back-and-forth.
+
+---
+
+## Tool of the Week
+
+**[GitHub CODEOWNERS](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners)** — Built into GitHub, costs nothing, and solves review routing automatically. Define ownership per directory or file pattern. PRs touching billing code get routed to the billing team. No manual assignment, no central bottleneck. Pair with branch protection rules for enforcement.
+
+---
+
+That's it for this week.
+
+Hit reply if your PR queue is growing faster than your team. Tell me your team size and average review time — I'll help you identify the bottleneck. I read every response.
+
+– Alex
+
+P.S. For the complete engineering leadership framework — from team processes to technical strategy: [Engineering Leadership: Founder to CTO](https://alexmayhew.dev/blog/engineering-leadership-founder-to-cto).

@@ -1,0 +1,99 @@
+---
+issue: 14
+title: "Your Monitoring Dashboard Is Lying to You"
+subject: "Your 200ms average hides an 8-second p99"
+sendDate: "2026-07-15"
+status: "draft"
+pillar: "performance"
+---
+
+Subject: Your 200ms average hides an 8-second p99
+
+Hey there,
+
+An enterprise customer of a SaaS I advise filed a severity-1 support ticket: "Application unusable during business hours." The team checked their dashboard. Average API response time: 200ms. Green across the board.
+
+Then I asked them to check p99. It was 8.2 seconds. Their biggest customers — the ones making the most API calls — were the ones hitting the tail latency. The dashboard was green. The customer experience was red.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your average API response time is 200ms. Your monitoring dashboard shows green. But enterprise customers are complaining about performance. Support tickets mention "slow" and "unresponsive" but your metrics say everything is fine.
+
+**The Insight:**
+Averages are the most dangerous metric in performance monitoring. A 200ms average can coexist with an 8-second p99 — and it will, because averages are dominated by the fast majority while the slow minority suffers silently.
+
+Here's the math: if 99% of requests complete in 120ms and 1% take 8 seconds, the average is ~199ms. Dashboard says "fast." But at 10,000 requests per hour, 100 users per hour wait 8 seconds. If those users are enterprise accounts making bulk API calls, they hit that 1% repeatedly.
+
+Four changes that transform monitoring from misleading to useful:
+
+**1. Replace averages with percentiles.**
+
+```
+p50: 120ms  — median experience (half your users are faster)
+p90: 350ms  — 10% of users see this or worse
+p95: 890ms  — where degradation starts becoming visible
+p99: 8200ms — your worst customer experience
+```
+
+Alert on p95 and p99, not average. If p99 exceeds your SLO, something is wrong — even if the average looks fine.
+
+**2. Add Real User Monitoring (RUM).**
+
+Synthetic monitoring tests from a datacenter on a fast connection. RUM measures actual user experience — including the user on a hotel wifi in Singapore accessing your US-hosted app. The gap between synthetic and real is often 3-5x.
+
+**3. Implement error budget burn rate alerting.**
+
+If your SLO is 99.9% of requests under 500ms, you have an error budget of 0.1%. Alert when the burn rate exceeds 1x — meaning you're consuming your monthly budget at a rate that will exhaust it within the month.
+
+```yaml
+# Prometheus alerting rule
+- alert: HighErrorBudgetBurn
+  expr: |
+    (
+      sum(rate(http_request_duration_seconds_bucket{le="0.5"}[1h]))
+      / sum(rate(http_request_duration_seconds_count[1h]))
+    ) < 0.999
+  for: 5m
+  labels:
+    severity: warning
+```
+
+**4. Include trace links in alerts.**
+
+When an alert fires, the on-call engineer needs to diagnose fast. Every alert should include a link to a representative slow trace — not just the metric that triggered it. This cuts initial triage from 15 minutes to 2 minutes.
+
+One team implemented these four changes. Their MTTR dropped from 45 minutes to 8 minutes. Not because they fixed things faster — because they found the right things to fix immediately.
+
+**When to Apply This:**
+- Any API serving more than 1,000 requests per minute
+- SaaS with enterprise customers who expect (or contractually require) SLOs
+- Teams where the monitoring dashboard says "green" but customers say "slow"
+
+---
+
+## Worth Your Time
+
+1. **[Google SRE Book: Service Level Objectives](https://sre.google/sre-book/service-level-objectives/)** — The canonical reference on SLOs, SLIs, and error budgets. The key insight: SLOs are a tool for prioritization. If you're within budget, ship features. If you're burning budget, fix reliability. Without SLOs, reliability work is always deprioritized.
+
+2. **[Datadog: Percentile Monitoring](https://www.datadoghq.com/blog/why-percentiles-dont-work-the-way-you-think/)** — Honest breakdown of how percentile aggregation works (and breaks) across distributed systems. The section on why you can't average percentiles across services is worth understanding before you build dashboards.
+
+3. **[Charity Majors: Observability Engineering](https://www.honeycomb.io/blog/observability-engineering-oreilly-book)** — The argument for high-cardinality, high-dimensionality observability. Traditional monitoring answers "is it broken?" Observability answers "why is it broken for this specific user?" Different question, different architecture.
+
+---
+
+## Tool of the Week
+
+**[Grafana Tempo](https://grafana.com/oss/tempo/)** — Distributed tracing backend that integrates with Grafana dashboards. Store every trace (not sampled), query by duration or attributes, and jump directly from a slow-request alert to the full trace. The cost model — object storage for trace data — makes 100% trace retention affordable at moderate scale.
+
+---
+
+That's it for this week.
+
+Hit reply if your dashboard shows green but your customers say otherwise. Send me your p50, p90, and p99 — I'll tell you where the problem lives. I read every response.
+
+– Alex
+
+P.S. For the complete performance engineering playbook — from monitoring to optimization: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).

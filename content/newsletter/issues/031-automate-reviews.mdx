@@ -1,0 +1,108 @@
+---
+issue: 31
+title: "Automating What Humans Shouldn't Review"
+subject: "Stop reviewing what machines should catch"
+sendDate: "2026-08-05"
+status: "draft"
+pillar: "leadership"
+---
+
+Subject: Stop reviewing what machines should catch
+
+Hey there,
+
+I audited a team's code review comments last month. Out of 847 comments across 6 weeks, 612 were things a machine could have caught: formatting inconsistencies, missing types, unused imports, accessibility violations, and bundle size regressions.
+
+That's 72% of review effort spent on work that CI should handle in 3 minutes.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your team's code reviews take 30-60 minutes each. Reviewers spend most of that time on mechanical checks — style consistency, type safety, security patterns — instead of evaluating architecture and business logic. PRs sit in review queues for hours because reviewers are exhausted by the volume.
+
+**The Insight:**
+Every mechanical check a human performs in code review is a check that should be in CI instead. The human review checklist should contain exactly 3 items: architecture decisions, business logic correctness, and failure modes. Everything else is automation's job.
+
+Here's the CI pipeline that eliminates mechanical review:
+
+```yaml
+# .github/workflows/automated-review.yml
+name: Automated Review
+on: [pull_request]
+jobs:
+  mechanical-checks:
+    runs-on: ubuntu-latest
+    steps:
+      # Formatting — never comment "fix formatting" again
+      - name: Prettier
+        run: npx prettier --check .
+
+      # Type safety — catches null refs, wrong types
+      - name: TypeScript
+        run: npx tsc --noEmit
+
+      # Lint rules — style consistency, import order
+      - name: ESLint
+        run: npx eslint . --max-warnings 0
+
+      # Security — OWASP patterns, dependency vulns
+      - name: CodeQL
+        uses: github/codeql-action/analyze@v3
+
+      # Accessibility — WCAG violations
+      - name: axe-core
+        run: npx jest --testPathPattern=a11y
+
+      # Performance — bundle size regression
+      - name: Size Limit
+        uses: andresz1/size-limit-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      # API contracts — breaking changes
+      - name: OpenAPI diff
+        run: npx openapi-diff main.yaml pr.yaml
+```
+
+After implementing this pipeline, the team I mentioned above saw review time drop from 45 minutes to 18 minutes average. More importantly, escaped defects (bugs that made it to production despite review) decreased by 28%. Not because humans reviewed more carefully, but because they stopped wasting attention on formatting and started focusing on logic.
+
+The human review checklist that remains:
+
+1. **Architecture** — Does this change introduce coupling that will be expensive to undo? Does the abstraction level make sense?
+2. **Business logic** — Given the product requirements, does this code produce the correct result for edge cases? What does a customer experience when this fails?
+3. **Failure modes** — What happens when the database is unreachable? When the request times out? When input is malformed? These are the questions that prevent production incidents.
+
+The anti-pattern to kill: "LGTM" approvals. If a reviewer can't name one thing they evaluated from the 3-item checklist, they didn't review — they rubber-stamped. Set a team norm: every approval comment includes which of the 3 areas was evaluated.
+
+**When to Apply This:**
+- Teams where more than 30% of review comments are about formatting, types, or style
+- Organizations where PRs wait more than 4 hours for review due to reviewer fatigue
+- Engineering leaders trying to increase deployment frequency without sacrificing quality
+
+---
+
+## Worth Your Time
+
+1. **[GitHub: Automating Code Review](https://github.blog/developer-skills/github/how-to-automate-code-reviews-on-github/)** — GitHub's guide to building automated review workflows. Covers required status checks, CODEOWNERS for routing, and branch protection rules that enforce CI passage before human review begins.
+
+2. **[Abi Noda: Engineering Metrics That Matter](https://newsletter.abinoda.com/)** — Noda's research on engineering productivity metrics shows that review cycle time is the strongest predictor of deployment frequency. Reducing review time by automating mechanical checks has a direct, measurable impact on ship speed.
+
+3. **[Thoughtworks: Continuous Delivery](https://www.thoughtworks.com/continuous-delivery)** — The original case for shifting quality checks left into CI. Their data from enterprise transformations: teams that automate 80%+ of quality checks deploy 10x more frequently with equal or fewer production incidents.
+
+---
+
+## Tool of the Week
+
+**[Danger](https://danger.systems/)** — Automates common PR review chores: checking for changelog updates, enforcing PR size limits, flagging files that need specific reviewer attention, and verifying test coverage thresholds. Think of it as a programmable first-pass reviewer that handles the checklist items humans forget. Configuration takes an hour; it saves 5+ hours per week across a 10-person team.
+
+---
+
+That's it for this week.
+
+Hit reply if you want a review of your CI pipeline — I'll identify which human review steps can be automated. I read every response.
+
+– Alex
+
+P.S. For the full engineering leadership playbook on building effective team processes: [Engineering Leadership: Founder to CTO](https://alexmayhew.dev/blog/engineering-leadership-founder-to-cto).

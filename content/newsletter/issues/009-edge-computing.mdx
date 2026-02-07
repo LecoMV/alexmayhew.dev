@@ -1,0 +1,86 @@
+---
+issue: 9
+title: "Edge Computing: When It's Actually Worth It"
+subject: "Edge computing is probably not worth your time"
+sendDate: "2026-05-06"
+status: "draft"
+pillar: "performance"
+---
+
+Subject: Edge computing is probably not worth your time
+
+Hey there,
+
+A VP of Engineering asked me to evaluate moving their API to Cloudflare Workers. Their pitch: "Users in Europe and Asia are seeing 200ms+ latency." My first question: "What's your read/write ratio?" They didn't know. Turns out it was 3:1. Edge would have helped reads but made writes slower — and their writes were the latency-sensitive operations.
+
+Edge computing solves a real problem. Most teams don't have that problem.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Users outside your primary region report 200ms+ latency. Your engineering team suggests edge computing — Cloudflare Workers, Vercel Edge Functions, or Deno Deploy. The promise: run code close to users, eliminate round-trip latency.
+
+**The Insight:**
+Edge reduces read latency from 200ms to 20ms. That's real. But writes still go to your origin database — and most edge platforms don't support persistent connections to traditional databases. You're optimizing half the picture while complicating your entire architecture.
+
+Here's the uncomfortable math: a CDN with proper cache headers delivers 80% of edge's latency benefit at 10% of the complexity.
+
+```
+Cache-Control: public, max-age=60, stale-while-revalidate=300
+```
+
+That single header on your API responses means:
+- Requests served from the nearest CDN PoP (same latency as edge compute)
+- Origin only hit once per 60 seconds per unique cache key
+- Users get stale-but-fast responses while revalidation happens in the background
+
+The cases where edge compute genuinely earns its complexity:
+
+**1. Personalized content at scale.** A/B tests, geo-based pricing, feature flags evaluated per-request. CDN caching can't handle per-user variation.
+
+**2. Auth at the edge.** JWT validation and session checking before requests reach your origin. Blocks unauthorized traffic 200ms sooner.
+
+**3. Real-time data transformation.** Image resizing, content negotiation, API response shaping based on client capabilities.
+
+But each of these requires your team to reason about two execution environments. Edge functions have different runtime constraints — no Node.js APIs, limited execution time, cold starts, no filesystem. Debugging spans two contexts. Deployments need coordination.
+
+**The decision framework:**
+- Global users across 3+ continents? Prerequisite, but not sufficient.
+- Read/write ratio above 10:1? Edge helps reads; writes still go to origin.
+- Dedicated infrastructure engineer? Edge adds operational surface area.
+- CDN with cache headers already evaluated? Start there. Seriously.
+
+I've advised 8 companies evaluating edge in the past year. Two actually needed it. The other six got better results from CDN caching and regional database replicas.
+
+**When to Apply This:**
+- Multi-continent user base with latency-sensitive read operations
+- Read/write ratio above 10:1 where caching alone isn't sufficient
+- Teams with dedicated infrastructure engineers who can maintain two execution contexts
+
+---
+
+## Worth Your Time
+
+1. **[Cloudflare: Smart Placement](https://blog.cloudflare.com/smart-placement/)** — Cloudflare's answer to the "edge writes are slow" problem. Smart Placement automatically runs Workers near your origin when they need database access, and near users when they don't. Acknowledges the core tension.
+
+2. **[Vercel: Understanding Edge vs Serverless](https://vercel.com/blog/edge-middleware-dynamic-code-execution)** — Honest breakdown of when edge middleware helps and when serverless functions at a single region perform better. Their recommendation: use edge for auth and redirects, serverless for data-fetching routes.
+
+3. **[Netflix: Open Connect](https://openconnect.netflix.com/)** — Netflix's CDN handles 95% of traffic without edge compute. Their architecture proves that caching strategy beats compute distribution for most read-heavy workloads. The scale is different, but the principle applies to SaaS.
+
+---
+
+## Tool of the Week
+
+**[Stellate](https://stellate.co/)** — GraphQL edge caching that sits in front of your API. Automatic cache invalidation based on mutations, per-field TTLs, and analytics on cache hit rates. If your SaaS has a GraphQL API and global users, this gets you 80% of edge benefits without rewriting a single endpoint. Free tier covers evaluation.
+
+---
+
+That's it for this week.
+
+Hit reply if you're debating edge computing. Tell me your user geography and read/write ratio — I'll tell you whether CDN caching is enough. I read every response.
+
+– Alex
+
+P.S. For the complete guide to performance optimization — from the database layer up through frontend delivery: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).

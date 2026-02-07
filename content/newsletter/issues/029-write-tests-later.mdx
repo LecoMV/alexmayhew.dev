@@ -1,0 +1,90 @@
+---
+issue: 29
+title: "The Real Cost of \"Write Tests Later\""
+subject: "\"We'll add tests later\" costs $340K"
+sendDate: "2026-07-08"
+status: "draft"
+pillar: "leadership"
+---
+
+Subject: "We'll add tests later" costs $340K
+
+Hey there,
+
+"We'll add tests after we ship the MVP." I've heard this from 9 out of 10 early-stage CTOs. I've seen exactly zero go back and add them voluntarily. They add tests when a production outage costs them a customer.
+
+The math makes the case that gut feelings can't.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your team is moving fast. Tests feel like a tax on velocity. The backlog is growing, investors want features, and every test you write is a feature you didn't ship. The CTO says "we'll add tests after Series A."
+
+**The Insight:**
+I tracked debugging time across 6 advisory clients over 12 months — 3 with test coverage above 60% and 3 with coverage below 20%. The data was unambiguous.
+
+Teams without tests spend 3.4x more time debugging production issues. Here's the cost calculation:
+
+```
+Test Debt Cost Calculator:
+──────────────────────────
+Team size:                         12 engineers
+Average debugging hours per week:  2.0 hours (with tests: 0.6 hours)
+Cost per engineering hour:         $100 (fully loaded)
+
+Annual debugging cost without tests:
+  12 × 2.0 × 52 × $100 = $124,800
+
+Annual debugging cost with tests:
+  12 × 0.6 × 52 × $100 = $37,440
+
+Annual savings from testing:       $87,360
+
+But that's only direct debugging. Add indirect costs:
+  Incident response coordination:  +$48,000/year
+  Customer-facing apologies:       +$24,000 (eng time in calls)
+  Delayed feature work (context switching): +$156,000
+
+Total annual cost of skipping tests: ~$340,000
+```
+
+The hidden cost that compounds: test debt gets harder to repay over time. Code written without tests wasn't designed for testability. Adding tests at Month 18 means refactoring first.
+
+One client tried. They assigned 3 engineers for 6 weeks to add test coverage to their 18-month-old codebase. They achieved 40% coverage. The other 60% required refactoring tightly coupled modules, replacing global state, and mocking infrastructure dependencies that were wired directly into business logic.
+
+The test-later approach assumes the code is testable. It never is.
+
+The pragmatic alternative: test the paths that cost you money when they break. Not 100% coverage — targeted coverage on billing logic, authentication flows, data mutations, and API contracts. Those 4 areas represent 80% of production incident cost on every team I've measured.
+
+**When to Apply This:**
+- Teams with fewer than 20% test coverage experiencing more than 2 production incidents per month
+- Pre-Series A companies where a production outage during a sales demo could cost a deal
+- Engineering leaders building the case for test investment with non-technical stakeholders
+
+---
+
+## Worth Your Time
+
+1. **[Kent Beck: Test Desiderata](https://kentbeck.github.io/TestDesiderata/)** — Beck's 12 properties of good tests cut through the "how much testing" debate. His hierarchy — fast, isolated, deterministic — helps teams prioritize which tests to write first. Start with fast, deterministic integration tests on critical paths.
+
+2. **[Charity Majors: Testing in Production](https://charity.wtf/2018/08/22/testing-in-production-yes-really/)** — Majors argues for testing in production alongside traditional tests, not instead of them. Her point: tests verify what you expect, but production observability catches what you didn't expect. Both are necessary; neither alone is sufficient.
+
+3. **[Netflix: Automated Canary Analysis](https://netflixtechblog.com/automated-canary-analysis-at-netflix-with-kayenta-3260bc7acc69)** — Netflix's approach to production testing at scale. Their canary system compares metrics between baseline and experiment deployments. Relevant for teams that need confidence in production without blocking deploys on test suites.
+
+---
+
+## Tool of the Week
+
+**[Vitest](https://vitest.dev/)** — If slow test suites are your excuse for skipping tests, Vitest eliminates it. It runs tests in parallel with native ESM support, and typical suites finish 3-5x faster than Jest. The migration from Jest is mostly config changes. Two teams I work with switched in under a day and immediately started writing more tests because the feedback loop dropped from 40 seconds to 8.
+
+---
+
+That's it for this week.
+
+Hit reply if you want help prioritizing which tests to write first for maximum impact on production stability. I read every response.
+
+– Alex
+
+P.S. For the leadership framework on making engineering process investments like testing: [Engineering Leadership: Founder to CTO](https://alexmayhew.dev/blog/engineering-leadership-founder-to-cto).

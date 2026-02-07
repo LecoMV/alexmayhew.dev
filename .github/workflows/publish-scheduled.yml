@@ -1,0 +1,119 @@
+name: Publish Scheduled Blog Posts
+
+on:
+  schedule:
+    # Every Monday at 05:00 UTC
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (list posts without publishing)"
+        required: false
+        default: "false"
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Publish Due Posts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Find and publish scheduled posts
+        id: publish
+        run: |
+          BLOG_DIR="content/blog"
+          TODAY=$(date -u +%Y-%m-%d)
+          TODAY_TS=$(date -u -d "$TODAY" +%s)
+
+          # Current week boundaries (Monday to Sunday)
+          DOW=$(date -u +%u)  # 1=Monday, 7=Sunday
+          WEEK_START_TS=$(date -u -d "$TODAY -$((DOW - 1)) days" +%s)
+          WEEK_END_TS=$(date -u -d "$TODAY +$((7 - DOW)) days" +%s)
+
+          DRY_RUN="${{ inputs.dry_run || 'false' }}"
+          PUBLISHED=0
+          SLUGS=""
+          MAX_PUBLISH=2
+
+          echo "Date: $TODAY"
+          echo "Week: $(date -u -d @$WEEK_START_TS +%Y-%m-%d) to $(date -u -d @$WEEK_END_TS +%Y-%m-%d)"
+          echo "Dry run: $DRY_RUN"
+          echo ""
+
+          for file in "$BLOG_DIR"/*.mdx; do
+            [ -f "$file" ] || continue
+
+            # Check if file has draft: true
+            if ! grep -q '^draft: true' "$file"; then
+              continue
+            fi
+
+            # Extract date from frontmatter
+            POST_DATE=$(sed -n '/^---$/,/^---$/p' "$file" | grep '^date:' | sed 's/^date:[[:space:]]*//' | sed 's/^"\(.*\)"$/\1/')
+
+            if [ -z "$POST_DATE" ]; then
+              continue
+            fi
+
+            POST_TS=$(date -u -d "$POST_DATE" +%s 2>/dev/null || continue)
+
+            # Post date must be <= today
+            if [ "$POST_TS" -gt "$TODAY_TS" ]; then
+              continue
+            fi
+
+            # Post date must be within current week (safety guard)
+            if [ "$POST_TS" -lt "$WEEK_START_TS" ] || [ "$POST_TS" -gt "$WEEK_END_TS" ]; then
+              SLUG=$(basename "$file" .mdx)
+              echo "::warning::Skipping $SLUG (date $POST_DATE is outside current week)"
+              continue
+            fi
+
+            SLUG=$(basename "$file" .mdx)
+
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "[DRY RUN] Would publish: $SLUG (date: $POST_DATE)"
+              PUBLISHED=$((PUBLISHED + 1))
+              continue
+            fi
+
+            # Safety guard: max 2 per run
+            if [ "$PUBLISHED" -ge "$MAX_PUBLISH" ]; then
+              echo "::warning::Max publish limit ($MAX_PUBLISH) reached. Remaining posts deferred to next run."
+              break
+            fi
+
+            # Change draft: true to draft: false
+            sed -i 's/^draft: true$/draft: false/' "$file"
+            echo "Published: $SLUG (date: $POST_DATE)"
+
+            if [ -n "$SLUGS" ]; then
+              SLUGS="$SLUGS, $SLUG"
+            else
+              SLUGS="$SLUG"
+            fi
+
+            PUBLISHED=$((PUBLISHED + 1))
+          done
+
+          echo ""
+          echo "Total published: $PUBLISHED"
+          echo "published_count=$PUBLISHED" >> "$GITHUB_OUTPUT"
+          echo "slugs=$SLUGS" >> "$GITHUB_OUTPUT"
+          echo "dry_run=$DRY_RUN" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push
+        if: steps.publish.outputs.published_count != '0' && steps.publish.outputs.dry_run != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add content/blog/*.mdx
+          git commit -m "content: publish ${{ steps.publish.outputs.slugs }} (scheduled)"
+          git push origin main

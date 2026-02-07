@@ -1,0 +1,116 @@
+---
+issue: 20
+title: "SaaS Billing Architecture with Stripe"
+subject: "Your Stripe integration is leaking revenue"
+sendDate: "2026-10-07"
+status: "draft"
+pillar: "architecture"
+---
+
+Subject: Your Stripe integration is leaking revenue
+
+Hey there,
+
+I audited a SaaS billing system that had been running for 18 months. They used Stripe Checkout for subscriptions. Basic integration — create a session, redirect, done. Then I ran a reconciliation between Stripe and their database.
+
+$8,200 per month in revenue leakage. Failed payment retries they weren't tracking. Subscription downgrades that weren't reflected in feature access. Trial conversions where webhooks were silently dropped. Eighteen months of compounding leakage.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+You started with Stripe Checkout and basic subscription management. Now you need upgrades, downgrades, proration, failed payment handling, and usage-based billing. Customer support is fielding billing complaints weekly. You're not sure if your database matches Stripe's state.
+
+**The Insight:**
+The most important billing architecture principle: Stripe is the source of truth. Your database is a cache. Every billing decision should query or be driven by Stripe's state, never your local copy alone.
+
+Most teams build it backwards — they treat their database as authoritative and "sync" to Stripe. This creates drift. Webhooks fail silently. Network errors during updates leave inconsistent state. And nobody notices until a customer reports they're paying for Pro but getting Basic features.
+
+**Three patterns that prevent revenue leakage:**
+
+**1. Idempotent webhook processing.**
+
+Stripe sends webhooks at least once — sometimes more. Without idempotency, you process the same event twice: double credits, duplicate invoice records, or conflicting state updates.
+
+```typescript
+async function handleWebhook(event: Stripe.Event) {
+  // Check if we've already processed this event
+  const existing = await db.query(
+    'SELECT id FROM processed_events WHERE stripe_event_id = $1',
+    [event.id]
+  );
+  if (existing.rows.length > 0) return; // Already processed
+
+  await db.transaction(async (tx) => {
+    // Process the event
+    await processEvent(tx, event);
+
+    // Record that we processed it
+    await tx.query(
+      'INSERT INTO processed_events (stripe_event_id, type, processed_at) VALUES ($1, $2, NOW())',
+      [event.id, event.type]
+    );
+  });
+}
+```
+
+**2. Strict payment behavior on subscription changes.**
+
+When a customer upgrades, the default Stripe behavior creates a pending invoice. If their card fails, they get the upgrade with no payment. Use `payment_behavior: 'error_if_incomplete'` to reject the upgrade unless payment succeeds immediately.
+
+```typescript
+const subscription = await stripe.subscriptions.update(subId, {
+  items: [{ id: itemId, price: newPriceId }],
+  payment_behavior: 'error_if_incomplete',
+  proration_behavior: 'create_prorations',
+});
+```
+
+**3. Daily reconciliation.**
+
+Once per day, compare your database against Stripe's API. Every active subscription in your database should match Stripe's state. Every Stripe subscription should have a corresponding local record. Flag discrepancies for manual review.
+
+The client I audited implemented daily reconciliation and caught $8,200/month in leakage within the first week:
+- 23 subscriptions marked active locally but cancelled in Stripe
+- 8 subscriptions on higher tiers in Stripe than locally recorded
+- 4 failed payment retry cycles that exhausted without notification
+
+The reconciliation job runs in 3 minutes and pays for itself every day it runs.
+
+**Additional patterns for production billing:**
+
+- **Webhook endpoint monitoring.** Alert when webhook delivery fails 3+ times. Stripe retries for 72 hours, then gives up. Silent webhook failure is the #1 cause of billing drift.
+- **Grace periods for payment failures.** Don't downgrade immediately on failed payment. Stripe retries over 7 days by default. Match your feature access to Stripe's retry window.
+- **Audit trail.** Log every billing state change with before/after values. When a customer disputes a charge, you need the full history — not just the current state.
+
+**When to Apply This:**
+- Any SaaS with paid subscriptions beyond basic Stripe Checkout
+- Companies where billing revenue exceeds $10K/month (leakage becomes material)
+- Teams that haven't run a Stripe-to-database reconciliation in the past 30 days
+
+---
+
+## Worth Your Time
+
+1. **[Stripe: Subscription Lifecycle](https://docs.stripe.com/billing/subscriptions/overview)** — The official guide covers states most teams ignore: `past_due`, `incomplete_expired`, and `unpaid`. Each state requires different handling. If your code only handles `active` and `cancelled`, you have gaps.
+
+2. **[Lago: Open-Source Billing](https://www.getlago.com/blog/why-billing-systems-are-a-nightmare-for-engineers)** — Honest breakdown of why billing is harder than it looks. Their analysis of edge cases — proration across timezone boundaries, mid-cycle plan changes, partial refunds — explains why dedicated billing infrastructure exists.
+
+3. **[Lemon Squeezy vs Stripe](https://www.lemonsqueezy.com/stripe-alternative)** — If you're building billing from scratch, consider whether Stripe's flexibility is worth the implementation cost. Lemon Squeezy handles subscriptions, tax, and compliance as a merchant of record. You trade control for simplicity.
+
+---
+
+## Tool of the Week
+
+**[Stripe Tax](https://stripe.com/tax)** — Automated sales tax, VAT, and GST calculation for 50+ countries. If you're selling internationally and haven't automated tax compliance, you're either under-collecting (legal risk) or over-collecting (customer friction). Stripe Tax integrates with existing Checkout and Billing API flows.
+
+---
+
+That's it for this week.
+
+Hit reply if you've never run a reconciliation between your database and Stripe. I'll share the query template that catches the most common drift patterns. I read every response.
+
+– Alex
+
+P.S. For the complete SaaS architecture framework — including billing, multi-tenancy, and infrastructure decisions: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).

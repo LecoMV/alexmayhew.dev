@@ -1,0 +1,101 @@
+---
+issue: 7
+title: "Core Web Vitals Audit You're Probably Failing"
+subject: "Lighthouse 90+ and your traffic is still dropping"
+sendDate: "2026-04-01"
+status: "draft"
+pillar: "performance"
+---
+
+Subject: Lighthouse 90+ and your traffic is still dropping
+
+Hey there,
+
+I reviewed a SaaS marketing site last month. Lighthouse score: 94. Organic traffic: down 23% over 6 months. The team was baffled — they'd optimized everything Lighthouse measured.
+
+The problem: Lighthouse was measuring the wrong things. Google replaced FID with INP in March 2024, and 40% of sites that passed FID are failing INP.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your Lighthouse score is 90+, but organic traffic keeps declining. You've optimized images, lazy-loaded below-the-fold content, minified bundles. Google Search Console shows "poor" Core Web Vitals for a metric you haven't been tracking.
+
+**The Insight:**
+Interaction to Next Paint (INP) replaced First Input Delay (FID) as a Core Web Vital in March 2024. The difference is fundamental: FID measured only the delay before the first interaction's event handler ran. INP measures the full round-trip of every interaction — input delay, processing time, and presentation delay — for every click, tap, and keypress during the entire session.
+
+Sites that passed FID at 50ms routinely fail INP at 400ms. Why? FID was forgiving. It only measured one event, and only the delay portion. INP catches every slow interaction for the entire page visit.
+
+The fix requires three changes:
+
+**1. Instrument with the web-vitals library, not Lighthouse.**
+
+```javascript
+import { onINP } from 'web-vitals';
+
+onINP((metric) => {
+  // Send to your analytics
+  analytics.track('web-vital', {
+    name: metric.name,
+    value: metric.value,         // Total INP in ms
+    rating: metric.rating,       // 'good' | 'needs-improvement' | 'poor'
+    entries: metric.entries,     // Which interaction triggered it
+  });
+});
+```
+
+Lighthouse runs a synthetic test on one device. Real User Monitoring (RUM) shows you what actual users experience across devices. A $200 Android phone on 3G tells a different story than your M3 MacBook on fiber.
+
+**2. Segment by device class.**
+Your p75 INP might be 180ms (passing). But when you segment: desktop 90ms, mobile 380ms. Mobile users — often 60%+ of traffic — are failing. Google evaluates at the 75th percentile of all users, not the average.
+
+**3. Use `scheduler.yield()` to break up long tasks.**
+Any event handler over 50ms blocks the main thread. The pattern: do critical work, yield to the browser to paint, then continue non-critical work.
+
+```javascript
+async function handleFilterChange(filters) {
+  // Critical: update UI immediately
+  updateFilterUI(filters);
+
+  // Yield to browser — let it paint
+  await scheduler.yield();
+
+  // Non-critical: fetch filtered data
+  const results = await fetchFilteredData(filters);
+  renderResults(results);
+}
+```
+
+One client went from 420ms INP to 110ms with this pattern alone. Their organic traffic recovered within 6 weeks.
+
+**When to Apply This:**
+- Any site where organic search traffic matters to revenue
+- Applications with interactive elements beyond simple navigation (filters, forms, modals)
+- Mobile-heavy audiences where 50%+ of traffic comes from phones
+
+---
+
+## Worth Your Time
+
+1. **[web.dev: INP Guide](https://web.dev/articles/inp)** — Google's canonical resource on INP. The section on "what counts as an interaction" clarifies why hover events don't count but keyboard input does. Required reading before optimizing.
+
+2. **[Vercel: Optimizing INP](https://vercel.com/blog/improving-interaction-to-next-paint)** — Vercel's engineering team shares specific React patterns that improve INP — including how `startTransition` and `useDeferredValue` reduce processing time on heavy renders.
+
+3. **[Chrome DevTools: INP Debugging](https://developer.chrome.com/docs/devtools/performance/selector-stats)** — The Performance panel's interaction track shows exactly which interactions contribute to INP. The selector stats feature identifies CSS selectors causing excessive style recalculation during interactions.
+
+---
+
+## Tool of the Week
+
+**[Speedlify](https://www.zachleat.com/web/speedlify/)** — Self-hosted performance monitoring that tracks Lighthouse and CrUX data over time. Unlike one-off audits, it shows trends — so you catch INP regressions before they tank organic traffic. Deploy it to Netlify for free and run it against your production URLs on a schedule.
+
+---
+
+That's it for this week.
+
+Hit reply if your Lighthouse score is green but your organic traffic is declining. Odds are strong it's INP. I read every response.
+
+– Alex
+
+P.S. For the complete performance engineering playbook — from database optimization to frontend delivery: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).

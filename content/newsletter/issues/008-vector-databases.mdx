@@ -1,0 +1,83 @@
+---
+issue: 8
+title: "Vector Databases: The Decision Most Teams Get Wrong"
+subject: "You probably don't need a vector database"
+sendDate: "2026-04-15"
+status: "draft"
+pillar: "ai"
+---
+
+Subject: You probably don't need a vector database
+
+Hey there,
+
+Three SaaS companies I've advised in the past quarter were evaluating Pinecone. All three had under 1M embeddings. All three were already running PostgreSQL. All three were about to add a new managed service, a new failure point, and $500-2,000/month in costs for a problem their existing database solves.
+
+The vector database market has a marketing problem disguised as a technical one.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+You're adding semantic search or RAG to your SaaS. The team is evaluating Pinecone vs Qdrant vs Weaviate vs pgvector. You have roughly 500K embeddings today, growing toward 2M. Budget conversations are already tense.
+
+**The Insight:**
+Under 10M vectors, pgvector eliminates the build-vs-buy decision entirely. With HNSW indexing, pgvector delivers sub-50ms query latency at 5M vectors with 99.5% recall. That's within margin of dedicated vector databases for the scale most SaaS companies operate at.
+
+The real advantages of pgvector aren't performance — they're operational:
+
+- **No new infrastructure.** Your PostgreSQL is already monitored, backed up, and understood by your team.
+- **Transactional consistency.** Embeddings update in the same transaction as the source data. No eventual consistency bugs where the search index is stale.
+- **Filtered queries are SQL.** `WHERE tenant_id = $1 AND created_at > $2` — not a proprietary filter syntax that varies by vendor.
+- **One fewer service to secure.** Every external service is an attack surface. Vector databases store your data representations — that's worth protecting with your existing security posture.
+
+```sql
+-- pgvector: Create index with HNSW (recommended over IVFFlat)
+CREATE INDEX ON documents
+  USING hnsw (embedding vector_cosine_ops)
+  WITH (m = 16, ef_construction = 256);
+
+-- Query with metadata filtering — it's just SQL
+SELECT id, title, 1 - (embedding <=> $1) AS similarity
+FROM documents
+WHERE tenant_id = $2
+  AND status = 'published'
+ORDER BY embedding <=> $1
+LIMIT 10;
+```
+
+The migration path from pgvector to a dedicated vector database, if you genuinely outgrow it, takes days — not months. Your embeddings are in PostgreSQL. Export, transform, load. The reverse migration (from Pinecone back to pgvector) is significantly harder because you've built around a proprietary API.
+
+**When to avoid pgvector:** Over 10M vectors with sub-10ms latency requirements, or when your query patterns need advanced features like multi-vector search or built-in reranking. At that scale, Qdrant (self-hosted) or Pinecone (managed) earn their complexity.
+
+**When to Apply This:**
+- Under 10M vectors where query latency above 20ms is acceptable
+- Teams already running PostgreSQL who want to minimize operational overhead
+- Multi-tenant SaaS where data isolation matters more than benchmark performance
+
+---
+
+## Worth Your Time
+
+1. **[Supabase: pgvector vs Pinecone](https://supabase.com/blog/pgvector-vs-pinecone)** — Benchmarks comparing pgvector with HNSW against Pinecone at various scales. The results are closer than most people expect below 5M vectors. Supabase has skin in the game, so read with that lens — but the methodology is sound.
+
+2. **[Simon Willison: Embeddings](https://simonwillison.net/2023/Oct/23/embeddings/)** — The clearest explanation of what embeddings actually are and how vector search works under the hood. If your team is making infrastructure decisions about vectors without understanding the math, start here.
+
+3. **[Qdrant: Filterable HNSW](https://qdrant.tech/articles/filtrable-hnsw/)** — When you do need a dedicated vector database, Qdrant's filterable HNSW approach is worth understanding. They solve the metadata filtering problem differently than pgvector, and at scale the performance difference matters.
+
+---
+
+## Tool of the Week
+
+**[pgvector](https://github.com/pgvectorscale/pgvectorscale)** — The pgvectorscale extension from Timescale adds streaming disk-based indexing and statistical binary quantization on top of pgvector. Benchmarks show 28x faster queries than HNSW at 50M+ vectors. If you're hitting pgvector's limits but don't want to leave PostgreSQL, this is the upgrade path.
+
+---
+
+That's it for this week.
+
+Hit reply if you're evaluating vector databases. Tell me your scale and latency requirements — I'll tell you whether pgvector is enough. I read every response.
+
+– Alex
+
+P.S. For the full guide on building AI features into SaaS products — including RAG architecture and model selection: [AI-Assisted Development Guide](https://alexmayhew.dev/blog/ai-assisted-development-guide).

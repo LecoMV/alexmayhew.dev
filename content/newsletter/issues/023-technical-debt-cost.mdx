@@ -1,0 +1,89 @@
+---
+issue: 23
+title: "The Real Cost of Technical Debt"
+subject: "The $2.4M cost of \"we'll fix it later\""
+sendDate: "2026-04-08"
+status: "draft"
+pillar: "architecture"
+---
+
+Subject: The $2.4M cost of "we'll fix it later"
+
+Hey there,
+
+"We know it's messy, but it works." I hear this sentence at least twice a month from CTOs who are about to learn what "works" actually costs them.
+
+The problem with technical debt isn't the code. It's that nobody quantifies it, so it never wins budget against feature work.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your engineering team moves slower every quarter. PRs that took 2 hours now take 6. Onboarding new engineers takes 3 months instead of 3 weeks. Everyone knows the codebase has problems, but leadership won't approve a "refactor sprint" without a business case.
+
+**The Insight:**
+I've developed a friction tax calculation that turns vague complaints into dollar figures. I've used it with 8 teams, and the number always shocks leadership into action.
+
+Here's the formula:
+
+```
+Friction Tax Calculator:
+────────────────────────
+Team size:                    12 engineers
+Average fully-loaded comp:    $200,000/year ($100/hour)
+Hours per week per engineer:  40
+
+Friction sources:
+  Extra time per PR (review + rework):     +2.5 hours/PR
+  PRs per engineer per week:               3
+  Extra debugging time per incident:       +4 hours
+  Incidents per month:                     6
+  Extra onboarding time per hire:          +160 hours (4 weeks)
+  Hires per year:                          4
+
+Annual friction cost:
+  PR overhead:    12 × 3 × 2.5 × 52 × $100  = $468,000
+  Incident cost:  6 × 4 × 12 × $100          = $28,800
+  Onboarding:     4 × 160 × $100             = $64,000
+                                    ─────────────────────
+  Total annual friction tax:                   $560,800
+  5-year cost at current trajectory:          $2,804,000
+```
+
+That $2.8M makes the business case for a 3-month refactor involving 3 engineers ($150,000 fully loaded). The ROI is 18:1 over 5 years, even assuming the refactor only reduces friction by 50%.
+
+The key insight: tech debt doesn't compound linearly. It compounds exponentially because each new feature built on a fragile foundation adds more coupling, more edge cases, and more "don't touch that" tribal knowledge. A team with 20% friction tax this year will have 30-35% next year if they keep building on the same foundation.
+
+One client measured their PR cycle time monthly. In January: 4.2 hours average. By September: 11.8 hours. Same team, same sprint velocity targets — they just spent 3x longer on each unit of work.
+
+**When to Apply This:**
+- Engineering teams where PR cycle time has increased more than 50% over 6 months
+- Companies spending over $150K/year on engineering compensation per person (the friction tax scales with compensation)
+- Organizations where onboarding takes more than 6 weeks to first meaningful PR
+
+---
+
+## Worth Your Time
+
+1. **[Stripe: Paying Down Tech Debt](https://stripe.com/blog/payment-api-design)** — Stripe's approach to API design prevents debt accumulation. Their backward-compatibility strategy means they rarely need large refactors. The lesson: design decisions that prevent debt are cheaper than any cleanup effort.
+
+2. **[Chelsea Troy: Quantifying Technical Debt](https://chelseatroy.com/2021/01/14/quantifying-technical-debt/)** — The best framework I've found for measuring tech debt beyond code quality metrics. Troy focuses on developer throughput impact, which is what actually affects the business.
+
+3. **[Google: Software Engineering at Google](https://abseil.io/resources/swe-book)** — Chapter 15 covers deprecation and large-scale changes. Google's approach to maintaining a 2-billion-line codebase offers patterns for managing debt at any scale. The key: automated tooling for refactors, not heroic manual efforts.
+
+---
+
+## Tool of the Week
+
+**[LinearB](https://linearb.io/)** — Measures cycle time, review time, and deployment frequency from your Git data. The dashboard makes friction visible to non-technical stakeholders. I recommend it specifically for building the business case — showing leadership a graph of PR cycle time trending upward is more persuasive than any slide deck.
+
+---
+
+That's it for this week.
+
+Hit reply if you want help running the friction tax calculation for your team — I'll walk you through the inputs. I read every response.
+
+– Alex
+
+P.S. For the full framework on when and how to address technical debt within your architecture evolution: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).

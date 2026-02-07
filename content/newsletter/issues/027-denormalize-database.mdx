@@ -1,0 +1,101 @@
+---
+issue: 27
+title: "When to Denormalize Your Database"
+subject: "When denormalization saves your SaaS"
+sendDate: "2026-06-10"
+status: "draft"
+pillar: "performance"
+---
+
+Subject: When denormalization saves your SaaS
+
+Hey there,
+
+A client's dashboard page was taking 8 seconds to load. The query behind it joined 6 tables, aggregated across 2.3 million rows, and ran 340 times per hour. Their DBA tried indexing. Then query rewriting. Then read replicas. Nothing got it under 3 seconds.
+
+We added one denormalized table and the query dropped to 45 milliseconds.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your normalized database schema is correct by every textbook standard. But certain read queries — dashboards, reports, search results — are becoming unacceptably slow as data grows. Your team is debating whether to denormalize.
+
+**The Insight:**
+Denormalization isn't a failure of database design. It's a targeted optimization for specific read patterns. The mistake teams make is treating it as all-or-nothing: either your schema is normalized or it's a mess. The reality: you normalize for writes and denormalize specific paths for reads.
+
+Three scenarios where denormalization is the correct call:
+
+**1. Dashboard queries joining 5+ tables and exceeding 500ms.**
+The fix: a materialized view or summary table refreshed on a schedule.
+
+```sql
+-- Instead of this 6-table join running 340 times/hour:
+SELECT p.name, COUNT(t.id), SUM(tl.hours), AVG(r.score)
+FROM projects p
+JOIN tasks t ON t.project_id = p.id
+JOIN time_logs tl ON tl.task_id = t.id
+JOIN reviews r ON r.task_id = t.id
+JOIN teams tm ON tm.id = p.team_id
+JOIN users u ON u.team_id = tm.id
+WHERE p.org_id = $1
+GROUP BY p.id;
+
+-- Create a materialized view refreshed every 5 minutes:
+CREATE MATERIALIZED VIEW project_dashboard AS
+SELECT p.id, p.name, p.org_id,
+       COUNT(t.id) as task_count,
+       COALESCE(SUM(tl.hours), 0) as total_hours,
+       COALESCE(AVG(r.score), 0) as avg_score
+FROM projects p
+LEFT JOIN tasks t ON t.project_id = p.id
+LEFT JOIN time_logs tl ON tl.task_id = t.id
+LEFT JOIN reviews r ON r.task_id = t.id
+GROUP BY p.id;
+
+CREATE UNIQUE INDEX ON project_dashboard (id);
+
+-- Refresh on schedule
+REFRESH MATERIALIZED VIEW CONCURRENTLY project_dashboard;
+-- Query time: 45ms vs 8,000ms
+```
+
+**2. Read-to-write ratio exceeding 50:1.**
+When data is read 50 times for every write, the cost of maintaining a denormalized copy is negligible compared to the cost of 50 expensive joins.
+
+**3. Report generation blocking transactional queries.**
+If analytical queries compete with OLTP queries for the same resources, a denormalized reporting table (updated via CDC or triggers) eliminates the contention entirely.
+
+The rule I follow: normalize for writes, denormalize for reads, and keep the denormalization layer clearly separated so the source of truth is never ambiguous.
+
+**When to Apply This:**
+- Read-heavy applications where specific queries exceed 500ms despite proper indexing
+- SaaS dashboards serving aggregate data to hundreds of concurrent users
+- Any system where reporting queries are degrading transactional performance
+
+---
+
+## Worth Your Time
+
+1. **[Postgres Materialized Views](https://www.postgresql.org/docs/current/sql-creatematerializedview.html)** — The official docs cover `CONCURRENTLY` refresh, which lets you update the view without locking reads. This is the difference between "dashboard goes blank during refresh" and "users never notice." Essential for production use.
+
+2. **[Netflix: Denormalization at Scale](https://netflixtechblog.com/tagged/data)** — Netflix's approach to denormalization for their recommendation engine processes billions of events daily. Their pattern — event-driven materialization — is more maintainable than trigger-based approaches for high-volume systems.
+
+3. **[Martin Kleppmann: Designing Data-Intensive Applications](https://dataintensive.net/)** — Chapter 3 covers storage engines and the read/write trade-off in depth. Kleppmann's framework for choosing between normalization and denormalization based on access patterns is the most rigorous I've encountered.
+
+---
+
+## Tool of the Week
+
+**[Debezium](https://debezium.io/)** — Change Data Capture (CDC) for PostgreSQL, MySQL, and MongoDB. Instead of triggers or scheduled refreshes, Debezium streams database changes to a denormalized target in near-real-time. I prefer CDC over triggers for denormalization because it decouples the write path from the materialization logic — your transactional database stays fast, and the denormalized copy updates asynchronously.
+
+---
+
+That's it for this week.
+
+Hit reply if you have a slow query you're debating whether to denormalize — I'll tell you if it's worth it. I read every response.
+
+– Alex
+
+P.S. For the complete guide on database performance optimization: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).

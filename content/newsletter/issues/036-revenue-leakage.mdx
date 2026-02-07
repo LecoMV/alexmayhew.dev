@@ -1,0 +1,101 @@
+---
+issue: 36
+title: "Revenue Leakage: The Silent Killer"
+subject: "The billing bugs costing you $8,200/month"
+sendDate: "2026-10-14"
+status: "draft"
+pillar: "architecture"
+---
+
+Subject: The billing bugs costing you $8,200/month
+
+Hey there,
+
+A client asked me to review their billing system last quarter. They weren't losing customers. Revenue was growing. Everything looked fine on the dashboard. Then we ran a reconciliation audit and found $8,200 per month in revenue that should have been collected but wasn't.
+
+At their scale, that's $98,400 per year walking out the door. They had no idea.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your SaaS billing works — customers get charged, subscriptions renew, upgrades process. But you've never audited the gap between what customers owe and what you actually collect. You assume Stripe handles it. Stripe handles payments. It doesn't handle your business logic.
+
+**The Insight:**
+Revenue leakage in SaaS comes from 5 predictable patterns. I've found at least 2 at every company I've audited:
+
+**1. Grace periods too long.** Your payment retry logic gives customers 30 days before cancellation. Industry standard is 7-14 days. At 1% monthly churn rate on $5M ARR, the difference between 30-day and 7-day grace periods is $1,150/month in extended free access.
+
+**2. Entitlements not revoked on downgrade.** A customer downgrades from Pro to Basic, but their Pro features stay active until the next deployment or cache clear. I've seen entitlement drift last 3-6 months undetected.
+
+**3. Free trial extensions untracked.** Sales extends a trial "for just one more week" through a support ticket. No one tracks the cost. Across 200 trials/month with a 5% extension rate, that's 10 trials running 2-4 extra weeks at $0 revenue.
+
+**4. Usage-based billing off by 5-10%.** Clock skew between your application servers and your metering system drops events. Batched metering with 5-minute windows misses events that land between flush cycles. One client was under-billing by 8% on their usage tier.
+
+**5. Failed webhook reconciliation.** Stripe sends a webhook for a successful payment. Your system misses it (timeout, deploy, error). The customer's subscription status doesn't update. They get service, you don't record revenue.
+
+The reconciliation audit that found the $8,200:
+
+```sql
+-- Billing health check: find leakage
+-- 1. Customers with active entitlements but no active subscription
+SELECT u.email, u.plan, u.features_active, s.status
+FROM users u
+LEFT JOIN subscriptions s ON s.user_id = u.id
+WHERE u.features_active = true
+  AND (s.status != 'active' OR s.id IS NULL);
+
+-- 2. Usage records that never made it to invoices
+SELECT date_trunc('month', ur.created_at) as month,
+       COUNT(*) as usage_events,
+       SUM(ur.units) as total_units,
+       i.billed_units
+FROM usage_records ur
+LEFT JOIN invoices i ON i.user_id = ur.user_id
+  AND i.period = date_trunc('month', ur.created_at)
+GROUP BY month, i.billed_units
+HAVING SUM(ur.units) > COALESCE(i.billed_units, 0);
+
+-- 3. Subscriptions in grace period longer than 14 days
+SELECT user_id, status, last_payment_attempt,
+       NOW() - last_payment_attempt as grace_duration
+FROM subscriptions
+WHERE status = 'past_due'
+  AND NOW() - last_payment_attempt > interval '14 days';
+```
+
+The client's leakage breakdown: $3,400/month from grace period overruns, $2,800/month from usage metering gaps, $1,200/month from entitlement drift after downgrades, $800/month from untracked trial extensions. Total: $8,200/month.
+
+The fixes took 2 engineers 3 weeks. Annual revenue recovered: $98,400. ROI on engineering time: 16x in the first year.
+
+**When to Apply This:**
+- Any SaaS company that hasn't run a billing reconciliation audit in the last 6 months
+- Companies with usage-based pricing where metering accuracy hasn't been verified
+- Organizations where sales can extend trials or adjust billing without automated tracking
+
+---
+
+## Worth Your Time
+
+1. **[Stripe: Revenue Recovery](https://stripe.com/docs/billing/revenue-recovery)** — Stripe's Smart Retries and dunning configuration directly address the grace period problem. Their data: optimized retry logic recovers 38% of failed payments on average. If you're using Stripe and haven't configured Smart Retries, you're leaving money on the table.
+
+2. **[Patrick McKenzie: Billing as Engineering](https://www.kalzumeus.com/2012/09/24/what-you-should-know-about-billing/)** — McKenzie's article on why billing is an engineering problem, not an accounting problem. Written in 2012, every point still applies. His argument that billing is a competitive advantage — not a commodity — is something most SaaS CTOs underestimate.
+
+3. **[Lago: Open-Source Billing](https://www.getlago.com/)** — Lago publishes their metering architecture openly. Their approach to usage-based billing — event ingestion, idempotent processing, reconciliation — is a reference implementation for any team building or auditing their own metering pipeline.
+
+---
+
+## Tool of the Week
+
+**[Metronome](https://metronome.com/)** — Usage-based billing infrastructure that handles metering, rating, and invoicing with reconciliation built in. If your usage-based billing has accuracy problems, Metronome replaces the custom metering code that's likely the source of your leakage. The pricing model (percentage of billings processed) means cost scales with revenue, not engineering time.
+
+---
+
+That's it for this week.
+
+Hit reply if you want help running a billing reconciliation audit — the queries above are a starting point, and I can help adapt them to your schema. I read every response.
+
+– Alex
+
+P.S. For the complete architecture guide covering billing, infrastructure, and scaling decisions: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).

@@ -1,0 +1,96 @@
+---
+issue: 12
+title: "LLM Costs: From $47K to $3,200/month"
+subject: "Your LLM bill is 14x higher than it needs to be"
+sendDate: "2026-06-17"
+status: "draft"
+pillar: "ai"
+---
+
+Subject: Your LLM bill is 14x higher than it needs to be
+
+Hey there,
+
+A SaaS company I advise was spending $47K/month on LLM API calls. Their AI feature had strong adoption — 60% of users engaged weekly. But the CFO was asking hard questions. At $47K/month and growing 20%, the feature would cost more than their entire engineering team by Q4.
+
+Six weeks later, the same feature ran at $3,200/month. Same quality. Same user satisfaction scores. Here's what changed.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your AI-powered feature costs $15K/month in LLM API calls, growing 20% monthly. You're sending everything to GPT-4 or Claude Opus because "quality matters." The CFO wants a profitability conversation you're not ready for.
+
+**The Insight:**
+Most LLM implementations waste 80-90% of their spend on requests that don't need frontier model capabilities. The fix is a three-layer optimization stack: tiered routing, semantic caching, and prompt engineering.
+
+**1. Tiered model routing (60-70% cost reduction).**
+
+Not every request needs the most expensive model. Classify requests by complexity and route accordingly:
+
+```python
+def route_request(query, context):
+    complexity = classify_complexity(query)
+
+    if complexity == "simple":
+        # 60% of requests: FAQ-style, short answers
+        return call_model("haiku", query, context)      # $0.25/1M tokens
+    elif complexity == "moderate":
+        # 30% of requests: multi-step reasoning
+        return call_model("sonnet", query, context)      # $3/1M tokens
+    else:
+        # 10% of requests: complex analysis
+        return call_model("opus", query, context)         # $15/1M tokens
+```
+
+The classification itself can run on the smallest model. A fine-tuned classifier on historical requests achieves 90%+ routing accuracy. The weighted average cost drops from $15/1M tokens to roughly $2.50/1M tokens.
+
+**2. Semantic caching (30-40% fewer API calls).**
+
+Users ask similar questions in different words. "How do I reset my password?" and "I forgot my password, how do I change it?" should return the same cached response.
+
+Embed incoming queries, compare against a cache of recent query embeddings, and serve cached responses when similarity exceeds 0.95. One client saw a 40% cache hit rate on their customer support AI. That's 40% fewer API calls at zero quality cost.
+
+**3. Prompt optimization (50-60% fewer tokens).**
+
+Most prompts are bloated. System prompts stuffed with "you are a helpful assistant" boilerplate. Context windows filled with irrelevant retrieved documents. Few-shot examples that could be distilled into clear instructions.
+
+Concrete techniques:
+- Strip system prompt to essential instructions. Every token costs money.
+- Limit retrieved context to top 3-5 most relevant chunks, not 10-20.
+- Use structured output (JSON mode) to reduce response token waste.
+- Cache system prompts with provider-specific prompt caching features.
+
+The client I mentioned — $47K to $3,200 — applied all three. Tiered routing handled the bulk. Semantic caching caught repeated patterns. Prompt optimization shrank every request. The compounding effect is what makes the 14x reduction possible.
+
+**When to Apply This:**
+- LLM API costs exceeding $1K/month or growing faster than revenue
+- Approaching production scale where per-request cost matters
+- Any feature sending all requests to a single frontier model
+
+---
+
+## Worth Your Time
+
+1. **[Anthropic: Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)** — Cache system prompts and large context blocks across API calls. Up to 90% reduction on cached content costs. If you're sending the same system prompt with every request (you are), enable this immediately.
+
+2. **[OpenAI: Batch API](https://platform.openai.com/docs/guides/batch/overview)** — 50% discount for non-real-time workloads. Content generation, data enrichment, batch analysis — anything that doesn't need sub-second response. If you're running nightly jobs against LLM APIs, you're overpaying by 2x.
+
+3. **[Braintrust: LLM Evals](https://www.braintrust.dev/)** — You can't optimize model routing without measuring quality per tier. Braintrust provides evaluation frameworks that let you compare Haiku vs Sonnet vs Opus on your actual queries with your actual quality criteria. Data-driven routing beats intuition.
+
+---
+
+## Tool of the Week
+
+**[LiteLLM](https://docs.litellm.ai/)** — Unified API proxy for 100+ LLM providers. Route between models, add fallbacks, track costs per endpoint, and switch providers without code changes. The cost tracking dashboard alone — showing spend by model, endpoint, and user — makes the business case for optimization visible to the CFO.
+
+---
+
+That's it for this week.
+
+Hit reply if your LLM costs are growing faster than your revenue. I've run this optimization playbook for 4 companies now — the savings are consistently 70-90%. I read every response.
+
+– Alex
+
+P.S. For the complete guide to building cost-effective AI features in SaaS: [AI-Assisted Development Guide](https://alexmayhew.dev/blog/ai-assisted-development-guide).

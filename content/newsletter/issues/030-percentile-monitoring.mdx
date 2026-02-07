@@ -1,0 +1,101 @@
+---
+issue: 30
+title: "When Averages Lie: Percentile Monitoring"
+subject: "Your 200ms average hides 8-second requests"
+sendDate: "2026-07-22"
+status: "draft"
+pillar: "performance"
+---
+
+Subject: Your 200ms average hides 8-second requests
+
+Hey there,
+
+A client told me their API was "fast — 200ms average response time." I pulled their p99 data. It was 8,200ms. Their enterprise customers, running complex dashboard queries, were waiting 8 seconds per API call while the average looked healthy.
+
+They lost a $180K/year contract before they noticed.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your monitoring dashboard shows average response times in a comfortable range. Your team believes performance is fine. But customer complaints about "slowness" keep appearing, and you can't reproduce the issue.
+
+**The Insight:**
+Averages hide bimodal distributions. When 99% of requests complete in 50ms and 1% take 5,000ms, the average reads 100ms. That 1% represents your most valuable users — enterprise customers with complex data, power users with large accounts, API consumers running batch operations.
+
+Here's what the distribution actually looks like:
+
+```
+Response Time Distribution (real client data):
+──────────────────────────────────────────────
+
+  Requests
+  │
+  ████████████████████████████  p50: 45ms
+  │
+  ████████████████               p90: 180ms
+  │
+  ██████████                     p95: 620ms
+  │
+  ███                            p99: 5,200ms
+  │
+  █                              p99.9: 12,400ms
+  ├──────────────────────────────────────────
+  0ms     1s      2s      5s     10s     15s
+
+  Average: 198ms  ← This number is a lie.
+
+  The 1% at p99 are your enterprise customers.
+  The 0.1% at p99.9 are your largest accounts.
+```
+
+The fix is straightforward. Switch your alerting from average-based to percentile-based. One Prometheus rule change:
+
+```yaml
+# Before: alert on average (misses tail latency)
+- alert: HighLatency
+  expr: rate(http_request_duration_seconds_sum[5m])
+      / rate(http_request_duration_seconds_count[5m]) > 0.5
+
+# After: alert on p99 (catches enterprise customer pain)
+- alert: HighTailLatency
+  expr: histogram_quantile(0.99,
+    rate(http_request_duration_seconds_bucket[5m])) > 2.0
+```
+
+The client who lost the contract made two changes: added p99 alerting and added a Grafana panel showing percentile distribution instead of average. Within a week, they identified 3 slow query patterns affecting only accounts with more than 10,000 records. The fixes were specific: add an index, paginate one query, cache another. Total engineering time: 2 days. The performance improvement for their top 50 accounts: 94%.
+
+The key insight: average-based monitoring optimizes for the median user. Percentile-based monitoring optimizes for the users who pay you the most.
+
+**When to Apply This:**
+- Any SaaS product where account sizes vary by more than 10x (most B2B SaaS)
+- Teams relying on average response time as their primary performance metric
+- Products losing enterprise customers to "performance concerns" that don't show up in aggregate metrics
+
+---
+
+## Worth Your Time
+
+1. **[Gil Tene: How NOT to Measure Latency](https://www.youtube.com/watch?v=lJ8ydIuPFeU)** — The definitive talk on latency measurement. Tene's explanation of coordinated omission — how most benchmarking tools systematically underreport tail latency — changed how I evaluate every performance claim.
+
+2. **[Brendan Gregg: The USE Method](https://www.brendangregg.com/usemethod.html)** — Gregg's Utilization, Saturation, Errors methodology catches the resource contention that causes tail latency before it reaches users. If your p99 is high, the root cause is almost always saturation somewhere in the stack.
+
+3. **[Datadog: Guide to Monitoring Percentiles](https://www.datadoghq.com/blog/monitoring-101-collecting-data/)** — Practical guide on implementing percentile monitoring across different observability stacks. Covers the storage trade-offs of histogram data vs. summary metrics — relevant when your metrics volume is high.
+
+---
+
+## Tool of the Week
+
+**[Grafana](https://grafana.com/)** — You likely have Grafana already. The underused feature: histogram panel type. Configure it to show response time distribution instead of time series, and tail latency becomes visually obvious. One dashboard change gives your team the same "aha moment" I described above. Pair it with alerting on `histogram_quantile(0.99, ...)` and you'll catch enterprise customer pain before they email you about it.
+
+---
+
+That's it for this week.
+
+Hit reply if you want help setting up percentile-based alerting for your stack — the config changes are small but the visibility improvement is significant. I read every response.
+
+– Alex
+
+P.S. For the complete performance monitoring strategy including percentile-based SLOs: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).

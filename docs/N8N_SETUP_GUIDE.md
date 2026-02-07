@@ -1,18 +1,27 @@
 # n8n Content Repurposing Setup Guide
 
 > **Created:** 2026-01-27
-> **Updated:** 2026-01-28 (Postiz auto-scheduling integration)
-> **Status:** Ready for setup
+> **Updated:** 2026-02-07 (Groq upgrade, voice validation, newsletter branch)
+> **Status:** Active
 > **Container:** Podman at http://localhost:5678
 
-## What Changed (2026-01-28)
+## What Changed (2026-02-07)
 
-The workflow now **automatically schedules posts to Postiz** instead of just returning generated content. When you trigger the webhook, it:
+Major workflow upgrade:
 
-1. Generates LinkedIn, Twitter, and Dev.to content via Ollama
-2. Formats the content for Postiz API
-3. Schedules all three posts to Postiz
-4. Returns a summary of what was scheduled
+1. **Groq Llama 3.3 70B** replaces Gemma 2 9B as primary LLM (with Ollama fallback)
+2. **Voice compliance validation** node checks all output for banned words, emojis, length
+3. **Newsletter generation branch** added (4th parallel generation path)
+4. Content quality significantly improved (70B model vs 9B)
+
+### Previous Changes (2026-01-28)
+
+The workflow automatically schedules posts to Postiz. When you trigger the webhook, it:
+
+1. Generates LinkedIn, Twitter, Dev.to, and Newsletter content via Groq (Ollama fallback)
+2. Validates content against brand voice rules
+3. Formats and schedules posts to Postiz
+4. Returns a summary including validation results
 
 ### Integration IDs (Updated 2026-01-28)
 
@@ -80,30 +89,54 @@ Expected response (after 60-120 seconds):
 ```
 POST /webhook/content-repurpose
          │
-         ├──► Ollama: LinkedIn Carousel (parallel)
+         ├──► Groq: LinkedIn Post (parallel)
+         │      └─ IF fail → Ollama Fallback: LinkedIn
          │
-         ├──► Ollama: Twitter Thread (parallel)
+         ├──► Groq: X/Twitter Tweet (parallel)
+         │      └─ IF fail → Ollama Fallback: Twitter
          │
-         ├──► Ollama: Dev.to Article (parallel)
+         ├──► Groq: Dev.to Article (parallel)
+         │      └─ IF fail → Ollama Fallback: DevTo
          │
-         └──► Ollama: Newsletter Section (parallel)
+         └──► Groq: Newsletter Section (parallel)
+                └─ IF fail → Ollama Fallback: Newsletter
                       │
                       ▼
                Wait For All (Merge)
                       │
                       ▼
-               Format Output (Code)
+               Voice Compliance Validation (Code)
+               ├─ Banned words check
+               ├─ Emoji detection
+               ├─ Length validation per platform
+               └─ Hashtag detection
                       │
                       ▼
-               Respond to Webhook (JSON)
+               Prepare Postiz Payloads (Code)
+                      │
+                      ├──► Schedule LinkedIn (Postiz API)
+                      ├──► Schedule X/Twitter (Postiz API)
+                      └──► Schedule Dev.to (Postiz API)
+                              │
+                              ▼
+                      Merge Postiz Results
+                              │
+                              ▼
+                      Format Response (Code)
+                              │
+                              ▼
+                      Respond to Webhook (JSON)
 ```
 
 **Key Design Decisions:**
 
 - Uses `responseMode: "responseNode"` for async webhook response
-- 3 parallel HTTP requests to Ollama for speed
+- **Groq primary, Ollama fallback** — IF nodes route to Ollama on Groq HTTP errors
+- 4 parallel generation branches (LinkedIn, X, Dev.to, Newsletter)
+- Voice compliance validation catches banned words, emojis, length violations
+- Newsletter content returned in response but NOT auto-scheduled (requires manual Listmonk campaign)
 - Merge node waits for all branches to complete
-- "Respond to Webhook" node returns structured JSON
+- "Respond to Webhook" node returns structured JSON with validation results
 
 ---
 
@@ -122,9 +155,28 @@ podman logs n8n --tail 50
 podman restart n8n
 ```
 
-### Ollama Connection
+### Groq API Connection (Primary)
 
-The workflow connects to Ollama via:
+The workflow uses Groq's OpenAI-compatible API:
+
+```
+https://api.groq.com/openai/v1/chat/completions
+```
+
+**Model:** `llama-3.3-70b-versatile`
+**Auth:** Bearer token from `pass show claude/groq/api-key`
+**Rate limit:** 14,400 requests/day (free tier)
+
+**Verify Groq is accessible:**
+
+```bash
+curl -s https://api.groq.com/openai/v1/models \
+  -H "Authorization: Bearer $(pass show claude/groq/api-key)" | jq '.data[0].id'
+```
+
+### Ollama Connection (Fallback)
+
+If Groq returns an error (rate limit, outage), the workflow falls back to Ollama via:
 
 ```
 http://host.containers.internal:11434
@@ -150,6 +202,17 @@ sudo systemctl daemon-reload
 sudo systemctl restart ollama
 ```
 
+### Voice Compliance Validation
+
+A Code node validates all generated content before scheduling:
+
+- **Banned words:** game-changer, revolutionary, cutting-edge, leverage, utilize, delve, landscape, best practices, synergy, perhaps, maybe, might, could potentially, just, simply, easy, straightforward
+- **Emoji detection:** Flags any Unicode emoji characters
+- **Length checks:** LinkedIn 900-1400 chars, X under 280 chars
+- **Hashtag detection:** Flags hashtags on LinkedIn/X (allowed on Dev.to)
+
+Validation results are included in the webhook response. Content is NOT blocked — the caller decides whether to review flagged content.
+
 ---
 
 ## API Reference
@@ -172,11 +235,23 @@ sudo systemctl restart ollama
 	"title": "string",
 	"generated_at": "ISO 8601 timestamp",
 	"content": {
-		"linkedin_carousel": "string - 10-12 slides formatted",
-		"twitter_thread": "string - 8-10 tweets formatted",
-		"newsletter_section": "string - Newsletter excerpt",
-		"devto_article": "string - Full Dev.to article with frontmatter"
-	}
+		"linkedin": "string - 1,000-1,300 char text post",
+		"twitter": "string - Under 280 char standalone tweet",
+		"devto": "string - Full Dev.to article with frontmatter",
+		"newsletter": "string - This Week's Decision section"
+	},
+	"validation": {
+		"linkedin": { "valid": true, "issues": [] },
+		"twitter": { "valid": true, "issues": [] },
+		"devto": { "valid": true, "issues": [] },
+		"newsletter": { "valid": true, "issues": [] }
+	},
+	"postiz": {
+		"linkedin": { "scheduled": true, "post_id": "..." },
+		"twitter": { "scheduled": true, "post_id": "..." },
+		"devto": { "scheduled": true, "post_id": "..." }
+	},
+	"source": "groq"
 }
 ```
 
@@ -222,9 +297,21 @@ curl -s "http://localhost:5678/api/v1/executions" \
 3. Click Save if you made changes
 4. Try the Production URL (not Test URL)
 
-### Ollama Timeout
+### Groq API Error / Rate Limit
 
-**Cause:** LLM generation takes too long.
+**Cause:** Groq returns HTTP error (429 rate limit, 500 server error, etc.)
+
+**Behavior:** The IF nodes automatically route to Ollama fallback. Check the `source` field in the response — if it says `"ollama"`, Groq failed.
+
+**Fix:**
+
+- Check Groq API status: `curl -s https://api.groq.com/openai/v1/models -H "Authorization: Bearer $(pass show claude/groq/api-key)"`
+- If rate limited, wait or reduce request frequency (free tier: 14,400/day)
+- If API key expired, update: `pass edit claude/groq/api-key`
+
+### Ollama Timeout (Fallback)
+
+**Cause:** LLM generation takes too long (only when running as Groq fallback).
 
 **Fix:** Timeout is set to 180 seconds (3 minutes) per request. If still timing out:
 
@@ -246,6 +333,16 @@ ollama list | grep gemma2
 ollama pull gemma2:9b
 ```
 
+### Voice Validation Flagging Everything
+
+**Cause:** Generated content consistently fails voice compliance checks.
+
+**Fix:** Validation results appear in the webhook response under `validation`. Common issues:
+
+- Groq output contains hedging words ("perhaps", "maybe") — check prompts in `docs/LLM_REPURPOSING_PROMPTS.md`
+- LinkedIn posts too short (under 900 chars) — increase `max_tokens` in the Groq node
+- Content isn't blocked, only flagged — review and edit before scheduling
+
 ### Merge Node Not Waiting
 
 **Cause:** Merge node configuration issue.
@@ -254,7 +351,7 @@ ollama pull gemma2:9b
 
 1. Open workflow in n8n UI
 2. Click on "Wait For All" node
-3. Verify all 4 inputs are connected
+3. Verify all 8 inputs are connected (4 Groq + 4 fallback paths)
 
 ---
 
@@ -272,11 +369,12 @@ All prompts in this workflow follow the brand voice from `docs/VOICE_GUIDE.md`:
 
 ## Credentials Reference
 
-| Service     | Location                              |
-| ----------- | ------------------------------------- |
-| n8n API Key | `pass show claude/n8n/api-key`        |
-| Groq API    | `pass show claude/groq/api-key`       |
-| Buttondown  | `pass show claude/buttondown/api-key` |
+| Service          | Location                                   |
+| ---------------- | ------------------------------------------ |
+| n8n API Key      | `pass show claude/n8n/api-key`             |
+| Groq API         | `pass show claude/groq/api-key`            |
+| Listmonk Admin   | `pass show claude/listmonk/admin-password` |
+| Postiz API Token | Postiz dashboard > Settings > API          |
 
 ---
 
@@ -304,8 +402,10 @@ All prompts in this workflow follow the brand voice from `docs/VOICE_GUIDE.md`:
      -d "{\"title\": \"Why Boring Technology Wins\", \"slug\": \"boring-technology-wins\", \"content\": $(echo "$CONTENT" | jq -Rs .)}"
    ```
 
-2. **Schedule to Postiz:** Copy generated content to Postiz for scheduling
+2. **Verify Groq is primary:** Check the `source` field in the response — should say `"groq"`. If it says `"ollama"`, Groq may be failing.
 
-3. **Add to Buttondown:** Use newsletter section for weekly email
+3. **Check voice validation:** Review the `validation` field. Fix any flagged issues before content goes live.
 
-4. **Cross-post to Dev.to:** Paste Dev.to article with canonical URL
+4. **Newsletter section:** The `content.newsletter` field contains a "This Week's Decision" section. Use it with `scripts/newsletter-manage.sh` or create a Listmonk campaign manually.
+
+5. **Auto-scheduling:** LinkedIn, X, and Dev.to posts are automatically scheduled to Postiz. Newsletter content is NOT auto-scheduled — use `scripts/newsletter-manage.sh schedule-next`.

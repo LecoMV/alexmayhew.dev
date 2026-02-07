@@ -1,0 +1,95 @@
+---
+issue: 34
+title: "The $200K Mistake: Supporting \"Both\""
+subject: "The $200K/year \"we support both\" mistake"
+sendDate: "2026-09-16"
+status: "draft"
+pillar: "architecture"
+---
+
+Subject: The $200K/year "we support both" mistake
+
+Hey there,
+
+"We support both REST and GraphQL." "We maintain both the legacy Angular app and the new React app." "We run on both AWS and GCP." Every time I hear "we support both," I see a team burning money to avoid making a decision.
+
+The cost of "both" is never what teams expect.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your company acquired a product running on a different tech stack. Or sales promised a customer REST when you're a GraphQL shop. Or the team couldn't agree on a framework, so both factions got what they wanted. Now you maintain two of something, and it's slowly draining your engineering capacity.
+
+**The Insight:**
+I've calculated the cost of "both" across 7 teams. The formula is straightforward, and the number is always higher than leadership expects:
+
+```
+Cost of "Both" Calculator:
+──────────────────────────
+Context switching overhead per PR:     +1.5 hours
+  (two codebases, two patterns, two mental models)
+PRs per engineer per week:             3
+Engineers working across both:         8
+Weekly switching cost:                 36 hours
+
+Duplicate infrastructure maintenance:  +10 hours/week
+  (two CI pipelines, two dependency sets, two security audit surfaces)
+
+Knowledge fragmentation:               +5 hours/week
+  (bugs in system A require system B context, or vice versa)
+
+Total weekly cost: 51 hours × $100/hour = $5,100/week
+
+Annual cost: $265,200
+
+For a team that could consolidate in a
+3-month project (3 engineers × 3 months):  $150,000
+
+Break-even: 7 months
+ROI over 3 years: 5.3x
+```
+
+Why "both" happens and how to counter each argument:
+
+**"Sales promised it."** Response: calculate the cost of the promise. If maintaining a second API surface costs $200K/year and the deal is worth $80K/year, the math doesn't work. Present the data to sales leadership.
+
+**"We acquired it."** Response: set a sunset date before the acquisition closes. The integration plan should include a migration timeline. Every month without a plan makes the migration more expensive.
+
+**"The team couldn't agree."** Response: this is a leadership failure, not a technical problem. Make the decision. The cost of maintaining two approaches always exceeds the cost of one team being unhappy for a month.
+
+**"We need it for backward compatibility."** Response: this is the only valid reason, and it still has a deadline. Set a deprecation timeline with version support windows. Communicate it to customers. The cost of perpetual backward compatibility is often higher than the cost of migrating customers.
+
+The decision-making framework: for every "we support both" situation, answer three questions. What is the annual maintenance cost? What is the one-time migration cost? What is the break-even timeline? If break-even is under 18 months, migrate. If it's over 18 months, schedule the migration for the next major version or product cycle.
+
+**When to Apply This:**
+- Teams maintaining two versions of a system, two API paradigms, or two deployment targets
+- Post-acquisition integration where "keep both" has become the default
+- Any situation where "supporting both" was a temporary compromise that became permanent
+
+---
+
+## Worth Your Time
+
+1. **[Basecamp: Choose Boring Technology](https://boringtechnology.club/)** — Dan McKinley's original argument for limiting technology choices. His "innovation tokens" concept applies directly to the "both" problem: every additional technology you support spends a token you can't use on product innovation.
+
+2. **[Shopify: Monorepo Migration](https://shopify.engineering/shopify-monorepo)** — Shopify consolidated from multiple repositories and tech stacks into a monorepo. Their migration story quantifies the before/after: deployment frequency doubled, onboarding time halved, and cross-team collaboration became possible without context switching.
+
+3. **[Martin Fowler: Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)** — If you decide to migrate away from "both," the strangler fig pattern is the lowest-risk approach. Route traffic incrementally from the old system to the new one. Fowler's description remains the clearest explanation of how to execute a gradual migration without a rewrite.
+
+---
+
+## Tool of the Week
+
+**[Backstage](https://backstage.io/)** — Spotify's developer portal. If you're stuck supporting "both" during a transition period, Backstage provides a unified catalog of all services regardless of tech stack. It won't reduce the cost of "both," but it makes the fragmentation visible — which is the first step toward building the case for consolidation.
+
+---
+
+That's it for this week.
+
+Hit reply if you're stuck supporting "both" of something and want help building the migration business case. I read every response.
+
+– Alex
+
+P.S. For the complete framework on making architecture consolidation decisions: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).

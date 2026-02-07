@@ -1,0 +1,102 @@
+---
+issue: 32
+title: "Redux Is Dead (For Most Apps)"
+subject: "Redux is dead (for 90% of apps)"
+sendDate: "2026-08-19"
+status: "draft"
+pillar: "frontend"
+---
+
+Subject: Redux is dead (for 90% of apps)
+
+Hey there,
+
+A client's frontend team spent 3 weeks building a Redux store for their SaaS dashboard. Reducers, selectors, normalized state, middleware for async operations. When I reviewed it, 94% of the state in their Redux store was server data — data that belonged in a cache, not in client state management.
+
+They replaced it all with React Query in 4 days. The codebase shrank by 2,800 lines.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your frontend team uses Redux because it's what they've always used. Every new feature means writing reducers, actions, selectors, and middleware. The boilerplate-to-business-logic ratio is 4:1. Someone asks "should we keep using Redux?" and the room splits.
+
+**The Insight:**
+Redux solved a real problem in 2016: React had no built-in way to manage complex state shared across components. In 2026, that problem has better solutions for most use cases.
+
+The question isn't "is Redux bad?" — it's "is your state actually client state?"
+
+**90% of "state" in SaaS applications is server data.** User profiles, project lists, dashboard metrics, notifications — this data lives in your database and gets cached on the client. It's not state you manage. It's data you fetch, cache, and invalidate.
+
+For server data, use React Query (TanStack Query) or SWR:
+
+```typescript
+// Redux approach: 45 lines for one data fetch
+// actions.ts, reducers.ts, selectors.ts, thunks.ts...
+
+// React Query approach: 8 lines
+function useProjects() {
+  return useQuery({
+    queryKey: ['projects'],
+    queryFn: () => api.getProjects(),
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+  });
+}
+
+// Mutation with automatic cache invalidation
+function useCreateProject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: api.createProject,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['projects'] }),
+  });
+}
+```
+
+For the remaining 10% — actual client state (UI toggles, form state, multi-step wizard progress) — Zustand provides Redux-like patterns without Redux-like boilerplate:
+
+```typescript
+// Zustand: 8 lines for a complete store
+const useUIStore = create((set) => ({
+  sidebarOpen: true,
+  activeTab: 'overview',
+  toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
+  setActiveTab: (tab) => set({ activeTab: tab }),
+}));
+```
+
+The 10% of apps that genuinely need Redux: applications requiring time-travel debugging (dev tools, collaborative editing), complex undo/redo (design tools, spreadsheet applications), or deeply interconnected client state where changes cascade across dozens of components simultaneously.
+
+npm download trends confirm this shift. Redux downloads plateaued at ~8M/week in 2024. Zustand crossed 4M/week in 2025, growing 200%+ year-over-year. React Query passed 6M/week. The ecosystem voted.
+
+**When to Apply This:**
+- SaaS applications where more than 70% of Redux state is fetched from an API
+- Teams where Redux boilerplate slows feature development by more than 20%
+- New projects evaluating state management — start with React Query + Zustand, add Redux only if you hit a wall
+
+---
+
+## Worth Your Time
+
+1. **[TanStack Query Documentation](https://tanstack.com/query/latest)** — The docs are excellent and include migration guides from Redux. The "Thinking in React Query" page reframes state management in terms of server cache semantics. Read it before starting a migration.
+
+2. **[Mark Erikson: Redux Is Not Dead](https://blog.isquaredsoftware.com/)** — The Redux maintainer's counterargument. Erikson makes valid points about Redux Toolkit reducing boilerplate. I disagree that RTK solves the fundamental issue — most teams don't need client-side state management for server data — but his perspective is worth understanding.
+
+3. **[Zustand GitHub](https://github.com/pmndrs/zustand)** — Zustand's README is its best documentation. The simplicity is the point: no providers, no context, no boilerplate. For the 10% of state that's genuinely client-side, Zustand is what Redux should have been.
+
+---
+
+## Tool of the Week
+
+**[TanStack Router](https://tanstack.com/router/latest)** — If you're adopting TanStack Query, pair it with TanStack Router. It handles URL-based state (filters, pagination, search params) as first-class router state, eliminating another category of data that teams mistakenly put in Redux. Type-safe route params, built-in search param serialization, and loader patterns that integrate directly with TanStack Query.
+
+---
+
+That's it for this week.
+
+Hit reply if you're considering a Redux migration and want advice on the migration path — I've guided 3 teams through it. I read every response.
+
+– Alex
+
+P.S. For the complete guide on modern frontend architecture decisions: [Modern Frontend Architecture](https://alexmayhew.dev/blog/modern-frontend-architecture).

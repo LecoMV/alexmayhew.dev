@@ -14,10 +14,38 @@
 | 2    | 2026-02-11 | Draft   | The Hidden Cost of Microservices                |
 | 3    | 2026-02-18 | Draft   | PostgreSQL Row-Level Security for Multi-Tenancy |
 | 4    | 2026-02-25 | Draft   | When NOT to Use Next.js                         |
-| 5    | 2026-03-04 | Planned | Database Migrations That Won't Wake You at 3 AM |
-| 6    | 2026-03-11 | Planned | The Architecture Decision I Regret Most         |
-| 7    | 2026-03-18 | Planned | How I Replaced $500/mo in API Costs             |
-| 8    | 2026-03-25 | Planned | The Real Cost of Technical Debt                 |
+| 5    | 2026-03-04 | Drafted | Database Migrations (feature blog)              |
+| 6    | 2026-03-11 | Drafted | The Architecture Decision I Regret Most         |
+| 7    | 2026-03-18 | Drafted | RAG Architecture for SaaS (feature blog)        |
+| 8    | 2026-03-25 | Drafted | How I Replaced $500/mo in API Costs             |
+| 9    | 2026-04-01 | Drafted | Core Web Vitals 2026 (feature blog)             |
+| 10   | 2026-04-08 | Drafted | The Real Cost of Technical Debt                 |
+| 11   | 2026-04-15 | Drafted | Vector Databases: Build vs Buy (feature blog)   |
+| 12   | 2026-04-22 | Drafted | Code Review That Actually Adds Value            |
+| 13   | 2026-05-06 | Drafted | Edge Computing (feature blog)                   |
+| 14   | 2026-05-13 | Drafted | Hiring Your First Staff Engineer                |
+| 15   | 2026-05-20 | Drafted | Incident Response (feature blog)                |
+| 16   | 2026-05-27 | Drafted | Choosing Between REST and GraphQL in 2026       |
+| 17   | 2026-06-03 | Drafted | Caching Strategies (feature blog)               |
+| 18   | 2026-06-10 | Drafted | When to Denormalize Your Database               |
+| 19   | 2026-06-17 | Drafted | LLM Cost Optimization (feature blog)            |
+| 20   | 2026-06-24 | Drafted | Q2 Retrospective: What Worked                   |
+| 21   | 2026-07-01 | Drafted | Testing RSCs (feature blog)                     |
+| 22   | 2026-07-08 | Drafted | The Real Cost of "Write Tests Later"            |
+| 23   | 2026-07-15 | Drafted | Performance Monitoring (feature blog)           |
+| 24   | 2026-07-22 | Drafted | When Averages Lie: Percentile Monitoring        |
+| 25   | 2026-07-29 | Drafted | Code Review Practices (feature blog)            |
+| 26   | 2026-08-05 | Drafted | Automating What Humans Shouldn't Review         |
+| 27   | 2026-08-12 | Drafted | State Management 2026 (feature blog)            |
+| 28   | 2026-08-19 | Drafted | Redux Is Dead (For Most Apps)                   |
+| 29   | 2026-08-26 | Drafted | Documentation Engineers Read (feature blog)     |
+| 30   | 2026-09-02 | Drafted | The Documentation Half-Life Problem             |
+| 31   | 2026-09-09 | Drafted | Hiring Staff Engineers (feature blog)           |
+| 32   | 2026-09-16 | Drafted | The $200K Mistake: Supporting "Both"            |
+| 33   | 2026-09-23 | Drafted | Hidden Tax (feature blog)                       |
+| 34   | 2026-09-30 | Drafted | Q3 Retrospective                                |
+| 35   | 2026-10-07 | Drafted | Billing Architecture (feature blog)             |
+| 36   | 2026-10-14 | Drafted | Revenue Leakage: The Silent Killer              |
 
 ---
 
@@ -337,10 +365,17 @@ export default defineConfig({
 
 ## Automation Notes
 
-Once n8n is set up, automate:
+**Newsletter management script:** `scripts/newsletter-manage.sh`
 
-1. **New blog post → Newsletter section draft** (Gemma 2 9B)
-2. **Newsletter send → Social posts scheduled** (LinkedIn + Twitter)
-3. **Subscriber milestone → Celebration post**
+```bash
+./scripts/newsletter-manage.sh create-all     # Bulk-create Listmonk draft campaigns
+./scripts/newsletter-manage.sh status          # Show all campaign statuses
+./scripts/newsletter-manage.sh schedule-next   # Schedule next upcoming issue
+./scripts/newsletter-manage.sh preview 005     # Preview rendered HTML
+```
 
-See `docs/CONTENT_REPURPOSING_SYSTEM.md` for prompts.
+**n8n workflow** generates newsletter sections automatically when new blog posts are published (Groq Llama 3.3 70B, with Ollama fallback).
+
+**All 36 issues (#005-#036) are pre-written** in `content/newsletter/issues/`. Use `newsletter-manage.sh create-all` to bulk-create Listmonk campaigns as drafts, then `schedule-next` weekly to arm each send.
+
+See `docs/CONTENT_REPURPOSING_SYSTEM.md` for generation prompts.

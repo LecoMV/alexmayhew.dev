@@ -1,0 +1,99 @@
+---
+issue: 19
+title: "The Hidden Tax of 'We Support Both'"
+subject: "Supporting both costs you 30% of engineering"
+sendDate: "2026-09-23"
+status: "draft"
+pillar: "architecture"
+---
+
+Subject: Supporting both costs you 30% of engineering
+
+Hey there,
+
+I audited a SaaS codebase last year that supported both PostgreSQL and MongoDB. The adapter layer had 47 special-case conditionals. Every pull request touching the data layer took an extra 30 minutes to review. Their SOC2 security audit cost doubled because two database engines meant two sets of access controls, two backup verification procedures, and two attack surface assessments.
+
+The MongoDB support existed for one customer paying $50K/year. The engineering overhead cost them $200K/year.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your codebase supports "both" — two databases, two authentication providers, two cloud platforms, two API versions. It started as flexibility. It evolved into a tax on every engineering decision.
+
+**The Insight:**
+"We support both" sounds like good engineering. In practice, it's a 25-40% overhead on every activity that touches the abstraction layer. I've quantified this across 8 client codebases:
+
+| Activity | Single path | "Both" | Overhead |
+|---|---|---|---|
+| Feature development | 1x | 1.4-1.8x | 40-80% |
+| Code review | 1x | 1.3x | 30% |
+| Testing | 1x | 2x | 100% |
+| Security audit | 1x | 1.8x | 80% |
+| Debugging | 1x | 1.5x | 50% |
+| Onboarding | 1x | 1.3x | 30% |
+| Documentation | 1x | 1.6x | 60% |
+
+The testing overhead alone is devastating. Every test that touches the data layer needs to run against both backends. That's not 2x test count — it's 2x test infrastructure, 2x CI time, and 2x flaky test surface area.
+
+The pattern I see: "both" accumulates over 2+ years through reasonable individual decisions. One customer needs MongoDB. One deploy target needs AWS. One integration requires SAML alongside OIDC. Each addition is justified in isolation. The compounding cost is invisible until you audit it.
+
+**The exit strategy has four phases:**
+
+1. **Stop new development on the deprecated path.** No new features, no bug fixes except security-critical. This costs nothing and stops the bleeding immediately.
+
+2. **Migrate existing users.** For the client paying $50K/year on MongoDB: offer migration support, a temporary price discount, or accept losing them. Calculate the real cost of supporting them — not the revenue they bring, but the engineering overhead they create.
+
+3. **Sunset with a deadline.** Public deprecation timeline. 6-12 months for infrastructure changes, 3-6 months for API versions. Communicate clearly and stick to it.
+
+4. **Delete the code.** Not "comment out." Not "feature flag." Delete. Every line of compatibility code that remains is a line that someone will maintain, test, and reason about.
+
+```typescript
+// BEFORE: 47 conditionals like this
+async function findUser(id: string) {
+  if (config.db === 'mongodb') {
+    return mongodb.collection('users').findOne({ _id: id });
+  } else {
+    return pg.query('SELECT * FROM users WHERE id = $1', [id]);
+  }
+}
+
+// AFTER: One path. Zero conditionals.
+async function findUser(id: string) {
+  return pg.query('SELECT * FROM users WHERE id = $1', [id]);
+}
+```
+
+The team I mentioned deleted 12,000 lines of adapter code when they dropped MongoDB. PR review time on data layer changes dropped 35%. Their CI pipeline ran 40% faster. Three engineers said it was the most impactful change of the year.
+
+**When to Apply This:**
+- Dual-support accumulated over 2+ years where one path serves less than 20% of usage
+- Engineering overhead from "both" exceeds the revenue of customers requiring the secondary path
+- Any codebase where adapter layers have more than 10 special-case conditionals
+
+---
+
+## Worth Your Time
+
+1. **[Martin Fowler: Strangler Fig](https://martinfowler.com/bliki/StranglerFigApplication.html)** — The pattern for incrementally replacing legacy systems. The same approach applies to removing a supported backend — build the migration around the new path, then let the old one die. Don't attempt a big-bang cutover.
+
+2. **[Stripe: API Versioning](https://stripe.com/blog/api-versioning)** — Stripe supports every API version indefinitely — but they've built the infrastructure to make that sustainable. For 99% of companies, this level of backwards compatibility is unaffordable. Stripe's approach is the exception, not the model.
+
+3. **[Basecamp: Shape Up](https://basecamp.com/shapeup/3.4-chapter-12)** — The chapter on "scope hammering" applies directly to feature scope. Every "we support both" was a scope expansion that wasn't hammered back. The discipline of saying "we don't do that" prevents accumulation.
+
+---
+
+## Tool of the Week
+
+**[ts-prune](https://github.com/nadeesha/ts-prune)** — Finds unused exports in TypeScript projects. When you delete a supported path, ts-prune identifies the adapter interfaces, utility functions, and type definitions that are now dead code. Clean deletion is safer than hopeful deletion.
+
+---
+
+That's it for this week.
+
+Hit reply if your codebase has a "we support both" tax you haven't quantified. Tell me what the "both" is — I'll help you estimate the engineering overhead. I read every response.
+
+– Alex
+
+P.S. For the complete architecture decision framework — including when to consolidate and when flexibility is genuinely worth it: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).

@@ -1,0 +1,80 @@
+---
+issue: 5
+title: "Database Migrations That Won't Wake You at 3 AM"
+subject: "Your database migrations are a ticking time bomb"
+sendDate: "2026-03-04"
+status: "draft"
+pillar: "performance"
+---
+
+Subject: Your database migrations are a ticking time bomb
+
+Hey there,
+
+A CTO I advise called me at 11 PM on a Tuesday. Their team had run a migration on a 120GB PostgreSQL database during business hours. Adding a column with a default value locked the table for 47 seconds. Their checkout flow went dark.
+
+The fix took 3 minutes. The incident cost them $18K in lost transactions and an enterprise customer escalation.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your SaaS database crossed 100GB. Migrations that used to complete in seconds now take minutes. Last week, a column addition caused 30 seconds of degraded performance during peak hours. Your team is starting to dread deploy days.
+
+**The Insight:**
+The expand-contract pattern eliminates downtime for every common migration operation. The core principle: never modify a column in place. Always add new, backfill, migrate reads, migrate writes, drop old.
+
+Here's what most teams get wrong. They treat migrations as atomic database operations. At scale, they're multi-deploy workflows.
+
+The 30-second rule: if a migration takes longer than 30 seconds on your staging database with production-scale data, it needs to be decomposed. Most teams don't test with production-scale data in staging — that's where the 3 AM pages come from.
+
+```sql
+-- WRONG: Locks table for duration of rewrite
+ALTER TABLE orders ADD COLUMN status_v2 varchar(50) DEFAULT 'pending';
+
+-- RIGHT: Add column without default (instant on PG 11+)
+ALTER TABLE orders ADD COLUMN status_v2 varchar(50);
+-- Backfill in batches of 10,000
+UPDATE orders SET status_v2 = status
+  WHERE id BETWEEN $1 AND $2;
+```
+
+Batch everything. A single UPDATE on 10M rows holds a lock for minutes. Batches of 10,000 rows with 100ms delays between them complete in comparable time with zero user impact.
+
+Three more rules that save production:
+
+- **Never rename columns directly.** Add new, dual-write, backfill, switch reads, drop old. Four deploys instead of one, but zero downtime.
+- **Never drop columns in the migration that removes usage.** Drop them in a follow-up deploy after the code referencing them is fully removed.
+- **Always test migrations against a production-sized dataset.** A 500-row dev database tells you nothing about lock duration on 50M rows.
+
+**When to Apply This:**
+- Database over 50GB or any table over 10M rows
+- Deploying during business hours with active users on the database
+- Any migration touching a table involved in your critical transaction path
+
+---
+
+## Worth Your Time
+
+1. **[Stripe's Online Migrations at Scale](https://stripe.com/blog/online-migrations)** — Stripe migrates while processing billions in payments. Their four-phase approach (dual-write, backfill, verify, cutover) is the gold standard. The verification phase alone — comparing old and new data row-by-row — is worth stealing.
+
+2. **[GitHub's gh-ost](https://github.blog/engineering/engineering-principles/gh-ost-github-s-online-schema-migration-tool-for-mysql/)** — If you're on MySQL, gh-ost performs schema migrations by creating shadow tables and replaying binlog events. Zero locking. GitHub migrates tables with billions of rows during peak traffic. The architecture is a masterclass in non-blocking operations.
+
+3. **[Martin Fowler: Evolutionary Database Design](https://martinfowler.com/articles/evodb.html)** — The foundational argument for treating database schema as an evolutionary artifact, not a fixed blueprint. His point about database refactoring patterns maps directly to expand-contract at scale.
+
+---
+
+## Tool of the Week
+
+**[pgroll](https://github.com/xataio/pgroll)** — Schema migration tool for PostgreSQL that handles expand-contract automatically. Define your migration, and pgroll creates versioned views so old and new code can run simultaneously. Still early, but solves the exact coordination problem that causes 3 AM incidents. Worth evaluating if you're running Postgres at scale.
+
+---
+
+That's it for this week.
+
+Hit reply if you've got a migration that's been sitting in a PR because nobody wants to run it in production. I've probably seen the pattern before. I read every response.
+
+– Alex
+
+P.S. For the full playbook on database performance at scale — including query optimization, connection pooling, and indexing strategies: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).

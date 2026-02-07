@@ -1,0 +1,109 @@
+---
+issue: 16
+title: "State Management in 2026: The 28KB Stack"
+subject: "State management solved in 28KB"
+sendDate: "2026-08-12"
+status: "draft"
+pillar: "frontend"
+---
+
+Subject: State management solved in 28KB
+
+Hey there,
+
+A team I advise spent three sprint planning sessions debating Redux vs Zustand vs signals for a new SaaS dashboard. Fourteen engineering hours burned on a decision that shouldn't take fourteen minutes.
+
+The debate was wrong because the question was wrong. "Which state management library?" assumes all state is the same. It's not.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+New SaaS project. The team is debating Redux vs Zustand vs Jotai vs signals. Everyone has a preference. Nobody has a framework for deciding. Sprint planning is becoming a recurring architecture forum.
+
+**The Insight:**
+Your application has four types of state. Each has a purpose-built solution that's smaller, simpler, and more performant than any general-purpose library trying to handle all four.
+
+**1. Server state → React Query / TanStack Query (~13KB)**
+
+API data, cached responses, background refetching. This is 60-80% of what Redux stores in most applications. React Query handles caching, deduplication, background updates, optimistic mutations, and stale-while-revalidate — all things teams build manually in Redux.
+
+```typescript
+const { data: users } = useQuery({
+  queryKey: ['users', filters],
+  queryFn: () => api.getUsers(filters),
+  staleTime: 60_000,
+});
+// Cached, deduped, auto-refetched. No reducer needed.
+```
+
+**2. Client state → Zustand (~1.5KB)**
+
+UI toggles, sidebar open/closed, selected tab, modal visibility. True client-only state that doesn't come from the server. Zustand gives you a store with zero boilerplate.
+
+```typescript
+const useUIStore = create((set) => ({
+  sidebarOpen: false,
+  toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
+}));
+```
+
+**3. URL state → nuqs (~5KB)**
+
+Filters, pagination, search queries, sort order. Any state that should survive a page refresh or be shareable via link. URL is the state manager. nuqs gives you type-safe URL query parameter hooks for Next.js.
+
+```typescript
+const [search, setSearch] = useQueryState('q', parseAsString.withDefault(''));
+const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
+// Bookmarkable. Shareable. No store needed.
+```
+
+**4. Form state → React Hook Form + Zod (~8.5KB)**
+
+Validation, dirty tracking, submission handling. Forms have unique requirements — field-level validation, touched state, submit error handling — that general state managers handle poorly.
+
+```typescript
+const schema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+});
+const { register, handleSubmit } = useForm({
+  resolver: zodResolver(schema),
+});
+```
+
+Total bundle: ~28KB. Compare to Redux Toolkit at ~40KB — which handles one of these four categories well (client state) and forces awkward patterns on the other three.
+
+Redux tried to be one solution for all four state types. That's why it's verbose. The 28KB stack uses four focused tools, each doing one thing well.
+
+**When to Apply This:**
+- New React or Next.js projects choosing a state management approach
+- Existing Redux applications where the store is primarily API data (migrate server state to React Query first)
+- Teams spending sprint time debating state management instead of shipping
+
+---
+
+## Worth Your Time
+
+1. **[TkDodo: Practical React Query](https://tkdodo.eu/blog/practical-react-query)** — The best React Query resource. The series on query key management and optimistic updates covers patterns you'll need in production. Written by a maintainer.
+
+2. **[Zustand: Comparison](https://docs.pmnd.rs/zustand/getting-started/comparison)** — Zustand's official comparison against Redux, Jotai, Recoil, and Valtio. Honest about trade-offs. Their point about when Jotai (atomic model) fits better than Zustand (single store) is worth reading.
+
+3. **[nuqs: Type-Safe URL State](https://nuqs.47ng.com/)** — URL state management for Next.js with full TypeScript inference. The documentation covers App Router integration, shallow routing, and history mode. If you're building anything with filterable lists, this replaces custom URL parsing.
+
+---
+
+## Tool of the Week
+
+**[TanStack Query DevTools](https://tanstack.com/query/latest/docs/framework/react/devtools)** — Visual debugger for React Query cache. See every cached query, its status, staleness, and data. When someone asks "why isn't this data updating?" the DevTools answer in seconds. Install it in development and never remove it.
+
+---
+
+That's it for this week.
+
+Hit reply if your team is stuck in a state management debate. Tell me what your store looks like — I'll tell you which parts should move where. I read every response.
+
+– Alex
+
+P.S. For the complete guide to modern frontend architecture — including component patterns, testing, and build optimization: [Modern Frontend Architecture](https://alexmayhew.dev/blog/modern-frontend-architecture).

@@ -1,0 +1,89 @@
+---
+issue: 10
+title: "The Incident Response Playbook That Cuts MTTR by 75%"
+subject: "Your outages take 6x longer than they should"
+sendDate: "2026-05-20"
+status: "draft"
+pillar: "leadership"
+---
+
+Subject: Your outages take 6x longer than they should
+
+Hey there,
+
+I reviewed incident reports for a Series C SaaS last quarter. Average outage: 90 minutes. Average time to fix: 15 minutes. The other 75 minutes? Figuring out who should be doing what, arguing about severity, writing status updates that nobody had approved, and waiting for a VP to join a Zoom call they didn't need to be on.
+
+Their incidents weren't slow because the problems were hard. They were slow because nobody had decided the process before the building was on fire.
+
+---
+
+## This Week's Decision
+
+**The Situation:**
+Your last major outage lasted 90 minutes. The actual technical fix took 15 minutes. The remaining 75 were spent on coordination — deciding who leads, who communicates, what severity it is, and whether to wake up the CTO.
+
+**The Insight:**
+Incident response speed is a process problem, not a technical one. Pre-assigning three roles and classifying severity before incidents happen cuts MTTR by 60-75% consistently across every team I've advised.
+
+**The three roles:**
+
+1. **Incident Commander (IC).** Owns the timeline. Makes decisions about escalation, rollback, and communication cadence. Does not debug. Their job is coordination.
+
+2. **Technical Lead.** The engineer closest to the affected system. They diagnose and fix. They report status to the IC, not to Slack, not to executives, not to customers.
+
+3. **Communications Lead.** Writes status page updates, handles customer-facing messaging, updates internal stakeholders. Takes this burden entirely off the technical lead.
+
+```
+SEVERITY CLASSIFICATION (decide BEFORE incidents)
+
+SEV1: Revenue-impacting outage, data loss risk
+  → IC + Tech Lead + Comms Lead activated immediately
+  → Status update every 15 minutes
+  → Post-incident review within 24 hours
+
+SEV2: Degraded service, workaround available
+  → IC + Tech Lead activated
+  → Status update every 30 minutes
+  → Post-incident review within 48 hours
+
+SEV3: Non-critical service affected, no user impact
+  → Tech Lead handles, IC optional
+  → Internal update when resolved
+```
+
+The most counterintuitive principle: **restore first, investigate later.** If a rollback fixes the issue, roll back. Don't spend 30 minutes understanding why the deploy broke while users are affected. Understanding comes in the post-incident review, not during the outage.
+
+One client implemented this framework in a week. Their next SEV1 incident — a database connection pool exhaustion — went from detection to resolution in 12 minutes. The IC made the rollback call at minute 4. Previously, that decision would have waited for a VP who was in a meeting.
+
+The post-incident review is where real value compounds. Blameless, focused on systemic improvements, and always producing at least one action item that prevents recurrence. Teams that skip reviews repeat incidents. Teams that do them reduce incident frequency by 30-40% year over year.
+
+**When to Apply This:**
+- Any SaaS with paying customers and implicit or explicit uptime commitments
+- Teams where the last outage involved more than 5 minutes of "who should handle this"
+- Organizations without documented severity classification or role assignments
+
+---
+
+## Worth Your Time
+
+1. **[PagerDuty: Incident Response Guide](https://response.pagerduty.com/)** — The most comprehensive open-source incident response framework available. Their IC training materials alone are worth the read. Adapt their severity matrix to your scale rather than building from scratch.
+
+2. **[Google SRE Book: Managing Incidents](https://sre.google/sre-book/managing-incidents/)** — Google's incident management chapter covers role assignment, communication protocols, and post-incident review in detail. The key insight: incident management is a skill that requires practice, not just documentation.
+
+3. **[Jeli: Howie Post-Incident Guide](https://www.jeli.io/howie/welcome)** — Goes beyond "5 whys" into contributing factor analysis. Their approach surfaces systemic issues instead of stopping at proximate causes. This is how you prevent recurrence instead of just documenting what happened.
+
+---
+
+## Tool of the Week
+
+**[incident.io](https://incident.io/)** — Incident management that lives in Slack. Declare an incident, it creates a channel, assigns roles, tracks timeline, and generates the post-incident report. The automation removes exactly the coordination overhead that stretches 15-minute fixes into 90-minute outages. Worth evaluating once your team has 10+ incidents per quarter.
+
+---
+
+That's it for this week.
+
+Hit reply if your last outage took longer than it should have. I'll help you identify where the coordination bottleneck is. I read every response.
+
+– Alex
+
+P.S. For the complete engineering leadership framework — from incident response to team scaling: [Engineering Leadership: Founder to CTO](https://alexmayhew.dev/blog/engineering-leadership-founder-to-cto).

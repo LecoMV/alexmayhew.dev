@@ -12,25 +12,78 @@
 			"name": "Webhook",
 			"type": "n8n-nodes-base.webhook",
 			"typeVersion": 2,
-			"position": [250, 300],
+			"position": [250, 400],
 			"webhookId": "content-repurpose-webhook"
 		},
 		{
 			"parameters": {
 				"method": "POST",
-				"url": "http://host.containers.internal:11434/api/generate",
+				"url": "https://api.groq.com/openai/v1/chat/completions",
+				"sendHeaders": true,
+				"headerParameters": {
+					"parameters": [
+						{
+							"name": "Authorization",
+							"value": "=Bearer {{ $env.GROQ_API_KEY }}"
+						},
+						{
+							"name": "Content-Type",
+							"value": "application/json"
+						}
+					]
+				},
 				"sendBody": true,
 				"specifyBody": "json",
-				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and authoritative—take clear positions, no hedging\n- Technical but always tied to business outcomes\n- Use specific numbers (40%, 10x, 100k+)—never vague\n- Dense—every sentence carries weight, no filler\n\nNEVER use emojis. Ever.\n\n<task>Convert this blog post into a LinkedIn text post (NOT a carousel)</task>\n\n<rules>\n- 150-250 words total\n- First line MUST stop the scroll (bold claim or counterintuitive statement)\n- Use line breaks every 1-2 sentences\n- Include 3-4 concrete insights with specific numbers\n- End with a question to drive engagement\n- NO hashtags (LinkedIn algorithm no longer boosts them in 2026)\n- NO emojis, NO hedging\n- NO external links in the post body\n- Use arrows or bullet points for lists\n- End with a specific question to drive comments\n</rules>\n\n<input>\nTitle: ${$json.body.title}\n\n${$json.body.content}\n</input>\n\nOutput ONLY the LinkedIn post text, ready to publish.`, stream: false, options: { temperature: 0.7, num_predict: 600 } }) }}",
+				"jsonBody": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'system', content: 'You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\\n\\nYour voice:\\n- Direct and authoritative—take clear positions, no hedging\\n- Technical but always tied to business outcomes\\n- Use specific numbers (40%, 10x, 100k+)—never vague\\n- Dense—every sentence carries weight, no filler\\n\\nNEVER use emojis. Ever.' }, { role: 'user', content: 'Convert this blog post into a LinkedIn text post (NOT a carousel).\\n\\nRules:\\n- 150-250 words total\\n- First line MUST stop the scroll (bold claim or counterintuitive statement)\\n- Use line breaks every 1-2 sentences\\n- Include 3-4 concrete insights with specific numbers\\n- End with a question to drive engagement\\n- NO hashtags, NO emojis, NO hedging\\n- NO external links in the post body\\n\\nTitle: ' + $('Webhook').first().json.body.title + '\\n\\n' + $('Webhook').first().json.body.content + '\\n\\nOutput ONLY the LinkedIn post text, ready to publish.' }], max_tokens: 1200, temperature: 0.7 }) }}",
 				"options": {
-					"timeout": 180000
+					"timeout": 60000
 				}
 			},
-			"id": "ollama-linkedin",
-			"name": "Generate LinkedIn",
+			"id": "groq-linkedin",
+			"name": "Groq LinkedIn",
 			"type": "n8n-nodes-base.httpRequest",
 			"typeVersion": 4.2,
-			"position": [500, 100]
+			"position": [450, 100]
+		},
+		{
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict"
+					},
+					"conditions": [
+						{
+							"id": "groq-linkedin-check",
+							"leftValue": "={{ $json.choices }}",
+							"rightValue": "",
+							"operator": {
+								"type": "array",
+								"operation": "exists",
+								"singleValue": true
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			},
+			"id": "if-groq-linkedin",
+			"name": "IF Groq LinkedIn OK",
+			"type": "n8n-nodes-base.if",
+			"typeVersion": 2.2,
+			"position": [650, 100]
+		},
+		{
+			"parameters": {
+				"jsCode": "// Extract Groq response and tag as linkedin\nconst content = $json.choices[0].message.content;\nreturn [{ json: { platform: 'linkedin', content } }];"
+			},
+			"id": "groq-linkedin-extract",
+			"name": "Extract Groq LinkedIn",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [850, 50]
 		},
 		{
 			"parameters": {
@@ -38,16 +91,96 @@
 				"url": "http://host.containers.internal:11434/api/generate",
 				"sendBody": true,
 				"specifyBody": "json",
-				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and authoritative—take clear positions\n- Specific numbers (40%, 10x, 100k+)—never vague\n- Experience-backed (\"I've advised 30+ startups...\")\n- Punchy and dense\n\nNEVER use emojis.\n\n<task>Convert this blog post into a single standalone tweet</task>\n\n<rules>\n- Maximum 280 characters to prevent truncation\n- Lead with the most contrarian or surprising insight\n- Include one specific number or metric\n- NEVER include external links (links receive a 270% reach penalty on X in 2026)\n- NEVER use hashtags (hashtags trigger spam filters and provide no algorithm boost in 2026)\n- NO emojis\n- The tweet must stand completely alone as valuable insight\n</rules>\n\n<input>\nTitle: ${$json.body.title}\n\n${$json.body.content}\n</input>\n\nOutput ONLY the tweet text. No quotes, no explanation, just the tweet.`, stream: false, options: { temperature: 0.6, num_predict: 200 } }) }}",
+				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and authoritative—take clear positions, no hedging\n- Technical but always tied to business outcomes\n- Use specific numbers (40%, 10x, 100k+)—never vague\n- Dense—every sentence carries weight, no filler\n\nNEVER use emojis. Ever.\n\n<task>Convert this blog post into a LinkedIn text post (NOT a carousel)</task>\n\n<rules>\n- 150-250 words total\n- First line MUST stop the scroll (bold claim or counterintuitive statement)\n- Use line breaks every 1-2 sentences\n- Include 3-4 concrete insights with specific numbers\n- End with a question to drive engagement\n- NO hashtags (LinkedIn algorithm no longer boosts them in 2026)\n- NO emojis, NO hedging\n- NO external links in the post body\n- Use arrows or bullet points for lists\n- End with a specific question to drive comments\n</rules>\n\n<input>\nTitle: ${$('Webhook').first().json.body.title}\n\n${$('Webhook').first().json.body.content}\n</input>\n\nOutput ONLY the LinkedIn post text, ready to publish.`, stream: false, options: { temperature: 0.7, num_predict: 600 } }) }}",
 				"options": {
 					"timeout": 180000
 				}
 			},
-			"id": "ollama-twitter",
-			"name": "Generate Twitter",
+			"id": "ollama-linkedin-fallback",
+			"name": "Ollama LinkedIn Fallback",
 			"type": "n8n-nodes-base.httpRequest",
 			"typeVersion": 4.2,
-			"position": [500, 300]
+			"position": [850, 200]
+		},
+		{
+			"parameters": {
+				"jsCode": "// Extract Ollama response and tag as linkedin\nconst content = $json.response || '';\nreturn [{ json: { platform: 'linkedin', content } }];"
+			},
+			"id": "ollama-linkedin-extract",
+			"name": "Extract Ollama LinkedIn",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [1050, 200]
+		},
+		{
+			"parameters": {
+				"method": "POST",
+				"url": "https://api.groq.com/openai/v1/chat/completions",
+				"sendHeaders": true,
+				"headerParameters": {
+					"parameters": [
+						{
+							"name": "Authorization",
+							"value": "=Bearer {{ $env.GROQ_API_KEY }}"
+						},
+						{
+							"name": "Content-Type",
+							"value": "application/json"
+						}
+					]
+				},
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'system', content: 'You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\\n\\nYour voice:\\n- Direct and authoritative—take clear positions\\n- Specific numbers (40%, 10x, 100k+)—never vague\\n- Experience-backed (\"I\\'ve advised 30+ startups...\")\\n- Punchy and dense\\n\\nNEVER use emojis.' }, { role: 'user', content: 'Convert this blog post into a single standalone tweet.\\n\\nRules:\\n- Maximum 280 characters to prevent truncation\\n- Lead with the most contrarian or surprising insight\\n- Include one specific number or metric\\n- NEVER include external links\\n- NEVER use hashtags\\n- NO emojis\\n- The tweet must stand completely alone as valuable insight\\n\\nTitle: ' + $('Webhook').first().json.body.title + '\\n\\n' + $('Webhook').first().json.body.content + '\\n\\nOutput ONLY the tweet text. No quotes, no explanation, just the tweet.' }], max_tokens: 200, temperature: 0.6 }) }}",
+				"options": {
+					"timeout": 60000
+				}
+			},
+			"id": "groq-twitter",
+			"name": "Groq Twitter",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [450, 350]
+		},
+		{
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict"
+					},
+					"conditions": [
+						{
+							"id": "groq-twitter-check",
+							"leftValue": "={{ $json.choices }}",
+							"rightValue": "",
+							"operator": {
+								"type": "array",
+								"operation": "exists",
+								"singleValue": true
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			},
+			"id": "if-groq-twitter",
+			"name": "IF Groq Twitter OK",
+			"type": "n8n-nodes-base.if",
+			"typeVersion": 2.2,
+			"position": [650, 350]
+		},
+		{
+			"parameters": {
+				"jsCode": "// Extract Groq response and tag as x\nconst content = $json.choices[0].message.content.trim();\nreturn [{ json: { platform: 'x', content } }];"
+			},
+			"id": "groq-twitter-extract",
+			"name": "Extract Groq Twitter",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [850, 300]
 		},
 		{
 			"parameters": {
@@ -55,36 +188,251 @@
 				"url": "http://host.containers.internal:11434/api/generate",
 				"sendBody": true,
 				"specifyBody": "json",
-				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and authoritative\n- Technical depth for developers\n- Use specific numbers (40%, 10x, 100k+)\n- Experience-backed\n- Conversational for Dev.to community\n\nNEVER use emojis in the body.\n\n<task>Create a Dev.to article summary</task>\n\n<rules>\n- Start with TL;DR (2-3 bullet points)\n- Then 3-4 key sections with headers\n- Include code blocks if relevant\n- End with Key Takeaways (3-5 bullets)\n- Add canonical link note at end\n- 500-800 words total\n</rules>\n\n<input>\nTitle: ${$json.body.title}\nSlug: ${$json.body.slug || 'post'}\n\n${$json.body.content}\n</input>\n\nOutput the Dev.to article body (no frontmatter, just content).`, stream: false, options: { temperature: 0.7, num_predict: 1500 } }) }}",
+				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and authoritative—take clear positions\n- Specific numbers (40%, 10x, 100k+)—never vague\n- Experience-backed (\"I've advised 30+ startups...\")\n- Punchy and dense\n\nNEVER use emojis.\n\n<task>Convert this blog post into a single standalone tweet</task>\n\n<rules>\n- Maximum 280 characters to prevent truncation\n- Lead with the most contrarian or surprising insight\n- Include one specific number or metric\n- NEVER include external links (links receive a 270% reach penalty on X in 2026)\n- NEVER use hashtags (hashtags trigger spam filters and provide no algorithm boost in 2026)\n- NO emojis\n- The tweet must stand completely alone as valuable insight\n</rules>\n\n<input>\nTitle: ${$('Webhook').first().json.body.title}\n\n${$('Webhook').first().json.body.content}\n</input>\n\nOutput ONLY the tweet text. No quotes, no explanation, just the tweet.`, stream: false, options: { temperature: 0.6, num_predict: 200 } }) }}",
 				"options": {
 					"timeout": 180000
 				}
 			},
-			"id": "ollama-devto",
-			"name": "Generate DevTo",
+			"id": "ollama-twitter-fallback",
+			"name": "Ollama Twitter Fallback",
 			"type": "n8n-nodes-base.httpRequest",
 			"typeVersion": 4.2,
-			"position": [500, 500]
+			"position": [850, 450]
 		},
 		{
 			"parameters": {
-				"mode": "append"
+				"jsCode": "// Extract Ollama response and tag as x\nconst content = ($json.response || '').trim();\nreturn [{ json: { platform: 'x', content } }];"
+			},
+			"id": "ollama-twitter-extract",
+			"name": "Extract Ollama Twitter",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [1050, 450]
+		},
+		{
+			"parameters": {
+				"method": "POST",
+				"url": "https://api.groq.com/openai/v1/chat/completions",
+				"sendHeaders": true,
+				"headerParameters": {
+					"parameters": [
+						{
+							"name": "Authorization",
+							"value": "=Bearer {{ $env.GROQ_API_KEY }}"
+						},
+						{
+							"name": "Content-Type",
+							"value": "application/json"
+						}
+					]
+				},
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'system', content: 'You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\\n\\nYour voice:\\n- Direct and authoritative\\n- Technical depth for developers\\n- Use specific numbers (40%, 10x, 100k+)\\n- Experience-backed\\n- Conversational for Dev.to community\\n\\nNEVER use emojis in the body.' }, { role: 'user', content: 'Create a Dev.to article summary.\\n\\nRules:\\n- Start with TL;DR (2-3 bullet points)\\n- Then 3-4 key sections with headers\\n- Include code blocks if relevant\\n- End with Key Takeaways (3-5 bullets)\\n- Add canonical link note at end\\n- 500-800 words total\\n\\nTitle: ' + $('Webhook').first().json.body.title + '\\nSlug: ' + ($('Webhook').first().json.body.slug || 'post') + '\\n\\n' + $('Webhook').first().json.body.content + '\\n\\nOutput the Dev.to article body (no frontmatter, just content).' }], max_tokens: 2000, temperature: 0.7 }) }}",
+				"options": {
+					"timeout": 60000
+				}
+			},
+			"id": "groq-devto",
+			"name": "Groq DevTo",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [450, 600]
+		},
+		{
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict"
+					},
+					"conditions": [
+						{
+							"id": "groq-devto-check",
+							"leftValue": "={{ $json.choices }}",
+							"rightValue": "",
+							"operator": {
+								"type": "array",
+								"operation": "exists",
+								"singleValue": true
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			},
+			"id": "if-groq-devto",
+			"name": "IF Groq DevTo OK",
+			"type": "n8n-nodes-base.if",
+			"typeVersion": 2.2,
+			"position": [650, 600]
+		},
+		{
+			"parameters": {
+				"jsCode": "// Extract Groq response and tag as devto\nconst content = $json.choices[0].message.content;\nreturn [{ json: { platform: 'devto', content } }];"
+			},
+			"id": "groq-devto-extract",
+			"name": "Extract Groq DevTo",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [850, 550]
+		},
+		{
+			"parameters": {
+				"method": "POST",
+				"url": "http://host.containers.internal:11434/api/generate",
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and authoritative\n- Technical depth for developers\n- Use specific numbers (40%, 10x, 100k+)\n- Experience-backed\n- Conversational for Dev.to community\n\nNEVER use emojis in the body.\n\n<task>Create a Dev.to article summary</task>\n\n<rules>\n- Start with TL;DR (2-3 bullet points)\n- Then 3-4 key sections with headers\n- Include code blocks if relevant\n- End with Key Takeaways (3-5 bullets)\n- Add canonical link note at end\n- 500-800 words total\n</rules>\n\n<input>\nTitle: ${$('Webhook').first().json.body.title}\nSlug: ${$('Webhook').first().json.body.slug || 'post'}\n\n${$('Webhook').first().json.body.content}\n</input>\n\nOutput the Dev.to article body (no frontmatter, just content).`, stream: false, options: { temperature: 0.7, num_predict: 1500 } }) }}",
+				"options": {
+					"timeout": 180000
+				}
+			},
+			"id": "ollama-devto-fallback",
+			"name": "Ollama DevTo Fallback",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [850, 700]
+		},
+		{
+			"parameters": {
+				"jsCode": "// Extract Ollama response and tag as devto\nconst content = $json.response || '';\nreturn [{ json: { platform: 'devto', content } }];"
+			},
+			"id": "ollama-devto-extract",
+			"name": "Extract Ollama DevTo",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [1050, 700]
+		},
+		{
+			"parameters": {
+				"method": "POST",
+				"url": "https://api.groq.com/openai/v1/chat/completions",
+				"sendHeaders": true,
+				"headerParameters": {
+					"parameters": [
+						{
+							"name": "Authorization",
+							"value": "=Bearer {{ $env.GROQ_API_KEY }}"
+						},
+						{
+							"name": "Content-Type",
+							"value": "application/json"
+						}
+					]
+				},
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'system', content: 'You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\\n\\nYour voice:\\n- Direct and authoritative—take clear positions, no hedging\\n- Technical but always tied to business outcomes\\n- Use specific numbers (40%, 10x, 100k+)—never vague\\n- Dense—every sentence carries weight, no filler\\n\\nNEVER use emojis. Ever.' }, { role: 'user', content: 'Convert this blog post into a newsletter section following the \"This Week\\'s Decision\" format:\\n\\n- Situation (2-3 sentences with business context)\\n- Insight (150-200 words with specific metrics)\\n- When to Apply (3 bullet points with specific criteria)\\n- When NOT to Apply (3 bullet points)\\n\\nTitle: ' + $('Webhook').first().json.body.title + '\\n\\n' + $('Webhook').first().json.body.content + '\\n\\nOutput ONLY the newsletter section.' }], max_tokens: 1000, temperature: 0.7 }) }}",
+				"options": {
+					"timeout": 60000
+				}
+			},
+			"id": "groq-newsletter",
+			"name": "Groq Newsletter",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [450, 850]
+		},
+		{
+			"parameters": {
+				"conditions": {
+					"options": {
+						"caseSensitive": true,
+						"leftValue": "",
+						"typeValidation": "strict"
+					},
+					"conditions": [
+						{
+							"id": "groq-newsletter-check",
+							"leftValue": "={{ $json.choices }}",
+							"rightValue": "",
+							"operator": {
+								"type": "array",
+								"operation": "exists",
+								"singleValue": true
+							}
+						}
+					],
+					"combinator": "and"
+				},
+				"options": {}
+			},
+			"id": "if-groq-newsletter",
+			"name": "IF Groq Newsletter OK",
+			"type": "n8n-nodes-base.if",
+			"typeVersion": 2.2,
+			"position": [650, 850]
+		},
+		{
+			"parameters": {
+				"jsCode": "// Extract Groq response and tag as newsletter\nconst content = $json.choices[0].message.content;\nreturn [{ json: { platform: 'newsletter', content } }];"
+			},
+			"id": "groq-newsletter-extract",
+			"name": "Extract Groq Newsletter",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [850, 800]
+		},
+		{
+			"parameters": {
+				"method": "POST",
+				"url": "http://host.containers.internal:11434/api/generate",
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify({ model: 'gemma2:9b', prompt: `You are Alex Mayhew, a Technical Advisor who helps CTOs avoid $500K architecture mistakes.\n\nYour voice:\n- Direct and authoritative—take clear positions, no hedging\n- Technical but always tied to business outcomes\n- Use specific numbers (40%, 10x, 100k+)—never vague\n- Dense—every sentence carries weight, no filler\n\nNEVER use emojis. Ever.\n\n<task>Convert this blog post into a newsletter section following the \"This Week's Decision\" format</task>\n\n<rules>\n- Situation (2-3 sentences with business context)\n- Insight (150-200 words with specific metrics)\n- When to Apply (3 bullet points with specific criteria)\n- When NOT to Apply (3 bullet points)\n</rules>\n\n<input>\nTitle: ${$('Webhook').first().json.body.title}\n\n${$('Webhook').first().json.body.content}\n</input>\n\nOutput ONLY the newsletter section.`, stream: false, options: { temperature: 0.7, num_predict: 800 } }) }}",
+				"options": {
+					"timeout": 180000
+				}
+			},
+			"id": "ollama-newsletter-fallback",
+			"name": "Ollama Newsletter Fallback",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [850, 950]
+		},
+		{
+			"parameters": {
+				"jsCode": "// Extract Ollama response and tag as newsletter\nconst content = $json.response || '';\nreturn [{ json: { platform: 'newsletter', content } }];"
+			},
+			"id": "ollama-newsletter-extract",
+			"name": "Extract Ollama Newsletter",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [1050, 950]
+		},
+		{
+			"parameters": {
+				"mode": "append",
+				"options": {}
 			},
 			"id": "merge-generated",
 			"name": "Wait For Generation",
 			"type": "n8n-nodes-base.merge",
 			"typeVersion": 3,
-			"position": [750, 300]
+			"position": [1250, 400]
 		},
 		{
 			"parameters": {
-				"jsCode": "// Get webhook input and generated content\nconst webhook = $('Webhook').first().json;\nconst linkedinRaw = $('Generate LinkedIn').first().json;\nconst twitterRaw = $('Generate Twitter').first().json;\nconst devtoRaw = $('Generate DevTo').first().json;\n\n// Parse content\nconst linkedinContent = linkedinRaw?.response || '';\nconst twitterContent = (twitterRaw?.response || '').trim();\nconst devtoContent = devtoRaw?.response || '';\n\n// Get scheduling info from webhook\nconst scheduleConfig = webhook.body?.schedule || {};\nconst linkedinDate = scheduleConfig.linkedin || new Date(Date.now() + 24*60*60*1000).toISOString();\nconst twitterDate = scheduleConfig.twitter || new Date(Date.now() + 48*60*60*1000).toISOString();\nconst devtoDate = scheduleConfig.devto || new Date(Date.now() + 24*60*60*1000).toISOString();\n\n// Prepare Postiz payloads\nconst linkedinPayload = {\n  type: 'schedule',\n  date: linkedinDate,\n  shortLink: false,\n  tags: [],\n  posts: [{\n    integration: { id: 'cmky9rja60001oc82ci8qle6v' },\n    value: [{ content: linkedinContent, image: [] }],\n    settings: { __type: 'linkedin' }\n  }]\n};\n\n// Twitter standalone tweet\nconst twitterPayload = {\n  type: 'schedule',\n  date: twitterDate,\n  shortLink: false,\n  tags: [],\n  posts: [{\n    integration: { id: 'cmkxmmwlk0001mj96243heh2y' },\n    value: [{ content: twitterContent, image: [] }],\n    settings: { __type: 'x', who_can_reply_post: 'everyone' }\n  }]\n};\n\n// Dev.to payload\nconst devtoPayload = {\n  type: 'schedule',\n  date: devtoDate,\n  shortLink: false,\n  tags: [],\n  posts: [{\n    integration: { id: 'cmky5o54e0001p397fhvbi0pp' },\n    value: [{ content: devtoContent, image: [] }],\n    settings: { \n      __type: 'devto', \n      title: webhook.body?.title || 'New Post'\n    }\n  }]\n};\n\nreturn [{\n  json: {\n    title: webhook.body?.title,\n    linkedinPayload,\n    twitterPayload,\n    devtoPayload,\n    generatedContent: {\n      linkedin: linkedinContent,\n      twitter: twitterContent,\n      devto: devtoContent\n    }\n  }\n}];"
+				"jsCode": "// Voice Compliance Check\nconst BANNED_WORDS = [\n  'game-changer', 'revolutionary', 'cutting-edge', 'leverage', 'utilize',\n  'delve', 'landscape', 'in today\\'s', 'best practices', 'synergy',\n  'perhaps', 'maybe', 'might', 'could potentially', 'just', 'simply',\n  'easy', 'straightforward'\n];\nconst EMOJI_REGEX = /[\\u{1F600}-\\u{1F9FF}\\u{2600}-\\u{26FF}\\u{2700}-\\u{27BF}]/gu;\n\nfunction validateContent(content, platform) {\n  const issues = [];\n  for (const word of BANNED_WORDS) {\n    if (content.toLowerCase().includes(word)) {\n      issues.push(`Contains banned word: \"${word}\"`);\n    }\n  }\n  if (EMOJI_REGEX.test(content)) {\n    issues.push('Contains emoji');\n  }\n  if (platform === 'linkedin' && content.length < 900) {\n    issues.push(`LinkedIn too short: ${content.length} chars (min 900)`);\n  }\n  if (platform === 'linkedin' && content.length > 1400) {\n    issues.push(`LinkedIn too long: ${content.length} chars (max 1400)`);\n  }\n  if (platform === 'x' && content.length > 280) {\n    issues.push(`Tweet too long: ${content.length} chars (max 280)`);\n  }\n  if (content.includes('#') && platform !== 'devto') {\n    issues.push('Contains hashtag');\n  }\n  return { valid: issues.length === 0, issues };\n}\n\n// Get generated content from upstream nodes\nconst items = $input.all();\nconst linkedin = items.find(i => i.json.platform === 'linkedin')?.json?.content || '';\nconst twitter = items.find(i => i.json.platform === 'x')?.json?.content || '';\nconst devto = items.find(i => i.json.platform === 'devto')?.json?.content || '';\nconst newsletter = items.find(i => i.json.platform === 'newsletter')?.json?.content || '';\n\nconst linkedinCheck = validateContent(linkedin, 'linkedin');\nconst twitterCheck = validateContent(twitter, 'x');\nconst devtoCheck = validateContent(devto, 'devto');\nconst newsletterCheck = validateContent(newsletter, 'newsletter');\n\nreturn [{\n  json: {\n    linkedin: { content: linkedin, validation: linkedinCheck },\n    twitter: { content: twitter, validation: twitterCheck },\n    devto: { content: devto, validation: devtoCheck },\n    newsletter: { content: newsletter, validation: newsletterCheck },\n    allValid: linkedinCheck.valid && twitterCheck.valid && devtoCheck.valid && newsletterCheck.valid\n  }\n}];"
+			},
+			"id": "voice-compliance",
+			"name": "Voice Compliance Check",
+			"type": "n8n-nodes-base.code",
+			"typeVersion": 2,
+			"position": [1450, 400]
+		},
+		{
+			"parameters": {
+				"jsCode": "// Get webhook input and validated content\nconst webhook = $('Webhook').first().json;\nconst validated = $('Voice Compliance Check').first().json;\n\n// Parse content from validated output\nconst linkedinContent = validated.linkedin.content;\nconst twitterContent = validated.twitter.content;\nconst devtoContent = validated.devto.content;\nconst newsletterContent = validated.newsletter.content;\n\n// Get scheduling info from webhook\nconst scheduleConfig = webhook.body?.schedule || {};\nconst linkedinDate = scheduleConfig.linkedin || new Date(Date.now() + 24*60*60*1000).toISOString();\nconst twitterDate = scheduleConfig.twitter || new Date(Date.now() + 48*60*60*1000).toISOString();\nconst devtoDate = scheduleConfig.devto || new Date(Date.now() + 24*60*60*1000).toISOString();\n\n// Prepare Postiz payloads\nconst linkedinPayload = {\n  type: 'schedule',\n  date: linkedinDate,\n  shortLink: false,\n  tags: [],\n  posts: [{\n    integration: { id: 'cmky9rja60001oc82ci8qle6v' },\n    value: [{ content: linkedinContent, image: [] }],\n    settings: { __type: 'linkedin' }\n  }]\n};\n\n// Twitter standalone tweet\nconst twitterPayload = {\n  type: 'schedule',\n  date: twitterDate,\n  shortLink: false,\n  tags: [],\n  posts: [{\n    integration: { id: 'cmkxmmwlk0001mj96243heh2y' },\n    value: [{ content: twitterContent, image: [] }],\n    settings: { __type: 'x', who_can_reply_post: 'everyone' }\n  }]\n};\n\n// Dev.to payload\nconst devtoPayload = {\n  type: 'schedule',\n  date: devtoDate,\n  shortLink: false,\n  tags: [],\n  posts: [{\n    integration: { id: 'cmky5o54e0001p397fhvbi0pp' },\n    value: [{ content: devtoContent, image: [] }],\n    settings: { \n      __type: 'devto', \n      title: webhook.body?.title || 'New Post'\n    }\n  }]\n};\n\nreturn [{\n  json: {\n    title: webhook.body?.title,\n    linkedinPayload,\n    twitterPayload,\n    devtoPayload,\n    newsletterContent,\n    validation: {\n      linkedin: validated.linkedin.validation,\n      twitter: validated.twitter.validation,\n      devto: validated.devto.validation,\n      newsletter: validated.newsletter.validation,\n      allValid: validated.allValid\n    },\n    generatedContent: {\n      linkedin: linkedinContent,\n      twitter: twitterContent,\n      devto: devtoContent,\n      newsletter: newsletterContent\n    }\n  }\n}];"
 			},
 			"id": "prepare-postiz",
 			"name": "Prepare Postiz Payloads",
 			"type": "n8n-nodes-base.code",
 			"typeVersion": 2,
-			"position": [950, 300]
+			"position": [1650, 400]
 		},
 		{
 			"parameters": {
@@ -114,7 +462,7 @@
 			"name": "Post to LinkedIn",
 			"type": "n8n-nodes-base.httpRequest",
 			"typeVersion": 4.2,
-			"position": [1200, 100]
+			"position": [1900, 200]
 		},
 		{
 			"parameters": {
@@ -144,7 +492,7 @@
 			"name": "Post to Twitter",
 			"type": "n8n-nodes-base.httpRequest",
 			"typeVersion": 4.2,
-			"position": [1200, 300]
+			"position": [1900, 400]
 		},
 		{
 			"parameters": {
@@ -174,27 +522,28 @@
 			"name": "Post to DevTo",
 			"type": "n8n-nodes-base.httpRequest",
 			"typeVersion": 4.2,
-			"position": [1200, 500]
+			"position": [1900, 600]
 		},
 		{
 			"parameters": {
-				"mode": "append"
+				"mode": "append",
+				"options": {}
 			},
 			"id": "merge-posted",
 			"name": "Wait For Posts",
 			"type": "n8n-nodes-base.merge",
 			"typeVersion": 3,
-			"position": [1450, 300]
+			"position": [2150, 400]
 		},
 		{
 			"parameters": {
-				"jsCode": "// Collect results\nconst prepared = $('Prepare Postiz Payloads').first().json;\nconst linkedinResult = $('Post to LinkedIn').first().json;\nconst twitterResult = $('Post to Twitter').first().json;\nconst devtoResult = $('Post to DevTo').first().json;\n\nreturn [{\n  json: {\n    success: true,\n    title: prepared.title,\n    generated_at: new Date().toISOString(),\n    scheduled: {\n      linkedin: {\n        success: !linkedinResult?.error,\n        response: linkedinResult\n      },\n      twitter: {\n        success: !twitterResult?.error,\n        response: twitterResult\n      },\n      devto: {\n        success: !devtoResult?.error,\n        response: devtoResult\n      }\n    },\n    content_preview: {\n      linkedin: prepared.generatedContent?.linkedin?.substring(0, 200) + '...',\n      twitter: prepared.generatedContent?.twitter || '',\n      devto: prepared.generatedContent?.devto?.substring(0, 200) + '...'\n    }\n  }\n}];"
+				"jsCode": "// Collect results\nconst prepared = $('Prepare Postiz Payloads').first().json;\nconst linkedinResult = $('Post to LinkedIn').first().json;\nconst twitterResult = $('Post to Twitter').first().json;\nconst devtoResult = $('Post to DevTo').first().json;\n\nreturn [{\n  json: {\n    success: true,\n    title: prepared.title,\n    generated_at: new Date().toISOString(),\n    validation: prepared.validation,\n    scheduled: {\n      linkedin: {\n        success: !linkedinResult?.error,\n        response: linkedinResult\n      },\n      twitter: {\n        success: !twitterResult?.error,\n        response: twitterResult\n      },\n      devto: {\n        success: !devtoResult?.error,\n        response: devtoResult\n      }\n    },\n    content_preview: {\n      linkedin: prepared.generatedContent?.linkedin?.substring(0, 200) + '...',\n      twitter: prepared.generatedContent?.twitter || '',\n      devto: prepared.generatedContent?.devto?.substring(0, 200) + '...',\n      newsletter: prepared.generatedContent?.newsletter?.substring(0, 200) + '...'\n    },\n    newsletter: {\n      content: prepared.newsletterContent,\n      note: 'Newsletter content is not scheduled via Postiz. Use Listmonk to send.'\n    }\n  }\n}];"
 			},
 			"id": "format-response",
 			"name": "Format Response",
 			"type": "n8n-nodes-base.code",
 			"typeVersion": 2,
-			"position": [1650, 300]
+			"position": [2350, 400]
 		},
 		{
 			"parameters": {
@@ -206,7 +555,7 @@
 			"name": "Respond to Webhook",
 			"type": "n8n-nodes-base.respondToWebhook",
 			"typeVersion": 1.1,
-			"position": [1850, 300]
+			"position": [2550, 400]
 		}
 	],
 	"connections": {
@@ -214,24 +563,58 @@
 			"main": [
 				[
 					{
-						"node": "Generate LinkedIn",
+						"node": "Groq LinkedIn",
 						"type": "main",
 						"index": 0
 					},
 					{
-						"node": "Generate Twitter",
+						"node": "Groq Twitter",
 						"type": "main",
 						"index": 0
 					},
 					{
-						"node": "Generate DevTo",
+						"node": "Groq DevTo",
+						"type": "main",
+						"index": 0
+					},
+					{
+						"node": "Groq Newsletter",
 						"type": "main",
 						"index": 0
 					}
 				]
 			]
 		},
-		"Generate LinkedIn": {
+		"Groq LinkedIn": {
+			"main": [
+				[
+					{
+						"node": "IF Groq LinkedIn OK",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"IF Groq LinkedIn OK": {
+			"main": [
+				[
+					{
+						"node": "Extract Groq LinkedIn",
+						"type": "main",
+						"index": 0
+					}
+				],
+				[
+					{
+						"node": "Ollama LinkedIn Fallback",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Extract Groq LinkedIn": {
 			"main": [
 				[
 					{
@@ -242,7 +625,58 @@
 				]
 			]
 		},
-		"Generate Twitter": {
+		"Ollama LinkedIn Fallback": {
+			"main": [
+				[
+					{
+						"node": "Extract Ollama LinkedIn",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Extract Ollama LinkedIn": {
+			"main": [
+				[
+					{
+						"node": "Wait For Generation",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Groq Twitter": {
+			"main": [
+				[
+					{
+						"node": "IF Groq Twitter OK",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"IF Groq Twitter OK": {
+			"main": [
+				[
+					{
+						"node": "Extract Groq Twitter",
+						"type": "main",
+						"index": 0
+					}
+				],
+				[
+					{
+						"node": "Ollama Twitter Fallback",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Extract Groq Twitter": {
 			"main": [
 				[
 					{
@@ -253,7 +687,58 @@
 				]
 			]
 		},
-		"Generate DevTo": {
+		"Ollama Twitter Fallback": {
+			"main": [
+				[
+					{
+						"node": "Extract Ollama Twitter",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Extract Ollama Twitter": {
+			"main": [
+				[
+					{
+						"node": "Wait For Generation",
+						"type": "main",
+						"index": 1
+					}
+				]
+			]
+		},
+		"Groq DevTo": {
+			"main": [
+				[
+					{
+						"node": "IF Groq DevTo OK",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"IF Groq DevTo OK": {
+			"main": [
+				[
+					{
+						"node": "Extract Groq DevTo",
+						"type": "main",
+						"index": 0
+					}
+				],
+				[
+					{
+						"node": "Ollama DevTo Fallback",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Extract Groq DevTo": {
 			"main": [
 				[
 					{
@@ -264,7 +749,102 @@
 				]
 			]
 		},
+		"Ollama DevTo Fallback": {
+			"main": [
+				[
+					{
+						"node": "Extract Ollama DevTo",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Extract Ollama DevTo": {
+			"main": [
+				[
+					{
+						"node": "Wait For Generation",
+						"type": "main",
+						"index": 2
+					}
+				]
+			]
+		},
+		"Groq Newsletter": {
+			"main": [
+				[
+					{
+						"node": "IF Groq Newsletter OK",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"IF Groq Newsletter OK": {
+			"main": [
+				[
+					{
+						"node": "Extract Groq Newsletter",
+						"type": "main",
+						"index": 0
+					}
+				],
+				[
+					{
+						"node": "Ollama Newsletter Fallback",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Extract Groq Newsletter": {
+			"main": [
+				[
+					{
+						"node": "Wait For Generation",
+						"type": "main",
+						"index": 3
+					}
+				]
+			]
+		},
+		"Ollama Newsletter Fallback": {
+			"main": [
+				[
+					{
+						"node": "Extract Ollama Newsletter",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Extract Ollama Newsletter": {
+			"main": [
+				[
+					{
+						"node": "Wait For Generation",
+						"type": "main",
+						"index": 3
+					}
+				]
+			]
+		},
 		"Wait For Generation": {
+			"main": [
+				[
+					{
+						"node": "Voice Compliance Check",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Voice Compliance Check": {
 			"main": [
 				[
 					{
