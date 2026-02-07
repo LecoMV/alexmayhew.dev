@@ -28,6 +28,14 @@ reviews:
   review_status: true
   collapse_walkthrough: false
 
+  # Filter out generated/vendored files from review
+  path_filters:
+    - "!**/*.lock"
+    - "!**/node_modules/**"
+    - "!**/.next/**"
+    - "!**/coverage/**"
+    - "!**/*.d.ts"
+
   # Path-based configuration
   path_instructions:
     - path: "src/components/**"
@@ -60,10 +68,3 @@ chat:
   # Enable conversational reviews
   auto_reply: true
 
-# Ignore patterns
-ignore:
-  - "**/*.lock"
-  - "**/node_modules/**"
-  - "**/.next/**"
-  - "**/coverage/**"
-  - "**/*.d.ts"
