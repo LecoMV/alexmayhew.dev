@@ -101,7 +101,7 @@ Communication happens through your preferred channels—Slack, email, or a dedic
 
 		relatedServices: [
 			"nextjs-developer-for-saas",
-			"technical-due-diligence-for-startups",
+			"technical-due-diligence-consultant",
 			"technical-advisor-for-startups",
 		],
 
@@ -233,8 +233,8 @@ I'm responsive to urgent questions (within hours during business hours) because 
 
 		relatedServices: [
 			"fullstack-developer-for-startups",
-			"mvp-developer-for-founders",
-			"technical-cofounder-alternative",
+			"fullstack-developer-for-startups",
+			"fractional-cto-for-startups",
 		],
 
 		faqs: [
@@ -363,8 +363,8 @@ From there, ongoing engagement depends on your needs. Some founders want fractio
 The goal is always to build your technical capability, not create dependency. As you hire internal technical talent, my role naturally evolves toward higher-level strategy and eventually phases out.`,
 
 		relatedServices: [
-			"technical-cofounder-alternative",
-			"mvp-developer-for-founders",
+			"fractional-cto-for-startups",
+			"fullstack-developer-for-startups",
 			"technical-advisor-for-startups",
 		],
 
@@ -495,7 +495,7 @@ I can also embed with your team for specific projects—leading a modernization 
 
 		relatedServices: [
 			"technical-advisor-for-startups",
-			"technical-due-diligence-for-startups",
+			"technical-due-diligence-consultant",
 			"nextjs-developer-for-saas",
 		],
 

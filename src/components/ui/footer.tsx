@@ -36,6 +36,9 @@ const socialLinks = [
 
 const footerLinks = [
 	{ href: "/work", label: "Work" },
+	{ href: "/services", label: "Services" },
+	{ href: "/for", label: "Advisory" },
+	{ href: "/tools", label: "Tools" },
 	{ href: "/blog", label: "Blog" },
 	{ href: "/docs", label: "Docs" },
 	{ href: "/about", label: "About" },

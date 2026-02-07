@@ -31,19 +31,19 @@ const platforms: SharePlatform[] = [
 		name: "twitter",
 		label: "X",
 		getUrl: (title, url) =>
-			`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,
+			`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}&via=alexmayhewdev`,
 	},
 	{
 		name: "linkedin",
 		label: "LINKEDIN",
-		getUrl: (_, url) =>
-			`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+		getUrl: (title, url) =>
+			`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`,
 	},
 	{
 		name: "bluesky",
 		label: "BSKY",
 		getUrl: (title, url) =>
-			`https://bsky.app/intent/compose?text=${encodeURIComponent(`${title} ${url}`)}`,
+			`https://bsky.app/intent/compose?text=${encodeURIComponent(`${title}\n\n${url}`)}`,
 	},
 	{
 		name: "hackernews",
@@ -97,7 +97,15 @@ export function ShareButtons({ title, url, description, className }: ShareButton
 	const handlePlatformShare = (platform: SharePlatform) => {
 		trackEvent("share", { method: platform.name, content_type: "article", item_id: url });
 		const shareUrl = platform.getUrl(title, url);
-		window.open(shareUrl, "_blank", "noopener,noreferrer,width=600,height=400");
+		const w = 600;
+		const h = 600;
+		const left = Math.round(window.screenX + (window.outerWidth - w) / 2);
+		const top = Math.round(window.screenY + (window.outerHeight - h) / 2);
+		window.open(
+			shareUrl,
+			"_blank",
+			`noopener,noreferrer,width=${w},height=${h},left=${left},top=${top}`
+		);
 	};
 
 	return (

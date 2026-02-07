@@ -60,7 +60,7 @@ export const projects: Project[] = [
 		github: "https://github.com/alexmayhew/claude-pilot",
 		featured: true,
 		relatedServices: [
-			{ label: "AI-powered SaaS development", href: "/services/ai-integration-developer" },
+			{ label: "AI-powered SaaS development", href: "/services/ai-integration-developer-for-saas" },
 			{ label: "React enterprise dashboards", href: "/services/react-developer-for-saas" },
 		],
 	},
@@ -75,7 +75,7 @@ export const projects: Project[] = [
 		status: "Production",
 		featured: true,
 		relatedServices: [
-			{ label: "AI/ML integration for SaaS", href: "/services/ai-integration-developer" },
+			{ label: "AI/ML integration for SaaS", href: "/services/ai-integration-developer-for-saas" },
 			{ label: "Python backend architecture", href: "/services/python-developer-for-healthcare" },
 			{
 				label: "Performance-critical systems",
@@ -94,8 +94,11 @@ export const projects: Project[] = [
 		status: "Production",
 		featured: true,
 		relatedServices: [
-			{ label: "Custom LLM fine-tuning", href: "/services/ai-integration-developer" },
-			{ label: "Domain-specific AI systems", href: "/services/ai-integration-healthcare" },
+			{ label: "Custom LLM fine-tuning", href: "/services/ai-integration-developer-for-saas" },
+			{
+				label: "Domain-specific AI systems",
+				href: "/services/ai-integration-developer-for-healthcare",
+			},
 		],
 	},
 	{
