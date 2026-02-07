@@ -28,6 +28,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	const title = `${project.title} Case Study — Alex Mayhew`;
 	const description = project.caseStudy.subtitle;
 
+	const ogImage = `/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&category=${encodeURIComponent("Case Study")}`;
+
 	return {
 		title,
 		description,
@@ -41,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			siteName: "Alex Mayhew",
 			images: [
 				{
-					url: `${siteUrl}/og-image.png`,
+					url: ogImage,
 					width: 1200,
 					height: 630,
 					alt: `${project.title} Case Study`,
@@ -52,7 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			card: "summary_large_image",
 			title,
 			description,
-			images: [`${siteUrl}/og-image.png`],
+			images: [ogImage],
 			creator: "@alexmayhewdev",
 		},
 		alternates: {

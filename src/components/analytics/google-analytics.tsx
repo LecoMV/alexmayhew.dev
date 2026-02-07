@@ -18,35 +18,7 @@ export function GoogleAnalytics() {
 
 	return (
 		<>
-			{/* eslint-disable-next-line @next/next/no-before-interactive-script-outside-document -- App Router: rendered in root layout, no _document.js exists */}
-			<Script id="ga-consent-default" strategy="beforeInteractive">
-				{`
-					window.dataLayer = window.dataLayer || [];
-					function gtag(){dataLayer.push(arguments);}
-
-					// Consent Mode v2 — deny by default, update on user choice
-					gtag('consent', 'default', {
-						analytics_storage: 'denied',
-						ad_storage: 'denied',
-						ad_user_data: 'denied',
-						ad_personalization: 'denied',
-						wait_for_update: 500
-					});
-
-					// Check for existing consent
-					try {
-						var stored = localStorage.getItem('cookie-consent');
-						if (stored) {
-							var consent = JSON.parse(stored);
-							if (consent.version === '1' && consent.analytics) {
-								gtag('consent', 'update', {
-									analytics_storage: 'granted'
-								});
-							}
-						}
-					} catch(e) {}
-				`}
-			</Script>
+			{/* Consent Mode v2 default-deny is now inlined in layout.tsx <head> for early execution */}
 			<Script
 				src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
 				strategy="afterInteractive"

@@ -219,6 +219,26 @@ jobs:
 
           echo "All smoke tests passed!"
 
+      - name: Sitemap URL Validation
+        run: |
+          echo "Fetching sitemap..."
+          SITEMAP_URLS=$(curl -s https://alexmayhew.dev/sitemap.xml | grep -oP '(?<=<loc>)[^<]+')
+          TOTAL=$(echo "$SITEMAP_URLS" | wc -l)
+          FAILED=0
+          echo "Checking $TOTAL URLs from sitemap..."
+          while IFS= read -r url; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$url")
+            if [ "$STATUS" != "200" ]; then
+              echo "FAIL: $url -> $STATUS"
+              FAILED=$((FAILED + 1))
+            fi
+          done <<< "$SITEMAP_URLS"
+          echo "Results: $((TOTAL - FAILED))/$TOTAL passed"
+          if [ "$FAILED" -gt 0 ]; then
+            echo "::error::$FAILED sitemap URLs returned non-200 status"
+            exit 1
+          fi
+
       - name: Notify on failure
         if: failure()
         uses: actions/github-script@v7

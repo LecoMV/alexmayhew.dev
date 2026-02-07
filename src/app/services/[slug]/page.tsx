@@ -40,6 +40,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	const industryLabel = INDUSTRY_LABELS[page.industry];
 	const pageUrl = `${siteUrl}/services/${slug}`;
 
+	const ogImage = `/og?title=${encodeURIComponent(page.seo.title)}&description=${encodeURIComponent(page.seo.description)}&category=${encodeURIComponent("Service")}`;
+
 	return {
 		title: page.seo.title,
 		description: page.seo.description,
@@ -53,7 +55,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			siteName: "Alex Mayhew",
 			images: [
 				{
-					url: `${siteUrl}/og-image.png`,
+					url: ogImage,
 					width: 1200,
 					height: 630,
 					alt: `${techLabel} Development for ${industryLabel}`,
@@ -64,7 +66,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			card: "summary_large_image",
 			title: page.seo.title,
 			description: page.seo.description,
-			images: [`${siteUrl}/og-image.png`],
+			images: [ogImage],
 			creator: "@alexmayhewdev",
 		},
 		alternates: {

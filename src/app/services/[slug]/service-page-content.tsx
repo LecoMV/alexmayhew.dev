@@ -2,6 +2,7 @@
 
 import { m } from "framer-motion";
 import Link from "next/link";
+import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import {
 	ArrowRight,
 	Lightbulb,
@@ -850,6 +851,13 @@ function CtaSection() {
 							transition={{ duration: 0.3 }}
 						/>
 					</Link>
+				</div>
+
+				<div className="mt-8 border-t border-white/10 pt-8">
+					<p className="text-slate-text mb-4 text-center font-mono text-xs tracking-wider uppercase">
+						Not ready to talk? Stay in the loop.
+					</p>
+					<NewsletterSignup variant="minimal" />
 				</div>
 			</div>
 		</m.section>

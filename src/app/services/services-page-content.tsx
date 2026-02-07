@@ -3,6 +3,7 @@
 import { m } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Code2, Building2, CheckCircle2, ChevronRight } from "lucide-react";
+import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import type { PseoPage } from "@/data/pseo";
 import { TECHNOLOGY_LABELS, INDUSTRY_LABELS } from "@/data/pseo";
 import { cn } from "@/lib/utils";
@@ -364,6 +365,13 @@ export function ServicesPage({ pages }: ServicesPageProps) {
 						<span className="text-cyber-lime">Schedule_Consultation()</span>
 						<ArrowRight className="text-cyber-lime h-4 w-4 transition-transform group-hover:translate-x-1" />
 					</Link>
+
+					<div className="mt-8 border-t border-white/10 pt-8">
+						<p className="text-slate-text mb-4 text-center font-mono text-xs tracking-wider uppercase">
+							Not ready to talk? Stay in the loop.
+						</p>
+						<NewsletterSignup variant="minimal" />
+					</div>
 				</m.section>
 			</div>
 		</main>

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { m, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { Menu, X, ChevronDown, Layers, Terminal, Mic } from "lucide-react";
+import { Menu, X, ChevronDown, Layers, Terminal, Mic, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -28,10 +28,11 @@ const navItems: NavItem[] = [
 	{ href: "/", label: "Home", code: "00" },
 	{ href: "/work", label: "Work", code: "01" },
 	{ href: "/services", label: "Services", code: "02" },
-	{ href: "/tools", label: "Tools", code: "03", hasDropdown: true },
-	{ href: "/blog", label: "Blog", code: "04" },
-	{ href: "/about", label: "About", code: "05" },
-	{ href: "/contact", label: "Contact", code: "06" },
+	{ href: "/technologies", label: "Technologies", code: "03" },
+	{ href: "/tools", label: "Tools", code: "04", hasDropdown: true },
+	{ href: "/blog", label: "Blog", code: "05" },
+	{ href: "/about", label: "About", code: "06" },
+	{ href: "/contact", label: "Contact", code: "07" },
 ];
 
 const toolsDropdown: ToolItem[] = [
@@ -270,6 +271,15 @@ export function Navigation() {
 							);
 						})}
 					</div>
+
+					{/* Search Trigger */}
+					<button
+						onClick={() => window.dispatchEvent(new CustomEvent("toggle-command-palette"))}
+						className="text-slate-text hover:text-cyber-lime p-2 transition-colors"
+						aria-label="Search (Cmd+K)"
+					>
+						<Search className="h-4 w-4" strokeWidth={1.5} />
+					</button>
 
 					{/* Mobile Menu Button */}
 					<button

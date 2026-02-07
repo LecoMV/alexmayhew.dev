@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	const post = blog.find((p) => getSlug(p.info.path) === slug);
 	if (!post) return {};
 
-	const ogImage = post.image ? `${siteUrl}${post.image}` : `${siteUrl}/og-image.png`;
+	const ogImage = `/og?title=${encodeURIComponent(post.title)}&description=${encodeURIComponent(post.description || "")}&category=${encodeURIComponent(post.category || "Blog")}`;
 
 	return {
 		title: `${post.title} | Alex Mayhew`,

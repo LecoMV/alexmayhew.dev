@@ -2,6 +2,7 @@
 
 import { m } from "framer-motion";
 import Link from "next/link";
+import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import {
 	ArrowRight,
 	ArrowLeftRight,
@@ -1019,6 +1020,13 @@ function CtaSection({ page }: { page: IntegrationPage }) {
 				<p className="text-slate-text mt-6 font-mono text-xs">
 					Free 30-minute integration scoping call
 				</p>
+
+				<div className="mt-8 border-t border-white/10 pt-8">
+					<p className="text-slate-text mb-4 text-center font-mono text-xs tracking-wider uppercase">
+						Not ready to talk? Stay in the loop.
+					</p>
+					<NewsletterSignup variant="minimal" />
+				</div>
 			</m.div>
 		</m.section>
 	);

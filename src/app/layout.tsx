@@ -6,9 +6,17 @@ import { SmoothScroll, MotionProvider } from "@/components/providers";
 import { Navigation } from "@/components/ui/navigation";
 import { Footer } from "@/components/ui/footer";
 import { NoiseOverlay } from "@/components/ui/noise-overlay";
+import { CommandPaletteServer } from "@/components/ui/command-palette-server";
 import { JsonLd, LocalBusinessJsonLd } from "@/components/seo";
-import { CloudflareAnalytics, GoogleAnalytics } from "@/components/analytics";
-import { PageAnalytics } from "@/components/analytics/page-analytics";
+const GoogleAnalytics = dynamic(() =>
+	import("@/components/analytics/google-analytics").then((m) => m.GoogleAnalytics)
+);
+const CloudflareAnalytics = dynamic(() =>
+	import("@/components/analytics/cloudflare-analytics").then((m) => m.CloudflareAnalytics)
+);
+const PageAnalytics = dynamic(() =>
+	import("@/components/analytics/page-analytics").then((m) => m.PageAnalytics)
+);
 
 const WebVitalsReporter = dynamic(() =>
 	import("@/components/analytics/web-vitals").then((mod) => mod.WebVitalsReporter)
@@ -130,6 +138,12 @@ export default function RootLayout({
 			<head>
 				<JsonLd />
 				<LocalBusinessJsonLd />
+				{/* Consent Mode v2 default-deny — must fire before gtag loads */}
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',wait_for_update:500});try{var s=localStorage.getItem('cookie-consent');if(s){var c=JSON.parse(s);if(c.version==='1'&&c.analytics){gtag('consent','update',{analytics_storage:'granted'});}}}catch(e){}`,
+					}}
+				/>
 			</head>
 			<body className="relative min-h-dvh overflow-x-clip">
 				<MotionProvider>
@@ -143,6 +157,7 @@ export default function RootLayout({
 					</SmoothScroll>
 					<ChatWidget />
 					<CookieConsent />
+					<CommandPaletteServer />
 				</MotionProvider>
 				<ServiceWorkerRegister />
 				<GoogleAnalytics />

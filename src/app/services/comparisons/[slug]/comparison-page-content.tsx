@@ -2,6 +2,7 @@
 
 import { m } from "framer-motion";
 import Link from "next/link";
+import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import {
 	ArrowRight,
 	CheckCircle2,
@@ -935,6 +936,13 @@ function CtaSection({ page }: { page: ComparisonPage }) {
 						</span>
 						<ArrowRight className="group-hover:text-cyber-lime h-4 w-4 transition-colors" />
 					</Link>
+
+					<div className="mt-8 border-t border-white/10 pt-8">
+						<p className="text-slate-text mb-4 text-center font-mono text-xs tracking-wider uppercase">
+							Not ready to talk? Stay in the loop.
+						</p>
+						<NewsletterSignup variant="minimal" />
+					</div>
 				</div>
 			</m.div>
 		</m.section>
