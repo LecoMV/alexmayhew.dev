@@ -444,7 +444,7 @@ export const projects: Project[] = [
 		id: "voice-cloner",
 		title: "Voice Cloner",
 		description:
-			"Built a production zero-shot voice cloning SaaS handling 41+ curated voices and custom voice uploads with 12-second P50 latency on a single RTX 3080. Studios were paying $500+/hour for professional voice talent while AI TTS solutions produced robotic output. Engineered a Qwen3-TTS 1.7B inference pipeline with Redis priority queuing, VRAM fragmentation mitigation (worker recycling every 500 generations), and crossfade audio merging with LUFS normalization for multi-voice conversations. 99.95% uptime, 0.03% error rate, Stripe subscription billing across Free/Pro/Enterprise tiers.",
+			"Built a production AI voice platform handling single-voice TTS, multi-speaker conversations, and full audiobook production from manuscript uploads — all on a single RTX 3080. The platform runs Qwen3-TTS 1.7B with 12-second P50 latency, 41+ curated voices, and zero-shot cloning from short reference audio. The Audiobook Studio parses DOCX/PDF/TXT manuscripts into chapters with dialogue detection, assigns character voices, applies pronunciation dictionaries, and exports distribution-ready M4B with chapter markers. Multi-voice conversations support drag-and-drop line ordering, per-line effects (speed, volume, gap), stage directions, multiple takes, ambient audio, and a waveform timeline editor. 99.95% uptime, 0.03% error rate, Stripe subscription billing.",
 		category: "AI/ML",
 		tech: [
 			"Python",
@@ -477,23 +477,28 @@ export const projects: Project[] = [
 		],
 		caseStudy: {
 			published: true,
-			subtitle: "Production voice cloning SaaS with 12s P50 latency on a single RTX 3080",
+			subtitle:
+				"Production voice platform — TTS, conversations, and audiobook production on a single RTX 3080",
 			context: {
-				duration: "6 weeks",
+				duration: "8 weeks",
 				industry: "AI/ML SaaS",
 				type: "SaaS Product",
 			},
 			challenge:
-				"Professional voice talent costs $500+/hour with minimum session fees, booking lead times, and re-recording costs for script changes. Existing AI TTS solutions (ElevenLabs, Play.ht) produce serviceable but detectable synthetic speech—fine for prototypes, insufficient for production content. Zero-shot voice cloning from short reference audio samples was technically possible but no solution offered multi-voice conversation support, priority-based queue management for different pricing tiers, or reliable single-server deployment. The core engineering challenge: running a 1.7B parameter TTS model in bfloat16 on a single RTX 3080 (10GB VRAM) with consistent sub-15-second latency while handling concurrent requests from multiple subscription tiers without GPU memory degradation over time.",
+				"Professional voice talent costs $500+/hour, and 95% of books lack audio versions because producing a single audiobook costs $2K-$5K in human narration fees. Existing AI TTS solutions (ElevenLabs, Play.ht) handle single-voice generation but offer nothing for multi-character production workflows — no conversation builder, no manuscript parsing, no chapter management, no pronunciation dictionaries. Content creators need a complete production pipeline: from raw manuscript to distribution-ready M4B with chapter markers and consistent multi-voice narration. The core engineering challenge: running a 1.7B parameter TTS model in bfloat16 on a single RTX 3080 (10GB VRAM) with consistent sub-15-second latency while supporting three distinct production modes (single TTS, multi-speaker conversations, full audiobook chapters) through a unified inference pipeline.",
 			approach:
-				"Chose Qwen3-TTS 1.7B as the inference model after benchmarking against XTTS, Bark, and Tortoise—it delivered the best quality-to-VRAM ratio for zero-shot cloning from 10-30 second reference samples. Built the inference pipeline on FastAPI with a 4-tier Redis priority queue (admin > enterprise > pro > free) ensuring paid users never wait behind free-tier requests. The critical insight was that PyTorch's CUDA memory allocator fragments over extended operation periods. Rather than fighting the allocator, implemented proactive worker recycling every 500 generations—the worker process terminates and a fresh one spawns, resetting the memory allocator state. This maintains consistent 12-second P50 latency instead of degrading to 45+ seconds after thousands of generations.",
+				"Chose Qwen3-TTS 1.7B after benchmarking against XTTS, Bark, and Tortoise — best quality-to-VRAM ratio for zero-shot cloning from 10-30 second reference samples. Built the inference pipeline on FastAPI with a 4-tier Redis priority queue (admin > enterprise > pro > free). The critical architectural decision was making each audiobook chapter a Conversation record internally, reusing the entire existing TTS pipeline, per-line effects engine, takes system, and timeline editor with zero code duplication. The Audiobook Studio layer adds manuscript parsing (DOCX via python-docx, PDF via PyMuPDF, TXT via regex), chapter management, character-to-voice casting that propagates across all chapters, and a pronunciation dictionary that applies regex substitutions before TTS generation. Implemented proactive worker recycling every 500 generations to combat PyTorch VRAM fragmentation.",
 			solution:
-				"Voice Cloner runs a FastAPI backend with Redis-orchestrated inference workers serving Qwen3-TTS 1.7B in bfloat16. The frontend is Next.js 15 deployed on Cloudflare Workers with wavesurfer.js for audio visualization and real-time SSE progress updates. 41+ curated voices are available immediately; custom voice uploads undergo SNR analysis with a rejection threshold ensuring minimum reference audio quality. Multi-voice conversations use a crossfade audio merger with LUFS normalization for consistent loudness across different voice profiles. Stripe handles subscription billing (Free/Pro/Enterprise) with usage tracking, Clerk manages authentication, and Sentry + Amplitude provide observability. Running at 99.95% uptime with 0.03% error rate on a single server.",
+				"Voice Cloner runs three production modes through a unified FastAPI backend: (1) Single-voice TTS for quick generation, (2) Multi-speaker Conversations with drag-and-drop line ordering, per-line effects (speed/volume/gap), stage directions, multiple takes per line, ambient audio layers, and a waveform timeline editor, (3) Audiobook Studio that parses manuscripts into chapters, detects dialogue and character names, assigns AI voices to each character, applies book-wide pronunciation dictionaries, and exports as M4B with chapter markers or MP3/WAV zip with LUFS mastering. The frontend is Next.js 15 on Cloudflare Workers with wavesurfer.js visualization. 41+ curated voices plus custom uploads with SNR quality gating. Stripe handles tiered billing, Clerk manages auth, Sentry + Amplitude provide observability. Running at 99.95% uptime with 0.03% error rate on a single server.",
 			metrics: [
 				{ label: "P50 Latency", value: "12s", context: "Short text generation on RTX 3080" },
 				{ label: "Uptime", value: "99.95%", context: "Single-server production deployment" },
 				{ label: "Error Rate", value: "0.03%", context: "Across all generation requests" },
-				{ label: "Curated Voices", value: "41+", context: "Plus custom voice upload support" },
+				{
+					label: "Curated Voices",
+					value: "41+",
+					context: "Presidents, celebrities, plus custom uploads",
+				},
 			],
 			techDecisions: [
 				{
@@ -503,22 +508,22 @@ export const projects: Project[] = [
 						"Best quality-to-VRAM ratio for zero-shot voice cloning on 10GB VRAM. XTTS requires more memory for comparable quality; Bark and Tortoise are slower with inferior zero-shot capabilities. bfloat16 precision halves memory usage with negligible quality impact.",
 				},
 				{
+					component: "Audiobook Architecture",
+					technology: "Chapter-as-Conversation pattern",
+					rationale:
+						"Each audiobook chapter maps to a Conversation record, reusing the entire TTS pipeline, per-line effects, takes system, and timeline editor with zero code duplication. This avoided building a parallel generation system and gave audiobooks instant access to all conversation features.",
+				},
+				{
 					component: "Queue System",
 					technology: "Redis 4-Tier Priority Queue",
 					rationale:
-						"Subscription tiers need differentiated service levels without separate infrastructure. Redis sorted sets with tier-based scoring ensure Enterprise requests process before Pro, Pro before Free—all on the same GPU. Simple, fast, and observable.",
+						"Subscription tiers need differentiated service levels without separate infrastructure. Redis sorted sets with tier-based scoring ensure Enterprise requests process before Pro, Pro before Free — all on the same GPU.",
 				},
 				{
 					component: "VRAM Management",
 					technology: "Worker Recycling (500 generations)",
 					rationale:
-						"PyTorch's CUDA memory allocator fragments over time, degrading latency from 12s to 45s+ after thousands of generations. Proactive worker recycling every 500 generations resets allocator state. The 3-second restart penalty is invisible to users compared to gradual degradation.",
-				},
-				{
-					component: "Frontend",
-					technology: "Next.js 15 + Cloudflare Workers",
-					rationale:
-						"Edge-deployed frontend eliminates latency between user interaction and API calls. wavesurfer.js provides production-quality audio visualization. SSE for progress updates is simpler and more reliable than WebSockets for unidirectional status streaming.",
+						"PyTorch's CUDA memory allocator fragments over time, degrading latency from 12s to 45s+ after thousands of generations. Proactive worker recycling every 500 generations resets allocator state. The 3-second restart penalty is invisible to users.",
 				},
 			],
 			challenges: [
@@ -527,42 +532,42 @@ export const projects: Project[] = [
 					problem:
 						"PyTorch's CUDA memory allocator fragments over time. After 1,000+ generations, P50 latency degrades from 12 seconds to 45+ seconds as the allocator struggles to find contiguous memory blocks.",
 					solution:
-						"Worker processes recycle every 500 generations, spawning a fresh process with a clean memory allocator. The 3-second restart is invisible to users since queued requests simply wait for the next worker. Monitoring alerts if any worker exceeds 600 generations without recycling.",
+						"Worker processes recycle every 500 generations, spawning a fresh process with a clean memory allocator. The 3-second restart is invisible to users since queued requests simply wait for the next worker.",
+				},
+				{
+					title: "Manuscript Chapter Detection",
+					problem:
+						"Manuscripts use wildly inconsistent chapter formatting — Heading styles in DOCX, font-size changes in PDF, or plain-text markers like 'Chapter 1', 'CHAPTER ONE', 'Part II'. No single regex pattern handles all cases.",
+					solution:
+						"Built a three-tier detection pipeline: first check document-native structure (DOCX Heading styles, PDF font-size analysis), then fall back to regex patterns for common chapter markers, and finally use blank-line paragraph splitting as a last resort. Each tier feeds the next only when it produces zero results.",
+				},
+				{
+					title: "Cross-Chapter Voice Consistency",
+					problem:
+						"Character voice assignments in audiobooks need to propagate across all chapters. Changing a character's voice after generating 5 chapters would leave inconsistent audio.",
+					solution:
+						"Voice assignments live on AudiobookCharacter records and propagate to ConversationLine records when chapters are created or cast is updated. The speaker_name field links lines to characters, so updating a character's voice_id automatically applies to all future generations across all chapters.",
 				},
 				{
 					title: "DB Pool Exhaustion from SSE",
 					problem:
-						"Server-Sent Events for real-time generation progress held database connections open for the duration of each generation (12-38 seconds). Under load, this exhausted the connection pool and caused cascading failures.",
+						"Server-Sent Events for real-time generation progress held database connections open for the duration of each generation (12-38 seconds). Under load, this exhausted the connection pool.",
 					solution:
-						"Separated SSE connections from the main database pool. SSE endpoints use a dedicated connection pool sized for concurrent stream count rather than request rate. Added connection timeouts and graceful degradation—if the SSE pool is exhausted, clients fall back to polling.",
-				},
-				{
-					title: "Rate Limit Bypass via IP Spoofing",
-					problem:
-						"Attackers sent fake X-Forwarded-For headers to bypass per-IP rate limits, consuming free-tier generation capacity at scale.",
-					solution:
-						"Implemented Cloudflare IP validation to only trust the CF-Connecting-IP header, which Cloudflare sets from the actual client connection. All other forwarded headers are ignored for rate limiting. Combined with per-account rate limits that apply regardless of IP.",
-				},
-				{
-					title: "Stripe Webhook Race Conditions",
-					problem:
-						"Concurrent Stripe webhooks for the same subscription (e.g., payment_intent.succeeded + invoice.paid firing simultaneously) caused duplicate subscription records and billing inconsistencies.",
-					solution:
-						"Implemented idempotent upserts keyed on Stripe event ID. Each webhook handler checks if the event has been processed before executing business logic. Database operations use ON CONFLICT clauses to handle concurrent writes gracefully.",
+						"Separated SSE connections from the main database pool. SSE endpoints use a dedicated pool sized for concurrent stream count rather than request rate. Added graceful degradation — if the SSE pool is exhausted, clients fall back to polling.",
 				},
 				{
 					title: "Reference Audio Quality Variance",
 					problem:
-						"User-uploaded reference audio ranged from studio recordings to phone captures with heavy background noise. Low-quality references produced unusable voice clones, leading to support tickets and refund requests.",
+						"User-uploaded reference audio ranged from studio recordings to phone captures with heavy background noise. Low-quality references produced unusable voice clones.",
 					solution:
-						"Added an SNR (signal-to-noise ratio) analysis pipeline that evaluates uploaded audio before accepting it. References below the quality threshold are rejected with specific feedback about what to improve. This eliminated 90% of quality-related support tickets.",
+						"Added an SNR analysis pipeline that evaluates uploaded audio before accepting it. References below the quality threshold are rejected with specific feedback. This eliminated 90% of quality-related support tickets.",
 				},
 			],
 			takeaways: [
-				"GPU inference services need proactive VRAM management—memory fragmentation is silent and cumulative, degrading latency gradually until the service appears broken.",
-				"SSE long-lived connections break traditional connection pooling assumptions. Size pools for concurrent stream count, not request rate.",
+				"Reusing existing systems through smart data modeling (chapter-as-conversation) avoids the trap of building parallel pipelines for related features.",
+				"GPU inference services need proactive VRAM management — memory fragmentation is silent and cumulative, degrading latency until the service appears broken.",
 				"Zero-shot voice cloning quality is bounded by reference audio quality. Input validation on uploads is the highest-ROI investment for user satisfaction.",
-				"Priority queue systems with paid tier separation deliver both better UX for paying users and revenue alignment for the business.",
+				"Multi-tier manuscript parsing (structure > regex > fallback) handles real-world document diversity better than any single detection strategy.",
 				"Single-server GPU deployments can serve production SaaS workloads at 99.95% uptime with proper queue management and proactive maintenance.",
 			],
 		},

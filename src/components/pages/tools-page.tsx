@@ -42,9 +42,9 @@ const tools: Tool[] = [
 	{
 		id: "voice-cloner",
 		name: "Voice Cloner",
-		tagline: "AI Text-to-Speech with Voice Cloning",
+		tagline: "TTS, Conversations & Audiobook Studio",
 		description:
-			"Neural text-to-speech powered by Qwen3-TTS with zero-shot voice cloning. Type any text, pick from 40+ curated voices, or upload your own. Custom voice uploads now free during beta!",
+			"Neural text-to-speech powered by Qwen3-TTS with zero-shot voice cloning. Single voice TTS, multi-speaker conversations with per-line effects, and a full audiobook studio — upload manuscripts, assign character voices, and export distribution-ready M4B or MP3. 40+ curated voices, free during beta.",
 		href: "/tools/voice-cloner",
 		icon: <Mic className="h-6 w-6" strokeWidth={1.5} />,
 		badge: "Live",
