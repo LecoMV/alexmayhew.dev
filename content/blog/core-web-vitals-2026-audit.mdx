@@ -32,11 +32,11 @@ I've audited 15+ SaaS dashboards in the past year. The median INP on data-heavy 
 
 ## The Three Metrics (2026 Thresholds)
 
-| Metric | Good | Needs Improvement | Poor | What It Measures |
-|---|---|---|---|---|
-| **LCP** | < 2.5s | 2.5-4.0s | > 4.0s | Largest visible content element load time |
-| **INP** | < 200ms | 200-500ms | > 500ms | Worst interaction responsiveness (full lifecycle) |
-| **CLS** | < 0.1 | 0.1-0.25 | > 0.25 | Cumulative layout shift score |
+| Metric  | Good    | Needs Improvement | Poor    | What It Measures                                  |
+| ------- | ------- | ----------------- | ------- | ------------------------------------------------- |
+| **LCP** | < 2.5s  | 2.5-4.0s          | > 4.0s  | Largest visible content element load time         |
+| **INP** | < 200ms | 200-500ms         | > 500ms | Worst interaction responsiveness (full lifecycle) |
+| **CLS** | < 0.1   | 0.1-0.25          | > 0.25  | Cumulative layout shift score                     |
 
 These thresholds haven't changed since 2024. What changed is the measurement methodology and the weight Google places on field data vs. lab data.
 
@@ -59,27 +59,22 @@ Before optimizing anything, instrument your application to collect real user dat
 **1. Install the Web Vitals Library**
 
 ```typescript
-import { onLCP, onINP, onCLS } from 'web-vitals';
+import { onLCP, onINP, onCLS } from "web-vitals";
 
-function sendToAnalytics(metric: {
-  name: string;
-  value: number;
-  id: string;
-  delta: number;
-}) {
-  // Send to your analytics backend
-  fetch('/api/vitals', {
-    method: 'POST',
-    body: JSON.stringify({
-      name: metric.name,
-      value: metric.value,
-      page: window.location.pathname,
-      connection: navigator.connection?.effectiveType,
-      device: navigator.userAgent,
-      timestamp: Date.now(),
-    }),
-    keepalive: true,
-  });
+function sendToAnalytics(metric: { name: string; value: number; id: string; delta: number }) {
+	// Send to your analytics backend
+	fetch("/api/vitals", {
+		method: "POST",
+		body: JSON.stringify({
+			name: metric.name,
+			value: metric.value,
+			page: window.location.pathname,
+			connection: navigator.connection?.effectiveType,
+			device: navigator.userAgent,
+			timestamp: Date.now(),
+		}),
+		keepalive: true,
+	});
 }
 
 onLCP(sendToAnalytics);
@@ -101,20 +96,20 @@ CrUX data updates monthly. Use it for trend analysis, not real-time debugging. Y
 
 ```json
 {
-  "budgets": [
-    {
-      "path": "/*",
-      "timings": [
-        { "metric": "largest-contentful-paint", "budget": 2500 },
-        { "metric": "interaction-to-next-paint", "budget": 200 },
-        { "metric": "cumulative-layout-shift", "budget": 0.1 }
-      ],
-      "resourceSizes": [
-        { "resourceType": "script", "budget": 300 },
-        { "resourceType": "total", "budget": 800 }
-      ]
-    }
-  ]
+	"budgets": [
+		{
+			"path": "/*",
+			"timings": [
+				{ "metric": "largest-contentful-paint", "budget": 2500 },
+				{ "metric": "interaction-to-next-paint", "budget": 200 },
+				{ "metric": "cumulative-layout-shift", "budget": 0.1 }
+			],
+			"resourceSizes": [
+				{ "resourceType": "script", "budget": 300 },
+				{ "resourceType": "total", "budget": 800 }
+			]
+		}
+	]
 }
 ```
 
@@ -130,12 +125,12 @@ LCP measures how quickly the largest visible content element renders. For most S
 
 ```javascript
 new PerformanceObserver((entryList) => {
-  for (const entry of entryList.getEntries()) {
-    console.log('LCP element:', entry.element);
-    console.log('LCP time:', entry.startTime);
-    console.log('LCP size:', entry.size);
-  }
-}).observe({ type: 'largest-contentful-paint', buffered: true });
+	for (const entry of entryList.getEntries()) {
+		console.log("LCP element:", entry.element);
+		console.log("LCP time:", entry.startTime);
+		console.log("LCP size:", entry.size);
+	}
+}).observe({ type: "largest-contentful-paint", buffered: true });
 ```
 
 Run this in your browser console on key pages. The LCP element is often not what you expect—on data-heavy pages, it might be a table cell or a chart SVG, not the page heading.
@@ -147,8 +142,7 @@ Run this in your browser console on key pages. The LCP element is often not what
 <link rel="preload" as="image" href="/hero.webp" fetchpriority="high" />
 
 <!-- Preload critical fonts -->
-<link rel="preload" as="font" type="font/woff2"
-  href="/fonts/inter-var.woff2" crossorigin />
+<link rel="preload" as="font" type="font/woff2" href="/fonts/inter-var.woff2" crossorigin />
 
 <!-- Preconnect to API origins -->
 <link rel="preconnect" href="https://api.yoursaas.com" />
@@ -190,25 +184,22 @@ INP is where most SaaS applications fail. Dashboard interactions—filtering, so
 Any task that blocks the main thread for more than 50ms degrades INP. Use `scheduler.yield()` (or the polyfill) to break long tasks into smaller chunks:
 
 ```typescript
-async function filterLargeDataset(
-  data: DataRow[],
-  filters: FilterConfig
-): Promise<DataRow[]> {
-  const results: DataRow[] = [];
-  const chunkSize = 1000;
+async function filterLargeDataset(data: DataRow[], filters: FilterConfig): Promise<DataRow[]> {
+	const results: DataRow[] = [];
+	const chunkSize = 1000;
 
-  for (let i = 0; i < data.length; i += chunkSize) {
-    const chunk = data.slice(i, i + chunkSize);
-    const filtered = chunk.filter((row) => applyFilters(row, filters));
-    results.push(...filtered);
+	for (let i = 0; i < data.length; i += chunkSize) {
+		const chunk = data.slice(i, i + chunkSize);
+		const filtered = chunk.filter((row) => applyFilters(row, filters));
+		results.push(...filtered);
 
-    // Yield to the main thread every 1000 items
-    if (i + chunkSize < data.length) {
-      await scheduler.yield();
-    }
-  }
+		// Yield to the main thread every 1000 items
+		if (i + chunkSize < data.length) {
+			await scheduler.yield();
+		}
+	}
 
-  return results;
+	return results;
 }
 ```
 
@@ -291,20 +282,20 @@ CLS measures how much the page layout shifts during loading. The most common cau
 ```css
 /* Reserve space for content that loads asynchronously */
 .dashboard-chart {
-  aspect-ratio: 16 / 9;
-  min-height: 300px;
-  contain: layout;
+	aspect-ratio: 16 / 9;
+	min-height: 300px;
+	contain: layout;
 }
 
 /* Font display swap with fallback metrics */
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/inter-var.woff2') format('woff2');
-  font-display: swap;
-  size-adjust: 107%;
-  ascent-override: 90%;
-  descent-override: 22%;
-  line-gap-override: 0%;
+	font-family: "Inter";
+	src: url("/fonts/inter-var.woff2") format("woff2");
+	font-display: swap;
+	size-adjust: 107%;
+	ascent-override: 90%;
+	descent-override: 22%;
+	line-gap-override: 0%;
 }
 ```
 
@@ -314,13 +305,13 @@ The `size-adjust` and override properties match the fallback font metrics to you
 
 ```css
 .sidebar-widget {
-  contain: layout style;
+	contain: layout style;
 }
 
 .notification-banner {
-  contain: layout;
-  position: fixed;
-  top: 0;
+	contain: layout;
+	position: fixed;
+	top: 0;
 }
 ```
 
@@ -334,34 +325,34 @@ The `contain` property tells the browser that layout changes inside the element 
 
 ```typescript
 // CI integration — fail the build on CWV regression
-import { startFlow } from 'lighthouse';
-import puppeteer from 'puppeteer';
+import { startFlow } from "lighthouse";
+import puppeteer from "puppeteer";
 
 async function auditCWV(url: string) {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  const flow = await startFlow(page);
+	const browser = await puppeteer.launch();
+	const page = await browser.newPage();
+	const flow = await startFlow(page);
 
-  // Navigate and measure
-  await flow.navigate(url);
+	// Navigate and measure
+	await flow.navigate(url);
 
-  // Simulate interaction for INP
-  await flow.startTimespan();
-  await page.click('[data-testid="filter-button"]');
-  await page.waitForSelector('[data-testid="filtered-results"]');
-  await flow.endTimespan();
+	// Simulate interaction for INP
+	await flow.startTimespan();
+	await page.click('[data-testid="filter-button"]');
+	await page.waitForSelector('[data-testid="filtered-results"]');
+	await flow.endTimespan();
 
-  const report = await flow.generateReport();
-  const results = JSON.parse(report);
+	const report = await flow.generateReport();
+	const results = JSON.parse(report);
 
-  // Assert thresholds
-  const lcp = results.audits['largest-contentful-paint'].numericValue;
-  const cls = results.audits['cumulative-layout-shift'].numericValue;
+	// Assert thresholds
+	const lcp = results.audits["largest-contentful-paint"].numericValue;
+	const cls = results.audits["cumulative-layout-shift"].numericValue;
 
-  if (lcp > 2500) throw new Error(`LCP ${lcp}ms exceeds 2500ms budget`);
-  if (cls > 0.1) throw new Error(`CLS ${cls} exceeds 0.1 budget`);
+	if (lcp > 2500) throw new Error(`LCP ${lcp}ms exceeds 2500ms budget`);
+	if (cls > 0.1) throw new Error(`CLS ${cls} exceeds 0.1 budget`);
 
-  await browser.close();
+	await browser.close();
 }
 ```
 
@@ -386,16 +377,16 @@ Analytics, chat widgets, A/B testing tools, and error monitoring scripts add 200
 ```typescript
 // Performance observer to catch third-party long tasks
 new PerformanceObserver((list) => {
-  for (const entry of list.getEntries()) {
-    if (entry.duration > 50) {
-      // entry.attribution tells you which script caused the long task
-      console.warn('Long task:', {
-        duration: entry.duration,
-        source: entry.attribution?.[0]?.containerSrc,
-      });
-    }
-  }
-}).observe({ type: 'longtask', buffered: true });
+	for (const entry of list.getEntries()) {
+		if (entry.duration > 50) {
+			// entry.attribution tells you which script caused the long task
+			console.warn("Long task:", {
+				duration: entry.duration,
+				source: entry.attribution?.[0]?.containerSrc,
+			});
+		}
+	}
+}).observe({ type: "longtask", buffered: true });
 ```
 
 ---

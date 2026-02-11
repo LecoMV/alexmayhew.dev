@@ -37,20 +37,20 @@ For server data, use React Query (TanStack Query) or SWR:
 
 // React Query approach: 8 lines
 function useProjects() {
-  return useQuery({
-    queryKey: ['projects'],
-    queryFn: () => api.getProjects(),
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
-  });
+	return useQuery({
+		queryKey: ["projects"],
+		queryFn: () => api.getProjects(),
+		staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+	});
 }
 
 // Mutation with automatic cache invalidation
 function useCreateProject() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: api.createProject,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['projects'] }),
-  });
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: api.createProject,
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["projects"] }),
+	});
 }
 ```
 
@@ -59,10 +59,10 @@ For the remaining 10% — actual client state (UI toggles, form state, multi-ste
 ```typescript
 // Zustand: 8 lines for a complete store
 const useUIStore = create((set) => ({
-  sidebarOpen: true,
-  activeTab: 'overview',
-  toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
-  setActiveTab: (tab) => set({ activeTab: tab }),
+	sidebarOpen: true,
+	activeTab: "overview",
+	toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
+	setActiveTab: (tab) => set({ activeTab: tab }),
 }));
 ```
 
@@ -71,6 +71,7 @@ The 10% of apps that genuinely need Redux: applications requiring time-travel de
 npm download trends confirm this shift. Redux downloads plateaued at ~8M/week in 2024. Zustand crossed 4M/week in 2025, growing 200%+ year-over-year. React Query passed 6M/week. The ecosystem voted.
 
 **When to Apply This:**
+
 - SaaS applications where more than 70% of Redux state is fetched from an API
 - Teams where Redux boilerplate slows feature development by more than 20%
 - New projects evaluating state management — start with React Query + Zustand, add Redux only if you hit a wall

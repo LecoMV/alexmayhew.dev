@@ -24,14 +24,14 @@ RAG is the fastest path from "we should add AI" to a shipped feature, but 70% of
 
 Before diving into architecture, the decision framework for RAG vs. fine-tuning:
 
-| Factor | RAG | Fine-Tuning |
-|---|---|---|
-| **Data freshness** | Real-time (data updated immediately) | Stale (requires retraining) |
-| **Cost** | Pay per query (embedding + generation) | High upfront training cost |
-| **Hallucination control** | Better (grounded in retrieved docs) | Worse (model memorizes patterns) |
-| **Data privacy** | Data stays in your infrastructure | Data sent to training provider |
-| **Implementation time** | Days to weeks | Weeks to months |
-| **Best for** | Knowledge bases, docs, support | Tone/style, domain-specific tasks |
+| Factor                    | RAG                                    | Fine-Tuning                       |
+| ------------------------- | -------------------------------------- | --------------------------------- |
+| **Data freshness**        | Real-time (data updated immediately)   | Stale (requires retraining)       |
+| **Cost**                  | Pay per query (embedding + generation) | High upfront training cost        |
+| **Hallucination control** | Better (grounded in retrieved docs)    | Worse (model memorizes patterns)  |
+| **Data privacy**          | Data stays in your infrastructure      | Data sent to training provider    |
+| **Implementation time**   | Days to weeks                          | Weeks to months                   |
+| **Best for**              | Knowledge bases, docs, support         | Tone/style, domain-specific tasks |
 
 For SaaS products, RAG is the right choice 80% of the time. Your customers' data changes constantly. Fine-tuning requires retraining when data changes. RAG retrieves from the latest data on every query.
 
@@ -82,11 +82,11 @@ Chunking is the process of splitting your documents into pieces small enough for
 ```typescript
 // Naive fixed-size chunking — DON'T do this for production
 function fixedChunk(text: string, size: number, overlap: number): string[] {
-  const chunks: string[] = [];
-  for (let i = 0; i < text.length; i += size - overlap) {
-    chunks.push(text.slice(i, i + size));
-  }
-  return chunks;
+	const chunks: string[] = [];
+	for (let i = 0; i < text.length; i += size - overlap) {
+		chunks.push(text.slice(i, i + size));
+	}
+	return chunks;
 }
 ```
 
@@ -96,72 +96,69 @@ Fixed-size chunks split mid-sentence, mid-paragraph, and mid-thought. The result
 
 ```typescript
 // Semantic chunking: split on document structure
-function semanticChunk(
-  document: string,
-  maxChunkTokens: number = 512
-): Chunk[] {
-  const sections = splitByHeaders(document); // Split on H1, H2, H3
-  const chunks: Chunk[] = [];
+function semanticChunk(document: string, maxChunkTokens: number = 512): Chunk[] {
+	const sections = splitByHeaders(document); // Split on H1, H2, H3
+	const chunks: Chunk[] = [];
 
-  for (const section of sections) {
-    if (tokenCount(section.content) <= maxChunkTokens) {
-      chunks.push({
-        content: section.content,
-        metadata: {
-          heading: section.heading,
-          level: section.level,
-          documentId: document.id,
-        },
-      });
-    } else {
-      // Section too large — split by paragraphs
-      const paragraphs = section.content.split('\n\n');
-      let currentChunk = '';
+	for (const section of sections) {
+		if (tokenCount(section.content) <= maxChunkTokens) {
+			chunks.push({
+				content: section.content,
+				metadata: {
+					heading: section.heading,
+					level: section.level,
+					documentId: document.id,
+				},
+			});
+		} else {
+			// Section too large — split by paragraphs
+			const paragraphs = section.content.split("\n\n");
+			let currentChunk = "";
 
-      for (const paragraph of paragraphs) {
-        if (tokenCount(currentChunk + paragraph) > maxChunkTokens) {
-          if (currentChunk) {
-            chunks.push({
-              content: currentChunk.trim(),
-              metadata: {
-                heading: section.heading,
-                level: section.level,
-                documentId: document.id,
-              },
-            });
-          }
-          currentChunk = paragraph;
-        } else {
-          currentChunk += '\n\n' + paragraph;
-        }
-      }
+			for (const paragraph of paragraphs) {
+				if (tokenCount(currentChunk + paragraph) > maxChunkTokens) {
+					if (currentChunk) {
+						chunks.push({
+							content: currentChunk.trim(),
+							metadata: {
+								heading: section.heading,
+								level: section.level,
+								documentId: document.id,
+							},
+						});
+					}
+					currentChunk = paragraph;
+				} else {
+					currentChunk += "\n\n" + paragraph;
+				}
+			}
 
-      if (currentChunk) {
-        chunks.push({
-          content: currentChunk.trim(),
-          metadata: {
-            heading: section.heading,
-            level: section.level,
-            documentId: document.id,
-          },
-        });
-      }
-    }
-  }
+			if (currentChunk) {
+				chunks.push({
+					content: currentChunk.trim(),
+					metadata: {
+						heading: section.heading,
+						level: section.level,
+						documentId: document.id,
+					},
+				});
+			}
+		}
+	}
 
-  return chunks;
+	return chunks;
 }
 ```
 
 ### Chunk Size Guidelines
 
-| Content Type | Optimal Chunk Size | Overlap |
-|---|---|---|
-| **Technical documentation** | 300-500 tokens | 20-30% |
-| **Customer support articles** | 200-400 tokens | 15-20% |
-| **Legal/compliance documents** | 400-600 tokens | 25-30% |
-| **Product descriptions** | 150-300 tokens | 10-15% |
-| **Code + comments** | 200-400 tokens | 30% (preserve function boundaries) |
+| Content Type                   | Optimal Chunk Size | Overlap                            |
+| ------------------------------ | ------------------ | ---------------------------------- |
+| **Technical documentation**    | 300-500 tokens     | 20-30%                             |
+| **Customer support articles**  | 200-400 tokens     | 15-20%                             |
+| **Legal/compliance documents** | 400-600 tokens     | 25-30%                             |
+| **Product descriptions**       | 150-300 tokens     | 10-15%                             |
+| **Code + comments**            | 200-400 tokens     | 30% (preserve function boundaries) |
 
 The overlap is critical. Without overlap, information that spans two chunks is lost during retrieval. A 20-30% overlap ensures that cross-boundary information appears in at least one complete chunk.
 
@@ -173,44 +170,44 @@ The embedding model converts text into dense vector representations for similari
 
 ### Model Comparison (2026 Benchmarks)
 
-| Model | Dimensions | MTEB Score | Cost per 1M tokens | Latency |
-|---|---|---|---|---|
-| **OpenAI text-embedding-3-large** | 3072 | 64.6 | $0.13 | 50-100ms |
-| **OpenAI text-embedding-3-small** | 1536 | 62.3 | $0.02 | 30-60ms |
-| **Cohere embed-v3** | 1024 | 64.5 | $0.10 | 40-80ms |
-| **Voyage AI voyage-3** | 1024 | 67.1 | $0.06 | 40-70ms |
-| **BGE-M3 (self-hosted)** | 1024 | 66.1 | Infrastructure only | 20-50ms |
+| Model                             | Dimensions | MTEB Score | Cost per 1M tokens  | Latency  |
+| --------------------------------- | ---------- | ---------- | ------------------- | -------- |
+| **OpenAI text-embedding-3-large** | 3072       | 64.6       | $0.13               | 50-100ms |
+| **OpenAI text-embedding-3-small** | 1536       | 62.3       | $0.02               | 30-60ms  |
+| **Cohere embed-v3**               | 1024       | 64.5       | $0.10               | 40-80ms  |
+| **Voyage AI voyage-3**            | 1024       | 67.1       | $0.06               | 40-70ms  |
+| **BGE-M3 (self-hosted)**          | 1024       | 66.1       | Infrastructure only | 20-50ms  |
 
 For most SaaS applications, `text-embedding-3-small` provides sufficient quality at 6.5x lower cost than the large model. The quality difference (62.3 vs 64.6 MTEB) is measurable but rarely the bottleneck—chunking and retrieval strategy matter more.
 
 ### Embedding Pipeline
 
 ```typescript
-import { OpenAI } from 'openai';
+import { OpenAI } from "openai";
 
 const openai = new OpenAI();
 
 async function embedChunks(chunks: Chunk[]): Promise<EmbeddedChunk[]> {
-  // Batch embedding — up to 2048 inputs per request
-  const batchSize = 2048;
-  const results: EmbeddedChunk[] = [];
+	// Batch embedding — up to 2048 inputs per request
+	const batchSize = 2048;
+	const results: EmbeddedChunk[] = [];
 
-  for (let i = 0; i < chunks.length; i += batchSize) {
-    const batch = chunks.slice(i, i + batchSize);
-    const response = await openai.embeddings.create({
-      model: 'text-embedding-3-small',
-      input: batch.map((c) => c.content),
-    });
+	for (let i = 0; i < chunks.length; i += batchSize) {
+		const batch = chunks.slice(i, i + batchSize);
+		const response = await openai.embeddings.create({
+			model: "text-embedding-3-small",
+			input: batch.map((c) => c.content),
+		});
 
-    for (let j = 0; j < batch.length; j++) {
-      results.push({
-        ...batch[j],
-        embedding: response.data[j].embedding,
-      });
-    }
-  }
+		for (let j = 0; j < batch.length; j++) {
+			results.push({
+				...batch[j],
+				embedding: response.data[j].embedding,
+			});
+		}
+	}
 
-  return results;
+	return results;
 }
 ```
 
@@ -225,51 +222,51 @@ Hybrid search combines vector similarity (semantic understanding) with BM25 keyw
 ```typescript
 // Hybrid retrieval: vector + keyword search
 async function hybridSearch(
-  query: string,
-  queryEmbedding: number[],
-  topK: number = 20
+	query: string,
+	queryEmbedding: number[],
+	topK: number = 20
 ): Promise<SearchResult[]> {
-  // Vector search — semantic similarity
-  const vectorResults = await vectorDb.search({
-    vector: queryEmbedding,
-    topK: topK,
-    includeMetadata: true,
-  });
+	// Vector search — semantic similarity
+	const vectorResults = await vectorDb.search({
+		vector: queryEmbedding,
+		topK: topK,
+		includeMetadata: true,
+	});
 
-  // BM25 keyword search — exact term matching
-  const keywordResults = await searchIndex.search(query, {
-    topK: topK,
-    fields: ['content', 'heading'],
-  });
+	// BM25 keyword search — exact term matching
+	const keywordResults = await searchIndex.search(query, {
+		topK: topK,
+		fields: ["content", "heading"],
+	});
 
-  // Reciprocal Rank Fusion to merge results
-  return reciprocalRankFusion(vectorResults, keywordResults, {
-    vectorWeight: 0.6,
-    keywordWeight: 0.4,
-    k: 60, // RRF constant
-  });
+	// Reciprocal Rank Fusion to merge results
+	return reciprocalRankFusion(vectorResults, keywordResults, {
+		vectorWeight: 0.6,
+		keywordWeight: 0.4,
+		k: 60, // RRF constant
+	});
 }
 
 function reciprocalRankFusion(
-  vectorResults: SearchResult[],
-  keywordResults: SearchResult[],
-  config: { vectorWeight: number; keywordWeight: number; k: number }
+	vectorResults: SearchResult[],
+	keywordResults: SearchResult[],
+	config: { vectorWeight: number; keywordWeight: number; k: number }
 ): SearchResult[] {
-  const scores = new Map<string, number>();
+	const scores = new Map<string, number>();
 
-  vectorResults.forEach((result, rank) => {
-    const score = config.vectorWeight / (config.k + rank + 1);
-    scores.set(result.id, (scores.get(result.id) || 0) + score);
-  });
+	vectorResults.forEach((result, rank) => {
+		const score = config.vectorWeight / (config.k + rank + 1);
+		scores.set(result.id, (scores.get(result.id) || 0) + score);
+	});
 
-  keywordResults.forEach((result, rank) => {
-    const score = config.keywordWeight / (config.k + rank + 1);
-    scores.set(result.id, (scores.get(result.id) || 0) + score);
-  });
+	keywordResults.forEach((result, rank) => {
+		const score = config.keywordWeight / (config.k + rank + 1);
+		scores.set(result.id, (scores.get(result.id) || 0) + score);
+	});
 
-  return Array.from(scores.entries())
-    .sort((a, b) => b[1] - a[1])
-    .map(([id, score]) => ({ id, score, ...getDocument(id) }));
+	return Array.from(scores.entries())
+		.sort((a, b) => b[1] - a[1])
+		.map(([id, score]) => ({ id, score, ...getDocument(id) }));
 }
 ```
 
@@ -277,11 +274,11 @@ function reciprocalRankFusion(
 
 Testing on 3 SaaS knowledge bases (10K-50K documents each):
 
-| Metric | Pure Vector | Pure BM25 | Hybrid (0.6/0.4) |
-|---|---|---|---|
-| **Recall@10** | 72% | 65% | 89% |
-| **Precision@5** | 68% | 71% | 84% |
-| **MRR** | 0.61 | 0.58 | 0.78 |
+| Metric          | Pure Vector | Pure BM25 | Hybrid (0.6/0.4) |
+| --------------- | ----------- | --------- | ---------------- |
+| **Recall@10**   | 72%         | 65%       | 89%              |
+| **Precision@5** | 68%         | 71%       | 84%              |
+| **MRR**         | 0.61        | 0.58      | 0.78             |
 
 Hybrid search outperforms either approach alone by 30-40% on recall. The improvement is most dramatic for queries that contain specific technical terms—exactly the queries SaaS users ask most.
 
@@ -294,30 +291,30 @@ Retrieval returns 20 candidates. The generation model only has context window sp
 ```typescript
 // Reranking with a cross-encoder model
 async function rerankResults(
-  query: string,
-  results: SearchResult[],
-  topK: number = 5
+	query: string,
+	results: SearchResult[],
+	topK: number = 5
 ): Promise<SearchResult[]> {
-  const response = await fetch('https://api.cohere.ai/v1/rerank', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${COHERE_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'rerank-english-v3.0',
-      query: query,
-      documents: results.map((r) => r.content),
-      top_n: topK,
-      return_documents: false,
-    }),
-  });
+	const response = await fetch("https://api.cohere.ai/v1/rerank", {
+		method: "POST",
+		headers: {
+			Authorization: `Bearer ${COHERE_API_KEY}`,
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			model: "rerank-english-v3.0",
+			query: query,
+			documents: results.map((r) => r.content),
+			top_n: topK,
+			return_documents: false,
+		}),
+	});
 
-  const reranked = await response.json();
+	const reranked = await response.json();
 
-  return reranked.results
-    .filter((r: any) => r.relevance_score > 0.3) // Threshold filter
-    .map((r: any) => results[r.index]);
+	return reranked.results
+		.filter((r: any) => r.relevance_score > 0.3) // Threshold filter
+		.map((r: any) => results[r.index]);
 }
 ```
 
@@ -331,19 +328,17 @@ The generation prompt structure determines whether the AI feature is trustworthy
 
 ```typescript
 async function generateAnswer(
-  query: string,
-  context: SearchResult[]
+	query: string,
+	context: SearchResult[]
 ): Promise<{ answer: string; citations: Citation[] }> {
-  const contextText = context
-    .map((c, i) => `[Source ${i + 1}] ${c.content}`)
-    .join('\n\n');
+	const contextText = context.map((c, i) => `[Source ${i + 1}] ${c.content}`).join("\n\n");
 
-  const response = await openai.chat.completions.create({
-    model: 'gpt-4-turbo',
-    messages: [
-      {
-        role: 'system',
-        content: `You are a helpful assistant that answers questions based ONLY on the provided context.
+	const response = await openai.chat.completions.create({
+		model: "gpt-4-turbo",
+		messages: [
+			{
+				role: "system",
+				content: `You are a helpful assistant that answers questions based ONLY on the provided context.
 
 Rules:
 - Answer using ONLY information from the provided sources
@@ -351,19 +346,19 @@ Rules:
 - If the context doesn't contain enough information, say "I don't have enough information to answer that"
 - Never make up information not present in the sources
 - Be specific and include numbers/details from the sources`,
-      },
-      {
-        role: 'user',
-        content: `Context:\n${contextText}\n\nQuestion: ${query}`,
-      },
-    ],
-    temperature: 0.1, // Low temperature for factual accuracy
-  });
+			},
+			{
+				role: "user",
+				content: `Context:\n${contextText}\n\nQuestion: ${query}`,
+			},
+		],
+		temperature: 0.1, // Low temperature for factual accuracy
+	});
 
-  const answer = response.choices[0].message.content;
-  const citations = extractCitations(answer, context);
+	const answer = response.choices[0].message.content;
+	const citations = extractCitations(answer, context);
 
-  return { answer, citations };
+	return { answer, citations };
 }
 ```
 
@@ -375,15 +370,15 @@ Temperature of 0.1 is deliberate. For factual Q&A grounded in retrieved document
 
 RAG costs scale with query volume. Here's a breakdown for 100K queries/month:
 
-| Component | Cost Model | 100K queries/month |
-|---|---|---|
-| **Embedding (query)** | $0.02/1M tokens | ~$2 |
-| **Vector search** | Varies by provider | $20-50 (managed), $10-20 (self-hosted) |
-| **Reranking** | $1.00/1K searches | $100 |
-| **Generation (GPT-4 Turbo)** | ~$0.03 per query (avg) | $3,000 |
-| **Generation (GPT-4o-mini)** | ~$0.001 per query (avg) | $100 |
-| **Total (GPT-4 Turbo)** | | ~$3,150/month |
-| **Total (GPT-4o-mini)** | | ~$250/month |
+| Component                    | Cost Model              | 100K queries/month                     |
+| ---------------------------- | ----------------------- | -------------------------------------- |
+| **Embedding (query)**        | $0.02/1M tokens         | ~$2                                    |
+| **Vector search**            | Varies by provider      | $20-50 (managed), $10-20 (self-hosted) |
+| **Reranking**                | $1.00/1K searches       | $100                                   |
+| **Generation (GPT-4 Turbo)** | ~$0.03 per query (avg)  | $3,000                                 |
+| **Generation (GPT-4o-mini)** | ~$0.001 per query (avg) | $100                                   |
+| **Total (GPT-4 Turbo)**      |                         | ~$3,150/month                          |
+| **Total (GPT-4o-mini)**      |                         | ~$250/month                            |
 
 The generation model is 95% of the cost. For most SaaS knowledge base features, GPT-4o-mini produces answers that are 90% as good as GPT-4 Turbo at 3% of the cost. Start with the smaller model and upgrade only for use cases where quality measurably improves revenue.
 
@@ -393,33 +388,33 @@ The generation model is 95% of the cost. For most SaaS knowledge base features, 
 
 ### The Metrics That Matter
 
-| Metric | What It Measures | Target |
-|---|---|---|
-| **Retrieval recall@5** | Were the correct documents in the top 5? | > 85% |
-| **Answer correctness** | Does the answer match the ground truth? | > 80% |
-| **Faithfulness** | Does the answer only use information from context? | > 95% |
-| **Answer relevance** | Does the answer address the user's question? | > 90% |
-| **Latency (p95)** | End-to-end response time | < 3 seconds |
+| Metric                 | What It Measures                                   | Target      |
+| ---------------------- | -------------------------------------------------- | ----------- |
+| **Retrieval recall@5** | Were the correct documents in the top 5?           | > 85%       |
+| **Answer correctness** | Does the answer match the ground truth?            | > 80%       |
+| **Faithfulness**       | Does the answer only use information from context? | > 95%       |
+| **Answer relevance**   | Does the answer address the user's question?       | > 90%       |
+| **Latency (p95)**      | End-to-end response time                           | < 3 seconds |
 
 ### Automated Evaluation Pipeline
 
 ```typescript
 // Evaluate RAG quality on a test set
 async function evaluateRAG(testSet: TestCase[]): Promise<EvalResults> {
-  const results = await Promise.all(
-    testSet.map(async (testCase) => {
-      const { answer, citations } = await ragPipeline(testCase.query);
+	const results = await Promise.all(
+		testSet.map(async (testCase) => {
+			const { answer, citations } = await ragPipeline(testCase.query);
 
-      return {
-        query: testCase.query,
-        retrievalRecall: calculateRecall(citations, testCase.relevantDocs),
-        answerCorrectness: await evaluateCorrectness(answer, testCase.expectedAnswer),
-        faithfulness: await evaluateFaithfulness(answer, citations),
-      };
-    })
-  );
+			return {
+				query: testCase.query,
+				retrievalRecall: calculateRecall(citations, testCase.relevantDocs),
+				answerCorrectness: await evaluateCorrectness(answer, testCase.expectedAnswer),
+				faithfulness: await evaluateFaithfulness(answer, citations),
+			};
+		})
+	);
 
-  return aggregateResults(results);
+	return aggregateResults(results);
 }
 ```
 

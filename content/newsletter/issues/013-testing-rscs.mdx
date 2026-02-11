@@ -34,19 +34,19 @@ Extract logic from components into pure functions. These are the easiest tests t
 ```typescript
 // lib/pricing.ts — pure function, no React dependency
 export function calculateProration(
-  currentPlan: Plan,
-  newPlan: Plan,
-  daysRemaining: number
+	currentPlan: Plan,
+	newPlan: Plan,
+	daysRemaining: number
 ): number {
-  const dailyDiff = (newPlan.price - currentPlan.price) / 30;
-  return Math.max(0, dailyDiff * daysRemaining);
+	const dailyDiff = (newPlan.price - currentPlan.price) / 30;
+	return Math.max(0, dailyDiff * daysRemaining);
 }
 
 // lib/pricing.test.ts — fast, no rendering
-test('prorates upgrade correctly', () => {
-  const current = { price: 49 };
-  const next = { price: 99 };
-  expect(calculateProration(current, next, 15)).toBeCloseTo(25);
+test("prorates upgrade correctly", () => {
+	const current = { price: 49 };
+	const next = { price: 99 };
+	expect(calculateProration(current, next, 15)).toBeCloseTo(25);
 });
 ```
 
@@ -73,21 +73,22 @@ Server Components render on the server and return HTML. Test them the way you'd 
 
 ```typescript
 // app/dashboard/page.integration.test.ts
-test('dashboard renders user metrics', async () => {
-  const response = await fetch('http://localhost:3000/dashboard', {
-    headers: { Cookie: `session=${testSession}` },
-  });
-  const html = await response.text();
+test("dashboard renders user metrics", async () => {
+	const response = await fetch("http://localhost:3000/dashboard", {
+		headers: { Cookie: `session=${testSession}` },
+	});
+	const html = await response.text();
 
-  expect(html).toContain('Monthly Revenue');
-  expect(html).toContain('Active Users');
-  expect(response.status).toBe(200);
+	expect(html).toContain("Monthly Revenue");
+	expect(html).toContain("Active Users");
+	expect(response.status).toBe(200);
 });
 ```
 
 One team implementing this model saw their test suite run 40% faster (pure function tests are orders of magnitude quicker than rendering tests) while catching more real bugs — because they were testing business logic directly instead of fighting React internals.
 
 **When to Apply This:**
+
 - Any team using Next.js App Router with an existing test suite
 - Teams where more than 20% of tests broke during the Server Component migration
 - New projects on App Router that need a testing strategy from day one

@@ -89,15 +89,15 @@ The `SKIP LOCKED` clause is critical—it prevents the backfill from blocking ap
 
 Renaming columns, changing types, splitting tables, adding NOT NULL constraints to populated columns. These require the expand-contract pattern—there is no safe shortcut.
 
-| Operation | Risk | Duration (50M rows) | Lock Type |
-|---|---|---|---|
-| ADD COLUMN (nullable) | None | < 1ms | AccessExclusive (instant) |
-| ADD COLUMN (with default) | None (PG 11+) | < 1ms | AccessExclusive (instant) |
-| CREATE INDEX | Low | 5-30 min | ShareLock (blocks writes) |
-| CREATE INDEX CONCURRENTLY | None | 10-60 min | No lock |
-| ALTER COLUMN TYPE | High | 15-90 min | AccessExclusive (blocks all) |
-| ADD NOT NULL constraint | High | 10-30 min | AccessExclusive (blocks all) |
-| Backfill 50M rows | Medium | 5-45 min | Row-level (per batch) |
+| Operation                 | Risk          | Duration (50M rows) | Lock Type                    |
+| ------------------------- | ------------- | ------------------- | ---------------------------- |
+| ADD COLUMN (nullable)     | None          | < 1ms               | AccessExclusive (instant)    |
+| ADD COLUMN (with default) | None (PG 11+) | < 1ms               | AccessExclusive (instant)    |
+| CREATE INDEX              | Low           | 5-30 min            | ShareLock (blocks writes)    |
+| CREATE INDEX CONCURRENTLY | None          | 10-60 min           | No lock                      |
+| ALTER COLUMN TYPE         | High          | 15-90 min           | AccessExclusive (blocks all) |
+| ADD NOT NULL constraint   | High          | 10-30 min           | AccessExclusive (blocks all) |
+| Backfill 50M rows         | Medium        | 5-45 min            | Row-level (per batch)        |
 
 ---
 
@@ -111,18 +111,16 @@ Add the new structure alongside the old. Both exist simultaneously. The applicat
 
 ```typescript
 // Migration: add new column
-await db.schema.alterTable('users', (table) => {
-  table.string('email_normalized').nullable();
+await db.schema.alterTable("users", (table) => {
+	table.string("email_normalized").nullable();
 });
 
 // Application code: dual-write during transition
 async function updateUserEmail(userId: string, email: string) {
-  await db('users')
-    .where({ id: userId })
-    .update({
-      email: email,
-      email_normalized: email.toLowerCase().trim(),
-    });
+	await db("users").where({ id: userId }).update({
+		email: email,
+		email_normalized: email.toLowerCase().trim(),
+	});
 }
 ```
 
@@ -133,11 +131,12 @@ Backfill the new structure with existing data. Run in batches during low-traffic
 ```typescript
 // Backfill migration — run as a background job, NOT a deployment step
 async function backfillNormalizedEmails() {
-  const batchSize = 5000;
-  let processed = 0;
+	const batchSize = 5000;
+	let processed = 0;
 
-  while (true) {
-    const count = await db.raw(`
+	while (true) {
+		const count = await db.raw(
+			`
       UPDATE users
       SET email_normalized = LOWER(TRIM(email))
       WHERE id IN (
@@ -146,17 +145,19 @@ async function backfillNormalizedEmails() {
         LIMIT ?
         FOR UPDATE SKIP LOCKED
       )
-    `, [batchSize]);
+    `,
+			[batchSize]
+		);
 
-    if (count.rowCount === 0) break;
-    processed += count.rowCount;
+		if (count.rowCount === 0) break;
+		processed += count.rowCount;
 
-    // Log progress for observability
-    logger.info(`Backfilled ${processed} email records`);
+		// Log progress for observability
+		logger.info(`Backfilled ${processed} email records`);
 
-    // Let the database breathe
-    await sleep(100);
-  }
+		// Let the database breathe
+		await sleep(100);
+	}
 }
 ```
 
@@ -212,13 +213,13 @@ WHERE NOT indisvalid;
 
 Every major migration tool handles `CONCURRENTLY` differently:
 
-| Tool | Configuration |
-|---|---|
-| **Alembic** | `op.execute('CREATE INDEX CONCURRENTLY ...')` with `autocommit=True` in migration context |
-| **Prisma Migrate** | Raw SQL in migration file, requires `-- CreateIndex` comment removal |
-| **Knex** | `knex.raw('CREATE INDEX CONCURRENTLY ...')` outside transaction |
-| **Django** | `AddIndexConcurrently` operation (built-in since Django 3.0) |
-| **Rails** | `add_index :table, :column, algorithm: :concurrently` with `disable_ddl_transaction!` |
+| Tool               | Configuration                                                                             |
+| ------------------ | ----------------------------------------------------------------------------------------- |
+| **Alembic**        | `op.execute('CREATE INDEX CONCURRENTLY ...')` with `autocommit=True` in migration context |
+| **Prisma Migrate** | Raw SQL in migration file, requires `-- CreateIndex` comment removal                      |
+| **Knex**           | `knex.raw('CREATE INDEX CONCURRENTLY ...')` outside transaction                           |
+| **Django**         | `AddIndexConcurrently` operation (built-in since Django 3.0)                              |
+| **Rails**          | `add_index :table, :column, algorithm: :concurrently` with `disable_ddl_transaction!`     |
 
 ---
 
@@ -282,14 +283,14 @@ The snapshot gives you a guaranteed rollback point. The cost is storage (snapsho
 
 ### The Rollback Decision Framework
 
-| Migration Type | Rollback Strategy | Recovery Time |
-|---|---|---|
-| Add nullable column | Drop column (safe) | < 1 second |
-| Add index CONCURRENTLY | Drop index (safe) | < 1 second |
-| Backfill data | Re-run backfill with old values | Minutes to hours |
-| Rename column | Rename back (requires code revert) | < 1 second + deploy |
-| Change column type | Restore from snapshot | 15-45 minutes |
-| Drop column | Restore from snapshot | 15-45 minutes |
+| Migration Type         | Rollback Strategy                  | Recovery Time       |
+| ---------------------- | ---------------------------------- | ------------------- |
+| Add nullable column    | Drop column (safe)                 | < 1 second          |
+| Add index CONCURRENTLY | Drop index (safe)                  | < 1 second          |
+| Backfill data          | Re-run backfill with old values    | Minutes to hours    |
+| Rename column          | Rename back (requires code revert) | < 1 second + deploy |
+| Change column type     | Restore from snapshot              | 15-45 minutes       |
+| Drop column            | Restore from snapshot              | 15-45 minutes       |
 
 ---
 
@@ -306,30 +307,31 @@ A migration on 1,000 tenant schemas that takes 2 seconds each takes 33 minutes t
 ```typescript
 // Run tenant migrations in controlled parallel batches
 async function migrateTenants(migrationSql: string) {
-  const tenants = await db('tenants').select('schema_name');
-  const concurrency = 10; // Don't overwhelm the connection pool
+	const tenants = await db("tenants").select("schema_name");
+	const concurrency = 10; // Don't overwhelm the connection pool
 
-  for (let i = 0; i < tenants.length; i += concurrency) {
-    const batch = tenants.slice(i, i + concurrency);
-    await Promise.all(
-      batch.map(async (tenant) => {
-        try {
-          await db.raw(`SET search_path TO ??`, [tenant.schema_name]);
-          await db.raw(migrationSql);
-        } catch (error) {
-          logger.error(`Migration failed for tenant ${tenant.schema_name}`, error);
-          // Record failure — don't abort entire batch
-          await recordMigrationFailure(tenant.schema_name, error);
-        }
-      })
-    );
+	for (let i = 0; i < tenants.length; i += concurrency) {
+		const batch = tenants.slice(i, i + concurrency);
+		await Promise.all(
+			batch.map(async (tenant) => {
+				try {
+					await db.raw(`SET search_path TO ??`, [tenant.schema_name]);
+					await db.raw(migrationSql);
+				} catch (error) {
+					logger.error(`Migration failed for tenant ${tenant.schema_name}`, error);
+					// Record failure — don't abort entire batch
+					await recordMigrationFailure(tenant.schema_name, error);
+				}
+			})
+		);
 
-    logger.info(`Migrated ${Math.min(i + concurrency, tenants.length)}/${tenants.length} tenants`);
-  }
+		logger.info(`Migrated ${Math.min(i + concurrency, tenants.length)}/${tenants.length} tenants`);
+	}
 }
 ```
 
 Key decisions:
+
 - **Concurrency of 10** keeps connection pool pressure manageable
 - **Individual error handling** prevents one tenant's failure from blocking all others
 - **Failure recording** enables targeted retry for failed tenants
@@ -341,6 +343,7 @@ Key decisions:
 Before running any migration in production:
 
 **Pre-Flight:**
+
 - [ ] Migration tested against production-scale data (row counts and indexes match)
 - [ ] Execution time measured and within maintenance window
 - [ ] Rollback plan documented and tested
@@ -348,12 +351,14 @@ Before running any migration in production:
 - [ ] Monitoring dashboards open (connection pool, query latency, replication lag)
 
 **Execution:**
+
 - [ ] Run during lowest-traffic period (check analytics, not assumptions)
 - [ ] Schema changes separated from data changes
 - [ ] Indexes created with `CONCURRENTLY`
 - [ ] Backfills batched with `SKIP LOCKED` and sleep intervals
 
 **Post-Flight:**
+
 - [ ] Verify no invalid indexes (`pg_index WHERE NOT indisvalid`)
 - [ ] Verify replication lag returned to baseline
 - [ ] Verify application error rates unchanged

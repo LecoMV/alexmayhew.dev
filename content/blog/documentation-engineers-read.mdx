@@ -46,15 +46,19 @@ ADRs capture the why behind technical decisions. They're the single most valuabl
 ## Status: Accepted (2026-01-15)
 
 ## Context
+
 Our SaaS application needs to isolate tenant data. We evaluated three approaches:
+
 1. Separate databases per tenant
 2. Shared database with application-level filtering
 3. Shared database with PostgreSQL Row-Level Security (RLS)
 
 ## Decision
+
 We chose PostgreSQL RLS (option 3).
 
 ## Rationale
+
 - **Separate databases** (option 1) provides strong isolation but makes schema migrations
   O(N) where N = number of tenants. At 500+ tenants, migrations take 30+ minutes.
 - **Application filtering** (option 2) requires every query to include a WHERE clause.
@@ -64,11 +68,13 @@ We chose PostgreSQL RLS (option 3).
   returns zero rows instead of another tenant's data. Fail-safe by default.
 
 ## Trade-offs
+
 - RLS adds 2-5% query overhead (measured on our workload)
 - Requires SET app.tenant_id on every connection (handled via Prisma middleware)
 - Debugging is harder—queries return empty results instead of errors when tenant context is wrong
 
 ## Consequences
+
 - All database queries automatically filtered by tenant
 - New engineers can't accidentally write cross-tenant queries
 - Monitoring needed for the Prisma middleware setting tenant context
@@ -82,13 +88,15 @@ We chose PostgreSQL RLS (option 3).
 
 Runbooks are step-by-step procedures for operational tasks. They answer: "How do I do this specific thing right now?"
 
-```markdown
+````markdown
 # Runbook: Deploy Hotfix to Production
 
 ## When to Use
+
 Production issue requiring an immediate fix that can't wait for the normal release cycle.
 
 ## Prerequisites
+
 - [ ] GitHub access to main branch
 - [ ] Cloudflare dashboard access (for rollback if needed)
 
@@ -98,8 +106,10 @@ Production issue requiring an immediate fix that can't wait for the normal relea
    ```bash
    git checkout main && git pull && git checkout -b hotfix/description
    ```
+````
 
 2. Apply fix, commit, push:
+
    ```bash
    git add <files> && git commit -m "fix: description" && git push -u origin hotfix/description
    ```
@@ -111,6 +121,7 @@ Production issue requiring an immediate fix that can't wait for the normal relea
 5. Merge to main. GitHub Actions deploys automatically.
 
 6. Verify:
+
    ```bash
    curl -s https://alexmayhew.dev/api/health | jq
    ```
@@ -119,8 +130,10 @@ Production issue requiring an immediate fix that can't wait for the normal relea
    Workers & Pages > alexmayhew-dev > Deployments > Rollback
 
 ## Escalation
+
 If steps above don't resolve the issue, contact [on-call IC] via PagerDuty.
-```
+
+````
 
 **Why runbooks work:** They're designed for the exact moment when an engineer needs them—under stress, with limited context. Every step is explicit. No assumed knowledge.
 
@@ -161,7 +174,7 @@ The effective onboarding guide isn't a wiki page—it's a checklist with day-by-
 - [ ] Read the runbook for the service area you're joining
 - [ ] Meet your team lead for architecture walkthrough (30 min)
 - [ ] Complete second PR with a slightly larger scope
-```
+````
 
 **Why onboarding guides work:** They remove decision-making from the new hire's first week. The checklist tells them exactly what to do, in what order, with expected outcomes at each step.
 
@@ -176,12 +189,17 @@ API documentation that's generated from code stays accurate because it changes w
 // The contract IS the code — there's no separate document to maintain
 
 const createOrderSchema = z.object({
-  customerId: z.string().uuid().describe('The customer placing the order'),
-  items: z.array(z.object({
-    productId: z.string().uuid(),
-    quantity: z.number().int().positive(),
-  })).min(1).describe('Order line items (at least one required)'),
-  currency: z.enum(['USD', 'EUR', 'GBP']).default('USD'),
+	customerId: z.string().uuid().describe("The customer placing the order"),
+	items: z
+		.array(
+			z.object({
+				productId: z.string().uuid(),
+				quantity: z.number().int().positive(),
+			})
+		)
+		.min(1)
+		.describe("Order line items (at least one required)"),
+	currency: z.enum(["USD", "EUR", "GBP"]).default("USD"),
 });
 ```
 
@@ -195,13 +213,13 @@ const createOrderSchema = z.object({
 
 These documentation types consistently fail:
 
-| Type | Why It Fails | Alternative |
-|---|---|---|
-| **Comprehensive architecture overview** | Outdated within 2 months | ADRs for decisions, code for current state |
-| **Process documents** | Never read, frequently wrong | Automated checks (CI) that enforce process |
-| **Meeting notes** | Written for the writer, not the reader | Decision records (ADRs) for outcomes |
-| **"How it works" deep-dives** | Outdated when code changes | Well-named code + inline comments |
-| **Style guides** | Replaced by automated formatters | Prettier/ESLint/gofmt configs |
+| Type                                    | Why It Fails                           | Alternative                                |
+| --------------------------------------- | -------------------------------------- | ------------------------------------------ |
+| **Comprehensive architecture overview** | Outdated within 2 months               | ADRs for decisions, code for current state |
+| **Process documents**                   | Never read, frequently wrong           | Automated checks (CI) that enforce process |
+| **Meeting notes**                       | Written for the writer, not the reader | Decision records (ADRs) for outcomes       |
+| **"How it works" deep-dives**           | Outdated when code changes             | Well-named code + inline comments          |
+| **Style guides**                        | Replaced by automated formatters       | Prettier/ESLint/gofmt configs              |
 
 The honest truth: if documentation can be replaced by automation, replace it. A linter rule that enforces a naming convention is more reliable than a style guide that describes it.
 
@@ -211,13 +229,13 @@ The honest truth: if documentation can be replaced by automation, replace it. A 
 
 Documentation decays at a predictable rate. The half-life depends on the type:
 
-| Documentation Type | Half-Life | Decay Cause |
-|---|---|---|
-| API contracts (code-generated) | Infinite | Changes when code changes |
-| ADRs | 2-5 years | Decisions rarely change |
-| Runbooks | 3-6 months | Tooling and processes evolve |
-| Onboarding guides | 2-4 months | Dependencies and setup change |
-| Architecture overviews | 4-8 weeks | Code changes faster than docs |
+| Documentation Type             | Half-Life  | Decay Cause                   |
+| ------------------------------ | ---------- | ----------------------------- |
+| API contracts (code-generated) | Infinite   | Changes when code changes     |
+| ADRs                           | 2-5 years  | Decisions rarely change       |
+| Runbooks                       | 3-6 months | Tooling and processes evolve  |
+| Onboarding guides              | 2-4 months | Dependencies and setup change |
+| Architecture overviews         | 4-8 weeks  | Code changes faster than docs |
 
 ### Prevention Strategies
 
@@ -230,7 +248,7 @@ Documentation decays at a predictable rate. The half-life depends on the type:
 name: Doc Freshness Check
 on:
   schedule:
-    - cron: '0 9 * * 1' # Every Monday
+    - cron: "0 9 * * 1" # Every Monday
 
 jobs:
   check-freshness:

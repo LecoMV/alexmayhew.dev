@@ -32,16 +32,16 @@ The fix requires three changes:
 **1. Instrument with the web-vitals library, not Lighthouse.**
 
 ```javascript
-import { onINP } from 'web-vitals';
+import { onINP } from "web-vitals";
 
 onINP((metric) => {
-  // Send to your analytics
-  analytics.track('web-vital', {
-    name: metric.name,
-    value: metric.value,         // Total INP in ms
-    rating: metric.rating,       // 'good' | 'needs-improvement' | 'poor'
-    entries: metric.entries,     // Which interaction triggered it
-  });
+	// Send to your analytics
+	analytics.track("web-vital", {
+		name: metric.name,
+		value: metric.value, // Total INP in ms
+		rating: metric.rating, // 'good' | 'needs-improvement' | 'poor'
+		entries: metric.entries, // Which interaction triggered it
+	});
 });
 ```
 
@@ -55,21 +55,22 @@ Any event handler over 50ms blocks the main thread. The pattern: do critical wor
 
 ```javascript
 async function handleFilterChange(filters) {
-  // Critical: update UI immediately
-  updateFilterUI(filters);
+	// Critical: update UI immediately
+	updateFilterUI(filters);
 
-  // Yield to browser — let it paint
-  await scheduler.yield();
+	// Yield to browser — let it paint
+	await scheduler.yield();
 
-  // Non-critical: fetch filtered data
-  const results = await fetchFilteredData(filters);
-  renderResults(results);
+	// Non-critical: fetch filtered data
+	const results = await fetchFilteredData(filters);
+	renderResults(results);
 }
 ```
 
 One client went from 420ms INP to 110ms with this pattern alone. Their organic traffic recovered within 6 weeks.
 
 **When to Apply This:**
+
 - Any site where organic search traffic matters to revenue
 - Applications with interactive elements beyond simple navigation (filters, forms, modals)
 - Mobile-heavy audiences where 50%+ of traffic comes from phones

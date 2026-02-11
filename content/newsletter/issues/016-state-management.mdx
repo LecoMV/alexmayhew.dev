@@ -31,9 +31,9 @@ API data, cached responses, background refetching. This is 60-80% of what Redux 
 
 ```typescript
 const { data: users } = useQuery({
-  queryKey: ['users', filters],
-  queryFn: () => api.getUsers(filters),
-  staleTime: 60_000,
+	queryKey: ["users", filters],
+	queryFn: () => api.getUsers(filters),
+	staleTime: 60_000,
 });
 // Cached, deduped, auto-refetched. No reducer needed.
 ```
@@ -44,8 +44,8 @@ UI toggles, sidebar open/closed, selected tab, modal visibility. True client-onl
 
 ```typescript
 const useUIStore = create((set) => ({
-  sidebarOpen: false,
-  toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
+	sidebarOpen: false,
+	toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
 }));
 ```
 
@@ -54,8 +54,8 @@ const useUIStore = create((set) => ({
 Filters, pagination, search queries, sort order. Any state that should survive a page refresh or be shareable via link. URL is the state manager. nuqs gives you type-safe URL query parameter hooks for Next.js.
 
 ```typescript
-const [search, setSearch] = useQueryState('q', parseAsString.withDefault(''));
-const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
+const [search, setSearch] = useQueryState("q", parseAsString.withDefault(""));
+const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
 // Bookmarkable. Shareable. No store needed.
 ```
 
@@ -65,11 +65,11 @@ Validation, dirty tracking, submission handling. Forms have unique requirements 
 
 ```typescript
 const schema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
+	name: z.string().min(2),
+	email: z.string().email(),
 });
 const { register, handleSubmit } = useForm({
-  resolver: zodResolver(schema),
+	resolver: zodResolver(schema),
 });
 ```
 
@@ -78,6 +78,7 @@ Total bundle: ~28KB. Compare to Redux Toolkit at ~40KB — which handles one of 
 Redux tried to be one solution for all four state types. That's why it's verbose. The 28KB stack uses four focused tools, each doing one thing well.
 
 **When to Apply This:**
+
 - New React or Next.js projects choosing a state management approach
 - Existing Redux applications where the store is primarily API data (migrate server state to React Query first)
 - Teams spending sprint time debating state management instead of shipping

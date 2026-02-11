@@ -52,6 +52,7 @@ The migration path from pgvector to a dedicated vector database, if you genuinel
 **When to avoid pgvector:** Over 10M vectors with sub-10ms latency requirements, or when your query patterns need advanced features like multi-vector search or built-in reranking. At that scale, Qdrant (self-hosted) or Pinecone (managed) earn their complexity.
 
 **When to Apply This:**
+
 - Under 10M vectors where query latency above 20ms is acceptable
 - Teams already running PostgreSQL who want to minimize operational overhead
 - Multi-tenant SaaS where data isolation matters more than benchmark performance

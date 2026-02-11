@@ -49,6 +49,7 @@ Three more rules that save production:
 - **Always test migrations against a production-sized dataset.** A 500-row dev database tells you nothing about lock duration on 50M rows.
 
 **When to Apply This:**
+
 - Database over 50GB or any table over 10M rows
 - Deploying during business hours with active users on the database
 - Any migration touching a table involved in your critical transaction path

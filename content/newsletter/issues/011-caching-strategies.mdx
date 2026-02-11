@@ -44,13 +44,13 @@ This single header on read-heavy endpoints means: serve from CDN cache for 60 se
 const cache = new Map();
 
 function getCachedConfig(key) {
-  const entry = cache.get(key);
-  if (entry && Date.now() - entry.timestamp < 60_000) {
-    return entry.value;
-  }
-  const value = db.query('SELECT value FROM config WHERE key = $1', [key]);
-  cache.set(key, { value, timestamp: Date.now() });
-  return value;
+	const entry = cache.get(key);
+	if (entry && Date.now() - entry.timestamp < 60_000) {
+		return entry.value;
+	}
+	const value = db.query("SELECT value FROM config WHERE key = $1", [key]);
+	cache.set(key, { value, timestamp: Date.now() });
+	return value;
 }
 ```
 
@@ -61,6 +61,7 @@ The mistake I see repeatedly: teams add Redis before they've added a single Cach
 When 60-second staleness is acceptable — and for dashboards, analytics, and reporting endpoints, it almost always is — HTTP caching eliminates the need for application-level caching entirely.
 
 **When to Apply This:**
+
 - Read-heavy API endpoints where 60-second data staleness is acceptable
 - Dashboard and reporting pages that re-fetch identical data on every load
 - Before proposing Redis or any new caching infrastructure

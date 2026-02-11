@@ -24,12 +24,12 @@ State management in 2026 is simpler than the discourse suggests—if you decompo
 
 The fundamental mistake teams make: treating all state the same. Server state and client state have completely different characteristics and need different management strategies.
 
-| Type | Source | Characteristics | Example |
-|---|---|---|---|
-| **Server state** | API / database | Async, shared, cacheable, stale | User profile, dashboard metrics, order list |
-| **Client state** | User interaction | Synchronous, local, transient | Form inputs, modal open/close, selected tab |
-| **URL state** | Browser URL | Synchronous, shareable, navigable | Filters, pagination, search query |
-| **Global state** | App-wide config | Persistent, shared across routes | Auth session, theme, feature flags |
+| Type             | Source           | Characteristics                   | Example                                     |
+| ---------------- | ---------------- | --------------------------------- | ------------------------------------------- |
+| **Server state** | API / database   | Async, shared, cacheable, stale   | User profile, dashboard metrics, order list |
+| **Client state** | User interaction | Synchronous, local, transient     | Form inputs, modal open/close, selected tab |
+| **URL state**    | Browser URL      | Synchronous, shareable, navigable | Filters, pagination, search query           |
+| **Global state** | App-wide config  | Persistent, shared across routes  | Auth session, theme, feature flags          |
 
 Redux tried to be the answer for all four categories. That's why Redux applications become unwieldy—they're using a complex tool for simple problems and a simple tool for complex problems.
 
@@ -106,6 +106,7 @@ function Dashboard() {
 ```
 
 **What React Query gives you for free:**
+
 - Automatic caching with configurable staleness
 - Background refetching when the user returns to the tab
 - Request deduplication (5 components using the same query = 1 network request)
@@ -207,29 +208,29 @@ function ViewToggle() {
 For state that should survive page refreshes (theme preference, sidebar state, last viewed dashboard):
 
 ```typescript
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 const usePreferences = create(
-  persist<PreferencesState>(
-    (set) => ({
-      theme: 'dark',
-      sidebarCollapsed: false,
-      lastDashboard: null,
-      setTheme: (theme) => set({ theme }),
-      toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
-      setLastDashboard: (id) => set({ lastDashboard: id }),
-    }),
-    {
-      name: 'user-preferences',
-      // Only persist specific fields (not functions)
-      partialize: (state) => ({
-        theme: state.theme,
-        sidebarCollapsed: state.sidebarCollapsed,
-        lastDashboard: state.lastDashboard,
-      }),
-    }
-  )
+	persist<PreferencesState>(
+		(set) => ({
+			theme: "dark",
+			sidebarCollapsed: false,
+			lastDashboard: null,
+			setTheme: (theme) => set({ theme }),
+			toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
+			setLastDashboard: (id) => set({ lastDashboard: id }),
+		}),
+		{
+			name: "user-preferences",
+			// Only persist specific fields (not functions)
+			partialize: (state) => ({
+				theme: state.theme,
+				sidebarCollapsed: state.sidebarCollapsed,
+				lastDashboard: state.lastDashboard,
+			}),
+		}
+	)
 );
 ```
 
@@ -243,12 +244,12 @@ Signals provide fine-grained reactivity—when a signal value changes, only the 
 
 In a dashboard with 500 data cells, updating one cell's value:
 
-| Approach | What Updates | Time |
-|---|---|---|
-| **React state (naive)** | Entire table re-renders | 50-200ms |
-| **React state (memo)** | Table re-renders, memoized cells skip | 10-50ms |
-| **Zustand (selector)** | Only subscribed components | 5-20ms |
-| **Signals** | Only the specific DOM text node | < 1ms |
+| Approach                | What Updates                          | Time     |
+| ----------------------- | ------------------------------------- | -------- |
+| **React state (naive)** | Entire table re-renders               | 50-200ms |
+| **React state (memo)**  | Table re-renders, memoized cells skip | 10-50ms  |
+| **Zustand (selector)**  | Only subscribed components            | 5-20ms   |
+| **Signals**             | Only the specific DOM text node       | < 1ms    |
 
 For applications with hundreds of frequently updating values (trading dashboards, real-time monitoring, collaborative editing), signals provide a measurable performance advantage.
 
@@ -312,13 +313,13 @@ What type of state?
 
 For 90% of SaaS applications:
 
-| Concern | Solution | Bundle Size |
-|---|---|---|
-| Server state | React Query | ~13KB |
-| Client state | Zustand | ~1.2KB |
-| URL state | nuqs | ~2KB |
-| Form state | React Hook Form + Zod | ~9KB + ~3KB |
-| **Total** | | **~28KB** |
+| Concern      | Solution              | Bundle Size |
+| ------------ | --------------------- | ----------- |
+| Server state | React Query           | ~13KB       |
+| Client state | Zustand               | ~1.2KB      |
+| URL state    | nuqs                  | ~2KB        |
+| Form state   | React Hook Form + Zod | ~9KB + ~3KB |
+| **Total**    |                       | **~28KB**   |
 
 Compare this to Redux Toolkit + RTK Query + Redux Persist: ~40KB, with significantly more boilerplate.
 

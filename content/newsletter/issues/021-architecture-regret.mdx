@@ -34,8 +34,8 @@ const project = await db.projects.findOne({ _id: projectId });
 // Became this — application-level joins across 4 collections
 const project = await db.projects.findOne({ _id: projectId });
 const tasks = await db.tasks.find({ projectId }).toArray();
-const users = await db.users.find({ _id: { $in: tasks.map(t => t.assigneeId) } }).toArray();
-const timeLogs = await db.timeLogs.find({ taskId: { $in: tasks.map(t => t._id) } }).toArray();
+const users = await db.users.find({ _id: { $in: tasks.map((t) => t.assigneeId) } }).toArray();
+const timeLogs = await db.timeLogs.find({ taskId: { $in: tasks.map((t) => t._id) } }).toArray();
 // Then manually stitch everything together...
 ```
 
@@ -46,6 +46,7 @@ The lesson: PostgreSQL handles 95% of SaaS data patterns. Its `jsonb` type cover
 My rule now: start with PostgreSQL unless you can prove — with your actual query patterns, not hypothetical ones — that a document database solves a problem PostgreSQL cannot.
 
 **When to Apply This:**
+
 - Any new SaaS product without a proven, specific need for a document database
 - Teams under 20 engineers where maintaining two data paradigms creates cognitive overhead
 - Products where enterprise customers will eventually demand reporting, audit trails, or complex queries

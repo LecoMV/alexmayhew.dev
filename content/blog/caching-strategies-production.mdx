@@ -52,14 +52,14 @@ Before writing a single line of caching code, configure your HTTP cache headers 
 // Next.js: static assets get immutable caching automatically
 // For custom routes serving static content:
 export async function GET() {
-  const data = await getStaticContent();
+	const data = await getStaticContent();
 
-  return Response.json(data, {
-    headers: {
-      'Cache-Control': 'public, max-age=31536000, immutable',
-      'ETag': generateETag(data),
-    },
-  });
+	return Response.json(data, {
+		headers: {
+			"Cache-Control": "public, max-age=31536000, immutable",
+			ETag: generateETag(data),
+		},
+	});
 }
 ```
 
@@ -70,16 +70,16 @@ export async function GET() {
 ```typescript
 // SaaS dashboard: data that changes infrequently
 export async function GET(request: Request) {
-  const tenantId = getTenantId(request);
-  const dashboardData = await getDashboardMetrics(tenantId);
+	const tenantId = getTenantId(request);
+	const dashboardData = await getDashboardMetrics(tenantId);
 
-  return Response.json(dashboardData, {
-    headers: {
-      // Private: only browser caches, not CDN (tenant-specific data)
-      'Cache-Control': 'private, max-age=60, stale-while-revalidate=300',
-      'ETag': generateETag(dashboardData),
-    },
-  });
+	return Response.json(dashboardData, {
+		headers: {
+			// Private: only browser caches, not CDN (tenant-specific data)
+			"Cache-Control": "private, max-age=60, stale-while-revalidate=300",
+			ETag: generateETag(dashboardData),
+		},
+	});
 }
 ```
 
@@ -87,14 +87,14 @@ The `stale-while-revalidate` directive is the most underused caching feature. It
 
 ### The Cache-Control Decision Matrix
 
-| Content Type | Cache-Control | Max-Age | Invalidation |
-|---|---|---|---|
-| Hashed static assets | `public, immutable` | 1 year | URL change (new hash) |
-| Unhashed static assets | `public, must-revalidate` | 1 hour | ETag comparison |
-| Per-user API data | `private, stale-while-revalidate` | 60s | Time-based + SWR |
-| Shared API data | `public, s-maxage` | 5 min | CDN purge on write |
-| Real-time data | `no-store` | 0 | N/A |
-| Auth tokens | `no-store, no-cache` | 0 | N/A |
+| Content Type           | Cache-Control                     | Max-Age | Invalidation          |
+| ---------------------- | --------------------------------- | ------- | --------------------- |
+| Hashed static assets   | `public, immutable`               | 1 year  | URL change (new hash) |
+| Unhashed static assets | `public, must-revalidate`         | 1 hour  | ETag comparison       |
+| Per-user API data      | `private, stale-while-revalidate` | 60s     | Time-based + SWR      |
+| Shared API data        | `public, s-maxage`                | 5 min   | CDN purge on write    |
+| Real-time data         | `no-store`                        | 0       | N/A                   |
+| Auth tokens            | `no-store, no-cache`              | 0       | N/A                   |
 
 ---
 
@@ -103,36 +103,30 @@ The `stale-while-revalidate` directive is the most underused caching feature. It
 An in-process cache—a Map or LRU cache in your application's memory—has zero network latency. For data that's read frequently and changes infrequently, this is faster than Redis by 100-1000x.
 
 ```typescript
-import { LRUCache } from 'lru-cache';
+import { LRUCache } from "lru-cache";
 
 const configCache = new LRUCache<string, TenantConfig>({
-  max: 10000,        // Maximum 10K entries
-  ttl: 1000 * 60 * 5, // 5-minute TTL
-  updateAgeOnGet: true, // Reset TTL on read
+	max: 10000, // Maximum 10K entries
+	ttl: 1000 * 60 * 5, // 5-minute TTL
+	updateAgeOnGet: true, // Reset TTL on read
 });
 
 async function getTenantConfig(tenantId: string): Promise<TenantConfig> {
-  const cached = configCache.get(tenantId);
-  if (cached) return cached;
+	const cached = configCache.get(tenantId);
+	if (cached) return cached;
 
-  const config = await db.query(
-    'SELECT * FROM tenant_configs WHERE tenant_id = $1',
-    [tenantId]
-  );
+	const config = await db.query("SELECT * FROM tenant_configs WHERE tenant_id = $1", [tenantId]);
 
-  configCache.set(tenantId, config);
-  return config;
+	configCache.set(tenantId, config);
+	return config;
 }
 
 // Invalidate on write
 async function updateTenantConfig(tenantId: string, updates: Partial<TenantConfig>) {
-  await db.query(
-    'UPDATE tenant_configs SET config = $1 WHERE tenant_id = $2',
-    [updates, tenantId]
-  );
+	await db.query("UPDATE tenant_configs SET config = $1 WHERE tenant_id = $2", [updates, tenantId]);
 
-  // Immediate invalidation — next read hits the database
-  configCache.delete(tenantId);
+	// Immediate invalidation — next read hits the database
+	configCache.delete(tenantId);
 }
 ```
 
@@ -142,11 +136,11 @@ async function updateTenantConfig(tenantId: string, updates: Partial<TenantConfi
 
 **Solutions by complexity:**
 
-| Approach | Consistency | Complexity |
-|---|---|---|
-| **Short TTL (30-60s)** | Eventually consistent | None |
-| **Redis pub/sub invalidation** | Near-instant | Medium |
-| **Sticky sessions** | Strong for same user | Low |
+| Approach                       | Consistency           | Complexity |
+| ------------------------------ | --------------------- | ---------- |
+| **Short TTL (30-60s)**         | Eventually consistent | None       |
+| **Redis pub/sub invalidation** | Near-instant          | Medium     |
+| **Sticky sessions**            | Strong for same user  | Low        |
 
 For most SaaS applications, a 30-60 second TTL is sufficient. Users don't expect real-time updates on configuration pages—they expect changes to take effect "soon."
 
@@ -163,12 +157,12 @@ Redis is an excellent tool for specific use cases. It's a terrible general-purpo
 ```typescript
 // Session store with Redis — user state across instances
 async function getSession(sessionId: string): Promise<Session | null> {
-  const data = await redis.get(`session:${sessionId}`);
-  if (!data) return null;
+	const data = await redis.get(`session:${sessionId}`);
+	if (!data) return null;
 
-  // Extend session TTL on every access
-  await redis.expire(`session:${sessionId}`, 3600);
-  return JSON.parse(data);
+	// Extend session TTL on every access
+	await redis.expire(`session:${sessionId}`, 3600);
+	return JSON.parse(data);
 }
 ```
 
@@ -177,27 +171,27 @@ async function getSession(sessionId: string): Promise<Session | null> {
 ```typescript
 // Sliding window rate limiter
 async function checkRateLimit(
-  userId: string,
-  limit: number,
-  windowMs: number
+	userId: string,
+	limit: number,
+	windowMs: number
 ): Promise<{ allowed: boolean; remaining: number }> {
-  const key = `rate:${userId}`;
-  const now = Date.now();
-  const windowStart = now - windowMs;
+	const key = `rate:${userId}`;
+	const now = Date.now();
+	const windowStart = now - windowMs;
 
-  const pipeline = redis.pipeline();
-  pipeline.zremrangebyscore(key, 0, windowStart);
-  pipeline.zadd(key, now, `${now}`);
-  pipeline.zcard(key);
-  pipeline.expire(key, Math.ceil(windowMs / 1000));
+	const pipeline = redis.pipeline();
+	pipeline.zremrangebyscore(key, 0, windowStart);
+	pipeline.zadd(key, now, `${now}`);
+	pipeline.zcard(key);
+	pipeline.expire(key, Math.ceil(windowMs / 1000));
 
-  const results = await pipeline.exec();
-  const count = results[2][1] as number;
+	const results = await pipeline.exec();
+	const count = results[2][1] as number;
 
-  return {
-    allowed: count <= limit,
-    remaining: Math.max(0, limit - count),
-  };
+	return {
+		allowed: count <= limit,
+		remaining: Math.max(0, limit - count),
+	};
 }
 ```
 
@@ -206,16 +200,19 @@ async function checkRateLimit(
 ```typescript
 // Publisher: invalidate cache across all instances
 async function invalidateCache(key: string) {
-  await redis.publish('cache-invalidation', JSON.stringify({
-    key,
-    timestamp: Date.now(),
-  }));
+	await redis.publish(
+		"cache-invalidation",
+		JSON.stringify({
+			key,
+			timestamp: Date.now(),
+		})
+	);
 }
 
 // Subscriber: each application instance listens
-redis.subscribe('cache-invalidation', (message) => {
-  const { key } = JSON.parse(message);
-  localCache.delete(key);
+redis.subscribe("cache-invalidation", (message) => {
+	const { key } = JSON.parse(message);
+	localCache.delete(key);
 });
 ```
 
@@ -226,24 +223,27 @@ redis.subscribe('cache-invalidation', (message) => {
 ```typescript
 // BAD: caching a complex query result in Redis
 async function getOrderSummary(tenantId: string) {
-  const cached = await redis.get(`orders:summary:${tenantId}`);
-  if (cached) return JSON.parse(cached);
+	const cached = await redis.get(`orders:summary:${tenantId}`);
+	if (cached) return JSON.parse(cached);
 
-  const summary = await db.query(`
+	const summary = await db.query(
+		`
     SELECT status, COUNT(*), SUM(total)
     FROM orders WHERE tenant_id = $1
     GROUP BY status
-  `, [tenantId]);
+  `,
+		[tenantId]
+	);
 
-  // How do you invalidate this?
-  // - When an order is created?
-  // - When an order status changes?
-  // - When an order total is modified?
-  // - When an order is deleted?
-  // Every write to the orders table potentially invalidates this cache.
-  await redis.set(`orders:summary:${tenantId}`, JSON.stringify(summary), 'EX', 300);
+	// How do you invalidate this?
+	// - When an order is created?
+	// - When an order status changes?
+	// - When an order total is modified?
+	// - When an order is deleted?
+	// Every write to the orders table potentially invalidates this cache.
+	await redis.set(`orders:summary:${tenantId}`, JSON.stringify(summary), "EX", 300);
 
-  return summary;
+	return summary;
 }
 ```
 
@@ -263,16 +263,17 @@ Every write updates both the database and the cache atomically. The cache is alw
 
 ```typescript
 async function updateUser(userId: string, data: UserUpdate) {
-  // Update database
-  const user = await db.query(
-    'UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *',
-    [data.name, data.email, userId]
-  );
+	// Update database
+	const user = await db.query("UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *", [
+		data.name,
+		data.email,
+		userId,
+	]);
 
-  // Update cache with fresh data
-  await cache.set(`user:${userId}`, user);
+	// Update cache with fresh data
+	await cache.set(`user:${userId}`, user);
 
-  return user;
+	return user;
 }
 ```
 
@@ -291,30 +292,28 @@ For multi-layer caches, use database triggers or application events to invalidat
 ```typescript
 // Event-based cache invalidation across all layers
 class CacheInvalidator {
-  private layers: CacheLayer[];
+	private layers: CacheLayer[];
 
-  constructor(layers: CacheLayer[]) {
-    this.layers = layers;
-  }
+	constructor(layers: CacheLayer[]) {
+		this.layers = layers;
+	}
 
-  async invalidate(pattern: string) {
-    await Promise.all(
-      this.layers.map((layer) => layer.invalidate(pattern))
-    );
-  }
+	async invalidate(pattern: string) {
+		await Promise.all(this.layers.map((layer) => layer.invalidate(pattern)));
+	}
 }
 
 // Usage
 const invalidator = new CacheInvalidator([
-  new LocalCacheLayer(localLRU),
-  new RedisCacheLayer(redis),
-  new CDNCacheLayer(cloudflareApi),
+	new LocalCacheLayer(localLRU),
+	new RedisCacheLayer(redis),
+	new CDNCacheLayer(cloudflareApi),
 ]);
 
 // After any order modification
-orderEvents.on('order.updated', async (orderId, tenantId) => {
-  await invalidator.invalidate(`order:${orderId}`);
-  await invalidator.invalidate(`orders:list:${tenantId}`);
+orderEvents.on("order.updated", async (orderId, tenantId) => {
+	await invalidator.invalidate(`order:${orderId}`);
+	await invalidator.invalidate(`orders:list:${tenantId}`);
 });
 ```
 
@@ -332,19 +331,19 @@ let hits = 0;
 let misses = 0;
 
 function getCached(key: string) {
-  const value = cache.get(key);
-  if (value) {
-    hits++;
-    return value;
-  }
-  misses++;
-  return null;
+	const value = cache.get(key);
+	if (value) {
+		hits++;
+		return value;
+	}
+	misses++;
+	return null;
 }
 
 // Expose as a metric
 function getCacheHitRate(): number {
-  const total = hits + misses;
-  return total === 0 ? 0 : hits / total;
+	const total = hits + misses;
+	return total === 0 ? 0 : hits / total;
 }
 ```
 

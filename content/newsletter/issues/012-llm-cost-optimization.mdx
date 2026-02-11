@@ -57,6 +57,7 @@ Embed incoming queries, compare against a cache of recent query embeddings, and 
 Most prompts are bloated. System prompts stuffed with "you are a helpful assistant" boilerplate. Context windows filled with irrelevant retrieved documents. Few-shot examples that could be distilled into clear instructions.
 
 Concrete techniques:
+
 - Strip system prompt to essential instructions. Every token costs money.
 - Limit retrieved context to top 3-5 most relevant chunks, not 10-20.
 - Use structured output (JSON mode) to reduce response token waste.
@@ -65,6 +66,7 @@ Concrete techniques:
 The client I mentioned — $47K to $3,200 — applied all three. Tiered routing handled the bulk. Semantic caching caught repeated patterns. Prompt optimization shrank every request. The compounding effect is what makes the 14x reduction possible.
 
 **When to Apply This:**
+
 - LLM API costs exceeding $1K/month or growing faster than revenue
 - Approaching production scale where per-request cost matters
 - Any feature sending all requests to a single frontier model

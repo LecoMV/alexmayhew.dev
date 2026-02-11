@@ -26,10 +26,10 @@ The first architectural decision: where does subscription state live? The answer
 
 Why this matters:
 
-| Approach | Risk |
-|---|---|
+| Approach                     | Risk                                                                                                                                                        |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Your DB is authoritative** | Drift between your DB and Stripe. Customer pays but your app doesn't reflect the plan. Or worse: customer's payment fails but your app still grants access. |
-| **Stripe is authoritative** | Your DB might be stale by seconds, but Stripe's state is always correct. Webhooks keep you in sync. |
+| **Stripe is authoritative**  | Your DB might be stale by seconds, but Stripe's state is always correct. Webhooks keep you in sync.                                                         |
 
 ```typescript
 // Database schema: cache of Stripe state
@@ -79,75 +79,70 @@ customer.subscription.updated (status: trialing)
 ### Webhook Handler
 
 ```typescript
-import Stripe from 'stripe';
+import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export async function handleWebhook(request: Request): Promise<Response> {
-  const body = await request.text();
-  const signature = request.headers.get('stripe-signature');
+	const body = await request.text();
+	const signature = request.headers.get("stripe-signature");
 
-  let event: Stripe.Event;
-  try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      signature!,
-      process.env.STRIPE_WEBHOOK_SECRET!
-    );
-  } catch (err) {
-    return new Response('Invalid signature', { status: 400 });
-  }
+	let event: Stripe.Event;
+	try {
+		event = stripe.webhooks.constructEvent(body, signature!, process.env.STRIPE_WEBHOOK_SECRET!);
+	} catch (err) {
+		return new Response("Invalid signature", { status: 400 });
+	}
 
-  // Idempotency: check if we've already processed this event
-  const processed = await db.query(
-    'SELECT id FROM processed_events WHERE stripe_event_id = $1',
-    [event.id]
-  );
+	// Idempotency: check if we've already processed this event
+	const processed = await db.query("SELECT id FROM processed_events WHERE stripe_event_id = $1", [
+		event.id,
+	]);
 
-  if (processed.rowCount > 0) {
-    return new Response('Already processed', { status: 200 });
-  }
+	if (processed.rowCount > 0) {
+		return new Response("Already processed", { status: 200 });
+	}
 
-  try {
-    await processEvent(event);
+	try {
+		await processEvent(event);
 
-    // Record successful processing
-    await db.query(
-      'INSERT INTO processed_events (stripe_event_id, event_type, processed_at) VALUES ($1, $2, NOW())',
-      [event.id, event.type]
-    );
+		// Record successful processing
+		await db.query(
+			"INSERT INTO processed_events (stripe_event_id, event_type, processed_at) VALUES ($1, $2, NOW())",
+			[event.id, event.type]
+		);
 
-    return new Response('OK', { status: 200 });
-  } catch (err) {
-    // Return 500 so Stripe retries
-    console.error('Webhook processing failed:', err);
-    return new Response('Processing failed', { status: 500 });
-  }
+		return new Response("OK", { status: 200 });
+	} catch (err) {
+		// Return 500 so Stripe retries
+		console.error("Webhook processing failed:", err);
+		return new Response("Processing failed", { status: 500 });
+	}
 }
 
 async function processEvent(event: Stripe.Event) {
-  switch (event.type) {
-    case 'customer.subscription.created':
-    case 'customer.subscription.updated':
-      await syncSubscription(event.data.object as Stripe.Subscription);
-      break;
+	switch (event.type) {
+		case "customer.subscription.created":
+		case "customer.subscription.updated":
+			await syncSubscription(event.data.object as Stripe.Subscription);
+			break;
 
-    case 'customer.subscription.deleted':
-      await handleCancellation(event.data.object as Stripe.Subscription);
-      break;
+		case "customer.subscription.deleted":
+			await handleCancellation(event.data.object as Stripe.Subscription);
+			break;
 
-    case 'invoice.paid':
-      await handleSuccessfulPayment(event.data.object as Stripe.Invoice);
-      break;
+		case "invoice.paid":
+			await handleSuccessfulPayment(event.data.object as Stripe.Invoice);
+			break;
 
-    case 'invoice.payment_failed':
-      await handleFailedPayment(event.data.object as Stripe.Invoice);
-      break;
+		case "invoice.payment_failed":
+			await handleFailedPayment(event.data.object as Stripe.Invoice);
+			break;
 
-    case 'customer.subscription.trial_will_end':
-      await sendTrialEndingNotification(event.data.object as Stripe.Subscription);
-      break;
-  }
+		case "customer.subscription.trial_will_end":
+			await sendTrialEndingNotification(event.data.object as Stripe.Subscription);
+			break;
+	}
 }
 ```
 
@@ -155,7 +150,8 @@ async function processEvent(event: Stripe.Event) {
 
 ```typescript
 async function syncSubscription(subscription: Stripe.Subscription) {
-  await db.query(`
+	await db.query(
+		`
     INSERT INTO subscriptions (
       stripe_subscription_id, stripe_customer_id, tenant_id,
       status, plan_id, current_period_start, current_period_end,
@@ -168,23 +164,25 @@ async function syncSubscription(subscription: Stripe.Subscription) {
       current_period_end = EXCLUDED.current_period_end,
       cancel_at_period_end = EXCLUDED.cancel_at_period_end,
       synced_at = NOW()
-  `, [
-    subscription.id,
-    subscription.customer,
-    await getTenantByStripeCustomer(subscription.customer as string),
-    subscription.status,
-    subscription.items.data[0].price.id,
-    new Date(subscription.current_period_start * 1000),
-    new Date(subscription.current_period_end * 1000),
-    subscription.cancel_at_period_end,
-  ]);
+  `,
+		[
+			subscription.id,
+			subscription.customer,
+			await getTenantByStripeCustomer(subscription.customer as string),
+			subscription.status,
+			subscription.items.data[0].price.id,
+			new Date(subscription.current_period_start * 1000),
+			new Date(subscription.current_period_end * 1000),
+			subscription.cancel_at_period_end,
+		]
+	);
 
-  // Update tenant's feature flags based on plan
-  await updateTenantEntitlements(
-    await getTenantByStripeCustomer(subscription.customer as string),
-    subscription.items.data[0].price.id,
-    subscription.status
-  );
+	// Update tenant's feature flags based on plan
+	await updateTenantEntitlements(
+		await getTenantByStripeCustomer(subscription.customer as string),
+		subscription.items.data[0].price.id,
+		subscription.status
+	);
 }
 ```
 
@@ -197,45 +195,50 @@ The subscription plan determines what features the customer can access. This map
 ```typescript
 // Plan → entitlements mapping
 const PLAN_ENTITLEMENTS: Record<string, Entitlements> = {
-  'price_starter_monthly': {
-    maxUsers: 5,
-    maxProjects: 10,
-    features: ['basic_analytics', 'email_support'],
-    apiRateLimit: 100, // requests per minute
-    storageGB: 5,
-  },
-  'price_growth_monthly': {
-    maxUsers: 25,
-    maxProjects: 50,
-    features: ['basic_analytics', 'advanced_analytics', 'priority_support', 'api_access'],
-    apiRateLimit: 1000,
-    storageGB: 50,
-  },
-  'price_enterprise_monthly': {
-    maxUsers: -1, // unlimited
-    maxProjects: -1,
-    features: ['basic_analytics', 'advanced_analytics', 'priority_support', 'api_access', 'sso', 'audit_log', 'custom_branding'],
-    apiRateLimit: 10000,
-    storageGB: 500,
-  },
+	price_starter_monthly: {
+		maxUsers: 5,
+		maxProjects: 10,
+		features: ["basic_analytics", "email_support"],
+		apiRateLimit: 100, // requests per minute
+		storageGB: 5,
+	},
+	price_growth_monthly: {
+		maxUsers: 25,
+		maxProjects: 50,
+		features: ["basic_analytics", "advanced_analytics", "priority_support", "api_access"],
+		apiRateLimit: 1000,
+		storageGB: 50,
+	},
+	price_enterprise_monthly: {
+		maxUsers: -1, // unlimited
+		maxProjects: -1,
+		features: [
+			"basic_analytics",
+			"advanced_analytics",
+			"priority_support",
+			"api_access",
+			"sso",
+			"audit_log",
+			"custom_branding",
+		],
+		apiRateLimit: 10000,
+		storageGB: 500,
+	},
 };
 
 // Check entitlement at the feature boundary
-async function checkEntitlement(
-  tenantId: string,
-  feature: string
-): Promise<boolean> {
-  const subscription = await db.query(
-    'SELECT plan_id, status FROM subscriptions WHERE tenant_id = $1',
-    [tenantId]
-  );
+async function checkEntitlement(tenantId: string, feature: string): Promise<boolean> {
+	const subscription = await db.query(
+		"SELECT plan_id, status FROM subscriptions WHERE tenant_id = $1",
+		[tenantId]
+	);
 
-  if (!subscription.rows[0] || subscription.rows[0].status !== 'active') {
-    return false;
-  }
+	if (!subscription.rows[0] || subscription.rows[0].status !== "active") {
+		return false;
+	}
 
-  const entitlements = PLAN_ENTITLEMENTS[subscription.rows[0].plan_id];
-  return entitlements?.features.includes(feature) ?? false;
+	const entitlements = PLAN_ENTITLEMENTS[subscription.rows[0].plan_id];
+	return entitlements?.features.includes(feature) ?? false;
 }
 ```
 
@@ -251,25 +254,27 @@ Customer upgrades from Starter ($29/mo) to Growth ($99/mo) on day 15 of a 30-day
 
 ```typescript
 async function upgradeSubscription(
-  tenantId: string,
-  newPriceId: string
+	tenantId: string,
+	newPriceId: string
 ): Promise<Stripe.Subscription> {
-  const subscription = await getActiveSubscription(tenantId);
+	const subscription = await getActiveSubscription(tenantId);
 
-  const updated = await stripe.subscriptions.update(subscription.stripe_subscription_id, {
-    items: [{
-      id: subscription.items.data[0].id,
-      price: newPriceId,
-    }],
-    proration_behavior: 'create_prorations',
-    payment_behavior: 'error_if_incomplete',
-  });
+	const updated = await stripe.subscriptions.update(subscription.stripe_subscription_id, {
+		items: [
+			{
+				id: subscription.items.data[0].id,
+				price: newPriceId,
+			},
+		],
+		proration_behavior: "create_prorations",
+		payment_behavior: "error_if_incomplete",
+	});
 
-  // Don't wait for webhook — update entitlements immediately
-  // The webhook will confirm the state later
-  await updateTenantEntitlements(tenantId, newPriceId, 'active');
+	// Don't wait for webhook — update entitlements immediately
+	// The webhook will confirm the state later
+	await updateTenantEntitlements(tenantId, newPriceId, "active");
 
-  return updated;
+	return updated;
 }
 ```
 
@@ -281,30 +286,30 @@ Stripe's Smart Retries attempt up to 4 payment retries over 3-4 weeks. During th
 
 The answer depends on your business model:
 
-| Strategy | Behavior | Revenue Impact |
-|---|---|---|
-| **Immediate restriction** | Lock features on first failure | Low revenue leakage, higher churn |
-| **Grace period (7 days)** | Full access for 7 days, then restrict | Balanced |
-| **Full access until canceled** | No restriction during retries | Higher revenue leakage, lower churn |
+| Strategy                       | Behavior                              | Revenue Impact                      |
+| ------------------------------ | ------------------------------------- | ----------------------------------- |
+| **Immediate restriction**      | Lock features on first failure        | Low revenue leakage, higher churn   |
+| **Grace period (7 days)**      | Full access for 7 days, then restrict | Balanced                            |
+| **Full access until canceled** | No restriction during retries         | Higher revenue leakage, lower churn |
 
 Most B2B SaaS companies use a 7-day grace period:
 
 ```typescript
 async function checkAccess(tenantId: string): Promise<AccessLevel> {
-  const sub = await getSubscription(tenantId);
+	const sub = await getSubscription(tenantId);
 
-  if (sub.status === 'active' || sub.status === 'trialing') {
-    return 'full';
-  }
+	if (sub.status === "active" || sub.status === "trialing") {
+		return "full";
+	}
 
-  if (sub.status === 'past_due') {
-    const daysPastDue = differenceInDays(new Date(), sub.current_period_end);
-    if (daysPastDue <= 7) return 'full';
-    if (daysPastDue <= 14) return 'read_only';
-    return 'locked';
-  }
+	if (sub.status === "past_due") {
+		const daysPastDue = differenceInDays(new Date(), sub.current_period_end);
+		if (daysPastDue <= 7) return "full";
+		if (daysPastDue <= 14) return "read_only";
+		return "locked";
+	}
 
-  return 'locked';
+	return "locked";
 }
 ```
 
@@ -317,25 +322,25 @@ Run a reconciliation job daily:
 ```typescript
 // Daily reconciliation: compare your DB with Stripe's truth
 async function reconcileSubscriptions() {
-  const localSubs = await db.query(
-    "SELECT stripe_subscription_id, status, plan_id FROM subscriptions WHERE status != 'canceled'"
-  );
+	const localSubs = await db.query(
+		"SELECT stripe_subscription_id, status, plan_id FROM subscriptions WHERE status != 'canceled'"
+	);
 
-  for (const local of localSubs.rows) {
-    const stripeSub = await stripe.subscriptions.retrieve(local.stripe_subscription_id);
+	for (const local of localSubs.rows) {
+		const stripeSub = await stripe.subscriptions.retrieve(local.stripe_subscription_id);
 
-    if (stripeSub.status !== local.status || stripeSub.items.data[0]?.price.id !== local.plan_id) {
-      console.warn('Subscription drift detected', {
-        subscriptionId: local.stripe_subscription_id,
-        localStatus: local.status,
-        stripeStatus: stripeSub.status,
-        localPlan: local.plan_id,
-        stripePlan: stripeSub.items.data[0]?.price.id,
-      });
+		if (stripeSub.status !== local.status || stripeSub.items.data[0]?.price.id !== local.plan_id) {
+			console.warn("Subscription drift detected", {
+				subscriptionId: local.stripe_subscription_id,
+				localStatus: local.status,
+				stripeStatus: stripeSub.status,
+				localPlan: local.plan_id,
+				stripePlan: stripeSub.items.data[0]?.price.id,
+			});
 
-      await syncSubscription(stripeSub);
-    }
-  }
+			await syncSubscription(stripeSub);
+		}
+	}
 }
 ```
 
@@ -349,36 +354,39 @@ For usage-based pricing (API calls, storage, compute time), report usage to Stri
 
 ```typescript
 // Report usage to Stripe
-async function reportUsage(
-  subscriptionItemId: string,
-  quantity: number,
-  timestamp: number
-) {
-  await stripe.subscriptionItems.createUsageRecord(subscriptionItemId, {
-    quantity,
-    timestamp,
-    action: 'increment', // or 'set' for gauge metrics
-  });
+async function reportUsage(subscriptionItemId: string, quantity: number, timestamp: number) {
+	await stripe.subscriptionItems.createUsageRecord(subscriptionItemId, {
+		quantity,
+		timestamp,
+		action: "increment", // or 'set' for gauge metrics
+	});
 }
 
 // Batch usage reporting (more efficient)
 async function reportDailyUsage(tenantId: string) {
-  const usage = await db.query(`
+	const usage = await db.query(
+		`
     SELECT COUNT(*) as api_calls, SUM(storage_bytes) as storage
     FROM usage_events
     WHERE tenant_id = $1 AND created_at >= CURRENT_DATE
-  `, [tenantId]);
+  `,
+		[tenantId]
+	);
 
-  const subscription = await getSubscription(tenantId);
-  const apiItem = subscription.items.find((i) => i.price.id.includes('api'));
-  const storageItem = subscription.items.find((i) => i.price.id.includes('storage'));
+	const subscription = await getSubscription(tenantId);
+	const apiItem = subscription.items.find((i) => i.price.id.includes("api"));
+	const storageItem = subscription.items.find((i) => i.price.id.includes("storage"));
 
-  if (apiItem) {
-    await reportUsage(apiItem.id, usage.api_calls, Math.floor(Date.now() / 1000));
-  }
-  if (storageItem) {
-    await reportUsage(storageItem.id, Math.ceil(usage.storage / (1024 * 1024 * 1024)), Math.floor(Date.now() / 1000));
-  }
+	if (apiItem) {
+		await reportUsage(apiItem.id, usage.api_calls, Math.floor(Date.now() / 1000));
+	}
+	if (storageItem) {
+		await reportUsage(
+			storageItem.id,
+			Math.ceil(usage.storage / (1024 * 1024 * 1024)),
+			Math.floor(Date.now() / 1000)
+		);
+	}
 }
 ```
 
@@ -390,35 +398,35 @@ Billing code needs more test coverage than any other part of your application. A
 
 ```typescript
 // Test every state transition
-describe('Subscription Lifecycle', () => {
-  it('grants access when subscription is active', async () => {
-    await createSubscription({ status: 'active', plan: 'growth' });
-    expect(await checkAccess(tenantId)).toBe('full');
-    expect(await checkEntitlement(tenantId, 'advanced_analytics')).toBe(true);
-  });
+describe("Subscription Lifecycle", () => {
+	it("grants access when subscription is active", async () => {
+		await createSubscription({ status: "active", plan: "growth" });
+		expect(await checkAccess(tenantId)).toBe("full");
+		expect(await checkEntitlement(tenantId, "advanced_analytics")).toBe(true);
+	});
 
-  it('maintains access during 7-day grace period', async () => {
-    await createSubscription({ status: 'past_due', periodEnd: daysAgo(5) });
-    expect(await checkAccess(tenantId)).toBe('full');
-  });
+	it("maintains access during 7-day grace period", async () => {
+		await createSubscription({ status: "past_due", periodEnd: daysAgo(5) });
+		expect(await checkAccess(tenantId)).toBe("full");
+	});
 
-  it('restricts to read-only after 7-day grace period', async () => {
-    await createSubscription({ status: 'past_due', periodEnd: daysAgo(10) });
-    expect(await checkAccess(tenantId)).toBe('read_only');
-  });
+	it("restricts to read-only after 7-day grace period", async () => {
+		await createSubscription({ status: "past_due", periodEnd: daysAgo(10) });
+		expect(await checkAccess(tenantId)).toBe("read_only");
+	});
 
-  it('locks account after 14 days past due', async () => {
-    await createSubscription({ status: 'past_due', periodEnd: daysAgo(15) });
-    expect(await checkAccess(tenantId)).toBe('locked');
-  });
+	it("locks account after 14 days past due", async () => {
+		await createSubscription({ status: "past_due", periodEnd: daysAgo(15) });
+		expect(await checkAccess(tenantId)).toBe("locked");
+	});
 
-  it('handles upgrade proration correctly', async () => {
-    await createSubscription({ status: 'active', plan: 'starter' });
-    expect(await checkEntitlement(tenantId, 'api_access')).toBe(false);
+	it("handles upgrade proration correctly", async () => {
+		await createSubscription({ status: "active", plan: "starter" });
+		expect(await checkEntitlement(tenantId, "api_access")).toBe(false);
 
-    await upgradeSubscription(tenantId, 'price_growth_monthly');
-    expect(await checkEntitlement(tenantId, 'api_access')).toBe(true);
-  });
+		await upgradeSubscription(tenantId, "price_growth_monthly");
+		expect(await checkEntitlement(tenantId, "api_access")).toBe(true);
+	});
 });
 ```
 

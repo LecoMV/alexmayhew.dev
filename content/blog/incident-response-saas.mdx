@@ -34,12 +34,12 @@ Incident response is an organizational problem, not a technical one.
 
 Not every incident deserves the same response. A cosmetic CSS bug on the marketing page and a complete authentication outage require fundamentally different responses.
 
-| Severity | Definition | Response | Notification | SLA |
-|---|---|---|---|---|
-| **SEV-1** | Total service outage or data loss risk | All hands on deck | CEO, all engineers, customers | 5 min to start mitigation |
-| **SEV-2** | Major feature degraded, affecting >20% of users | On-call + relevant team | Engineering lead, support | 15 min to start mitigation |
-| **SEV-3** | Minor feature impact, workaround available | On-call during business hours | Team Slack channel | 4 hours to start mitigation |
-| **SEV-4** | Cosmetic or non-user-facing issue | Normal sprint work | Ticket created | Next sprint |
+| Severity  | Definition                                      | Response                      | Notification                  | SLA                         |
+| --------- | ----------------------------------------------- | ----------------------------- | ----------------------------- | --------------------------- |
+| **SEV-1** | Total service outage or data loss risk          | All hands on deck             | CEO, all engineers, customers | 5 min to start mitigation   |
+| **SEV-2** | Major feature degraded, affecting >20% of users | On-call + relevant team       | Engineering lead, support     | 15 min to start mitigation  |
+| **SEV-3** | Minor feature impact, workaround available      | On-call during business hours | Team Slack channel            | 4 hours to start mitigation |
+| **SEV-4** | Cosmetic or non-user-facing issue               | Normal sprint work            | Ticket created                | Next sprint                 |
 
 **The classification rule:** When in doubt, escalate. A SEV-2 that turns out to be a SEV-3 costs you 30 minutes of extra attention. A SEV-3 that's actually a SEV-1 costs you hours of delayed response while customers churn.
 
@@ -52,6 +52,7 @@ Not every incident deserves the same response. A cosmetic CSS bug on the marketi
 The IC doesn't fix the problem. The IC coordinates the response. This distinction is critical—the best debugger on the team should be debugging, not managing communications.
 
 **IC responsibilities:**
+
 - Declare the incident and assign severity
 - Open the incident channel (Slack, Teams, whatever your team uses)
 - Assign roles (who investigates, who communicates)
@@ -68,6 +69,7 @@ The engineer (or engineers) actively investigating and fixing the issue. They co
 ### Communications Lead
 
 Responsible for all external communication during the incident:
+
 - Customer-facing status page updates
 - Internal stakeholder updates (CEO, support, sales)
 - Drafting the initial postmortem summary
@@ -92,6 +94,7 @@ Responsible for all external communication during the incident:
 **Status Page:** [link]
 
 **Timeline:**
+
 - [HH:MM] Issue detected via [monitoring/customer report/alert]
 - [HH:MM] Incident declared, severity assigned
 ```
@@ -122,13 +125,13 @@ curl -s https://yoursaas.com/api/health | jq
 
 **Restore first, investigate later.** This is the most important principle in incident response.
 
-| Mitigation Option | Time to Restore | Risk |
-|---|---|---|
-| **Revert last deploy** | 2-5 min | Low (proven previous state) |
-| **Feature flag disable** | 30 sec | None (isolated change) |
-| **Failover to backup** | 5-15 min | Medium (backup freshness) |
-| **Scale up resources** | 5-10 min | Low (more capacity) |
-| **Degraded mode** | 1-5 min | Low (reduced functionality) |
+| Mitigation Option        | Time to Restore | Risk                        |
+| ------------------------ | --------------- | --------------------------- |
+| **Revert last deploy**   | 2-5 min         | Low (proven previous state) |
+| **Feature flag disable** | 30 sec          | None (isolated change)      |
+| **Failover to backup**   | 5-15 min        | Medium (backup freshness)   |
+| **Scale up resources**   | 5-10 min        | Low (more capacity)         |
+| **Degraded mode**        | 1-5 min         | Low (reduced functionality) |
 
 The IC decides which mitigation to pursue. If reverting the last deploy doesn't fix it, try the next option. Don't spend 30 minutes debugging when you could restore service in 5 minutes and debug afterward.
 
@@ -180,34 +183,41 @@ The postmortem is where teams either improve or repeat the same mistakes. The ke
 **Impact:** [number of users affected, revenue impact if measurable]
 
 ### Summary
+
 [2-3 sentences describing what happened, in plain language]
 
 ### Timeline
+
 - [HH:MM] [Event]
 - [HH:MM] [Event]
 - ...
 
 ### Root Cause
+
 [Technical explanation of what caused the incident]
 
 ### Contributing Factors
+
 - [Factor 1: e.g., "No automated rollback on error rate spike"]
 - [Factor 2: e.g., "Migration not tested against production-scale data"]
 
 ### What Went Well
+
 - [e.g., "Detection happened within 2 minutes via automated alerting"]
 - [e.g., "Customer communication started within 5 minutes"]
 
 ### What Went Poorly
+
 - [e.g., "Rollback took 15 minutes because CI pipeline was backed up"]
 - [e.g., "No runbook existed for this failure mode"]
 
 ### Action Items
-| Action | Owner | Due Date | Priority |
-|--------|-------|----------|----------|
-| Add automated rollback trigger | [name] | [date] | P1 |
-| Create runbook for [scenario] | [name] | [date] | P2 |
-| Add monitoring for [metric] | [name] | [date] | P2 |
+
+| Action                         | Owner  | Due Date | Priority |
+| ------------------------------ | ------ | -------- | -------- |
+| Add automated rollback trigger | [name] | [date]   | P1       |
+| Create runbook for [scenario]  | [name] | [date]   | P2       |
+| Add monitoring for [metric]    | [name] | [date]   | P2       |
 ```
 
 ### Postmortem Rules
@@ -223,11 +233,11 @@ The postmortem is where teams either improve or repeat the same mistakes. The ke
 
 ### Rotation Structure
 
-| Team Size | Rotation Length | On-Call Window |
-|---|---|---|
-| 3-5 engineers | 1 week per person | 24/7 (follow the sun if possible) |
-| 6-10 engineers | 1 week primary + 1 week secondary | 24/7 with secondary backup |
-| 10+ engineers | Per-service ownership | Business hours + escalation |
+| Team Size      | Rotation Length                   | On-Call Window                    |
+| -------------- | --------------------------------- | --------------------------------- |
+| 3-5 engineers  | 1 week per person                 | 24/7 (follow the sun if possible) |
+| 6-10 engineers | 1 week primary + 1 week secondary | 24/7 with secondary backup        |
+| 10+ engineers  | Per-service ownership             | Business hours + escalation       |
 
 ### On-Call Compensation
 
@@ -252,12 +262,12 @@ Track on-call burden: pages per week, MTTR, and time spent on incidents. If the 
 
 ## The Maturity Model
 
-| Level | Characteristics | MTTR | Incident Rate |
-|---|---|---|---|
-| **Level 1: Reactive** | No process, hero debugging | 2-4 hours | High |
-| **Level 2: Defined** | Severity levels, IC role, postmortems | 30-60 min | Medium |
-| **Level 3: Proactive** | Error budgets, automated rollbacks, runbooks | 10-15 min | Low |
-| **Level 4: Preventive** | Chaos engineering, pre-mortems, SLO-driven development | < 5 min | Rare |
+| Level                   | Characteristics                                        | MTTR      | Incident Rate |
+| ----------------------- | ------------------------------------------------------ | --------- | ------------- |
+| **Level 1: Reactive**   | No process, hero debugging                             | 2-4 hours | High          |
+| **Level 2: Defined**    | Severity levels, IC role, postmortems                  | 30-60 min | Medium        |
+| **Level 3: Proactive**  | Error budgets, automated rollbacks, runbooks           | 10-15 min | Low           |
+| **Level 4: Preventive** | Chaos engineering, pre-mortems, SLO-driven development | < 5 min   | Rare          |
 
 Most SaaS teams are at Level 1 or 2. Moving from Level 1 to Level 2 requires process documentation and role definition—no new tools. Moving from Level 2 to Level 3 requires monitoring investment and automation. Level 4 requires organizational commitment to reliability as a feature.
 

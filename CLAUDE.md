@@ -69,9 +69,7 @@ docs/                       # Implementation docs
 
 ## Content Architecture (Hub-and-Spoke)
 
-**Status:** ✅ Complete (2026-01-28)
-
-The blog uses a hub-and-spoke model with 5 comprehensive guide hubs and 39 spoke posts.
+5 hub guides + 39 spoke posts. Hub posts: `isHub: true`. Spoke posts: `series: "[cluster-name]"`.
 
 | Hub                                    | Series Key                | Spokes |
 | -------------------------------------- | ------------------------- | ------ |
@@ -81,15 +79,7 @@ The blog uses a hub-and-spoke model with 5 comprehensive guide hubs and 39 spoke
 | Performance Engineering Playbook       | `performance-engineering` | 8      |
 | AI-Assisted Development Guide          | `ai-development`          | 6      |
 
-**Key Features:**
-
-- Hub posts have `isHub: true` in frontmatter
-- Spoke posts have `series: "[cluster-name]"` in frontmatter
-- "Comprehensive Guides" section on /blog shows all hubs
-- Cross-cluster linking for meta-framework posts
-- All pSEO service pages link to relevant hubs
-
-See `docs/CONTENT_STATUS.md` for full content inventory and linking structure.
+See `docs/CONTENT_STATUS.md` for full inventory.
 
 ## Credentials
 
@@ -104,103 +94,39 @@ pass show claude/listmonk/admin-password  # Listmonk admin + API password
 pass show claude/resend/api-key           # Resend SMTP (used by Listmonk)
 ```
 
-## Content Repurposing Pipeline
+## Content Pipeline
 
-**n8n Webhook:** `http://localhost:5678/webhook/content-repurpose`
-
-```bash
-# Test the pipeline
-curl -X POST http://localhost:5678/webhook/content-repurpose \
-  -H "Content-Type: application/json" \
-  -d '{"title": "Post Title", "slug": "url-slug", "content": "Blog content..."}'
-```
-
-**Output:** LinkedIn carousel, Twitter thread, Newsletter section, Dev.to article
-
-See `docs/N8N_SETUP_GUIDE.md` for full setup and troubleshooting.
-
-## LLM Stack
-
-See `docs/SELF_HOSTED_LLM_GUIDE.md` for details.
-
-- **Local:** Ollama + Gemma 2 9B (RTX 3080 10GB)
-- **Cloud:** Groq API (free), Cloudflare Workers AI (free 10K neurons/day)
-- **Automation:** n8n (Podman container at localhost:5678)
+- **n8n Webhook:** `http://localhost:5678/webhook/content-repurpose` — see `docs/N8N_SETUP_GUIDE.md`
+- **LLM Stack:** Ollama + Gemma 2 9B (local), Groq API (cloud), n8n (automation) — see `docs/SELF_HOSTED_LLM_GUIDE.md`
 
 ## Content Operations
 
-**Cadence:** 2 blog posts/month (spokes) + weekly newsletter + 4 LinkedIn/week (Mon-Thu) + 3 X tweets/week (Tue-Thu) + bi-weekly Dev.to.
-**Rhythm:** Week A = blog + newsletter + social. Week B = newsletter + repurposed social. See `docs/CONTENT_OPERATIONS.md`.
+**Cadence:** 2 blog posts/month + weekly newsletter + 4 LinkedIn/week (Mon-Thu) + 3 X tweets/week (Tue-Thu) + bi-weekly Dev.to.
 
-**Start here for content work:** `docs/CONTENT_PLATFORM_REFERENCE.md` (master reference — infrastructure, brand voice, scheduling, all doc links)
+**Start here:** `docs/CONTENT_PLATFORM_REFERENCE.md` (master reference for all content work)
 
-- **Operations workflow:** `docs/CONTENT_OPERATIONS.md` (end-to-end process)
-- **Editorial calendar:** `docs/EDITORIAL_CALENDAR_2026.md` (what to write and when)
-- **Content inventory:** `docs/CONTENT_STATUS.md` (hub-and-spoke status)
-
-**Quality gates:**
-
-- Blog posts: `docs/BLOG_QUALITY_CHECKLIST.md`
-- Newsletter issues: `content/newsletter/QUALITY_CHECKLIST.md`
-- Voice reference: `docs/VOICE_GUIDE.md`
+**Quality gates:** Blog: `docs/BLOG_QUALITY_CHECKLIST.md` | Newsletter: `content/newsletter/QUALITY_CHECKLIST.md` | Voice: `docs/VOICE_GUIDE.md`
 
 ## References
 
-### Core
+**Master docs** (start here — they link to everything else):
 
+- Content: `docs/CONTENT_PLATFORM_REFERENCE.md`
 - Architecture: `docs/IMPLEMENTATION_PLAN.md`
+- Social: `docs/CROSS_PLATFORM_CONTENT_STRATEGY.md`
+- Marketing: `MARKETING_PLAN_2026.md`
 - Deployment: `docs/DEPLOYMENT.md`
-- Claude Config: `docs/CLAUDE_CODE_CONFIG.md`
-
-### Content
-
-- **Content Platform Reference:** `docs/CONTENT_PLATFORM_REFERENCE.md` (master doc — start here)
-- Content Status: `docs/CONTENT_STATUS.md` (hub-and-spoke inventory)
-- Voice Guide: `docs/VOICE_GUIDE.md` (brand voice for all content)
-- Hub Strategy: `docs/HUB_AND_SPOKE_CONTENT_STRATEGY.md`
-- Newsletter Strategy: `docs/NEWSLETTER_STRATEGY.md`
-- Listmonk Setup: `docs/LISTMONK_SETUP.md`
-
-### Marketing & Repurposing
-
-- n8n Setup: `docs/N8N_SETUP_GUIDE.md`
-- LLM Prompts: `docs/LLM_REPURPOSING_PROMPTS.md`
-- Content System: `docs/CONTENT_REPURPOSING_SYSTEM.md`
-- Implementation Roadmap: `docs/IMPLEMENTATION_ROADMAP.md`
-- Marketing Plan: `MARKETING_PLAN_2026.md`
-
-### Social Media
-
-- **Cross-Platform Strategy:** `docs/CROSS_PLATFORM_CONTENT_STRATEGY.md` (master plan — how X, LinkedIn, Dev.to work together)
-- **Social Media Playbook:** `docs/SOCIAL_MEDIA_PLAYBOOK.md` (brand voice, posting guidelines, engagement strategy)
-- **LinkedIn Reply Examples:** `docs/LINKEDIN_REPLY_EXAMPLES.md` (real examples for consistency)
-- **X/Twitter Guide:** `docs/X_TWITTER_ENGAGEMENT_GUIDE.md` (growth strategy for new account)
-
-### Technical
-
-- LLM Stack: `docs/SELF_HOSTED_LLM_GUIDE.md`
-- Copy Audit: `docs/COPY_AUDIT_REPORT.md`
 
 ## Social Media Quick Reference
 
-**Brand Voice (6 Pillars):**
-
-1. Technical Precision (specific numbers, never vague)
-2. Direct & Authoritative (clear positions, no hedging)
-3. Business Context First (every tech point ties to outcomes)
-4. Experienced Perspective ("I've advised...", "I've seen...")
-5. Dense Information (no filler)
-6. Contrarian When Warranted (backed by evidence)
+**Brand Voice:** Technical Precision, Direct & Authoritative, Business Context First, Experienced Perspective, Dense Information, Contrarian When Warranted
 
 **Never use:** Emojis, "game-changer", "perhaps/maybe", "just/simply", exclamation points
 
-**LinkedIn:** 4 posts/week (Mon-Thu, 10:00 AM EST). 1,000-1,300 chars, short paragraphs, no links in body, end with specific question.
+**LinkedIn:** 4/week Mon-Thu 10:00 AM EST. 1,000-1,300 chars, no links in body, end with question.
 
-**X/Twitter:** 3 tweets/week (Tue-Thu, 12:00 PM EST). Under 280 chars, no links, no hashtags. 70-80% engagement, 20-30% posting for new accounts. Join Communities. Replies > original posts.
+**X/Twitter:** 3/week Tue-Thu 12:00 PM EST. <280 chars, no links/hashtags. 70-80% engagement for new accounts.
 
-**Cross-Platform Rule:** Same source material, different voice per platform. Never post the same content verbatim across platforms. See `docs/CROSS_PLATFORM_CONTENT_STRATEGY.md`.
+**Cross-Platform:** Same source, different voice. Never verbatim cross-post. See `docs/CROSS_PLATFORM_CONTENT_STRATEGY.md`.
 
-**Automation:**
-
-- Postiz: `http://localhost:4007` (scheduling)
-- n8n: `http://localhost:5678` (content repurposing + welcome sequence)
+**Automation:** Postiz (`localhost:4007`), n8n (`localhost:5678`)

@@ -57,7 +57,7 @@ The fix is straightforward. Switch your alerting from average-based to percentil
 # Before: alert on average (misses tail latency)
 - alert: HighLatency
   expr: rate(http_request_duration_seconds_sum[5m])
-      / rate(http_request_duration_seconds_count[5m]) > 0.5
+    / rate(http_request_duration_seconds_count[5m]) > 0.5
 
 # After: alert on p99 (catches enterprise customer pain)
 - alert: HighTailLatency
@@ -70,6 +70,7 @@ The client who lost the contract made two changes: added p99 alerting and added 
 The key insight: average-based monitoring optimizes for the median user. Percentile-based monitoring optimizes for the users who pay you the most.
 
 **When to Apply This:**
+
 - Any SaaS product where account sizes vary by more than 10x (most B2B SaaS)
 - Teams relying on average response time as their primary performance metric
 - Products losing enterprise customers to "performance concerns" that don't show up in aggregate metrics

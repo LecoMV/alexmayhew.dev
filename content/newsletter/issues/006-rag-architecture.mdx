@@ -57,6 +57,7 @@ Two more optimizations that matter for production SaaS:
 - **Metadata filtering for multi-tenant.** Always filter by tenant ID before similarity search. Without it, Tenant A's confidential docs can leak into Tenant B's results through vector proximity.
 
 **When to Apply This:**
+
 - SaaS adding AI-powered search or Q&A over product documentation
 - Multi-tenant applications where data isolation is non-negotiable
 - Any RAG system where you haven't measured retrieval accuracy (you should)

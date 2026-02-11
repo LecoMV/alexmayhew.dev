@@ -36,11 +36,11 @@ The question isn't "is edge faster?" It's "does edge latency improvement justify
 
 ### Factor 1: User Distribution
 
-| User Distribution | Edge Benefit | Recommendation |
-|---|---|---|
-| 90%+ in one region | Minimal | Stay on origin. Use CDN for static assets. |
-| 60-90% in one region, rest scattered | Moderate | Edge for auth + reads, origin for writes |
-| Truly global (no region > 40%) | High | Full edge deployment with regional data stores |
+| User Distribution                    | Edge Benefit | Recommendation                                 |
+| ------------------------------------ | ------------ | ---------------------------------------------- |
+| 90%+ in one region                   | Minimal      | Stay on origin. Use CDN for static assets.     |
+| 60-90% in one region, rest scattered | Moderate     | Edge for auth + reads, origin for writes       |
+| Truly global (no region > 40%)       | High         | Full edge deployment with regional data stores |
 
 If your analytics show 85% of traffic from North America, deploying to the edge gives your European and Asian users a better experience—but they're 15% of your base. That's a meaningful improvement for a small audience. Whether it justifies the engineering investment depends on your growth plans.
 
@@ -48,12 +48,12 @@ If your analytics show 85% of traffic from North America, deploying to the edge 
 
 Edge compute works best for read-heavy workloads because reads can be served from cached or replicated data. Writes need to reach the source of truth.
 
-| Read:Write Ratio | Edge Architecture | Complexity |
-|---|---|---|
-| **50:1 or higher** | Cache everything at edge, async write-back | Low |
-| **10:1 to 50:1** | Edge reads with origin write-through | Medium |
-| **Below 10:1** | Origin for most requests, edge for auth only | Low |
-| **Below 3:1** | Don't use edge compute | None |
+| Read:Write Ratio   | Edge Architecture                            | Complexity |
+| ------------------ | -------------------------------------------- | ---------- |
+| **50:1 or higher** | Cache everything at edge, async write-back   | Low        |
+| **10:1 to 50:1**   | Edge reads with origin write-through         | Medium     |
+| **Below 10:1**     | Origin for most requests, edge for auth only | Low        |
+| **Below 3:1**      | Don't use edge compute                       | None       |
 
 SaaS dashboards typically have read:write ratios of 20:1 to 100:1. Users view data far more often than they modify it. This makes dashboards excellent edge candidates.
 
@@ -70,26 +70,26 @@ This is where edge architectures get complicated.
 ```typescript
 // Cloudflare Worker: read-your-writes consistency pattern
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    const userId = getUserId(request);
-    const lastWrite = await env.KV.get(`last-write:${userId}`);
+	async fetch(request: Request, env: Env): Promise<Response> {
+		const userId = getUserId(request);
+		const lastWrite = await env.KV.get(`last-write:${userId}`);
 
-    if (lastWrite && Date.now() - parseInt(lastWrite) < 5000) {
-      // User wrote within 5 seconds — route to origin for consistency
-      return fetch(request, { cf: { resolveOverride: 'origin.yoursaas.com' } });
-    }
+		if (lastWrite && Date.now() - parseInt(lastWrite) < 5000) {
+			// User wrote within 5 seconds — route to origin for consistency
+			return fetch(request, { cf: { resolveOverride: "origin.yoursaas.com" } });
+		}
 
-    // Safe to serve from edge cache
-    const cached = await env.KV.get(`data:${userId}`, { cacheTtl: 60 });
-    if (cached) return new Response(cached, { headers: { 'Content-Type': 'application/json' } });
+		// Safe to serve from edge cache
+		const cached = await env.KV.get(`data:${userId}`, { cacheTtl: 60 });
+		if (cached) return new Response(cached, { headers: { "Content-Type": "application/json" } });
 
-    // Cache miss — fetch from origin and cache at edge
-    const response = await fetch(`https://origin.yoursaas.com/api/data/${userId}`);
-    const data = await response.text();
-    await env.KV.put(`data:${userId}`, data, { expirationTtl: 300 });
+		// Cache miss — fetch from origin and cache at edge
+		const response = await fetch(`https://origin.yoursaas.com/api/data/${userId}`);
+		const data = await response.text();
+		await env.KV.put(`data:${userId}`, data, { expirationTtl: 300 });
 
-    return new Response(data, { headers: { 'Content-Type': 'application/json' } });
-  },
+		return new Response(data, { headers: { "Content-Type": "application/json" } });
+	},
 };
 ```
 
@@ -106,26 +106,26 @@ The simplest edge pattern. Move authentication and session validation to the edg
 ```typescript
 // Edge middleware: validate JWT without hitting origin
 async function authenticateAtEdge(request: Request): Promise<Response | null> {
-  const token = request.headers.get('Authorization')?.replace('Bearer ', '');
-  if (!token) return new Response('Unauthorized', { status: 401 });
+	const token = request.headers.get("Authorization")?.replace("Bearer ", "");
+	if (!token) return new Response("Unauthorized", { status: 401 });
 
-  try {
-    const payload = await verifyJWT(token, env.JWT_PUBLIC_KEY);
+	try {
+		const payload = await verifyJWT(token, env.JWT_PUBLIC_KEY);
 
-    // Add user context to request headers for origin
-    const modifiedRequest = new Request(request, {
-      headers: new Headers({
-        ...Object.fromEntries(request.headers),
-        'X-User-Id': payload.sub,
-        'X-User-Role': payload.role,
-        'X-Tenant-Id': payload.tenantId,
-      }),
-    });
+		// Add user context to request headers for origin
+		const modifiedRequest = new Request(request, {
+			headers: new Headers({
+				...Object.fromEntries(request.headers),
+				"X-User-Id": payload.sub,
+				"X-User-Role": payload.role,
+				"X-Tenant-Id": payload.tenantId,
+			}),
+		});
 
-    return fetch(modifiedRequest); // Forward to origin with user context
-  } catch {
-    return new Response('Invalid token', { status: 401 });
-  }
+		return fetch(modifiedRequest); // Forward to origin with user context
+	} catch {
+		return new Response("Invalid token", { status: 401 });
+	}
 }
 ```
 
@@ -139,54 +139,52 @@ Read requests served from edge-cached data. Write requests forwarded to origin, 
 ```typescript
 // Edge worker: read from KV, write through to origin
 async function handleRequest(request: Request, env: Env): Promise<Response> {
-  const url = new URL(request.url);
+	const url = new URL(request.url);
 
-  if (request.method === 'GET') {
-    // Try edge cache first
-    const cacheKey = `${url.pathname}:${getUserId(request)}`;
-    const cached = await env.KV.get(cacheKey);
+	if (request.method === "GET") {
+		// Try edge cache first
+		const cacheKey = `${url.pathname}:${getUserId(request)}`;
+		const cached = await env.KV.get(cacheKey);
 
-    if (cached) {
-      return new Response(cached, {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Cache': 'HIT',
-          'X-Edge-Location': request.cf?.colo || 'unknown',
-        },
-      });
-    }
+		if (cached) {
+			return new Response(cached, {
+				headers: {
+					"Content-Type": "application/json",
+					"X-Cache": "HIT",
+					"X-Edge-Location": request.cf?.colo || "unknown",
+				},
+			});
+		}
 
-    // Cache miss — fetch from origin
-    const response = await fetch(request);
-    const data = await response.text();
+		// Cache miss — fetch from origin
+		const response = await fetch(request);
+		const data = await response.text();
 
-    // Cache at edge for 5 minutes
-    await env.KV.put(cacheKey, data, { expirationTtl: 300 });
+		// Cache at edge for 5 minutes
+		await env.KV.put(cacheKey, data, { expirationTtl: 300 });
 
-    return new Response(data, {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Cache': 'MISS',
-      },
-    });
-  }
+		return new Response(data, {
+			headers: {
+				"Content-Type": "application/json",
+				"X-Cache": "MISS",
+			},
+		});
+	}
 
-  // Writes go to origin, then invalidate edge cache
-  const response = await fetch(request);
+	// Writes go to origin, then invalidate edge cache
+	const response = await fetch(request);
 
-  if (response.ok) {
-    const cacheKey = `${url.pathname}:${getUserId(request)}`;
-    await env.KV.delete(cacheKey);
+	if (response.ok) {
+		const cacheKey = `${url.pathname}:${getUserId(request)}`;
+		await env.KV.delete(cacheKey);
 
-    // Record write timestamp for read-your-writes consistency
-    await env.KV.put(
-      `last-write:${getUserId(request)}`,
-      Date.now().toString(),
-      { expirationTtl: 10 }
-    );
-  }
+		// Record write timestamp for read-your-writes consistency
+		await env.KV.put(`last-write:${getUserId(request)}`, Date.now().toString(), {
+			expirationTtl: 10,
+		});
+	}
 
-  return response;
+	return response;
 }
 ```
 
@@ -197,12 +195,12 @@ async function handleRequest(request: Request, env: Env): Promise<Response> {
 
 For truly global applications, replicate data to regional edge databases. Cloudflare D1, Turso (libSQL), and Neon's edge cache all support this pattern.
 
-| Technology | Replication | Consistency | Read Latency | Write Latency |
-|---|---|---|---|---|
-| **Cloudflare D1** | Global (automatic) | Eventual (single writer) | 1-5ms | 50-200ms (to primary) |
-| **Turso (libSQL)** | Multi-region (configured) | Eventual (single writer) | 1-10ms | 50-150ms (to primary) |
-| **Neon Edge Cache** | Read replicas | Eventual | 5-20ms | Origin round-trip |
-| **PlanetScale** | Multi-region (Vitess) | Eventual | 5-15ms | 50-100ms (to primary) |
+| Technology          | Replication               | Consistency              | Read Latency | Write Latency         |
+| ------------------- | ------------------------- | ------------------------ | ------------ | --------------------- |
+| **Cloudflare D1**   | Global (automatic)        | Eventual (single writer) | 1-5ms        | 50-200ms (to primary) |
+| **Turso (libSQL)**  | Multi-region (configured) | Eventual (single writer) | 1-10ms       | 50-150ms (to primary) |
+| **Neon Edge Cache** | Read replicas             | Eventual                 | 5-20ms       | Origin round-trip     |
+| **PlanetScale**     | Multi-region (Vitess)     | Eventual                 | 5-15ms       | 50-100ms (to primary) |
 
 The "single writer" constraint is the critical limitation. All writes route to a primary region. Reads serve from the nearest replica. Write latency doesn't improve—it's still an origin round-trip. Read latency drops to near-zero.
 
@@ -230,13 +228,13 @@ Edge computing isn't free, and the pricing models are different from traditional
 
 A SaaS with 10M monthly API requests (80% reads, 20% writes):
 
-| Component | Cloudflare Workers | Lambda@Edge | Origin Only (us-east-1) |
-|---|---|---|---|
-| Compute | $3.00/month | $6.00/month | $15.00/month (EC2) |
-| Storage/Cache | $4.50/month (KV) | $12.00/month (DynamoDB DAX) | $0 (in-process) |
-| Total | ~$7.50/month | ~$18.00/month | ~$15.00/month |
-| p50 latency (global) | 30ms | 45ms | 180ms |
-| p99 latency (global) | 80ms | 200ms | 500ms |
+| Component            | Cloudflare Workers | Lambda@Edge                 | Origin Only (us-east-1) |
+| -------------------- | ------------------ | --------------------------- | ----------------------- |
+| Compute              | $3.00/month        | $6.00/month                 | $15.00/month (EC2)      |
+| Storage/Cache        | $4.50/month (KV)   | $12.00/month (DynamoDB DAX) | $0 (in-process)         |
+| Total                | ~$7.50/month       | ~$18.00/month               | ~$15.00/month           |
+| p50 latency (global) | 30ms               | 45ms                        | 180ms                   |
+| p99 latency (global) | 80ms               | 200ms                       | 500ms                   |
 
 The cost difference is negligible. The latency difference is significant. The complexity cost is where the real tradeoff lives—and that's measured in engineering hours, not dollars.
 
@@ -253,17 +251,19 @@ When a request fails at the edge, you need to answer: Which edge location? What 
 ```typescript
 // Structured logging at the edge
 function logEdgeRequest(request: Request, response: Response, timing: number) {
-  console.log(JSON.stringify({
-    timestamp: new Date().toISOString(),
-    method: request.method,
-    path: new URL(request.url).pathname,
-    status: response.status,
-    colo: request.cf?.colo,
-    country: request.cf?.country,
-    cache: response.headers.get('X-Cache'),
-    duration_ms: timing,
-    user_id: request.headers.get('X-User-Id'),
-  }));
+	console.log(
+		JSON.stringify({
+			timestamp: new Date().toISOString(),
+			method: request.method,
+			path: new URL(request.url).pathname,
+			status: response.status,
+			colo: request.cf?.colo,
+			country: request.cf?.country,
+			cache: response.headers.get("X-Cache"),
+			duration_ms: timing,
+			user_id: request.headers.get("X-User-Id"),
+		})
+	);
 }
 ```
 

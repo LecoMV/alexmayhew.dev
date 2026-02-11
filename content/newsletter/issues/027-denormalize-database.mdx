@@ -70,6 +70,7 @@ If analytical queries compete with OLTP queries for the same resources, a denorm
 The rule I follow: normalize for writes, denormalize for reads, and keep the denormalization layer clearly separated so the source of truth is never ambiguous.
 
 **When to Apply This:**
+
 - Read-heavy applications where specific queries exceed 500ms despite proper indexing
 - SaaS dashboards serving aggregate data to hundreds of concurrent users
 - Any system where reporting queries are degrading transactional performance

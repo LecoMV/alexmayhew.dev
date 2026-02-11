@@ -35,23 +35,22 @@ Stripe sends webhooks at least once — sometimes more. Without idempotency, you
 
 ```typescript
 async function handleWebhook(event: Stripe.Event) {
-  // Check if we've already processed this event
-  const existing = await db.query(
-    'SELECT id FROM processed_events WHERE stripe_event_id = $1',
-    [event.id]
-  );
-  if (existing.rows.length > 0) return; // Already processed
+	// Check if we've already processed this event
+	const existing = await db.query("SELECT id FROM processed_events WHERE stripe_event_id = $1", [
+		event.id,
+	]);
+	if (existing.rows.length > 0) return; // Already processed
 
-  await db.transaction(async (tx) => {
-    // Process the event
-    await processEvent(tx, event);
+	await db.transaction(async (tx) => {
+		// Process the event
+		await processEvent(tx, event);
 
-    // Record that we processed it
-    await tx.query(
-      'INSERT INTO processed_events (stripe_event_id, type, processed_at) VALUES ($1, $2, NOW())',
-      [event.id, event.type]
-    );
-  });
+		// Record that we processed it
+		await tx.query(
+			"INSERT INTO processed_events (stripe_event_id, type, processed_at) VALUES ($1, $2, NOW())",
+			[event.id, event.type]
+		);
+	});
 }
 ```
 
@@ -61,9 +60,9 @@ When a customer upgrades, the default Stripe behavior creates a pending invoice.
 
 ```typescript
 const subscription = await stripe.subscriptions.update(subId, {
-  items: [{ id: itemId, price: newPriceId }],
-  payment_behavior: 'error_if_incomplete',
-  proration_behavior: 'create_prorations',
+	items: [{ id: itemId, price: newPriceId }],
+	payment_behavior: "error_if_incomplete",
+	proration_behavior: "create_prorations",
 });
 ```
 
@@ -72,6 +71,7 @@ const subscription = await stripe.subscriptions.update(subId, {
 Once per day, compare your database against Stripe's API. Every active subscription in your database should match Stripe's state. Every Stripe subscription should have a corresponding local record. Flag discrepancies for manual review.
 
 The client I audited implemented daily reconciliation and caught $8,200/month in leakage within the first week:
+
 - 23 subscriptions marked active locally but cancelled in Stripe
 - 8 subscriptions on higher tiers in Stripe than locally recorded
 - 4 failed payment retry cycles that exhausted without notification
@@ -85,6 +85,7 @@ The reconciliation job runs in 3 minutes and pays for itself every day it runs.
 - **Audit trail.** Log every billing state change with before/after values. When a customer disputes a charge, you need the full history — not just the current state.
 
 **When to Apply This:**
+
 - Any SaaS with paid subscriptions beyond basic Stripe Checkout
 - Companies where billing revenue exceeds $10K/month (leakage becomes material)
 - Teams that haven't run a Stripe-to-database reconciliation in the past 30 days

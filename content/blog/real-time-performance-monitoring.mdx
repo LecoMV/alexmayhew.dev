@@ -24,13 +24,13 @@ The median SaaS company monitors uptime and average response time. Both are near
 
 A SaaS application serving 10,000 requests per minute with a 200ms average response time sounds healthy. But the distribution matters more than the average.
 
-| Percentile | Response Time | Users Affected |
-|---|---|---|
-| p50 | 120ms | 5,000 requests — fast |
-| p75 | 250ms | 2,500 requests — acceptable |
-| p90 | 800ms | 1,000 requests — noticeable |
-| p95 | 2,500ms | 500 requests — frustrating |
-| p99 | 8,000ms | 100 requests — broken |
+| Percentile | Response Time | Users Affected              |
+| ---------- | ------------- | --------------------------- |
+| p50        | 120ms         | 5,000 requests — fast       |
+| p75        | 250ms         | 2,500 requests — acceptable |
+| p90        | 800ms         | 1,000 requests — noticeable |
+| p95        | 2,500ms       | 500 requests — frustrating  |
+| p99        | 8,000ms       | 100 requests — broken       |
 
 That "200ms average" hides 100 requests per minute that take 8 seconds. Those 100 requests aren't random—they correlate with specific user segments: enterprise customers with large datasets, users on mobile networks, or requests that hit unoptimized query paths.
 
@@ -46,27 +46,27 @@ Track p50, p95, and p99 for every endpoint. Alert on p99 because that's where pr
 
 ```typescript
 // Histogram-based latency tracking
-import { Histogram } from 'prom-client';
+import { Histogram } from "prom-client";
 
 const httpDuration = new Histogram({
-  name: 'http_request_duration_seconds',
-  help: 'Duration of HTTP requests in seconds',
-  labelNames: ['method', 'route', 'status_code'],
-  buckets: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
+	name: "http_request_duration_seconds",
+	help: "Duration of HTTP requests in seconds",
+	labelNames: ["method", "route", "status_code"],
+	buckets: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
 });
 
 // Middleware
 function metricsMiddleware(req: Request, res: Response, next: NextFunction) {
-  const end = httpDuration.startTimer({
-    method: req.method,
-    route: req.route?.path || req.path,
-  });
+	const end = httpDuration.startTimer({
+		method: req.method,
+		route: req.route?.path || req.path,
+	});
 
-  res.on('finish', () => {
-    end({ status_code: res.statusCode });
-  });
+	res.on("finish", () => {
+		end({ status_code: res.statusCode });
+	});
 
-  next();
+	next();
 }
 ```
 
@@ -78,31 +78,31 @@ Synthetic monitoring tells you what the experience could be. RUM tells you what 
 
 ```typescript
 // Client-side RUM collection
-import { onLCP, onINP, onCLS, onTTFB } from 'web-vitals';
+import { onLCP, onINP, onCLS, onTTFB } from "web-vitals";
 
 interface RUMPayload {
-  metric: string;
-  value: number;
-  page: string;
-  connection: string;
-  device: string;
-  viewport: string;
-  timestamp: number;
+	metric: string;
+	value: number;
+	page: string;
+	connection: string;
+	device: string;
+	viewport: string;
+	timestamp: number;
 }
 
 function collectRUM(metric: { name: string; value: number }) {
-  const payload: RUMPayload = {
-    metric: metric.name,
-    value: metric.value,
-    page: window.location.pathname,
-    connection: (navigator as any).connection?.effectiveType || 'unknown',
-    device: /Mobile|Android/.test(navigator.userAgent) ? 'mobile' : 'desktop',
-    viewport: `${window.innerWidth}x${window.innerHeight}`,
-    timestamp: Date.now(),
-  };
+	const payload: RUMPayload = {
+		metric: metric.name,
+		value: metric.value,
+		page: window.location.pathname,
+		connection: (navigator as any).connection?.effectiveType || "unknown",
+		device: /Mobile|Android/.test(navigator.userAgent) ? "mobile" : "desktop",
+		viewport: `${window.innerWidth}x${window.innerHeight}`,
+		timestamp: Date.now(),
+	};
 
-  // Batch and send with beacon API (survives page navigation)
-  navigator.sendBeacon('/api/rum', JSON.stringify(payload));
+	// Batch and send with beacon API (survives page navigation)
+	navigator.sendBeacon("/api/rum", JSON.stringify(payload));
 }
 
 onLCP(collectRUM);
@@ -163,42 +163,42 @@ When a request touches 3+ services, you need to trace the full journey to identi
 
 ```typescript
 // OpenTelemetry instrumentation
-import { trace, SpanStatusCode } from '@opentelemetry/api';
+import { trace, SpanStatusCode } from "@opentelemetry/api";
 
-const tracer = trace.getTracer('order-service');
+const tracer = trace.getTracer("order-service");
 
 async function processOrder(orderId: string): Promise<Order> {
-  return tracer.startActiveSpan('processOrder', async (span) => {
-    try {
-      span.setAttribute('order.id', orderId);
+	return tracer.startActiveSpan("processOrder", async (span) => {
+		try {
+			span.setAttribute("order.id", orderId);
 
-      // Each sub-operation gets its own span
-      const order = await tracer.startActiveSpan('fetchOrder', async (childSpan) => {
-        const result = await db.query('SELECT * FROM orders WHERE id = $1', [orderId]);
-        childSpan.setAttribute('db.rows_returned', result.rowCount);
-        childSpan.end();
-        return result.rows[0];
-      });
+			// Each sub-operation gets its own span
+			const order = await tracer.startActiveSpan("fetchOrder", async (childSpan) => {
+				const result = await db.query("SELECT * FROM orders WHERE id = $1", [orderId]);
+				childSpan.setAttribute("db.rows_returned", result.rowCount);
+				childSpan.end();
+				return result.rows[0];
+			});
 
-      const payment = await tracer.startActiveSpan('processPayment', async (childSpan) => {
-        const result = await paymentService.charge(order.total, order.customerId);
-        childSpan.setAttribute('payment.amount', order.total);
-        childSpan.end();
-        return result;
-      });
+			const payment = await tracer.startActiveSpan("processPayment", async (childSpan) => {
+				const result = await paymentService.charge(order.total, order.customerId);
+				childSpan.setAttribute("payment.amount", order.total);
+				childSpan.end();
+				return result;
+			});
 
-      span.setStatus({ code: SpanStatusCode.OK });
-      return { ...order, paymentId: payment.id };
-    } catch (error) {
-      span.setStatus({
-        code: SpanStatusCode.ERROR,
-        message: error instanceof Error ? error.message : 'Unknown error',
-      });
-      throw error;
-    } finally {
-      span.end();
-    }
-  });
+			span.setStatus({ code: SpanStatusCode.OK });
+			return { ...order, paymentId: payment.id };
+		} catch (error) {
+			span.setStatus({
+				code: SpanStatusCode.ERROR,
+				message: error instanceof Error ? error.message : "Unknown error",
+			});
+			throw error;
+		} finally {
+			span.end();
+		}
+	});
 }
 ```
 
@@ -212,11 +212,11 @@ The average SaaS team has 50-200 active alerts. The on-call engineer ignores 90%
 
 ### The Three-Tier Alert Model
 
-| Tier | Response | SLA | Example |
-|---|---|---|---|
-| **P1: Page** | Wake someone up | 5 min response | Error budget burned 50% in 1 hour |
-| **P2: Ticket** | Next business day | 24 hours | p99 latency above SLO for 30 minutes |
-| **P3: Dashboard** | Weekly review | None | Cache hit rate dropped below 90% |
+| Tier              | Response          | SLA            | Example                              |
+| ----------------- | ----------------- | -------------- | ------------------------------------ |
+| **P1: Page**      | Wake someone up   | 5 min response | Error budget burned 50% in 1 hour    |
+| **P2: Ticket**    | Next business day | 24 hours       | p99 latency above SLO for 30 minutes |
+| **P3: Dashboard** | Weekly review     | None           | Cache hit rate dropped below 90%     |
 
 **The rule:** If an alert fires and nobody needs to take action, it shouldn't be an alert. Move it to a dashboard.
 
@@ -225,18 +225,18 @@ The average SaaS team has 50-200 active alerts. The on-call engineer ignores 90%
 ```yaml
 # Alertmanager configuration
 route:
-  group_by: ['alertname', 'service']
-  group_wait: 30s       # Wait for related alerts to arrive
-  group_interval: 5m    # Don't re-fire for 5 minutes
-  repeat_interval: 4h   # Re-fire every 4 hours if unresolved
+  group_by: ["alertname", "service"]
+  group_wait: 30s # Wait for related alerts to arrive
+  group_interval: 5m # Don't re-fire for 5 minutes
+  repeat_interval: 4h # Re-fire every 4 hours if unresolved
 
 inhibit_rules:
   # If the database is down, suppress all downstream service alerts
   - source_match:
-      alertname: 'DatabaseDown'
+      alertname: "DatabaseDown"
     target_match:
-      severity: 'warning'
-    equal: ['environment']
+      severity: "warning"
+    equal: ["environment"]
 ```
 
 Inhibition rules are critical for preventing alert storms. When the database goes down, every service that depends on it fires an alert. Without inhibition, the on-call engineer gets 50 notifications instead of 1.

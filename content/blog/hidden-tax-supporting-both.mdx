@@ -1,6 +1,6 @@
 ---
-title: "The Hidden Tax of \"We Support Both\""
-description: "Every SaaS team eventually says \"we'll support both\" — both databases, both auth providers, both deployment targets. The hidden cost isn't the initial implementation. It's the 2x testing matrix, 2x documentation, and the subtle bugs that only appear in one configuration."
+title: 'The Hidden Tax of "We Support Both"'
+description: 'Every SaaS team eventually says "we''ll support both" — both databases, both auth providers, both deployment targets. The hidden cost isn''t the initial implementation. It''s the 2x testing matrix, 2x documentation, and the subtle bugs that only appear in one configuration.'
 date: "2026-09-22"
 author: "Alex Mayhew"
 tags: ["architecture", "saas", "technical-debt", "decision-making", "strategy"]
@@ -40,11 +40,11 @@ I've tracked the actual engineering cost of "both" across 8 advisory clients. Th
 
 ### Testing Overhead
 
-| Configuration | Test Matrix | Maintenance |
-|---|---|---|
-| One database | 1x tests | 1x maintenance |
-| Two databases | 2.3x tests | 2.5x maintenance |
-| Two databases + two cloud providers | 4.6x tests | 5x maintenance |
+| Configuration                       | Test Matrix | Maintenance      |
+| ----------------------------------- | ----------- | ---------------- |
+| One database                        | 1x tests    | 1x maintenance   |
+| Two databases                       | 2.3x tests  | 2.5x maintenance |
+| Two databases + two cloud providers | 4.6x tests  | 5x maintenance   |
 
 The multiplier isn't exactly 2x because some tests are configuration-independent. But the configuration-specific tests—the ones that verify behavior unique to each option—are where the bugs hide. And those bugs are the hardest to reproduce because your development environment runs one configuration while production might run the other.
 
@@ -63,19 +63,15 @@ Every engineer who touches the codebase needs to understand both configurations.
 ```typescript
 // The abstraction that doesn't fully abstract
 async function getUser(id: string): Promise<User> {
-  if (config.database === 'postgresql') {
-    // PostgreSQL: JSONB query for preferences
-    return db.query(
-      `SELECT *, preferences->>'theme' as theme FROM users WHERE id = $1`,
-      [id]
-    );
-  } else {
-    // MongoDB: dot notation for nested fields
-    return db.collection('users').findOne(
-      { _id: new ObjectId(id) },
-      { projection: { 'preferences.theme': 1 } }
-    );
-  }
+	if (config.database === "postgresql") {
+		// PostgreSQL: JSONB query for preferences
+		return db.query(`SELECT *, preferences->>'theme' as theme FROM users WHERE id = $1`, [id]);
+	} else {
+		// MongoDB: dot notation for nested fields
+		return db
+			.collection("users")
+			.findOne({ _id: new ObjectId(id) }, { projection: { "preferences.theme": 1 } });
+	}
 }
 ```
 
@@ -95,23 +91,23 @@ Before accepting "we support both," quantify the cost:
 
 ### Step 1: Calculate the Ongoing Tax
 
-| Cost Category | Estimation Method |
-|---|---|
-| Testing | Count configuration-specific tests. Multiply by average test maintenance time. |
-| CI/CD | Number of additional build/deploy pipelines. Multiply by compute cost and maintenance time. |
-| Documentation | Pages of configuration-specific documentation. Multiply by update frequency. |
-| On-call | Additional runbooks and dashboards. Multiply by incident frequency in each configuration. |
-| Security | Additional attack surface. Multiply by audit frequency and remediation time. |
-| Cognitive load | Number of engineers who need to understand both. Multiply by ramp-up time. |
+| Cost Category  | Estimation Method                                                                           |
+| -------------- | ------------------------------------------------------------------------------------------- |
+| Testing        | Count configuration-specific tests. Multiply by average test maintenance time.              |
+| CI/CD          | Number of additional build/deploy pipelines. Multiply by compute cost and maintenance time. |
+| Documentation  | Pages of configuration-specific documentation. Multiply by update frequency.                |
+| On-call        | Additional runbooks and dashboards. Multiply by incident frequency in each configuration.   |
+| Security       | Additional attack surface. Multiply by audit frequency and remediation time.                |
+| Cognitive load | Number of engineers who need to understand both. Multiply by ramp-up time.                  |
 
 ### Step 2: Calculate the Business Value
 
-| Value Source | Estimation Method |
-|---|---|
-| Revenue at risk | ARR from customers who require the second option |
-| Market expansion | TAM unlocked by supporting the second option |
-| Competitive advantage | Does "both" differentiate from competitors? |
-| Acquisition requirement | Is "both" a requirement for an M&A deal? |
+| Value Source            | Estimation Method                                |
+| ----------------------- | ------------------------------------------------ |
+| Revenue at risk         | ARR from customers who require the second option |
+| Market expansion        | TAM unlocked by supporting the second option     |
+| Competitive advantage   | Does "both" differentiate from competitors?      |
+| Acquisition requirement | Is "both" a requirement for an M&A deal?         |
 
 ### Step 3: Compare Honestly
 
@@ -154,15 +150,15 @@ In my experience, 90% of customers accept this without pushback when you frame i
 
 ## Common "Both" Scenarios and Recommendations
 
-| "Both" Scenario | Recommendation | Reasoning |
-|---|---|---|
-| MySQL and PostgreSQL | Pick PostgreSQL | JSONB, RLS, better extension ecosystem for SaaS |
-| REST and GraphQL | Pick one based on clients | Mobile-heavy = GraphQL; B2B integrations = REST |
-| AWS and GCP | Pick one unless enterprise requires it | Multi-cloud tax is 30-50% of infrastructure engineering time |
-| Docker and bare metal | Docker | The abstraction cost is negligible; operational benefits are real |
-| API v1 and v2 | Sunset v1 within 12 months | Every additional API version is permanent maintenance |
-| Webpack and Vite | Vite | The migration is a one-time cost; the build speed improvement is permanent |
-| Jest and Vitest | Pick one | They're similar enough that maintaining both is pure overhead |
+| "Both" Scenario       | Recommendation                         | Reasoning                                                                  |
+| --------------------- | -------------------------------------- | -------------------------------------------------------------------------- |
+| MySQL and PostgreSQL  | Pick PostgreSQL                        | JSONB, RLS, better extension ecosystem for SaaS                            |
+| REST and GraphQL      | Pick one based on clients              | Mobile-heavy = GraphQL; B2B integrations = REST                            |
+| AWS and GCP           | Pick one unless enterprise requires it | Multi-cloud tax is 30-50% of infrastructure engineering time               |
+| Docker and bare metal | Docker                                 | The abstraction cost is negligible; operational benefits are real          |
+| API v1 and v2         | Sunset v1 within 12 months             | Every additional API version is permanent maintenance                      |
+| Webpack and Vite      | Vite                                   | The migration is a one-time cost; the build speed improvement is permanent |
+| Jest and Vitest       | Pick one                               | They're similar enough that maintaining both is pure overhead              |
 
 ---
 

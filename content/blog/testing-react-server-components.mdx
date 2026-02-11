@@ -46,6 +46,7 @@ async function DashboardPage() {
 ```
 
 Calling `render(<DashboardPage />)` in a test file fails because:
+
 - `db.query` doesn't exist in the test environment
 - `getAuthenticatedUser` requires HTTP headers
 - The component is async (RTL can't `await` a component)
@@ -61,66 +62,64 @@ Extract business logic from components into pure functions. Test the functions, 
 ```typescript
 // src/lib/metrics.ts — pure functions, no React
 export function calculateGrowthRate(
-  current: number,
-  previous: number
-): { rate: number; direction: 'up' | 'down' | 'flat' } {
-  if (previous === 0) return { rate: 0, direction: 'flat' };
+	current: number,
+	previous: number
+): { rate: number; direction: "up" | "down" | "flat" } {
+	if (previous === 0) return { rate: 0, direction: "flat" };
 
-  const rate = ((current - previous) / previous) * 100;
-  return {
-    rate: Math.round(rate * 10) / 10,
-    direction: rate > 1 ? 'up' : rate < -1 ? 'down' : 'flat',
-  };
+	const rate = ((current - previous) / previous) * 100;
+	return {
+		rate: Math.round(rate * 10) / 10,
+		direction: rate > 1 ? "up" : rate < -1 ? "down" : "flat",
+	};
 }
 
 export function filterMetricsByDateRange(
-  metrics: Metric[],
-  startDate: Date,
-  endDate: Date
+	metrics: Metric[],
+	startDate: Date,
+	endDate: Date
 ): Metric[] {
-  return metrics.filter(
-    (m) => m.timestamp >= startDate && m.timestamp <= endDate
-  );
+	return metrics.filter((m) => m.timestamp >= startDate && m.timestamp <= endDate);
 }
 
 export function aggregateByDay(metrics: Metric[]): DailyAggregate[] {
-  const grouped = new Map<string, Metric[]>();
+	const grouped = new Map<string, Metric[]>();
 
-  for (const metric of metrics) {
-    const day = metric.timestamp.toISOString().split('T')[0];
-    const existing = grouped.get(day) || [];
-    grouped.set(day, [...existing, metric]);
-  }
+	for (const metric of metrics) {
+		const day = metric.timestamp.toISOString().split("T")[0];
+		const existing = grouped.get(day) || [];
+		grouped.set(day, [...existing, metric]);
+	}
 
-  return Array.from(grouped.entries()).map(([day, dayMetrics]) => ({
-    date: day,
-    total: dayMetrics.reduce((sum, m) => sum + m.value, 0),
-    count: dayMetrics.length,
-    average: dayMetrics.reduce((sum, m) => sum + m.value, 0) / dayMetrics.length,
-  }));
+	return Array.from(grouped.entries()).map(([day, dayMetrics]) => ({
+		date: day,
+		total: dayMetrics.reduce((sum, m) => sum + m.value, 0),
+		count: dayMetrics.length,
+		average: dayMetrics.reduce((sum, m) => sum + m.value, 0) / dayMetrics.length,
+	}));
 }
 ```
 
 ```typescript
 // src/lib/metrics.test.ts — fast, isolated unit tests
-import { calculateGrowthRate, filterMetricsByDateRange, aggregateByDay } from './metrics';
+import { calculateGrowthRate, filterMetricsByDateRange, aggregateByDay } from "./metrics";
 
-describe('calculateGrowthRate', () => {
-  it('calculates positive growth', () => {
-    expect(calculateGrowthRate(150, 100)).toEqual({ rate: 50, direction: 'up' });
-  });
+describe("calculateGrowthRate", () => {
+	it("calculates positive growth", () => {
+		expect(calculateGrowthRate(150, 100)).toEqual({ rate: 50, direction: "up" });
+	});
 
-  it('calculates negative growth', () => {
-    expect(calculateGrowthRate(80, 100)).toEqual({ rate: -20, direction: 'down' });
-  });
+	it("calculates negative growth", () => {
+		expect(calculateGrowthRate(80, 100)).toEqual({ rate: -20, direction: "down" });
+	});
 
-  it('handles zero previous value', () => {
-    expect(calculateGrowthRate(100, 0)).toEqual({ rate: 0, direction: 'flat' });
-  });
+	it("handles zero previous value", () => {
+		expect(calculateGrowthRate(100, 0)).toEqual({ rate: 0, direction: "flat" });
+	});
 
-  it('returns flat for small changes', () => {
-    expect(calculateGrowthRate(100.5, 100)).toEqual({ rate: 0.5, direction: 'flat' });
-  });
+	it("returns flat for small changes", () => {
+		expect(calculateGrowthRate(100.5, 100)).toEqual({ rate: 0.5, direction: "flat" });
+	});
 });
 ```
 
@@ -132,54 +131,54 @@ Test Server Components by making HTTP requests to the Next.js development server
 
 ```typescript
 // tests/integration/dashboard.test.ts
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from "vitest";
 
 let baseUrl: string;
 
 beforeAll(async () => {
-  // Start the Next.js server in test mode
-  // Or use a running dev server
-  baseUrl = process.env.TEST_BASE_URL || 'http://localhost:3001';
+	// Start the Next.js server in test mode
+	// Or use a running dev server
+	baseUrl = process.env.TEST_BASE_URL || "http://localhost:3001";
 });
 
-describe('Dashboard Page', () => {
-  it('renders metrics table for authenticated user', async () => {
-    const response = await fetch(`${baseUrl}/dashboard`, {
-      headers: {
-        Cookie: 'session=test-session-token',
-      },
-    });
+describe("Dashboard Page", () => {
+	it("renders metrics table for authenticated user", async () => {
+		const response = await fetch(`${baseUrl}/dashboard`, {
+			headers: {
+				Cookie: "session=test-session-token",
+			},
+		});
 
-    expect(response.status).toBe(200);
-    const html = await response.text();
+		expect(response.status).toBe(200);
+		const html = await response.text();
 
-    // Assert on the HTML output
-    expect(html).toContain('Dashboard for');
-    expect(html).toContain('data-testid="metrics-table"');
-  });
+		// Assert on the HTML output
+		expect(html).toContain("Dashboard for");
+		expect(html).toContain('data-testid="metrics-table"');
+	});
 
-  it('redirects unauthenticated users to login', async () => {
-    const response = await fetch(`${baseUrl}/dashboard`, {
-      redirect: 'manual',
-    });
+	it("redirects unauthenticated users to login", async () => {
+		const response = await fetch(`${baseUrl}/dashboard`, {
+			redirect: "manual",
+		});
 
-    expect(response.status).toBe(307);
-    expect(response.headers.get('location')).toBe('/login');
-  });
+		expect(response.status).toBe(307);
+		expect(response.headers.get("location")).toBe("/login");
+	});
 
-  it('returns correct data for tenant', async () => {
-    const response = await fetch(`${baseUrl}/api/metrics`, {
-      headers: {
-        Cookie: 'session=test-session-token',
-        'X-Tenant-Id': 'test-tenant',
-      },
-    });
+	it("returns correct data for tenant", async () => {
+		const response = await fetch(`${baseUrl}/api/metrics`, {
+			headers: {
+				Cookie: "session=test-session-token",
+				"X-Tenant-Id": "test-tenant",
+			},
+		});
 
-    const data = await response.json();
-    expect(data.metrics).toHaveLength(10);
-    expect(data.metrics[0]).toHaveProperty('value');
-    expect(data.metrics[0]).toHaveProperty('timestamp');
-  });
+		const data = await response.json();
+		expect(data.metrics).toHaveLength(10);
+		expect(data.metrics[0]).toHaveProperty("value");
+		expect(data.metrics[0]).toHaveProperty("timestamp");
+	});
 });
 ```
 
@@ -191,32 +190,32 @@ Use Playwright for the 10-20 critical user flows that span multiple pages and cl
 
 ```typescript
 // tests/e2e/dashboard-flow.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('user can view and filter dashboard metrics', async ({ page }) => {
-  // Login
-  await page.goto('/login');
-  await page.fill('[data-testid="email"]', 'test@example.com');
-  await page.fill('[data-testid="password"]', 'test-password');
-  await page.click('[data-testid="login-button"]');
+test("user can view and filter dashboard metrics", async ({ page }) => {
+	// Login
+	await page.goto("/login");
+	await page.fill('[data-testid="email"]', "test@example.com");
+	await page.fill('[data-testid="password"]', "test-password");
+	await page.click('[data-testid="login-button"]');
 
-  // Wait for dashboard to load (RSC streaming)
-  await page.waitForSelector('[data-testid="metrics-table"]');
+	// Wait for dashboard to load (RSC streaming)
+	await page.waitForSelector('[data-testid="metrics-table"]');
 
-  // Verify initial data
-  const rows = await page.locator('[data-testid="metric-row"]').count();
-  expect(rows).toBeGreaterThan(0);
+	// Verify initial data
+	const rows = await page.locator('[data-testid="metric-row"]').count();
+	expect(rows).toBeGreaterThan(0);
 
-  // Apply date filter (client component interaction)
-  await page.click('[data-testid="date-filter"]');
-  await page.click('[data-testid="last-7-days"]');
+	// Apply date filter (client component interaction)
+	await page.click('[data-testid="date-filter"]');
+	await page.click('[data-testid="last-7-days"]');
 
-  // Wait for RSC re-fetch (triggered by URL param change)
-  await page.waitForSelector('[data-testid="metrics-table"]');
+	// Wait for RSC re-fetch (triggered by URL param change)
+	await page.waitForSelector('[data-testid="metrics-table"]');
 
-  // Verify filtered data
-  const filteredRows = await page.locator('[data-testid="metric-row"]').count();
-  expect(filteredRows).toBeLessThanOrEqual(rows);
+	// Verify filtered data
+	const filteredRows = await page.locator('[data-testid="metric-row"]').count();
+	expect(filteredRows).toBeLessThanOrEqual(rows);
 });
 ```
 
@@ -265,12 +264,12 @@ function ActivityFeed({ activities }: { activities: Activity[] }) {
 
 **Testing strategy:**
 
-| Component | Test Layer | How |
-|---|---|---|
-| `UserProfile` (Server) | Integration (HTTP) | Assert HTML contains user data |
-| `ActivityFeed` (Client) | Unit (RTL) | Pass mock activities as props |
-| Data fetching logic | Unit | Extract to function, test independently |
-| Full flow | E2E (Playwright) | Test user interaction end-to-end |
+| Component               | Test Layer         | How                                     |
+| ----------------------- | ------------------ | --------------------------------------- |
+| `UserProfile` (Server)  | Integration (HTTP) | Assert HTML contains user data          |
+| `ActivityFeed` (Client) | Unit (RTL)         | Pass mock activities as props           |
+| Data fetching logic     | Unit               | Extract to function, test independently |
+| Full flow               | E2E (Playwright)   | Test user interaction end-to-end        |
 
 ```typescript
 // Client component test — this still works with RTL
@@ -304,27 +303,27 @@ RSCs can stream content progressively using Suspense boundaries. Testing this re
 
 ```typescript
 // Integration test: verify streaming completes
-test('dashboard streams all sections', async () => {
-  const response = await fetch(`${baseUrl}/dashboard`, {
-    headers: { Cookie: 'session=test-token' },
-  });
+test("dashboard streams all sections", async () => {
+	const response = await fetch(`${baseUrl}/dashboard`, {
+		headers: { Cookie: "session=test-token" },
+	});
 
-  // Read the full streaming response
-  const reader = response.body!.getReader();
-  const decoder = new TextDecoder();
-  let html = '';
+	// Read the full streaming response
+	const reader = response.body!.getReader();
+	const decoder = new TextDecoder();
+	let html = "";
 
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    html += decoder.decode(value, { stream: true });
-  }
+	while (true) {
+		const { done, value } = await reader.read();
+		if (done) break;
+		html += decoder.decode(value, { stream: true });
+	}
 
-  // All Suspense boundaries should have resolved
-  expect(html).not.toContain('data-testid="loading-skeleton"');
-  expect(html).toContain('data-testid="metrics-table"');
-  expect(html).toContain('data-testid="activity-feed"');
-  expect(html).toContain('data-testid="alerts-panel"');
+	// All Suspense boundaries should have resolved
+	expect(html).not.toContain('data-testid="loading-skeleton"');
+	expect(html).toContain('data-testid="metrics-table"');
+	expect(html).toContain('data-testid="activity-feed"');
+	expect(html).toContain('data-testid="alerts-panel"');
 });
 ```
 
@@ -332,12 +331,12 @@ test('dashboard streams all sections', async () => {
 
 ## The Test Distribution
 
-| Layer | % of Tests | Speed | Confidence | Maintenance |
-|---|---|---|---|---|
-| Unit (logic functions) | 60-70% | < 1ms each | High for logic | Very low |
-| Unit (client components, RTL) | 15-20% | 10-50ms each | High for UI | Low |
-| Integration (HTTP) | 10-15% | 100-500ms each | High for data flow | Medium |
-| E2E (Playwright) | 5-10% | 2-10s each | Highest for flows | Higher |
+| Layer                         | % of Tests | Speed          | Confidence         | Maintenance |
+| ----------------------------- | ---------- | -------------- | ------------------ | ----------- |
+| Unit (logic functions)        | 60-70%     | < 1ms each     | High for logic     | Very low    |
+| Unit (client components, RTL) | 15-20%     | 10-50ms each   | High for UI        | Low         |
+| Integration (HTTP)            | 10-15%     | 100-500ms each | High for data flow | Medium      |
+| E2E (Playwright)              | 5-10%      | 2-10s each     | Highest for flows  | Higher      |
 
 This distribution keeps the test suite fast (under 30 seconds for unit tests, under 2 minutes for integration, under 10 minutes for E2E) while covering the critical paths.
 

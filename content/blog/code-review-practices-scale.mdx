@@ -36,16 +36,16 @@ Before a human sees the PR, automated checks should validate everything a machin
 
 ### What to Automate
 
-| Check | Tool | What It Catches |
-|---|---|---|
-| **Formatting** | Prettier, Black, gofmt | Style inconsistencies (100% of formatting discussions eliminated) |
-| **Linting** | ESLint, Ruff, Clippy | Common bugs, unused variables, deprecated APIs |
-| **Type checking** | TypeScript strict, mypy | Type errors, null safety violations |
-| **Tests** | Jest, pytest, go test | Regressions, broken contracts |
-| **Test coverage** | Istanbul, Coverage.py | Untested code paths (set minimum: 80% on changed lines) |
-| **Security** | Snyk, CodeQL, Semgrep | Known vulnerabilities, injection patterns |
-| **Bundle size** | Bundlewatch, size-limit | Performance regressions (set a budget) |
-| **PR size** | Custom check | PRs over 400 lines need justification |
+| Check             | Tool                    | What It Catches                                                   |
+| ----------------- | ----------------------- | ----------------------------------------------------------------- |
+| **Formatting**    | Prettier, Black, gofmt  | Style inconsistencies (100% of formatting discussions eliminated) |
+| **Linting**       | ESLint, Ruff, Clippy    | Common bugs, unused variables, deprecated APIs                    |
+| **Type checking** | TypeScript strict, mypy | Type errors, null safety violations                               |
+| **Tests**         | Jest, pytest, go test   | Regressions, broken contracts                                     |
+| **Test coverage** | Istanbul, Coverage.py   | Untested code paths (set minimum: 80% on changed lines)           |
+| **Security**      | Snyk, CodeQL, Semgrep   | Known vulnerabilities, injection patterns                         |
+| **Bundle size**   | Bundlewatch, size-limit | Performance regressions (set a budget)                            |
+| **PR size**       | Custom check            | PRs over 400 lines need justification                             |
 
 ```yaml
 # GitHub Actions: automated quality gate
@@ -132,12 +132,12 @@ Synchronous review (sitting together, walking through code) doesn't scale past 1
 
 **The async review contract:**
 
-| Rule | Detail |
-|---|---|
-| **Review within 4 business hours** | The reviewer commits to providing initial feedback within 4 hours of being assigned |
-| **Author responds within 4 hours** | The author responds to all comments within 4 hours |
-| **Two rounds maximum** | If the PR needs more than 2 rounds of review, have a synchronous conversation instead |
-| **Approval means "ship it"** | An approval is a commitment: "I believe this code is production-ready" |
+| Rule                               | Detail                                                                                |
+| ---------------------------------- | ------------------------------------------------------------------------------------- |
+| **Review within 4 business hours** | The reviewer commits to providing initial feedback within 4 hours of being assigned   |
+| **Author responds within 4 hours** | The author responds to all comments within 4 hours                                    |
+| **Two rounds maximum**             | If the PR needs more than 2 rounds of review, have a synchronous conversation instead |
+| **Approval means "ship it"**       | An approval is a commitment: "I believe this code is production-ready"                |
 
 ### Ownership-Based Routing
 
@@ -163,12 +163,12 @@ CODEOWNERS ensures the reviewer has context on the code they're reviewing. A fro
 
 The single most effective change for review speed: smaller PRs.
 
-| PR Size | Review Time | Defect Density | Time to Merge |
-|---|---|---|---|
-| 1-100 lines | 10-15 min | Low | < 4 hours |
-| 100-250 lines | 20-30 min | Low-Medium | < 8 hours |
-| 250-500 lines | 45-60 min | Medium | 1-2 days |
-| 500+ lines | 60-90 min | High | 2-5 days |
+| PR Size       | Review Time | Defect Density | Time to Merge |
+| ------------- | ----------- | -------------- | ------------- |
+| 1-100 lines   | 10-15 min   | Low            | < 4 hours     |
+| 100-250 lines | 20-30 min   | Low-Medium     | < 8 hours     |
+| 250-500 lines | 45-60 min   | Medium         | 1-2 days      |
+| 500+ lines    | 60-90 min   | High           | 2-5 days      |
 
 Studies from Google and Microsoft show that review quality drops significantly after 200-400 lines. Beyond 500 lines, reviewers miss more defects than they catch—their attention is exhausted.
 
@@ -212,13 +212,13 @@ One senior engineer who must approve every PR. Creates a single point of failure
 
 Track these metrics monthly:
 
-| Metric | Healthy | Warning | Unhealthy |
-|---|---|---|---|
-| **Median time to first review** | < 4 hours | 4-8 hours | > 8 hours |
-| **Median PR cycle time** | < 24 hours | 24-48 hours | > 48 hours |
-| **Median review rounds** | 1.2 | 1.5-2.0 | > 2.0 |
-| **PR size (median lines)** | < 200 | 200-400 | > 400 |
-| **Review comment density** | 2-5 per 100 lines | 1-2 per 100 lines | < 1 per 100 lines |
+| Metric                          | Healthy           | Warning           | Unhealthy         |
+| ------------------------------- | ----------------- | ----------------- | ----------------- |
+| **Median time to first review** | < 4 hours         | 4-8 hours         | > 8 hours         |
+| **Median PR cycle time**        | < 24 hours        | 24-48 hours       | > 48 hours        |
+| **Median review rounds**        | 1.2               | 1.5-2.0           | > 2.0             |
+| **PR size (median lines)**      | < 200             | 200-400           | > 400             |
+| **Review comment density**      | 2-5 per 100 lines | 1-2 per 100 lines | < 1 per 100 lines |
 
 The last metric is counterintuitive. Too few comments per 100 lines suggests rubber-stamping. Too many suggests nitpicking or inadequate automated checks.
 

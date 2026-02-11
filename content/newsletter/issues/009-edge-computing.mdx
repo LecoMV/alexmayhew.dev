@@ -32,6 +32,7 @@ Cache-Control: public, max-age=60, stale-while-revalidate=300
 ```
 
 That single header on your API responses means:
+
 - Requests served from the nearest CDN PoP (same latency as edge compute)
 - Origin only hit once per 60 seconds per unique cache key
 - Users get stale-but-fast responses while revalidation happens in the background
@@ -47,6 +48,7 @@ The cases where edge compute genuinely earns its complexity:
 But each of these requires your team to reason about two execution environments. Edge functions have different runtime constraints — no Node.js APIs, limited execution time, cold starts, no filesystem. Debugging spans two contexts. Deployments need coordination.
 
 **The decision framework:**
+
 - Global users across 3+ continents? Prerequisite, but not sufficient.
 - Read/write ratio above 10:1? Edge helps reads; writes still go to origin.
 - Dedicated infrastructure engineer? Edge adds operational surface area.
@@ -55,6 +57,7 @@ But each of these requires your team to reason about two execution environments.
 I've advised 8 companies evaluating edge in the past year. Two actually needed it. The other six got better results from CDN caching and regional database replicas.
 
 **When to Apply This:**
+
 - Multi-continent user base with latency-sensitive read operations
 - Read/write ratio above 10:1 where caching alone isn't sufficient
 - Teams with dedicated infrastructure engineers who can maintain two execution contexts

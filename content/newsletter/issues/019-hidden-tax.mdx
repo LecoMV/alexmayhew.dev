@@ -25,15 +25,15 @@ Your codebase supports "both" — two databases, two authentication providers, t
 **The Insight:**
 "We support both" sounds like good engineering. In practice, it's a 25-40% overhead on every activity that touches the abstraction layer. I've quantified this across 8 client codebases:
 
-| Activity | Single path | "Both" | Overhead |
-|---|---|---|---|
-| Feature development | 1x | 1.4-1.8x | 40-80% |
-| Code review | 1x | 1.3x | 30% |
-| Testing | 1x | 2x | 100% |
-| Security audit | 1x | 1.8x | 80% |
-| Debugging | 1x | 1.5x | 50% |
-| Onboarding | 1x | 1.3x | 30% |
-| Documentation | 1x | 1.6x | 60% |
+| Activity            | Single path | "Both"   | Overhead |
+| ------------------- | ----------- | -------- | -------- |
+| Feature development | 1x          | 1.4-1.8x | 40-80%   |
+| Code review         | 1x          | 1.3x     | 30%      |
+| Testing             | 1x          | 2x       | 100%     |
+| Security audit      | 1x          | 1.8x     | 80%      |
+| Debugging           | 1x          | 1.5x     | 50%      |
+| Onboarding          | 1x          | 1.3x     | 30%      |
+| Documentation       | 1x          | 1.6x     | 60%      |
 
 The testing overhead alone is devastating. Every test that touches the data layer needs to run against both backends. That's not 2x test count — it's 2x test infrastructure, 2x CI time, and 2x flaky test surface area.
 
@@ -52,22 +52,23 @@ The pattern I see: "both" accumulates over 2+ years through reasonable individua
 ```typescript
 // BEFORE: 47 conditionals like this
 async function findUser(id: string) {
-  if (config.db === 'mongodb') {
-    return mongodb.collection('users').findOne({ _id: id });
-  } else {
-    return pg.query('SELECT * FROM users WHERE id = $1', [id]);
-  }
+	if (config.db === "mongodb") {
+		return mongodb.collection("users").findOne({ _id: id });
+	} else {
+		return pg.query("SELECT * FROM users WHERE id = $1", [id]);
+	}
 }
 
 // AFTER: One path. Zero conditionals.
 async function findUser(id: string) {
-  return pg.query('SELECT * FROM users WHERE id = $1', [id]);
+	return pg.query("SELECT * FROM users WHERE id = $1", [id]);
 }
 ```
 
 The team I mentioned deleted 12,000 lines of adapter code when they dropped MongoDB. PR review time on data layer changes dropped 35%. Their CI pipeline ran 40% faster. Three engineers said it was the most impactful change of the year.
 
 **When to Apply This:**
+
 - Dual-support accumulated over 2+ years where one path serves less than 20% of usage
 - Engineering overhead from "both" exceeds the revenue of customers requiring the secondary path
 - Any codebase where adapter layers have more than 10 special-case conditionals
