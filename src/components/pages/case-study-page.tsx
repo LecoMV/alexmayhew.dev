@@ -16,16 +16,10 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
+import { springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 import type { Project } from "@/data/projects";
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
 
 interface CaseStudyPageProps {
 	project: Project;

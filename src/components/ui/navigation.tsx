@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import { springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -62,13 +63,6 @@ const toolsDropdown: ToolItem[] = [
 		badgeColor: "blue",
 	},
 ];
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
 
 export function Navigation() {
 	const pathname = usePathname();

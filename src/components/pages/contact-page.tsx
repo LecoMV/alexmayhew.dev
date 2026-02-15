@@ -2,20 +2,14 @@
 
 import { m } from "framer-motion";
 import { AlertCircle, CheckCircle, Clock, Mail, MapPin, Send } from "lucide-react";
-import { useRef, useState } from "react";
+import { useActionState, useEffect, useRef } from "react";
+import { useFormStatus } from "react-dom";
 
-import { submitContactForm } from "@/app/actions/contact";
+import { type ContactFormState, submitContactAction } from "@/app/actions/contact";
 import { trackEvent, trackLeadEvent } from "@/components/analytics";
 import { Turnstile, type TurnstileRef } from "@/components/ui/turnstile";
-import { type ContactFormValues } from "@/lib/schemas/contact";
+import { springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
 
 const contactInfo = [
 	{
@@ -36,23 +30,82 @@ const contactInfo = [
 	},
 ];
 
-type FormStatus = "idle" | "submitting" | "success" | "error";
+const initialState: ContactFormState = { success: false };
+
+function ContactSubmitButton({ success }: { success: boolean }) {
+	const { pending } = useFormStatus();
+
+	return (
+		<button
+			type="submit"
+			disabled={pending || success}
+			className={cn(
+				"group hover:border-cyber-lime relative flex w-full items-center justify-center gap-3 border border-white/20 px-6 py-4 transition-colors duration-300 md:w-auto",
+				pending && "cursor-wait opacity-70",
+				success && "border-cyber-lime cursor-default"
+			)}
+		>
+			{!pending && !success && (
+				<>
+					<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">
+						TRANSMIT_MESSAGE()
+					</span>
+					<Send
+						className="text-slate-text group-hover:text-cyber-lime h-4 w-4 transition-colors duration-300"
+						strokeWidth={1.5}
+					/>
+				</>
+			)}
+			{pending && (
+				<>
+					<span className="font-mono text-sm tracking-tight">TRANSMITTING...</span>
+					<div className="bg-cyber-lime h-4 w-4 animate-pulse" />
+				</>
+			)}
+			{success && (
+				<>
+					<span className="text-cyber-lime font-mono text-sm tracking-tight">
+						TRANSMISSION_COMPLETE
+					</span>
+					<CheckCircle className="text-cyber-lime h-4 w-4" strokeWidth={1.5} />
+				</>
+			)}
+			<m.div
+				className="bg-cyber-lime/5 absolute inset-0"
+				initial={{ opacity: 0 }}
+				whileHover={{ opacity: 1 }}
+				transition={{ duration: 0.3 }}
+			/>
+		</button>
+	);
+}
 
 export function ContactPage() {
-	const [formStatus, setFormStatus] = useState<FormStatus>("idle");
-	const [formData, setFormData] = useState({
-		name: "",
-		email: "",
-		projectType: "",
-		budget: "",
-		message: "",
-		referralSource: "",
-	});
-	const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+	const [state, formAction] = useActionState(submitContactAction, initialState);
 	const turnstileRef = useRef<TurnstileRef>(null);
 	const formStartTracked = useRef(false);
+	const prevSuccess = useRef(false);
 
-	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	// Track lead on success
+	useEffect(() => {
+		if (state.success && !prevSuccess.current) {
+			prevSuccess.current = true;
+			trackLeadEvent("generate_lead", {
+				lead_source: "contact_form",
+				project_type: "unknown",
+				budget_range: "unknown",
+				form_type: "consultation_request",
+				referral_source: "not_specified",
+			});
+		}
+	}, [state.success]);
+
+	// Reset turnstile on error
+	useEffect(() => {
+		if (state.error) {
+			turnstileRef.current?.reset();
+		}
+	}, [state.error]);
 
 	const handleFormStart = () => {
 		if (formStartTracked.current) return;
@@ -61,52 +114,6 @@ export function ContactPage() {
 			form_id: "contact",
 			form_name: "consultation_request",
 		});
-	};
-
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-
-		if (!turnstileToken) {
-			setFormStatus("error");
-			setErrorMessage("Please complete the security check");
-			return;
-		}
-
-		setFormStatus("submitting");
-		setErrorMessage(null);
-
-		const result = await submitContactForm({
-			...formData,
-			referralSource: formData.referralSource || undefined,
-			turnstileToken,
-		} as ContactFormValues);
-
-		if (result.success) {
-			setFormStatus("success");
-			// Track lead generation using GA4 2026 best practices
-			trackLeadEvent("generate_lead", {
-				lead_source: "contact_form",
-				project_type: formData.projectType,
-				budget_range: formData.budget,
-				form_type: "consultation_request",
-				referral_source: formData.referralSource || "not_specified",
-			});
-		} else {
-			setFormStatus("error");
-			setErrorMessage(result.error || "Something went wrong");
-			// Reset turnstile on error
-			turnstileRef.current?.reset();
-			setTurnstileToken(null);
-		}
-	};
-
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-	) => {
-		setFormData((prev) => ({
-			...prev,
-			[e.target.name]: e.target.value,
-		}));
 	};
 
 	return (
@@ -144,7 +151,7 @@ export function ContactPage() {
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ ...springTransition, delay: 0.1 }}
 					>
-						<form onSubmit={handleSubmit} onFocus={handleFormStart} className="space-y-6">
+						<form action={formAction} onFocus={handleFormStart} className="space-y-6">
 							{/* Name & Email Row */}
 							<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 								<div>
@@ -159,8 +166,6 @@ export function ContactPage() {
 										id="name"
 										name="name"
 										required
-										value={formData.name}
-										onChange={handleChange}
 										className="bg-gunmetal-glass/20 focus:border-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 placeholder:text-white/30 focus:outline-none"
 										placeholder="Your name"
 									/>
@@ -177,8 +182,6 @@ export function ContactPage() {
 										id="email"
 										name="email"
 										required
-										value={formData.email}
-										onChange={handleChange}
 										className="bg-gunmetal-glass/20 focus:border-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 placeholder:text-white/30 focus:outline-none"
 										placeholder="your@email.com"
 									/>
@@ -198,8 +201,7 @@ export function ContactPage() {
 										id="projectType"
 										name="projectType"
 										required
-										value={formData.projectType}
-										onChange={handleChange}
+										defaultValue=""
 										className="bg-gunmetal-glass/20 focus:border-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none"
 									>
 										<option value="" className="bg-void-navy">
@@ -233,8 +235,7 @@ export function ContactPage() {
 										id="budget"
 										name="budget"
 										required
-										value={formData.budget}
-										onChange={handleChange}
+										defaultValue=""
 										className="bg-gunmetal-glass/20 focus:border-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none"
 									>
 										<option value="" className="bg-void-navy">
@@ -267,8 +268,7 @@ export function ContactPage() {
 								<select
 									id="referralSource"
 									name="referralSource"
-									value={formData.referralSource}
-									onChange={handleChange}
+									defaultValue=""
 									className="bg-gunmetal-glass/20 focus:border-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none"
 								>
 									<option value="" className="bg-void-navy">
@@ -311,79 +311,42 @@ export function ContactPage() {
 									name="message"
 									required
 									rows={6}
-									value={formData.message}
-									onChange={handleChange}
 									className="bg-gunmetal-glass/20 focus:border-cyber-lime text-mist-white w-full resize-none border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 placeholder:text-white/30 focus:outline-none"
 									placeholder="Describe your project, goals, and timeline..."
 								/>
 							</div>
 
-							{/* Turnstile Bot Protection */}
+							{/* Turnstile Bot Protection — token piped via hidden input */}
 							<div>
 								<Turnstile
 									ref={turnstileRef}
-									onSuccess={(token) => setTurnstileToken(token)}
-									onError={() => {
-										setTurnstileToken(null);
-										setErrorMessage("Security check failed. Please try again.");
+									onSuccess={(token) => {
+										const hidden = document.getElementById(
+											"turnstileToken"
+										) as HTMLInputElement | null;
+										if (hidden) hidden.value = token;
 									}}
-									onExpire={() => setTurnstileToken(null)}
+									onError={() => {
+										const hidden = document.getElementById(
+											"turnstileToken"
+										) as HTMLInputElement | null;
+										if (hidden) hidden.value = "";
+									}}
+									onExpire={() => {
+										const hidden = document.getElementById(
+											"turnstileToken"
+										) as HTMLInputElement | null;
+										if (hidden) hidden.value = "";
+									}}
 								/>
+								<input type="hidden" id="turnstileToken" name="turnstileToken" defaultValue="" />
 							</div>
 
 							{/* Submit Button */}
-							<button
-								type="submit"
-								disabled={formStatus === "submitting" || formStatus === "success"}
-								className={cn(
-									"group hover:border-cyber-lime relative flex w-full items-center justify-center gap-3 border border-white/20 px-6 py-4 transition-colors duration-300 md:w-auto",
-									formStatus === "submitting" && "cursor-wait opacity-70",
-									formStatus === "success" && "border-cyber-lime cursor-default"
-								)}
-							>
-								{formStatus === "idle" && (
-									<>
-										<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">
-											TRANSMIT_MESSAGE()
-										</span>
-										<Send
-											className="text-slate-text group-hover:text-cyber-lime h-4 w-4 transition-colors duration-300"
-											strokeWidth={1.5}
-										/>
-									</>
-								)}
-								{formStatus === "submitting" && (
-									<>
-										<span className="font-mono text-sm tracking-tight">TRANSMITTING...</span>
-										<div className="bg-cyber-lime h-4 w-4 animate-pulse" />
-									</>
-								)}
-								{formStatus === "success" && (
-									<>
-										<span className="text-cyber-lime font-mono text-sm tracking-tight">
-											TRANSMISSION_COMPLETE
-										</span>
-										<CheckCircle className="text-cyber-lime h-4 w-4" strokeWidth={1.5} />
-									</>
-								)}
-								{formStatus === "error" && (
-									<>
-										<span className="text-burnt-ember font-mono text-sm tracking-tight">
-											TRANSMISSION_FAILED
-										</span>
-										<AlertCircle className="text-burnt-ember h-4 w-4" strokeWidth={1.5} />
-									</>
-								)}
-								<m.div
-									className="bg-cyber-lime/5 absolute inset-0"
-									initial={{ opacity: 0 }}
-									whileHover={{ opacity: 1 }}
-									transition={{ duration: 0.3 }}
-								/>
-							</button>
+							<ContactSubmitButton success={state.success} />
 
 							{/* Success Message */}
-							{formStatus === "success" && (
+							{state.success && (
 								<m.p
 									initial={{ opacity: 0, y: 10 }}
 									animate={{ opacity: 1, y: 0 }}
@@ -394,21 +357,15 @@ export function ContactPage() {
 							)}
 
 							{/* Error Message */}
-							{formStatus === "error" && errorMessage && (
+							{state.error && (
 								<m.div
 									initial={{ opacity: 0, y: 10 }}
 									animate={{ opacity: 1, y: 0 }}
 									className="flex items-center gap-4"
 									role="alert"
 								>
-									<p className="text-burnt-ember font-mono text-sm">{errorMessage}</p>
-									<button
-										type="button"
-										onClick={() => setFormStatus("idle")}
-										className="text-slate-text hover:text-cyber-lime font-mono text-xs underline transition-colors"
-									>
-										RETRY()
-									</button>
+									<AlertCircle className="text-burnt-ember h-4 w-4 shrink-0" strokeWidth={1.5} />
+									<p className="text-burnt-ember font-mono text-sm">{state.error}</p>
 								</m.div>
 							)}
 						</form>

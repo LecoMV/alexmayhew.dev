@@ -3,12 +3,7 @@
 import { m } from "framer-motion";
 import { Activity, Database, Layout, Server, Shield, Terminal, User, Zap } from "lucide-react";
 
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
+import { springTransition } from "@/lib/motion-constants";
 
 interface Feature {
 	icon: React.ReactNode;

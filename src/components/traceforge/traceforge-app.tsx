@@ -5,19 +5,13 @@ import { ArrowRight, Code, Eraser, Layers, RefreshCw, Shield, Zap } from "lucide
 import { useCallback, useState } from "react";
 
 import { type Generator, useVectorizer } from "@/lib/hooks/use-vectorizer";
+import { springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 import { PresetSelector } from "./preset-selector";
 import { ProgressLog } from "./progress-log";
 import { ResultViewer } from "./result-viewer";
 import { UploadZone } from "./upload-zone";
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
 
 const features = [
 	{

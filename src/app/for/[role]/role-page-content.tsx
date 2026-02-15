@@ -18,16 +18,10 @@ import { useState } from "react";
 
 import { trackCTAClick } from "@/components/analytics";
 import { ROLE_LABELS, SERVICE_TIER_DESCRIPTIONS, SERVICE_TIER_LABELS } from "@/data/roles";
+import { springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 import type { RolePage } from "@/data/roles";
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
 
 const staggerContainer = {
 	hidden: { opacity: 0 },

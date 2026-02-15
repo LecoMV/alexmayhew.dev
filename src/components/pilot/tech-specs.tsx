@@ -2,12 +2,7 @@
 
 import { m } from "framer-motion";
 
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
+import { springTransition } from "@/lib/motion-constants";
 
 interface Spec {
 	label: string;

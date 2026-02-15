@@ -21,16 +21,10 @@ import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import { TopicClusterNav } from "@/components/seo";
 import { INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
 import { useContentAnalytics } from "@/lib/hooks/use-content-analytics";
+import { springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 import type { ExpertApproach, PseoPage } from "@/data/pseo";
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
 
 const staggerContainer = {
 	hidden: { opacity: 0 },

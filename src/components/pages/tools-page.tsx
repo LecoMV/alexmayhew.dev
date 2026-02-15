@@ -4,14 +4,8 @@ import { m } from "framer-motion";
 import { ArrowUpRight, Download, Layers, Mic, Sparkles, Terminal } from "lucide-react";
 import Link from "next/link";
 
+import { springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
 
 interface Tool {
 	id: string;

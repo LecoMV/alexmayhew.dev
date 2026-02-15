@@ -6,15 +6,9 @@ import Link from "next/link";
 
 import { trackCTAClick } from "@/components/analytics";
 import { ROLE_LABELS } from "@/data/roles";
+import { springTransition } from "@/lib/motion-constants";
 
 import type { Role, RolePage } from "@/data/roles";
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
 
 const staggerContainer = {
 	hidden: { opacity: 0 },

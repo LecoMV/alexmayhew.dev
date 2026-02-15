@@ -27,16 +27,10 @@ import { useState } from "react";
 import { trackCTAClick } from "@/components/analytics";
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import { getPageBySlug, INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
+import { springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 import type { IntegrationPage, PseoPage } from "@/data/pseo";
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
 
 const staggerContainer = {
 	hidden: { opacity: 0 },

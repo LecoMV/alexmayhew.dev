@@ -16,19 +16,13 @@ import Link from "next/link";
 
 import { trackCTAClick } from "@/components/analytics";
 import { getPublishedPages } from "@/data/pseo";
+import { springTransition } from "@/lib/motion-constants";
 
 import type { Technology } from "@/data/pseo/technologies";
 
 interface TechnologyPageContentProps {
 	technology: Technology;
 }
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
 
 // Get related service pages for this technology
 function getRelatedServicePages(technologyId: string) {

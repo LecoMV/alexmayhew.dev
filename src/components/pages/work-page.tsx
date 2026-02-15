@@ -6,14 +6,8 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { categories, type Category, projects } from "@/data/projects";
+import { springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
 
 export function WorkPage() {
 	const [activeCategory, setActiveCategory] = useState<Category>("All");

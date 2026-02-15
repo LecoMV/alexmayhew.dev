@@ -5,6 +5,7 @@ import { Check, ExternalLink, Link2, Share2 } from "lucide-react";
 import { useState } from "react";
 
 import { trackEvent } from "@/components/analytics";
+import { snappySpringTransition as springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 interface ShareButtonsProps {
@@ -13,12 +14,6 @@ interface ShareButtonsProps {
 	description?: string;
 	className?: string;
 }
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 300,
-	damping: 25,
-};
 
 interface SharePlatform {
 	name: string;

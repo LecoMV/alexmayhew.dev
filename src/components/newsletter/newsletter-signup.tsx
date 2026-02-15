@@ -2,31 +2,23 @@
 
 import { m } from "framer-motion";
 import { AlertCircle, ArrowRight, CheckCircle, Mail } from "lucide-react";
-import { useState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 
-import { subscribeToNewsletter } from "@/app/actions/newsletter";
+import { type NewsletterFormState, subscribeNewsletterAction } from "@/app/actions/newsletter";
 import { trackNewsletterEvent } from "@/components/analytics";
+import { springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
-
-type FormStatus = "idle" | "submitting" | "success" | "error";
+import { SubmitButton } from "./submit-button";
 
 interface NewsletterSignupProps {
-	/** Visual variant */
 	variant?: "inline" | "card" | "minimal";
-	/** Source for analytics tracking */
 	source?: string;
-	/** Custom className */
 	className?: string;
-	/** Show description text */
 	showDescription?: boolean;
 }
+
+const initialState: NewsletterFormState = { success: false };
 
 export function NewsletterSignup({
 	variant = "card",
@@ -34,46 +26,24 @@ export function NewsletterSignup({
 	className,
 	showDescription = true,
 }: NewsletterSignupProps) {
-	const [email, setEmail] = useState("");
-	const [status, setStatus] = useState<FormStatus>("idle");
-	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [state, formAction] = useActionState(subscribeNewsletterAction, initialState);
+	const formRef = useRef<HTMLFormElement>(null);
+	const prevSuccess = useRef(false);
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-
-		if (!email || !email.includes("@")) {
-			setStatus("error");
-			setErrorMessage("Please enter a valid email address");
-			return;
+	// Track analytics on success
+	useEffect(() => {
+		if (state.success && !prevSuccess.current) {
+			prevSuccess.current = true;
+			formRef.current?.reset();
+			trackNewsletterEvent("newsletter_subscribe", {
+				method: "email",
+				source: source,
+				location: variant,
+			});
 		}
+	}, [state.success, source, variant]);
 
-		setStatus("submitting");
-		setErrorMessage(null);
-
-		try {
-			const result = await subscribeToNewsletter({ email, source });
-
-			if (result.success) {
-				setStatus("success");
-				setEmail("");
-				// Track newsletter signup for GA4 lead generation reports
-				trackNewsletterEvent("newsletter_subscribe", {
-					method: "email",
-					source: source,
-					location: variant,
-				});
-			} else {
-				setStatus("error");
-				setErrorMessage(result.error || "Something went wrong. Please try again.");
-			}
-		} catch {
-			setStatus("error");
-			setErrorMessage("Something went wrong. Please try again.");
-		}
-	};
-
-	// Success state
-	if (status === "success") {
+	if (state.success) {
 		return (
 			<m.div
 				className={cn(
@@ -94,7 +64,6 @@ export function NewsletterSignup({
 		);
 	}
 
-	// Card variant (for sidebar, footer)
 	if (variant === "card") {
 		return (
 			<div
@@ -114,7 +83,8 @@ export function NewsletterSignup({
 					</p>
 				)}
 
-				<form onSubmit={handleSubmit} className="space-y-3">
+				<form ref={formRef} action={formAction} className="space-y-3">
+					<input type="hidden" name="source" value={source} />
 					<div className="relative">
 						<label htmlFor="newsletter-email-card" className="sr-only">
 							Email address
@@ -122,50 +92,42 @@ export function NewsletterSignup({
 						<input
 							id="newsletter-email-card"
 							type="email"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
+							name="email"
+							required
 							placeholder="you@company.com"
-							disabled={status === "submitting"}
-							aria-invalid={status === "error" ? true : undefined}
-							aria-describedby={status === "error" ? "newsletter-error-card" : undefined}
+							aria-invalid={state.error ? true : undefined}
+							aria-describedby={state.error ? "newsletter-error-card" : undefined}
 							className={cn(
 								"w-full border bg-transparent px-4 py-3 font-mono text-sm transition-colors",
 								"placeholder:text-slate-text/50",
 								"focus:border-cyber-lime focus:outline-none",
-								status === "error" ? "border-burnt-ember" : "border-white/20"
+								state.error ? "border-burnt-ember" : "border-white/20"
 							)}
 						/>
 					</div>
 
-					{status === "error" && errorMessage && (
+					{state.error && (
 						<div
 							id="newsletter-error-card"
 							role="alert"
 							className="text-burnt-ember flex items-center gap-2 text-sm"
 						>
 							<AlertCircle className="h-4 w-4 shrink-0" />
-							<span>{errorMessage}</span>
+							<span>{state.error}</span>
 						</div>
 					)}
 
-					<button
-						type="submit"
-						disabled={status === "submitting"}
+					<SubmitButton
 						className={cn(
 							"group flex w-full items-center justify-center gap-2 border px-4 py-3 font-mono text-sm transition-colors",
 							"hover:border-cyber-lime hover:text-cyber-lime border-white/20",
 							"disabled:cursor-not-allowed disabled:opacity-50"
 						)}
+						pendingText="Subscribing..."
 					>
-						{status === "submitting" ? (
-							<span className="animate-pulse">Subscribing...</span>
-						) : (
-							<>
-								<span>Subscribe</span>
-								<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-							</>
-						)}
-					</button>
+						<span>Subscribe</span>
+						<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+					</SubmitButton>
 				</form>
 
 				<p className="text-slate-text/60 mt-3 text-xs">
@@ -175,7 +137,6 @@ export function NewsletterSignup({
 		);
 	}
 
-	// Inline variant (for blog posts)
 	if (variant === "inline") {
 		return (
 			<div className={cn("my-8 border-y border-white/10 py-8", className)}>
@@ -192,48 +153,47 @@ export function NewsletterSignup({
 						)}
 					</div>
 
-					<form onSubmit={handleSubmit} className="flex gap-2">
+					<form ref={formRef} action={formAction} className="flex gap-2">
+						<input type="hidden" name="source" value={source} />
 						<label htmlFor="newsletter-email-inline" className="sr-only">
 							Email address
 						</label>
 						<input
 							id="newsletter-email-inline"
 							type="email"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
+							name="email"
+							required
 							placeholder="you@company.com"
-							disabled={status === "submitting"}
-							aria-invalid={status === "error" ? true : undefined}
-							aria-describedby={status === "error" ? "newsletter-error-inline" : undefined}
+							aria-invalid={state.error ? true : undefined}
+							aria-describedby={state.error ? "newsletter-error-inline" : undefined}
 							className={cn(
 								"w-full border bg-transparent px-4 py-2 font-mono text-sm md:w-64",
 								"placeholder:text-slate-text/50",
 								"focus:border-cyber-lime focus:outline-none",
-								status === "error" ? "border-burnt-ember" : "border-white/20"
+								state.error ? "border-burnt-ember" : "border-white/20"
 							)}
 						/>
-						<button
-							type="submit"
-							disabled={status === "submitting"}
+						<SubmitButton
 							className={cn(
 								"shrink-0 border px-4 py-2 font-mono text-sm transition-colors",
 								"hover:border-cyber-lime hover:text-cyber-lime border-white/20",
 								"disabled:cursor-not-allowed disabled:opacity-50"
 							)}
+							pendingText="..."
 						>
-							{status === "submitting" ? "..." : "Subscribe"}
-						</button>
+							Subscribe
+						</SubmitButton>
 					</form>
 				</div>
 
-				{status === "error" && errorMessage && (
+				{state.error && (
 					<div
 						id="newsletter-error-inline"
 						role="alert"
 						className="text-burnt-ember mt-2 flex items-center gap-2 text-sm"
 					>
 						<AlertCircle className="h-4 w-4 shrink-0" />
-						<span>{errorMessage}</span>
+						<span>{state.error}</span>
 					</div>
 				)}
 			</div>
@@ -242,36 +202,35 @@ export function NewsletterSignup({
 
 	// Minimal variant (for footer)
 	return (
-		<form onSubmit={handleSubmit} className={cn("flex gap-2", className)}>
+		<form ref={formRef} action={formAction} className={cn("flex gap-2", className)}>
+			<input type="hidden" name="source" value={source} />
 			<label htmlFor="newsletter-email-minimal" className="sr-only">
 				Email address
 			</label>
 			<input
 				id="newsletter-email-minimal"
 				type="email"
-				value={email}
-				onChange={(e) => setEmail(e.target.value)}
+				name="email"
+				required
 				placeholder="you@company.com"
-				disabled={status === "submitting"}
-				aria-invalid={status === "error" ? true : undefined}
+				aria-invalid={state.error ? true : undefined}
 				className={cn(
 					"w-full border bg-transparent px-3 py-2 font-mono text-sm",
 					"placeholder:text-slate-text/50",
 					"focus:border-cyber-lime focus:outline-none",
-					status === "error" ? "border-burnt-ember" : "border-white/20"
+					state.error ? "border-burnt-ember" : "border-white/20"
 				)}
 			/>
-			<button
-				type="submit"
-				disabled={status === "submitting"}
+			<SubmitButton
 				className={cn(
 					"shrink-0 border px-3 py-2 font-mono text-xs transition-colors",
 					"hover:border-cyber-lime hover:text-cyber-lime border-white/20",
 					"disabled:cursor-not-allowed disabled:opacity-50"
 				)}
+				pendingText="..."
 			>
-				{status === "submitting" ? "..." : "Join"}
-			</button>
+				Join
+			</SubmitButton>
 		</form>
 	);
 }

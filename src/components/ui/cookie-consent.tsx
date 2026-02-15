@@ -5,6 +5,8 @@ import { Cookie, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { springTransition } from "@/lib/motion-constants";
+
 const CONSENT_KEY = "cookie-consent";
 const CONSENT_VERSION = "1"; // Bump this to re-show consent after policy changes
 
@@ -19,13 +21,6 @@ interface GeoResponse {
 	isEU: boolean;
 	requiresCookieConsent: boolean;
 }
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
 
 export function CookieConsent() {
 	const [showBanner, setShowBanner] = useState(false);

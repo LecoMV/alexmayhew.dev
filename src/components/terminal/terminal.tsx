@@ -3,9 +3,12 @@
 import { AnimatePresence, m } from "framer-motion";
 import { Minus, Square, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import { snappySpringTransition as springTransition } from "@/lib/motion-constants";
 
 import { type CommandResult, executeCommand } from "./commands";
+import { handleTerminalKeyDown } from "./keyboard-handler";
 
 interface HistoryEntry {
 	id: number;
@@ -20,12 +23,6 @@ interface TerminalProps {
 	onClose?: () => void;
 	onMinimize?: () => void;
 }
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 300,
-	damping: 25,
-};
 
 const WELCOME_MESSAGE = `Last login: ${new Date().toDateString()}
 Type 'help' to see available commands.
@@ -108,53 +105,16 @@ export function Terminal({
 
 	// Handle keyboard navigation
 	const handleKeyDown = useCallback(
-		(e: KeyboardEvent<HTMLInputElement>) => {
-			if (e.key === "Enter") {
-				handleSubmit();
-			} else if (e.key === "ArrowUp") {
-				e.preventDefault();
-				if (commandHistory.length > 0) {
-					const newIndex =
-						historyIndex === -1 ? commandHistory.length - 1 : Math.max(0, historyIndex - 1);
-					setHistoryIndex(newIndex);
-					setInput(commandHistory[newIndex]);
-				}
-			} else if (e.key === "ArrowDown") {
-				e.preventDefault();
-				if (historyIndex !== -1) {
-					const newIndex = historyIndex + 1;
-					if (newIndex >= commandHistory.length) {
-						setHistoryIndex(-1);
-						setInput("");
-					} else {
-						setHistoryIndex(newIndex);
-						setInput(commandHistory[newIndex]);
-					}
-				}
-			} else if (e.key === "Tab") {
-				e.preventDefault();
-				// Basic tab completion
-				const cmds = [
-					"help",
-					"whoami",
-					"ls",
-					"cat",
-					"cd",
-					"skills",
-					"contact",
-					"clear",
-					"theme",
-					"neofetch",
-					"sudo",
-				];
-				const matches = cmds.filter((c) => c.startsWith(input.toLowerCase()));
-				if (matches.length === 1) {
-					setInput(matches[0]);
-				}
-			} else if (e.ctrlKey && e.key === "l") {
-				e.preventDefault();
-				setHistory([{ id: Date.now(), command: "", output: WELCOME_MESSAGE }]);
-			}
+		(e: React.KeyboardEvent<HTMLInputElement>) => {
+			handleTerminalKeyDown(e, {
+				input,
+				commandHistory,
+				historyIndex,
+				onSubmit: handleSubmit,
+				onInputChange: setInput,
+				onHistoryIndexChange: setHistoryIndex,
+				onClear: () => setHistory([{ id: Date.now(), command: "", output: WELCOME_MESSAGE }]),
+			});
 		},
 		[handleSubmit, commandHistory, historyIndex, input]
 	);

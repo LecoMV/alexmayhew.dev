@@ -4,6 +4,7 @@ import { AnimatePresence, m } from "framer-motion";
 import { Bot, Loader2, MessageSquare, Send, User, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { snappySpringTransition as springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 interface Message {
@@ -18,12 +19,6 @@ interface ChatApiResponse {
 	model?: string;
 	error?: string;
 }
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 300,
-	damping: 25,
-};
 
 export function ChatWidget() {
 	const [isOpen, setIsOpen] = useState(false);

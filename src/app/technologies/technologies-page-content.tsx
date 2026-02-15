@@ -16,13 +16,7 @@ import Link from "next/link";
 
 import { trackCTAClick } from "@/components/analytics";
 import { getTechnologyIds, technologies } from "@/data/pseo/technologies";
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
+import { springTransition } from "@/lib/motion-constants";
 
 // Map technology IDs to icons
 const technologyIcons: Record<

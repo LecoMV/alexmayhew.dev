@@ -6,13 +6,7 @@ import Link from "next/link";
 
 import { trackCTAClick } from "@/components/analytics";
 import { NewsletterSignup } from "@/components/newsletter";
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
+import { springTransition } from "@/lib/motion-constants";
 
 const staggerContainer = {
 	hidden: { opacity: 0 },

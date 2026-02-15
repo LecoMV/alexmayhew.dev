@@ -5,18 +5,12 @@ import { ArrowRight, Layers } from "lucide-react";
 import Link from "next/link";
 
 import { getClusterRelatedPages, getPageClusters } from "@/data/pseo/types";
+import { springTransition } from "@/lib/motion-constants";
 
 interface TopicClusterNavProps {
 	currentSlug: string;
 	basePath?: string; // e.g., "/services" or "/services/migrations"
 }
-
-const springTransition = {
-	type: "spring" as const,
-	stiffness: 100,
-	damping: 20,
-	mass: 1,
-};
 
 /**
  * Topic cluster navigation component for pSEO pages.
