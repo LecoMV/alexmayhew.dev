@@ -38,7 +38,6 @@ export function HybridAtmospheric({
 		}
 	}, []);
 
-	// Noise function for ASCII
 	const noise = useCallback((x: number, y: number, t: number): number => {
 		const sin1 = Math.sin(x * 0.015 + t);
 		const sin2 = Math.sin(y * 0.015 + t * 0.7);
@@ -47,7 +46,6 @@ export function HybridAtmospheric({
 		return ((sin1 + sin2 + sin3 + sin4) / 4) * 0.5 + 0.5;
 	}, []);
 
-	// Initialize circuits
 	useEffect(() => {
 		if (dimensions.width === 0) return;
 
@@ -102,7 +100,6 @@ export function HybridAtmospheric({
 		circuitsRef.current = circuits;
 	}, [dimensions]);
 
-	// Handle resize
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		if (!canvas) return;
@@ -125,7 +122,6 @@ export function HybridAtmospheric({
 		};
 	}, [handleMouseMove]);
 
-	// Main animation
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		if (!canvas || dimensions.width === 0) return;

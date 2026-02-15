@@ -36,7 +36,6 @@ export function CircuitTraces({
 	const animationRef = useRef<number | undefined>(undefined);
 	const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
-	// Generate circuit traces
 	useEffect(() => {
 		const generateTraces = () => {
 			const newTraces: Trace[] = [];
@@ -97,7 +96,6 @@ export function CircuitTraces({
 		}
 	}, [dimensions, density, animated]);
 
-	// Handle resize
 	useEffect(() => {
 		const updateDimensions = () => {
 			if (canvasRef.current) {
@@ -111,7 +109,6 @@ export function CircuitTraces({
 		return () => window.removeEventListener("resize", updateDimensions);
 	}, []);
 
-	// Animation loop
 	useEffect(() => {
 		if (!animated || !canvasRef.current) return;
 
@@ -199,7 +196,6 @@ export function CircuitTraces({
 		};
 	}, [traces, animated, color, glowColor]);
 
-	// Static render
 	useEffect(() => {
 		if (animated || !canvasRef.current || traces.length === 0) return;
 

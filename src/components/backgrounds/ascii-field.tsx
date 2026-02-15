@@ -26,7 +26,6 @@ export function AsciiField({
 	const animationRef = useRef<number | undefined>(undefined);
 	const timeRef = useRef(0);
 
-	// Simple noise function
 	const noise = useCallback((x: number, y: number, t: number): number => {
 		const sin1 = Math.sin(x * 0.02 + t);
 		const sin2 = Math.sin(y * 0.02 + t * 0.7);

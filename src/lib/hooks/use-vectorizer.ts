@@ -68,7 +68,6 @@ const initialState: VectorizerState = {
 export function useVectorizer() {
 	const [state, setState] = useState<VectorizerState>(initialState);
 
-	// Refs for cleanup
 	const pollingRef = useRef<NodeJS.Timeout | null>(null);
 	const abortControllerRef = useRef<AbortController | null>(null);
 	const currentPreviewUrlRef = useRef<string | null>(null);
@@ -112,7 +111,6 @@ export function useVectorizer() {
 		revokePreviewUrl();
 	}, [stopPolling, cancelRequests, revokePreviewUrl]);
 
-	// Cleanup on unmount
 	useEffect(() => {
 		return cleanup;
 	}, [cleanup]);

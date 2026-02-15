@@ -49,20 +49,17 @@ export function Terminal({
 	const terminalRef = useRef<HTMLDivElement>(null);
 	const outputRef = useRef<HTMLDivElement>(null);
 
-	// Auto-scroll to bottom
 	useEffect(() => {
 		if (outputRef.current) {
 			outputRef.current.scrollTop = outputRef.current.scrollHeight;
 		}
 	}, [history]);
 
-	// Focus input on terminal click
 	const focusInput = useCallback(() => {
 		inputRef.current?.focus();
 		setIsFocused(true);
 	}, []);
 
-	// Handle command execution
 	const handleSubmit = useCallback(() => {
 		if (!input.trim()) {
 			setHistory((prev) => [...prev, { id: Date.now(), command: "", output: "" }]);
@@ -80,7 +77,6 @@ export function Terminal({
 			},
 		});
 
-		// Handle clear command
 		if (result.shouldClear) {
 			setHistory([{ id: Date.now(), command: "", output: WELCOME_MESSAGE }]);
 		} else {
@@ -90,20 +86,17 @@ export function Terminal({
 			]);
 		}
 
-		// Handle navigation
 		if (result.redirect) {
 			setTimeout(() => {
 				router.push(result.redirect!);
 			}, 500);
 		}
 
-		// Update command history
 		setCommandHistory((prev) => [...prev, input]);
 		setHistoryIndex(-1);
 		setInput("");
 	}, [input, currentPath, router]);
 
-	// Handle keyboard navigation
 	const handleKeyDown = useCallback(
 		(e: React.KeyboardEvent<HTMLInputElement>) => {
 			handleTerminalKeyDown(e, {

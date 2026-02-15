@@ -66,7 +66,6 @@ export function DataFlow({
 		}
 	}, []);
 
-	// Initialize nodes
 	useEffect(() => {
 		if (dimensions.width === 0) return;
 
@@ -101,7 +100,6 @@ export function DataFlow({
 		nodesRef.current = nodes;
 	}, [dimensions, nodeCount, labels]);
 
-	// Handle resize
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		if (!canvas) return;
@@ -124,7 +122,6 @@ export function DataFlow({
 		};
 	}, [handleMouseMove]);
 
-	// Animation
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		if (!canvas || dimensions.width === 0) return;
