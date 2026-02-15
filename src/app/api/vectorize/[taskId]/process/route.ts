@@ -50,6 +50,7 @@ export async function POST(
 				remove_background: options.remove_background,
 				calculate_quality: options.calculate_quality,
 			}),
+			signal: AbortSignal.timeout(10_000),
 		});
 
 		if (!response.ok) {

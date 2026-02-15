@@ -41,6 +41,7 @@ async function sendEmailViaResend(params: {
 			subject: params.subject,
 			html: params.html,
 		}),
+		signal: AbortSignal.timeout(10_000),
 	});
 
 	if (!response.ok) {
@@ -82,13 +83,30 @@ export const __resetDependencies = async () => {
 	};
 };
 
-export interface ContactFormResult {
+export interface ContactFormState {
 	success: boolean;
 	error?: string;
 	fieldErrors?: Record<string, string[]>;
 }
 
-export async function submitContactForm(data: ContactFormValues): Promise<ContactFormResult> {
+// useActionState-compatible wrapper: accepts (prevState, FormData)
+export async function submitContactAction(
+	_prevState: ContactFormState,
+	formData: FormData
+): Promise<ContactFormState> {
+	const raw = {
+		name: formData.get("name") as string,
+		email: formData.get("email") as string,
+		projectType: formData.get("projectType") as string,
+		budget: formData.get("budget") as string,
+		message: formData.get("message") as string,
+		referralSource: (formData.get("referralSource") as string) || undefined,
+		turnstileToken: (formData.get("turnstileToken") as string) || undefined,
+	};
+	return submitContactForm(raw as ContactFormValues);
+}
+
+export async function submitContactForm(data: ContactFormValues): Promise<ContactFormState> {
 	// 1. Zod Validation
 	const validation = contactFormSchema.safeParse(data);
 	if (!validation.success) {

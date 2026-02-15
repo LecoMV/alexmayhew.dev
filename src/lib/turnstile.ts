@@ -25,6 +25,7 @@ export async function verifyTurnstileToken(token: string, secretKey?: string): P
 				secret: secretKey,
 				response: token,
 			}),
+			signal: AbortSignal.timeout(5_000),
 		});
 
 		const data: TurnstileVerifyResponse = await response.json();

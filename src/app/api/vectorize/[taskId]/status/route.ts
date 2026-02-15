@@ -29,6 +29,7 @@ export async function GET(
 		const response = await fetch(`${VECTORIZER_CONFIG.apiUrl}/status/${taskIdResult.data}`, {
 			method: "GET",
 			headers,
+			signal: AbortSignal.timeout(5_000),
 		});
 
 		if (!response.ok) {

@@ -14,9 +14,21 @@ const newsletterSchema = z.object({
 
 export type NewsletterFormValues = z.infer<typeof newsletterSchema>;
 
-export interface NewsletterResult {
+export interface NewsletterFormState {
 	success: boolean;
 	error?: string;
+}
+
+// useActionState-compatible wrapper: accepts (prevState, FormData)
+export async function subscribeNewsletterAction(
+	_prevState: NewsletterFormState,
+	formData: FormData
+): Promise<NewsletterFormState> {
+	const raw = {
+		email: formData.get("email") as string,
+		source: (formData.get("source") as string) || "website",
+	};
+	return subscribeToNewsletter(raw);
 }
 
 // Dependency injection for testing
@@ -44,7 +56,9 @@ export const __resetDependencies = async () => {
 	};
 };
 
-export async function subscribeToNewsletter(data: NewsletterFormValues): Promise<NewsletterResult> {
+export async function subscribeToNewsletter(
+	data: NewsletterFormValues
+): Promise<NewsletterFormState> {
 	// 1. Validate input
 	const validation = newsletterSchema.safeParse(data);
 	if (!validation.success) {
@@ -94,6 +108,7 @@ export async function subscribeToNewsletter(data: NewsletterFormValues): Promise
 				name: "",
 				list_uuids: [listUuid],
 			}),
+			signal: AbortSignal.timeout(8_000),
 		});
 
 		if (response.ok) {

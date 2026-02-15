@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
 			method: "POST",
 			headers,
 			body: uploadFormData,
+			signal: AbortSignal.timeout(30_000),
 		});
 
 		if (!response.ok) {
