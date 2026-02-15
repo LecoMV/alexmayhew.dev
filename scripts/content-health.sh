@@ -8,7 +8,6 @@ set -euo pipefail
 LISTMONK_URL="http://localhost:9000"
 LISTMONK_PASS=$(pass show claude/listmonk/admin-password 2>/dev/null || echo "")
 BLOG_DIR="/home/deploy/projects/amdev/alexmayhew-dev/content/blog"
-POSTIZ_DB="PGPASSWORD=postiz_secure_2026 psql -p 5433 -U postiz_user -d postiz_app -h localhost -t -A"
 
 # Colors
 RED='\033[0;31m'
@@ -20,22 +19,13 @@ NC='\033[0m'
 # Status tracking
 WARNINGS=0
 CRITICALS=0
-ALERT_DETAILS=""
 
-pass_check() {
-  echo -e "  ${GREEN}[pass]${NC} $1"
-}
+pass_check() { echo -e "  ${GREEN}[pass]${NC} $1"; }
+warn_check() { echo -e "  ${YELLOW}[warn]${NC} $1"; WARNINGS=$((WARNINGS + 1)); }
+fail_check() { echo -e "  ${RED}[FAIL]${NC} $1"; CRITICALS=$((CRITICALS + 1)); }
 
-warn_check() {
-  echo -e "  ${YELLOW}[warn]${NC} $1"
-  WARNINGS=$((WARNINGS + 1))
-  ALERT_DETAILS="${ALERT_DETAILS}\n[WARN] $1"
-}
-
-fail_check() {
-  echo -e "  ${RED}[FAIL]${NC} $1"
-  CRITICALS=$((CRITICALS + 1))
-  ALERT_DETAILS="${ALERT_DETAILS}\n[FAIL] $1"
+db() {
+  PGPASSWORD=postiz_secure_2026 psql -p 5433 -U postiz_user -d postiz_app -h localhost -t -A -c "$1" 2>/dev/null
 }
 
 echo -e "${BOLD}Content Health Check — $(date '+%Y-%m-%d %H:%M %Z')${NC}\n"
@@ -49,17 +39,16 @@ else
   fail_check "Postiz container not running"
 fi
 
-# Check posts queued in next 7 days
-QUEUED_7D=$(eval "$POSTIZ_DB" -c "
-  SELECT COUNT(*) FROM posts
+QUEUED_7D=$(db "
+  SELECT COUNT(*) FROM \"Post\"
   WHERE \"publishDate\" >= NOW()
     AND \"publishDate\" <= NOW() + INTERVAL '7 days'
-    AND state = 'queue';
-" 2>/dev/null || echo "ERR")
+    AND state = 'QUEUE';
+" || echo "ERR")
 
 if [ "$QUEUED_7D" = "ERR" ]; then
   warn_check "Could not query Postiz DB"
-elif [ "$QUEUED_7D" -gt 0 ]; then
+elif [ "$QUEUED_7D" -gt 0 ] 2>/dev/null; then
   pass_check "${QUEUED_7D} posts queued in next 7 days"
 else
   warn_check "No posts queued in next 7 days"
@@ -68,13 +57,13 @@ fi
 # ─── 2. Listmonk Status ─────────────────────────────────────────────
 echo -e "\n${BOLD}2. Listmonk${NC}"
 
-if podman ps --format '{{.Names}}' 2>/dev/null | grep -qi listmonk; then
-  pass_check "Listmonk container running"
+LM_HTTP=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 http://localhost:9000/ 2>/dev/null || echo "000")
+if [ "$LM_HTTP" != "000" ]; then
+  pass_check "Listmonk responding (HTTP ${LM_HTTP})"
 else
-  fail_check "Listmonk container not running"
+  fail_check "Listmonk not responding on port 9000"
 fi
 
-# Check for scheduled campaigns in next 7 days
 if [ -n "$LISTMONK_PASS" ]; then
   SCHEDULED=$(curl -s -u "admin:${LISTMONK_PASS}" \
     "${LISTMONK_URL}/api/campaigns?status=scheduled&per_page=all" 2>/dev/null | \
@@ -123,7 +112,6 @@ else
   warn_check "Ollama service not running"
 fi
 
-# Check for loaded models
 MODELS=$(curl -s http://localhost:11434/api/tags 2>/dev/null | jq -r '.models[]?.name' 2>/dev/null || echo "ERR")
 if [ "$MODELS" = "ERR" ] || [ -z "$MODELS" ]; then
   warn_check "No Ollama models found or API unreachable"
@@ -142,16 +130,12 @@ MISSED_POSTS=""
 
 for file in "$BLOG_DIR"/*.mdx; do
   [ -f "$file" ] || continue
-
   if ! grep -q '^draft: true' "$file"; then
     continue
   fi
-
   POST_DATE=$(sed -n '/^---$/,/^---$/p' "$file" | grep '^date:' | sed 's/^date:[[:space:]]*//' | sed 's/^"\(.*\)"$/\1/')
   [ -z "$POST_DATE" ] && continue
-
   POST_TS=$(date -u -d "$POST_DATE" +%s 2>/dev/null || continue)
-
   if [ "$POST_TS" -le "$TODAY_TS" ]; then
     SLUG=$(basename "$file" .mdx)
     MISSED=$((MISSED + 1))
@@ -177,32 +161,32 @@ for i in $(seq 0 13); do
 
   # LinkedIn: Mon-Thu (1-4)
   if [ "$DOW" -ge 1 ] && [ "$DOW" -le 4 ]; then
-    LI_COUNT=$(eval "$POSTIZ_DB" -c "
-      SELECT COUNT(*) FROM posts
+    LI_COUNT=$(db "
+      SELECT COUNT(*) FROM \"Post\"
       WHERE \"publishDate\"::date = '${CHECK_DATE}'
-        AND state = 'queue'
-        AND content LIKE '%linkedin%';
-    " 2>/dev/null || echo "ERR")
+        AND state = 'QUEUE'
+        AND content::jsonb->0->>'id' = 'linkedin';
+    " || echo "ERR")
 
     if [ "$LI_COUNT" = "ERR" ]; then
-      :  # Skip if DB unreachable (already warned above)
-    elif [ "$LI_COUNT" -eq 0 ]; then
+      :
+    elif [ "$LI_COUNT" -eq 0 ] 2>/dev/null; then
       LINKEDIN_GAPS="${LINKEDIN_GAPS} ${CHECK_DATE}"
     fi
   fi
 
   # X/Twitter: Tue-Thu (2-4)
   if [ "$DOW" -ge 2 ] && [ "$DOW" -le 4 ]; then
-    X_COUNT=$(eval "$POSTIZ_DB" -c "
-      SELECT COUNT(*) FROM posts
+    X_COUNT=$(db "
+      SELECT COUNT(*) FROM \"Post\"
       WHERE \"publishDate\"::date = '${CHECK_DATE}'
-        AND state = 'queue'
-        AND content LIKE '%x%';
-    " 2>/dev/null || echo "ERR")
+        AND state = 'QUEUE'
+        AND content::jsonb->0->>'id' = 'x';
+    " || echo "ERR")
 
     if [ "$X_COUNT" = "ERR" ]; then
       :
-    elif [ "$X_COUNT" -eq 0 ]; then
+    elif [ "$X_COUNT" -eq 0 ] 2>/dev/null; then
       X_GAPS="${X_GAPS} ${CHECK_DATE}"
     fi
   fi
@@ -220,6 +204,28 @@ else
   warn_check "X/Twitter gaps:${X_GAPS}"
 fi
 
+# ─── 7. Token Expiry ────────────────────────────────────────────────
+echo -e "\n${BOLD}7. Token Expiry${NC}"
+
+LI_EXPIRES=$(db "
+  SELECT \"expiresIn\"::date FROM \"Integration\"
+  WHERE provider = 'linkedin' LIMIT 1;
+" | tr -d ' ' || echo "")
+
+if [ -n "$LI_EXPIRES" ]; then
+  LI_TS=$(date -u -d "$LI_EXPIRES" +%s 2>/dev/null || echo "0")
+  NOW_TS=$(date -u +%s)
+  DAYS_LEFT=$(( (LI_TS - NOW_TS) / 86400 ))
+
+  if [ "$DAYS_LEFT" -lt 7 ]; then
+    fail_check "LinkedIn token expires in ${DAYS_LEFT} days — re-authenticate NOW"
+  elif [ "$DAYS_LEFT" -lt 21 ]; then
+    warn_check "LinkedIn token expires in ${DAYS_LEFT} days"
+  else
+    pass_check "LinkedIn token expires in ${DAYS_LEFT} days"
+  fi
+fi
+
 # ─── Summary ────────────────────────────────────────────────────────
 echo ""
 echo -e "${BOLD}Summary${NC}"
@@ -230,28 +236,6 @@ elif [ "$WARNINGS" -gt 0 ]; then
   echo -e "  ${YELLOW}${WARNINGS} warning(s)${NC}, no critical issues"
 else
   echo -e "  ${GREEN}All checks passed${NC}"
-fi
-
-# ─── Send Alert if Issues Found ─────────────────────────────────────
-if [ "$CRITICALS" -gt 0 ] && [ -n "$LISTMONK_PASS" ]; then
-  echo ""
-  echo -e "${BOLD}Sending alert email...${NC}"
-
-  ALERT_BODY="Content Health Check found ${CRITICALS} critical issue(s) and ${WARNINGS} warning(s).\n\nDetails:${ALERT_DETAILS}"
-
-  curl -s -u "admin:${LISTMONK_PASS}" "${LISTMONK_URL}/api/tx" \
-    -H "Content-Type: application/json" \
-    -d "$(jq -n \
-      --arg email "alex@alexmayhew.dev" \
-      --argjson template_id "$TEMPLATE_ID" \
-      --arg body "$ALERT_BODY" \
-      '{
-        subscriber_email: $email,
-        template_id: $template_id,
-        data: {subject: "Content Health Alert", body: $body}
-      }')" >/dev/null 2>&1 && \
-    echo -e "  ${GREEN}Alert sent to alex@alexmayhew.dev${NC}" || \
-    echo -e "  ${RED}Failed to send alert${NC}"
 fi
 
 # Exit code
