@@ -1,6 +1,8 @@
-import { createMDX } from "fumadocs-mdx/next";
-import { fileURLToPath } from "url";
 import { execSync } from "child_process";
+import { fileURLToPath } from "url";
+
+import { withSentryConfig } from "@sentry/nextjs";
+import { createMDX } from "fumadocs-mdx/next";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -90,7 +92,13 @@ const config = {
 
 const withMDX = createMDX();
 
-export default withMDX(config);
+export default withSentryConfig(withMDX(config), {
+	silent: true,
+	sourcemaps: { disable: true },
+	autoInstrumentServerFunctions: false,
+	autoInstrumentMiddleware: false,
+	autoInstrumentAppDirectory: false,
+});
 
 // Enable calling `getCloudflareContext()` in `next dev`.
 // See https://opennext.js.org/cloudflare/bindings#local-access-to-bindings.
