@@ -2,9 +2,10 @@ import dynamic from "next/dynamic";
 
 import { MotionProvider, SmoothScroll } from "@/components/providers";
 import { JsonLd, LocalBusinessJsonLd } from "@/components/seo";
+import { CommandPaletteServer } from "@/components/ui/command-palette-server";
 
 import "./globals.css";
-import { CommandPaletteServer } from "@/components/ui/command-palette-server";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { Footer } from "@/components/ui/footer";
 import { Navigation } from "@/components/ui/navigation";
 import { NoiseOverlay } from "@/components/ui/noise-overlay";
@@ -159,7 +160,9 @@ export default function RootLayout({
 							<Footer />
 						</main>
 					</SmoothScroll>
-					<ChatWidget />
+					<ErrorBoundary>
+						<ChatWidget />
+					</ErrorBoundary>
 					<CookieConsent />
 					<CommandPaletteServer />
 				</MotionProvider>
