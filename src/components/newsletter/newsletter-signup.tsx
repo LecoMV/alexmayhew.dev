@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { m } from "framer-motion";
-import { Mail, CheckCircle, AlertCircle, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { AlertCircle, ArrowRight, CheckCircle, Mail } from "lucide-react";
+import { useState } from "react";
+
 import { subscribeToNewsletter } from "@/app/actions/newsletter";
 import { trackNewsletterEvent } from "@/components/analytics";
+import { cn } from "@/lib/utils";
 
 const springTransition = {
 	type: "spring" as const,

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import { useBlogTheme } from "@/lib/blog-themes";
 
 export function ReadingProgress() {

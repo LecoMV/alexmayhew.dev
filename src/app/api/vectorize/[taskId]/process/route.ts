@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+
 import {
-	VECTORIZER_CONFIG,
-	taskIdSchema,
-	processOptionsSchema,
 	formatZodError,
+	processOptionsSchema,
+	taskIdSchema,
+	VECTORIZER_CONFIG,
 } from "@/lib/vectorizer";
 
 /**

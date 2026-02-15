@@ -1,19 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { m, AnimatePresence } from "framer-motion";
-import Link from "next/link";
+import { AnimatePresence, m } from "framer-motion";
 import {
 	ArrowLeft,
-	Check,
-	Layers,
-	Zap,
-	Grid3X3,
-	Terminal,
 	Binary,
+	Check,
+	Grid3X3,
+	Layers,
 	Network,
 	Sparkles,
+	Terminal,
+	Zap,
 } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+
 import {
 	AsciiField,
 	BlueprintGrid,

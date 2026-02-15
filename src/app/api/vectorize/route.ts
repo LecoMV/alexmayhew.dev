@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { VECTORIZER_CONFIG, validateFile } from "@/lib/vectorizer";
+
+import { validateFile, VECTORIZER_CONFIG } from "@/lib/vectorizer";
 
 /**
  * POST /api/vectorize

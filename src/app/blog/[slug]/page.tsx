@@ -1,9 +1,12 @@
-import { blog } from "@/../.source/server";
 import { notFound } from "next/navigation";
+
+import { blog } from "@/../.source/server";
 import { BlogArticle } from "@/components/blog/blog-article";
 import { mdxComponents } from "@/components/mdx/mdx-components";
 import { ArticleJsonLd, BreadcrumbJsonLd, FaqJsonLd } from "@/components/seo";
+
 import { hubFaqs } from "./hub-faqs";
+
 import type { Metadata } from "next";
 
 const siteUrl = "https://alexmayhew.dev";

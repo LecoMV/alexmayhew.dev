@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { AnimatePresence, m } from "framer-motion";
+import { ChevronDown, Layers, Menu, Mic, Search, Terminal, X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { m, AnimatePresence } from "framer-motion";
-import Image from "next/image";
-import { Menu, X, ChevronDown, Layers, Terminal, Mic, Search } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
 import { cn } from "@/lib/utils";
 
 interface NavItem {

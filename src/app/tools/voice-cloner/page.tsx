@@ -1,24 +1,25 @@
-import type { Metadata } from "next";
 import {
-	Mic,
 	ArrowLeft,
-	ExternalLink,
-	Cpu,
-	Zap,
 	AudioWaveform,
-	Users,
 	BookOpen,
-	MessageSquare,
-	Settings2,
+	Cpu,
 	Download,
-	Sparkles,
-	Shield,
-	Globe,
+	ExternalLink,
 	FileText,
-	Wand2,
+	Globe,
 	Headphones,
+	MessageSquare,
+	Mic,
+	Settings2,
+	Shield,
+	Sparkles,
+	Users,
+	Wand2,
+	Zap,
 } from "lucide-react";
 import Link from "next/link";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
 	title: "Voice Cloner — AI Text-to-Speech & Audiobook Studio",

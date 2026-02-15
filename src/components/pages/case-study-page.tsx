@@ -1,22 +1,24 @@
 "use client";
 
-import { useState } from "react";
 import { m } from "framer-motion";
-import Link from "next/link";
 import {
-	ExternalLink,
-	Github,
 	ArrowRight,
+	Briefcase,
+	Building2,
+	CheckCircle2,
 	ChevronDown,
 	Clock,
-	Building2,
-	Briefcase,
-	CheckCircle2,
+	ExternalLink,
+	Github,
 	Lightbulb,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import type { Project } from "@/data/projects";
+import Link from "next/link";
+import { useState } from "react";
+
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
+import { cn } from "@/lib/utils";
+
+import type { Project } from "@/data/projects";
 
 const springTransition = {
 	type: "spring" as const,

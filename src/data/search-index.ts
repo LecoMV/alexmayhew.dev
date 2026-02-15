@@ -1,12 +1,12 @@
 import { blog } from "@/../.source/server";
 import { projects } from "@/data/projects";
 import {
-	getPublishedPages,
-	getAllMigrationPages,
-	getAllIntegrationPages,
 	getAllComparisonPages,
+	getAllIntegrationPages,
+	getAllMigrationPages,
+	getPublishedPages,
 } from "@/data/pseo";
-import { technologies, getTechnologyIds } from "@/data/pseo/technologies";
+import { getTechnologyIds, technologies } from "@/data/pseo/technologies";
 
 export interface SearchItem {
 	title: string;

@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+
 import { cn } from "@/lib/utils";
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -94,4 +95,4 @@ const CardFooter = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElemen
 );
 CardFooter.displayName = "CardFooter";
 
-export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter };
+export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle };

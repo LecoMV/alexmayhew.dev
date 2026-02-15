@@ -1,17 +1,20 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
 import { m } from "framer-motion";
-import Link from "next/link";
+import { ArrowLeft, ArrowRight, Calendar, Clock, RefreshCw, Tag } from "lucide-react";
 import Image from "next/image";
-import { ArrowLeft, Calendar, Tag, ArrowRight, Clock, RefreshCw } from "lucide-react";
-import { useBlogTheme } from "@/lib/blog-themes";
-import { ShareButtons } from "./share-buttons";
-import { ReadingProgress } from "./reading-progress";
-import { TableOfContents } from "./table-of-contents";
-import { NewsletterSignup } from "@/components/newsletter";
-import { useContentAnalytics } from "@/lib/hooks/use-content-analytics";
+import Link from "next/link";
+import { ReactNode, useEffect, useState } from "react";
+
 import { trackCTAClick } from "@/components/analytics";
+import { NewsletterSignup } from "@/components/newsletter";
+import { useBlogTheme } from "@/lib/blog-themes";
+import { useContentAnalytics } from "@/lib/hooks/use-content-analytics";
+
+import { ReadingProgress } from "./reading-progress";
+import { ShareButtons } from "./share-buttons";
+import { TableOfContents } from "./table-of-contents";
+
 import type { Post } from "./types";
 
 const seriesTopics: Record<string, string> = {

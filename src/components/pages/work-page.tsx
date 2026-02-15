@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { m, AnimatePresence } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
+import { ArrowUpRight, ExternalLink, FileText, Github, Layers } from "lucide-react";
 import Link from "next/link";
-import { ExternalLink, Github, ArrowUpRight, Layers, FileText } from "lucide-react";
+import { useState } from "react";
+
+import { categories, type Category, projects } from "@/data/projects";
 import { cn } from "@/lib/utils";
-import { projects, categories, type Category } from "@/data/projects";
 
 const springTransition = {
 	type: "spring" as const,

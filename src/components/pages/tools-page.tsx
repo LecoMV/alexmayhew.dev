@@ -1,8 +1,9 @@
 "use client";
 
 import { m } from "framer-motion";
-import { ArrowUpRight, Sparkles, Terminal, Layers, Download, Mic } from "lucide-react";
+import { ArrowUpRight, Download, Layers, Mic, Sparkles, Terminal } from "lucide-react";
 import Link from "next/link";
+
 import { cn } from "@/lib/utils";
 
 const springTransition = {

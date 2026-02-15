@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import { m, AnimatePresence } from "framer-motion";
-import { MessageSquare, X, Send, Loader2, Bot, User } from "lucide-react";
+import { AnimatePresence, m } from "framer-motion";
+import { Bot, Loader2, MessageSquare, Send, User, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
 import { cn } from "@/lib/utils";
 
 interface Message {

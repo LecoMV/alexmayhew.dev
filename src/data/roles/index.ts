@@ -11,16 +11,16 @@
 export type {
 	// Core types
 	Role,
-	ServiceTier,
-	// Supporting types
-	RolePainPoint,
 	RoleFaqItem,
-	RoleSeoMeta,
 	// Main page type
 	RolePage,
 	RolePageInput,
-	RolePageUpdate,
 	RolePageSummary,
+	RolePageUpdate,
+	// Supporting types
+	RolePainPoint,
+	RoleSeoMeta,
+	ServiceTier,
 } from "./types";
 
 // =============================================================================
@@ -28,12 +28,12 @@ export type {
 // =============================================================================
 
 export {
+	ROLE_LABELS,
 	// Role labels
 	ROLE_TITLES,
-	ROLE_LABELS,
+	SERVICE_TIER_DESCRIPTIONS,
 	// Service tier labels
 	SERVICE_TIER_LABELS,
-	SERVICE_TIER_DESCRIPTIONS,
 } from "./types";
 
 // =============================================================================
@@ -41,11 +41,11 @@ export {
 // =============================================================================
 
 export {
-	// Page data
-	rolePages,
+	getAllRoleSlugs,
 	// Helper functions
 	getPublishedRolePages,
-	getRolePageBySlug,
-	getAllRoleSlugs,
 	getPublishedRoleSlugs,
+	getRolePageBySlug,
+	// Page data
+	rolePages,
 } from "./pages";

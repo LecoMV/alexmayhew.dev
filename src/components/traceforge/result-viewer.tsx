@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
 import { m } from "framer-motion";
-import { Download, Copy, Check, ZoomIn, ZoomOut, RotateCcw, Eye } from "lucide-react";
+import { Check, Copy, Download, Eye, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+
 import { cn } from "@/lib/utils";
 import { sanitizeSvg } from "@/lib/vectorizer/sanitize";
+
 import type { ProcessingResult } from "@/lib/hooks/use-vectorizer";
 
 interface ResultViewerProps {

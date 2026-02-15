@@ -1,21 +1,21 @@
 "use client";
 
 import { m } from "framer-motion";
-import Link from "next/link";
 import {
-	MapPin,
+	ArrowRight,
 	Calendar,
 	Code2,
 	Cpu,
 	Database,
 	Globe,
+	MapPin,
 	Palette,
 	Server,
-	ArrowRight,
-	TrendingUp,
 	Shield,
+	TrendingUp,
 	Zap,
 } from "lucide-react";
+import Link from "next/link";
 
 const springTransition = {
 	type: "spring" as const,

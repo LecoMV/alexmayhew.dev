@@ -9,9 +9,9 @@ export { IntegrationJsonLd } from "./integration-json-ld";
 export { TechnologyJsonLd } from "./technology-json-ld";
 export { RoleJsonLd } from "./role-json-ld";
 export {
-	HowToJsonLd,
-	generateMigrationHowToSteps,
 	generateIntegrationHowToSteps,
+	generateMigrationHowToSteps,
+	HowToJsonLd,
 } from "./howto-json-ld";
 export { LocalBusinessJsonLd } from "./local-business-json-ld";
 export { CaseStudyJsonLd } from "./case-study-json-ld";

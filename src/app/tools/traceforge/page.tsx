@@ -1,8 +1,10 @@
-import type { Metadata } from "next";
-import { Layers, ArrowLeft, Zap } from "lucide-react";
+import { ArrowLeft, Layers, Zap } from "lucide-react";
 import Link from "next/link";
+
 import { TraceForgeApp } from "@/components/traceforge";
 import { SystemStatus } from "@/components/traceforge/system-status";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
 	title: "TraceForge",

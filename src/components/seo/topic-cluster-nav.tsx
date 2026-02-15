@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { Layers, ArrowRight } from "lucide-react";
 import { m } from "framer-motion";
-import { getPageClusters, getClusterRelatedPages } from "@/data/pseo/types";
+import { ArrowRight, Layers } from "lucide-react";
+import Link from "next/link";
+
+import { getClusterRelatedPages, getPageClusters } from "@/data/pseo/types";
 
 interface TopicClusterNavProps {
 	currentSlug: string;

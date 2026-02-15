@@ -1,17 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import { m } from "framer-motion";
-import Link from "next/link";
 import {
 	ArrowLeft,
-	Terminal as TerminalIcon,
+	ArrowRight,
 	Box,
-	MessageSquare,
 	Check,
 	Clock,
-	ArrowRight,
+	MessageSquare,
+	Terminal as TerminalIcon,
 } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+
 import { Terminal } from "@/components/terminal/terminal";
 
 const springTransition = {

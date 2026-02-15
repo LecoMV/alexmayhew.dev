@@ -1,13 +1,13 @@
 // Types
 export type {
-	ThemeId,
-	LayoutVariant,
-	ThemeColors,
-	ThemeTypography,
-	ThemeAnimation,
-	ThemeLayout,
 	BlogTheme,
+	LayoutVariant,
+	ThemeAnimation,
+	ThemeColors,
+	ThemeId,
+	ThemeLayout,
 	ThemeOverride,
+	ThemeTypography,
 } from "./types";
 
 // Theme definitions
@@ -16,10 +16,10 @@ export { terminalTheme } from "./themes/terminal";
 export { classifiedTheme } from "./themes/classified";
 
 // Config
-export { ACTIVE_THEME_ID, resolveTheme, getActiveTheme, getAllThemes } from "./config";
+export { ACTIVE_THEME_ID, getActiveTheme, getAllThemes, resolveTheme } from "./config";
 
 // Context and hooks
-export { BlogThemeProvider, useBlogTheme, useTheme, useSpringTransition } from "./context";
+export { BlogThemeProvider, useBlogTheme, useSpringTransition, useTheme } from "./context";
 
 // Utilities
-export { deepMerge, getThemeCSSVars, getSpringTransition } from "./utils";
+export { deepMerge, getSpringTransition, getThemeCSSVars } from "./utils";

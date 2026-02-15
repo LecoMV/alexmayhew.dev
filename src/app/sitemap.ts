@@ -1,14 +1,15 @@
-import type { MetadataRoute } from "next";
 import { blog, newsletter } from "@/../.source/server";
+import { getCaseStudyProjects } from "@/data/projects";
 import {
-	getPublishedPages,
-	getAllMigrationPages,
-	getAllIntegrationPages,
 	getAllComparisonPages,
+	getAllIntegrationPages,
+	getAllMigrationPages,
+	getPublishedPages,
 } from "@/data/pseo";
 import { getTechnologyIds } from "@/data/pseo/technologies";
 import { getPublishedRolePages } from "@/data/roles";
-import { getCaseStudyProjects } from "@/data/projects";
+
+import type { MetadataRoute } from "next";
 
 const siteUrl = "https://alexmayhew.dev";
 

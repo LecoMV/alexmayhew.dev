@@ -1,20 +1,21 @@
 "use client";
 
 import { m } from "framer-motion";
-import Link from "next/link";
 import {
-	Code2,
 	ArrowRight,
-	Database,
-	Server,
 	Brain,
 	Cloud,
+	Code2,
+	Database,
 	FileCode,
-	Workflow,
 	Layers,
+	Server,
+	Workflow,
 } from "lucide-react";
-import { technologies, getTechnologyIds } from "@/data/pseo/technologies";
+import Link from "next/link";
+
 import { trackCTAClick } from "@/components/analytics";
+import { getTechnologyIds, technologies } from "@/data/pseo/technologies";
 
 const springTransition = {
 	type: "spring" as const,

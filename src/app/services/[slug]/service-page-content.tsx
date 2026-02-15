@@ -1,27 +1,29 @@
 "use client";
 
 import { m } from "framer-motion";
-import Link from "next/link";
-import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import {
+	AlertTriangle,
 	ArrowRight,
+	ChevronDown,
+	Code2,
+	DollarSign,
+	ExternalLink,
+	HelpCircle,
 	Lightbulb,
 	Shield,
 	Wrench,
-	Code2,
-	DollarSign,
-	HelpCircle,
-	ChevronDown,
-	ExternalLink,
-	AlertTriangle,
 } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
-import type { PseoPage, ExpertApproach } from "@/data/pseo";
-import { TECHNOLOGY_LABELS, INDUSTRY_LABELS } from "@/data/pseo";
-import { TopicClusterNav } from "@/components/seo";
+
 import { trackCTAClick } from "@/components/analytics";
+import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
+import { TopicClusterNav } from "@/components/seo";
+import { INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
 import { useContentAnalytics } from "@/lib/hooks/use-content-analytics";
 import { cn } from "@/lib/utils";
+
+import type { ExpertApproach, PseoPage } from "@/data/pseo";
 
 const springTransition = {
 	type: "spring" as const,

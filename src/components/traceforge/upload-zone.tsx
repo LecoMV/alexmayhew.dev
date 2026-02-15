@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
-import { m, AnimatePresence } from "framer-motion";
-import { Upload, Image as ImageIcon, X, AlertCircle } from "lucide-react";
+import { AnimatePresence, m } from "framer-motion";
+import { AlertCircle, Image as ImageIcon, Upload, X } from "lucide-react";
+import { useCallback, useRef, useState } from "react";
+
 import { cn } from "@/lib/utils";
 
 interface UploadZoneProps {

@@ -1,5 +1,6 @@
-import type { RolePage } from "@/data/roles";
 import { ROLE_LABELS, SERVICE_TIER_LABELS } from "@/data/roles";
+
+import type { RolePage } from "@/data/roles";
 
 interface RoleJsonLdProps {
 	page: RolePage;

@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
 import { ContactPage } from "@/components/pages";
 import { ContactJsonLd } from "@/components/seo";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
 	title: "Contact",

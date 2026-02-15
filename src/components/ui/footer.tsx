@@ -1,8 +1,10 @@
-import Link from "next/link";
-import Image from "next/image";
 import { Github, Linkedin, Mail } from "lucide-react";
-import { LocalTime } from "./local-time";
+import Image from "next/image";
+import Link from "next/link";
+
 import { NewsletterSignup } from "@/components/newsletter";
+
+import { LocalTime } from "./local-time";
 
 // Custom X (formerly Twitter) icon since Lucide deprecated brand icons
 function XIcon({ className }: { className?: string }) {

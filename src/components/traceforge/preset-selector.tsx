@@ -1,20 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { m, AnimatePresence } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import {
-	Sparkles,
-	Zap,
-	Palette,
-	Pencil,
+	AlertTriangle,
 	Camera,
-	Layers,
+	ChevronDown,
 	Grid3X3,
 	HelpCircle,
-	ChevronDown,
-	AlertTriangle,
+	Layers,
+	Palette,
+	Pencil,
+	Sparkles,
+	Zap,
 } from "lucide-react";
+import { useState } from "react";
+
 import { cn } from "@/lib/utils";
+
 import type { Generator } from "@/lib/hooks/use-vectorizer";
 
 interface PresetOption {

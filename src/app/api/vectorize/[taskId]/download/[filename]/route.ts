@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { VECTORIZER_CONFIG, taskIdSchema, filenameSchema } from "@/lib/vectorizer";
+
+import { filenameSchema, taskIdSchema, VECTORIZER_CONFIG } from "@/lib/vectorizer";
 
 /**
  * GET /api/vectorize/[taskId]/download/[filename]

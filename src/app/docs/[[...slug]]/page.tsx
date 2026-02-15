@@ -1,7 +1,9 @@
-import { source } from "@/lib/source";
+import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
-import { DocsPage, DocsBody, DocsTitle, DocsDescription } from "fumadocs-ui/page";
+
 import { mdxComponents } from "@/components/mdx/mdx-components";
+import { source } from "@/lib/source";
+
 import type { Metadata } from "next";
 
 interface PageProps {

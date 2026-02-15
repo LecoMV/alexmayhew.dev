@@ -6,19 +6,21 @@
  */
 
 import { z } from "zod";
+
+import { INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "./types";
+
 import type {
-	Technology,
-	Industry,
-	Regulation,
-	PainPoint,
-	Recommendation,
-	CaseStudy,
 	BudgetRange,
+	CaseStudy,
 	FaqItem,
-	SeoMeta,
+	Industry,
+	PainPoint,
 	PseoPage,
+	Recommendation,
+	Regulation,
+	SeoMeta,
+	Technology,
 } from "./types";
-import { TECHNOLOGY_LABELS, INDUSTRY_LABELS } from "./types";
 
 // =============================================================================
 // Constants - Quality Gates

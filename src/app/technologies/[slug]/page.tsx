@@ -1,8 +1,11 @@
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getTechnology, getTechnologyIds } from "@/data/pseo/technologies";
+
 import { TechnologyJsonLd } from "@/components/seo/technology-json-ld";
+import { getTechnology, getTechnologyIds } from "@/data/pseo/technologies";
+
 import { TechnologyPageContent } from "./technology-page-content";
+
+import type { Metadata } from "next";
 
 type PageProps = {
 	params: Promise<{ slug: string }>;

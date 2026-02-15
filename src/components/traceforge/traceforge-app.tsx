@@ -1,14 +1,16 @@
 "use client";
 
-import { useState, useCallback } from "react";
 import { m } from "framer-motion";
-import { ArrowRight, RefreshCw, Layers, Zap, Shield, Code, Eraser } from "lucide-react";
+import { ArrowRight, Code, Eraser, Layers, RefreshCw, Shield, Zap } from "lucide-react";
+import { useCallback, useState } from "react";
+
+import { type Generator, useVectorizer } from "@/lib/hooks/use-vectorizer";
 import { cn } from "@/lib/utils";
-import { useVectorizer, type Generator } from "@/lib/hooks/use-vectorizer";
-import { UploadZone } from "./upload-zone";
+
 import { PresetSelector } from "./preset-selector";
 import { ProgressLog } from "./progress-log";
 import { ResultViewer } from "./result-viewer";
+import { UploadZone } from "./upload-zone";
 
 const springTransition = {
 	type: "spring" as const,

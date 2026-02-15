@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback, KeyboardEvent } from "react";
-import { m, AnimatePresence } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { Minus, Square, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { executeCommand, type CommandResult } from "./commands";
+import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+
+import { type CommandResult, executeCommand } from "./commands";
 
 interface HistoryEntry {
 	id: number;

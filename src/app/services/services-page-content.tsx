@@ -1,13 +1,15 @@
 "use client";
 
 import { m } from "framer-motion";
+import { ArrowRight, Building2, CheckCircle2, ChevronRight, Code2 } from "lucide-react";
 import Link from "next/link";
-import { ArrowRight, Code2, Building2, CheckCircle2, ChevronRight } from "lucide-react";
-import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
-import type { PseoPage } from "@/data/pseo";
-import { TECHNOLOGY_LABELS, INDUSTRY_LABELS } from "@/data/pseo";
-import { cn } from "@/lib/utils";
+
 import { trackCTAClick } from "@/components/analytics";
+import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
+import { INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
+import { cn } from "@/lib/utils";
+
+import type { PseoPage } from "@/data/pseo";
 
 const springTransition = {
 	type: "spring" as const,

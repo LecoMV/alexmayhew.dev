@@ -9,24 +9,24 @@
 // =============================================================================
 
 export type {
-	// Core enums/unions
-	Technology,
-	TechnologyCategory,
-	Industry,
-	// Supporting types
-	Regulation,
-	PainPoint,
-	Recommendation,
-	CaseStudy,
 	BudgetRange,
-	FaqItem,
-	SeoMeta,
+	CaseStudy,
 	ExpertApproach,
+	FaqItem,
+	Industry,
+	PainPoint,
 	// Main page type
 	PseoPage,
 	PseoPageInput,
-	PseoPageUpdate,
 	PseoPageSummary,
+	PseoPageUpdate,
+	Recommendation,
+	// Supporting types
+	Regulation,
+	SeoMeta,
+	// Core enums/unions
+	Technology,
+	TechnologyCategory,
 } from "./types";
 
 // =============================================================================
@@ -34,12 +34,12 @@ export type {
 // =============================================================================
 
 export {
-	TECHNOLOGY_LABELS,
-	TECHNOLOGY_CATEGORIES,
-	INDUSTRY_LABELS,
 	// Utility functions
 	generateSlug,
+	INDUSTRY_LABELS,
 	parseSlug,
+	TECHNOLOGY_CATEGORIES,
+	TECHNOLOGY_LABELS,
 } from "./types";
 
 // =============================================================================
@@ -47,43 +47,43 @@ export {
 // =============================================================================
 
 export {
-	// Quality gate constants
-	MIN_UNIQUE_INSIGHTS,
-	MIN_LONG_FORM_WORDS,
-	MIN_FAQS,
-	MIN_PAIN_POINTS,
-	MIN_TECH_RECOMMENDATIONS,
-	SEO_TITLE_MIN,
-	SEO_TITLE_MAX,
-	SEO_DESCRIPTION_MIN,
-	SEO_DESCRIPTION_MAX,
-	// Schemas
-	technologySchema,
-	industrySchema,
-	regulationSchema,
-	painPointSchema,
-	recommendationSchema,
-	caseStudySchema,
 	budgetRangeSchema,
-	faqItemSchema,
-	seoMetaSchema,
-	pseoPageSchema,
-	// Validation functions
-	validatePseoPage,
-	validatePartialPage,
+	caseStudySchema,
 	checkQualityGates,
-	validateSlugFormat,
 	// Utilities
 	countWords,
+	faqItemSchema,
 	formatZodErrors,
 	formatZodErrorString,
+	industrySchema,
+	MIN_FAQS,
+	MIN_LONG_FORM_WORDS,
+	MIN_PAIN_POINTS,
+	MIN_TECH_RECOMMENDATIONS,
+	// Quality gate constants
+	MIN_UNIQUE_INSIGHTS,
+	painPointSchema,
+	pseoPageSchema,
+	recommendationSchema,
+	regulationSchema,
+	SEO_DESCRIPTION_MAX,
+	SEO_DESCRIPTION_MIN,
+	SEO_TITLE_MAX,
+	SEO_TITLE_MIN,
+	seoMetaSchema,
+	// Schemas
+	technologySchema,
+	validatePartialPage,
+	// Validation functions
+	validatePseoPage,
+	validateSlugFormat,
 } from "./validation";
 
 export type {
-	ValidationResult,
-	ValidationError,
 	QualityGateResult,
 	QualityIssue,
+	ValidationError,
+	ValidationResult,
 } from "./validation";
 
 // =============================================================================
@@ -91,14 +91,14 @@ export type {
 // =============================================================================
 
 export {
-	// Main industry database
-	industries,
 	// Helper functions
 	getAllIndustryIds,
 	getIndustryData,
-	getIndustryRegulations,
-	getIndustryPainPoints,
 	getIndustryKeywords,
+	getIndustryPainPoints,
+	getIndustryRegulations,
+	// Main industry database
+	industries,
 	searchIndustries,
 } from "./industries";
 
@@ -109,15 +109,15 @@ export type { IndustryData, TechStackRecommendation, TimelineExpectation } from 
 // =============================================================================
 
 export {
-	// Page data
-	pseoPages,
+	getAllPageSlugs,
 	// Helper functions
 	getPageBySlug,
-	getPublishedPages,
-	getAllPageSlugs,
-	getPagesByTechnology,
 	getPagesByIndustry,
+	getPagesByTechnology,
+	getPublishedPages,
 	getRelatedPages,
+	// Page data
+	pseoPages,
 } from "./pages";
 
 // =============================================================================
@@ -125,32 +125,32 @@ export {
 // =============================================================================
 
 export {
-	// Migration page data
-	migrationPages,
+	getAllMigrationPages,
 	// Helper functions
 	getAllMigrationSlugs,
 	getMigrationPageBySlug,
 	getMigrationPagesByIndustry,
-	getAllMigrationPages,
+	// Migration page data
+	migrationPages,
 } from "./migrations";
 
-export type { LegacyTech, ModernTech, MigrationPattern, MigrationPage } from "./migrations";
+export type { LegacyTech, MigrationPage, MigrationPattern, ModernTech } from "./migrations";
 
 // =============================================================================
 // Integration Data (SaaS A ↔ SaaS B)
 // =============================================================================
 
 export {
-	// Integration page data
-	integrationPages,
+	getAllIntegrationPages,
 	// Helper functions
 	getAllIntegrationSlugs,
 	getIntegrationPageBySlug,
 	getIntegrationPagesByIndustry,
-	getAllIntegrationPages,
+	// Integration page data
+	integrationPages,
 } from "./integrations";
 
-export type { SaasProduct, IntegrationPattern, IntegrationPage } from "./integrations";
+export type { IntegrationPage, IntegrationPattern, SaasProduct } from "./integrations";
 
 // =============================================================================
 // Comparison Data (Tech A vs Tech B)
@@ -159,16 +159,16 @@ export type { SaasProduct, IntegrationPattern, IntegrationPage } from "./integra
 export {
 	// Comparison page data
 	comparisonPages,
+	getAllComparisonPages,
 	// Helper functions
 	getAllComparisonSlugs,
 	getComparisonPageBySlug,
 	getComparisonPagesByIndustry,
-	getAllComparisonPages,
 } from "./comparisons";
 
 export type {
-	TechOption,
 	ComparisonCriterion,
-	DecisionMatrix,
 	ComparisonPage,
+	DecisionMatrix,
+	TechOption,
 } from "./comparisons";

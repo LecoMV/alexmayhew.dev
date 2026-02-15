@@ -1,10 +1,10 @@
 export { CloudflareAnalytics } from "./cloudflare-analytics";
 export {
 	GoogleAnalytics,
+	trackContentEvent,
+	trackCTAClick,
 	trackEvent,
 	trackLeadEvent,
-	trackContentEvent,
-	trackServiceEvent,
 	trackNewsletterEvent,
-	trackCTAClick,
+	trackServiceEvent,
 } from "./google-analytics";

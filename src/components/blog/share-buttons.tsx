@@ -1,10 +1,11 @@
 "use client";
 
+import { AnimatePresence, m } from "framer-motion";
+import { Check, ExternalLink, Link2, Share2 } from "lucide-react";
 import { useState } from "react";
-import { m, AnimatePresence } from "framer-motion";
-import { Link2, Check, Share2, ExternalLink } from "lucide-react";
-import { cn } from "@/lib/utils";
+
 import { trackEvent } from "@/components/analytics";
+import { cn } from "@/lib/utils";
 
 interface ShareButtonsProps {
 	title: string;

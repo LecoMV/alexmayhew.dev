@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+
 import { useBlogTheme } from "@/lib/blog-themes";
 
 // Giscus configuration — update repo and categoryId after enabling GitHub Discussions

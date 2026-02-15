@@ -1,5 +1,6 @@
+import { INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
+
 import type { PseoPage } from "@/data/pseo";
-import { TECHNOLOGY_LABELS, INDUSTRY_LABELS } from "@/data/pseo";
 
 interface ServiceJsonLdProps {
 	page: PseoPage;

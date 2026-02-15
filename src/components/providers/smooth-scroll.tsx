@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import Lenis from "lenis";
+import { useEffect, useRef } from "react";
 
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
 	const lenisRef = useRef<Lenis | null>(null);

@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
-import { ForHubPage } from "./for-hub-page";
 import { getPublishedRolePages, ROLE_LABELS } from "@/data/roles";
+
+import { ForHubPage } from "./for-hub-page";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
 	title: "Technical Advisory by Role | Alex Mayhew",

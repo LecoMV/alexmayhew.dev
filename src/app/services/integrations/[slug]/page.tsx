@@ -1,9 +1,12 @@
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getIntegrationPageBySlug, getAllIntegrationSlugs } from "@/data/pseo";
+
+import { generateIntegrationHowToSteps, HowToJsonLd } from "@/components/seo/howto-json-ld";
 import { IntegrationJsonLd } from "@/components/seo/integration-json-ld";
-import { HowToJsonLd, generateIntegrationHowToSteps } from "@/components/seo/howto-json-ld";
+import { getAllIntegrationSlugs, getIntegrationPageBySlug } from "@/data/pseo";
+
 import { IntegrationPageContent } from "./integration-page-content";
+
+import type { Metadata } from "next";
 
 const siteUrl = "https://alexmayhew.dev";
 

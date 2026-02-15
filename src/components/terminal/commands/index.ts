@@ -2,7 +2,7 @@
 // Each command returns a string or JSX output
 
 import { getProjectsRecord } from "@/data/projects";
-import { skills, blogPosts } from "@/data/skills";
+import { blogPosts, skills } from "@/data/skills";
 
 export interface CommandResult {
 	output: string | React.ReactNode;

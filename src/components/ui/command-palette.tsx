@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { Command } from "cmdk";
 import { AnimatePresence, m } from "framer-motion";
-import { FileText, Briefcase, Cpu, Layers, Globe } from "lucide-react";
+import { Briefcase, Cpu, FileText, Globe, Layers } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+
 import type { SearchItem } from "@/data/search-index";
 
 const categoryIcons: Record<SearchItem["category"], React.ReactNode> = {

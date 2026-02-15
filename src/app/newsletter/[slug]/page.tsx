@@ -1,10 +1,12 @@
-import { newsletter } from "@/../.source/server";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+
+import { newsletter } from "@/../.source/server";
+import { mdxComponents } from "@/components/mdx/mdx-components";
 import { NewsletterSignup } from "@/components/newsletter";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/seo";
-import { mdxComponents } from "@/components/mdx/mdx-components";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+
 import type { Metadata } from "next";
 
 interface PageProps {

@@ -1,7 +1,8 @@
-import type { ThemeId, BlogTheme, ThemeOverride } from "./types";
+import { classifiedTheme } from "./themes/classified";
 import { defaultTheme } from "./themes/default";
 import { terminalTheme } from "./themes/terminal";
-import { classifiedTheme } from "./themes/classified";
+
+import type { BlogTheme, ThemeId, ThemeOverride } from "./types";
 
 /**
  * ═══════════════════════════════════════════════════════════════════════════

@@ -1,7 +1,9 @@
-import type { Metadata } from "next";
-import { Terminal, ArrowLeft, Github, ExternalLink } from "lucide-react";
+import { ArrowLeft, ExternalLink, Github, Terminal } from "lucide-react";
 import Link from "next/link";
+
 import { DownloadButtons, FeatureGrid, SecuritySection, TechSpecs } from "@/components/pilot";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
 	title: "Claude Pilot",

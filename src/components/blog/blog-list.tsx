@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useMemo } from "react";
 import { m } from "framer-motion";
-import Link from "next/link";
 import Image from "next/image";
-import { useBlogTheme } from "@/lib/blog-themes";
+import Link from "next/link";
+import { useMemo, useState } from "react";
+
 import { trackEvent } from "@/components/analytics";
-import { CardsLayout, TerminalLayout, DossierLayout } from "./layouts";
+import { useBlogTheme } from "@/lib/blog-themes";
+
+import { CardsLayout, DossierLayout, TerminalLayout } from "./layouts";
+
 import type { Post } from "./types";
 
 const CATEGORIES = ["all", "architecture", "business", "frontend", "infrastructure"] as const;

@@ -1,21 +1,23 @@
 "use client";
 
 import { m } from "framer-motion";
-import Link from "next/link";
 import {
-	Code2,
 	AlertTriangle,
-	CheckCircle2,
-	Lightbulb,
 	ArrowRight,
-	Layers,
-	Target,
 	Briefcase,
+	CheckCircle2,
 	ChevronRight,
+	Code2,
+	Layers,
+	Lightbulb,
+	Target,
 } from "lucide-react";
-import type { Technology } from "@/data/pseo/technologies";
-import { getPublishedPages } from "@/data/pseo";
+import Link from "next/link";
+
 import { trackCTAClick } from "@/components/analytics";
+import { getPublishedPages } from "@/data/pseo";
+
+import type { Technology } from "@/data/pseo/technologies";
 
 interface TechnologyPageContentProps {
 	technology: Technology;

@@ -1,24 +1,26 @@
 "use client";
 
 import { m } from "framer-motion";
-import Link from "next/link";
 import {
 	ArrowRight,
-	Target,
-	Wrench,
 	CheckCircle,
-	HelpCircle,
 	ChevronDown,
-	ExternalLink,
-	Users,
 	Clock,
+	ExternalLink,
+	HelpCircle,
+	Target,
+	Users,
+	Wrench,
 	Zap,
 } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
-import type { RolePage } from "@/data/roles";
-import { ROLE_LABELS, SERVICE_TIER_LABELS, SERVICE_TIER_DESCRIPTIONS } from "@/data/roles";
-import { cn } from "@/lib/utils";
+
 import { trackCTAClick } from "@/components/analytics";
+import { ROLE_LABELS, SERVICE_TIER_DESCRIPTIONS, SERVICE_TIER_LABELS } from "@/data/roles";
+import { cn } from "@/lib/utils";
+
+import type { RolePage } from "@/data/roles";
 
 const springTransition = {
 	type: "spring" as const,

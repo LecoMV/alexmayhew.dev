@@ -12,7 +12,7 @@
  * - When to choose each option
  */
 
-import type { Industry, BudgetRange, FaqItem } from "./types";
+import type { BudgetRange, FaqItem, Industry } from "./types";
 
 // =============================================================================
 // Comparison-Specific Types

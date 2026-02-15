@@ -1,9 +1,10 @@
 "use client";
 
 import { m } from "framer-motion";
-import { Download, Apple, Monitor, Terminal } from "lucide-react";
+import { Apple, Download, Monitor, Terminal } from "lucide-react";
+
+import { getPlatformDownloadUrl, type Platform, usePlatform } from "@/lib/hooks/use-platform";
 import { cn } from "@/lib/utils";
-import { usePlatform, getPlatformDownloadUrl, type Platform } from "@/lib/hooks/use-platform";
 
 const VERSION = "0.2.0-alpha.1";
 

@@ -1,6 +1,8 @@
+import Link from "next/link";
+
 import { newsletter } from "@/../.source/server";
 import { NewsletterSignup } from "@/components/newsletter";
-import Link from "next/link";
+
 import type { Metadata } from "next";
 
 const siteUrl = "https://alexmayhew.dev";

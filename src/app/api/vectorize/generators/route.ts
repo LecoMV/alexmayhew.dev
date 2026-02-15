@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { VECTORIZER_CONFIG, POTRACE_PRESETS, VTRACER_PRESETS } from "@/lib/vectorizer";
+
+import { POTRACE_PRESETS, VECTORIZER_CONFIG, VTRACER_PRESETS } from "@/lib/vectorizer";
 
 /**
  * GET /api/vectorize/generators

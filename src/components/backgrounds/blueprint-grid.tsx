@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
 import { m } from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface BlueprintGridProps {
 	className?: string;

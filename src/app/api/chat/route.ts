@@ -1,4 +1,5 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+
 import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
 
 // Rate limit: 10 messages per minute per IP (generous for legitimate users)

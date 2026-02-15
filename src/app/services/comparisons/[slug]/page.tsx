@@ -1,8 +1,11 @@
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getComparisonPageBySlug, getAllComparisonSlugs } from "@/data/pseo";
+
 import { ComparisonJsonLd } from "@/components/seo/comparison-json-ld";
+import { getAllComparisonSlugs, getComparisonPageBySlug } from "@/data/pseo";
+
 import { ComparisonPageContent } from "./comparison-page-content";
+
+import type { Metadata } from "next";
 
 const siteUrl = "https://alexmayhew.dev";
 

@@ -1,11 +1,13 @@
 "use client";
 
 import { m } from "framer-motion";
+import { ArrowRight, Briefcase, Building2, Rocket, Users } from "lucide-react";
 import Link from "next/link";
-import { ArrowRight, Users, Briefcase, Rocket, Building2 } from "lucide-react";
-import type { RolePage, Role } from "@/data/roles";
-import { ROLE_LABELS } from "@/data/roles";
+
 import { trackCTAClick } from "@/components/analytics";
+import { ROLE_LABELS } from "@/data/roles";
+
+import type { Role, RolePage } from "@/data/roles";
 
 const springTransition = {
 	type: "spring" as const,

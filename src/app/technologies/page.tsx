@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
 import { TechnologiesPageContent } from "./technologies-page-content";
+
+import type { Metadata } from "next";
 
 const siteUrl = "https://alexmayhew.dev";
 

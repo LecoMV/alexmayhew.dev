@@ -1,5 +1,6 @@
 import { blog } from "@/../.source/server";
 import { BlogList } from "@/components/blog/blog-list";
+
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

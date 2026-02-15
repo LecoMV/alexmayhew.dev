@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { m } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 interface Point {
 	x: number;

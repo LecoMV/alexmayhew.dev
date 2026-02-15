@@ -1,18 +1,19 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import { m, AnimatePresence } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import {
-	Cpu,
-	Zap,
-	PenTool,
-	Sparkles,
-	Server,
-	Power,
 	ArrowRight,
+	Cpu,
 	Loader2,
 	Lock,
+	PenTool,
+	Power,
+	Server,
+	Sparkles,
+	Zap,
 } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
 import { cn } from "@/lib/utils";
 
 interface SystemStatusData {

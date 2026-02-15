@@ -1,9 +1,11 @@
 "use client";
 
+import { AnimatePresence, m } from "framer-motion";
+import { AlertCircle, CheckCircle, Loader2, Terminal } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { m, AnimatePresence } from "framer-motion";
-import { Terminal, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+
 import { cn } from "@/lib/utils";
+
 import type { VectorizerStatus } from "@/lib/hooks/use-vectorizer";
 
 interface ProgressLogProps {

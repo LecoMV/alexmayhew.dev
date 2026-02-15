@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
 import { WorkPage } from "@/components/pages";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
 	title: "Work",

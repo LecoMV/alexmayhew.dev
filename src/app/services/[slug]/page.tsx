@@ -1,14 +1,17 @@
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+
+import { ServiceJsonLd } from "@/components/seo";
 import {
 	getPageBySlug,
 	getPublishedPages,
-	TECHNOLOGY_LABELS,
-	INDUSTRY_LABELS,
 	getRelatedPages,
+	INDUSTRY_LABELS,
+	TECHNOLOGY_LABELS,
 } from "@/data/pseo";
-import { ServiceJsonLd } from "@/components/seo";
+
 import { ServicePageContent } from "./service-page-content";
+
+import type { Metadata } from "next";
 
 const siteUrl = "https://alexmayhew.dev";
 

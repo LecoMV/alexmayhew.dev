@@ -14,7 +14,7 @@
  * - Budget range
  */
 
-import type { Industry, BudgetRange, FaqItem, Regulation } from "./types";
+import type { BudgetRange, FaqItem, Industry, Regulation } from "./types";
 
 // =============================================================================
 // Migration-Specific Types

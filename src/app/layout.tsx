@@ -1,13 +1,17 @@
-import type { Metadata, Viewport } from "next";
 import dynamic from "next/dynamic";
-import { inter, jetbrainsMono } from "./fonts";
-import "./globals.css";
-import { SmoothScroll, MotionProvider } from "@/components/providers";
-import { Navigation } from "@/components/ui/navigation";
-import { Footer } from "@/components/ui/footer";
-import { NoiseOverlay } from "@/components/ui/noise-overlay";
-import { CommandPaletteServer } from "@/components/ui/command-palette-server";
+
+import { MotionProvider, SmoothScroll } from "@/components/providers";
 import { JsonLd, LocalBusinessJsonLd } from "@/components/seo";
+
+import "./globals.css";
+import { CommandPaletteServer } from "@/components/ui/command-palette-server";
+import { Footer } from "@/components/ui/footer";
+import { Navigation } from "@/components/ui/navigation";
+import { NoiseOverlay } from "@/components/ui/noise-overlay";
+
+import { inter, jetbrainsMono } from "./fonts";
+
+import type { Metadata, Viewport } from "next";
 const GoogleAnalytics = dynamic(() =>
 	import("@/components/analytics/google-analytics").then((m) => m.GoogleAnalytics)
 );

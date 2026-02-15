@@ -1,8 +1,11 @@
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getRolePageBySlug, getPublishedRoleSlugs, ROLE_LABELS } from "@/data/roles";
+
 import { RoleJsonLd } from "@/components/seo/role-json-ld";
+import { getPublishedRoleSlugs, getRolePageBySlug, ROLE_LABELS } from "@/data/roles";
+
 import { RolePageContent } from "./role-page-content";
+
+import type { Metadata } from "next";
 
 const siteUrl = "https://alexmayhew.dev";
 

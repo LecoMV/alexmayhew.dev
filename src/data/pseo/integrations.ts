@@ -13,7 +13,7 @@
  * - Error handling strategies
  */
 
-import type { Industry, BudgetRange, FaqItem, Regulation } from "./types";
+import type { BudgetRange, FaqItem, Industry, Regulation } from "./types";
 
 // =============================================================================
 // Integration-Specific Types

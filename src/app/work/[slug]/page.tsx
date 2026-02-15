@@ -1,8 +1,10 @@
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getProjectById, getCaseStudyProjects, projects } from "@/data/projects";
-import { CaseStudyJsonLd } from "@/components/seo/case-study-json-ld";
+
 import { CaseStudyPage } from "@/components/pages/case-study-page";
+import { CaseStudyJsonLd } from "@/components/seo/case-study-json-ld";
+import { getCaseStudyProjects, getProjectById, projects } from "@/data/projects";
+
+import type { Metadata } from "next";
 
 const siteUrl = "https://alexmayhew.dev";
 

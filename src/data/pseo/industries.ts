@@ -8,7 +8,7 @@
  * Sources: Federal regulations, industry reports, compliance frameworks
  */
 
-import type { Industry, Regulation, PainPoint, BudgetRange } from "./types";
+import type { BudgetRange, Industry, PainPoint, Regulation } from "./types";
 
 // =============================================================================
 // Industry Data Interface

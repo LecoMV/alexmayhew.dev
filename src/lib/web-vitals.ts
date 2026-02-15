@@ -1,5 +1,5 @@
-import { onCLS, onINP, onLCP, onFCP, onTTFB, type Metric } from "web-vitals";
-import { setMeasurement, addBreadcrumb, captureMessage } from "@sentry/nextjs";
+import { addBreadcrumb, captureMessage, setMeasurement } from "@sentry/nextjs";
+import { type Metric, onCLS, onFCP, onINP, onLCP, onTTFB } from "web-vitals";
 
 // Core Web Vitals thresholds per Google/Atmospheric standards
 const thresholds = {

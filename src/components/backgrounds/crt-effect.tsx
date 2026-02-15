@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { m } from "framer-motion";
+import { useEffect, useRef } from "react";
 
 interface CRTEffectProps {
 	className?: string;

@@ -2,8 +2,9 @@
 
 import { headers } from "next/headers";
 import { z } from "zod";
-import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
+
 import { getEnv } from "@/lib/cloudflare-env";
+import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
 
 // Validation schema
 const newsletterSchema = z.object({

@@ -1,7 +1,7 @@
 "use client";
 
 import { m } from "framer-motion";
-import { Layout, Database, Server, Terminal, Activity, User, Shield, Zap } from "lucide-react";
+import { Activity, Database, Layout, Server, Shield, Terminal, User, Zap } from "lucide-react";
 
 const springTransition = {
 	type: "spring" as const,

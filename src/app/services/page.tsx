@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
+import { getPublishedPages, INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
+
 import { ServicesPage } from "./services-page-content";
-import { getPublishedPages, TECHNOLOGY_LABELS, INDUSTRY_LABELS } from "@/data/pseo";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
 	title: "Technical Advisory Services",

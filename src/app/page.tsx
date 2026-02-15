@@ -1,10 +1,11 @@
 "use client";
 
 import { m } from "framer-motion";
+import { ArrowRight, Layers, Terminal, Zap } from "lucide-react";
 import Link from "next/link";
-import { ArrowRight, Terminal, Layers, Zap } from "lucide-react";
-import { NewsletterSignup } from "@/components/newsletter";
+
 import { trackCTAClick } from "@/components/analytics";
+import { NewsletterSignup } from "@/components/newsletter";
 
 const springTransition = {
 	type: "spring" as const,

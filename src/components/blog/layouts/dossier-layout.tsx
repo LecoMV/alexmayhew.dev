@@ -1,9 +1,11 @@
 "use client";
 
 import { m } from "framer-motion";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+
 import { useBlogTheme } from "@/lib/blog-themes";
+
 import type { Post } from "../types";
 
 interface DossierLayoutProps {

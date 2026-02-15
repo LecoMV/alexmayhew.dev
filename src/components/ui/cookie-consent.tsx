@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { m, AnimatePresence } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { Cookie, X } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const CONSENT_KEY = "cookie-consent";
 const CONSENT_VERSION = "1"; // Bump this to re-show consent after policy changes

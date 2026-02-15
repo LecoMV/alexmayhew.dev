@@ -4,7 +4,8 @@
  */
 
 import { z } from "zod";
-import { POTRACE_PRESETS, VTRACER_PRESETS, ALLOWED_IMAGE_TYPES, MAX_FILE_SIZE } from "./config";
+
+import { ALLOWED_IMAGE_TYPES, MAX_FILE_SIZE, POTRACE_PRESETS, VTRACER_PRESETS } from "./config";
 
 /**
  * UUID v4 regex pattern for task ID validation

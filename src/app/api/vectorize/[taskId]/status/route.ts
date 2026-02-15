@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { VECTORIZER_CONFIG, taskIdSchema } from "@/lib/vectorizer";
+
+import { taskIdSchema, VECTORIZER_CONFIG } from "@/lib/vectorizer";
 
 /**
  * GET /api/vectorize/[taskId]/status

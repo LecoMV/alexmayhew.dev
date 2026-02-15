@@ -1,6 +1,6 @@
 "use client";
 
-import { Turnstile as TurnstileWidget, type TurnstileInstance } from "@marsidev/react-turnstile";
+import { type TurnstileInstance, Turnstile as TurnstileWidget } from "@marsidev/react-turnstile";
 import { forwardRef, useImperativeHandle, useRef } from "react";
 
 export interface TurnstileRef {

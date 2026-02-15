@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
 import { usePathname } from "next/navigation";
-import { trackContentEvent, trackServiceEvent, trackEvent } from "@/components/analytics";
+import { useCallback, useEffect, useRef } from "react";
+
+import { trackContentEvent, trackEvent, trackServiceEvent } from "@/components/analytics";
 
 interface UseContentAnalyticsOptions {
 	contentId?: string;
