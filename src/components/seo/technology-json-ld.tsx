@@ -1,3 +1,12 @@
+import {
+	AREA_SERVED,
+	breadcrumbSchema,
+	JsonLdScript,
+	SCHEMA_CONTEXT,
+	SITE_URL,
+	WEBSITE_REF,
+} from "./schema-utils";
+
 import type { Technology } from "@/data/pseo/technologies";
 
 interface TechnologyJsonLdProps {
@@ -5,12 +14,10 @@ interface TechnologyJsonLdProps {
 }
 
 export function TechnologyJsonLd({ technology }: TechnologyJsonLdProps) {
-	const siteUrl = "https://alexmayhew.dev";
-	const pageUrl = `${siteUrl}/technologies/${technology.id}`;
+	const pageUrl = `${SITE_URL}/technologies/${technology.id}`;
 
-	// Service schema - represents the development service offered
 	const serviceSchema = {
-		"@context": "https://schema.org",
+		"@context": SCHEMA_CONTEXT,
 		"@type": "Service",
 		"@id": `${pageUrl}#service`,
 		name: `${technology.displayName} Development`,
@@ -18,14 +25,11 @@ export function TechnologyJsonLd({ technology }: TechnologyJsonLdProps) {
 		provider: {
 			"@type": "Person",
 			name: "Alex Mayhew",
-			url: siteUrl,
+			url: SITE_URL,
 			jobTitle: "Technical Advisor & Systems Architect",
 		},
 		serviceType: "Software Development",
-		areaServed: {
-			"@type": "Place",
-			name: "Worldwide",
-		},
+		areaServed: AREA_SERVED,
 		hasOfferCatalog: {
 			"@type": "OfferCatalog",
 			name: `${technology.displayName} Services`,
@@ -40,9 +44,8 @@ export function TechnologyJsonLd({ technology }: TechnologyJsonLdProps) {
 		},
 	};
 
-	// ItemList schema for best practices - helps with featured snippets
 	const bestPracticesSchema = {
-		"@context": "https://schema.org",
+		"@context": SCHEMA_CONTEXT,
 		"@type": "ItemList",
 		name: `${technology.displayName} Best Practices`,
 		description: `Expert best practices for ${technology.displayName} development`,
@@ -54,9 +57,8 @@ export function TechnologyJsonLd({ technology }: TechnologyJsonLdProps) {
 		})),
 	};
 
-	// ItemList schema for common pitfalls
 	const pitfallsSchema = {
-		"@context": "https://schema.org",
+		"@context": SCHEMA_CONTEXT,
 		"@type": "ItemList",
 		name: `${technology.displayName} Common Pitfalls`,
 		description: `Common mistakes to avoid in ${technology.displayName} development`,
@@ -68,19 +70,16 @@ export function TechnologyJsonLd({ technology }: TechnologyJsonLdProps) {
 		})),
 	};
 
-	// WebPage schema
 	const webPageSchema = {
-		"@context": "https://schema.org",
+		"@context": SCHEMA_CONTEXT,
 		"@type": "WebPage",
 		"@id": pageUrl,
 		url: pageUrl,
 		name: `${technology.displayName} Developer | Technical Advisor`,
 		description: technology.expertiseLevel,
 		isPartOf: {
-			"@type": "WebSite",
-			"@id": `${siteUrl}#website`,
-			url: siteUrl,
-			name: "Alex Mayhew",
+			...WEBSITE_REF,
+			"@id": `${SITE_URL}#website`,
 		},
 		about: {
 			"@type": "Thing",
@@ -91,53 +90,18 @@ export function TechnologyJsonLd({ technology }: TechnologyJsonLdProps) {
 		},
 	};
 
-	// BreadcrumbList schema
-	const breadcrumbSchema = {
-		"@context": "https://schema.org",
-		"@type": "BreadcrumbList",
-		itemListElement: [
-			{
-				"@type": "ListItem",
-				position: 1,
-				name: "Home",
-				item: siteUrl,
-			},
-			{
-				"@type": "ListItem",
-				position: 2,
-				name: "Technologies",
-				item: `${siteUrl}/technologies`,
-			},
-			{
-				"@type": "ListItem",
-				position: 3,
-				name: technology.displayName,
-				item: pageUrl,
-			},
-		],
-	};
-
 	return (
 		<>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
-			/>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(bestPracticesSchema) }}
-			/>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(pitfallsSchema) }}
-			/>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
-			/>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+			<JsonLdScript data={serviceSchema} />
+			<JsonLdScript data={bestPracticesSchema} />
+			<JsonLdScript data={pitfallsSchema} />
+			<JsonLdScript data={webPageSchema} />
+			<JsonLdScript
+				data={breadcrumbSchema([
+					{ name: "Home", item: SITE_URL },
+					{ name: "Technologies", item: `${SITE_URL}/technologies` },
+					{ name: technology.displayName, item: pageUrl },
+				])}
 			/>
 		</>
 	);

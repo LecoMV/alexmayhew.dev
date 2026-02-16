@@ -1,38 +1,33 @@
+import {
+	AREA_SERVED,
+	breadcrumbSchema,
+	faqSchema,
+	JsonLdScript,
+	PROVIDER_PERSON,
+	SCHEMA_CONTEXT,
+	SITE_URL,
+	webPageSchema,
+} from "./schema-utils";
+
 import type { MigrationPage } from "@/data/pseo";
 
 interface MigrationJsonLdProps {
 	page: MigrationPage;
 }
 
-const siteUrl = "https://alexmayhew.dev";
-
-/**
- * JSON-LD structured data for migration service pages.
- * Implements Service, HowTo, FAQ, WebPage, and Breadcrumb schemas.
- */
 export function MigrationJsonLd({ page }: MigrationJsonLdProps) {
-	const pageUrl = `${siteUrl}/services/migrations/${page.slug}`;
+	const pageUrl = `${SITE_URL}/services/migrations/${page.slug}`;
 	const serviceName = `${page.legacyTech.name} to ${page.modernTech.name} Migration`;
 
-	// Service schema
 	const serviceSchema = {
-		"@context": "https://schema.org",
+		"@context": SCHEMA_CONTEXT,
 		"@type": "Service",
 		"@id": pageUrl,
 		name: serviceName,
 		description: page.seo.description,
-		provider: {
-			"@type": "Person",
-			name: "Alex Mayhew",
-			url: siteUrl,
-			image: `${siteUrl}/og-image.png`,
-			jobTitle: "Technical Advisor & Systems Architect",
-		},
+		provider: PROVIDER_PERSON,
 		serviceType: "Software Migration Services",
-		areaServed: {
-			"@type": "Place",
-			name: "Worldwide",
-		},
+		areaServed: AREA_SERVED,
 		hasOfferCatalog: {
 			"@type": "OfferCatalog",
 			name: `${serviceName} Services`,
@@ -74,9 +69,8 @@ export function MigrationJsonLd({ page }: MigrationJsonLdProps) {
 		url: pageUrl,
 	};
 
-	// HowTo schema for migration process
 	const howToSchema = {
-		"@context": "https://schema.org",
+		"@context": SCHEMA_CONTEXT,
 		"@type": "HowTo",
 		name: `How to Migrate from ${page.legacyTech.name} to ${page.modernTech.name}`,
 		description: page.migrationApproach,
@@ -128,98 +122,27 @@ export function MigrationJsonLd({ page }: MigrationJsonLdProps) {
 		})),
 	};
 
-	// FAQ schema
-	const faqSchema = {
-		"@context": "https://schema.org",
-		"@type": "FAQPage",
-		mainEntity: page.faqs.map((faq) => ({
-			"@type": "Question",
-			name: faq.question,
-			acceptedAnswer: {
-				"@type": "Answer",
-				text: faq.answer,
-			},
-		})),
-	};
-
-	// WebPage schema
-	const webPageSchema = {
-		"@context": "https://schema.org",
-		"@type": "WebPage",
-		"@id": pageUrl,
-		url: pageUrl,
-		name: page.seo.title,
-		description: page.seo.description,
-		inLanguage: "en-US",
-		isPartOf: {
-			"@type": "WebSite",
-			"@id": siteUrl,
-			url: siteUrl,
-			name: "Alex Mayhew",
-		},
-		about: {
-			"@type": "Thing",
-			name: serviceName,
-		},
-		mainEntity: {
-			"@id": pageUrl,
-		},
-		keywords: page.seo.keywords.join(", "),
-	};
-
-	// BreadcrumbList schema
-	const breadcrumbSchema = {
-		"@context": "https://schema.org",
-		"@type": "BreadcrumbList",
-		itemListElement: [
-			{
-				"@type": "ListItem",
-				position: 1,
-				name: "Home",
-				item: siteUrl,
-			},
-			{
-				"@type": "ListItem",
-				position: 2,
-				name: "Services",
-				item: `${siteUrl}/services`,
-			},
-			{
-				"@type": "ListItem",
-				position: 3,
-				name: "Migrations",
-				item: `${siteUrl}/services/migrations`,
-			},
-			{
-				"@type": "ListItem",
-				position: 4,
-				name: `${page.legacyTech.name} to ${page.modernTech.name}`,
-				item: pageUrl,
-			},
-		],
-	};
-
 	return (
 		<>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+			<JsonLdScript data={serviceSchema} />
+			<JsonLdScript data={howToSchema} />
+			<JsonLdScript data={faqSchema(page.faqs)} />
+			<JsonLdScript
+				data={webPageSchema({
+					pageUrl,
+					title: page.seo.title,
+					description: page.seo.description,
+					aboutName: serviceName,
+					keywords: page.seo.keywords,
+				})}
 			/>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
-			/>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-			/>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
-			/>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+			<JsonLdScript
+				data={breadcrumbSchema([
+					{ name: "Home", item: SITE_URL },
+					{ name: "Services", item: `${SITE_URL}/services` },
+					{ name: "Migrations", item: `${SITE_URL}/services/migrations` },
+					{ name: `${page.legacyTech.name} to ${page.modernTech.name}`, item: pageUrl },
+				])}
 			/>
 		</>
 	);

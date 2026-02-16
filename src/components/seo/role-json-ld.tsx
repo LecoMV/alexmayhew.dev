@@ -1,24 +1,27 @@
 import { ROLE_LABELS, SERVICE_TIER_LABELS } from "@/data/roles";
 
+import {
+	AREA_SERVED,
+	breadcrumbSchema,
+	faqSchema,
+	JsonLdScript,
+	SCHEMA_CONTEXT,
+	SITE_URL,
+	webPageSchema,
+} from "./schema-utils";
+
 import type { RolePage } from "@/data/roles";
 
 interface RoleJsonLdProps {
 	page: RolePage;
 }
 
-const siteUrl = "https://alexmayhew.dev";
-
-/**
- * JSON-LD structured data for role-based landing pages.
- * Implements Service, FAQPage, WebPage, and BreadcrumbList schemas.
- */
 export function RoleJsonLd({ page }: RoleJsonLdProps) {
 	const roleLabel = ROLE_LABELS[page.role];
-	const pageUrl = `${siteUrl}/for/${page.slug}`;
+	const pageUrl = `${SITE_URL}/for/${page.slug}`;
 
-	// Service schema - positioned as consulting service
 	const serviceSchema = {
-		"@context": "https://schema.org",
+		"@context": SCHEMA_CONTEXT,
 		"@type": "Service",
 		"@id": pageUrl,
 		name: `Technical Advisory for ${roleLabel}`,
@@ -26,15 +29,12 @@ export function RoleJsonLd({ page }: RoleJsonLdProps) {
 		provider: {
 			"@type": "Person",
 			name: "Alex Mayhew",
-			url: siteUrl,
-			image: `${siteUrl}/og-image.png`,
+			url: SITE_URL,
+			image: `${SITE_URL}/og-image.png`,
 			jobTitle: "Technical Advisor & Software Architect",
 		},
 		serviceType: "Technical Consulting",
-		areaServed: {
-			"@type": "Place",
-			name: "Worldwide",
-		},
+		areaServed: AREA_SERVED,
 		hasOfferCatalog: {
 			"@type": "OfferCatalog",
 			name: `Services for ${roleLabel}`,
@@ -54,83 +54,25 @@ export function RoleJsonLd({ page }: RoleJsonLdProps) {
 		url: pageUrl,
 	};
 
-	// FAQ schema
-	const faqSchema = {
-		"@context": "https://schema.org",
-		"@type": "FAQPage",
-		mainEntity: page.faqs.map((faq) => ({
-			"@type": "Question",
-			name: faq.question,
-			acceptedAnswer: {
-				"@type": "Answer",
-				text: faq.answer,
-			},
-		})),
-	};
-
-	// WebPage schema
-	const webPageSchema = {
-		"@context": "https://schema.org",
-		"@type": "WebPage",
-		"@id": pageUrl,
-		url: pageUrl,
-		name: page.seo.title,
-		description: page.seo.description,
-		inLanguage: "en-US",
-		isPartOf: {
-			"@type": "WebSite",
-			"@id": siteUrl,
-			url: siteUrl,
-			name: "Alex Mayhew",
-		},
-		about: {
-			"@type": "Thing",
-			name: `Technical Advisory for ${roleLabel}`,
-		},
-		mainEntity: {
-			"@id": pageUrl,
-		},
-		dateModified: page.lastUpdated?.toISOString() ?? new Date().toISOString(),
-		keywords: page.seo.keywords.join(", "),
-	};
-
-	// BreadcrumbList schema
-	const breadcrumbSchema = {
-		"@context": "https://schema.org",
-		"@type": "BreadcrumbList",
-		itemListElement: [
-			{
-				"@type": "ListItem",
-				position: 1,
-				name: "Home",
-				item: siteUrl,
-			},
-			{
-				"@type": "ListItem",
-				position: 2,
-				name: `For ${roleLabel}`,
-				item: pageUrl,
-			},
-		],
-	};
-
 	return (
 		<>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+			<JsonLdScript data={serviceSchema} />
+			<JsonLdScript data={faqSchema(page.faqs)} />
+			<JsonLdScript
+				data={webPageSchema({
+					pageUrl,
+					title: page.seo.title,
+					description: page.seo.description,
+					aboutName: `Technical Advisory for ${roleLabel}`,
+					keywords: page.seo.keywords,
+					dateModified: page.lastUpdated?.toISOString() ?? new Date().toISOString(),
+				})}
 			/>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-			/>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
-			/>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+			<JsonLdScript
+				data={breadcrumbSchema([
+					{ name: "Home", item: SITE_URL },
+					{ name: `For ${roleLabel}`, item: pageUrl },
+				])}
 			/>
 		</>
 	);

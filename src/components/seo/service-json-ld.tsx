@@ -1,41 +1,36 @@
 import { INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
 
+import {
+	AREA_SERVED,
+	breadcrumbSchema,
+	faqSchema,
+	JsonLdScript,
+	PROVIDER_PERSON,
+	SCHEMA_CONTEXT,
+	SITE_URL,
+	webPageSchema,
+} from "./schema-utils";
+
 import type { PseoPage } from "@/data/pseo";
 
 interface ServiceJsonLdProps {
 	page: PseoPage;
 }
 
-const siteUrl = "https://alexmayhew.dev";
-
-/**
- * JSON-LD structured data for pSEO service pages.
- * Implements ServicePage schema with FAQ and pricing information.
- */
 export function ServiceJsonLd({ page }: ServiceJsonLdProps) {
 	const techLabel = TECHNOLOGY_LABELS[page.technology];
 	const industryLabel = INDUSTRY_LABELS[page.industry];
-	const pageUrl = `${siteUrl}/services/${page.slug}`;
+	const pageUrl = `${SITE_URL}/services/${page.slug}`;
 
-	// Service schema
 	const serviceSchema = {
-		"@context": "https://schema.org",
+		"@context": SCHEMA_CONTEXT,
 		"@type": "Service",
 		"@id": pageUrl,
 		name: `${techLabel} Development for ${industryLabel}`,
 		description: page.seo.description,
-		provider: {
-			"@type": "Person",
-			name: "Alex Mayhew",
-			url: siteUrl,
-			image: `${siteUrl}/og-image.png`,
-			jobTitle: "Technical Advisor & Systems Architect",
-		},
+		provider: PROVIDER_PERSON,
 		serviceType: "Web Development",
-		areaServed: {
-			"@type": "Place",
-			name: "Worldwide",
-		},
+		areaServed: AREA_SERVED,
 		hasOfferCatalog: {
 			"@type": "OfferCatalog",
 			name: `${techLabel} ${industryLabel} Services`,
@@ -77,89 +72,26 @@ export function ServiceJsonLd({ page }: ServiceJsonLdProps) {
 		url: pageUrl,
 	};
 
-	// FAQ schema
-	const faqSchema = {
-		"@context": "https://schema.org",
-		"@type": "FAQPage",
-		mainEntity: page.faqs.map((faq) => ({
-			"@type": "Question",
-			name: faq.question,
-			acceptedAnswer: {
-				"@type": "Answer",
-				text: faq.answer,
-			},
-		})),
-	};
-
-	// WebPage schema
-	const webPageSchema = {
-		"@context": "https://schema.org",
-		"@type": "WebPage",
-		"@id": pageUrl,
-		url: pageUrl,
-		name: page.seo.title,
-		description: page.seo.description,
-		inLanguage: "en-US",
-		isPartOf: {
-			"@type": "WebSite",
-			"@id": siteUrl,
-			url: siteUrl,
-			name: "Alex Mayhew",
-		},
-		about: {
-			"@type": "Thing",
-			name: `${techLabel} ${industryLabel} Development`,
-		},
-		mainEntity: {
-			"@id": pageUrl,
-		},
-		dateModified: page.lastUpdated?.toISOString() ?? new Date().toISOString(),
-		keywords: page.seo.keywords.join(", "),
-	};
-
-	// BreadcrumbList schema
-	const breadcrumbSchema = {
-		"@context": "https://schema.org",
-		"@type": "BreadcrumbList",
-		itemListElement: [
-			{
-				"@type": "ListItem",
-				position: 1,
-				name: "Home",
-				item: siteUrl,
-			},
-			{
-				"@type": "ListItem",
-				position: 2,
-				name: "Services",
-				item: `${siteUrl}/services`,
-			},
-			{
-				"@type": "ListItem",
-				position: 3,
-				name: `${techLabel} for ${industryLabel}`,
-				item: pageUrl,
-			},
-		],
-	};
-
 	return (
 		<>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+			<JsonLdScript data={serviceSchema} />
+			<JsonLdScript data={faqSchema(page.faqs)} />
+			<JsonLdScript
+				data={webPageSchema({
+					pageUrl,
+					title: page.seo.title,
+					description: page.seo.description,
+					aboutName: `${techLabel} ${industryLabel} Development`,
+					keywords: page.seo.keywords,
+					dateModified: page.lastUpdated?.toISOString() ?? new Date().toISOString(),
+				})}
 			/>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-			/>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
-			/>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+			<JsonLdScript
+				data={breadcrumbSchema([
+					{ name: "Home", item: SITE_URL },
+					{ name: "Services", item: `${SITE_URL}/services` },
+					{ name: `${techLabel} for ${industryLabel}`, item: pageUrl },
+				])}
 			/>
 		</>
 	);
