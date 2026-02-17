@@ -75,8 +75,8 @@ This gives you at-least-once delivery. Your consumers must be idempotent...proce
 
 **Two implementation approaches:**
 
-| Approach                      | Mechanism                                          | Latency  | Complexity                        |
-| ----------------------------- | -------------------------------------------------- | -------- | --------------------------------- |
+| Approach                      | Mechanism                                          | Latency  | Complexity                          |
+| ----------------------------- | -------------------------------------------------- | -------- | ----------------------------------- |
 | **Polling**                   | Scheduled job queries outbox table                 | 100ms-5s | Low...any team can implement        |
 | **CDC (Change Data Capture)** | PostgreSQL logical replication streams WAL changes | 10-50ms  | Medium...requires WAL configuration |
 
@@ -92,11 +92,11 @@ Two fundamentally different approaches to coordinating multi-service workflows.
 
 The decision matrix isn't about preference...it's about the workflow characteristics:
 
-| Factor                | Choreography                   | Orchestration                         |
-| --------------------- | ------------------------------ | ------------------------------------- |
-| **Services involved** | 2-3                            | 4+                                    |
-| **Failure handling**  | Compensating events            | Centralized rollback                  |
-| **Visibility**        | Distributed tracing required   | Orchestrator holds full state         |
+| Factor                | Choreography                     | Orchestration                           |
+| --------------------- | -------------------------------- | --------------------------------------- |
+| **Services involved** | 2-3                              | 4+                                      |
+| **Failure handling**  | Compensating events              | Centralized rollback                    |
+| **Visibility**        | Distributed tracing required     | Orchestrator holds full state           |
 | **Team autonomy**     | High...teams own their reactions | Lower...orchestrator team is bottleneck |
 | **Debugging**         | Harder...follow event chain      | Easier...single coordinator log         |
 
