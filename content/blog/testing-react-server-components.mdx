@@ -14,15 +14,15 @@ image: "/images/blog/testing-react-server-components-featured.webp"
 
 ## TL;DR
 
-React Server Components (RSCs) are async, run on the server, and can't be rendered in jsdom—which means React Testing Library's `render()` doesn't work on them. The testing strategy that does work: unit test data fetching and business logic as plain functions (no React at all), integration test RSCs via HTTP request to the Next.js server (test the HTML output), and E2E test critical user flows with Playwright. The biggest shift: stop testing "does this component render correctly?" and start testing "does this route return the correct data?" RSCs push data fetching into the component tree, which means testing the component IS testing the data layer. The teams I've advised that adopted this approach reduced their test suite runtime by 40% while catching more real bugs—because they stopped mocking fetch and started testing actual server behavior.
+React Server Components (RSCs) are async, run on the server, and can't be rendered in jsdom...which means React Testing Library's `render()` doesn't work on them. The testing strategy that does work: unit test data fetching and business logic as plain functions (no React at all), integration test RSCs via HTTP request to the Next.js server (test the HTML output), and E2E test critical user flows with Playwright. The biggest shift: stop testing "does this component render correctly?" and start testing "does this route return the correct data?" RSCs push data fetching into the component tree, which means testing the component IS testing the data layer. The teams I've advised that adopted this approach reduced their test suite runtime by 40% while catching more real bugs...because they stopped mocking fetch and started testing actual server behavior.
 
-> **Part of the [Modern Frontend Architecture](/blog/modern-frontend-architecture)** — a comprehensive guide to frontend patterns that scale.
+> **Part of the [Modern Frontend Architecture](/blog/modern-frontend-architecture)** ... a comprehensive guide to frontend patterns that scale.
 
 ---
 
 ## Why Your Existing Tests Break
 
-React Testing Library (RTL) works by rendering components into a jsdom environment—a browser simulation in Node.js. This works for client components because they're JavaScript that runs in a browser-like environment.
+React Testing Library (RTL) works by rendering components into a jsdom environment...a browser simulation in Node.js. This works for client components because they're JavaScript that runs in a browser-like environment.
 
 Server Components break this model:
 
@@ -60,7 +60,7 @@ Calling `render(<DashboardPage />)` in a test file fails because:
 Extract business logic from components into pure functions. Test the functions, not the component.
 
 ```typescript
-// src/lib/metrics.ts — pure functions, no React
+// src/lib/metrics.ts ... pure functions, no React
 export function calculateGrowthRate(
 	current: number,
 	previous: number
@@ -101,7 +101,7 @@ export function aggregateByDay(metrics: Metric[]): DailyAggregate[] {
 ```
 
 ```typescript
-// src/lib/metrics.test.ts — fast, isolated unit tests
+// src/lib/metrics.test.ts ... fast, isolated unit tests
 import { calculateGrowthRate, filterMetricsByDateRange, aggregateByDay } from "./metrics";
 
 describe("calculateGrowthRate", () => {
@@ -182,7 +182,7 @@ describe("Dashboard Page", () => {
 });
 ```
 
-**Why HTTP integration tests work:** They test the entire server-side rendering pipeline—the Server Component, its data fetching, the streaming boundaries, and the HTML output. This is what the user actually receives.
+**Why HTTP integration tests work:** They test the entire server-side rendering pipeline...the Server Component, its data fetching, the streaming boundaries, and the HTML output. This is what the user actually receives.
 
 ### Layer 3: E2E Tests for Critical Flows
 
@@ -223,7 +223,7 @@ test("user can view and filter dashboard metrics", async ({ page }) => {
 
 ## Testing the Client-Server Boundary
 
-The hardest testing challenge with RSCs is the boundary between server and client components. A Server Component passes props to a Client Component—the serialization boundary.
+The hardest testing challenge with RSCs is the boundary between server and client components. A Server Component passes props to a Client Component...the serialization boundary.
 
 ```typescript
 // Server Component (not directly testable with RTL)
@@ -272,7 +272,7 @@ function ActivityFeed({ activities }: { activities: Activity[] }) {
 | Full flow               | E2E (Playwright)   | Test user interaction end-to-end        |
 
 ```typescript
-// Client component test — this still works with RTL
+// Client component test ... this still works with RTL
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ActivityFeed } from './ActivityFeed';
@@ -351,32 +351,32 @@ This distribution keeps the test suite fast (under 30 seconds for unit tests, un
 
 ## When NOT to Apply This
 
-- You're using Pages Router or a client-side SPA—RTL still works fine
-- Your components are purely presentational with no data fetching—standard RTL testing applies
+- You're using Pages Router or a client-side SPA...RTL still works fine
+- Your components are purely presentational with no data fetching...standard RTL testing applies
 - You're in a rapid prototyping phase where E2E tests provide sufficient coverage
 
 ---
 
 **Migrating your testing strategy to work with Server Components?** I help teams redesign their test architecture to match modern React patterns.
 
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Frontend architecture decisions
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Production-grade React applications
-- [Technical Due Diligence](/services/technical-due-diligence-consultant) — Code quality and test coverage assessment
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Frontend architecture decisions
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Production-grade React applications
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) ... Code quality and test coverage assessment
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [Modern Frontend Architecture](/blog/modern-frontend-architecture)** — covering component design, state management, performance, and testing strategies.
+**This post is part of the [Modern Frontend Architecture](/blog/modern-frontend-architecture)** ... covering component design, state management, performance, and testing strategies.
 
 ### More in This Series
 
-- [RSC and Edge: The Death of the Waterfall](/blog/rsc-edge-death-of-waterfall) — Server Components as a performance strategy
-- [Component API Design](/blog/component-api-design) — Building testable component interfaces
-- [Optimistic UI](/blog/optimistic-ui) — Client-side patterns that complement server components
-- [Accessibility in Design Systems](/blog/accessibility-design-systems) — Testing accessibility in the RSC model
+- [RSC and Edge: The Death of the Waterfall](/blog/rsc-edge-death-of-waterfall) ... Server Components as a performance strategy
+- [Component API Design](/blog/component-api-design) ... Building testable component interfaces
+- [Optimistic UI](/blog/optimistic-ui) ... Client-side patterns that complement server components
+- [Accessibility in Design Systems](/blog/accessibility-design-systems) ... Testing accessibility in the RSC model
 
 ### Related Guides
 
-- [State Management in 2026](/blog/state-management-2026) — Managing state across the client-server boundary
-- [Core Web Vitals Audit Checklist](/blog/core-web-vitals-2026-audit) — Performance testing for frontend applications
+- [State Management in 2026](/blog/state-management-2026) ... Managing state across the client-server boundary
+- [Core Web Vitals Audit Checklist](/blog/core-web-vitals-2026-audit) ... Performance testing for frontend applications

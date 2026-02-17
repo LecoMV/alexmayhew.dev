@@ -14,17 +14,17 @@ image: "/images/blog/core-web-vitals-2026-audit-featured.webp"
 
 ## TL;DR
 
-INP (Interaction to Next Paint) replaced FID in March 2024 and most SaaS dashboards still haven't adapted. FID measured input delay only—the easy part. INP measures the entire interaction lifecycle: input delay + processing time + presentation delay. The result: 40% of sites that passed FID fail INP. The 2026 audit checklist covers the three metrics that matter (LCP, INP, CLS), the field data sources that Google actually uses for ranking (CrUX, not Lighthouse), and the 12 optimizations I've seen move the needle most across advisory clients. Stop chasing Lighthouse scores. Start measuring real user experience with the Web Vitals library and RUM data.
+INP (Interaction to Next Paint) replaced FID in March 2024 and most SaaS dashboards still haven't adapted. FID measured input delay only...the easy part. INP measures the entire interaction lifecycle: input delay + processing time + presentation delay. The result: 40% of sites that passed FID fail INP. The 2026 audit checklist covers the three metrics that matter (LCP, INP, CLS), the field data sources that Google actually uses for ranking (CrUX, not Lighthouse), and the 12 optimizations I've seen move the needle most across advisory clients. Stop chasing Lighthouse scores. Start measuring real user experience with the Web Vitals library and RUM data.
 
-> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — a comprehensive guide to building systems that stay fast under real-world load.
+> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to building systems that stay fast under real-world load.
 
 ---
 
 ## The INP Shift Nobody Prepared For
 
-When Google replaced First Input Delay with Interaction to Next Paint in March 2024, the industry treated it as a minor metric swap. It wasn't. FID only measured the delay before the browser started processing an interaction—typically 50-100ms on most sites. INP measures the full round-trip: from user click to the next frame being painted on screen.
+When Google replaced First Input Delay with Interaction to Next Paint in March 2024, the industry treated it as a minor metric swap. It wasn't. FID only measured the delay before the browser started processing an interaction...typically 50-100ms on most sites. INP measures the full round-trip: from user click to the next frame being painted on screen.
 
-This distinction matters because most performance problems happen during processing, not during input delay. A React component that re-renders 500 nodes on a button click has zero FID issues—the browser starts processing immediately. But the INP is 800ms because the main thread is blocked while React reconciles the virtual DOM.
+This distinction matters because most performance problems happen during processing, not during input delay. A React component that re-renders 500 nodes on a button click has zero FID issues...the browser starts processing immediately. But the INP is 800ms because the main thread is blocked while React reconciles the virtual DOM.
 
 I've audited 15+ SaaS dashboards in the past year. The median INP on data-heavy pages is 350-500ms. Google's "good" threshold is 200ms.
 
@@ -42,7 +42,7 @@ These thresholds haven't changed since 2024. What changed is the measurement met
 
 ### Field Data vs. Lab Data
 
-**Field data** (CrUX — Chrome User Experience Report) is what Google uses for ranking signals. It represents the 75th percentile of real user experiences across all device types and network conditions.
+**Field data** (CrUX ... Chrome User Experience Report) is what Google uses for ranking signals. It represents the 75th percentile of real user experiences across all device types and network conditions.
 
 **Lab data** (Lighthouse, WebPageTest) is a synthetic test from a single device profile. It's useful for debugging but does not directly influence search rankings.
 
@@ -133,7 +133,7 @@ new PerformanceObserver((entryList) => {
 }).observe({ type: "largest-contentful-paint", buffered: true });
 ```
 
-Run this in your browser console on key pages. The LCP element is often not what you expect—on data-heavy pages, it might be a table cell or a chart SVG, not the page heading.
+Run this in your browser console on key pages. The LCP element is often not what you expect...on data-heavy pages, it might be a table cell or a chart SVG, not the page heading.
 
 **5. Preload Critical Resources**
 
@@ -155,7 +155,7 @@ Run this in your browser console on key pages. The LCP element is often not what
 For SaaS dashboards, the LCP element is often data-dependent. Server-side rendering the initial data load eliminates the client-side fetch waterfall:
 
 ```typescript
-// Next.js App Router — server component
+// Next.js App Router ... server component
 async function DashboardPage() {
   // Data fetch happens on the server, before HTML reaches the browser
   const metrics = await db.query(
@@ -177,7 +177,7 @@ This pattern reduces LCP by 500-1500ms on data-heavy pages compared to client-si
 
 ### Phase 3: INP Optimization
 
-INP is where most SaaS applications fail. Dashboard interactions—filtering, sorting, toggling—trigger expensive re-renders that block the main thread.
+INP is where most SaaS applications fail. Dashboard interactions...filtering, sorting, toggling...trigger expensive re-renders that block the main thread.
 
 **7. Break Up Long Tasks**
 
@@ -324,7 +324,7 @@ The `contain` property tells the browser that layout changes inside the element 
 **12. Set Up Automated CWV Monitoring**
 
 ```typescript
-// CI integration — fail the build on CWV regression
+// CI integration ... fail the build on CWV regression
 import { startFlow } from "lighthouse";
 import puppeteer from "puppeteer";
 
@@ -400,32 +400,32 @@ new PerformanceObserver((list) => {
 
 ## When NOT to Apply This
 
-- Internal tools with fewer than 50 users—invest the time elsewhere
+- Internal tools with fewer than 50 users...invest the time elsewhere
 - Pre-launch MVPs where the product hypothesis isn't validated yet
 - API-only services with no user-facing frontend
 
 ---
 
-**Need a performance audit that goes beyond Lighthouse scores?** I help SaaS teams identify and fix the real bottlenecks—the ones that affect revenue, not just metrics.
+**Need a performance audit that goes beyond Lighthouse scores?** I help SaaS teams identify and fix the real bottlenecks...the ones that affect revenue, not just metrics.
 
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Architecture decisions from MVP to scale
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Production-grade frontend performance
-- [Technical Due Diligence](/services/technical-due-diligence-consultant) — Pre-investment performance assessment
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Architecture decisions from MVP to scale
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Production-grade frontend performance
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) ... Pre-investment performance assessment
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — covering database optimization, caching strategies, monitoring, and zero-downtime operations.
+**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... covering database optimization, caching strategies, monitoring, and zero-downtime operations.
 
 ### More in This Series
 
-- [Core Web Vitals Optimization](/blog/core-web-vitals-optimization) — The foundational guide to CWV metrics
-- [Database Migration Patterns](/blog/database-migration-patterns) — Zero-downtime migrations that scale
-- [CDN Caching Strategy](/blog/cdn-caching-strategy) — Multi-layer caching that actually invalidates correctly
-- [RSC and Edge: The Death of the Waterfall](/blog/rsc-edge-death-of-waterfall) — Server components as a performance strategy
+- [Core Web Vitals Optimization](/blog/core-web-vitals-optimization) ... The foundational guide to CWV metrics
+- [Database Migration Patterns](/blog/database-migration-patterns) ... Zero-downtime migrations that scale
+- [CDN Caching Strategy](/blog/cdn-caching-strategy) ... Multi-layer caching that actually invalidates correctly
+- [RSC and Edge: The Death of the Waterfall](/blog/rsc-edge-death-of-waterfall) ... Server components as a performance strategy
 
 ### Related Guides
 
-- [Modern Frontend Architecture](/blog/modern-frontend-architecture) — The frontend patterns that support performance
-- [Design Tokens: A Comprehensive Guide](/blog/design-tokens-comprehensive) — Systematic design that reduces layout shifts
+- [Modern Frontend Architecture](/blog/modern-frontend-architecture) ... The frontend patterns that support performance
+- [Design Tokens: A Comprehensive Guide](/blog/design-tokens-comprehensive) ... Systematic design that reduces layout shifts

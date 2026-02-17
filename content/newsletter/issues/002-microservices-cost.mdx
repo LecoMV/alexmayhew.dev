@@ -11,7 +11,7 @@ Subject: The 73% overhead nobody warns you about
 
 Hey there,
 
-Last week I shared why your SaaS needs a monolith first. This week, the other side: what microservices actually cost when you adopt them too early. Not the AWS bill — the costs that don't show up on any dashboard.
+Last week I shared why your SaaS needs a monolith first. This week, the other side: what microservices actually cost when you adopt them too early. Not the AWS bill ... the costs that don't show up on any dashboard.
 
 ---
 
@@ -21,7 +21,7 @@ Last week I shared why your SaaS needs a monolith first. This week, the other si
 Your engineering team pushes for microservices because "Netflix does it." Leadership wants to know the real cost before approving.
 
 **The Insight:**
-Across the startups I've advised, premature microservices adoption follows a predictable cost pattern. I call it the TCO Triangle — three categories of overhead that compound:
+Across the startups I've advised, premature microservices adoption follows a predictable cost pattern. I call it the TCO Triangle ... three categories of overhead that compound:
 
 **1. Infrastructure Tax (30-40% of codebase)**
 
@@ -65,25 +65,25 @@ You need at least one infrastructure-focused engineer to maintain the platform. 
 
 **When to Apply This:**
 
-- Under $1M ARR with fewer than 10 engineers — the monolith is your competitive advantage, not your technical debt
-- $1-5M ARR — audit your services, calculate your infrastructure-to-feature ratio, and consolidate if it exceeds 30%
-- $5M+ ARR — now microservices earn their operational cost, but only where team boundaries genuinely require independent deployment
+- Under $1M ARR with fewer than 10 engineers ... the monolith is your competitive advantage, not your technical debt
+- $1-5M ARR ... audit your services, calculate your infrastructure-to-feature ratio, and consolidate if it exceeds 30%
+- $5M+ ARR ... now microservices earn their operational cost, but only where team boundaries genuinely require independent deployment
 
 ---
 
 ## Worth Your Time
 
-1. **[Martin Fowler: Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)** — Fowler's argument has a nuance most people miss: you can't draw service boundaries correctly until you understand the domain. Starting with a monolith is how you learn where the real seams are.
+1. **[Martin Fowler: Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)** ... Fowler's argument has a nuance most people miss: you can't draw service boundaries correctly until you understand the domain. Starting with a monolith is how you learn where the real seams are.
 
-2. **[Shopify's Modular Monolith](https://shopify.engineering/shopify-monolith)** — Shopify processes $7.5B+ in GMV on a Rails monolith. Componentized modules within a single deployment — Black Friday at scale, one pipeline.
+2. **[Shopify's Modular Monolith](https://shopify.engineering/shopify-monolith)** ... Shopify processes $7.5B+ in GMV on a Rails monolith. Componentized modules within a single deployment ... Black Friday at scale, one pipeline.
 
-3. **[Local-First Software](https://www.inkandswitch.com/local-first/)** — A paradigm that sidesteps the distributed systems question entirely. Worth understanding as the complexity pendulum swings back toward simplicity.
+3. **[Local-First Software](https://www.inkandswitch.com/local-first/)** ... A paradigm that sidesteps the distributed systems question entirely. Worth understanding as the complexity pendulum swings back toward simplicity.
 
 ---
 
 ## Tool of the Week
 
-**[k6](https://k6.io/)** — Before you add horizontal scaling, know your actual limits. k6 lets you write load tests in JavaScript, and the results consistently surprise teams: most well-tuned monoliths on a single beefy server handle 5-10x the traffic founders assume. Start with `k6 run --vus 100 --duration 30s` against your staging environment and see where you actually stand.
+**[k6](https://k6.io/)** ... Before you add horizontal scaling, know your actual limits. k6 lets you write load tests in JavaScript, and the results consistently surprise teams: most well-tuned monoliths on a single beefy server handle 5-10x the traffic founders assume. Start with `k6 run --vus 100 --duration 30s` against your staging environment and see where you actually stand.
 
 ---
 
@@ -93,4 +93,4 @@ Hit reply if you've calculated your infrastructure-to-feature ratio. I'm curious
 
 – Alex
 
-P.S. Last week's issue on [why monoliths win at early stage](https://alexmayhew.dev/blog/saas-architecture-decision-framework) pairs well with this one — the decision framework for when to actually make the switch.
+P.S. Last week's issue on [why monoliths win at early stage](https://alexmayhew.dev/blog/saas-architecture-decision-framework) pairs well with this one ... the decision framework for when to actually make the switch.

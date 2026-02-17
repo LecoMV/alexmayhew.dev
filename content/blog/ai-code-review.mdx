@@ -13,9 +13,9 @@ image: "/images/blog/ai-code-review-featured.webp"
 
 ## TL;DR
 
-AI code review catches 60-80% of style violations and common bugs—but misses business logic errors, security edge cases, and architectural fit. The hybrid workflow: AI pre-review filters noise, humans focus on what matters. Trust requires systematic validation: test coverage requirements, security scanning, and gradual rollout. AI review is a filter, not a replacement.
+AI code review catches 60-80% of style violations and common bugs...but misses business logic errors, security edge cases, and architectural fit. The hybrid workflow: AI pre-review filters noise, humans focus on what matters. Trust requires systematic validation: test coverage requirements, security scanning, and gradual rollout. AI review is a filter, not a replacement.
 
-> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** — from code generation to production LLMs.
+> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
 
 ---
 
@@ -23,13 +23,13 @@ AI code review catches 60-80% of style violations and common bugs—but misses b
 
 Every engineering team faces the same bottleneck: code review.
 
-Senior developers spend 15-25% of their time reviewing pull requests. Junior developers wait hours—sometimes days—for feedback. Context switching destroys productivity. The backlog grows.
+Senior developers spend 15-25% of their time reviewing pull requests. Junior developers wait hours...sometimes days...for feedback. Context switching destroys productivity. The backlog grows.
 
 AI code review tools promise to solve this. GitHub Copilot, Amazon CodeWhisperer, and a dozen startups offer automated review capabilities. The pitch: instant feedback, consistent standards, reduced senior developer burden.
 
 The reality is more nuanced.
 
-AI excels at pattern matching. It catches style violations, common anti-patterns, and obvious bugs with near-perfect accuracy. A human reviewer might miss a trailing comma or inconsistent naming—AI never does.
+AI excels at pattern matching. It catches style violations, common anti-patterns, and obvious bugs with near-perfect accuracy. A human reviewer might miss a trailing comma or inconsistent naming...AI never does.
 
 But AI struggles with context. It cannot evaluate whether your implementation actually solves the business problem. It cannot assess whether your architecture scales for the next two years of growth. It cannot determine whether the security model protects against threats specific to your domain.
 
@@ -92,7 +92,7 @@ users.forEach((user) => {
 
 These bugs are well-documented. The patterns are consistent. AI has seen them thousands of times in training data.
 
-A senior developer catches these too—but only when they're paying attention. AI never stops paying attention.
+A senior developer catches these too...but only when they're paying attention. AI never stops paying attention.
 
 ### Documentation Gaps
 
@@ -134,7 +134,7 @@ export function calculateProratedAmount(
 }
 ```
 
-Documentation is tedious. Developers skip it under deadline pressure. AI surfaces the gaps without judgment—just consistent enforcement.
+Documentation is tedious. Developers skip it under deadline pressure. AI surfaces the gaps without judgment...just consistent enforcement.
 
 ### Dependency Outdating
 
@@ -152,7 +152,7 @@ This requires integration with vulnerability databases (Snyk, npm audit, etc.), 
 
 ## What LLMs Miss
 
-The limitations matter more than the capabilities. Here's where AI code review fails—and where human judgment remains irreplaceable.
+The limitations matter more than the capabilities. Here's where AI code review fails...and where human judgment remains irreplaceable.
 
 ### Business Logic Correctness
 
@@ -175,13 +175,13 @@ The code is syntactically correct, follows best practices, and handles the cases
 
 But the business requirement was: "Gold customers get 10% off orders over $100, platinum gets 15% off any order." The `$100` threshold is missing entirely.
 
-AI has no access to your product requirements, stakeholder conversations, or business context. It validates code against patterns—not against intent.
+AI has no access to your product requirements, stakeholder conversations, or business context. It validates code against patterns...not against intent.
 
 I reviewed a codebase where AI had approved a billing calculation that rounded cents in the wrong direction. Syntactically perfect. The company lost $47,000 over three months before someone noticed.
 
 ### Security Edge Cases
 
-AI recognizes common security vulnerabilities—SQL injection, XSS, obvious authentication bypasses. But it misses domain-specific threats.
+AI recognizes common security vulnerabilities...SQL injection, XSS, obvious authentication bypasses. But it misses domain-specific threats.
 
 ```typescript
 // AI might not flag this
@@ -211,7 +211,7 @@ The code has no SQL injection, no obvious bugs. AI might suggest adding error ha
 
 What AI misses: the authorization check is absent. Any authenticated user can transfer from any account. This is a business logic vulnerability, not a code pattern vulnerability.
 
-As I discussed in [AI-Assisted Development: Navigating the Generative Debt Crisis](/blog/ai-assisted-development-generative-debt), research shows developers using AI assistants write more security vulnerabilities while feeling more confident in their code's security. AI review does not solve this—it may exacerbate it by creating false confidence.
+As I discussed in [AI-Assisted Development: Navigating the Generative Debt Crisis](/blog/ai-assisted-development-generative-debt), research shows developers using AI assistants write more security vulnerabilities while feeling more confident in their code's security. AI review does not solve this...it may exacerbate it by creating false confidence.
 
 ### Architectural Fit
 
@@ -228,7 +228,7 @@ const user = await userService.getById(id);
 const user = await prisma.user.findUnique({ where: { id } });
 ```
 
-Both implementations work. Both are syntactically correct. The second violates your architecture—bypassing the service layer that handles caching, logging, and authorization.
+Both implementations work. Both are syntactically correct. The second violates your architecture...bypassing the service layer that handles caching, logging, and authorization.
 
 AI trained on general code patterns has no visibility into your specific patterns. It cannot enforce your hexagonal architecture, your domain-driven design boundaries, or your team's conventions.
 
@@ -253,7 +253,7 @@ The code works. Each query is correct.
 
 But this endpoint makes 5 sequential database calls. In production, with 500ms average latency per call, the endpoint takes 2.5 seconds. The N+1 query potential in `findByProjects` could explode with scale.
 
-AI cannot know your database is under load, your users expect sub-second responses, or this endpoint gets hit 10,000 times per hour. It reviews code—not systems.
+AI cannot know your database is under load, your users expect sub-second responses, or this endpoint gets hit 10,000 times per hour. It reviews code...not systems.
 
 ### Test Quality Assessment
 
@@ -274,7 +274,7 @@ describe("UserService", () => {
 });
 ```
 
-These tests provide coverage numbers without confidence. They verify the code runs—not that it works correctly.
+These tests provide coverage numbers without confidence. They verify the code runs...not that it works correctly.
 
 AI cannot determine that `expect(user).toBeDefined()` is meaningless, or that the create test has no assertions. These require understanding what the test should verify.
 
@@ -282,7 +282,7 @@ AI cannot determine that `expect(user).toBeDefined()` is meaningless, or that th
 
 ## The Hybrid Review Workflow
 
-The solution is not AI or humans—it's AI then humans, with clear boundaries.
+The solution is not AI or humans...it's AI then humans, with clear boundaries.
 
 ### Stage 1: AI Pre-Review (Automated)
 
@@ -312,7 +312,7 @@ jobs:
           suggest-on: documentation, optimization
 ```
 
-AI comments on the PR directly. Developers fix issues before requesting human review. The human reviewer never sees the obvious violations—they're already resolved.
+AI comments on the PR directly. Developers fix issues before requesting human review. The human reviewer never sees the obvious violations...they're already resolved.
 
 ### Stage 2: Human Review (Focused)
 
@@ -382,7 +382,7 @@ require_status_checks:
 
 ## Validating AI-Generated Code
 
-AI doesn't just review code—it generates code. Different validation requirements apply.
+AI doesn't just review code...it generates code. Different validation requirements apply.
 
 ### Testing Strategy for AI Code
 
@@ -409,7 +409,7 @@ function normalizePhoneNumber(input: string): string {
 // - Extremely long input?
 ```
 
-The test suite must cover what the developer didn't think about—because no developer thought about it.
+The test suite must cover what the developer didn't think about...because no developer thought about it.
 
 Minimum requirements for AI-generated code:
 
@@ -475,7 +475,7 @@ describe("calculatePrice", () => {
 });
 ```
 
-Property-based testing generates thousands of inputs. It finds the edge cases nobody—human or AI—anticipated.
+Property-based testing generates thousands of inputs. It finds the edge cases nobody...human or AI...anticipated.
 
 ---
 
@@ -754,9 +754,9 @@ jobs:
 
 ## The Senior Developer's Role
 
-AI code review changes what [senior developers](/blog/senior-developer-paradox) do—it doesn't replace them.
+AI code review changes what [senior developers](/blog/senior-developer-paradox) do...it doesn't replace them.
 
-Before AI, seniors spent hours on mechanical review. Style violations, missing null checks, documentation gaps—all required human attention.
+Before AI, seniors spent hours on mechanical review. Style violations, missing null checks, documentation gaps...all required human attention.
 
 With AI, seniors shift to higher-value work:
 
@@ -765,7 +765,7 @@ With AI, seniors shift to higher-value work:
 - **Performance assessment**: Will this scale?
 - **Mentorship**: Teaching juniors why AI suggestions matter
 
-The 10x developer isn't someone who writes 10x more code. It's someone whose reviews prevent 10x the problems. AI handles the mechanical 60%—seniors focus on the critical 40%.
+The 10x developer isn't someone who writes 10x more code. It's someone whose reviews prevent 10x the problems. AI handles the mechanical 60%...seniors focus on the critical 40%.
 
 ---
 
@@ -784,30 +784,30 @@ The hybrid workflow works:
 
 Trust builds through gradual rollout, measured outcomes, and clear override paths. Teams that deploy AI review effectively report 40-60% reduction in review cycle time with no increase in escaped bugs.
 
-The key insight: AI doesn't make code review faster by doing the same work faster. It makes code review faster by doing different work—the mechanical work—so humans can do the judgment work without distraction.
+The key insight: AI doesn't make code review faster by doing the same work faster. It makes code review faster by doing different work...the mechanical work...so humans can do the judgment work without distraction.
 
 For more on managing AI in development workflows, see [AI-Assisted Development: Navigating the Generative Debt Crisis](/blog/ai-assisted-development-generative-debt). For prompt engineering techniques that improve AI code generation, see [Prompt Engineering for Developers](/blog/prompt-engineering-developers).
 
 ---
 
-**Building a development workflow that integrates AI effectively?** I help teams implement AI code review, establish validation frameworks, and build trust in AI-generated code—without sacrificing quality or security.
+**Building a development workflow that integrates AI effectively?** I help teams implement AI code review, establish validation frameworks, and build trust in AI-generated code...without sacrificing quality or security.
 
-- [AI Integration for SaaS](/services/ai-integration-developer-for-saas) — AI workflows that work in production
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Strategic guidance on AI adoption
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Production-ready architecture with AI integration
+- [AI Integration for SaaS](/services/ai-integration-developer-for-saas) ... AI workflows that work in production
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Strategic guidance on AI adoption
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Production-ready architecture with AI integration
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** — covering code generation, LLM architecture, prompt engineering, and cost optimization.
+**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
 
 ### More in This Series
 
-- [AI-Assisted Development: Navigating the Generative Debt Crisis](/blog/ai-assisted-development-generative-debt) — The hidden costs of AI-generated code
-- [LLM Integration Architecture](/blog/llm-integration-architecture) — Vector databases to production
-- [Prompt Engineering for Developers](/blog/prompt-engineering-developers) — Getting better LLM results
-- [Building AI Features Users Want](/blog/building-ai-features-users-want) — Product strategy for AI
-- [AI Cost Optimization](/blog/ai-cost-optimization) — APIs vs self-hosting vs fine-tuning
+- [AI-Assisted Development: Navigating the Generative Debt Crisis](/blog/ai-assisted-development-generative-debt) ... The hidden costs of AI-generated code
+- [LLM Integration Architecture](/blog/llm-integration-architecture) ... Vector databases to production
+- [Prompt Engineering for Developers](/blog/prompt-engineering-developers) ... Getting better LLM results
+- [Building AI Features Users Want](/blog/building-ai-features-users-want) ... Product strategy for AI
+- [AI Cost Optimization](/blog/ai-cost-optimization) ... APIs vs self-hosting vs fine-tuning
 
 **Integrating AI into your product?** [Work with me](/services/ai-integration-developer-for-saas) on your AI architecture.

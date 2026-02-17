@@ -11,7 +11,7 @@ Subject: Your RAG pipeline is retrieval-broken, not AI-broken
 
 Hey there,
 
-A Series B SaaS asked me to review their AI-powered help center. Demo was impressive — contextual answers, natural language queries, looked polished. Then I ran 50 real user questions through it. 19 returned irrelevant or wrong answers. Their retrieval accuracy was 62%.
+A Series B SaaS asked me to review their AI-powered help center. Demo was impressive ... contextual answers, natural language queries, looked polished. Then I ran 50 real user questions through it. 19 returned irrelevant or wrong answers. Their retrieval accuracy was 62%.
 
 The LLM was fine. The retrieval was broken.
 
@@ -20,10 +20,10 @@ The LLM was fine. The retrieval was broken.
 ## This Week's Decision
 
 **The Situation:**
-You've shipped a RAG-powered feature — help center, document search, knowledge base Q&A. It works in demos, but users complain about irrelevant answers. You haven't measured retrieval accuracy because you're not sure how.
+You've shipped a RAG-powered feature ... help center, document search, knowledge base Q&A. It works in demos, but users complain about irrelevant answers. You haven't measured retrieval accuracy because you're not sure how.
 
 **The Insight:**
-Most RAG implementations fail at retrieval, not generation. Naive chunking (split every 512 tokens) with cosine similarity search gives you roughly 62% retrieval accuracy. That means 4 in 10 queries feed the LLM wrong context — and the LLM confidently generates wrong answers from that wrong context.
+Most RAG implementations fail at retrieval, not generation. Naive chunking (split every 512 tokens) with cosine similarity search gives you roughly 62% retrieval accuracy. That means 4 in 10 queries feed the LLM wrong context ... and the LLM confidently generates wrong answers from that wrong context.
 
 Three changes push accuracy from 62% to 85-92%:
 
@@ -66,24 +66,24 @@ Two more optimizations that matter for production SaaS:
 
 ## Worth Your Time
 
-1. **[Anthropic: Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval)** — Anthropic's approach to adding context to chunks before embedding. Prepending a short description of where each chunk fits in the document improves retrieval by 49%. Simple technique, significant impact.
+1. **[Anthropic: Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval)** ... Anthropic's approach to adding context to chunks before embedding. Prepending a short description of where each chunk fits in the document improves retrieval by 49%. Simple technique, significant impact.
 
-2. **[Pinecone: Chunking Strategies](https://www.pinecone.io/learn/chunking-strategies/)** — Comprehensive comparison of fixed-size, recursive, semantic, and document-aware chunking. The benchmarks on retrieval quality by strategy are worth bookmarking.
+2. **[Pinecone: Chunking Strategies](https://www.pinecone.io/learn/chunking-strategies/)** ... Comprehensive comparison of fixed-size, recursive, semantic, and document-aware chunking. The benchmarks on retrieval quality by strategy are worth bookmarking.
 
-3. **[LangChain: RAG Evaluation](https://blog.langchain.dev/evaluating-rag-pipelines-with-ragas-langsmith/)** — If you can't measure retrieval accuracy, you can't improve it. RAGAS framework gives you faithfulness, answer relevancy, and context precision scores. Set this up before optimizing anything.
+3. **[LangChain: RAG Evaluation](https://blog.langchain.dev/evaluating-rag-pipelines-with-ragas-langsmith/)** ... If you can't measure retrieval accuracy, you can't improve it. RAGAS framework gives you faithfulness, answer relevancy, and context precision scores. Set this up before optimizing anything.
 
 ---
 
 ## Tool of the Week
 
-**[Cohere Rerank](https://cohere.com/rerank)** — Drop-in reranking API that scores query-document relevance. Takes your existing retrieval results and reorders them by actual relevance. 50-100ms latency, measurable accuracy improvement. The API-based approach means you can add it without changing your embedding pipeline. Start with their free tier to benchmark against your current retrieval quality.
+**[Cohere Rerank](https://cohere.com/rerank)** ... Drop-in reranking API that scores query-document relevance. Takes your existing retrieval results and reorders them by actual relevance. 50-100ms latency, measurable accuracy improvement. The API-based approach means you can add it without changing your embedding pipeline. Start with their free tier to benchmark against your current retrieval quality.
 
 ---
 
 That's it for this week.
 
-Hit reply if you're building RAG and want a second opinion on your chunking strategy. I've reviewed a dozen of these pipelines — the failure patterns are predictable. I read every response.
+Hit reply if you're building RAG and want a second opinion on your chunking strategy. I've reviewed a dozen of these pipelines ... the failure patterns are predictable. I read every response.
 
 – Alex
 
-P.S. For the complete guide to building production AI features in SaaS — from model selection to cost optimization: [AI-Assisted Development Guide](https://alexmayhew.dev/blog/ai-assisted-development-guide).
+P.S. For the complete guide to building production AI features in SaaS ... from model selection to cost optimization: [AI-Assisted Development Guide](https://alexmayhew.dev/blog/ai-assisted-development-guide).

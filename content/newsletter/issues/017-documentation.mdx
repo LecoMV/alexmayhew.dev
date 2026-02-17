@@ -25,9 +25,9 @@ Your team has 200+ Confluence pages, wiki articles, or Google Docs. Half are out
 **The Insight:**
 Most documentation is written because someone felt they should document something. That's the wrong motivation. Documentation survives only when an active force maintains it. Across every team I've advised, only four types of documentation have the natural maintenance pressure to stay current.
 
-**1. Architecture Decision Records (ADRs) — 2-3 year half-life.**
+**1. Architecture Decision Records (ADRs) ... 2-3 year half-life.**
 
-ADRs document why a decision was made, not what was decided. The code shows what. The ADR shows the context, options considered, and trade-offs accepted. They're stable because decisions don't change often — and when they do, the new ADR supersedes the old one.
+ADRs document why a decision was made, not what was decided. The code shows what. The ADR shows the context, options considered, and trade-offs accepted. They're stable because decisions don't change often ... and when they do, the new ADR supersedes the old one.
 
 ```markdown
 # ADR-007: Use PostgreSQL RLS for multi-tenancy
@@ -51,19 +51,19 @@ bypass in application code.
 - Cannot accidentally leak cross-tenant data
 ```
 
-**2. Runbooks — maintained by 3 AM urgency.**
+**2. Runbooks ... maintained by 3 AM urgency.**
 
-When production is down at 3 AM, the on-call engineer updates the runbook with what actually worked. Urgency is the strongest documentation maintenance force. Runbooks that get used in incidents stay current. Runbooks for systems that never break become stale — and that's fine.
+When production is down at 3 AM, the on-call engineer updates the runbook with what actually worked. Urgency is the strongest documentation maintenance force. Runbooks that get used in incidents stay current. Runbooks for systems that never break become stale ... and that's fine.
 
-**3. Onboarding guides — maintained by new hire feedback.**
+**3. Onboarding guides ... maintained by new hire feedback.**
 
 Every new engineer is a documentation tester. They follow the guide, hit gaps, and either fix them (docs-as-code) or report them. If new hires join quarterly, the guide gets tested quarterly. Build onboarding as a checklist with "update this doc if anything is wrong" as the final step.
 
-**4. API contracts — generated from code.**
+**4. API contracts ... generated from code.**
 
-OpenAPI specs generated from your route definitions. TypeScript types generated from your database schema. These stay current because they're derived from the source of truth — the code itself. Manually written API docs diverge within weeks.
+OpenAPI specs generated from your route definitions. TypeScript types generated from your database schema. These stay current because they're derived from the source of truth ... the code itself. Manually written API docs diverge within weeks.
 
-Everything else — meeting notes, "how we do X" guides, process documentation, feature specs — decays. Don't invest in documentation types that lack a maintenance mechanism.
+Everything else ... meeting notes, "how we do X" guides, process documentation, feature specs ... decays. Don't invest in documentation types that lack a maintenance mechanism.
 
 **The implementation rule:** documentation lives in the code repository, not in a wiki. Docs-as-code means PRs include doc changes. CI validates links. Search works. Version history is git log.
 
@@ -77,17 +77,17 @@ Everything else — meeting notes, "how we do X" guides, process documentation, 
 
 ## Worth Your Time
 
-1. **[Cognitect: ADR Process](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)** — Michael Nygard's original ADR proposal. Short, practical, and the format that's become an industry standard. The key insight: record the decision and its context, not the analysis that led to it.
+1. **[Cognitect: ADR Process](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)** ... Michael Nygard's original ADR proposal. Short, practical, and the format that's become an industry standard. The key insight: record the decision and its context, not the analysis that led to it.
 
-2. **[Google: Documentation Guide](https://google.github.io/styleguide/docguide/best_practices.html)** — Google's internal documentation philosophy: minimum viable documentation, maintained by ownership, tested by usage. Their distinction between "conceptual," "procedural," and "reference" docs clarifies what format serves which purpose.
+2. **[Google: Documentation Guide](https://google.github.io/styleguide/docguide/best_practices.html)** ... Google's internal documentation philosophy: minimum viable documentation, maintained by ownership, tested by usage. Their distinction between "conceptual," "procedural," and "reference" docs clarifies what format serves which purpose.
 
-3. **[Divio: Documentation System](https://docs.divio.com/documentation-system/)** — The four-quadrant framework: tutorials, how-to guides, reference, and explanation. Each serves a different reader need. The framework prevents "dump everything in one format" which is how most wikis become useless.
+3. **[Divio: Documentation System](https://docs.divio.com/documentation-system/)** ... The four-quadrant framework: tutorials, how-to guides, reference, and explanation. Each serves a different reader need. The framework prevents "dump everything in one format" which is how most wikis become useless.
 
 ---
 
 ## Tool of the Week
 
-**[Backstage](https://backstage.io/)** — Spotify's developer portal. Centralizes documentation, service catalog, and runbooks in one place with ownership tracking. Docs live alongside the services they describe, with visibility into which docs are stale. If your documentation problem is really a discoverability problem, Backstage solves it.
+**[Backstage](https://backstage.io/)** ... Spotify's developer portal. Centralizes documentation, service catalog, and runbooks in one place with ownership tracking. Docs live alongside the services they describe, with visibility into which docs are stale. If your documentation problem is really a discoverability problem, Backstage solves it.
 
 ---
 
@@ -97,4 +97,4 @@ Hit reply if your team has a documentation problem they keep trying to solve wit
 
 – Alex
 
-P.S. For the complete engineering leadership framework — from documentation to team scaling: [Engineering Leadership: Founder to CTO](https://alexmayhew.dev/blog/engineering-leadership-founder-to-cto).
+P.S. For the complete engineering leadership framework ... from documentation to team scaling: [Engineering Leadership: Founder to CTO](https://alexmayhew.dev/blog/engineering-leadership-founder-to-cto).

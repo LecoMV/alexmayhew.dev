@@ -1,6 +1,6 @@
 ---
 title: "Multi-Tenancy Done Right: A Prisma & RLS Deep Dive"
-description: "Row-Level Security isn't just for security—it's an architectural pattern that simplifies code and makes tenant isolation bulletproof."
+description: "Row-Level Security isn't just for security...it's an architectural pattern that simplifies code and makes tenant isolation bulletproof."
 date: "2025-09-16"
 updatedAt: "2026-02-06"
 author: "Alex Mayhew"
@@ -16,7 +16,7 @@ image: "/images/blog/multi-tenancy-prisma-rls-featured.webp"
 
 Schema-per-tenant breaks at 200-300 tenants (Prisma limitation). Database-per-tenant costs $50-100+/month per tenant. Shared tables + Row-Level Security scales indefinitely with negligible overhead. RLS from day one prevents the painful migration later. Pattern: Set `app.current_tenant_id` per-transaction, let Postgres enforce isolation at the query planner level.
 
-> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — a comprehensive guide to architecture decisions from MVP to scale.
+> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
 
 ---
 
@@ -30,7 +30,7 @@ Each tenant gets their own PostgreSQL database.
 
 **Advantages**:
 
-- Maximum isolation—one tenant's data cannot possibly leak to another
+- Maximum isolation...one tenant's data cannot possibly leak to another
 - Per-tenant backup and restore
 - Independent scaling
 - Easy regulatory compliance (data residency)
@@ -57,7 +57,7 @@ Single database, separate PostgreSQL schemas per tenant.
 
 **Disadvantages**:
 
-- Prisma generates one client per schema—breaks at 200-300 tenants
+- Prisma generates one client per schema...breaks at 200-300 tenants
 - Schema migrations must still run per-tenant
 - Connection pooling complications
 - Doesn't scale for B2C with thousands of tenants
@@ -104,7 +104,7 @@ WHERE status = 'pending'
   AND tenant_id = current_setting('app.current_tenant_id');
 ```
 
-The tenant filter is added at the query planner level. Rows that don't match the policy are never read from disk—they're not filtered out after the fact.
+The tenant filter is added at the query planner level. Rows that don't match the policy are never read from disk...they're not filtered out after the fact.
 
 ### Creating RLS Policies
 
@@ -169,7 +169,7 @@ SELECT set_config('app.current_tenant_id', '123e4567-e89b-...', true);
 SET LOCAL app.current_tenant_id = '123e4567-e89b-...';
 ```
 
-The `true` parameter makes it transaction-local—it resets when the transaction ends. This is crucial for connection pooling.
+The `true` parameter makes it transaction-local...it resets when the transaction ends. This is crucial for connection pooling.
 
 ### PgBouncer Transaction Mode Compatibility
 
@@ -357,7 +357,7 @@ Prisma's managed connection pooler:
 
 ## Testing RLS with pgTAP
 
-Don't trust your RLS policies—verify them with database unit tests.
+Don't trust your RLS policies...verify them with database unit tests.
 
 ### Setting Up pgTAP
 
@@ -612,7 +612,7 @@ RLS isn't just a security feature. It's an architectural pattern that:
 3. **Scales indefinitely**: No schema-per-tenant limitations
 4. **Aids compliance**: Auditable, database-enforced access controls
 
-The migration from schema-per-tenant to pool model is painful. The migration from pool model to database-per-tenant (if you ever need it) is straightforward—just add a router that directs tenants to different databases.
+The migration from schema-per-tenant to pool model is painful. The migration from pool model to database-per-tenant (if you ever need it) is straightforward...just add a router that directs tenants to different databases.
 
 Start with RLS. You can always scale up to more isolation. Scaling down from schema-per-tenant is the hard direction.
 
@@ -620,21 +620,21 @@ Start with RLS. You can always scale up to more isolation. Scaling down from sch
 
 **Need help implementing multi-tenant architecture?** I specialize in building SaaS platforms with bulletproof tenant isolation from day one. Whether you're starting fresh or migrating from schema-per-tenant, I can help you get it right.
 
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Multi-tenant architecture with RLS
-- [PostgreSQL Development](/services/postgresql-developer-for-fintech) — Database design and optimization
-- [Full-Stack Development for Startups](/services/fullstack-developer-for-startups) — Type-safe tenant isolation
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Multi-tenant architecture with RLS
+- [PostgreSQL Development](/services/postgresql-developer-for-fintech) ... Database design and optimization
+- [Full-Stack Development for Startups](/services/fullstack-developer-for-startups) ... Type-safe tenant isolation
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
 
 ### More in This Series
 
-- [The $500K Architecture Mistake](/blog/500k-architecture-mistake) — Why microservices aren't the answer
-- [Zero to 10K MRR SaaS Playbook](/blog/zero-to-10k-mrr-saas-playbook) — Early-stage architecture
-- [Boring Technology Wins](/blog/boring-technology-wins) — Technology selection philosophy
-- [Database Query Optimization](/blog/database-query-optimization) — From N+1 to optimal
+- [The $500K Architecture Mistake](/blog/500k-architecture-mistake) ... Why microservices aren't the answer
+- [Zero to 10K MRR SaaS Playbook](/blog/zero-to-10k-mrr-saas-playbook) ... Early-stage architecture
+- [Boring Technology Wins](/blog/boring-technology-wins) ... Technology selection philosophy
+- [Database Query Optimization](/blog/database-query-optimization) ... From N+1 to optimal
 
 **Ready to make better architecture decisions?** [Work with me](/services/technical-advisor-for-startups) on your SaaS architecture.

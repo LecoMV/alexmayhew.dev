@@ -13,7 +13,7 @@ image: "/images/blog/ai-assisted-development-reality-featured.webp"
 
 ## TL;DR
 
-"Vibe coding" is a reductive term that misrepresents how AI-assisted development actually works. The anti-AI camp claims you need a CS degree and 10 years of production experience to ship anything real. The AI evangelists claim their 10,000-agent swarm builds enterprise software overnight. Both are wrong. AI-assisted development is a discipline that amplifies existing competence — it does not replace it. The differentiator is not the tool. It is the person directing it.
+"Vibe coding" is a reductive term that misrepresents how AI-assisted development actually works. The anti-AI camp claims you need a CS degree and 10 years of production experience to ship anything real. The AI evangelists claim their 10,000-agent swarm builds enterprise software overnight. Both are wrong. AI-assisted development is a discipline that amplifies existing competence ... it does not replace it. The differentiator is not the tool. It is the person directing it.
 
 ---
 
@@ -21,7 +21,7 @@ image: "/images/blog/ai-assisted-development-reality-featured.webp"
 
 "Vibe coding" needs to die.
 
-Not because AI-assisted development is not real — it is. I use it every day. But because the term reduces a legitimate engineering discipline to something that sounds like you are closing your eyes and hoping the code works. It implies the absence of skill, intent, and rigor. It suggests that the human in the loop is optional.
+Not because AI-assisted development is not real ... it is. I use it every day. But because the term reduces a legitimate engineering discipline to something that sounds like you are closing your eyes and hoping the code works. It implies the absence of skill, intent, and rigor. It suggests that the human in the loop is optional.
 
 The term has become a weapon for both sides of a debate that is mostly fiction. One side uses it to dismiss AI-generated code as inherently unshippable. The other side uses it to sell the fantasy that anyone with a credit card and an API key can replace a development team overnight.
 
@@ -49,11 +49,11 @@ None of that happened because I typed a single prompt and let the AI run. It hap
 
 I wrote my first website in 2002. I was 14, using the earliest version of Dreamweaver, hand-editing HTML before CSS was standard practice. That was years before anyone imagined AI writing code.
 
-I am not a formally trained software engineer. I do not have a computer science degree. I have never worked as a full-time developer at a FAANG company. What I have is over two decades of building things on the web — learning how servers work, how databases fail, how architectures scale and where they break, how teams ship code and why they ship bugs. I learned by doing. I learned by breaking things and fixing them. I learned by working with teams that did it right and teams that did it catastrophically wrong.
+I am not a formally trained software engineer. I do not have a computer science degree. I have never worked as a full-time developer at a FAANG company. What I have is over two decades of building things on the web ... learning how servers work, how databases fail, how architectures scale and where they break, how teams ship code and why they ship bugs. I learned by doing. I learned by breaking things and fixing them. I learned by working with teams that did it right and teams that did it catastrophically wrong.
 
 That background is the differentiator. Not the AI.
 
-When I sit down with Claude Code, I am not asking it to think for me. I am directing an engineering effort. I know enough about web architectures, frameworks, and infrastructure patterns to evaluate whether the code it generates is correct, appropriate, and maintainable. I know when a database query is going to cause contention at scale. I know when an authentication pattern has a security gap. I know when a caching strategy is going to create stale data problems. I do not always know the exact implementation — but I know the right questions to ask, and I know when an answer does not smell right.
+When I sit down with Claude Code, I am not asking it to think for me. I am directing an engineering effort. I know enough about web architectures, frameworks, and infrastructure patterns to evaluate whether the code it generates is correct, appropriate, and maintainable. I know when a database query is going to cause contention at scale. I know when an authentication pattern has a security gap. I know when a caching strategy is going to create stale data problems. I do not always know the exact implementation ... but I know the right questions to ask, and I know when an answer does not smell right.
 
 That is not vibe coding. That is engineering with a different set of tools.
 
@@ -105,7 +105,7 @@ Here is what AI-assisted development actually looks like when it works:
 
 **I ask the right questions at the right time.** Before implementing a monitoring system, I asked about Temporal workflow replay behavior and learned that changing a publish date in the database does not prevent Temporal from firing the scheduled action. That one question prevented a data loss scenario that would have gone undetected until posts started publishing at wrong times. The AI provided the answer. I knew to ask the question.
 
-**I catch mistakes.** AI makes errors. Context windows degrade. Sessions that run too long produce lower quality output. I have learned the patterns — when to clear the session, when to compact, when to start fresh. I have caught database table name casing issues that would have caused silent query failures. I have caught bash quoting bugs in monitoring scripts. I have caught networking configuration issues that would have left services inaccessible. The AI wrote the code. I verified it worked.
+**I catch mistakes.** AI makes errors. Context windows degrade. Sessions that run too long produce lower quality output. I have learned the patterns ... when to clear the session, when to compact, when to start fresh. I have caught database table name casing issues that would have caused silent query failures. I have caught bash quoting bugs in monitoring scripts. I have caught networking configuration issues that would have left services inaccessible. The AI wrote the code. I verified it worked.
 
 **I iterate toward quality.** My definition of an MVP is probably closer to what most teams consider production-ready. I do not ship the first thing that works. I harden it. I add monitoring. I add safety nets. I test failure modes. That discipline existed before AI and it exists because of how I approach building software. AI makes the iteration faster. It does not make it optional.
 
@@ -119,7 +119,7 @@ If there is a formula for making AI-assisted development work, it is this:
 
 Remove competence and you get demo-quality code that breaks in production. Remove discipline and you get technical debt that compounds faster because AI helps you write more of it. Remove research and you get confident implementations of the wrong solution. Remove AI and you get the same results, slower.
 
-The order matters. AI is the multiplier at the end, not the foundation. Every attempt I have seen to put AI first — to use it as a replacement for understanding rather than an amplifier of it — produces the same result: something that looks impressive until it has to work.
+The order matters. AI is the multiplier at the end, not the foundation. Every attempt I have seen to put AI first ... to use it as a replacement for understanding rather than an amplifier of it ... produces the same result: something that looks impressive until it has to work.
 
 ---
 
@@ -155,4 +155,4 @@ It is not magic. It is not a replacement for skill. It is not going to let someo
 
 It is a tool. The most powerful development tool that has existed in my 24 years of building for the web. But like every tool before it, the results depend entirely on the person using it.
 
-Stop calling it vibe coding. Start treating it as what it is: a new discipline within software engineering that rewards the same qualities that have always separated good engineers from bad ones — judgment, discipline, and the willingness to understand what you are building before you build it.
+Stop calling it vibe coding. Start treating it as what it is: a new discipline within software engineering that rewards the same qualities that have always separated good engineers from bad ones ... judgment, discipline, and the willingness to understand what you are building before you build it.

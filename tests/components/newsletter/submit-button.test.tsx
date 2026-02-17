@@ -32,9 +32,9 @@ describe("SubmitButton", () => {
 	it("shows pendingText when pending", () => {
 		vi.mocked(useFormStatus).mockReturnValue({
 			pending: true,
-			data: null,
-			method: null,
-			action: null,
+			data: new FormData(),
+			method: "POST",
+			action: "/",
 		});
 
 		render(<SubmitButton pendingText="Loading...">Subscribe</SubmitButton>);
@@ -45,9 +45,9 @@ describe("SubmitButton", () => {
 	it("has animate-pulse class on pending text", () => {
 		vi.mocked(useFormStatus).mockReturnValue({
 			pending: true,
-			data: null,
-			method: null,
-			action: null,
+			data: new FormData(),
+			method: "POST",
+			action: "/",
 		});
 
 		render(<SubmitButton pendingText="Loading...">Subscribe</SubmitButton>);
@@ -58,9 +58,9 @@ describe("SubmitButton", () => {
 	it("disables button when pending", () => {
 		vi.mocked(useFormStatus).mockReturnValue({
 			pending: true,
-			data: null,
-			method: null,
-			action: null,
+			data: new FormData(),
+			method: "POST",
+			action: "/",
 		});
 
 		render(<SubmitButton pendingText="Loading...">Subscribe</SubmitButton>);

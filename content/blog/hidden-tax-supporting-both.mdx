@@ -1,6 +1,6 @@
 ---
 title: 'The Hidden Tax of "We Support Both"'
-description: 'Every SaaS team eventually says "we''ll support both" — both databases, both auth providers, both deployment targets. The hidden cost isn''t the initial implementation. It''s the 2x testing matrix, 2x documentation, and the subtle bugs that only appear in one configuration.'
+description: 'Every SaaS team eventually says "we''ll support both" ... both databases, both auth providers, both deployment targets. The hidden cost isn''t the initial implementation. It''s the 2x testing matrix, 2x documentation, and the subtle bugs that only appear in one configuration.'
 date: "2026-09-22"
 author: "Alex Mayhew"
 tags: ["architecture", "saas", "technical-debt", "decision-making", "strategy"]
@@ -14,9 +14,9 @@ image: "/images/blog/hidden-tax-supporting-both-featured.webp"
 
 ## TL;DR
 
-"We support both" is the most expensive sentence in SaaS architecture. Every "both" doubles your surface area: testing, documentation, operational runbooks, security audits, and the mental model your team carries. I've audited 8 SaaS codebases where "we support both MySQL and PostgreSQL" or "we support both AWS and GCP" accounted for 25-40% of total engineering overhead. The cost isn't visible in sprint planning because it's distributed: an extra 30 minutes on every PR review checking both paths, an extra 2 hours on every deployment verifying both configurations, an extra week on every security audit. The fix isn't always eliminating one option—sometimes you genuinely need both. The fix is making the decision consciously, quantifying the tax, and choosing "both" only when the business value exceeds the ongoing engineering cost.
+"We support both" is the most expensive sentence in SaaS architecture. Every "both" doubles your surface area: testing, documentation, operational runbooks, security audits, and the mental model your team carries. I've audited 8 SaaS codebases where "we support both MySQL and PostgreSQL" or "we support both AWS and GCP" accounted for 25-40% of total engineering overhead. The cost isn't visible in sprint planning because it's distributed: an extra 30 minutes on every PR review checking both paths, an extra 2 hours on every deployment verifying both configurations, an extra week on every security audit. The fix isn't always eliminating one option...sometimes you genuinely need both. The fix is making the decision consciously, quantifying the tax, and choosing "both" only when the business value exceeds the ongoing engineering cost.
 
-> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — a comprehensive guide to architecture decisions from MVP to scale.
+> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
 
 ---
 
@@ -46,7 +46,7 @@ I've tracked the actual engineering cost of "both" across 8 advisory clients. Th
 | Two databases                       | 2.3x tests  | 2.5x maintenance |
 | Two databases + two cloud providers | 4.6x tests  | 5x maintenance   |
 
-The multiplier isn't exactly 2x because some tests are configuration-independent. But the configuration-specific tests—the ones that verify behavior unique to each option—are where the bugs hide. And those bugs are the hardest to reproduce because your development environment runs one configuration while production might run the other.
+The multiplier isn't exactly 2x because some tests are configuration-independent. But the configuration-specific tests...the ones that verify behavior unique to each option...are where the bugs hide. And those bugs are the hardest to reproduce because your development environment runs one configuration while production might run the other.
 
 ### Operational Overhead
 
@@ -75,13 +75,13 @@ async function getUser(id: string): Promise<User> {
 }
 ```
 
-This pattern—a function that branches on configuration—appears innocuous. But multiply it by 200 database operations and you have a codebase where every function has two code paths that diverge in subtle ways.
+This pattern...a function that branches on configuration...appears innocuous. But multiply it by 200 database operations and you have a codebase where every function has two code paths that diverge in subtle ways.
 
 ### Security Surface Area
 
 Every "both" doubles your security audit scope. Two databases means two sets of access controls, two sets of encryption configurations, two sets of vulnerability scanning pipelines.
 
-A client discovered this the hard way: their PostgreSQL deployment had Row-Level Security enforcing tenant isolation. Their MongoDB deployment relied on application-level filtering. A bug in the application filter exposed cross-tenant data—but only in the MongoDB configuration. The vulnerability existed for 8 months before discovery because security testing focused on the PostgreSQL path.
+A client discovered this the hard way: their PostgreSQL deployment had Row-Level Security enforcing tenant isolation. Their MongoDB deployment relied on application-level filtering. A bug in the application filter exposed cross-tenant data...but only in the MongoDB configuration. The vulnerability existed for 8 months before discovery because security testing focused on the PostgreSQL path.
 
 ---
 
@@ -179,24 +179,24 @@ In my experience, 90% of customers accept this without pushback when you frame i
 
 **Paying the hidden tax of "we support both"?** I help teams quantify the cost, make the decision, and execute the migration.
 
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Architecture simplification
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Opinionated, focused technology choices
-- [Technical Due Diligence](/services/technical-due-diligence-consultant) — Identifying hidden architecture taxes
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Architecture simplification
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Opinionated, focused technology choices
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) ... Identifying hidden architecture taxes
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — covering database design, deployment strategy, API patterns, and infrastructure decisions.
+**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering database design, deployment strategy, API patterns, and infrastructure decisions.
 
 ### More in This Series
 
-- [Boring Technology Wins](/blog/boring-technology-wins) — Why choosing one mature option beats supporting both
-- [Build vs Buy: The SaaS Engineering Decision](/blog/build-vs-buy) — When to build custom vs adopt existing solutions
-- [Technical Debt Strategy](/blog/technical-debt-strategy) — Managing the complexity that "both" creates
-- [Tech Stack as Capital Allocation](/blog/tech-stack-capital-allocation) — Every "both" is a capital allocation decision
+- [Boring Technology Wins](/blog/boring-technology-wins) ... Why choosing one mature option beats supporting both
+- [Build vs Buy: The SaaS Engineering Decision](/blog/build-vs-buy) ... When to build custom vs adopt existing solutions
+- [Technical Debt Strategy](/blog/technical-debt-strategy) ... Managing the complexity that "both" creates
+- [Tech Stack as Capital Allocation](/blog/tech-stack-capital-allocation) ... Every "both" is a capital allocation decision
 
 ### Related Guides
 
-- [Engineering Leadership: Founder to CTO](/blog/engineering-leadership-founder-to-cto) — Making these decisions as a leader
-- [SaaS Billing Architecture with Stripe](/blog/saas-billing-stripe-architecture) — One area where "both" is never worth it
+- [Engineering Leadership: Founder to CTO](/blog/engineering-leadership-founder-to-cto) ... Making these decisions as a leader
+- [SaaS Billing Architecture with Stripe](/blog/saas-billing-stripe-architecture) ... One area where "both" is never worth it

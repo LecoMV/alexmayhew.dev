@@ -9,7 +9,7 @@ vi.mock("react", async () => {
 	const actual = await vi.importActual("react");
 	return {
 		...actual,
-		useActionState: vi.fn(() => [mockState, mockFormAction]),
+		useActionState: vi.fn(() => [mockState, mockFormAction, false]),
 		useRef: () => ({ current: null }),
 		useEffect: () => {},
 	};
@@ -81,7 +81,7 @@ import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 describe("NewsletterSignup", () => {
 	beforeEach(() => {
 		mockState = { success: false };
-		vi.mocked(useActionState).mockReturnValue([mockState, mockFormAction]);
+		vi.mocked(useActionState).mockReturnValue([mockState, mockFormAction, false]);
 	});
 
 	describe("card variant (default)", () => {
@@ -123,7 +123,7 @@ describe("NewsletterSignup", () => {
 	describe("error state", () => {
 		beforeEach(() => {
 			mockState = { success: false, error: "Invalid email address" };
-			vi.mocked(useActionState).mockReturnValue([mockState, mockFormAction]);
+			vi.mocked(useActionState).mockReturnValue([mockState, mockFormAction, false]);
 		});
 
 		it("shows role='alert' element", () => {
@@ -140,7 +140,7 @@ describe("NewsletterSignup", () => {
 	describe("success state", () => {
 		beforeEach(() => {
 			mockState = { success: true };
-			vi.mocked(useActionState).mockReturnValue([mockState, mockFormAction]);
+			vi.mocked(useActionState).mockReturnValue([mockState, mockFormAction, false]);
 		});
 
 		it("shows 'You're in!' text", () => {
@@ -157,7 +157,7 @@ describe("NewsletterSignup", () => {
 
 		it("sets aria-invalid when error is present", () => {
 			mockState = { success: false, error: "Bad email" };
-			vi.mocked(useActionState).mockReturnValue([mockState, mockFormAction]);
+			vi.mocked(useActionState).mockReturnValue([mockState, mockFormAction, false]);
 			render(<NewsletterSignup />);
 			const emailInput = screen.getByPlaceholderText("you@company.com");
 			expect(emailInput.getAttribute("aria-invalid")).toBe("true");

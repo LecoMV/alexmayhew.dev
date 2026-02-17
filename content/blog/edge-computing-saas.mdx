@@ -14,9 +14,9 @@ image: "/images/blog/edge-computing-saas-featured.webp"
 
 ## TL;DR
 
-Edge computing reduces latency by running code closer to users—30-50ms instead of 150-300ms for cross-continent requests. But the complexity cost is real: no persistent connections, cold storage access patterns change, debugging distributed state becomes a daily activity. I've helped 6 SaaS companies evaluate edge deployments. Three moved forward, three stayed on origin servers. The deciding factor wasn't latency—it was data locality. If 80%+ of your requests need data that lives in a single region, edge compute adds complexity without meaningful latency improvement. If your users are globally distributed and your read-to-write ratio exceeds 10:1, edge is worth the investment. The sweet spot: edge for authentication, static content, and read-heavy APIs. Origin for writes, transactions, and anything requiring strong consistency.
+Edge computing reduces latency by running code closer to users...30-50ms instead of 150-300ms for cross-continent requests. But the complexity cost is real: no persistent connections, cold storage access patterns change, debugging distributed state becomes a daily activity. I've helped 6 SaaS companies evaluate edge deployments. Three moved forward, three stayed on origin servers. The deciding factor wasn't latency...it was data locality. If 80%+ of your requests need data that lives in a single region, edge compute adds complexity without meaningful latency improvement. If your users are globally distributed and your read-to-write ratio exceeds 10:1, edge is worth the investment. The sweet spot: edge for authentication, static content, and read-heavy APIs. Origin for writes, transactions, and anything requiring strong consistency.
 
-> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — a comprehensive guide to building systems that stay fast under real-world load.
+> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to building systems that stay fast under real-world load.
 
 ---
 
@@ -24,7 +24,7 @@ Edge computing reduces latency by running code closer to users—30-50ms instead
 
 A request from Tokyo to a us-east-1 origin server takes 150-200ms in network round-trip time alone. Before your application code runs a single line, the user has already waited 200ms. Add database queries, business logic, and response serialization, and you're looking at 400-800ms total.
 
-Move that same code to an edge node in Tokyo—Cloudflare's network has 310+ locations—and the network round-trip drops to 5-15ms. Your total response time falls to 50-150ms.
+Move that same code to an edge node in Tokyo...Cloudflare's network has 310+ locations...and the network round-trip drops to 5-15ms. Your total response time falls to 50-150ms.
 
 That 300-500ms improvement sounds transformative. For some applications, it is. For others, it's a 300-500ms improvement that costs 200+ engineering hours to implement and maintain.
 
@@ -42,7 +42,7 @@ The question isn't "is edge faster?" It's "does edge latency improvement justify
 | 60-90% in one region, rest scattered | Moderate     | Edge for auth + reads, origin for writes       |
 | Truly global (no region > 40%)       | High         | Full edge deployment with regional data stores |
 
-If your analytics show 85% of traffic from North America, deploying to the edge gives your European and Asian users a better experience—but they're 15% of your base. That's a meaningful improvement for a small audience. Whether it justifies the engineering investment depends on your growth plans.
+If your analytics show 85% of traffic from North America, deploying to the edge gives your European and Asian users a better experience...but they're 15% of your base. That's a meaningful improvement for a small audience. Whether it justifies the engineering investment depends on your growth plans.
 
 ### Factor 2: Read-to-Write Ratio
 
@@ -75,7 +75,7 @@ export default {
 		const lastWrite = await env.KV.get(`last-write:${userId}`);
 
 		if (lastWrite && Date.now() - parseInt(lastWrite) < 5000) {
-			// User wrote within 5 seconds — route to origin for consistency
+			// User wrote within 5 seconds ... route to origin for consistency
 			return fetch(request, { cf: { resolveOverride: "origin.yoursaas.com" } });
 		}
 
@@ -83,7 +83,7 @@ export default {
 		const cached = await env.KV.get(`data:${userId}`, { cacheTtl: 60 });
 		if (cached) return new Response(cached, { headers: { "Content-Type": "application/json" } });
 
-		// Cache miss — fetch from origin and cache at edge
+		// Cache miss ... fetch from origin and cache at edge
 		const response = await fetch(`https://origin.yoursaas.com/api/data/${userId}`);
 		const data = await response.text();
 		await env.KV.put(`data:${userId}`, data, { expirationTtl: 300 });
@@ -101,7 +101,7 @@ export default {
 
 The simplest edge pattern. Move authentication and session validation to the edge. Everything else stays at the origin.
 
-**Why it works:** Authentication is a read-heavy operation (validate token on every request) with infrequent writes (login, logout, token refresh). JWT validation is purely computational—no database needed.
+**Why it works:** Authentication is a read-heavy operation (validate token on every request) with infrequent writes (login, logout, token refresh). JWT validation is purely computational...no database needed.
 
 ```typescript
 // Edge middleware: validate JWT without hitting origin
@@ -156,7 +156,7 @@ async function handleRequest(request: Request, env: Env): Promise<Response> {
 			});
 		}
 
-		// Cache miss — fetch from origin
+		// Cache miss ... fetch from origin
 		const response = await fetch(request);
 		const data = await response.text();
 
@@ -202,7 +202,7 @@ For truly global applications, replicate data to regional edge databases. Cloudf
 | **Neon Edge Cache** | Read replicas             | Eventual                 | 5-20ms       | Origin round-trip     |
 | **PlanetScale**     | Multi-region (Vitess)     | Eventual                 | 5-15ms       | 50-100ms (to primary) |
 
-The "single writer" constraint is the critical limitation. All writes route to a primary region. Reads serve from the nearest replica. Write latency doesn't improve—it's still an origin round-trip. Read latency drops to near-zero.
+The "single writer" constraint is the critical limitation. All writes route to a primary region. Reads serve from the nearest replica. Write latency doesn't improve...it's still an origin round-trip. Read latency drops to near-zero.
 
 For a SaaS dashboard with a 50:1 read:write ratio, this means 98% of requests complete in under 20ms.
 
@@ -236,7 +236,7 @@ A SaaS with 10M monthly API requests (80% reads, 20% writes):
 | p50 latency (global) | 30ms               | 45ms                        | 180ms                   |
 | p99 latency (global) | 80ms               | 200ms                       | 500ms                   |
 
-The cost difference is negligible. The latency difference is significant. The complexity cost is where the real tradeoff lives—and that's measured in engineering hours, not dollars.
+The cost difference is negligible. The latency difference is significant. The complexity cost is where the real tradeoff lives...and that's measured in engineering hours, not dollars.
 
 ---
 
@@ -280,33 +280,33 @@ Without structured logging that includes the edge location (`colo`), you'll spen
 
 ## When NOT to Apply This
 
-- 80%+ of users are in one region—use a CDN for static assets instead
+- 80%+ of users are in one region...use a CDN for static assets instead
 - Your application is write-heavy (CRM data entry, content management)
 - Your team is under 10 engineers and doesn't have distributed systems experience
-- You're pre-product-market-fit—optimize for iteration speed, not latency
+- You're pre-product-market-fit...optimize for iteration speed, not latency
 
 ---
 
 **Evaluating whether edge computing makes sense for your SaaS?** I help teams make this decision without the 6-month trial-and-error phase.
 
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Architecture decisions from MVP to scale
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Edge-ready frontend architectures
-- [Technical Due Diligence](/services/technical-due-diligence-consultant) — Pre-investment infrastructure assessment
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Architecture decisions from MVP to scale
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Edge-ready frontend architectures
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) ... Pre-investment infrastructure assessment
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — covering latency optimization, caching strategies, monitoring, and infrastructure patterns.
+**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... covering latency optimization, caching strategies, monitoring, and infrastructure patterns.
 
 ### More in This Series
 
-- [CDN Caching Strategy](/blog/cdn-caching-strategy) — Multi-layer caching that actually invalidates correctly
-- [The Lambda Tax: Cold Starts and Hidden Costs](/blog/lambda-tax-cold-starts) — When serverless costs more than servers
-- [Core Web Vitals Audit Checklist](/blog/core-web-vitals-2026-audit) — The 2026 update with INP optimization
-- [Database Migration Patterns](/blog/database-migration-patterns) — Zero-downtime operations at scale
+- [CDN Caching Strategy](/blog/cdn-caching-strategy) ... Multi-layer caching that actually invalidates correctly
+- [The Lambda Tax: Cold Starts and Hidden Costs](/blog/lambda-tax-cold-starts) ... When serverless costs more than servers
+- [Core Web Vitals Audit Checklist](/blog/core-web-vitals-2026-audit) ... The 2026 update with INP optimization
+- [Database Migration Patterns](/blog/database-migration-patterns) ... Zero-downtime operations at scale
 
 ### Related Guides
 
-- [Multi-Region SaaS Architecture](/blog/multi-region-saas-architecture) — Global replication and data residency
-- [SaaS Reliability Monitoring](/blog/saas-reliability-monitoring) — Observability across distributed infrastructure
+- [Multi-Region SaaS Architecture](/blog/multi-region-saas-architecture) ... Global replication and data residency
+- [SaaS Reliability Monitoring](/blog/saas-reliability-monitoring) ... Observability across distributed infrastructure

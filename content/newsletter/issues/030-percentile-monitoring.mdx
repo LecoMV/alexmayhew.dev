@@ -11,7 +11,7 @@ Subject: Your 200ms average hides 8-second requests
 
 Hey there,
 
-A client told me their API was "fast — 200ms average response time." I pulled their p99 data. It was 8,200ms. Their enterprise customers, running complex dashboard queries, were waiting 8 seconds per API call while the average looked healthy.
+A client told me their API was "fast ... 200ms average response time." I pulled their p99 data. It was 8,200ms. Their enterprise customers, running complex dashboard queries, were waiting 8 seconds per API call while the average looked healthy.
 
 They lost a $180K/year contract before they noticed.
 
@@ -23,7 +23,7 @@ They lost a $180K/year contract before they noticed.
 Your monitoring dashboard shows average response times in a comfortable range. Your team believes performance is fine. But customer complaints about "slowness" keep appearing, and you can't reproduce the issue.
 
 **The Insight:**
-Averages hide bimodal distributions. When 99% of requests complete in 50ms and 1% take 5,000ms, the average reads 100ms. That 1% represents your most valuable users — enterprise customers with complex data, power users with large accounts, API consumers running batch operations.
+Averages hide bimodal distributions. When 99% of requests complete in 50ms and 1% take 5,000ms, the average reads 100ms. That 1% represents your most valuable users ... enterprise customers with complex data, power users with large accounts, API consumers running batch operations.
 
 Here's what the distribution actually looks like:
 
@@ -79,23 +79,23 @@ The key insight: average-based monitoring optimizes for the median user. Percent
 
 ## Worth Your Time
 
-1. **[Gil Tene: How NOT to Measure Latency](https://www.youtube.com/watch?v=lJ8ydIuPFeU)** — The definitive talk on latency measurement. Tene's explanation of coordinated omission — how most benchmarking tools systematically underreport tail latency — changed how I evaluate every performance claim.
+1. **[Gil Tene: How NOT to Measure Latency](https://www.youtube.com/watch?v=lJ8ydIuPFeU)** ... The definitive talk on latency measurement. Tene's explanation of coordinated omission ... how most benchmarking tools systematically underreport tail latency ... changed how I evaluate every performance claim.
 
-2. **[Brendan Gregg: The USE Method](https://www.brendangregg.com/usemethod.html)** — Gregg's Utilization, Saturation, Errors methodology catches the resource contention that causes tail latency before it reaches users. If your p99 is high, the root cause is almost always saturation somewhere in the stack.
+2. **[Brendan Gregg: The USE Method](https://www.brendangregg.com/usemethod.html)** ... Gregg's Utilization, Saturation, Errors methodology catches the resource contention that causes tail latency before it reaches users. If your p99 is high, the root cause is almost always saturation somewhere in the stack.
 
-3. **[Datadog: Guide to Monitoring Percentiles](https://www.datadoghq.com/blog/monitoring-101-collecting-data/)** — Practical guide on implementing percentile monitoring across different observability stacks. Covers the storage trade-offs of histogram data vs. summary metrics — relevant when your metrics volume is high.
+3. **[Datadog: Guide to Monitoring Percentiles](https://www.datadoghq.com/blog/monitoring-101-collecting-data/)** ... Practical guide on implementing percentile monitoring across different observability stacks. Covers the storage trade-offs of histogram data vs. summary metrics ... relevant when your metrics volume is high.
 
 ---
 
 ## Tool of the Week
 
-**[Grafana](https://grafana.com/)** — You likely have Grafana already. The underused feature: histogram panel type. Configure it to show response time distribution instead of time series, and tail latency becomes visually obvious. One dashboard change gives your team the same "aha moment" I described above. Pair it with alerting on `histogram_quantile(0.99, ...)` and you'll catch enterprise customer pain before they email you about it.
+**[Grafana](https://grafana.com/)** ... You likely have Grafana already. The underused feature: histogram panel type. Configure it to show response time distribution instead of time series, and tail latency becomes visually obvious. One dashboard change gives your team the same "aha moment" I described above. Pair it with alerting on `histogram_quantile(0.99, ...)` and you'll catch enterprise customer pain before they email you about it.
 
 ---
 
 That's it for this week.
 
-Hit reply if you want help setting up percentile-based alerting for your stack — the config changes are small but the visibility improvement is significant. I read every response.
+Hit reply if you want help setting up percentile-based alerting for your stack ... the config changes are small but the visibility improvement is significant. I read every response.
 
 – Alex
 

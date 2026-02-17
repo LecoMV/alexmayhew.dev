@@ -1,6 +1,6 @@
 ---
 title: "Documentation That Engineers Actually Read"
-description: "Your team has documentation. Nobody reads it. Here's why—and the 4 documentation types that engineers actually use, with the templates and maintenance strategies that keep docs accurate past the first week."
+description: "Your team has documentation. Nobody reads it. Here's why...and the 4 documentation types that engineers actually use, with the templates and maintenance strategies that keep docs accurate past the first week."
 date: "2026-08-25"
 author: "Alex Mayhew"
 tags: ["documentation", "engineering-culture", "developer-experience", "leadership"]
@@ -14,9 +14,9 @@ image: "/images/blog/documentation-engineers-read-featured.webp"
 
 ## TL;DR
 
-Most engineering documentation is written once and never read. Not because engineers don't value docs—because the docs don't match how engineers actually look for information. Engineers don't read documentation top to bottom like a textbook. They search for answers to specific questions at specific moments: "How do I deploy?" "What does this error mean?" "Why was this architecture decision made?" The four documentation types that engineers actually use: decision records (ADRs), runbooks, onboarding guides, and API contracts. Everything else—comprehensive architecture overviews, process documents, team wikis—has a half-life of about 6 weeks before it's outdated and actively misleading. Write less documentation, but keep what you write accurate.
+Most engineering documentation is written once and never read. Not because engineers don't value docs...because the docs don't match how engineers actually look for information. Engineers don't read documentation top to bottom like a textbook. They search for answers to specific questions at specific moments: "How do I deploy?" "What does this error mean?" "Why was this architecture decision made?" The four documentation types that engineers actually use: decision records (ADRs), runbooks, onboarding guides, and API contracts. Everything else...comprehensive architecture overviews, process documents, team wikis...has a half-life of about 6 weeks before it's outdated and actively misleading. Write less documentation, but keep what you write accurate.
 
-> **Part of the [Engineering Leadership: Founder to CTO](/blog/engineering-leadership-founder-to-cto)** — a comprehensive guide to scaling engineering teams and practices.
+> **Part of the [Engineering Leadership: Founder to CTO](/blog/engineering-leadership-founder-to-cto)** ... a comprehensive guide to scaling engineering teams and practices.
 
 ---
 
@@ -28,9 +28,9 @@ I've audited engineering documentation at 12 companies in the past 2 years. The 
 - **70%+** of engineers report finding incorrect information in docs at least monthly
 - **90%+** of "comprehensive" architecture documents haven't been updated in 6+ months
 
-The problem isn't motivation. Every team I've worked with wants good documentation. The problem is that most documentation strategies optimize for comprehensiveness instead of accuracy—and comprehensive docs that are wrong are worse than no docs at all.
+The problem isn't motivation. Every team I've worked with wants good documentation. The problem is that most documentation strategies optimize for comprehensiveness instead of accuracy...and comprehensive docs that are wrong are worse than no docs at all.
 
-Wrong documentation costs more than missing documentation. When an engineer follows outdated instructions and breaks something, they lose trust in all documentation. From that point forward, they ask a colleague instead of reading the docs—which defeats the entire purpose.
+Wrong documentation costs more than missing documentation. When an engineer follows outdated instructions and breaks something, they lose trust in all documentation. From that point forward, they ask a colleague instead of reading the docs...which defeats the entire purpose.
 
 ---
 
@@ -71,7 +71,7 @@ We chose PostgreSQL RLS (option 3).
 
 - RLS adds 2-5% query overhead (measured on our workload)
 - Requires SET app.tenant_id on every connection (handled via Prisma middleware)
-- Debugging is harder—queries return empty results instead of errors when tenant context is wrong
+- Debugging is harder...queries return empty results instead of errors when tenant context is wrong
 
 ## Consequences
 
@@ -80,7 +80,7 @@ We chose PostgreSQL RLS (option 3).
 - Monitoring needed for the Prisma middleware setting tenant context
 ```
 
-**Why ADRs work:** They're written once, at the moment of decision, when context is fresh. They don't need updating because the decision itself doesn't change—even if the implementation evolves.
+**Why ADRs work:** They're written once, at the moment of decision, when context is fresh. They don't need updating because the decision itself doesn't change...even if the implementation evolves.
 
 **Maintenance cost:** Near zero. ADRs are immutable records. If a decision is reversed, write a new ADR that supersedes the old one.
 
@@ -135,7 +135,7 @@ If steps above don't resolve the issue, contact [on-call IC] via PagerDuty.
 
 ````
 
-**Why runbooks work:** They're designed for the exact moment when an engineer needs them—under stress, with limited context. Every step is explicit. No assumed knowledge.
+**Why runbooks work:** They're designed for the exact moment when an engineer needs them...under stress, with limited context. Every step is explicit. No assumed knowledge.
 
 **Maintenance strategy:** Every time a runbook is used and a step is wrong, fix the runbook immediately. Treat runbook inaccuracy as a bug with the same priority as a code bug.
 
@@ -143,7 +143,7 @@ If steps above don't resolve the issue, contact [on-call IC] via PagerDuty.
 
 New engineer onboarding documentation has the highest ROI of any documentation type. Every hour invested in onboarding docs saves that hour multiplied by every future engineer who joins.
 
-The effective onboarding guide isn't a wiki page—it's a checklist with day-by-day tasks:
+The effective onboarding guide isn't a wiki page...it's a checklist with day-by-day tasks:
 
 ```markdown
 # Engineering Onboarding: Week 1
@@ -154,8 +154,8 @@ The effective onboarding guide isn't a wiki page—it's a checklist with day-by-
 - [ ] Clone the monorepo: `git clone git@github.com:org/repo.git`
 - [ ] Install dependencies: `npm install` (requires Node 20+)
 - [ ] Set up local database: `docker compose up -d`
-- [ ] Run the dev server: `npm run dev` — verify http://localhost:3001 loads
-- [ ] Run tests: `npm test` — all should pass
+- [ ] Run the dev server: `npm run dev` ... verify http://localhost:3001 loads
+- [ ] Run tests: `npm test` ... all should pass
 
 ### Afternoon
 - [ ] Read ADR-001 through ADR-010 (architecture context)
@@ -186,7 +186,7 @@ API documentation that's generated from code stays accurate because it changes w
 
 ```typescript
 // OpenAPI spec generated from code (e.g., tRPC, Zod, or decorators)
-// The contract IS the code — there's no separate document to maintain
+// The contract IS the code ... there's no separate document to maintain
 
 const createOrderSchema = z.object({
 	customerId: z.string().uuid().describe("The customer placing the order"),
@@ -278,32 +278,32 @@ jobs:
 
 ## When NOT to Apply This
 
-- Solo developer or two-person team—verbal communication is faster
-- Prototype or throwaway project—documentation outliving the code is waste
-- First week of a startup—ship first, document later
+- Solo developer or two-person team...verbal communication is faster
+- Prototype or throwaway project...documentation outliving the code is waste
+- First week of a startup...ship first, document later
 
 ---
 
 **Building an engineering culture where documentation actually works?** I help teams implement documentation strategies that scale with their growth.
 
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Engineering culture and process guidance
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Teams that ship with documentation built in
-- [Technical Due Diligence](/services/technical-due-diligence-consultant) — Engineering process maturity assessment
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Engineering culture and process guidance
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Teams that ship with documentation built in
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) ... Engineering process maturity assessment
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [Engineering Leadership: Founder to CTO](/blog/engineering-leadership-founder-to-cto)** — covering hiring, team scaling, technical strategy, and operational excellence.
+**This post is part of the [Engineering Leadership: Founder to CTO](/blog/engineering-leadership-founder-to-cto)** ... covering hiring, team scaling, technical strategy, and operational excellence.
 
 ### More in This Series
 
-- [Code Review Practices That Scale](/blog/code-review-practices-scale) — Review processes that improve with team size
-- [First Engineering Team Playbook](/blog/first-engineering-team-playbook) — Building your first 5 engineering hires
-- [Hiring Your First Staff Engineer](/blog/hiring-first-staff-engineer) — When and how to make the senior-plus hire
-- [Technical Debt Strategy](/blog/technical-debt-strategy) — Managing complexity at scale
+- [Code Review Practices That Scale](/blog/code-review-practices-scale) ... Review processes that improve with team size
+- [First Engineering Team Playbook](/blog/first-engineering-team-playbook) ... Building your first 5 engineering hires
+- [Hiring Your First Staff Engineer](/blog/hiring-first-staff-engineer) ... When and how to make the senior-plus hire
+- [Technical Debt Strategy](/blog/technical-debt-strategy) ... Managing complexity at scale
 
 ### Related Guides
 
-- [Boring Technology Wins](/blog/boring-technology-wins) — Decision-making frameworks worth documenting
-- [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework) — ADRs for architecture decisions
+- [Boring Technology Wins](/blog/boring-technology-wins) ... Decision-making frameworks worth documenting
+- [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework) ... ADRs for architecture decisions

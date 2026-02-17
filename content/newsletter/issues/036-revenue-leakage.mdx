@@ -20,7 +20,7 @@ At their scale, that's $98,400 per year walking out the door. They had no idea.
 ## This Week's Decision
 
 **The Situation:**
-Your SaaS billing works — customers get charged, subscriptions renew, upgrades process. But you've never audited the gap between what customers owe and what you actually collect. You assume Stripe handles it. Stripe handles payments. It doesn't handle your business logic.
+Your SaaS billing works ... customers get charged, subscriptions renew, upgrades process. But you've never audited the gap between what customers owe and what you actually collect. You assume Stripe handles it. Stripe handles payments. It doesn't handle your business logic.
 
 **The Insight:**
 Revenue leakage in SaaS comes from 5 predictable patterns. I've found at least 2 at every company I've audited:
@@ -79,23 +79,23 @@ The fixes took 2 engineers 3 weeks. Annual revenue recovered: $98,400. ROI on en
 
 ## Worth Your Time
 
-1. **[Stripe: Revenue Recovery](https://stripe.com/docs/billing/revenue-recovery)** — Stripe's Smart Retries and dunning configuration directly address the grace period problem. Their data: optimized retry logic recovers 38% of failed payments on average. If you're using Stripe and haven't configured Smart Retries, you're leaving money on the table.
+1. **[Stripe: Revenue Recovery](https://stripe.com/docs/billing/revenue-recovery)** ... Stripe's Smart Retries and dunning configuration directly address the grace period problem. Their data: optimized retry logic recovers 38% of failed payments on average. If you're using Stripe and haven't configured Smart Retries, you're leaving money on the table.
 
-2. **[Patrick McKenzie: Billing as Engineering](https://www.kalzumeus.com/2012/09/24/what-you-should-know-about-billing/)** — McKenzie's article on why billing is an engineering problem, not an accounting problem. Written in 2012, every point still applies. His argument that billing is a competitive advantage — not a commodity — is something most SaaS CTOs underestimate.
+2. **[Patrick McKenzie: Billing as Engineering](https://www.kalzumeus.com/2012/09/24/what-you-should-know-about-billing/)** ... McKenzie's article on why billing is an engineering problem, not an accounting problem. Written in 2012, every point still applies. His argument that billing is a competitive advantage ... not a commodity ... is something most SaaS CTOs underestimate.
 
-3. **[Lago: Open-Source Billing](https://www.getlago.com/)** — Lago publishes their metering architecture openly. Their approach to usage-based billing — event ingestion, idempotent processing, reconciliation — is a reference implementation for any team building or auditing their own metering pipeline.
+3. **[Lago: Open-Source Billing](https://www.getlago.com/)** ... Lago publishes their metering architecture openly. Their approach to usage-based billing ... event ingestion, idempotent processing, reconciliation ... is a reference implementation for any team building or auditing their own metering pipeline.
 
 ---
 
 ## Tool of the Week
 
-**[Metronome](https://metronome.com/)** — Usage-based billing infrastructure that handles metering, rating, and invoicing with reconciliation built in. If your usage-based billing has accuracy problems, Metronome replaces the custom metering code that's likely the source of your leakage. The pricing model (percentage of billings processed) means cost scales with revenue, not engineering time.
+**[Metronome](https://metronome.com/)** ... Usage-based billing infrastructure that handles metering, rating, and invoicing with reconciliation built in. If your usage-based billing has accuracy problems, Metronome replaces the custom metering code that's likely the source of your leakage. The pricing model (percentage of billings processed) means cost scales with revenue, not engineering time.
 
 ---
 
 That's it for this week.
 
-Hit reply if you want help running a billing reconciliation audit — the queries above are a starting point, and I can help adapt them to your schema. I read every response.
+Hit reply if you want help running a billing reconciliation audit ... the queries above are a starting point, and I can help adapt them to your schema. I read every response.
 
 – Alex
 

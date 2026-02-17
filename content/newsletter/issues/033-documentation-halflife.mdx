@@ -23,7 +23,7 @@ The documentation was beautifully written. It was also 40% wrong.
 Your team invested in documentation. Architecture decision records, onboarding guides, API docs, runbooks. Six months later, half of it is outdated. Engineers stopped trusting the docs and started asking Slack instead. The documentation investment feels wasted.
 
 **The Insight:**
-Documentation has a half-life — the time it takes for 50% of the content to become inaccurate. I've measured this across 5 teams:
+Documentation has a half-life ... the time it takes for 50% of the content to become inaccurate. I've measured this across 5 teams:
 
 ```
 Documentation Half-Life by Type:
@@ -44,13 +44,13 @@ Three strategies that work:
 
 **1. Generate what you can.** API docs from OpenAPI specs, database schemas from migrations, dependency graphs from code. Generated docs are always current because they're derived from the source of truth.
 
-**2. Test what you can't generate.** Onboarding docs are the highest-decay, highest-impact category. The test: every new hire follows the onboarding guide exactly as written. Any step that fails gets fixed immediately. One team I advise makes it the new hire's first PR — fixing the onboarding doc.
+**2. Test what you can't generate.** Onboarding docs are the highest-decay, highest-impact category. The test: every new hire follows the onboarding guide exactly as written. Any step that fails gets fixed immediately. One team I advise makes it the new hire's first PR ... fixing the onboarding doc.
 
-**3. Budget for maintenance.** Documentation maintenance isn't a one-time project. Allocate 5% of sprint capacity to documentation upkeep, distributed across the team. Not a "documentation sprint" once a quarter — 2 hours per engineer per sprint reviewing and updating the docs they own.
+**3. Budget for maintenance.** Documentation maintenance isn't a one-time project. Allocate 5% of sprint capacity to documentation upkeep, distributed across the team. Not a "documentation sprint" once a quarter ... 2 hours per engineer per sprint reviewing and updating the docs they own.
 
 The concept I use: assign documentation owners. Every document has a name next to it. That person is responsible for reviewing it monthly and either confirming it's current or updating it. When the owner leaves the team, ownership transfers explicitly in their offboarding checklist.
 
-The anti-pattern: a wiki with 400 pages and no owners. That's not documentation — it's an archaeological site. Better to have 40 accurate, owned pages than 400 pages where engineers have to guess which ones are still valid.
+The anti-pattern: a wiki with 400 pages and no owners. That's not documentation ... it's an archaeological site. Better to have 40 accurate, owned pages than 400 pages where engineers have to guess which ones are still valid.
 
 **When to Apply This:**
 
@@ -62,23 +62,23 @@ The anti-pattern: a wiki with 400 pages and no owners. That's not documentation 
 
 ## Worth Your Time
 
-1. **[Stripe: Documentation-Driven Development](https://stripe.com/blog/markdoc)** — Stripe built Markdoc to keep their docs in sync with their codebase. The key insight: documentation lives alongside code, reviewed in the same PRs, tested in the same CI pipeline. When documentation is a code artifact, it decays at the same rate as code — which is manageable.
+1. **[Stripe: Documentation-Driven Development](https://stripe.com/blog/markdoc)** ... Stripe built Markdoc to keep their docs in sync with their codebase. The key insight: documentation lives alongside code, reviewed in the same PRs, tested in the same CI pipeline. When documentation is a code artifact, it decays at the same rate as code ... which is manageable.
 
-2. **[Divio Documentation System](https://docs.divio.com/documentation-system/)** — The clearest framework for documentation types: tutorials, how-to guides, reference, and explanation. Each type has a different half-life and maintenance strategy. Mixing them (the most common mistake) makes everything harder to maintain.
+2. **[Divio Documentation System](https://docs.divio.com/documentation-system/)** ... The clearest framework for documentation types: tutorials, how-to guides, reference, and explanation. Each type has a different half-life and maintenance strategy. Mixing them (the most common mistake) makes everything harder to maintain.
 
-3. **[Google: Documentation Best Practices](https://google.github.io/styleguide/docguide/)** — Google's internal documentation standards emphasize freshness over completeness. Their rule: delete documentation that's more than 6 months stale without an owner. Controversial, but better than misleading engineers with outdated content.
+3. **[Google: Documentation Best Practices](https://google.github.io/styleguide/docguide/)** ... Google's internal documentation standards emphasize freshness over completeness. Their rule: delete documentation that's more than 6 months stale without an owner. Controversial, but better than misleading engineers with outdated content.
 
 ---
 
 ## Tool of the Week
 
-**[Mintlify](https://mintlify.com/)** — Documentation platform that detects stale content automatically. It flags pages that haven't been updated since the codebase changed, surfaces broken links, and generates update reminders for document owners. If your documentation problem is "we don't know what's outdated," Mintlify solves the detection half of the problem. You still need humans to fix it.
+**[Mintlify](https://mintlify.com/)** ... Documentation platform that detects stale content automatically. It flags pages that haven't been updated since the codebase changed, surfaces broken links, and generates update reminders for document owners. If your documentation problem is "we don't know what's outdated," Mintlify solves the detection half of the problem. You still need humans to fix it.
 
 ---
 
 That's it for this week.
 
-Hit reply if you want help designing a documentation maintenance system for your team — the setup takes one sprint and saves hours per week. I read every response.
+Hit reply if you want help designing a documentation maintenance system for your team ... the setup takes one sprint and saves hours per week. I read every response.
 
 – Alex
 

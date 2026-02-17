@@ -1,6 +1,6 @@
 ---
 title: "RAG Architecture for SaaS Products"
-description: "Retrieval-Augmented Generation turns your product's data into an AI feature. Most implementations fail on retrieval quality, not generation quality. Here's the architecture that works in production—chunking strategies, embedding models, and the hybrid search approach that outperforms pure vector similarity by 30-40%."
+description: "Retrieval-Augmented Generation turns your product's data into an AI feature. Most implementations fail on retrieval quality, not generation quality. Here's the architecture that works in production...chunking strategies, embedding models, and the hybrid search approach that outperforms pure vector similarity by 30-40%."
 date: "2026-03-16"
 author: "Alex Mayhew"
 tags: ["rag", "ai", "vector-database", "saas", "llm"]
@@ -14,9 +14,9 @@ image: "/images/blog/rag-architecture-saas-featured.webp"
 
 ## TL;DR
 
-RAG is the fastest path from "we should add AI" to a shipped feature, but 70% of RAG implementations I've audited have the same problem: they focus on the generation model while neglecting retrieval quality. An LLM with perfect retrieval and GPT-4 Turbo produces better answers than an LLM with poor retrieval and Claude Opus. The architecture that works: semantic chunking (not fixed-size), hybrid search combining BM25 keyword matching with vector similarity, a reranking step before generation, and aggressive chunk overlap (20-30%). The median retrieval accuracy I see in production RAG systems is 62%. With the hybrid approach and reranking, that jumps to 85-92%. The retrieval quality is the ceiling for your AI feature's usefulness—no amount of prompt engineering compensates for retrieving the wrong documents.
+RAG is the fastest path from "we should add AI" to a shipped feature, but 70% of RAG implementations I've audited have the same problem: they focus on the generation model while neglecting retrieval quality. An LLM with perfect retrieval and GPT-4 Turbo produces better answers than an LLM with poor retrieval and Claude Opus. The architecture that works: semantic chunking (not fixed-size), hybrid search combining BM25 keyword matching with vector similarity, a reranking step before generation, and aggressive chunk overlap (20-30%). The median retrieval accuracy I see in production RAG systems is 62%. With the hybrid approach and reranking, that jumps to 85-92%. The retrieval quality is the ceiling for your AI feature's usefulness...no amount of prompt engineering compensates for retrieving the wrong documents.
 
-> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** — a comprehensive guide to building AI features that deliver real value.
+> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... a comprehensive guide to building AI features that deliver real value.
 
 ---
 
@@ -77,10 +77,10 @@ Each stage has specific failure modes and optimization strategies. Let me walk t
 
 Chunking is the process of splitting your documents into pieces small enough for embedding and retrieval. Get this wrong and everything downstream suffers.
 
-### Fixed-Size Chunking (The Default—and Often Wrong)
+### Fixed-Size Chunking (The Default...and Often Wrong)
 
 ```typescript
-// Naive fixed-size chunking — DON'T do this for production
+// Naive fixed-size chunking ... DON'T do this for production
 function fixedChunk(text: string, size: number, overlap: number): string[] {
 	const chunks: string[] = [];
 	for (let i = 0; i < text.length; i += size - overlap) {
@@ -111,7 +111,7 @@ function semanticChunk(document: string, maxChunkTokens: number = 512): Chunk[] 
 				},
 			});
 		} else {
-			// Section too large — split by paragraphs
+			// Section too large ... split by paragraphs
 			const paragraphs = section.content.split("\n\n");
 			let currentChunk = "";
 
@@ -178,7 +178,7 @@ The embedding model converts text into dense vector representations for similari
 | **Voyage AI voyage-3**            | 1024       | 67.1       | $0.06               | 40-70ms  |
 | **BGE-M3 (self-hosted)**          | 1024       | 66.1       | Infrastructure only | 20-50ms  |
 
-For most SaaS applications, `text-embedding-3-small` provides sufficient quality at 6.5x lower cost than the large model. The quality difference (62.3 vs 64.6 MTEB) is measurable but rarely the bottleneck—chunking and retrieval strategy matter more.
+For most SaaS applications, `text-embedding-3-small` provides sufficient quality at 6.5x lower cost than the large model. The quality difference (62.3 vs 64.6 MTEB) is measurable but rarely the bottleneck...chunking and retrieval strategy matter more.
 
 ### Embedding Pipeline
 
@@ -188,7 +188,7 @@ import { OpenAI } from "openai";
 const openai = new OpenAI();
 
 async function embedChunks(chunks: Chunk[]): Promise<EmbeddedChunk[]> {
-	// Batch embedding — up to 2048 inputs per request
+	// Batch embedding ... up to 2048 inputs per request
 	const batchSize = 2048;
 	const results: EmbeddedChunk[] = [];
 
@@ -226,14 +226,14 @@ async function hybridSearch(
 	queryEmbedding: number[],
 	topK: number = 20
 ): Promise<SearchResult[]> {
-	// Vector search — semantic similarity
+	// Vector search ... semantic similarity
 	const vectorResults = await vectorDb.search({
 		vector: queryEmbedding,
 		topK: topK,
 		includeMetadata: true,
 	});
 
-	// BM25 keyword search — exact term matching
+	// BM25 keyword search ... exact term matching
 	const keywordResults = await searchIndex.search(query, {
 		topK: topK,
 		fields: ["content", "heading"],
@@ -280,7 +280,7 @@ Testing on 3 SaaS knowledge bases (10K-50K documents each):
 | **Precision@5** | 68%         | 71%       | 84%              |
 | **MRR**         | 0.61        | 0.58      | 0.78             |
 
-Hybrid search outperforms either approach alone by 30-40% on recall. The improvement is most dramatic for queries that contain specific technical terms—exactly the queries SaaS users ask most.
+Hybrid search outperforms either approach alone by 30-40% on recall. The improvement is most dramatic for queries that contain specific technical terms...exactly the queries SaaS users ask most.
 
 ---
 
@@ -431,33 +431,33 @@ Build a test set of 50-100 representative queries with known correct answers. Ru
 
 ## When NOT to Apply This
 
-- Your data changes every few seconds (real-time trading, live monitoring)—RAG latency is too high
-- You need creative generation (marketing copy, design suggestions)—RAG constrains creativity
-- Your dataset is under 100 documents—a simple search bar is simpler and sufficient
-- You don't have ground truth data to evaluate quality—you'll ship a feature you can't measure
+- Your data changes every few seconds (real-time trading, live monitoring)...RAG latency is too high
+- You need creative generation (marketing copy, design suggestions)...RAG constrains creativity
+- Your dataset is under 100 documents...a simple search bar is simpler and sufficient
+- You don't have ground truth data to evaluate quality...you'll ship a feature you can't measure
 
 ---
 
 **Building an AI feature for your SaaS product?** I help teams design RAG architectures that deliver accurate, production-grade AI experiences without the 6-month experimentation phase.
 
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — AI architecture decisions
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — AI-powered features in production
-- [Technical Due Diligence](/services/technical-due-diligence-consultant) — AI readiness assessment
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... AI architecture decisions
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... AI-powered features in production
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) ... AI readiness assessment
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** — covering AI integration patterns, cost optimization, and building AI features users actually want.
+**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering AI integration patterns, cost optimization, and building AI features users actually want.
 
 ### More in This Series
 
-- [LLM Integration Architecture](/blog/llm-integration-architecture) — Patterns for integrating LLMs into existing systems
-- [AI Cost Optimization](/blog/ai-cost-optimization) — Reducing LLM costs without sacrificing quality
-- [Building AI Features Users Want](/blog/building-ai-features-users-want) — User research for AI product decisions
-- [Prompt Engineering for Developers](/blog/prompt-engineering-developers) — Systematic prompt design
+- [LLM Integration Architecture](/blog/llm-integration-architecture) ... Patterns for integrating LLMs into existing systems
+- [AI Cost Optimization](/blog/ai-cost-optimization) ... Reducing LLM costs without sacrificing quality
+- [Building AI Features Users Want](/blog/building-ai-features-users-want) ... User research for AI product decisions
+- [Prompt Engineering for Developers](/blog/prompt-engineering-developers) ... Systematic prompt design
 
 ### Related Guides
 
-- [Vector Databases: When to Build vs Buy](/blog/vector-database-selection) — Choosing the right vector store for your RAG system
-- [LLM Cost Optimization at Scale](/blog/llm-cost-optimization-scale) — Advanced cost management for AI features
+- [Vector Databases: When to Build vs Buy](/blog/vector-database-selection) ... Choosing the right vector store for your RAG system
+- [LLM Cost Optimization at Scale](/blog/llm-cost-optimization-scale) ... Advanced cost management for AI features

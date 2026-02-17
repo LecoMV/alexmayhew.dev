@@ -15,13 +15,13 @@ series: "frontend-architecture"
 
 Spring physics: mass, stiffness, damping. Damping ratio (ζ): `<1` bouncy, `=1` smooth, `>1` sluggish. Layout Projection = FLIP for smooth layout changes. Never use linear easing for UI animations. Respect `prefers-reduced-motion`. Animation is feedback, not decoration.
 
-> **Part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** — design systems, component patterns, and Server Components.
+> **Part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** ... design systems, component patterns, and Server Components.
 
 ---
 
 ## Why Springs Feel Natural
 
-Biological motion follows physics. When you reach for a coffee cup, your arm doesn't move at constant velocity then stop instantly. It accelerates, decelerates, and settles—with a tiny overshoot if you're rushed.
+Biological motion follows physics. When you reach for a coffee cup, your arm doesn't move at constant velocity then stop instantly. It accelerates, decelerates, and settles...with a tiny overshoot if you're rushed.
 
 Linear animations violate this intuition. They feel robotic because nothing in nature moves linearly.
 
@@ -29,7 +29,7 @@ Spring animations model the physics of an oscillating spring. The math is simple
 
 **Hooke's Law**: Force = -k × displacement
 
-The further you stretch a spring, the harder it pulls back. The variable `k` is the spring constant—how stiff the spring is.
+The further you stretch a spring, the harder it pulls back. The variable `k` is the spring constant...how stiff the spring is.
 
 **Damping**: Force = -c × velocity
 
@@ -295,7 +295,7 @@ When a parent scales, children would appear distorted. Framer Motion corrects fo
 
 ### Shared Element Transitions
 
-The `layoutId` prop creates shared element transitions—an element in one location animates to another location:
+The `layoutId` prop creates shared element transitions...an element in one location animates to another location:
 
 ```tsx
 function CardList() {
@@ -337,7 +337,7 @@ The card "morphs" from its list position into a full-screen modal. The title mai
 
 ## Velocity Preservation
 
-Good animations maintain C¹ continuity—no jarring velocity jumps.
+Good animations maintain C¹ continuity...no jarring velocity jumps.
 
 When a user interrupts an animation mid-flight, the new animation should start from the current velocity, not zero:
 
@@ -480,7 +480,7 @@ Framer Motion's layout animations convert layout properties to transforms intern
 }
 ```
 
-This hints to the browser to prepare for animation by promoting the element to its own compositor layer. Use sparingly—too many layers consume GPU memory.
+This hints to the browser to prepare for animation by promoting the element to its own compositor layer. Use sparingly...too many layers consume GPU memory.
 
 Framer Motion applies `will-change` automatically during animation and removes it afterward.
 
@@ -592,7 +592,7 @@ The element animates when it enters the viewport. `once: true` prevents re-anima
 </motion.button>
 ```
 
-Snappy springs (high stiffness) work well for hover states—the feedback should feel immediate.
+Snappy springs (high stiffness) work well for hover states...the feedback should feel immediate.
 
 ---
 
@@ -608,13 +608,13 @@ Animation isn't decoration. It's communication.
 
 **Error states**: A shake animation on failed validation is clearer than red text. It says "no, try again" in a way that's hard to miss.
 
-The physics of springs—overshoot, settle, momentum—create the illusion that UI elements have weight. This "weight" makes interfaces feel real, responsive, and crafted.
+The physics of springs...overshoot, settle, momentum...create the illusion that UI elements have weight. This "weight" makes interfaces feel real, responsive, and crafted.
 
 ---
 
 ## Conclusion
 
-Animation is the physicality layer of UI. Done right, it makes interfaces feel natural, responsive, and alive. Done wrong—linear easing, jarring stops, excessive movement—it creates cognitive friction.
+Animation is the physicality layer of UI. Done right, it makes interfaces feel natural, responsive, and alive. Done wrong...linear easing, jarring stops, excessive movement...it creates cognitive friction.
 
 The tools are simple:
 
@@ -626,27 +626,27 @@ The tools are simple:
 
 Start with Framer Motion's defaults, then tune. Add a spring playground to your component library so designers and developers can explore together.
 
-The goal is invisible animation—motion that feels so natural you don't notice it, but its absence would make the interface feel dead.
+The goal is invisible animation...motion that feels so natural you don't notice it, but its absence would make the interface feel dead.
 
 ---
 
-**Want interfaces that feel alive?** I implement physics-based animations that create tactile, responsive experiences—like this site.
+**Want interfaces that feel alive?** I implement physics-based animations that create tactile, responsive experiences...like this site.
 
-- [React Development for SaaS](/services/react-developer-for-saas) — Framer Motion expertise
-- [Next.js Development for E-commerce](/services/nextjs-developer-for-ecommerce) — Engaging product experiences
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Full-stack with premium feel
+- [React Development for SaaS](/services/react-developer-for-saas) ... Framer Motion expertise
+- [Next.js Development for E-commerce](/services/nextjs-developer-for-ecommerce) ... Engaging product experiences
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Full-stack with premium feel
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** — covering design systems, component APIs, CSS strategy, and React Server Components.
+**This post is part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** ... covering design systems, component APIs, CSS strategy, and React Server Components.
 
 ### More in This Series
 
-- [Neo-Brutalism Developer Guide](/blog/neo-brutalism-developer-guide) — Design philosophy implementation
-- [Component API Design](/blog/component-api-design) — Props, variants, composition
-- [Design Tokens Beyond Color](/blog/design-tokens-comprehensive) — Typography, spacing, elevation
-- [Tailwind vs Component Libraries](/blog/tailwind-vs-component-libraries) — CSS strategy comparison
+- [Neo-Brutalism Developer Guide](/blog/neo-brutalism-developer-guide) ... Design philosophy implementation
+- [Component API Design](/blog/component-api-design) ... Props, variants, composition
+- [Design Tokens Beyond Color](/blog/design-tokens-comprehensive) ... Typography, spacing, elevation
+- [Tailwind vs Component Libraries](/blog/tailwind-vs-component-libraries) ... CSS strategy comparison
 
 **Building a design system?** [Work with me](/services/react-developer-for-saas) on your frontend architecture.

@@ -16,7 +16,7 @@ image: "/images/blog/vector-database-selection-featured.webp"
 
 Start with pgvector. For 80% of SaaS AI features, pgvector on your existing PostgreSQL handles the load, keeps your infrastructure simple, and performs well up to 5-10 million vectors. The teams that need a dedicated vector database are processing 10M+ vectors, require sub-10ms query latency at scale, or need advanced filtering that pgvector doesn't support efficiently. Pinecone is the right choice for teams that want zero operational overhead. Qdrant is the right choice for teams that want control and performance. Weaviate is the right choice for teams that need built-in hybrid search. The wrong choice: adopting a dedicated vector database before you need one, adding infrastructure complexity for a feature that might get 100 queries per day.
 
-> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** — a comprehensive guide to building AI features that deliver real value.
+> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... a comprehensive guide to building AI features that deliver real value.
 
 ---
 
@@ -88,7 +88,7 @@ These benchmarks are on a 4 vCPU, 16GB RAM PostgreSQL instance with 1536-dimensi
 ### The pgvector Sweet Spot
 
 ```typescript
-// Full-stack search with pgvector — no additional infrastructure
+// Full-stack search with pgvector ... no additional infrastructure
 async function searchDocuments(
 	queryEmbedding: number[],
 	tenantId: string,
@@ -126,7 +126,7 @@ The killer advantage: tenant filtering happens in the same query as vector searc
 
 ## Option 2: Dedicated Vector Databases
 
-When pgvector's limitations become real constraints—not hypothetical ones—consider a dedicated vector database.
+When pgvector's limitations become real constraints...not hypothetical ones...consider a dedicated vector database.
 
 ### Pinecone (Managed, Zero Ops)
 
@@ -247,7 +247,7 @@ async function migrateToQdrant() {
 }
 ```
 
-The migration is a one-time data copy. Your application code changes are minimal—swap the search function implementation, keep the interface the same.
+The migration is a one-time data copy. Your application code changes are minimal...swap the search function implementation, keep the interface the same.
 
 ---
 
@@ -277,32 +277,32 @@ Do you have > 5M vectors?
 
 ## When NOT to Apply This
 
-- You need exact keyword search only—use PostgreSQL full-text search or Elasticsearch
-- Your "AI feature" is a single prompt with no retrieval—you don't need a vector database
-- Your dataset fits in memory as a flat list—brute force search is fast enough under 10K vectors
+- You need exact keyword search only...use PostgreSQL full-text search or Elasticsearch
+- Your "AI feature" is a single prompt with no retrieval...you don't need a vector database
+- Your dataset fits in memory as a flat list...brute force search is fast enough under 10K vectors
 
 ---
 
-**Choosing a vector database for your SaaS AI feature?** I help teams make this decision based on their actual data scale and query requirements—not vendor marketing.
+**Choosing a vector database for your SaaS AI feature?** I help teams make this decision based on their actual data scale and query requirements...not vendor marketing.
 
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — AI infrastructure decisions
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — AI-powered features in production
-- [Technical Due Diligence](/services/technical-due-diligence-consultant) — AI architecture assessment
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... AI infrastructure decisions
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... AI-powered features in production
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) ... AI architecture assessment
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** — covering AI integration patterns, cost optimization, and building features users want.
+**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering AI integration patterns, cost optimization, and building features users want.
 
 ### More in This Series
 
-- [RAG Architecture for SaaS Products](/blog/rag-architecture-saas) — End-to-end retrieval-augmented generation
-- [AI Cost Optimization](/blog/ai-cost-optimization) — Reducing AI infrastructure costs
-- [LLM Integration Architecture](/blog/llm-integration-architecture) — Patterns for integrating LLMs into existing systems
-- [Prompt Engineering for Developers](/blog/prompt-engineering-developers) — Systematic prompt design
+- [RAG Architecture for SaaS Products](/blog/rag-architecture-saas) ... End-to-end retrieval-augmented generation
+- [AI Cost Optimization](/blog/ai-cost-optimization) ... Reducing AI infrastructure costs
+- [LLM Integration Architecture](/blog/llm-integration-architecture) ... Patterns for integrating LLMs into existing systems
+- [Prompt Engineering for Developers](/blog/prompt-engineering-developers) ... Systematic prompt design
 
 ### Related Guides
 
-- [Database Query Optimization](/blog/database-query-optimization) — Optimizing PostgreSQL queries including pgvector
-- [LLM Cost Optimization at Scale](/blog/llm-cost-optimization-scale) — Total cost management for AI features
+- [Database Query Optimization](/blog/database-query-optimization) ... Optimizing PostgreSQL queries including pgvector
+- [LLM Cost Optimization at Scale](/blog/llm-cost-optimization-scale) ... Total cost management for AI features

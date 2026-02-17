@@ -27,7 +27,7 @@ The expand-contract pattern eliminates downtime for every common migration opera
 
 Here's what most teams get wrong. They treat migrations as atomic database operations. At scale, they're multi-deploy workflows.
 
-The 30-second rule: if a migration takes longer than 30 seconds on your staging database with production-scale data, it needs to be decomposed. Most teams don't test with production-scale data in staging — that's where the 3 AM pages come from.
+The 30-second rule: if a migration takes longer than 30 seconds on your staging database with production-scale data, it needs to be decomposed. Most teams don't test with production-scale data in staging ... that's where the 3 AM pages come from.
 
 ```sql
 -- WRONG: Locks table for duration of rewrite
@@ -58,17 +58,17 @@ Three more rules that save production:
 
 ## Worth Your Time
 
-1. **[Stripe's Online Migrations at Scale](https://stripe.com/blog/online-migrations)** — Stripe migrates while processing billions in payments. Their four-phase approach (dual-write, backfill, verify, cutover) is the gold standard. The verification phase alone — comparing old and new data row-by-row — is worth stealing.
+1. **[Stripe's Online Migrations at Scale](https://stripe.com/blog/online-migrations)** ... Stripe migrates while processing billions in payments. Their four-phase approach (dual-write, backfill, verify, cutover) is the gold standard. The verification phase alone ... comparing old and new data row-by-row ... is worth stealing.
 
-2. **[GitHub's gh-ost](https://github.blog/engineering/engineering-principles/gh-ost-github-s-online-schema-migration-tool-for-mysql/)** — If you're on MySQL, gh-ost performs schema migrations by creating shadow tables and replaying binlog events. Zero locking. GitHub migrates tables with billions of rows during peak traffic. The architecture is a masterclass in non-blocking operations.
+2. **[GitHub's gh-ost](https://github.blog/engineering/engineering-principles/gh-ost-github-s-online-schema-migration-tool-for-mysql/)** ... If you're on MySQL, gh-ost performs schema migrations by creating shadow tables and replaying binlog events. Zero locking. GitHub migrates tables with billions of rows during peak traffic. The architecture is a masterclass in non-blocking operations.
 
-3. **[Martin Fowler: Evolutionary Database Design](https://martinfowler.com/articles/evodb.html)** — The foundational argument for treating database schema as an evolutionary artifact, not a fixed blueprint. His point about database refactoring patterns maps directly to expand-contract at scale.
+3. **[Martin Fowler: Evolutionary Database Design](https://martinfowler.com/articles/evodb.html)** ... The foundational argument for treating database schema as an evolutionary artifact, not a fixed blueprint. His point about database refactoring patterns maps directly to expand-contract at scale.
 
 ---
 
 ## Tool of the Week
 
-**[pgroll](https://github.com/xataio/pgroll)** — Schema migration tool for PostgreSQL that handles expand-contract automatically. Define your migration, and pgroll creates versioned views so old and new code can run simultaneously. Still early, but solves the exact coordination problem that causes 3 AM incidents. Worth evaluating if you're running Postgres at scale.
+**[pgroll](https://github.com/xataio/pgroll)** ... Schema migration tool for PostgreSQL that handles expand-contract automatically. Define your migration, and pgroll creates versioned views so old and new code can run simultaneously. Still early, but solves the exact coordination problem that causes 3 AM incidents. Worth evaluating if you're running Postgres at scale.
 
 ---
 
@@ -78,4 +78,4 @@ Hit reply if you've got a migration that's been sitting in a PR because nobody w
 
 – Alex
 
-P.S. For the full playbook on database performance at scale — including query optimization, connection pooling, and indexing strategies: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).
+P.S. For the full playbook on database performance at scale ... including query optimization, connection pooling, and indexing strategies: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).

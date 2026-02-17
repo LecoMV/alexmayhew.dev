@@ -55,7 +55,7 @@ That $2.8M makes the business case for a 3-month refactor involving 3 engineers 
 
 The key insight: tech debt doesn't compound linearly. It compounds exponentially because each new feature built on a fragile foundation adds more coupling, more edge cases, and more "don't touch that" tribal knowledge. A team with 20% friction tax this year will have 30-35% next year if they keep building on the same foundation.
 
-One client measured their PR cycle time monthly. In January: 4.2 hours average. By September: 11.8 hours. Same team, same sprint velocity targets — they just spent 3x longer on each unit of work.
+One client measured their PR cycle time monthly. In January: 4.2 hours average. By September: 11.8 hours. Same team, same sprint velocity targets ... they just spent 3x longer on each unit of work.
 
 **When to Apply This:**
 
@@ -67,23 +67,23 @@ One client measured their PR cycle time monthly. In January: 4.2 hours average. 
 
 ## Worth Your Time
 
-1. **[Stripe: Paying Down Tech Debt](https://stripe.com/blog/payment-api-design)** — Stripe's approach to API design prevents debt accumulation. Their backward-compatibility strategy means they rarely need large refactors. The lesson: design decisions that prevent debt are cheaper than any cleanup effort.
+1. **[Stripe: Paying Down Tech Debt](https://stripe.com/blog/payment-api-design)** ... Stripe's approach to API design prevents debt accumulation. Their backward-compatibility strategy means they rarely need large refactors. The lesson: design decisions that prevent debt are cheaper than any cleanup effort.
 
-2. **[Chelsea Troy: Quantifying Technical Debt](https://chelseatroy.com/2021/01/14/quantifying-technical-debt/)** — The best framework I've found for measuring tech debt beyond code quality metrics. Troy focuses on developer throughput impact, which is what actually affects the business.
+2. **[Chelsea Troy: Quantifying Technical Debt](https://chelseatroy.com/2021/01/14/quantifying-technical-debt/)** ... The best framework I've found for measuring tech debt beyond code quality metrics. Troy focuses on developer throughput impact, which is what actually affects the business.
 
-3. **[Google: Software Engineering at Google](https://abseil.io/resources/swe-book)** — Chapter 15 covers deprecation and large-scale changes. Google's approach to maintaining a 2-billion-line codebase offers patterns for managing debt at any scale. The key: automated tooling for refactors, not heroic manual efforts.
+3. **[Google: Software Engineering at Google](https://abseil.io/resources/swe-book)** ... Chapter 15 covers deprecation and large-scale changes. Google's approach to maintaining a 2-billion-line codebase offers patterns for managing debt at any scale. The key: automated tooling for refactors, not heroic manual efforts.
 
 ---
 
 ## Tool of the Week
 
-**[LinearB](https://linearb.io/)** — Measures cycle time, review time, and deployment frequency from your Git data. The dashboard makes friction visible to non-technical stakeholders. I recommend it specifically for building the business case — showing leadership a graph of PR cycle time trending upward is more persuasive than any slide deck.
+**[LinearB](https://linearb.io/)** ... Measures cycle time, review time, and deployment frequency from your Git data. The dashboard makes friction visible to non-technical stakeholders. I recommend it specifically for building the business case ... showing leadership a graph of PR cycle time trending upward is more persuasive than any slide deck.
 
 ---
 
 That's it for this week.
 
-Hit reply if you want help running the friction tax calculation for your team — I'll walk you through the inputs. I read every response.
+Hit reply if you want help running the friction tax calculation for your team ... I'll walk you through the inputs. I read every response.
 
 – Alex
 

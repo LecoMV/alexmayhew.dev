@@ -20,7 +20,7 @@ The MongoDB support existed for one customer paying $50K/year. The engineering o
 ## This Week's Decision
 
 **The Situation:**
-Your codebase supports "both" — two databases, two authentication providers, two cloud platforms, two API versions. It started as flexibility. It evolved into a tax on every engineering decision.
+Your codebase supports "both" ... two databases, two authentication providers, two cloud platforms, two API versions. It started as flexibility. It evolved into a tax on every engineering decision.
 
 **The Insight:**
 "We support both" sounds like good engineering. In practice, it's a 25-40% overhead on every activity that touches the abstraction layer. I've quantified this across 8 client codebases:
@@ -35,7 +35,7 @@ Your codebase supports "both" — two databases, two authentication providers, t
 | Onboarding          | 1x          | 1.3x     | 30%      |
 | Documentation       | 1x          | 1.6x     | 60%      |
 
-The testing overhead alone is devastating. Every test that touches the data layer needs to run against both backends. That's not 2x test count — it's 2x test infrastructure, 2x CI time, and 2x flaky test surface area.
+The testing overhead alone is devastating. Every test that touches the data layer needs to run against both backends. That's not 2x test count ... it's 2x test infrastructure, 2x CI time, and 2x flaky test surface area.
 
 The pattern I see: "both" accumulates over 2+ years through reasonable individual decisions. One customer needs MongoDB. One deploy target needs AWS. One integration requires SAML alongside OIDC. Each addition is justified in isolation. The compounding cost is invisible until you audit it.
 
@@ -43,7 +43,7 @@ The pattern I see: "both" accumulates over 2+ years through reasonable individua
 
 1. **Stop new development on the deprecated path.** No new features, no bug fixes except security-critical. This costs nothing and stops the bleeding immediately.
 
-2. **Migrate existing users.** For the client paying $50K/year on MongoDB: offer migration support, a temporary price discount, or accept losing them. Calculate the real cost of supporting them — not the revenue they bring, but the engineering overhead they create.
+2. **Migrate existing users.** For the client paying $50K/year on MongoDB: offer migration support, a temporary price discount, or accept losing them. Calculate the real cost of supporting them ... not the revenue they bring, but the engineering overhead they create.
 
 3. **Sunset with a deadline.** Public deprecation timeline. 6-12 months for infrastructure changes, 3-6 months for API versions. Communicate clearly and stick to it.
 
@@ -77,24 +77,24 @@ The team I mentioned deleted 12,000 lines of adapter code when they dropped Mong
 
 ## Worth Your Time
 
-1. **[Martin Fowler: Strangler Fig](https://martinfowler.com/bliki/StranglerFigApplication.html)** — The pattern for incrementally replacing legacy systems. The same approach applies to removing a supported backend — build the migration around the new path, then let the old one die. Don't attempt a big-bang cutover.
+1. **[Martin Fowler: Strangler Fig](https://martinfowler.com/bliki/StranglerFigApplication.html)** ... The pattern for incrementally replacing legacy systems. The same approach applies to removing a supported backend ... build the migration around the new path, then let the old one die. Don't attempt a big-bang cutover.
 
-2. **[Stripe: API Versioning](https://stripe.com/blog/api-versioning)** — Stripe supports every API version indefinitely — but they've built the infrastructure to make that sustainable. For 99% of companies, this level of backwards compatibility is unaffordable. Stripe's approach is the exception, not the model.
+2. **[Stripe: API Versioning](https://stripe.com/blog/api-versioning)** ... Stripe supports every API version indefinitely ... but they've built the infrastructure to make that sustainable. For 99% of companies, this level of backwards compatibility is unaffordable. Stripe's approach is the exception, not the model.
 
-3. **[Basecamp: Shape Up](https://basecamp.com/shapeup/3.4-chapter-12)** — The chapter on "scope hammering" applies directly to feature scope. Every "we support both" was a scope expansion that wasn't hammered back. The discipline of saying "we don't do that" prevents accumulation.
+3. **[Basecamp: Shape Up](https://basecamp.com/shapeup/3.4-chapter-12)** ... The chapter on "scope hammering" applies directly to feature scope. Every "we support both" was a scope expansion that wasn't hammered back. The discipline of saying "we don't do that" prevents accumulation.
 
 ---
 
 ## Tool of the Week
 
-**[ts-prune](https://github.com/nadeesha/ts-prune)** — Finds unused exports in TypeScript projects. When you delete a supported path, ts-prune identifies the adapter interfaces, utility functions, and type definitions that are now dead code. Clean deletion is safer than hopeful deletion.
+**[ts-prune](https://github.com/nadeesha/ts-prune)** ... Finds unused exports in TypeScript projects. When you delete a supported path, ts-prune identifies the adapter interfaces, utility functions, and type definitions that are now dead code. Clean deletion is safer than hopeful deletion.
 
 ---
 
 That's it for this week.
 
-Hit reply if your codebase has a "we support both" tax you haven't quantified. Tell me what the "both" is — I'll help you estimate the engineering overhead. I read every response.
+Hit reply if your codebase has a "we support both" tax you haven't quantified. Tell me what the "both" is ... I'll help you estimate the engineering overhead. I read every response.
 
 – Alex
 
-P.S. For the complete architecture decision framework — including when to consolidate and when flexibility is genuinely worth it: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).
+P.S. For the complete architecture decision framework ... including when to consolidate and when flexibility is genuinely worth it: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).

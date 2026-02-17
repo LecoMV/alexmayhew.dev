@@ -20,7 +20,7 @@ We added one denormalized table and the query dropped to 45 milliseconds.
 ## This Week's Decision
 
 **The Situation:**
-Your normalized database schema is correct by every textbook standard. But certain read queries — dashboards, reports, search results — are becoming unacceptably slow as data grows. Your team is debating whether to denormalize.
+Your normalized database schema is correct by every textbook standard. But certain read queries ... dashboards, reports, search results ... are becoming unacceptably slow as data grows. Your team is debating whether to denormalize.
 
 **The Insight:**
 Denormalization isn't a failure of database design. It's a targeted optimization for specific read patterns. The mistake teams make is treating it as all-or-nothing: either your schema is normalized or it's a mess. The reality: you normalize for writes and denormalize specific paths for reads.
@@ -79,23 +79,23 @@ The rule I follow: normalize for writes, denormalize for reads, and keep the den
 
 ## Worth Your Time
 
-1. **[Postgres Materialized Views](https://www.postgresql.org/docs/current/sql-creatematerializedview.html)** — The official docs cover `CONCURRENTLY` refresh, which lets you update the view without locking reads. This is the difference between "dashboard goes blank during refresh" and "users never notice." Essential for production use.
+1. **[Postgres Materialized Views](https://www.postgresql.org/docs/current/sql-creatematerializedview.html)** ... The official docs cover `CONCURRENTLY` refresh, which lets you update the view without locking reads. This is the difference between "dashboard goes blank during refresh" and "users never notice." Essential for production use.
 
-2. **[Netflix: Denormalization at Scale](https://netflixtechblog.com/tagged/data)** — Netflix's approach to denormalization for their recommendation engine processes billions of events daily. Their pattern — event-driven materialization — is more maintainable than trigger-based approaches for high-volume systems.
+2. **[Netflix: Denormalization at Scale](https://netflixtechblog.com/tagged/data)** ... Netflix's approach to denormalization for their recommendation engine processes billions of events daily. Their pattern ... event-driven materialization ... is more maintainable than trigger-based approaches for high-volume systems.
 
-3. **[Martin Kleppmann: Designing Data-Intensive Applications](https://dataintensive.net/)** — Chapter 3 covers storage engines and the read/write trade-off in depth. Kleppmann's framework for choosing between normalization and denormalization based on access patterns is the most rigorous I've encountered.
+3. **[Martin Kleppmann: Designing Data-Intensive Applications](https://dataintensive.net/)** ... Chapter 3 covers storage engines and the read/write trade-off in depth. Kleppmann's framework for choosing between normalization and denormalization based on access patterns is the most rigorous I've encountered.
 
 ---
 
 ## Tool of the Week
 
-**[Debezium](https://debezium.io/)** — Change Data Capture (CDC) for PostgreSQL, MySQL, and MongoDB. Instead of triggers or scheduled refreshes, Debezium streams database changes to a denormalized target in near-real-time. I prefer CDC over triggers for denormalization because it decouples the write path from the materialization logic — your transactional database stays fast, and the denormalized copy updates asynchronously.
+**[Debezium](https://debezium.io/)** ... Change Data Capture (CDC) for PostgreSQL, MySQL, and MongoDB. Instead of triggers or scheduled refreshes, Debezium streams database changes to a denormalized target in near-real-time. I prefer CDC over triggers for denormalization because it decouples the write path from the materialization logic ... your transactional database stays fast, and the denormalized copy updates asynchronously.
 
 ---
 
 That's it for this week.
 
-Hit reply if you have a slow query you're debating whether to denormalize — I'll tell you if it's worth it. I read every response.
+Hit reply if you have a slow query you're debating whether to denormalize ... I'll tell you if it's worth it. I read every response.
 
 – Alex
 

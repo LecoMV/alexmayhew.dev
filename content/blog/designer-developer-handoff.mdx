@@ -16,7 +16,7 @@ series: "frontend-architecture"
 
 Design tokens = the API of the design system. Figma Code Connect = production code in Dev Mode. Percy/Chromatic = automated visual regression. "Pixel perfect" means design system intent, not static pixels. The handoff is dead; continuous synchronization is the new workflow.
 
-> **Part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** — design systems, component patterns, and Server Components.
+> **Part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** ... design systems, component patterns, and Server Components.
 
 ---
 
@@ -24,7 +24,7 @@ Design tokens = the API of the design system. Figma Code Connect = production co
 
 The "handoff" metaphor comes from a relay race. Designer completes work, passes the baton, developer runs their leg. This model has fundamental problems.
 
-The baton is a static artifact—a screenshot, a Figma link, a specification document. The moment it's passed, it's already diverging from reality. The designer iterates. The developer interprets. The production code drifts.
+The baton is a static artifact...a screenshot, a Figma link, a specification document. The moment it's passed, it's already diverging from reality. The designer iterates. The developer interprets. The production code drifts.
 
 By the time the feature ships, the implementation bears only passing resemblance to the original design. And nobody is happy: designers see their work compromised, developers feel blamed for "not following the design," and the product suffers.
 
@@ -93,13 +93,13 @@ The benefits compound:
 3. **Consistency**: Same component name in Figma and codebase
 4. **Onboarding**: New developers learn the component API from Figma
 
-Code Connect requires maintenance. When you add a button variant, you update both the Figma component and the config file. This is the right kind of overhead—it forces design and code to stay synchronized.
+Code Connect requires maintenance. When you add a button variant, you update both the Figma component and the config file. This is the right kind of overhead...it forces design and code to stay synchronized.
 
 ---
 
 ## Design Tokens: The Shared Source of Truth
 
-Colors, spacing, typography, shadows—these are the atoms of your design system. Historically, they lived in two places: Figma styles and a CSS/Tailwind file. They drifted apart constantly.
+Colors, spacing, typography, shadows...these are the atoms of your design system. Historically, they lived in two places: Figma styles and a CSS/Tailwind file. They drifted apart constantly.
 
 Design tokens unify them.
 
@@ -168,7 +168,7 @@ No manual copying. No drift. One source of truth.
 
 ### The DTCG Specification
 
-The Design Tokens Community Group (DTCG) stabilized the W3C specification in 2025. This standard format means tooling interoperability—Figma, Tokens Studio, Style Dictionary, and your build tools all speak the same language.
+The Design Tokens Community Group (DTCG) stabilized the W3C specification in 2025. This standard format means tooling interoperability...Figma, Tokens Studio, Style Dictionary, and your build tools all speak the same language.
 
 When evaluating token tools, verify DTCG compliance. Proprietary formats create vendor lock-in and break the pipeline.
 
@@ -282,9 +282,9 @@ Even with design tokens and Code Connect, some drift is inevitable. Understandin
 
 Figma uses Skia for text rendering. Browsers use platform-specific engines (DirectWrite on Windows, Core Text on macOS). The same font at the same size will render differently.
 
-This isn't a bug—it's physics. Sub-pixel rendering decisions differ. Line height calculations differ. You cannot achieve pixel-identical text rendering across Figma and browser.
+This isn't a bug...it's physics. Sub-pixel rendering decisions differ. Line height calculations differ. You cannot achieve pixel-identical text rendering across Figma and browser.
 
-**Solution**: Define typography with semantic intent, not pixel measurements. "Body text" means a readable paragraph—the exact pixel height is less important than readability.
+**Solution**: Define typography with semantic intent, not pixel measurements. "Body text" means a readable paragraph...the exact pixel height is less important than readability.
 
 ### Responsive Breakpoints
 
@@ -310,7 +310,7 @@ Replacing "pixel perfect" with meaningful criteria:
 
 ### 1. Visual Parity (VRT Approved)
 
-The visual regression test passes. This doesn't mean pixel-identical to Figma—it means pixel-identical to the last approved baseline. Change is intentional and reviewed.
+The visual regression test passes. This doesn't mean pixel-identical to Figma...it means pixel-identical to the last approved baseline. Change is intentional and reviewed.
 
 ### 2. Accessibility Audit Passed
 
@@ -439,29 +439,29 @@ The "handoff" was never the real problem. The problem was treating design and de
 
 They're not. They're parallel workflows operating on shared state. Design tokens are that shared state. Code Connect is the synchronization protocol. Visual regression testing is the consistency check.
 
-The goal isn't "pixel perfect"—a standard that's technically impossible and creatively limiting. The goal is **intent preservation**: the user experiences what the designer envisioned, even if the exact pixels differ.
+The goal isn't "pixel perfect"...a standard that's technically impossible and creatively limiting. The goal is **intent preservation**: the user experiences what the designer envisioned, even if the exact pixels differ.
 
-Build the infrastructure. Automate the verification. And stop arguing about whether that margin is 15px or 16px—if the token says "spacing.md," both are correct.
+Build the infrastructure. Automate the verification. And stop arguing about whether that margin is 15px or 16px...if the token says "spacing.md," both are correct.
 
 ---
 
 **Need to improve your design-to-development workflow?** I help teams build design systems with proper token architecture and automation.
 
-- [React Development for SaaS](/services/react-developer-for-saas) — Component systems with design tokens
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Full-stack design implementation
-- [Next.js Development for E-commerce](/services/nextjs-developer-for-ecommerce) — Brand-consistent storefronts
+- [React Development for SaaS](/services/react-developer-for-saas) ... Component systems with design tokens
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Full-stack design implementation
+- [Next.js Development for E-commerce](/services/nextjs-developer-for-ecommerce) ... Brand-consistent storefronts
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** — covering design systems, component APIs, CSS strategy, and React Server Components.
+**This post is part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** ... covering design systems, component APIs, CSS strategy, and React Server Components.
 
 ### More in This Series
 
-- [Neo-Brutalism Developer Guide](/blog/neo-brutalism-developer-guide) — Design philosophy implementation
-- [Component API Design](/blog/component-api-design) — Props, variants, composition
-- [Design Tokens Beyond Color](/blog/design-tokens-comprehensive) — Typography, spacing, elevation
-- [Tailwind vs Component Libraries](/blog/tailwind-vs-component-libraries) — CSS strategy comparison
+- [Neo-Brutalism Developer Guide](/blog/neo-brutalism-developer-guide) ... Design philosophy implementation
+- [Component API Design](/blog/component-api-design) ... Props, variants, composition
+- [Design Tokens Beyond Color](/blog/design-tokens-comprehensive) ... Typography, spacing, elevation
+- [Tailwind vs Component Libraries](/blog/tailwind-vs-component-libraries) ... CSS strategy comparison
 
 **Building a design system?** [Work with me](/services/react-developer-for-saas) on your frontend architecture.

@@ -1,6 +1,6 @@
 ---
 title: "Caching Strategies That Actually Work"
-description: "Everyone knows caching improves performance. Few teams implement it correctly. Here's the multi-layer caching architecture I recommend to SaaS teams—with the invalidation strategies that prevent stale data from becoming a support ticket."
+description: "Everyone knows caching improves performance. Few teams implement it correctly. Here's the multi-layer caching architecture I recommend to SaaS teams...with the invalidation strategies that prevent stale data from becoming a support ticket."
 date: "2026-06-02"
 author: "Alex Mayhew"
 tags: ["caching", "redis", "cdn", "performance", "saas"]
@@ -14,9 +14,9 @@ image: "/images/blog/caching-strategies-production-featured.webp"
 
 ## TL;DR
 
-Caching is a solved problem that teams keep solving wrong. The pattern I see repeatedly: Redis cache in front of PostgreSQL, no invalidation strategy, stale data for 5-30 minutes after writes, and support tickets asking "why doesn't my change show up?" The fix is a multi-layer caching architecture with explicit invalidation at each layer. Application-level cache with write-through invalidation handles 80% of cases. CDN edge caching handles the other 20%. Redis is rarely the right first choice for SaaS applications—HTTP caching headers and in-process caches (Map, LRU) eliminate 60-80% of database queries without the operational overhead of a cache cluster. When you do need Redis, use it for session state and rate limiting, not as a general-purpose query cache.
+Caching is a solved problem that teams keep solving wrong. The pattern I see repeatedly: Redis cache in front of PostgreSQL, no invalidation strategy, stale data for 5-30 minutes after writes, and support tickets asking "why doesn't my change show up?" The fix is a multi-layer caching architecture with explicit invalidation at each layer. Application-level cache with write-through invalidation handles 80% of cases. CDN edge caching handles the other 20%. Redis is rarely the right first choice for SaaS applications...HTTP caching headers and in-process caches (Map, LRU) eliminate 60-80% of database queries without the operational overhead of a cache cluster. When you do need Redis, use it for session state and rate limiting, not as a general-purpose query cache.
 
-> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — a comprehensive guide to building systems that stay fast under real-world load.
+> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to building systems that stay fast under real-world load.
 
 ---
 
@@ -100,7 +100,7 @@ The `stale-while-revalidate` directive is the most underused caching feature. It
 
 ## Layer 2: In-Process Cache (Zero Latency)
 
-An in-process cache—a Map or LRU cache in your application's memory—has zero network latency. For data that's read frequently and changes infrequently, this is faster than Redis by 100-1000x.
+An in-process cache...a Map or LRU cache in your application's memory...has zero network latency. For data that's read frequently and changes infrequently, this is faster than Redis by 100-1000x.
 
 ```typescript
 import { LRUCache } from "lru-cache";
@@ -125,7 +125,7 @@ async function getTenantConfig(tenantId: string): Promise<TenantConfig> {
 async function updateTenantConfig(tenantId: string, updates: Partial<TenantConfig>) {
 	await db.query("UPDATE tenant_configs SET config = $1 WHERE tenant_id = $2", [updates, tenantId]);
 
-	// Immediate invalidation — next read hits the database
+	// Immediate invalidation ... next read hits the database
 	configCache.delete(tenantId);
 }
 ```
@@ -142,7 +142,7 @@ async function updateTenantConfig(tenantId: string, updates: Partial<TenantConfi
 | **Redis pub/sub invalidation** | Near-instant          | Medium     |
 | **Sticky sessions**            | Strong for same user  | Low        |
 
-For most SaaS applications, a 30-60 second TTL is sufficient. Users don't expect real-time updates on configuration pages—they expect changes to take effect "soon."
+For most SaaS applications, a 30-60 second TTL is sufficient. Users don't expect real-time updates on configuration pages...they expect changes to take effect "soon."
 
 ---
 
@@ -155,7 +155,7 @@ Redis is an excellent tool for specific use cases. It's a terrible general-purpo
 **Session storage:**
 
 ```typescript
-// Session store with Redis — user state across instances
+// Session store with Redis ... user state across instances
 async function getSession(sessionId: string): Promise<Session | null> {
 	const data = await redis.get(`session:${sessionId}`);
 	if (!data) return null;
@@ -249,7 +249,7 @@ async function getOrderSummary(tenantId: string) {
 
 This creates a cache that's stale 80% of the time and correct 20% of the time. The TTL-based invalidation means users see data that's up to 5 minutes old. Support tickets follow.
 
-**The better approach:** Optimize the query itself. Add appropriate indexes. Use materialized views if the aggregation is expensive. The database is already good at this—you don't need to outsource the problem to Redis.
+**The better approach:** Optimize the query itself. Add appropriate indexes. Use materialized views if the aggregation is expensive. The database is already good at this...you don't need to outsource the problem to Redis.
 
 ---
 
@@ -377,24 +377,24 @@ The maximum time between a write and when all caches reflect the update. For mos
 
 **Need help designing a caching architecture that doesn't create more problems than it solves?** I help SaaS teams build multi-layer caching that improves performance without sacrificing data consistency.
 
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Architecture decisions from MVP to scale
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Production-grade caching strategies
-- [Technical Due Diligence](/services/technical-due-diligence-consultant) — Performance and architecture assessment
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Architecture decisions from MVP to scale
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Production-grade caching strategies
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) ... Performance and architecture assessment
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — covering database optimization, edge computing, monitoring, and zero-downtime operations.
+**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... covering database optimization, edge computing, monitoring, and zero-downtime operations.
 
 ### More in This Series
 
-- [CDN Caching Strategy](/blog/cdn-caching-strategy) — CDN-specific caching patterns and invalidation
-- [Edge Computing: When Worth the Complexity](/blog/edge-computing-saas) — Edge caching for global SaaS applications
-- [Node.js Memory Leaks in Production](/blog/nodejs-memory-leaks) — When your in-process cache becomes a memory leak
-- [Database Migration Patterns](/blog/database-migration-patterns) — Zero-downtime operations at scale
+- [CDN Caching Strategy](/blog/cdn-caching-strategy) ... CDN-specific caching patterns and invalidation
+- [Edge Computing: When Worth the Complexity](/blog/edge-computing-saas) ... Edge caching for global SaaS applications
+- [Node.js Memory Leaks in Production](/blog/nodejs-memory-leaks) ... When your in-process cache becomes a memory leak
+- [Database Migration Patterns](/blog/database-migration-patterns) ... Zero-downtime operations at scale
 
 ### Related Guides
 
-- [Database Query Optimization](/blog/database-query-optimization) — Optimize queries before caching them
-- [SaaS Reliability Monitoring](/blog/saas-reliability-monitoring) — Monitor cache hit rates and miss penalties
+- [Database Query Optimization](/blog/database-query-optimization) ... Optimize queries before caching them
+- [SaaS Reliability Monitoring](/blog/saas-reliability-monitoring) ... Monitor cache hit rates and miss penalties

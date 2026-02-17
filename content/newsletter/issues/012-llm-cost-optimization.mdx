@@ -11,7 +11,7 @@ Subject: Your LLM bill is 14x higher than it needs to be
 
 Hey there,
 
-A SaaS company I advise was spending $47K/month on LLM API calls. Their AI feature had strong adoption — 60% of users engaged weekly. But the CFO was asking hard questions. At $47K/month and growing 20%, the feature would cost more than their entire engineering team by Q4.
+A SaaS company I advise was spending $47K/month on LLM API calls. Their AI feature had strong adoption ... 60% of users engaged weekly. But the CFO was asking hard questions. At $47K/month and growing 20%, the feature would cost more than their entire engineering team by Q4.
 
 Six weeks later, the same feature ran at $3,200/month. Same quality. Same user satisfaction scores. Here's what changed.
 
@@ -63,7 +63,7 @@ Concrete techniques:
 - Use structured output (JSON mode) to reduce response token waste.
 - Cache system prompts with provider-specific prompt caching features.
 
-The client I mentioned — $47K to $3,200 — applied all three. Tiered routing handled the bulk. Semantic caching caught repeated patterns. Prompt optimization shrank every request. The compounding effect is what makes the 14x reduction possible.
+The client I mentioned ... $47K to $3,200 ... applied all three. Tiered routing handled the bulk. Semantic caching caught repeated patterns. Prompt optimization shrank every request. The compounding effect is what makes the 14x reduction possible.
 
 **When to Apply This:**
 
@@ -75,23 +75,23 @@ The client I mentioned — $47K to $3,200 — applied all three. Tiered routing 
 
 ## Worth Your Time
 
-1. **[Anthropic: Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)** — Cache system prompts and large context blocks across API calls. Up to 90% reduction on cached content costs. If you're sending the same system prompt with every request (you are), enable this immediately.
+1. **[Anthropic: Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)** ... Cache system prompts and large context blocks across API calls. Up to 90% reduction on cached content costs. If you're sending the same system prompt with every request (you are), enable this immediately.
 
-2. **[OpenAI: Batch API](https://platform.openai.com/docs/guides/batch/overview)** — 50% discount for non-real-time workloads. Content generation, data enrichment, batch analysis — anything that doesn't need sub-second response. If you're running nightly jobs against LLM APIs, you're overpaying by 2x.
+2. **[OpenAI: Batch API](https://platform.openai.com/docs/guides/batch/overview)** ... 50% discount for non-real-time workloads. Content generation, data enrichment, batch analysis ... anything that doesn't need sub-second response. If you're running nightly jobs against LLM APIs, you're overpaying by 2x.
 
-3. **[Braintrust: LLM Evals](https://www.braintrust.dev/)** — You can't optimize model routing without measuring quality per tier. Braintrust provides evaluation frameworks that let you compare Haiku vs Sonnet vs Opus on your actual queries with your actual quality criteria. Data-driven routing beats intuition.
+3. **[Braintrust: LLM Evals](https://www.braintrust.dev/)** ... You can't optimize model routing without measuring quality per tier. Braintrust provides evaluation frameworks that let you compare Haiku vs Sonnet vs Opus on your actual queries with your actual quality criteria. Data-driven routing beats intuition.
 
 ---
 
 ## Tool of the Week
 
-**[LiteLLM](https://docs.litellm.ai/)** — Unified API proxy for 100+ LLM providers. Route between models, add fallbacks, track costs per endpoint, and switch providers without code changes. The cost tracking dashboard alone — showing spend by model, endpoint, and user — makes the business case for optimization visible to the CFO.
+**[LiteLLM](https://docs.litellm.ai/)** ... Unified API proxy for 100+ LLM providers. Route between models, add fallbacks, track costs per endpoint, and switch providers without code changes. The cost tracking dashboard alone ... showing spend by model, endpoint, and user ... makes the business case for optimization visible to the CFO.
 
 ---
 
 That's it for this week.
 
-Hit reply if your LLM costs are growing faster than your revenue. I've run this optimization playbook for 4 companies now — the savings are consistently 70-90%. I read every response.
+Hit reply if your LLM costs are growing faster than your revenue. I've run this optimization playbook for 4 companies now ... the savings are consistently 70-90%. I read every response.
 
 – Alex
 

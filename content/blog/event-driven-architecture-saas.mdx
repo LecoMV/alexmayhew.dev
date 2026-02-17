@@ -13,9 +13,9 @@ image: "/images/blog/event-driven-architecture-saas-featured.webp"
 
 ## TL;DR
 
-Event-driven architecture solves real problems—decoupling services, handling bursty workloads, enabling independent team deployment. But I've watched teams adopt it 18 months too early and spend $50-100K/year on infrastructure they didn't need. The decision threshold isn't about ARR—it's about pain: cascading failures from synchronous calls, database locks from concurrent writes, and cross-team deployment bottlenecks. Start with the outbox pattern and a single event flow before migrating your entire architecture. Kafka handles 500K-1M messages/second but requires 8+ cores and 64-128GB RAM per broker. NATS JetStream delivers sub-millisecond latency at a fraction of the operational cost. Choose based on your actual throughput requirements, not your aspirational ones.
+Event-driven architecture solves real problems...decoupling services, handling bursty workloads, enabling independent team deployment. But I've watched teams adopt it 18 months too early and spend $50-100K/year on infrastructure they didn't need. The decision threshold isn't about ARR...it's about pain: cascading failures from synchronous calls, database locks from concurrent writes, and cross-team deployment bottlenecks. Start with the outbox pattern and a single event flow before migrating your entire architecture. Kafka handles 500K-1M messages/second but requires 8+ cores and 64-128GB RAM per broker. NATS JetStream delivers sub-millisecond latency at a fraction of the operational cost. Choose based on your actual throughput requirements, not your aspirational ones.
 
-> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — a comprehensive guide to architecture decisions from MVP to scale.
+> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
 
 ---
 
@@ -41,7 +41,7 @@ This isn't theoretical. I've seen this exact pattern take down production at thr
 
 ### Database Lock Contention
 
-Multiple services writing to the same database—or even the same tables—create lock contention under load. An inventory update blocks an order creation. A reporting query locks a table that the billing service needs. At 100 concurrent users, this is invisible. At 1,000, your p99 latency spikes from 200ms to 5 seconds.
+Multiple services writing to the same database...or even the same tables...create lock contention under load. An inventory update blocks an order creation. A reporting query locks a table that the billing service needs. At 100 concurrent users, this is invisible. At 1,000, your p99 latency spikes from 200ms to 5 seconds.
 
 ### Team Coupling
 
@@ -51,7 +51,7 @@ This is the one nobody talks about in architecture diagrams. When three teams sh
 
 ## Core Patterns You Actually Need
 
-EDA isn't one pattern—it's a family of patterns solving different problems. Most teams need two or three, not all of them.
+EDA isn't one pattern...it's a family of patterns solving different problems. Most teams need two or three, not all of them.
 
 ### The Outbox Pattern: Start Here
 
@@ -71,14 +71,14 @@ COMMIT;
 
 A separate relay process polls the outbox table and publishes events to your broker. The database transaction guarantees both the state change and the event record succeed or fail together.
 
-This gives you at-least-once delivery. Your consumers must be idempotent—processing the same event twice should produce the same result. This sounds like a constraint, but it forces better design. Every event handler that can safely retry is an event handler that recovers from failures automatically.
+This gives you at-least-once delivery. Your consumers must be idempotent...processing the same event twice should produce the same result. This sounds like a constraint, but it forces better design. Every event handler that can safely retry is an event handler that recovers from failures automatically.
 
 **Two implementation approaches:**
 
 | Approach                      | Mechanism                                          | Latency  | Complexity                        |
 | ----------------------------- | -------------------------------------------------- | -------- | --------------------------------- |
-| **Polling**                   | Scheduled job queries outbox table                 | 100ms-5s | Low—any team can implement        |
-| **CDC (Change Data Capture)** | PostgreSQL logical replication streams WAL changes | 10-50ms  | Medium—requires WAL configuration |
+| **Polling**                   | Scheduled job queries outbox table                 | 100ms-5s | Low...any team can implement        |
+| **CDC (Change Data Capture)** | PostgreSQL logical replication streams WAL changes | 10-50ms  | Medium...requires WAL configuration |
 
 For most SaaS applications under 10,000 events per minute, polling every 500ms is sufficient and dramatically simpler.
 
@@ -90,15 +90,15 @@ Two fundamentally different approaches to coordinating multi-service workflows.
 
 **Orchestration** (centralized): A coordinator service manages the workflow. The order orchestrator explicitly calls the payment service, waits for confirmation, then calls the inventory service.
 
-The decision matrix isn't about preference—it's about the workflow characteristics:
+The decision matrix isn't about preference...it's about the workflow characteristics:
 
 | Factor                | Choreography                   | Orchestration                         |
 | --------------------- | ------------------------------ | ------------------------------------- |
 | **Services involved** | 2-3                            | 4+                                    |
 | **Failure handling**  | Compensating events            | Centralized rollback                  |
 | **Visibility**        | Distributed tracing required   | Orchestrator holds full state         |
-| **Team autonomy**     | High—teams own their reactions | Lower—orchestrator team is bottleneck |
-| **Debugging**         | Harder—follow event chain      | Easier—single coordinator log         |
+| **Team autonomy**     | High...teams own their reactions | Lower...orchestrator team is bottleneck |
+| **Debugging**         | Harder...follow event chain      | Easier...single coordinator log         |
 
 Most SaaS applications benefit from a hybrid: choreography for simple, fire-and-forget flows (notifications, analytics, audit logging) and orchestration for critical business transactions (order fulfillment, payment processing, provisioning).
 
@@ -116,7 +116,7 @@ If step 3 fails, the saga executes compensation: refund the payment, release the
 **Where sagas go wrong:**
 
 - **Undefined compensation actions.** Every forward step needs a reverse step. "Release inventory" isn't always the reverse of "reserve inventory" if another order claimed the freed units in the meantime.
-- **Isolation violations.** Two concurrent sagas modifying the same data can cause lost updates. Saga A reads inventory count, Saga B reads the same count, both decrement—you've oversold.
+- **Isolation violations.** Two concurrent sagas modifying the same data can cause lost updates. Saga A reads inventory count, Saga B reads the same count, both decrement...you've oversold.
 - **Orchestrator as single point of failure.** If your saga coordinator goes down mid-transaction, you need recovery logic to resume or roll back incomplete sagas.
 
 The honest recommendation: don't implement sagas until you have a specific multi-service transaction that's causing data inconsistency problems. Sagas are the most complex EDA pattern and the one most often adopted prematurely.
@@ -168,7 +168,7 @@ Cost is where the technology decision gets real.
 - Software: $0 (open source)
 - Infrastructure: Runs on significantly smaller instances. Three t3.medium instances handle most SaaS workloads (~$120/month)
 - Operations: Minimal. No ZooKeeper, no partition management, no JVM tuning
-- Cloud IOPS: Dramatically lower than Kafka—significant cost difference on AWS/GCP
+- Cloud IOPS: Dramatically lower than Kafka...significant cost difference on AWS/GCP
 
 **AWS EventBridge**
 
@@ -224,7 +224,7 @@ interface OrderCreated {
 	total: number;
 }
 
-// Version 2 — backward compatible
+// Version 2 ... backward compatible
 interface OrderCreated {
 	orderId: string;
 	customerId: string;
@@ -262,7 +262,7 @@ Eventual consistency is the tax you pay for event-driven architecture. Organizat
 
 ### The Stale Read Problem
 
-User creates an order. Your API returns 201 Created. User immediately refreshes the orders page. The order isn't there—the read model hasn't caught up to the write.
+User creates an order. Your API returns 201 Created. User immediately refreshes the orders page. The order isn't there...the read model hasn't caught up to the write.
 
 This doesn't manifest in development because your event bus and read model are on the same machine. In production, event processing lag of 200ms-2 seconds is normal. Under load, it can spike to 10+ seconds.
 
@@ -292,7 +292,7 @@ Don't migrate your entire architecture to events simultaneously. The strangler f
 
 ### Step 1: Single Event Flow
 
-Pick one low-risk event. User signup is ideal—it's well-understood, low-volume, and failures are non-critical.
+Pick one low-risk event. User signup is ideal...it's well-understood, low-volume, and failures are non-critical.
 
 ```typescript
 // Before: synchronous call chain
@@ -330,10 +330,10 @@ Run the event-driven path alongside the synchronous path for two weeks. Compare:
 
 Once the first flow is stable, migrate the next most-critical workflow. For most SaaS applications, the priority order is:
 
-1. **Notifications** (email, push, in-app) — lowest risk, highest decoupling benefit
-2. **Analytics and audit logging** — fire-and-forget, no business logic dependency
-3. **Billing events** — higher stakes, but well-bounded domain
-4. **Core business workflows** — only after the team has 3-6 months of event-driven operational experience
+1. **Notifications** (email, push, in-app) ... lowest risk, highest decoupling benefit
+2. **Analytics and audit logging** ... fire-and-forget, no business logic dependency
+3. **Billing events** ... higher stakes, but well-bounded domain
+4. **Core business workflows** ... only after the team has 3-6 months of event-driven operational experience
 
 ---
 
@@ -362,25 +362,25 @@ Before committing to event-driven architecture, verify these conditions:
 
 **Building a SaaS that's hitting the synchronous wall?** I help teams plan and execute the migration to event-driven architecture without the 18-month learning curve.
 
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Architecture decisions from MVP to scale
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Production-grade Node.js systems
-- [Technical Due Diligence](/services/technical-due-diligence-consultant) — Pre-investment architecture assessment
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Architecture decisions from MVP to scale
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Production-grade Node.js systems
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) ... Pre-investment architecture assessment
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — covering database design, multi-region deployment, API strategy, and infrastructure patterns.
+**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering database design, multi-region deployment, API strategy, and infrastructure patterns.
 
 ### More in This Series
 
-- [Database Query Optimization for Scale](/blog/database-query-optimization) — From N+1 to Optimal
-- [Multi-Region SaaS Architecture](/blog/multi-region-saas-architecture) — Global replication and data residency
-- [Build vs. Buy: The SaaS Engineering Decision](/blog/build-vs-buy) — When to build custom vs. adopt SaaS tools
-- [SaaS Reliability Monitoring](/blog/saas-reliability-monitoring) — Observability that catches issues before customers do
+- [Database Query Optimization for Scale](/blog/database-query-optimization) ... From N+1 to Optimal
+- [Multi-Region SaaS Architecture](/blog/multi-region-saas-architecture) ... Global replication and data residency
+- [Build vs. Buy: The SaaS Engineering Decision](/blog/build-vs-buy) ... When to build custom vs. adopt SaaS tools
+- [SaaS Reliability Monitoring](/blog/saas-reliability-monitoring) ... Observability that catches issues before customers do
 
 ### Related Guides
 
-- [Boring Technology Wins](/blog/boring-technology-wins) — Why mature tech stacks outperform cutting-edge ones
-- [Anatomy of a High-Precision SaaS](/blog/anatomy-of-high-precision-saas) — Building systems that handle mission-critical data
-- [Performance Engineering Playbook](/blog/performance-engineering-playbook) — From TTFB to TTI optimization
+- [Boring Technology Wins](/blog/boring-technology-wins) ... Why mature tech stacks outperform cutting-edge ones
+- [Anatomy of a High-Precision SaaS](/blog/anatomy-of-high-precision-saas) ... Building systems that handle mission-critical data
+- [Performance Engineering Playbook](/blog/performance-engineering-playbook) ... From TTFB to TTI optimization

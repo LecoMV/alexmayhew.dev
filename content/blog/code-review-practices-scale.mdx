@@ -1,6 +1,6 @@
 ---
 title: "Code Review Practices That Scale"
-description: "Code review at 5 engineers is a conversation. At 50, it's a bottleneck. Here's how to scale review practices without sacrificing quality—from async review protocols to automated gates that catch 80% of issues before a human looks at the PR."
+description: "Code review at 5 engineers is a conversation. At 50, it's a bottleneck. Here's how to scale review practices without sacrificing quality...from async review protocols to automated gates that catch 80% of issues before a human looks at the PR."
 date: "2026-07-28"
 author: "Alex Mayhew"
 tags: ["code-review", "engineering-culture", "leadership", "automation", "developer-experience"]
@@ -14,9 +14,9 @@ image: "/images/blog/code-review-practices-scale-featured.webp"
 
 ## TL;DR
 
-Code review is the highest-leverage quality practice in software engineering—and the easiest to do poorly at scale. The pattern I see in growing teams: reviews become a bottleneck, PRs sit for 2-3 days, context switches kill productivity, and senior engineers spend 30-40% of their time reviewing instead of building. The fix isn't "review faster." It's automating what machines do better than humans (formatting, linting, type checking, test coverage) so human reviewers focus on what they're actually good at: architecture decisions, business logic correctness, and knowledge sharing. Teams that implement automated quality gates reduce review time from 45 minutes to 15 minutes per PR while catching more bugs—because the reviewer isn't fatigued from checking indentation.
+Code review is the highest-leverage quality practice in software engineering...and the easiest to do poorly at scale. The pattern I see in growing teams: reviews become a bottleneck, PRs sit for 2-3 days, context switches kill productivity, and senior engineers spend 30-40% of their time reviewing instead of building. The fix isn't "review faster." It's automating what machines do better than humans (formatting, linting, type checking, test coverage) so human reviewers focus on what they're actually good at: architecture decisions, business logic correctness, and knowledge sharing. Teams that implement automated quality gates reduce review time from 45 minutes to 15 minutes per PR while catching more bugs...because the reviewer isn't fatigued from checking indentation.
 
-> **Part of the [Engineering Leadership: Founder to CTO](/blog/engineering-leadership-founder-to-cto)** — a comprehensive guide to scaling engineering teams and practices.
+> **Part of the [Engineering Leadership: Founder to CTO](/blog/engineering-leadership-founder-to-cto)** ... a comprehensive guide to scaling engineering teams and practices.
 
 ---
 
@@ -24,9 +24,9 @@ Code review is the highest-leverage quality practice in software engineering—a
 
 At 5 engineers, everyone reviews everyone's code. PRs get reviewed the same day. Knowledge spreads naturally.
 
-At 20 engineers, review becomes a queue management problem. Senior engineers are the bottleneck—they're the only ones qualified to review certain areas. Junior engineers wait 2-3 days for review. PRs grow larger because "while I'm waiting, I'll add more changes." Large PRs take longer to review. The cycle reinforces itself.
+At 20 engineers, review becomes a queue management problem. Senior engineers are the bottleneck...they're the only ones qualified to review certain areas. Junior engineers wait 2-3 days for review. PRs grow larger because "while I'm waiting, I'll add more changes." Large PRs take longer to review. The cycle reinforces itself.
 
-I've measured this at 4 companies. The median PR cycle time (open to merge) grows from 4 hours at team size 5 to 52 hours at team size 20. That 48-hour increase isn't review time—it's wait time.
+I've measured this at 4 companies. The median PR cycle time (open to merge) grows from 4 hours at team size 5 to 52 hours at team size 20. That 48-hour increase isn't review time...it's wait time.
 
 ---
 
@@ -157,7 +157,7 @@ Don't assign reviews randomly. Route them based on code ownership:
 /src/components/ui/   @team-frontend
 ```
 
-CODEOWNERS ensures the reviewer has context on the code they're reviewing. A frontend engineer reviewing a database migration isn't providing useful feedback—they're rubber-stamping.
+CODEOWNERS ensures the reviewer has context on the code they're reviewing. A frontend engineer reviewing a database migration isn't providing useful feedback...they're rubber-stamping.
 
 ### Small PRs by Default
 
@@ -170,7 +170,7 @@ The single most effective change for review speed: smaller PRs.
 | 250-500 lines | 45-60 min   | Medium         | 1-2 days      |
 | 500+ lines    | 60-90 min   | High           | 2-5 days      |
 
-Studies from Google and Microsoft show that review quality drops significantly after 200-400 lines. Beyond 500 lines, reviewers miss more defects than they catch—their attention is exhausted.
+Studies from Google and Microsoft show that review quality drops significantly after 200-400 lines. Beyond 500 lines, reviewers miss more defects than they catch...their attention is exhausted.
 
 **How to enforce small PRs:**
 
@@ -184,7 +184,7 @@ Studies from Google and Microsoft show that review quality drops significantly a
 
 ### The Rubber Stamp
 
-"LGTM" without substantive feedback. This happens when reviewers are overloaded—they approve to clear their queue, not because they've reviewed the code.
+"LGTM" without substantive feedback. This happens when reviewers are overloaded...they approve to clear their queue, not because they've reviewed the code.
 
 **Fix:** Track approval time. If a PR is approved in under 3 minutes for a 200-line change, the reviewer didn't read it.
 
@@ -241,24 +241,24 @@ The last metric is counterintuitive. Too few comments per 100 lines suggests rub
 
 **Scaling your engineering team and code review is becoming a bottleneck?** I help teams design review processes that improve quality while accelerating delivery.
 
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Engineering team scaling guidance
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Teams with built-in quality practices
-- [Technical Due Diligence](/services/technical-due-diligence-consultant) — Engineering process assessment
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Engineering team scaling guidance
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Teams with built-in quality practices
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) ... Engineering process assessment
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [Engineering Leadership: Founder to CTO](/blog/engineering-leadership-founder-to-cto)** — covering hiring, team scaling, technical strategy, and operational excellence.
+**This post is part of the [Engineering Leadership: Founder to CTO](/blog/engineering-leadership-founder-to-cto)** ... covering hiring, team scaling, technical strategy, and operational excellence.
 
 ### More in This Series
 
-- [Technical Hiring Framework](/blog/technical-hiring-framework) — Hiring engineers who ship
-- [First Engineering Team Playbook](/blog/first-engineering-team-playbook) — Building your first 5 engineering hires
-- [Documentation That Engineers Actually Read](/blog/documentation-engineers-read) — Documentation as a scaling tool
-- [IC to Tech Lead](/blog/ic-to-tech-lead) — The transition from building to leading
+- [Technical Hiring Framework](/blog/technical-hiring-framework) ... Hiring engineers who ship
+- [First Engineering Team Playbook](/blog/first-engineering-team-playbook) ... Building your first 5 engineering hires
+- [Documentation That Engineers Actually Read](/blog/documentation-engineers-read) ... Documentation as a scaling tool
+- [IC to Tech Lead](/blog/ic-to-tech-lead) ... The transition from building to leading
 
 ### Related Guides
 
-- [AI Code Review: Catching What LLMs Miss](/blog/ai-code-review) — AI-assisted review as a supplement to human review
-- [Technical Debt Strategy](/blog/technical-debt-strategy) — Managing quality at scale
+- [AI Code Review: Catching What LLMs Miss](/blog/ai-code-review) ... AI-assisted review as a supplement to human review
+- [Technical Debt Strategy](/blog/technical-debt-strategy) ... Managing quality at scale

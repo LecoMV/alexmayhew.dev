@@ -11,7 +11,7 @@ Subject: Redux is dead (for 90% of apps)
 
 Hey there,
 
-A client's frontend team spent 3 weeks building a Redux store for their SaaS dashboard. Reducers, selectors, normalized state, middleware for async operations. When I reviewed it, 94% of the state in their Redux store was server data — data that belonged in a cache, not in client state management.
+A client's frontend team spent 3 weeks building a Redux store for their SaaS dashboard. Reducers, selectors, normalized state, middleware for async operations. When I reviewed it, 94% of the state in their Redux store was server data ... data that belonged in a cache, not in client state management.
 
 They replaced it all with React Query in 4 days. The codebase shrank by 2,800 lines.
 
@@ -25,9 +25,9 @@ Your frontend team uses Redux because it's what they've always used. Every new f
 **The Insight:**
 Redux solved a real problem in 2016: React had no built-in way to manage complex state shared across components. In 2026, that problem has better solutions for most use cases.
 
-The question isn't "is Redux bad?" — it's "is your state actually client state?"
+The question isn't "is Redux bad?" ... it's "is your state actually client state?"
 
-**90% of "state" in SaaS applications is server data.** User profiles, project lists, dashboard metrics, notifications — this data lives in your database and gets cached on the client. It's not state you manage. It's data you fetch, cache, and invalidate.
+**90% of "state" in SaaS applications is server data.** User profiles, project lists, dashboard metrics, notifications ... this data lives in your database and gets cached on the client. It's not state you manage. It's data you fetch, cache, and invalidate.
 
 For server data, use React Query (TanStack Query) or SWR:
 
@@ -54,7 +54,7 @@ function useCreateProject() {
 }
 ```
 
-For the remaining 10% — actual client state (UI toggles, form state, multi-step wizard progress) — Zustand provides Redux-like patterns without Redux-like boilerplate:
+For the remaining 10% ... actual client state (UI toggles, form state, multi-step wizard progress) ... Zustand provides Redux-like patterns without Redux-like boilerplate:
 
 ```typescript
 // Zustand: 8 lines for a complete store
@@ -74,29 +74,29 @@ npm download trends confirm this shift. Redux downloads plateaued at ~8M/week in
 
 - SaaS applications where more than 70% of Redux state is fetched from an API
 - Teams where Redux boilerplate slows feature development by more than 20%
-- New projects evaluating state management — start with React Query + Zustand, add Redux only if you hit a wall
+- New projects evaluating state management ... start with React Query + Zustand, add Redux only if you hit a wall
 
 ---
 
 ## Worth Your Time
 
-1. **[TanStack Query Documentation](https://tanstack.com/query/latest)** — The docs are excellent and include migration guides from Redux. The "Thinking in React Query" page reframes state management in terms of server cache semantics. Read it before starting a migration.
+1. **[TanStack Query Documentation](https://tanstack.com/query/latest)** ... The docs are excellent and include migration guides from Redux. The "Thinking in React Query" page reframes state management in terms of server cache semantics. Read it before starting a migration.
 
-2. **[Mark Erikson: Redux Is Not Dead](https://blog.isquaredsoftware.com/)** — The Redux maintainer's counterargument. Erikson makes valid points about Redux Toolkit reducing boilerplate. I disagree that RTK solves the fundamental issue — most teams don't need client-side state management for server data — but his perspective is worth understanding.
+2. **[Mark Erikson: Redux Is Not Dead](https://blog.isquaredsoftware.com/)** ... The Redux maintainer's counterargument. Erikson makes valid points about Redux Toolkit reducing boilerplate. I disagree that RTK solves the fundamental issue ... most teams don't need client-side state management for server data ... but his perspective is worth understanding.
 
-3. **[Zustand GitHub](https://github.com/pmndrs/zustand)** — Zustand's README is its best documentation. The simplicity is the point: no providers, no context, no boilerplate. For the 10% of state that's genuinely client-side, Zustand is what Redux should have been.
+3. **[Zustand GitHub](https://github.com/pmndrs/zustand)** ... Zustand's README is its best documentation. The simplicity is the point: no providers, no context, no boilerplate. For the 10% of state that's genuinely client-side, Zustand is what Redux should have been.
 
 ---
 
 ## Tool of the Week
 
-**[TanStack Router](https://tanstack.com/router/latest)** — If you're adopting TanStack Query, pair it with TanStack Router. It handles URL-based state (filters, pagination, search params) as first-class router state, eliminating another category of data that teams mistakenly put in Redux. Type-safe route params, built-in search param serialization, and loader patterns that integrate directly with TanStack Query.
+**[TanStack Router](https://tanstack.com/router/latest)** ... If you're adopting TanStack Query, pair it with TanStack Router. It handles URL-based state (filters, pagination, search params) as first-class router state, eliminating another category of data that teams mistakenly put in Redux. Type-safe route params, built-in search param serialization, and loader patterns that integrate directly with TanStack Query.
 
 ---
 
 That's it for this week.
 
-Hit reply if you're considering a Redux migration and want advice on the migration path — I've guided 3 teams through it. I read every response.
+Hit reply if you're considering a Redux migration and want advice on the migration path ... I've guided 3 teams through it. I read every response.
 
 – Alex
 

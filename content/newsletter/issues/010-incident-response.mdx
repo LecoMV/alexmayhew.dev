@@ -20,7 +20,7 @@ Their incidents weren't slow because the problems were hard. They were slow beca
 ## This Week's Decision
 
 **The Situation:**
-Your last major outage lasted 90 minutes. The actual technical fix took 15 minutes. The remaining 75 were spent on coordination — deciding who leads, who communicates, what severity it is, and whether to wake up the CTO.
+Your last major outage lasted 90 minutes. The actual technical fix took 15 minutes. The remaining 75 were spent on coordination ... deciding who leads, who communicates, what severity it is, and whether to wake up the CTO.
 
 **The Insight:**
 Incident response speed is a process problem, not a technical one. Pre-assigning three roles and classifying severity before incidents happen cuts MTTR by 60-75% consistently across every team I've advised.
@@ -53,7 +53,7 @@ SEV3: Non-critical service affected, no user impact
 
 The most counterintuitive principle: **restore first, investigate later.** If a rollback fixes the issue, roll back. Don't spend 30 minutes understanding why the deploy broke while users are affected. Understanding comes in the post-incident review, not during the outage.
 
-One client implemented this framework in a week. Their next SEV1 incident — a database connection pool exhaustion — went from detection to resolution in 12 minutes. The IC made the rollback call at minute 4. Previously, that decision would have waited for a VP who was in a meeting.
+One client implemented this framework in a week. Their next SEV1 incident ... a database connection pool exhaustion ... went from detection to resolution in 12 minutes. The IC made the rollback call at minute 4. Previously, that decision would have waited for a VP who was in a meeting.
 
 The post-incident review is where real value compounds. Blameless, focused on systemic improvements, and always producing at least one action item that prevents recurrence. Teams that skip reviews repeat incidents. Teams that do them reduce incident frequency by 30-40% year over year.
 
@@ -67,17 +67,17 @@ The post-incident review is where real value compounds. Blameless, focused on sy
 
 ## Worth Your Time
 
-1. **[PagerDuty: Incident Response Guide](https://response.pagerduty.com/)** — The most comprehensive open-source incident response framework available. Their IC training materials alone are worth the read. Adapt their severity matrix to your scale rather than building from scratch.
+1. **[PagerDuty: Incident Response Guide](https://response.pagerduty.com/)** ... The most comprehensive open-source incident response framework available. Their IC training materials alone are worth the read. Adapt their severity matrix to your scale rather than building from scratch.
 
-2. **[Google SRE Book: Managing Incidents](https://sre.google/sre-book/managing-incidents/)** — Google's incident management chapter covers role assignment, communication protocols, and post-incident review in detail. The key insight: incident management is a skill that requires practice, not just documentation.
+2. **[Google SRE Book: Managing Incidents](https://sre.google/sre-book/managing-incidents/)** ... Google's incident management chapter covers role assignment, communication protocols, and post-incident review in detail. The key insight: incident management is a skill that requires practice, not just documentation.
 
-3. **[Jeli: Howie Post-Incident Guide](https://www.jeli.io/howie/welcome)** — Goes beyond "5 whys" into contributing factor analysis. Their approach surfaces systemic issues instead of stopping at proximate causes. This is how you prevent recurrence instead of just documenting what happened.
+3. **[Jeli: Howie Post-Incident Guide](https://www.jeli.io/howie/welcome)** ... Goes beyond "5 whys" into contributing factor analysis. Their approach surfaces systemic issues instead of stopping at proximate causes. This is how you prevent recurrence instead of just documenting what happened.
 
 ---
 
 ## Tool of the Week
 
-**[incident.io](https://incident.io/)** — Incident management that lives in Slack. Declare an incident, it creates a channel, assigns roles, tracks timeline, and generates the post-incident report. The automation removes exactly the coordination overhead that stretches 15-minute fixes into 90-minute outages. Worth evaluating once your team has 10+ incidents per quarter.
+**[incident.io](https://incident.io/)** ... Incident management that lives in Slack. Declare an incident, it creates a channel, assigns roles, tracks timeline, and generates the post-incident report. The automation removes exactly the coordination overhead that stretches 15-minute fixes into 90-minute outages. Worth evaluating once your team has 10+ incidents per quarter.
 
 ---
 
@@ -87,4 +87,4 @@ Hit reply if your last outage took longer than it should have. I'll help you ide
 
 – Alex
 
-P.S. For the complete engineering leadership framework — from incident response to team scaling: [Engineering Leadership: Founder to CTO](https://alexmayhew.dev/blog/engineering-leadership-founder-to-cto).
+P.S. For the complete engineering leadership framework ... from incident response to team scaling: [Engineering Leadership: Founder to CTO](https://alexmayhew.dev/blog/engineering-leadership-founder-to-cto).

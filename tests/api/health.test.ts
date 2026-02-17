@@ -30,21 +30,21 @@ describe("GET /api/health", () => {
 
 	it("returns status ok in body", async () => {
 		const response = await GET();
-		const body = await response.json();
+		const body = (await response.json()) as Record<string, unknown>;
 		expect(body.status).toBe("ok");
 	});
 
 	it("returns a valid ISO timestamp", async () => {
 		const response = await GET();
-		const body = await response.json();
+		const body = (await response.json()) as Record<string, unknown>;
 		expect(body.timestamp).toBeDefined();
-		const parsed = new Date(body.timestamp);
+		const parsed = new Date(body.timestamp as string);
 		expect(parsed.toISOString()).toBe(body.timestamp);
 	});
 
 	it("returns deployment info from env vars", async () => {
 		const response = await GET();
-		const body = await response.json();
+		const body = (await response.json()) as Record<string, unknown>;
 		expect(body.deployment).toEqual({
 			sha: "abc123",
 			buildTime: "2026-01-01T00:00:00.000Z",

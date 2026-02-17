@@ -45,24 +45,24 @@ describe("subscribeToNewsletter", () => {
 
 	describe("newsletterSchema validation", () => {
 		it("should succeed with a valid email", async () => {
-			const result = await subscribeToNewsletter({ email: "user@example.com" });
+			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(true);
 		});
 
 		it("should fail with an invalid email", async () => {
-			const result = await subscribeToNewsletter({ email: "not-an-email" });
+			const result = await subscribeToNewsletter({ email: "not-an-email", source: "website" });
 			expect(result.success).toBe(false);
 			expect(result.error).toBe("Please enter a valid email address");
 		});
 
 		it("should fail with an empty email", async () => {
-			const result = await subscribeToNewsletter({ email: "" });
+			const result = await subscribeToNewsletter({ email: "", source: "website" });
 			expect(result.success).toBe(false);
 			expect(result.error).toBeDefined();
 		});
 
 		it("should default source to 'website' when not provided", async () => {
-			await subscribeToNewsletter({ email: "user@example.com" });
+			await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(mockFetch).toHaveBeenCalledWith(
 				expect.any(String),
 				expect.objectContaining({
@@ -108,20 +108,20 @@ describe("subscribeToNewsletter", () => {
 	describe("Rate limiting", () => {
 		it("should allow when rate limit succeeds", async () => {
 			mockRateLimit.mockReturnValue({ success: true, resetIn: 0 });
-			const result = await subscribeToNewsletter({ email: "user@example.com" });
+			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(true);
 		});
 
 		it("should block with minutes remaining message when rate limit fails", async () => {
 			mockRateLimit.mockReturnValue({ success: false, resetIn: 120 });
-			const result = await subscribeToNewsletter({ email: "user@example.com" });
+			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(false);
 			expect(result.error).toContain("Try again in 2 minutes");
 		});
 
 		it("should round up partial minutes", async () => {
 			mockRateLimit.mockReturnValue({ success: false, resetIn: 61 });
-			const result = await subscribeToNewsletter({ email: "user@example.com" });
+			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(false);
 			expect(result.error).toContain("Try again in 2 minutes");
 		});
@@ -133,7 +133,7 @@ describe("subscribeToNewsletter", () => {
 				LISTMONK_API_URL: undefined,
 			});
 
-			const result = await subscribeToNewsletter({ email: "user@example.com" });
+			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(false);
 			expect(result.error).toBe("Newsletter signup is temporarily unavailable.");
 		});
@@ -146,7 +146,7 @@ describe("subscribeToNewsletter", () => {
 				json: () => Promise.resolve({}),
 			});
 
-			const result = await subscribeToNewsletter({ email: "user@example.com" });
+			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(true);
 		});
 
@@ -157,7 +157,7 @@ describe("subscribeToNewsletter", () => {
 				json: () => Promise.resolve({ message: "Invalid email address provided" }),
 			});
 
-			const result = await subscribeToNewsletter({ email: "user@example.com" });
+			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(false);
 			expect(result.error).toBe("Please enter a valid email address.");
 		});
@@ -169,7 +169,7 @@ describe("subscribeToNewsletter", () => {
 				json: () => Promise.resolve({ message: "Not a valid format" }),
 			});
 
-			const result = await subscribeToNewsletter({ email: "user@example.com" });
+			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(false);
 			expect(result.error).toBe("Please enter a valid email address.");
 		});
@@ -181,7 +181,7 @@ describe("subscribeToNewsletter", () => {
 				json: () => Promise.resolve({ message: "List not found" }),
 			});
 
-			const result = await subscribeToNewsletter({ email: "user@example.com" });
+			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(false);
 			expect(result.error).toBe("Unable to subscribe. Please try again.");
 		});
@@ -193,7 +193,7 @@ describe("subscribeToNewsletter", () => {
 				json: () => Promise.resolve({ message: "Internal server error" }),
 			});
 
-			const result = await subscribeToNewsletter({ email: "user@example.com" });
+			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(false);
 			expect(result.error).toBe("Failed to subscribe. Please try again.");
 		});
@@ -205,7 +205,7 @@ describe("subscribeToNewsletter", () => {
 				json: () => Promise.reject(new Error("Invalid JSON")),
 			});
 
-			const result = await subscribeToNewsletter({ email: "user@example.com" });
+			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(false);
 			expect(result.error).toBe("Unable to subscribe. Please try again.");
 		});
@@ -215,7 +215,7 @@ describe("subscribeToNewsletter", () => {
 		it("should return unexpected error when fetch throws", async () => {
 			mockFetch.mockRejectedValue(new Error("Network timeout"));
 
-			const result = await subscribeToNewsletter({ email: "user@example.com" });
+			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(false);
 			expect(result.error).toBe("An unexpected error occurred.");
 		});
@@ -238,7 +238,7 @@ describe("subscribeToNewsletter", () => {
 				getIP: () => "127.0.0.1",
 			});
 
-			const result = await subscribeToNewsletter({ email: "user@example.com" });
+			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(true);
 			expect(mockGlobalFetch).toHaveBeenCalledWith(
 				"http://localhost:9000/api/public/subscription",

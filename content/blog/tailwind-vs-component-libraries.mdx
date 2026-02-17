@@ -13,9 +13,9 @@ series: "frontend-architecture"
 
 ## TL;DR
 
-Component libraries: fast to start, expensive to customize. Tailwind: slower start, atomic CSS purges to ~10KB. Material UI adds ~300ms to TTI. shadcn/ui is the middle ground—copy-paste components you own. Decision: internal tools → component libraries; consumer-facing → Tailwind + custom.
+Component libraries: fast to start, expensive to customize. Tailwind: slower start, atomic CSS purges to ~10KB. Material UI adds ~300ms to TTI. shadcn/ui is the middle ground...copy-paste components you own. Decision: internal tools → component libraries; consumer-facing → Tailwind + custom.
 
-> **Part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** — design systems, component patterns, and Server Components.
+> **Part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** ... design systems, component patterns, and Server Components.
 
 ---
 
@@ -25,7 +25,7 @@ Component libraries: fast to start, expensive to customize. Tailwind: slower sta
 
 Component libraries promise pre-built, accessible, styled components. Need a modal? Import Modal. Need a date picker? Import DatePicker. Ship features, not infrastructure.
 
-The promise is real—for certain use cases. But the marketing omits important details about bundle size, runtime overhead, and the customization cliff.
+The promise is real...for certain use cases. But the marketing omits important details about bundle size, runtime overhead, and the customization cliff.
 
 ---
 
@@ -119,7 +119,7 @@ export default class Document extends NextDocument {
 }
 ```
 
-This adds server-side overhead and complexity. Static CSS just works with SSR—no extraction needed.
+This adds server-side overhead and complexity. Static CSS just works with SSR...no extraction needed.
 
 ---
 
@@ -225,7 +225,7 @@ You're now maintaining your design system inside a theme object that maps imperf
 
 ## The shadcn/ui Middle Ground
 
-shadcn/ui changed the equation. It's not a library you install—it's components you copy.
+shadcn/ui changed the equation. It's not a library you install...it's components you copy.
 
 ### How It Works
 
@@ -442,7 +442,7 @@ If metrics don't improve, reconsider whether migration is worth the effort.
 
 ## Conclusion
 
-Component libraries solve real problems for certain use cases. Internal tools, admin dashboards, prototypes—the productivity gain is worth the bundle cost.
+Component libraries solve real problems for certain use cases. Internal tools, admin dashboards, prototypes...the productivity gain is worth the bundle cost.
 
 For consumer-facing products, the calculus shifts. Every 100KB costs users time. Every runtime computation delays interaction. When brand differentiation matters, fighting library styles costs engineering time.
 
@@ -460,21 +460,21 @@ Measure before deciding. Measure after implementing. The data will tell you if y
 
 **Need help choosing the right CSS approach for your project?** I build design systems with Tailwind that are both performant and maintainable.
 
-- [React Development for SaaS](/services/react-developer-for-saas) — Component architecture with Tailwind
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Modern styling strategies
-- [Full-Stack Development for Startups](/services/fullstack-developer-for-startups) — Fast iteration with design systems
+- [React Development for SaaS](/services/react-developer-for-saas) ... Component architecture with Tailwind
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Modern styling strategies
+- [Full-Stack Development for Startups](/services/fullstack-developer-for-startups) ... Fast iteration with design systems
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** — covering design systems, component APIs, CSS strategy, and React Server Components.
+**This post is part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** ... covering design systems, component APIs, CSS strategy, and React Server Components.
 
 ### More in This Series
 
-- [Neo-Brutalism Developer Guide](/blog/neo-brutalism-developer-guide) — Design philosophy implementation
-- [Component API Design](/blog/component-api-design) — Props, variants, composition
-- [Design Tokens Beyond Color](/blog/design-tokens-comprehensive) — Typography, spacing, elevation
-- [Accessibility in Design Systems](/blog/accessibility-design-systems) — Testing and enforcement
+- [Neo-Brutalism Developer Guide](/blog/neo-brutalism-developer-guide) ... Design philosophy implementation
+- [Component API Design](/blog/component-api-design) ... Props, variants, composition
+- [Design Tokens Beyond Color](/blog/design-tokens-comprehensive) ... Typography, spacing, elevation
+- [Accessibility in Design Systems](/blog/accessibility-design-systems) ... Testing and enforcement
 
 **Building a design system?** [Work with me](/services/react-developer-for-saas) on your frontend architecture.

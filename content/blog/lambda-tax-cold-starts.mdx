@@ -1,6 +1,6 @@
 ---
 title: "The Lambda Tax: Cold Starts and the True Cost of Serverless"
-description: "Cold starts add 100-500ms+ to user requests. Know when serverless helps and when it hurts—the math might surprise you."
+description: "Cold starts add 100-500ms+ to user requests. Know when serverless helps and when it hurts...the math might surprise you."
 date: "2025-08-26"
 updatedAt: "2026-02-06"
 author: "Alex Mayhew"
@@ -16,7 +16,7 @@ image: "/images/blog/lambda-tax-cold-starts-featured.webp"
 
 Cold start: 100-500ms+ penalty (new container creation). Warm start: `<20ms` (reused container). Provisioned concurrency eliminates cold starts but adds cost. Go/Rust cold start ~100ms; Java/C# cold start ~1-2 seconds. Serverless wins for bursty workloads; loses for consistent traffic with latency requirements.
 
-> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** — a comprehensive guide to web performance from TTFB to TTI.
+> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to web performance from TTFB to TTI.
 
 ---
 
@@ -47,7 +47,7 @@ The language runtime boots:
 
 Compiled languages (Go, Rust) have smaller binaries and no runtime to boot. Interpreted languages (Python, Node.js) are moderate. JVM and .NET languages pay a heavy runtime initialization cost.
 
-**Java SnapStart** (introduced 2023) dramatically reduces Java cold starts by snapshotting the initialized state. With SnapStart enabled, Java cold starts drop to ~1.4 seconds. With additional priming optimizations, you can achieve ~781ms—a 6x improvement over baseline.
+**Java SnapStart** (introduced 2023) dramatically reduces Java cold starts by snapshotting the initialized state. With SnapStart enabled, Java cold starts drop to ~1.4 seconds. With additional priming optimizations, you can achieve ~781ms...a 6x improvement over baseline.
 
 ### 3. Code Download and Extraction (Depends on Bundle Size)
 
@@ -62,7 +62,7 @@ This is why bundle size matters. Tree-shaking, selective imports, and external l
 
 ### 4. User Code Initialization
 
-Your initialization code runs—imports, database connections, dependency injection:
+Your initialization code runs...imports, database connections, dependency injection:
 
 ```typescript
 // This runs ONCE per cold start
@@ -483,21 +483,21 @@ Measure before deciding. Measure after deploying. The data will tell you if serv
 
 **Need help optimizing your serverless architecture?** I help teams evaluate the true cost of serverless and design architectures that balance performance with cost.
 
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Edge-first deployment strategies
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — Serverless architecture guidance
-- [Python Development for Fintech](/services/python-developer-for-fintech) — High-performance API design
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Edge-first deployment strategies
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Serverless architecture guidance
+- [Python Development for Fintech](/services/python-developer-for-fintech) ... High-performance API design
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
 
 ### More in This Series
 
-- [The $500K Architecture Mistake](/blog/500k-architecture-mistake) — Why microservices aren't the answer
-- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) — Database isolation patterns
-- [Zero to 10K MRR SaaS Playbook](/blog/zero-to-10k-mrr-saas-playbook) — Early-stage architecture
-- [Boring Technology Wins](/blog/boring-technology-wins) — Technology selection philosophy
+- [The $500K Architecture Mistake](/blog/500k-architecture-mistake) ... Why microservices aren't the answer
+- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) ... Database isolation patterns
+- [Zero to 10K MRR SaaS Playbook](/blog/zero-to-10k-mrr-saas-playbook) ... Early-stage architecture
+- [Boring Technology Wins](/blog/boring-technology-wins) ... Technology selection philosophy
 
 **Ready to make better architecture decisions?** [Work with me](/services/technical-advisor-for-startups) on your SaaS architecture.

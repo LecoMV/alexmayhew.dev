@@ -14,9 +14,9 @@ image: "/images/blog/llm-cost-optimization-scale-featured.webp"
 
 ## TL;DR
 
-LLM costs follow a power law: 80% of queries can be handled by cheap, fast models while 20% need expensive, capable models. The tiered approach—route simple queries to GPT-4o-mini ($0.15/1M input tokens) and complex queries to Claude Sonnet ($3/1M input tokens)—reduces average cost per query by 60-70%. Add semantic caching (serving identical or near-identical queries from cache) and you eliminate another 20-30% of LLM calls entirely. The three highest-leverage optimizations in order: (1) model routing based on query complexity, (2) semantic caching with 0.95+ similarity threshold, (3) prompt compression that strips unnecessary tokens. I've helped 4 SaaS companies reduce their monthly LLM spend from $15-50K to $3-10K using these patterns. The quality difference was measurable only on edge cases.
+LLM costs follow a power law: 80% of queries can be handled by cheap, fast models while 20% need expensive, capable models. The tiered approach...route simple queries to GPT-4o-mini ($0.15/1M input tokens) and complex queries to Claude Sonnet ($3/1M input tokens)...reduces average cost per query by 60-70%. Add semantic caching (serving identical or near-identical queries from cache) and you eliminate another 20-30% of LLM calls entirely. The three highest-leverage optimizations in order: (1) model routing based on query complexity, (2) semantic caching with 0.95+ similarity threshold, (3) prompt compression that strips unnecessary tokens. I've helped 4 SaaS companies reduce their monthly LLM spend from $15-50K to $3-10K using these patterns. The quality difference was measurable only on edge cases.
 
-> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** — a comprehensive guide to building AI features that deliver real value.
+> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... a comprehensive guide to building AI features that deliver real value.
 
 ---
 
@@ -157,7 +157,7 @@ async function handleQuery(query: string, context: string): Promise<string> {
 		return cached.response;
 	}
 
-	// Cache miss — call LLM
+	// Cache miss ... call LLM
 	const response = await callLLM(query, context);
 
 	// Store in cache
@@ -218,7 +218,7 @@ Context:
 Question: {query}
 ```
 
-The after version is 63% fewer tokens with identical behavior. At 100K queries/day with a 3K-token context, this saves ~24.5 billion tokens/month in prompt overhead—roughly $3,675/month at GPT-4o-mini rates.
+The after version is 63% fewer tokens with identical behavior. At 100K queries/day with a 3K-token context, this saves ~24.5 billion tokens/month in prompt overhead...roughly $3,675/month at GPT-4o-mini rates.
 
 ### Context Window Optimization
 
@@ -263,7 +263,7 @@ Set `max_tokens` to the minimum needed for your use case. A yes/no classifier do
 For non-real-time use cases (email generation, report creation, bulk classification), batch requests to take advantage of lower-cost batch APIs.
 
 ```typescript
-// OpenAI batch API — 50% cost reduction
+// OpenAI batch API ... 50% cost reduction
 async function batchProcess(requests: BatchRequest[]): Promise<BatchResult[]> {
 	// Create JSONL file with all requests
 	const jsonl = requests
@@ -350,7 +350,7 @@ GROUP BY feature, DATE(created_at)
 ORDER BY total_cost DESC;
 ```
 
-This reveals which features are consuming the most LLM budget—and where optimization has the highest ROI.
+This reveals which features are consuming the most LLM budget...and where optimization has the highest ROI.
 
 ---
 
@@ -363,32 +363,32 @@ This reveals which features are consuming the most LLM budget—and where optimi
 
 ## When NOT to Apply This
 
-- You're in development or early beta with under 100 queries/day—optimize for quality first
-- The AI feature is a premium add-on where customers pay for the compute—pass costs through
-- Your total LLM spend is under $100/month—the engineering time to optimize costs more than the savings
+- You're in development or early beta with under 100 queries/day...optimize for quality first
+- The AI feature is a premium add-on where customers pay for the compute...pass costs through
+- Your total LLM spend is under $100/month...the engineering time to optimize costs more than the savings
 
 ---
 
 **Need to get your AI costs under control without sacrificing quality?** I help SaaS teams design cost-efficient AI architectures that scale with their business.
 
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) — AI cost and architecture strategy
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — AI features with built-in cost controls
-- [Technical Due Diligence](/services/technical-due-diligence-consultant) — AI infrastructure cost assessment
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... AI cost and architecture strategy
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... AI features with built-in cost controls
+- [Technical Due Diligence](/services/technical-due-diligence-consultant) ... AI infrastructure cost assessment
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** — covering AI integration patterns, RAG architecture, and building features users want.
+**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering AI integration patterns, RAG architecture, and building features users want.
 
 ### More in This Series
 
-- [AI Cost Optimization](/blog/ai-cost-optimization) — Foundational cost management patterns
-- [RAG Architecture for SaaS Products](/blog/rag-architecture-saas) — Optimizing retrieval costs
-- [LLM Integration Architecture](/blog/llm-integration-architecture) — Patterns for efficient LLM integration
-- [Building AI Features Users Want](/blog/building-ai-features-users-want) — Investing AI budget where it matters
+- [AI Cost Optimization](/blog/ai-cost-optimization) ... Foundational cost management patterns
+- [RAG Architecture for SaaS Products](/blog/rag-architecture-saas) ... Optimizing retrieval costs
+- [LLM Integration Architecture](/blog/llm-integration-architecture) ... Patterns for efficient LLM integration
+- [Building AI Features Users Want](/blog/building-ai-features-users-want) ... Investing AI budget where it matters
 
 ### Related Guides
 
-- [Vector Databases: When to Build vs Buy](/blog/vector-database-selection) — Infrastructure cost decisions
-- [Caching Strategies That Actually Work](/blog/caching-strategies-production) — Caching patterns that apply to LLM responses
+- [Vector Databases: When to Build vs Buy](/blog/vector-database-selection) ... Infrastructure cost decisions
+- [Caching Strategies That Actually Work](/blog/caching-strategies-production) ... Caching patterns that apply to LLM responses

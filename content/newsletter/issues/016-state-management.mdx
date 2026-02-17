@@ -27,7 +27,7 @@ Your application has four types of state. Each has a purpose-built solution that
 
 **1. Server state → React Query / TanStack Query (~13KB)**
 
-API data, cached responses, background refetching. This is 60-80% of what Redux stores in most applications. React Query handles caching, deduplication, background updates, optimistic mutations, and stale-while-revalidate — all things teams build manually in Redux.
+API data, cached responses, background refetching. This is 60-80% of what Redux stores in most applications. React Query handles caching, deduplication, background updates, optimistic mutations, and stale-while-revalidate ... all things teams build manually in Redux.
 
 ```typescript
 const { data: users } = useQuery({
@@ -61,7 +61,7 @@ const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
 
 **4. Form state → React Hook Form + Zod (~8.5KB)**
 
-Validation, dirty tracking, submission handling. Forms have unique requirements — field-level validation, touched state, submit error handling — that general state managers handle poorly.
+Validation, dirty tracking, submission handling. Forms have unique requirements ... field-level validation, touched state, submit error handling ... that general state managers handle poorly.
 
 ```typescript
 const schema = z.object({
@@ -73,7 +73,7 @@ const { register, handleSubmit } = useForm({
 });
 ```
 
-Total bundle: ~28KB. Compare to Redux Toolkit at ~40KB — which handles one of these four categories well (client state) and forces awkward patterns on the other three.
+Total bundle: ~28KB. Compare to Redux Toolkit at ~40KB ... which handles one of these four categories well (client state) and forces awkward patterns on the other three.
 
 Redux tried to be one solution for all four state types. That's why it's verbose. The 28KB stack uses four focused tools, each doing one thing well.
 
@@ -87,24 +87,24 @@ Redux tried to be one solution for all four state types. That's why it's verbose
 
 ## Worth Your Time
 
-1. **[TkDodo: Practical React Query](https://tkdodo.eu/blog/practical-react-query)** — The best React Query resource. The series on query key management and optimistic updates covers patterns you'll need in production. Written by a maintainer.
+1. **[TkDodo: Practical React Query](https://tkdodo.eu/blog/practical-react-query)** ... The best React Query resource. The series on query key management and optimistic updates covers patterns you'll need in production. Written by a maintainer.
 
-2. **[Zustand: Comparison](https://docs.pmnd.rs/zustand/getting-started/comparison)** — Zustand's official comparison against Redux, Jotai, Recoil, and Valtio. Honest about trade-offs. Their point about when Jotai (atomic model) fits better than Zustand (single store) is worth reading.
+2. **[Zustand: Comparison](https://docs.pmnd.rs/zustand/getting-started/comparison)** ... Zustand's official comparison against Redux, Jotai, Recoil, and Valtio. Honest about trade-offs. Their point about when Jotai (atomic model) fits better than Zustand (single store) is worth reading.
 
-3. **[nuqs: Type-Safe URL State](https://nuqs.47ng.com/)** — URL state management for Next.js with full TypeScript inference. The documentation covers App Router integration, shallow routing, and history mode. If you're building anything with filterable lists, this replaces custom URL parsing.
+3. **[nuqs: Type-Safe URL State](https://nuqs.47ng.com/)** ... URL state management for Next.js with full TypeScript inference. The documentation covers App Router integration, shallow routing, and history mode. If you're building anything with filterable lists, this replaces custom URL parsing.
 
 ---
 
 ## Tool of the Week
 
-**[TanStack Query DevTools](https://tanstack.com/query/latest/docs/framework/react/devtools)** — Visual debugger for React Query cache. See every cached query, its status, staleness, and data. When someone asks "why isn't this data updating?" the DevTools answer in seconds. Install it in development and never remove it.
+**[TanStack Query DevTools](https://tanstack.com/query/latest/docs/framework/react/devtools)** ... Visual debugger for React Query cache. See every cached query, its status, staleness, and data. When someone asks "why isn't this data updating?" the DevTools answer in seconds. Install it in development and never remove it.
 
 ---
 
 That's it for this week.
 
-Hit reply if your team is stuck in a state management debate. Tell me what your store looks like — I'll tell you which parts should move where. I read every response.
+Hit reply if your team is stuck in a state management debate. Tell me what your store looks like ... I'll tell you which parts should move where. I read every response.
 
 – Alex
 
-P.S. For the complete guide to modern frontend architecture — including component patterns, testing, and build optimization: [Modern Frontend Architecture](https://alexmayhew.dev/blog/modern-frontend-architecture).
+P.S. For the complete guide to modern frontend architecture ... including component patterns, testing, and build optimization: [Modern Frontend Architecture](https://alexmayhew.dev/blog/modern-frontend-architecture).

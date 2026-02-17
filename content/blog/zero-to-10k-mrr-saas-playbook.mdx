@@ -15,7 +15,7 @@ image: "/images/blog/zero-to-10k-mrr-saas-playbook-featured.webp"
 
 Your first $10k MRR requires customers, not Kubernetes. Database: Postgres on Neon ($0 to start). Backend: Hono on Cloudflare Workers ($0-5/month). Frontend: Next.js on Vercel (free tier). Auth: Clerk ($0 to 10k MAU). Payments: Stripe ($0 until revenue). Total infrastructure cost at launch: approximately $0. Stop building infrastructure and start building product.
 
-> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — a comprehensive guide to architecture decisions from MVP to scale.
+> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
 
 ---
 
@@ -108,7 +108,7 @@ Next.js with App Router gives you:
 - Automatic code splitting
 - Built-in image optimization
 
-Vercel's free tier handles moderate traffic comfortably. You'll outgrow it eventually, but that's a good problem to have—it means you have customers.
+Vercel's free tier handles moderate traffic comfortably. You'll outgrow it eventually, but that's a good problem to have...it means you have customers.
 
 ### Total Monthly Cost at $0 MRR
 
@@ -125,7 +125,7 @@ Yes, you can run a production SaaS for free until you have paying customers. The
 
 ## The $1k MRR Stack
 
-At $1k MRR, you've proven someone will pay. Now you can invest in reducing operational friction. This isn't about scaling—it's about maintaining sanity as a solo founder or tiny team.
+At $1k MRR, you've proven someone will pay. Now you can invest in reducing operational friction. This isn't about scaling...it's about maintaining sanity as a solo founder or tiny team.
 
 ### Add: Authentication You Don't Have to Think About
 
@@ -133,7 +133,7 @@ Building auth from scratch is a trap. I've seen founders spend six weeks impleme
 
 **Clerk** or **Auth.js** handle this entirely:
 
-- Magic links, OAuth, passwords, MFA—all configured in a dashboard
+- Magic links, OAuth, passwords, MFA...all configured in a dashboard
 - Prebuilt components that look decent out of the box
 - Webhook events for user lifecycle (created, updated, deleted)
 - Free up to 10,000 monthly active users
@@ -238,7 +238,7 @@ At $1k MRR, an hour of downtime might affect a handful of users. At $10k MRR, do
 
 ### Migration Paths
 
-If you've built your $0 stack correctly—simple, modular, boring—migrating to a more sophisticated architecture is straightforward:
+If you've built your $0 stack correctly...simple, modular, boring...migrating to a more sophisticated architecture is straightforward:
 
 **Cloudflare Workers → AWS/GCP/Fly.io**: Your Hono app runs anywhere that speaks HTTP. The migration is primarily about deployment configuration, not code changes.
 
@@ -295,7 +295,7 @@ The $10k mark is roughly where you should have this conversation. Not $3k (too e
 
 The fastest path to $100k MRR goes through $10k first. And the fastest path to $10k goes through $1k first. You cannot skip stages by building infrastructure for a stage you haven't reached.
 
-Premature optimization isn't just "the root of all evil" in code—it's the root of all wasted runway in startups. Every hour you spend on infrastructure before you have revenue is borrowed from your runway at the highest possible interest rate.
+Premature optimization isn't just "the root of all evil" in code...it's the root of all wasted runway in startups. Every hour you spend on infrastructure before you have revenue is borrowed from your runway at the highest possible interest rate.
 
 Here's what actually matters at each stage:
 
@@ -307,7 +307,7 @@ Here's what actually matters at each stage:
 
 Build the simplest thing that works. Measure how it actually behaves with real traffic. Optimize based on data, not speculation. Repeat.
 
-The boring stack—Postgres, a simple API, a React frontend—has taken more companies to $10k MRR than any amount of architectural sophistication. Your customers don't care about your infrastructure. They care about whether your product solves their problem.
+The boring stack...Postgres, a simple API, a React frontend...has taken more companies to $10k MRR than any amount of architectural sophistication. Your customers don't care about your infrastructure. They care about whether your product solves their problem.
 
 Start there. The infrastructure can come later.
 
@@ -349,23 +349,23 @@ Answer these questions before making any infrastructure decisions at scale. The 
 
 ---
 
-**Building a SaaS from scratch?** I specialize in helping bootstrapped founders go from zero to $10k MRR with the right technical foundation—not over-engineered infrastructure.
+**Building a SaaS from scratch?** I specialize in helping bootstrapped founders go from zero to $10k MRR with the right technical foundation...not over-engineered infrastructure.
 
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — The ideal stack for bootstrappers
-- [Full-Stack Development for Startups](/services/fullstack-developer-for-startups) — MVP to production-ready
-- [PostgreSQL Development](/services/postgresql-developer-for-fintech) — Scalable database architecture
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... The ideal stack for bootstrappers
+- [Full-Stack Development for Startups](/services/fullstack-developer-for-startups) ... MVP to production-ready
+- [PostgreSQL Development](/services/postgresql-developer-for-fintech) ... Scalable database architecture
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
 
 ### More in This Series
 
-- [The $500K Architecture Mistake](/blog/500k-architecture-mistake) — Why microservices aren't the answer
-- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) — Database isolation patterns
-- [Boring Technology Wins](/blog/boring-technology-wins) — Technology selection philosophy
-- [Build vs. Buy](/blog/build-vs-buy) — When free actually costs more
+- [The $500K Architecture Mistake](/blog/500k-architecture-mistake) ... Why microservices aren't the answer
+- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) ... Database isolation patterns
+- [Boring Technology Wins](/blog/boring-technology-wins) ... Technology selection philosophy
+- [Build vs. Buy](/blog/build-vs-buy) ... When free actually costs more
 
 **Ready to make better architecture decisions?** [Work with me](/services/technical-advisor-for-startups) on your SaaS architecture.

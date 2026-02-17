@@ -1,4 +1,4 @@
-# The Architect's Brief — Quality Checklist
+# The Architect's Brief ... Quality Checklist
 
 > Run every issue through this gate before marking status as `reviewed`.
 > If any item fails, revise before sending.
@@ -25,7 +25,7 @@
 - [ ] No exclamation points (max 1 in the entire email, and only if genuinely warranted)
 - [ ] No filler phrases ("in today's world", "as we all know", "it goes without saying")
 - [ ] Short paragraphs (max 3 sentences each)
-- [ ] Reads like advice to a founder you talked to this week — not a blog post
+- [ ] Reads like advice to a founder you talked to this week ... not a blog post
 
 ---
 
@@ -37,7 +37,7 @@
 - [ ] Code blocks render correctly in Markdown preview
 - [ ] No code blocks wider than 60 characters (mobile-safe)
 - [ ] No tables wider than 600px
-- [ ] Mobile preview checked — readable without horizontal scrolling
+- [ ] Mobile preview checked ... readable without horizontal scrolling
 
 ---
 
@@ -58,6 +58,6 @@
 - [ ] Sent test email to personal inbox
 - [ ] Verified rendering in dark mode email client
 - [ ] Verified rendering on mobile (iOS Mail or Gmail app)
-- [ ] Read the entire email aloud — does it sound like a peer talking to a peer?
+- [ ] Read the entire email aloud ... does it sound like a peer talking to a peer?
 - [ ] The subject line makes you want to open it, even on a busy Tuesday morning
 - [ ] If you received this from someone else, would you forward it to your CTO?

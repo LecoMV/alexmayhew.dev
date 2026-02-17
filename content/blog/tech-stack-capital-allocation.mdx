@@ -16,7 +16,7 @@ image: "/images/blog/tech-stack-capital-allocation-featured.webp"
 
 Labor costs are 50-70% of engineering opex. Your stack determines your hiring pool. Seed stage: optimize for speed (Rails, Django, Next.js). Growth stage: optimize for scale (add Go/Rust for hotspots). Enterprise: optimize for efficiency (hybrid + repatriation). Instagram scaled to 14 million users with 3 engineers using PostgreSQL and Python. Technical novelty is not a competitive advantage.
 
-> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — a comprehensive guide to architecture decisions from MVP to scale.
+> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
 
 ---
 
@@ -46,7 +46,7 @@ The noise-to-signal ratio in the JavaScript market is exceptionally high. Bootca
 
 ### Constrained Ecosystems
 
-Rust, Elixir, and Haskell present the opposite problem. The talent pool is shallow. Roles can remain open 45-60+ days. If a critical engineer leaves, the replacement cost—measured in time—is fundamentally higher.
+Rust, Elixir, and Haskell present the opposite problem. The talent pool is shallow. Roles can remain open 45-60+ days. If a critical engineer leaves, the replacement cost...measured in time...is fundamentally higher.
 
 But there's an upside: the steep learning curve acts as a natural filter. An applicant for a Rust role is statistically more likely to possess deep fundamentals than an applicant for a React role.
 
@@ -61,7 +61,7 @@ But there's an upside: the steep learning curve acts as a natural filter. An app
 
 ### The Specialist Premium
 
-Constrained supply curves mean higher salaries. Rust developers command $175,000-$195,000 in the US—a 15-20% premium over baseline. Go runs $160,000-$185,000.
+Constrained supply curves mean higher salaries. Rust developers command $175,000-$195,000 in the US...a 15-20% premium over baseline. Go runs $160,000-$185,000.
 
 For a Series A startup with ten engineers, choosing Rust over Python implies an additional $300,000-$500,000 in annual payroll. That capital could extend runway by months.
 
@@ -69,7 +69,7 @@ For a Series A startup with ten engineers, choosing Rust over Python implies an 
 
 ## The Innovation Tokens Framework
 
-Dan McKinley, formerly of Etsy, proposed that organizations have a limited capacity for technical novelty—roughly three "innovation tokens" to spend.
+Dan McKinley, formerly of Etsy, proposed that organizations have a limited capacity for technical novelty...roughly three "innovation tokens" to spend.
 
 The rule: spend tokens only on technology that supports your core differentiator.
 
@@ -81,7 +81,7 @@ The math is simple: when Postgres fails, Stack Overflow has the answer. When you
 
 ### Boring Technology Has Known Failure Modes
 
-Instagram scaled to 14 million users with three engineers using PostgreSQL and Python (with Gearman for task queues). Shopify ran Rails from day one through IPO. Pinterest, GitHub, Airbnb—all built on "boring" stacks.
+Instagram scaled to 14 million users with three engineers using PostgreSQL and Python (with Gearman for task queues). Shopify ran Rails from day one through IPO. Pinterest, GitHub, Airbnb...all built on "boring" stacks.
 
 These companies optimized for iteration velocity, not theoretical performance. They accepted higher compute costs (more servers) in exchange for lower development costs (fewer engineers shipping more features).
 
@@ -135,7 +135,7 @@ The most expensive technology decision is one that must be reversed. But strateg
 
 **Projection**: $10 million savings over five years.
 
-**Lesson**: Public cloud sells elasticity. If you don't need elasticity—if your workload is predictable and stable—you're paying a premium for liquidity you never use. For mature SaaS businesses, owning hardware is often cheaper than renting it.
+**Lesson**: Public cloud sells elasticity. If you don't need elasticity...if your workload is predictable and stable...you're paying a premium for liquidity you never use. For mature SaaS businesses, owning hardware is often cheaper than renting it.
 
 ### Discord: Go to Rust
 
@@ -190,7 +190,7 @@ Stripe handles:
 - Subscription lifecycle management
 - Proration for plan changes
 
-Building this yourself creates "revenue leaks"—bugs that cause you to under-charge customers or lose failed payment recovery.
+Building this yourself creates "revenue leaks"...bugs that cause you to under-charge customers or lose failed payment recovery.
 
 The 2.9% + $0.30 per transaction is vastly cheaper than the engineering time to replicate Stripe's reliability.
 
@@ -230,7 +230,7 @@ The "right" architecture doesn't matter if you run out of money before finding c
 
 At this stage, you have product-market fit and need to scale. Optimize the critical path. Leave everything else alone.
 
-The common mistake is migrating too early—before you have data showing where the bottlenecks actually are. Profile first, optimize second.
+The common mistake is migrating too early...before you have data showing where the bottlenecks actually are. Profile first, optimize second.
 
 ### Enterprise Stage (100+ Engineers): Optimize for Efficiency
 
@@ -250,7 +250,7 @@ At this stage, you're managing an organization, not a codebase. Microservices ex
 
 ### AI-Readiness
 
-If you anticipate heavy ML or LLM integration, Python becomes the default backend choice. The alternative—maintaining a Node.js app layer plus a Python ML service—creates operational complexity.
+If you anticipate heavy ML or LLM integration, Python becomes the default backend choice. The alternative...maintaining a Node.js app layer plus a Python ML service...creates operational complexity.
 
 The Y Combinator 2024 cohorts show Python's surge correlating directly with AI integration needs.
 
@@ -258,7 +258,7 @@ The Y Combinator 2024 cohorts show Python's surge correlating directly with AI i
 
 Wasm is moving beyond the browser to server-side via WASI. It offers near-native performance with extreme security sandboxing.
 
-For edge computing architectures—where you need to run complex logic close to users—Wasm enables patterns that weren't previously possible. Figma uses this for their multiplayer editing.
+For edge computing architectures...where you need to run complex logic close to users...Wasm enables patterns that weren't previously possible. Figma uses this for their multiplayer editing.
 
 ### AI-Assisted Development
 
@@ -306,7 +306,7 @@ Optimize for the stage you're at, not the stage you hope to reach.
 
 ### Underestimating Migration Costs
 
-Migrations consume 12-24 months of engineering capacity. That's time not spent on features. The bar for "we need to migrate" should be very high—clear evidence that current architecture blocks business goals, not theoretical concerns about scale you haven't reached.
+Migrations consume 12-24 months of engineering capacity. That's time not spent on features. The bar for "we need to migrate" should be very high...clear evidence that current architecture blocks business goals, not theoretical concerns about scale you haven't reached.
 
 ---
 
@@ -346,7 +346,7 @@ Migrations consume 12-24 months of engineering capacity. That's time not spent o
 
 Your tech stack is not an expression of technical preferences. It's a capital allocation decision with measurable impact on hiring costs, development velocity, and operational expenses.
 
-The highest-performing startups didn't use cutting-edge technology. They used mature, productive technology extremely well. They treated architectural decisions as business decisions—optimizing for time-to-market when that mattered, optimizing for scale when they reached scale, optimizing for efficiency when margins became important.
+The highest-performing startups didn't use cutting-edge technology. They used mature, productive technology extremely well. They treated architectural decisions as business decisions...optimizing for time-to-market when that mattered, optimizing for scale when they reached scale, optimizing for efficiency when margins became important.
 
 Stop asking "what's the best stack?" Start asking "what stack minimizes our total cost of ownership at our current stage?"
 
@@ -354,28 +354,28 @@ The answer is almost always more boring than you'd expect.
 
 ---
 
-**Need help choosing the right tech stack for your stage?** I help founders make architecture decisions that optimize for their current reality—not hypothetical future scale.
+**Need help choosing the right tech stack for your stage?** I help founders make architecture decisions that optimize for their current reality...not hypothetical future scale.
 
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) — Optimal stacks for early-stage
-- [Full-Stack Development for Startups](/services/fullstack-developer-for-startups) — Fast iteration, solid foundation
-- [PostgreSQL Development](/services/postgresql-developer-for-fintech) — The boring database that scales
+- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Optimal stacks for early-stage
+- [Full-Stack Development for Startups](/services/fullstack-developer-for-startups) ... Fast iteration, solid foundation
+- [PostgreSQL Development](/services/postgresql-developer-for-fintech) ... The boring database that scales
 
 ---
 
 ## Continue Reading
 
-**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** — covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
 
 ### More in This Series
 
-- [The $500K Architecture Mistake](/blog/500k-architecture-mistake) — Why microservices aren't the answer
-- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) — Database isolation patterns
-- [Zero to 10K MRR SaaS Playbook](/blog/zero-to-10k-mrr-saas-playbook) — Early-stage architecture
-- [Boring Technology Wins](/blog/boring-technology-wins) — Technology selection philosophy
+- [The $500K Architecture Mistake](/blog/500k-architecture-mistake) ... Why microservices aren't the answer
+- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) ... Database isolation patterns
+- [Zero to 10K MRR SaaS Playbook](/blog/zero-to-10k-mrr-saas-playbook) ... Early-stage architecture
+- [Boring Technology Wins](/blog/boring-technology-wins) ... Technology selection philosophy
 
 ### Related Guides
 
-- [Engineering Leadership Guide](/blog/engineering-leadership-founder-to-cto) — Team scaling and hiring implications of stack decisions
-- [Performance Engineering Playbook](/blog/performance-engineering-playbook) — When and how to optimize
+- [Engineering Leadership Guide](/blog/engineering-leadership-founder-to-cto) ... Team scaling and hiring implications of stack decisions
+- [Performance Engineering Playbook](/blog/performance-engineering-playbook) ... When and how to optimize
 
 **Ready to make better architecture decisions?** [Work with me](/services/technical-advisor-for-startups) on your SaaS architecture.

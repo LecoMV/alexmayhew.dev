@@ -23,7 +23,7 @@ The math makes the case that gut feelings can't.
 Your team is moving fast. Tests feel like a tax on velocity. The backlog is growing, investors want features, and every test you write is a feature you didn't ship. The CTO says "we'll add tests after Series A."
 
 **The Insight:**
-I tracked debugging time across 6 advisory clients over 12 months — 3 with test coverage above 60% and 3 with coverage below 20%. The data was unambiguous.
+I tracked debugging time across 6 advisory clients over 12 months ... 3 with test coverage above 60% and 3 with coverage below 20%. The data was unambiguous.
 
 Teams without tests spend 3.4x more time debugging production issues. Here's the cost calculation:
 
@@ -56,7 +56,7 @@ One client tried. They assigned 3 engineers for 6 weeks to add test coverage to 
 
 The test-later approach assumes the code is testable. It never is.
 
-The pragmatic alternative: test the paths that cost you money when they break. Not 100% coverage — targeted coverage on billing logic, authentication flows, data mutations, and API contracts. Those 4 areas represent 80% of production incident cost on every team I've measured.
+The pragmatic alternative: test the paths that cost you money when they break. Not 100% coverage ... targeted coverage on billing logic, authentication flows, data mutations, and API contracts. Those 4 areas represent 80% of production incident cost on every team I've measured.
 
 **When to Apply This:**
 
@@ -68,17 +68,17 @@ The pragmatic alternative: test the paths that cost you money when they break. N
 
 ## Worth Your Time
 
-1. **[Kent Beck: Test Desiderata](https://kentbeck.github.io/TestDesiderata/)** — Beck's 12 properties of good tests cut through the "how much testing" debate. His hierarchy — fast, isolated, deterministic — helps teams prioritize which tests to write first. Start with fast, deterministic integration tests on critical paths.
+1. **[Kent Beck: Test Desiderata](https://kentbeck.github.io/TestDesiderata/)** ... Beck's 12 properties of good tests cut through the "how much testing" debate. His hierarchy ... fast, isolated, deterministic ... helps teams prioritize which tests to write first. Start with fast, deterministic integration tests on critical paths.
 
-2. **[Charity Majors: Testing in Production](https://charity.wtf/2018/08/22/testing-in-production-yes-really/)** — Majors argues for testing in production alongside traditional tests, not instead of them. Her point: tests verify what you expect, but production observability catches what you didn't expect. Both are necessary; neither alone is sufficient.
+2. **[Charity Majors: Testing in Production](https://charity.wtf/2018/08/22/testing-in-production-yes-really/)** ... Majors argues for testing in production alongside traditional tests, not instead of them. Her point: tests verify what you expect, but production observability catches what you didn't expect. Both are necessary; neither alone is sufficient.
 
-3. **[Netflix: Automated Canary Analysis](https://netflixtechblog.com/automated-canary-analysis-at-netflix-with-kayenta-3260bc7acc69)** — Netflix's approach to production testing at scale. Their canary system compares metrics between baseline and experiment deployments. Relevant for teams that need confidence in production without blocking deploys on test suites.
+3. **[Netflix: Automated Canary Analysis](https://netflixtechblog.com/automated-canary-analysis-at-netflix-with-kayenta-3260bc7acc69)** ... Netflix's approach to production testing at scale. Their canary system compares metrics between baseline and experiment deployments. Relevant for teams that need confidence in production without blocking deploys on test suites.
 
 ---
 
 ## Tool of the Week
 
-**[Vitest](https://vitest.dev/)** — If slow test suites are your excuse for skipping tests, Vitest eliminates it. It runs tests in parallel with native ESM support, and typical suites finish 3-5x faster than Jest. The migration from Jest is mostly config changes. Two teams I work with switched in under a day and immediately started writing more tests because the feedback loop dropped from 40 seconds to 8.
+**[Vitest](https://vitest.dev/)** ... If slow test suites are your excuse for skipping tests, Vitest eliminates it. It runs tests in parallel with native ESM support, and typical suites finish 3-5x faster than Jest. The migration from Jest is mostly config changes. Two teams I work with switched in under a day and immediately started writing more tests because the feedback loop dropped from 40 seconds to 8.
 
 ---
 
