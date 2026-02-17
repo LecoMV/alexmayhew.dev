@@ -45,3 +45,28 @@ Object.defineProperty(window, "ResizeObserver", {
 	writable: true,
 	value: MockResizeObserver,
 });
+
+// Global Framer Motion mock for component tests
+vi.mock("framer-motion", () => ({
+	m: new Proxy(
+		{},
+		{
+			get: (_target, prop) => {
+				if (typeof prop === "symbol") return undefined;
+				return prop;
+			},
+		}
+	),
+	motion: new Proxy(
+		{},
+		{
+			get: (_target, prop) => {
+				if (typeof prop === "symbol") return undefined;
+				return prop;
+			},
+		}
+	),
+	AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
+	useAnimation: () => ({ start: vi.fn() }),
+	useInView: () => true,
+}));
