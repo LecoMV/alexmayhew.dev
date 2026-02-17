@@ -1,19 +1,16 @@
 import { NextResponse } from "next/server";
+
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-	const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
-
-	// CSP: Strict by default, allowing scripts from trusted sources
-	// Note: 'unsafe-inline' is often needed for Next.js inline scripts/styles in dev,
-	// but we try to be strict. Validation required.
-	// We allow Cloudflare analytics and generic analytics often used.
 	const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://static.cloudflareinsights.com;
+    script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://challenges.cloudflare.com;
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data:;
     font-src 'self';
+    connect-src 'self' https://cloudflareinsights.com https://challenges.cloudflare.com https://*.ingest.sentry.io;
+    frame-src 'self' https://challenges.cloudflare.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
@@ -23,15 +20,7 @@ export function middleware(request: NextRequest) {
 		.replace(/\s{2,}/g, " ")
 		.trim();
 
-	const requestHeaders = new Headers(request.headers);
-	requestHeaders.set("x-nonce", nonce);
-	requestHeaders.set("Content-Security-Policy", cspHeader);
-
-	const response = NextResponse.next({
-		request: {
-			headers: requestHeaders,
-		},
-	});
+	const response = NextResponse.next();
 
 	response.headers.set("Content-Security-Policy", cspHeader);
 	response.headers.set("X-Frame-Options", "DENY");

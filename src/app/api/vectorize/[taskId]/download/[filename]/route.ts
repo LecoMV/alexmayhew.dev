@@ -13,13 +13,11 @@ export async function GET(
 	try {
 		const { taskId, filename } = await params;
 
-		// Validate taskId format (prevents path traversal and injection)
 		const taskIdResult = taskIdSchema.safeParse(taskId);
 		if (!taskIdResult.success) {
 			return NextResponse.json({ error: "Invalid task ID format" }, { status: 400 });
 		}
 
-		// Validate filename (prevents path traversal and header injection)
 		const filenameResult = filenameSchema.safeParse(filename);
 		if (!filenameResult.success) {
 			return NextResponse.json({ error: "Invalid filename" }, { status: 400 });
@@ -35,6 +33,7 @@ export async function GET(
 			{
 				method: "GET",
 				headers,
+				signal: AbortSignal.timeout(30_000),
 			}
 		);
 

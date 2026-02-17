@@ -6,7 +6,6 @@ import { createMDX } from "fumadocs-mdx/next";
 
 const __filename = fileURLToPath(import.meta.url);
 
-// Get git SHA for version display
 function getGitSha() {
 	try {
 		// Use Cloudflare Pages env if available, otherwise get from git
@@ -19,7 +18,6 @@ function getGitSha() {
 	}
 }
 
-/** @type {import('next').NextConfig} */
 const config = {
 	reactStrictMode: true,
 
@@ -64,29 +62,6 @@ const config = {
 		}
 
 		return config;
-	},
-
-	// Fail-safe security headers for static assets
-	headers: async () => {
-		return [
-			{
-				source: "/(.*)",
-				headers: [
-					{
-						key: "X-Frame-Options",
-						value: "DENY",
-					},
-					{
-						key: "X-Content-Type-Options",
-						value: "nosniff",
-					},
-					{
-						key: "Referrer-Policy",
-						value: "strict-origin-when-cross-origin",
-					},
-				],
-			},
-		];
 	},
 };
 

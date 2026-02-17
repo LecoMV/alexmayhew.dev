@@ -2,6 +2,7 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 
 import { FlatCompat } from "@eslint/eslintrc";
+import deslop from "eslint-plugin-deslop";
 import perfectionist from "eslint-plugin-perfectionist";
 import sonarjs from "eslint-plugin-sonarjs";
 
@@ -53,6 +54,13 @@ const eslintConfig = [
 			"sonarjs/cognitive-complexity": ["warn", 15],
 			"sonarjs/no-duplicate-string": ["warn", { threshold: 4 }],
 			"sonarjs/no-identical-functions": "warn",
+		},
+	},
+	{
+		plugins: { deslop },
+		rules: {
+			"deslop/no-excessive-comments": ["warn", { maxDensity: 0.5 }],
+			"deslop/no-obvious-comments": ["warn", { checkVariableNames: true }],
 		},
 	},
 ];

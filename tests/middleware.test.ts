@@ -1,11 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { middleware, config } from "../middleware";
 import { NextRequest } from "next/server";
+import { beforeEach, describe, expect, it } from "vitest";
 
-// Mock crypto for nonce generation
-vi.mock("crypto", () => ({
-	randomUUID: () => "test-uuid-1234",
-}));
+import { config, middleware } from "../middleware";
 
 describe("middleware", () => {
 	let mockRequest: NextRequest;
@@ -59,6 +55,14 @@ describe("middleware", () => {
 
 			expect(csp).toContain("script-src 'self'");
 			expect(csp).toContain("https://static.cloudflareinsights.com");
+			expect(csp).toContain("https://challenges.cloudflare.com");
+		});
+
+		it("should not include unsafe-eval", () => {
+			const response = middleware(mockRequest);
+			const csp = response.headers.get("Content-Security-Policy");
+
+			expect(csp).not.toContain("'unsafe-eval'");
 		});
 
 		it("should allow styles from self with unsafe-inline", () => {
@@ -80,6 +84,22 @@ describe("middleware", () => {
 			const csp = response.headers.get("Content-Security-Policy");
 
 			expect(csp).toContain("font-src 'self'");
+		});
+
+		it("should allow connections to Sentry and Cloudflare", () => {
+			const response = middleware(mockRequest);
+			const csp = response.headers.get("Content-Security-Policy");
+
+			expect(csp).toContain("connect-src 'self'");
+			expect(csp).toContain("https://cloudflareinsights.com");
+			expect(csp).toContain("https://*.ingest.sentry.io");
+		});
+
+		it("should allow frames from Cloudflare Turnstile", () => {
+			const response = middleware(mockRequest);
+			const csp = response.headers.get("Content-Security-Policy");
+
+			expect(csp).toContain("frame-src 'self' https://challenges.cloudflare.com");
 		});
 
 		it("should block object embeds", () => {
@@ -115,16 +135,6 @@ describe("middleware", () => {
 			const csp = response.headers.get("Content-Security-Policy");
 
 			expect(csp).toContain("upgrade-insecure-requests");
-		});
-	});
-
-	describe("nonce generation", () => {
-		it("should set x-nonce header on request", () => {
-			const response = middleware(mockRequest);
-
-			// The response contains the modified request headers
-			// We can verify the nonce was set by checking the response headers
-			expect(response.headers.get("Content-Security-Policy")).toBeDefined();
 		});
 	});
 });

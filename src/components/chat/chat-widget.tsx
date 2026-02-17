@@ -68,6 +68,7 @@ export function ChatWidget() {
 			const response = await fetch("/api/chat", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
+				signal: AbortSignal.timeout(15_000),
 				body: JSON.stringify({
 					messages: [...messages, userMessage]
 						.filter((m) => m.id !== "welcome")
