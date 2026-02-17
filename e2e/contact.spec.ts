@@ -1,4 +1,12 @@
-import { test, expect } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
+
+/**
+ * Scope all field locators to the contact form to avoid collisions
+ * with the footer newsletter signup (which also has name="email").
+ */
+function contactForm(page: Page) {
+	return page.locator("form", { has: page.locator('textarea[name="message"]') });
+}
 
 test.describe("Contact Page", () => {
 	test.beforeEach(async ({ page }) => {
@@ -8,38 +16,23 @@ test.describe("Contact Page", () => {
 	});
 
 	test("should display all form fields", async ({ page }) => {
-		// Check for name field
-		const nameInput = page.locator('input[name="name"], input[id="name"]');
-		await expect(nameInput).toBeVisible();
+		const form = contactForm(page);
 
-		// Check for email field
-		const emailInput = page.locator('input[name="email"], input[id="email"]');
-		await expect(emailInput).toBeVisible();
+		await expect(form.locator('input[name="name"]')).toBeVisible();
+		await expect(form.locator('input[name="email"]')).toBeVisible();
+		await expect(form.locator('select[name="projectType"]')).toBeVisible();
+		await expect(form.locator('select[name="budget"]')).toBeVisible();
+		await expect(form.locator('textarea[name="message"]')).toBeVisible();
 
-		// Check for project type select
-		const projectSelect = page.locator('select[name="projectType"], select[id="projectType"]');
-		await expect(projectSelect).toBeVisible();
-
-		// Check for budget select
-		const budgetSelect = page.locator('select[name="budget"], select[id="budget"]');
-		await expect(budgetSelect).toBeVisible();
-
-		// Check for message textarea
-		const messageTextarea = page.locator('textarea[name="message"], textarea[id="message"]');
-		await expect(messageTextarea).toBeVisible();
-
-		// Check for submit button (scope to contact form to avoid newsletter join button)
-		const contactForm = page.locator("form", { has: page.locator('textarea[name="message"]') });
-		const submitButton = contactForm.locator('button[type="submit"]');
+		const submitButton = form.locator('button[type="submit"]');
 		await submitButton.scrollIntoViewIfNeeded();
 		await expect(submitButton).toBeVisible();
 	});
 
 	test("should display project type options", async ({ page }) => {
-		const select = page.locator('select[name="projectType"], select[id="projectType"]');
+		const select = contactForm(page).locator('select[name="projectType"]');
 		await select.click();
 
-		// Check for expected options
 		const options = await select.locator("option").allTextContents();
 		const optionsLower = options.map((o) => o.toLowerCase());
 
@@ -50,10 +43,9 @@ test.describe("Contact Page", () => {
 	});
 
 	test("should display budget options", async ({ page }) => {
-		const select = page.locator('select[name="budget"], select[id="budget"]');
+		const select = contactForm(page).locator('select[name="budget"]');
 		await select.click();
 
-		// Check for expected options containing budget amounts
 		const options = await select.locator("option").allTextContents();
 		const optionsText = options.join(" ");
 
@@ -68,11 +60,8 @@ test.describe("Contact Page", () => {
 		await page.goto("/contact");
 		await page.waitForLoadState("networkidle");
 
-		// Form should still be visible
-		const nameInput = page.locator('input[name="name"], input[id="name"]');
-		await expect(nameInput).toBeVisible();
+		await expect(contactForm(page).locator('input[name="name"]')).toBeVisible();
 
-		// Check no significant horizontal overflow (allow minor scrollbar differences)
 		const body = page.locator("body");
 		const bodyScrollWidth = await body.evaluate((el) => el.scrollWidth);
 		const windowWidth = await body.evaluate(() => window.innerWidth);
@@ -85,13 +74,11 @@ test.describe("Contact Form Validation", () => {
 		await page.goto("/contact");
 		await page.waitForLoadState("networkidle");
 
-		// Try to click submit without filling form (scope to contact form)
-		const contactForm = page.locator("form", { has: page.locator('textarea[name="message"]') });
-		const submitButton = contactForm.locator('button[type="submit"]');
+		const form = contactForm(page);
+		const submitButton = form.locator('button[type="submit"]');
 		await submitButton.scrollIntoViewIfNeeded();
 		await submitButton.click();
 
-		// Form should not navigate away (still on contact page)
 		await expect(page).toHaveURL(/contact/);
 	});
 
@@ -99,20 +86,17 @@ test.describe("Contact Form Validation", () => {
 		await page.goto("/contact");
 		await page.waitForLoadState("networkidle");
 
-		// Fill in all fields
-		await page.fill('input[name="name"], input[id="name"]', "Test User");
-		await page.fill('input[name="email"], input[id="email"]', "test@example.com");
-		await page.selectOption('select[name="projectType"], select[id="projectType"]', { index: 1 });
-		await page.selectOption('select[name="budget"], select[id="budget"]', {
-			index: 1,
-		});
-		await page.fill(
-			'textarea[name="message"], textarea[id="message"]',
-			"This is a test message that is long enough to pass validation requirements."
-		);
+		const form = contactForm(page);
 
-		// Form should be fillable without errors
-		const nameValue = await page.locator('input[name="name"], input[id="name"]').inputValue();
+		await form.locator('input[name="name"]').fill("Test User");
+		await form.locator('input[name="email"]').fill("test@example.com");
+		await form.locator('select[name="projectType"]').selectOption({ index: 1 });
+		await form.locator('select[name="budget"]').selectOption({ index: 1 });
+		await form
+			.locator('textarea[name="message"]')
+			.fill("This is a test message that is long enough to pass validation requirements.");
+
+		const nameValue = await form.locator('input[name="name"]').inputValue();
 		expect(nameValue).toBe("Test User");
 	});
 });
