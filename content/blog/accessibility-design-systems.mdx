@@ -13,7 +13,7 @@ image: "/images/blog/accessibility-design-systems-featured.webp"
 
 ## TL;DR
 
-Accessibility is not a feature to add later...it is a fundamental quality attribute that must be encoded into your design system from day one. I have audited codebases where retroactive accessibility fixes cost 10x what building it right would have cost. The approach: automated testing with axe-core catches 30-50% of issues, manual screen reader testing catches the rest, and CI/CD enforcement prevents regressions. Build components that are accessible by default, so developers cannot accidentally ship inaccessible UI.
+Accessibility is not a feature to add later... it is a fundamental quality attribute that must be encoded into your design system from day one. I have audited codebases where retroactive accessibility fixes cost 10x what building it right would have cost. The approach: automated testing with axe-core catches 30-50% of issues, manual screen reader testing catches the rest, and CI/CD enforcement prevents regressions. Build components that are accessible by default, so developers cannot accidentally ship inaccessible UI.
 
 > **Part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** ... design systems, component patterns, and Server Components.
 
@@ -23,7 +23,7 @@ Accessibility is not a feature to add later...it is a fundamental quality attrib
 
 Let me start with the uncomfortable truth: accessibility lawsuits are skyrocketing. ADA web accessibility lawsuits increased 320% between 2018 and 2024. In 2023 alone, there were over 4,600 digital accessibility lawsuits filed in federal court. The average settlement ranges from $10,000 to $100,000, with larger companies facing multi-million dollar judgments.
 
-But framing accessibility purely as legal risk misses the point. One in four adults in the United States lives with a disability. That is 61 million potential customers. When your product is inaccessible, you are not just risking lawsuits...you are excluding a quarter of your market.
+But framing accessibility purely as legal risk misses the point. One in four adults in the United States lives with a disability. That is 61 million potential customers. When your product is inaccessible, you are not just risking lawsuits... you are excluding a quarter of your market.
 
 I have worked with startups that discovered their biggest enterprise prospect required WCAG 2.1 AA compliance as a procurement requirement. No compliance, no contract. The 6-week scramble to retrofit accessibility into a codebase that never considered it cost them $180,000 in engineering time and nearly cost them a $2M ARR customer.
 
@@ -69,13 +69,13 @@ Content must be robust enough to work with current and future technologies. This
 - Valid HTML that can be reliably parsed
 - Name, role, and value are programmatically determinable
 
-Every component you build should pass the "POUR test"...is it Perceivable, Operable, Understandable, and Robust?
+Every component you build should pass the "POUR test"... is it Perceivable, Operable, Understandable, and Robust?
 
 ---
 
 ## Component-Level Accessibility
 
-Design system components must be accessible by default. Developers consuming your components should not need to think about accessibility...it should be baked in.
+Design system components must be accessible by default. Developers consuming your components should not need to think about accessibility... it should be baked in.
 
 ### ARIA Roles and Attributes
 
@@ -195,7 +195,7 @@ function Tabs({ tabs, activeTab, onTabChange }) {
 }
 ```
 
-The `tabIndex={activeTab === index ? 0 : -1}` pattern is crucial...it creates a roving tabindex where only the active tab is in the tab order, while arrow keys navigate between tabs.
+The `tabIndex={activeTab === index ? 0 : -1}` pattern is crucial... it creates a roving tabindex where only the active tab is in the tab order, while arrow keys navigate between tabs.
 
 ### Focus Management
 
@@ -275,7 +275,7 @@ function Modal({ isOpen, onClose, children }) {
 
 ## Automated Testing Strategy
 
-Automated testing catches 30-50% of accessibility issues. That sounds low, but it catches the easy-to-miss issues...color contrast, missing alt text, improper ARIA usage...that would otherwise slip through code review.
+Automated testing catches 30-50% of accessibility issues. That sounds low, but it catches the easy-to-miss issues... color contrast, missing alt text, improper ARIA usage... that would otherwise slip through code review.
 
 ### axe-core Integration
 
@@ -492,7 +492,7 @@ const ratio = getContrastRatio("#CCF381", "#0B0E14"); // Returns ~12.4:1
 
 WCAG 3.0 will likely adopt APCA (Accessible Perceptual Contrast Algorithm) instead of the current luminance-based calculation. APCA accounts for font size, weight, and polarity (light text on dark vs. dark text on light).
 
-For now, stick with WCAG 2.1 contrast ratios for compliance. But consider APCA when making design decisions...it often produces more visually harmonious results, especially for dark mode interfaces.
+For now, stick with WCAG 2.1 contrast ratios for compliance. But consider APCA when making design decisions... it often produces more visually harmonious results, especially for dark mode interfaces.
 
 ### Color Blindness Considerations
 
@@ -720,7 +720,7 @@ If designs do not include accessibility considerations, send them back. Retrofit
 
 ## Putting It All Together
 
-Accessibility is not a checklist to complete...it is a quality attribute to maintain. Here is how I structure accessibility work in design systems:
+Accessibility is not a checklist to complete... it is a quality attribute to maintain. Here is how I structure accessibility work in design systems:
 
 ### The Component Lifecycle
 
@@ -744,13 +744,13 @@ The upfront investment in accessible design systems pays for itself within the f
 
 ## Conclusion
 
-Accessibility is not a feature to bolt on at the end. It is a fundamental quality attribute that must be encoded into your design system from day one. Components should be accessible by default...developers consuming your system should not need to think about accessibility because you have already done the thinking for them.
+Accessibility is not a feature to bolt on at the end. It is a fundamental quality attribute that must be encoded into your design system from day one. Components should be accessible by default... developers consuming your system should not need to think about accessibility because you have already done the thinking for them.
 
 The approach: automated testing with axe-core and Playwright catches the low-hanging fruit. Manual testing with screen readers and keyboard navigation catches the rest. CI/CD enforcement prevents regressions. Design review ensures accessibility starts before code is written.
 
 The business case is clear: avoid lawsuits, reach more customers, win enterprise contracts that require compliance. But more importantly, accessible products are better products. The constraints of accessibility force clearer thinking about interaction design, and everyone benefits from the result.
 
-Build it right from the start. Your future self...and your users...will thank you.
+Build it right from the start. Your future self... and your users... will thank you.
 
 ---
 

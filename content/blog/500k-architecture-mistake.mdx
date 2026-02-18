@@ -13,7 +13,7 @@ image: "/images/blog/500k-architecture-mistake-featured.webp"
 
 ## TL;DR
 
-A fintech startup with 8 engineers and $3M ARR was planning a 6-month microservices migration. The "problems" they were solving...deployment coupling, scaling issues, team autonomy...had simpler solutions. We implemented those instead: feature flags, database read replicas, and team-based code ownership. Total time: 3 weeks. They're at $12M ARR now, still on the monolith, shipping features 4x faster than competitors who went microservices.
+A fintech startup with 8 engineers and $3M ARR was planning a 6-month microservices migration. The "problems" they were solving... deployment coupling, scaling issues, team autonomy... had simpler solutions. We implemented those instead: feature flags, database read replicas, and team-based code ownership. Total time: 3 weeks. They're at $12M ARR now, still on the monolith, shipping features 4x faster than competitors who went microservices.
 
 > **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
 
@@ -29,7 +29,7 @@ The plan: decompose their Python/Django monolith into 12 services. Payment proce
 
 The justification:
 
-1. "Deployments are too risky...one change affects everything"
+1. "Deployments are too risky... one change affects everything"
 2. "We can't scale specific parts of the system"
 3. "Teams step on each other's toes"
 4. "It's industry best practice"
@@ -170,7 +170,7 @@ Result: Analytics queries no longer impacted transactional performance. P99 late
 
 ### Week 2: Module Boundaries
 
-We drew boundaries within the monolith. No code changes...just documentation and ownership.
+We drew boundaries within the monolith. No code changes... just documentation and ownership.
 
 ```
 app/
@@ -340,7 +340,7 @@ Here's how the microservices conversation usually goes:
 
 **Me**: "Have you tried feature flags?"
 
-**Startup**: "...No."
+**Startup**: "... No."
 
 **Me**: "Let's try feature flags."
 

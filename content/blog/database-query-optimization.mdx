@@ -13,7 +13,7 @@ image: "/images/blog/database-query-optimization-featured.webp"
 
 ## TL;DR
 
-N+1 queries are the silent killer of SaaS applications...I've watched dashboards go from 50ms to 5+ seconds as data grows. The fix isn't just "add includes"...it's a systematic approach: tenant-leading composite indexes, connection pooling with PgBouncer or Supavisor, and EXPLAIN ANALYZE as your diagnostic tool. Prisma's `include` over-fetches; `select` under-fetches; raw queries win when performance matters. Set up pg_stat_statements from day one. The queries that are fine at 1,000 rows become bottlenecks at 100,000.
+N+1 queries are the silent killer of SaaS applications... I've watched dashboards go from 50ms to 5+ seconds as data grows. The fix isn't just "add includes"... it's a systematic approach: tenant-leading composite indexes, connection pooling with PgBouncer or Supavisor, and EXPLAIN ANALYZE as your diagnostic tool. Prisma's `include` over-fetches; `select` under-fetches; raw queries win when performance matters. Set up pg_stat_statements from day one. The queries that are fine at 1,000 rows become bottlenecks at 100,000.
 
 > **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
 
@@ -40,7 +40,7 @@ for (const order of orders) {
 }
 ```
 
-This generates 51 database queries: 1 for the orders, 50 for each customer lookup. At 5ms per query...which is generous...that's 255ms of database time alone. But here's what the tutorials don't tell you: network latency between your application and database adds another 1-5ms per query. On a serverless platform like Vercel or AWS Lambda, you're looking at 300-500ms just for this simple operation.
+This generates 51 database queries: 1 for the orders, 50 for each customer lookup. At 5ms per query... which is generous... that's 255ms of database time alone. But here's what the tutorials don't tell you: network latency between your application and database adds another 1-5ms per query. On a serverless platform like Vercel or AWS Lambda, you're looking at 300-500ms just for this simple operation.
 
 Scale that to 500 orders on an admin dashboard, and you're at 3-5 seconds. I've seen exactly this scenario bring down a startup's admin panel during their busiest hour.
 
@@ -95,13 +95,13 @@ ORDER BY total_exec_time DESC
 LIMIT 20;
 ```
 
-I run this weekly on every production database I manage. The results are always surprising...the query you thought was fast is running 50,000 times per hour.
+I run this weekly on every production database I manage. The results are always surprising... the query you thought was fast is running 50,000 times per hour.
 
 ---
 
 ## Index Strategy for Multi-Tenant SaaS
 
-If you're building a multi-tenant SaaS with shared tables...which you should be, as I covered in [Multi-Tenancy Done Right: A Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls)...your index strategy needs to account for tenant isolation.
+If you're building a multi-tenant SaaS with shared tables... which you should be, as I covered in [Multi-Tenancy Done Right: A Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls)... your index strategy needs to account for tenant isolation.
 
 ### The Tenant-Leading Composite Index
 
@@ -157,7 +157,7 @@ This reduced index size by 70% for a client whose orders table was 80% completed
 
 ### The Covering Index Optimization
 
-When PostgreSQL can satisfy a query entirely from the index...without touching the table...it's called an index-only scan. This is 2-10x faster.
+When PostgreSQL can satisfy a query entirely from the index... without touching the table... it's called an index-only scan. This is 2-10x faster.
 
 ```sql
 -- Query: SELECT id, status, created_at FROM orders WHERE tenant_id = ?
@@ -167,7 +167,7 @@ CREATE INDEX idx_orders_covering
 ON orders(tenant_id) INCLUDE (id, status, created_at);
 ```
 
-Verify with EXPLAIN ANALYZE...look for "Index Only Scan" instead of "Index Scan."
+Verify with EXPLAIN ANALYZE... look for "Index Only Scan" instead of "Index Scan."
 
 ---
 
@@ -218,8 +218,8 @@ Execution Time: 847.456 ms
 
 The red flags here:
 
-1. **Seq Scan on orders**: Scanning 253,000 rows to find 18,432 matches...no index used
-2. **Buffers read=8923**: Reading 8,923 pages from disk...this is slow
+1. **Seq Scan on orders**: Scanning 253,000 rows to find 18,432 matches... no index used
+2. **Buffers read=8923**: Reading 8,923 pages from disk... this is slow
 3. **Rows Removed by Filter: 234567**: Scanning way more rows than returned
 4. **Execution Time: 847ms**: Unacceptable for a dashboard query
 
@@ -245,7 +245,7 @@ Planning Time: 0.156 ms
 Execution Time: 12.678 ms
 ```
 
-Execution time dropped from 847ms to 12ms...a 67x improvement. Buffer reads dropped from 21,770 to 156.
+Execution time dropped from 847ms to 12ms... a 67x improvement. Buffer reads dropped from 21,770 to 156.
 
 ### The Metrics That Matter
 
@@ -262,7 +262,7 @@ If you're running Prisma on serverless (Vercel, AWS Lambda), you will hit connec
 
 ### The Problem
 
-Each Prisma Client opens a connection. Serverless functions are stateless...new function, new connection. At scale:
+Each Prisma Client opens a connection. Serverless functions are stateless... new function, new connection. At scale:
 
 - 50 concurrent users
 - 3 Lambda instances each
@@ -318,7 +318,7 @@ pool_mode = "transaction"
 port = 6543
 ```
 
-Supavisor provides Prometheus metrics out of the box...connection wait times, query throughput, pool utilization.
+Supavisor provides Prometheus metrics out of the box... connection wait times, query throughput, pool utilization.
 
 ### Prisma Configuration for Pooling
 
@@ -553,7 +553,7 @@ Here's my systematic approach when optimizing a SaaS database:
 6. **Pool**: Ensure connection pooling is configured correctly
 7. **Monitor**: Set up alerting for regression
 
-The work I described here...applied to a 50M row PostgreSQL database...reduced P99 latency from 800ms to 45ms. Dashboard load times dropped from 4.2 seconds to 280ms. The infrastructure cost stayed the same.
+The work I described here... applied to a 50M row PostgreSQL database... reduced P99 latency from 800ms to 45ms. Dashboard load times dropped from 4.2 seconds to 280ms. The infrastructure cost stayed the same.
 
 Database optimization isn't glamorous work. But it's often the highest-ROI performance improvement you can make. One index, properly designed, can eliminate the need for an entire caching layer.
 
@@ -561,7 +561,7 @@ Database optimization isn't glamorous work. But it's often the highest-ROI perfo
 
 ## What's Next
 
-If you're building a multi-tenant SaaS, start with [proper tenant isolation using RLS](/blog/multi-tenancy-prisma-rls). For the full architecture picture...from infrastructure economics to API design...see [The Anatomy of a High-Precision SaaS](/blog/anatomy-of-high-precision-saas). And if serverless cold starts are hurting your database connection patterns, [understand the Lambda tax](/blog/lambda-tax-cold-starts) before it becomes a production incident.
+If you're building a multi-tenant SaaS, start with [proper tenant isolation using RLS](/blog/multi-tenancy-prisma-rls). For the full architecture picture... from infrastructure economics to API design... see [The Anatomy of a High-Precision SaaS](/blog/anatomy-of-high-precision-saas). And if serverless cold starts are hurting your database connection patterns, [understand the Lambda tax](/blog/lambda-tax-cold-starts) before it becomes a production incident.
 
 ---
 

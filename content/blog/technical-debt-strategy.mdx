@@ -1,6 +1,6 @@
 ---
 title: "Technical Debt Strategy: When to Accumulate, When to Pay Down"
-description: "Technical debt isn't inherently bad...it's strategic leverage. The problem is most teams accumulate it accidentally and pay it down randomly. Here's the framework that works."
+description: "Technical debt isn't inherently bad... it's strategic leverage. The problem is most teams accumulate it accidentally and pay it down randomly. Here's the framework that works."
 date: "2026-01-28"
 author: "Alex Mayhew"
 tags: ["technical-debt", "engineering-management", "architecture", "strategy", "startups"]
@@ -13,7 +13,7 @@ series: "engineering-leadership"
 
 ## TL;DR
 
-Strategic debt allocation: 15-25% of engineering capacity should go to debt reduction...not 0%, not 50%. Accumulate deliberately before PMF and for time-sensitive opportunities. Pay down before scaling (10x user growth), before team growth (doubling headcount), and when reliability requirements tighten. The ROI formula: (Hours Saved Per Month × Hourly Rate × 12) / (Refactoring Hours × Hourly Rate). If the result exceeds 2.0, prioritize now. Most teams accumulate accidentally and pay randomly...that's how 23% of Series B engineering time disappears into maintenance.
+Strategic debt allocation: 15-25% of engineering capacity should go to debt reduction... not 0%, not 50%. Accumulate deliberately before PMF and for time-sensitive opportunities. Pay down before scaling (10x user growth), before team growth (doubling headcount), and when reliability requirements tighten. The ROI formula: (Hours Saved Per Month × Hourly Rate × 12) / (Refactoring Hours × Hourly Rate). If the result exceeds 2.0, prioritize now. Most teams accumulate accidentally and pay randomly... that's how 23% of Series B engineering time disappears into maintenance.
 
 > **Part of the [Engineering Leadership Guide](/blog/engineering-leadership-founder-to-cto)** ... from solo founder to CTO leading 50+ engineers.
 
@@ -23,11 +23,11 @@ Strategic debt allocation: 15-25% of engineering capacity should go to debt redu
 
 Technical debt is not inherently bad. That statement makes some engineering managers uncomfortable, but it's true.
 
-Debt...financial or technical...is leverage. A mortgage lets you buy a house before you have the full price. Credit lets businesses invest in growth before revenue catches up. Technical debt lets you ship features before the codebase is perfect.
+Debt... financial or technical... is leverage. A mortgage lets you buy a house before you have the full price. Credit lets businesses invest in growth before revenue catches up. Technical debt lets you ship features before the codebase is perfect.
 
 The problem isn't debt. The problem is unmanaged debt.
 
-I've helped teams reduce their technical debt burden from 40% of engineering time to 15%...not by eliminating debt, but by making it deliberate. They stopped accumulating accidentally and started accumulating strategically. They stopped paying down randomly and started prioritizing by ROI.
+I've helped teams reduce their technical debt burden from 40% of engineering time to 15%... not by eliminating debt, but by making it deliberate. They stopped accumulating accidentally and started accumulating strategically. They stopped paying down randomly and started prioritizing by ROI.
 
 The companies that struggle with debt aren't the ones who have it. They're the ones who don't know how much they have, where it lives, or whether it's serving their business.
 
@@ -59,7 +59,7 @@ Common sources:
 
 - **Inexperienced developers**: They don't know the patterns they're violating. The code works, so it ships. The debt compounds silently.
 
-- **Missing context**: Developers new to the codebase repeat patterns they see without understanding why those patterns exist...or existed for reasons that no longer apply.
+- **Missing context**: Developers new to the codebase repeat patterns they see without understanding why those patterns exist... or existed for reasons that no longer apply.
 
 - **Scope creep integration**: A feature that was supposed to be simple grows organically. Each addition is small. The cumulative architecture violation is large.
 
@@ -75,7 +75,7 @@ Examples:
 - Integration partners change APIs
 - Best practices evolve
 
-A React class component written in 2018 was correct at the time. In 2026, it's debt...not because anyone made a mistake, but because the ecosystem moved.
+A React class component written in 2018 was correct at the time. In 2026, it's debt... not because anyone made a mistake, but because the ecosystem moved.
 
 ### The Debt Ratio Target
 
@@ -87,7 +87,7 @@ I recommend teams target this distribution:
 | Accidental | 20-30% | 50%                 |
 | Bit Rot    | 10-20% | 30%                 |
 
-Most teams I audit have inverted ratios...mostly accidental debt with deliberate debt as a minority. Flipping this ratio is the first step toward strategic debt management.
+Most teams I audit have inverted ratios... mostly accidental debt with deliberate debt as a minority. Flipping this ratio is the first step toward strategic debt management.
 
 ---
 
@@ -103,9 +103,9 @@ You can't manage what you can't measure. The challenge: technical debt doesn't a
 - Moderate debt: 5-15 defects per KLOC
 - High debt: 15+ defects per KLOC
 
-**Cycle Time**: Time from code commit to production deployment. Debt manifests as friction...longer code reviews, more failed tests, more deployment issues. Track the trend. If cycle time increases without corresponding feature complexity increase, debt is likely accumulating.
+**Cycle Time**: Time from code commit to production deployment. Debt manifests as friction... longer code reviews, more failed tests, more deployment issues. Track the trend. If cycle time increases without corresponding feature complexity increase, debt is likely accumulating.
 
-**Maintenance Ratio**: Percentage of engineering time spent on maintenance vs. new features. Healthy teams run 15-25% maintenance. When maintenance crosses 35%, debt has reached a level that impedes new development. At Series B, the industry average is 23%...nearly a quarter of engineering capacity going to maintenance rather than product.
+**Maintenance Ratio**: Percentage of engineering time spent on maintenance vs. new features. Healthy teams run 15-25% maintenance. When maintenance crosses 35%, debt has reached a level that impedes new development. At Series B, the industry average is 23%... nearly a quarter of engineering capacity going to maintenance rather than product.
 
 **Code Churn**: Files that are frequently modified signal architectural problems. If the same 20 files appear in 80% of PRs, those files are debt hotspots. Tools like CodeClimate and SonarQube visualize churn patterns.
 
@@ -132,11 +132,11 @@ This inventory serves two purposes: it prevents deliberate debt from becoming "f
 
 ### Leading vs. Lagging Indicators
 
-Defect density and cycle time are lagging indicators...they tell you debt has accumulated. Leading indicators predict debt before it compounds:
+Defect density and cycle time are lagging indicators... they tell you debt has accumulated. Leading indicators predict debt before it compounds:
 
 - **Code review rejection rate**: High rejection rates suggest developers are creating debt that reviewers catch. Good for catching it; bad that it's being created.
 
-- **Onboarding time**: How long until a new developer makes their first production commit? Increasing onboarding time signals codebase complexity...often debt-driven.
+- **Onboarding time**: How long until a new developer makes their first production commit? Increasing onboarding time signals codebase complexity... often debt-driven.
 
 - **Test execution time**: Slow tests discourage testing. Skipped tests create debt. Long test suites are a leading indicator of debt-driven shortcuts.
 
@@ -384,7 +384,7 @@ When proposing debt reduction investments:
 
 1. **Quantify the cost of inaction**: "At current trajectory, maintenance will consume 35% of engineering time within 12 months."
 
-2. **Show the investment math**: "A 4-week investment reduces that to 18%...recapturing 17% of capacity."
+2. **Show the investment math**: "A 4-week investment reduces that to 18%... recapturing 17% of capacity."
 
 3. **Translate to dollars**: "17% of a 10-person team at $180K average is $306K/year in recovered capacity."
 
@@ -421,19 +421,19 @@ When proposing debt reduction investments:
 
 Technical debt isn't a problem to eliminate. It's a resource to manage.
 
-The companies that succeed don't have zero debt. They have deliberate debt...accumulated strategically, documented clearly, and paid down when the business context demands it. They measure their debt load, track the trends, and communicate in business terms.
+The companies that succeed don't have zero debt. They have deliberate debt... accumulated strategically, documented clearly, and paid down when the business context demands it. They measure their debt load, track the trends, and communicate in business terms.
 
 The companies that struggle have accidental debt. They don't know how much they have. They don't know where it lives. They pay it down randomly when the pain becomes unbearable, then return to accumulating accidentally.
 
 The difference isn't engineering discipline. It's strategic framing.
 
-Treat your codebase like a balance sheet. Some debt creates leverage. Some debt creates drag. The skill is knowing which is which...and having the discipline to act accordingly.
+Treat your codebase like a balance sheet. Some debt creates leverage. Some debt creates drag. The skill is knowing which is which... and having the discipline to act accordingly.
 
 Most teams I work with don't need less debt. They need better debt. Start there.
 
 ---
 
-**Struggling to separate strategic debt from accidental accumulation?** I help engineering teams build debt management frameworks that align with business reality...not engineering perfectionism.
+**Struggling to separate strategic debt from accidental accumulation?** I help engineering teams build debt management frameworks that align with business reality... not engineering perfectionism.
 
 - [Why Boring Technology Wins](/blog/boring-technology-wins) ... Sometimes the "boring" choice creates less debt
 - [The Build vs. Buy Decision](/blog/build-vs-buy) ... When building creates more debt than buying

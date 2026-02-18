@@ -14,7 +14,7 @@ image: "/images/blog/core-web-vitals-2026-audit-featured.webp"
 
 ## TL;DR
 
-INP (Interaction to Next Paint) replaced FID in March 2024 and most SaaS dashboards still haven't adapted. FID measured input delay only...the easy part. INP measures the entire interaction lifecycle: input delay + processing time + presentation delay. The result: 40% of sites that passed FID fail INP. The 2026 audit checklist covers the three metrics that matter (LCP, INP, CLS), the field data sources that Google actually uses for ranking (CrUX, not Lighthouse), and the 12 optimizations I've seen move the needle most across advisory clients. Stop chasing Lighthouse scores. Start measuring real user experience with the Web Vitals library and RUM data.
+INP (Interaction to Next Paint) replaced FID in March 2024 and most SaaS dashboards still haven't adapted. FID measured input delay only... the easy part. INP measures the entire interaction lifecycle: input delay + processing time + presentation delay. The result: 40% of sites that passed FID fail INP. The 2026 audit checklist covers the three metrics that matter (LCP, INP, CLS), the field data sources that Google actually uses for ranking (CrUX, not Lighthouse), and the 12 optimizations I've seen move the needle most across advisory clients. Stop chasing Lighthouse scores. Start measuring real user experience with the Web Vitals library and RUM data.
 
 > **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to building systems that stay fast under real-world load.
 
@@ -22,9 +22,9 @@ INP (Interaction to Next Paint) replaced FID in March 2024 and most SaaS dashboa
 
 ## The INP Shift Nobody Prepared For
 
-When Google replaced First Input Delay with Interaction to Next Paint in March 2024, the industry treated it as a minor metric swap. It wasn't. FID only measured the delay before the browser started processing an interaction...typically 50-100ms on most sites. INP measures the full round-trip: from user click to the next frame being painted on screen.
+When Google replaced First Input Delay with Interaction to Next Paint in March 2024, the industry treated it as a minor metric swap. It wasn't. FID only measured the delay before the browser started processing an interaction... typically 50-100ms on most sites. INP measures the full round-trip: from user click to the next frame being painted on screen.
 
-This distinction matters because most performance problems happen during processing, not during input delay. A React component that re-renders 500 nodes on a button click has zero FID issues...the browser starts processing immediately. But the INP is 800ms because the main thread is blocked while React reconciles the virtual DOM.
+This distinction matters because most performance problems happen during processing, not during input delay. A React component that re-renders 500 nodes on a button click has zero FID issues... the browser starts processing immediately. But the INP is 800ms because the main thread is blocked while React reconciles the virtual DOM.
 
 I've audited 15+ SaaS dashboards in the past year. The median INP on data-heavy pages is 350-500ms. Google's "good" threshold is 200ms.
 
@@ -133,7 +133,7 @@ new PerformanceObserver((entryList) => {
 }).observe({ type: "largest-contentful-paint", buffered: true });
 ```
 
-Run this in your browser console on key pages. The LCP element is often not what you expect...on data-heavy pages, it might be a table cell or a chart SVG, not the page heading.
+Run this in your browser console on key pages. The LCP element is often not what you expect... on data-heavy pages, it might be a table cell or a chart SVG, not the page heading.
 
 **5. Preload Critical Resources**
 
@@ -177,7 +177,7 @@ This pattern reduces LCP by 500-1500ms on data-heavy pages compared to client-si
 
 ### Phase 3: INP Optimization
 
-INP is where most SaaS applications fail. Dashboard interactions...filtering, sorting, toggling...trigger expensive re-renders that block the main thread.
+INP is where most SaaS applications fail. Dashboard interactions... filtering, sorting, toggling... trigger expensive re-renders that block the main thread.
 
 **7. Break Up Long Tasks**
 
@@ -400,13 +400,13 @@ new PerformanceObserver((list) => {
 
 ## When NOT to Apply This
 
-- Internal tools with fewer than 50 users...invest the time elsewhere
+- Internal tools with fewer than 50 users... invest the time elsewhere
 - Pre-launch MVPs where the product hypothesis isn't validated yet
 - API-only services with no user-facing frontend
 
 ---
 
-**Need a performance audit that goes beyond Lighthouse scores?** I help SaaS teams identify and fix the real bottlenecks...the ones that affect revenue, not just metrics.
+**Need a performance audit that goes beyond Lighthouse scores?** I help SaaS teams identify and fix the real bottlenecks... the ones that affect revenue, not just metrics.
 
 - [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Architecture decisions from MVP to scale
 - [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Production-grade frontend performance

@@ -51,7 +51,7 @@ AI excels at specific categories of work:
 
 ### When AI Creates Problems
 
-AI struggles...and often makes things worse...in other categories:
+AI struggles... and often makes things worse... in other categories:
 
 **Precision-critical operations** - Invoice calculations, financial transactions, anything where one error destroys trust. Use deterministic code.
 
@@ -150,7 +150,7 @@ Retrieval quality matters more than model choice. A mediocre LLM with excellent 
 
 **Re-ranking** - Retrieve more candidates than needed (top-20), re-rank with a cross-encoder to the final top-5. Adds 50-200ms latency but dramatically improves precision.
 
-For the complete architecture patterns...including query expansion, HyDE, parent document retrieval, and cost optimization...see [LLM Integration Architecture: From Vector Databases to Production](/blog/llm-integration-architecture).
+For the complete architecture patterns... including query expansion, HyDE, parent document retrieval, and cost optimization... see [LLM Integration Architecture: From Vector Databases to Production](/blog/llm-integration-architecture).
 
 ### Reliability Patterns
 
@@ -170,7 +170,7 @@ Prompts are code. Treat them accordingly.
 
 ### The Five Components
 
-Every effective prompt has five components. Omitting any forces the LLM to guess...and its guesses will not match your expectations.
+Every effective prompt has five components. Omitting any forces the LLM to guess... and its guesses will not match your expectations.
 
 **Role** - Who the AI should be. "You are a senior code reviewer at a fintech company with 15 years of TypeScript experience."
 
@@ -205,11 +205,11 @@ Analyze using these steps:
 5. VERDICT: Critical issues and recommended fixes.
 ```
 
-For the complete framework...including temperature tuning, output format control, and prompt testing...see [Prompt Engineering for Developers](/blog/prompt-engineering-developers).
+For the complete framework... including temperature tuning, output format control, and prompt testing... see [Prompt Engineering for Developers](/blog/prompt-engineering-developers).
 
 ### Prompt Testing
 
-Run prompt tests on every deployment. LLM behavior changes with model updates...catch regressions early.
+Run prompt tests on every deployment. LLM behavior changes with model updates... catch regressions early.
 
 Build an evaluation suite:
 
@@ -247,7 +247,7 @@ Many queries are semantically equivalent. "What is the return policy?" and "How 
 
 Implementation: embed the query, search your cache vector collection with high similarity threshold (0.95+), return cached response if match found.
 
-Semantic caching can reduce LLM calls by 40-60% for applications with repetitive query patterns...support chatbots, FAQ systems, documentation search.
+Semantic caching can reduce LLM calls by 40-60% for applications with repetitive query patterns... support chatbots, FAQ systems, documentation search.
 
 ### Model Routing
 
@@ -266,7 +266,7 @@ Typical RAG system cost distribution:
 | Vector DB      | 5-15%      | Self-host, right-size              |
 | Infrastructure | 5-10%      | Standard optimization              |
 
-Focus optimization effort proportional to cost share. LLM calls dominate...optimize there first.
+Focus optimization effort proportional to cost share. LLM calls dominate... optimize there first.
 
 For detailed cost analysis including API vs self-hosted decision matrices, see [AI Cost Optimization: APIs, Self-Hosting, and Fine-Tuning Economics](/blog/ai-cost-optimization).
 
@@ -274,7 +274,7 @@ For detailed cost analysis including API vs self-hosted decision matrices, see [
 
 ## Code Review in the AI Era
 
-AI code review changes what developers do...it does not replace them.
+AI code review changes what developers do... it does not replace them.
 
 | Review Area                | LLM Capability | Details                                                                                                                                                 |
 | -------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -328,7 +328,7 @@ AI-generated code requires higher test coverage than human-written code because 
 - Failure mode tests
 - Integration tests verifying context
 
-**Property-based testing** catches edge cases AI did not consider. Generate thousands of inputs. Find the edge cases nobody...human or AI...anticipated.
+**Property-based testing** catches edge cases AI did not consider. Generate thousands of inputs. Find the edge cases nobody... human or AI... anticipated.
 
 ### The Governance Framework
 
@@ -496,7 +496,7 @@ Users want AI that saves them time on repetitive tasks, not AI that replaces the
 
 ---
 
-**Integrating AI into your development workflow or product?** I help teams build AI features that actually work in production...reliable, cost-effective, and solving real user problems.
+**Integrating AI into your development workflow or product?** I help teams build AI features that actually work in production... reliable, cost-effective, and solving real user problems.
 
 - [AI Integration for SaaS](/services/ai-integration-developer-for-saas) - Production AI that scales
 - [Technical Advisor for Startups](/services/technical-advisor-for-startups) - AI strategy and governance

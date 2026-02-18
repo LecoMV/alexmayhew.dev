@@ -14,7 +14,7 @@ image: "/images/blog/real-time-performance-monitoring-featured.webp"
 
 ## TL;DR
 
-The median SaaS company monitors uptime and average response time. Both are nearly useless for catching real performance problems. Averages hide the pain...your p50 is 200ms but your p99 is 4 seconds, and the 1% of users hitting that 4-second response are your highest-paying enterprise customers on complex dashboards. The monitoring stack that actually works: percentile-based latency tracking (p50, p95, p99) per endpoint, real user monitoring (RUM) with device and network segmentation, error budget burn rate alerting (not static thresholds), and distributed tracing that follows a request across all services. I've helped teams cut their MTTR from 45 minutes to under 8 minutes by switching from average-based monitoring to percentile-based alerting with error budgets.
+The median SaaS company monitors uptime and average response time. Both are nearly useless for catching real performance problems. Averages hide the pain... your p50 is 200ms but your p99 is 4 seconds, and the 1% of users hitting that 4-second response are your highest-paying enterprise customers on complex dashboards. The monitoring stack that actually works: percentile-based latency tracking (p50, p95, p99) per endpoint, real user monitoring (RUM) with device and network segmentation, error budget burn rate alerting (not static thresholds), and distributed tracing that follows a request across all services. I've helped teams cut their MTTR from 45 minutes to under 8 minutes by switching from average-based monitoring to percentile-based alerting with error budgets.
 
 > **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to building systems that stay fast under real-world load.
 
@@ -32,9 +32,9 @@ A SaaS application serving 10,000 requests per minute with a 200ms average respo
 | p95        | 2,500ms       | 500 requests ... frustrating  |
 | p99        | 8,000ms       | 100 requests ... broken       |
 
-That "200ms average" hides 100 requests per minute that take 8 seconds. Those 100 requests aren't random...they correlate with specific user segments: enterprise customers with large datasets, users on mobile networks, or requests that hit unoptimized query paths.
+That "200ms average" hides 100 requests per minute that take 8 seconds. Those 100 requests aren't random... they correlate with specific user segments: enterprise customers with large datasets, users on mobile networks, or requests that hit unoptimized query paths.
 
-The average tells you the system is fine. The percentiles tell you 1% of your users are having a terrible experience...and those users are often the ones paying the most.
+The average tells you the system is fine. The percentiles tell you 1% of your users are having a terrible experience... and those users are often the ones paying the most.
 
 ---
 
@@ -70,7 +70,7 @@ function metricsMiddleware(req: Request, res: Response, next: NextFunction) {
 }
 ```
 
-**Why histograms, not summaries:** Histograms are aggregatable across instances. If you have 10 application servers, you can calculate the global p99 from histograms. You can't do that with pre-computed summaries...each instance computes its own p99, and the average of 10 p99s is not the global p99.
+**Why histograms, not summaries:** Histograms are aggregatable across instances. If you have 10 application servers, you can calculate the global p99 from histograms. You can't do that with pre-computed summaries... each instance computes its own p99, and the average of 10 p99s is not the global p99.
 
 ### Pillar 2: Real User Monitoring (RUM)
 
@@ -287,7 +287,7 @@ Mean Time to Resolution (MTTR) is the metric that matters most for operational e
 
 **After:** Alert fires with context (which endpoint, which percentile, which user segment) → Engineer checks the trace link in the alert → Identifies the slow span → Deploys fix → SLO gauge confirms resolution.
 
-The difference: context in the alert and traces that follow the request. The engineer doesn't waste 30 minutes on investigation...the alert tells them where to look.
+The difference: context in the alert and traces that follow the request. The engineer doesn't waste 30 minutes on investigation... the alert tells them where to look.
 
 ---
 
@@ -300,7 +300,7 @@ The difference: context in the alert and traces that follow the request. The eng
 
 ## When NOT to Apply This
 
-- You're a small team with a monolith...basic uptime monitoring and application logs are sufficient
+- You're a small team with a monolith... basic uptime monitoring and application logs are sufficient
 - Your application has fewer than 100 concurrent users
 - You're pre-revenue and optimizing for shipping speed, not reliability
 

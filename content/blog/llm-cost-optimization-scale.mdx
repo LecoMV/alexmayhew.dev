@@ -14,7 +14,7 @@ image: "/images/blog/llm-cost-optimization-scale-featured.webp"
 
 ## TL;DR
 
-LLM costs follow a power law: 80% of queries can be handled by cheap, fast models while 20% need expensive, capable models. The tiered approach...route simple queries to GPT-4o-mini ($0.15/1M input tokens) and complex queries to Claude Sonnet ($3/1M input tokens)...reduces average cost per query by 60-70%. Add semantic caching (serving identical or near-identical queries from cache) and you eliminate another 20-30% of LLM calls entirely. The three highest-leverage optimizations in order: (1) model routing based on query complexity, (2) semantic caching with 0.95+ similarity threshold, (3) prompt compression that strips unnecessary tokens. I've helped 4 SaaS companies reduce their monthly LLM spend from $15-50K to $3-10K using these patterns. The quality difference was measurable only on edge cases.
+LLM costs follow a power law: 80% of queries can be handled by cheap, fast models while 20% need expensive, capable models. The tiered approach... route simple queries to GPT-4o-mini ($0.15/1M input tokens) and complex queries to Claude Sonnet ($3/1M input tokens)... reduces average cost per query by 60-70%. Add semantic caching (serving identical or near-identical queries from cache) and you eliminate another 20-30% of LLM calls entirely. The three highest-leverage optimizations in order: (1) model routing based on query complexity, (2) semantic caching with 0.95+ similarity threshold, (3) prompt compression that strips unnecessary tokens. I've helped 4 SaaS companies reduce their monthly LLM spend from $15-50K to $3-10K using these patterns. The quality difference was measurable only on edge cases.
 
 > **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... a comprehensive guide to building AI features that deliver real value.
 
@@ -218,7 +218,7 @@ Context:
 Question: {query}
 ```
 
-The after version is 63% fewer tokens with identical behavior. At 100K queries/day with a 3K-token context, this saves ~24.5 billion tokens/month in prompt overhead...roughly $3,675/month at GPT-4o-mini rates.
+The after version is 63% fewer tokens with identical behavior. At 100K queries/day with a 3K-token context, this saves ~24.5 billion tokens/month in prompt overhead... roughly $3,675/month at GPT-4o-mini rates.
 
 ### Context Window Optimization
 
@@ -350,7 +350,7 @@ GROUP BY feature, DATE(created_at)
 ORDER BY total_cost DESC;
 ```
 
-This reveals which features are consuming the most LLM budget...and where optimization has the highest ROI.
+This reveals which features are consuming the most LLM budget... and where optimization has the highest ROI.
 
 ---
 
@@ -363,9 +363,9 @@ This reveals which features are consuming the most LLM budget...and where optimi
 
 ## When NOT to Apply This
 
-- You're in development or early beta with under 100 queries/day...optimize for quality first
-- The AI feature is a premium add-on where customers pay for the compute...pass costs through
-- Your total LLM spend is under $100/month...the engineering time to optimize costs more than the savings
+- You're in development or early beta with under 100 queries/day... optimize for quality first
+- The AI feature is a premium add-on where customers pay for the compute... pass costs through
+- Your total LLM spend is under $100/month... the engineering time to optimize costs more than the savings
 
 ---
 

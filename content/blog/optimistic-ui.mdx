@@ -25,13 +25,13 @@ Human perception operates in distinct temporal bands:
 
 | Threshold  | User Experience                       |
 | ---------- | ------------------------------------- |
-| 100ms      | Feels instant...direct manipulation   |
+| 100ms      | Feels instant... direct manipulation   |
 | 1 second   | Noticeable delay, but flow maintained |
 | 10 seconds | Attention drifts, likely abandonment  |
 
 Traditional request-response cycles push interactions into the 100ms-1s danger zone. Even a fast 200ms API response, combined with network latency and rendering time, breaks the illusion of direct manipulation.
 
-The spinner creates uncertainty. "Is my internet down? Did the app freeze? Will my data be lost?" This anxiety dilates perceived time...a 2-second wait feels like 10.
+The spinner creates uncertainty. "Is my internet down? Did the app freeze? Will my data be lost?" This anxiety dilates perceived time... a 2-second wait feels like 10.
 
 Optimistic UI eliminates the wait by lying to the user. Productively.
 
@@ -55,7 +55,7 @@ The user sees instant feedback. The "system think time" overlaps with the user's
 
 ### Level 1: Component State
 
-The simplest implementation...toggle local state:
+The simplest implementation... toggle local state:
 
 ```tsx
 function LikeButton({ postId }) {
@@ -115,13 +115,13 @@ const mutation = useMutation({
 });
 ```
 
-Because the cache updates, every component rendering todos updates immediately...the list, the counter, the sidebar.
+Because the cache updates, every component rendering todos updates immediately... the list, the counter, the sidebar.
 
 ### Level 3: Local-First
 
 The most advanced pattern. The application reads from and writes to a local database (IndexedDB, SQLite-in-browser). A sync engine replicates changes to the server.
 
-Linear, Notion, and Figma use this architecture. The network is an implementation detail...the app works entirely offline.
+Linear, Notion, and Figma use this architecture. The network is an implementation detail... the app works entirely offline.
 
 Building a sync engine is substantial engineering. Consider libraries like Replicache or ElectricSQL for pre-built solutions.
 
@@ -240,7 +240,7 @@ async function sendMessage(formData: FormData) {
 }
 ```
 
-When the Server Action completes, the component re-renders with new server data. The optimistic state is automatically discarded...no explicit rollback code needed.
+When the Server Action completes, the component re-renders with new server data. The optimistic state is automatically discarded... no explicit rollback code needed.
 
 The implicit rollback relies on React's render cycle: when the transition ends, `useOptimistic` yields the real state prop, not the temporary state.
 
@@ -263,7 +263,7 @@ if (mutation.timestamp > record.updatedAt) {
 
 **Pros**: Simple, predictable.
 
-**Cons**: Data loss if two users edit simultaneously...later write overwrites earlier.
+**Cons**: Data loss if two users edit simultaneously... later write overwrites earlier.
 
 **Use for**: Settings, simple fields where concurrent editing of the same field is rare.
 
@@ -273,7 +273,7 @@ Conflict-free Replicated Data Types guarantee eventual consistency without coord
 
 Instead of storing values, CRDTs store operations (or deltas). Operations are designed to commute: A + B = B + A.
 
-**Sequence CRDTs** (like Yjs) enable collaborative text editing...multiple users can type simultaneously without conflicts.
+**Sequence CRDTs** (like Yjs) enable collaborative text editing... multiple users can type simultaneously without conflicts.
 
 **Use for**: Real-time collaboration (Figma, Notion, Google Docs).
 
@@ -325,7 +325,7 @@ When optimism fails, the user must know.
 
 ### The Ghost Problem
 
-User adds a todo. Optimistic update shows it. Network fails silently. User navigates away. Comes back...todo is gone.
+User adds a todo. Optimistic update shows it. Network fails silently. User navigates away. Comes back... todo is gone.
 
 The user experiences data loss with no explanation.
 
@@ -336,7 +336,7 @@ The user experiences data loss with no explanation.
 <TodoItem todo={todo} pending={todo.id.startsWith("temp-")} />
 ```
 
-Slight opacity, a clock icon...something that says "not yet saved" without blocking interaction.
+Slight opacity, a clock icon... something that says "not yet saved" without blocking interaction.
 
 ### Toast Notifications
 
@@ -353,7 +353,7 @@ onError: () => {
 };
 ```
 
-Include a retry action. The user's intent is clear...help them fulfill it.
+Include a retry action. The user's intent is clear... help them fulfill it.
 
 ### Persistent Drafts
 
@@ -383,7 +383,7 @@ Every action writes to IndexedDB immediately. The sync engine handles server rep
 
 Figma applies movements optimistically. When you drag a shape, the local canvas updates immediately. The operation is sent to the server.
 
-For remote users, Figma interpolates movements. If network packets arrive in bursts, other users see smooth animation...the system predicts where objects are heading.
+For remote users, Figma interpolates movements. If network packets arrive in bursts, other users see smooth animation... the system predicts where objects are heading.
 
 ### Notion
 
@@ -424,9 +424,9 @@ Optimistic UI trades technical correctness for perceived performance. The networ
 
 The pattern is simple: update immediately, sync in background, rollback on failure. The execution requires attention to edge cases, concurrent updates, and graceful error handling.
 
-Use it for likes, comments, todo lists...low-stakes operations where speed matters more than certainty.
+Use it for likes, comments, todo lists... low-stakes operations where speed matters more than certainty.
 
-Don't use it for money, scarcity, or irreversibility...where the cost of false confidence exceeds the cost of a spinner.
+Don't use it for money, scarcity, or irreversibility... where the cost of false confidence exceeds the cost of a spinner.
 
 ---
 

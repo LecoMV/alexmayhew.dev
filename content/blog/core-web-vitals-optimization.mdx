@@ -1,6 +1,6 @@
 ---
 title: "Core Web Vitals Deep Dive: LCP, INP, CLS Optimization"
-description: "Google's Core Web Vitals are a ranking factor...but more importantly, they correlate with conversion rates. Here's how to hit green scores without sacrificing functionality."
+description: "Google's Core Web Vitals are a ranking factor... but more importantly, they correlate with conversion rates. Here's how to hit green scores without sacrificing functionality."
 date: "2026-01-28"
 author: "Alex Mayhew"
 tags: ["performance", "core-web-vitals", "nextjs", "frontend", "seo"]
@@ -13,7 +13,7 @@ series: "performance-engineering"
 
 ## TL;DR
 
-LCP < 2.5s, INP < 200ms, CLS < 0.1. That's the target. The quick wins: preload LCP images, defer third-party scripts, use `next/font` with `display: swap`, reserve space for dynamic content. I've seen LCP improvements of 40% just from fixing image preloading and font loading strategies. INP...the FID replacement since March 2024...requires attention to JavaScript execution time, not just initial load. Every 100ms of delay costs 1% in conversions.
+LCP < 2.5s, INP < 200ms, CLS < 0.1. That's the target. The quick wins: preload LCP images, defer third-party scripts, use `next/font` with `display: swap`, reserve space for dynamic content. I've seen LCP improvements of 40% just from fixing image preloading and font loading strategies. INP... the FID replacement since March 2024... requires attention to JavaScript execution time, not just initial load. Every 100ms of delay costs 1% in conversions.
 
 > **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... from TTFB to TTI optimization.
 
@@ -21,7 +21,7 @@ LCP < 2.5s, INP < 200ms, CLS < 0.1. That's the target. The quick wins: preload L
 
 ## Why Core Web Vitals Matter Beyond SEO
 
-Google made Core Web Vitals a ranking factor in 2021. But the real reason to care isn't search rankings...it's money.
+Google made Core Web Vitals a ranking factor in 2021. But the real reason to care isn't search rankings... it's money.
 
 The data is consistent across industries:
 
@@ -32,9 +32,9 @@ The data is consistent across industries:
 | 0.1 lower CLS      | +15% session duration (Pinterest)       |
 | Sub-2.5s LCP       | 24% lower bounce rate (Google research) |
 
-When Vodafone improved LCP by 31%, their sales increased by 8%. That's not correlation...they ran controlled A/B tests.
+When Vodafone improved LCP by 31%, their sales increased by 8%. That's not correlation... they ran controlled A/B tests.
 
-I've worked with SaaS companies where Core Web Vitals improvements directly impacted trial-to-paid conversion. One client saw a 14% increase in demo requests after reducing LCP from 4.2s to 1.8s. The form was identical...the page just loaded faster.
+I've worked with SaaS companies where Core Web Vitals improvements directly impacted trial-to-paid conversion. One client saw a 14% increase in demo requests after reducing LCP from 4.2s to 1.8s. The form was identical... the page just loaded faster.
 
 The threshold breakdown:
 
@@ -62,7 +62,7 @@ The LCP element is determined by the browser at runtime. It's whichever of these
 - Elements with CSS `background-image`
 - Block-level text elements (`<h1>`, `<p>`, `<div>` with text)
 
-The browser recalculates LCP as the page loads. That's why you might see LCP shift from a heading to a hero image once the image loads...the final LCP is the last measurement before user interaction.
+The browser recalculates LCP as the page loads. That's why you might see LCP shift from a heading to a hero image once the image loads... the final LCP is the last measurement before user interaction.
 
 ### Common LCP Killers
 
@@ -137,7 +137,7 @@ In Next.js, use `priority` on Image components or add explicit preload links in 
 
 ## INP Deep Dive: The New Responsiveness Metric
 
-Interaction to Next Paint replaced First Input Delay in March 2024. While FID measured the delay before the browser started processing an interaction, INP measures the entire interaction lifecycle...including processing time and the paint that follows.
+Interaction to Next Paint replaced First Input Delay in March 2024. While FID measured the delay before the browser started processing an interaction, INP measures the entire interaction lifecycle... including processing time and the paint that follows.
 
 ### Why INP Is Harder Than FID
 
@@ -188,7 +188,7 @@ The `scheduler.yield()` API (Chrome 115+) explicitly yields to the main thread, 
 
 **2. Third-Party Scripts**
 
-Analytics, chat widgets, ad scripts...each adds JavaScript that competes for the main thread.
+Analytics, chat widgets, ad scripts... each adds JavaScript that competes for the main thread.
 
 ```tsx
 // Bad: Synchronous third-party load
@@ -271,7 +271,7 @@ elements.forEach((el, i) => {
 
 ## CLS Deep Dive: Visual Stability
 
-Cumulative Layout Shift measures unexpected layout changes. When content shifts after the user has started reading or about to click...that's CLS.
+Cumulative Layout Shift measures unexpected layout changes. When content shifts after the user has started reading or about to click... that's CLS.
 
 ### What Causes Layout Shifts
 
@@ -328,7 +328,7 @@ Next/font also enables automatic self-hosting, eliminating the external Google F
 
 **3. Dynamically Injected Content**
 
-Ads, embeds, cookie banners...anything that appears after initial render and pushes content.
+Ads, embeds, cookie banners... anything that appears after initial render and pushes content.
 
 ```tsx
 // Bad: Banner appears and shifts page content
@@ -452,7 +452,7 @@ export default function RootLayout({ children }) {
 }
 ```
 
-This self-hosts fonts at build time...no external requests to Google Fonts at runtime.
+This self-hosts fonts at build time... no external requests to Google Fonts at runtime.
 
 ### Script Loading Strategies
 
@@ -489,7 +489,7 @@ export default function RootLayout({ children }) {
 }
 ```
 
-The `worker` strategy uses Partytown to run scripts in a web worker...particularly useful for heavy analytics.
+The `worker` strategy uses Partytown to run scripts in a web worker... particularly useful for heavy analytics.
 
 ### Route Segment Config
 
@@ -601,7 +601,7 @@ export function WebVitalsReporter() {
 
 ### Field Data vs Lab Data
 
-**Lab data** (Lighthouse, PageSpeed Insights in lab mode) tests under controlled conditions...specific device, network, no caching.
+**Lab data** (Lighthouse, PageSpeed Insights in lab mode) tests under controlled conditions... specific device, network, no caching.
 
 **Field data** (Chrome User Experience Report, real user monitoring) reflects actual user experience across diverse conditions.
 
@@ -678,12 +678,12 @@ Define acceptable thresholds and alert on violations:
 
 ## Putting It Together
 
-Core Web Vitals optimization isn't about chasing arbitrary numbers...it's about building a fast, stable user experience that converts.
+Core Web Vitals optimization isn't about chasing arbitrary numbers... it's about building a fast, stable user experience that converts.
 
 The order of operations:
 
 1. **Measure first**: Set up field data collection before changing anything
-2. **Fix LCP**: Usually the biggest impact...hero images, fonts, server response time
+2. **Fix LCP**: Usually the biggest impact... hero images, fonts, server response time
 3. **Tackle CLS**: Reserve space, preload fonts, handle dynamic content
 4. **Optimize INP**: Audit third-party scripts, break up long tasks, defer non-essential JS
 
@@ -693,7 +693,7 @@ The business case is clear: faster sites convert better. Every 100ms you shave o
 
 ---
 
-**Ready to get your Core Web Vitals into the green?** I help SaaS companies achieve and maintain excellent performance scores while shipping features fast. The two aren't mutually exclusive...they're complementary.
+**Ready to get your Core Web Vitals into the green?** I help SaaS companies achieve and maintain excellent performance scores while shipping features fast. The two aren't mutually exclusive... they're complementary.
 
 - [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Performance-first architecture
 - [React Development for SaaS](/services/react-developer-for-saas) ... Component optimization and rendering strategies

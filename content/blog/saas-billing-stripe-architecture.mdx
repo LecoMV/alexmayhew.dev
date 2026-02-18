@@ -1,6 +1,6 @@
 ---
 title: "SaaS Billing Architecture with Stripe"
-description: "Billing is where SaaS architecture decisions have the most direct revenue impact. Here's the Stripe integration architecture I recommend...webhook-driven state machines, idempotent payment processing, and the subscription lifecycle patterns that prevent revenue leakage."
+description: "Billing is where SaaS architecture decisions have the most direct revenue impact. Here's the Stripe integration architecture I recommend... webhook-driven state machines, idempotent payment processing, and the subscription lifecycle patterns that prevent revenue leakage."
 date: "2026-10-06"
 author: "Alex Mayhew"
 tags: ["billing", "stripe", "saas", "architecture", "subscriptions"]
@@ -14,7 +14,7 @@ image: "/images/blog/saas-billing-stripe-architecture-featured.webp"
 
 ## TL;DR
 
-Billing is the only part of your SaaS where a bug directly costs you money. An incorrect proration calculation, a missed webhook, or a race condition in subscription upgrades...each one leaks revenue. I've helped teams recover from billing bugs that cost $10K-100K before detection. The architecture that prevents this: Stripe as the source of truth for subscription state (never your database), a webhook-driven state machine that handles every lifecycle event, idempotent payment processing that survives duplicate webhooks, and a reconciliation job that catches any drift between Stripe and your application. The most common mistake: polling Stripe's API to check subscription status instead of reacting to webhooks. Polling misses state transitions, creates race conditions, and burns your rate limit.
+Billing is the only part of your SaaS where a bug directly costs you money. An incorrect proration calculation, a missed webhook, or a race condition in subscription upgrades... each one leaks revenue. I've helped teams recover from billing bugs that cost $10K-100K before detection. The architecture that prevents this: Stripe as the source of truth for subscription state (never your database), a webhook-driven state machine that handles every lifecycle event, idempotent payment processing that survives duplicate webhooks, and a reconciliation job that catches any drift between Stripe and your application. The most common mistake: polling Stripe's API to check subscription status instead of reacting to webhooks. Polling misses state transitions, creates race conditions, and burns your rate limit.
 
 > **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
 
@@ -57,7 +57,7 @@ The `synced_at` column is critical. It tells you when this row was last updated 
 
 ## The Webhook State Machine
 
-Stripe communicates subscription lifecycle events through webhooks. Your application must handle every event type correctly...and handle them idempotently, because Stripe may send the same event multiple times.
+Stripe communicates subscription lifecycle events through webhooks. Your application must handle every event type correctly... and handle them idempotently, because Stripe may send the same event multiple times.
 
 ### Event Flow
 
@@ -190,7 +190,7 @@ async function syncSubscription(subscription: Stripe.Subscription) {
 
 ## Entitlement Management
 
-The subscription plan determines what features the customer can access. This mapping...plan to features...is the most business-critical code in your application.
+The subscription plan determines what features the customer can access. This mapping... plan to features... is the most business-critical code in your application.
 
 ```typescript
 // Plan → entitlements mapping
@@ -344,7 +344,7 @@ async function reconcileSubscriptions() {
 }
 ```
 
-This catches every drift scenario. Schedule it for off-peak hours and alert if drift is detected...it indicates a webhook processing bug that needs fixing.
+This catches every drift scenario. Schedule it for off-peak hours and alert if drift is detected... it indicates a webhook processing bug that needs fixing.
 
 ---
 
@@ -430,7 +430,7 @@ describe("Subscription Lifecycle", () => {
 });
 ```
 
-Use Stripe's test mode and test clocks for end-to-end billing tests. Test clocks let you simulate the passage of time...advance a subscription by 30 days and verify renewal behavior without waiting.
+Use Stripe's test mode and test clocks for end-to-end billing tests. Test clocks let you simulate the passage of time... advance a subscription by 30 days and verify renewal behavior without waiting.
 
 ---
 
@@ -443,9 +443,9 @@ Use Stripe's test mode and test clocks for end-to-end billing tests. Test clocks
 
 ## When NOT to Apply This
 
-- Pre-revenue MVP validating product-market fit...use Stripe Checkout with minimal code
-- One-time payment products (not subscriptions)...Stripe Checkout handles this without custom architecture
-- Marketplace with complex payouts...consider Stripe Connect instead
+- Pre-revenue MVP validating product-market fit... use Stripe Checkout with minimal code
+- One-time payment products (not subscriptions)... Stripe Checkout handles this without custom architecture
+- Marketplace with complex payouts... consider Stripe Connect instead
 
 ---
 

@@ -13,7 +13,7 @@ image: "/images/blog/llm-integration-architecture-featured.webp"
 
 ## TL;DR
 
-Vector databases: pgvector for < 1M vectors, Qdrant for 1-10M, Pinecone for > 10M or managed preference. RAG retrieval quality matters more than model choice. Embedding models: text-embedding-3-small ($0.02/1M tokens) beats ada-002 at half the cost. Prompt versioning is non-negotiable. Cache aggressively...semantic caching can cut LLM costs by 40-60%. Build fallback chains, not single points of failure.
+Vector databases: pgvector for < 1M vectors, Qdrant for 1-10M, Pinecone for > 10M or managed preference. RAG retrieval quality matters more than model choice. Embedding models: text-embedding-3-small ($0.02/1M tokens) beats ada-002 at half the cost. Prompt versioning is non-negotiable. Cache aggressively... semantic caching can cut LLM costs by 40-60%. Build fallback chains, not single points of failure.
 
 > **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
 
@@ -27,7 +27,7 @@ Then you deploy to production.
 
 Latency spikes to 3 seconds. Costs hit $500/day. Users report hallucinations. Rate limits throttle your application. The vector database times out under load.
 
-The gap between "working demo" and "production system" in LLM integration is wider than most teams expect. This post covers the architecture decisions that bridge that gap...the infrastructure choices, retrieval strategies, and reliability patterns that separate AI features that ship from AI features that get reverted.
+The gap between "working demo" and "production system" in LLM integration is wider than most teams expect. This post covers the architecture decisions that bridge that gap... the infrastructure choices, retrieval strategies, and reliability patterns that separate AI features that ship from AI features that get reverted.
 
 I've built LLM integrations serving 100K+ daily queries. The patterns here come from production incidents, cost optimization sessions, and the slow accumulation of what actually works versus what looks good in a pitch deck.
 
@@ -50,7 +50,7 @@ The vector database is the foundation of any retrieval-augmented generation (RAG
 
 ### pgvector: The Boring Choice That Works
 
-If you're already running PostgreSQL...and you should be...pgvector is the default choice up to about 1 million vectors.
+If you're already running PostgreSQL... and you should be... pgvector is the default choice up to about 1 million vectors.
 
 ```sql
 -- Enable the extension
@@ -77,7 +77,7 @@ The advantages are substantial:
 - **Familiar tooling**: Standard SQL, Prisma support, existing backups
 - **Cost**: Already paying for PostgreSQL
 
-The limitations become apparent at scale. HNSW indexes consume significant memory...roughly 1.5GB per million 1536-dimensional vectors. Query performance degrades as you approach the memory limit.
+The limitations become apparent at scale. HNSW indexes consume significant memory... roughly 1.5GB per million 1536-dimensional vectors. Query performance degrades as you approach the memory limit.
 
 **Recommendation**: Start with pgvector. Migrate when you hit performance walls or exceed 1-2 million vectors.
 
@@ -187,7 +187,7 @@ Optimal chunk size depends on content type:
 | Conversational  | 128-256 tokens   | 25      |
 | Code            | Function/class   | 0       |
 
-The overlap prevents context from being split mid-sentence. Without overlap, you get chunks that end "The key consideration is" and start "implementing proper authentication"...neither useful alone.
+The overlap prevents context from being split mid-sentence. Without overlap, you get chunks that end "The key consideration is" and start "implementing proper authentication"... neither useful alone.
 
 ### Update Patterns
 
@@ -302,7 +302,7 @@ def retrieve_expanded(query: str, k: int = 5):
 
 ### Hypothetical Document Embedding (HyDE)
 
-Instead of embedding the query, embed a hypothetical answer...then find documents similar to that answer.
+Instead of embedding the query, embed a hypothetical answer... then find documents similar to that answer.
 
 ```python
 def hyde_retrieve(query: str, k: int = 5):
@@ -435,7 +435,7 @@ def test_rag_prompt_cites_context():
     assert "330" in response
 ```
 
-Run prompt tests on every deployment. LLM behavior changes with model updates...catch regressions early.
+Run prompt tests on every deployment. LLM behavior changes with model updates... catch regressions early.
 
 ---
 
@@ -505,7 +505,7 @@ class SemanticCache:
         )
 ```
 
-Semantic caching can reduce LLM calls by 40-60% for applications with repetitive query patterns...support chatbots, FAQ systems, documentation search.
+Semantic caching can reduce LLM calls by 40-60% for applications with repetitive query patterns... support chatbots, FAQ systems, documentation search.
 
 ### Model Routing
 
@@ -540,7 +540,7 @@ Typical RAG system cost distribution:
 | Vector DB      | 5-15%      | Self-host, right-size            |
 | Infrastructure | 5-10%      | Standard optimization            |
 
-Focus optimization effort proportional to cost share. LLM calls dominate...optimize there first.
+Focus optimization effort proportional to cost share. LLM calls dominate... optimize there first.
 
 ---
 
@@ -618,7 +618,7 @@ class RateLimiter:
             self.token_counts.append((now, estimated_tokens))
 ```
 
-Implement client-side rate limiting. Don't rely on hitting API limits...you'll get errors and degraded service.
+Implement client-side rate limiting. Don't rely on hitting API limits... you'll get errors and degraded service.
 
 ### Graceful Degradation
 
@@ -782,7 +782,7 @@ The systems that work:
 
 6. **Monitor for silent degradation**. Hallucination rates, user feedback, latency percentiles.
 
-The teams that ship AI features successfully treat LLM integration as a systems problem, not a prompting problem. They build infrastructure for reliability, observability, and cost control first...then iterate on quality.
+The teams that ship AI features successfully treat LLM integration as a systems problem, not a prompting problem. They build infrastructure for reliability, observability, and cost control first... then iterate on quality.
 
 Start with the simplest architecture that works: pgvector + text-embedding-3-small + GPT-4o-mini + basic RAG. Add complexity only when you have data showing you need it.
 
@@ -790,7 +790,7 @@ Everything else is engineering theater.
 
 ---
 
-**Building LLM-powered features?** I help teams architect AI integrations that actually work in production...reliable, cost-effective, and observable.
+**Building LLM-powered features?** I help teams architect AI integrations that actually work in production... reliable, cost-effective, and observable.
 
 - [AI Integration for SaaS](/services/ai-integration-developer-for-saas) ... Production AI that scales
 - [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... LLM architecture guidance

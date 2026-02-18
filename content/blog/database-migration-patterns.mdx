@@ -14,7 +14,7 @@ image: "/images/blog/database-migration-patterns-featured.webp"
 
 ## TL;DR
 
-Database migrations are where SaaS teams learn the difference between "works in development" and "works in production." The migration that takes 200ms on your local PostgreSQL instance locks a 50M-row table for 45 minutes in production. I've helped teams recover from migrations that took down production for 4+ hours...every one was preventable. The core principle: never mix schema changes with data changes in the same migration. Use expand-contract for zero-downtime deploys, run `CONCURRENTLY` on every index creation, and always...always...test against a production-sized dataset before deploying. The tooling matters less than the patterns. Alembic, Prisma Migrate, and raw SQL all work if you follow the zero-downtime playbook.
+Database migrations are where SaaS teams learn the difference between "works in development" and "works in production." The migration that takes 200ms on your local PostgreSQL instance locks a 50M-row table for 45 minutes in production. I've helped teams recover from migrations that took down production for 4+ hours... every one was preventable. The core principle: never mix schema changes with data changes in the same migration. Use expand-contract for zero-downtime deploys, run `CONCURRENTLY` on every index creation, and always... always... test against a production-sized dataset before deploying. The tooling matters less than the patterns. Alembic, Prisma Migrate, and raw SQL all work if you follow the zero-downtime playbook.
 
 > **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to building systems that stay fast under real-world load.
 
@@ -51,7 +51,7 @@ CREATE TABLE order_audit_logs (
 );
 ```
 
-PostgreSQL 11+ made `ADD COLUMN` with a default value a metadata-only operation...no table rewrite required. This single optimization eliminated the most common migration failure mode.
+PostgreSQL 11+ made `ADD COLUMN` with a default value a metadata-only operation... no table rewrite required. This single optimization eliminated the most common migration failure mode.
 
 ### Category 2: Data Backfill (Medium Risk)
 
@@ -83,11 +83,11 @@ BEGIN
 END $$;
 ```
 
-The `SKIP LOCKED` clause is critical...it prevents the backfill from blocking application queries that need the same rows. The `pg_sleep` between batches lets the WAL writer catch up and prevents replication lag from spiking.
+The `SKIP LOCKED` clause is critical... it prevents the backfill from blocking application queries that need the same rows. The `pg_sleep` between batches lets the WAL writer catch up and prevents replication lag from spiking.
 
 ### Category 3: Structural Change (High Risk)
 
-Renaming columns, changing types, splitting tables, adding NOT NULL constraints to populated columns. These require the expand-contract pattern...there is no safe shortcut.
+Renaming columns, changing types, splitting tables, adding NOT NULL constraints to populated columns. These require the expand-contract pattern... there is no safe shortcut.
 
 | Operation                 | Risk          | Duration (50M rows) | Lock Type                    |
 | ------------------------- | ------------- | ------------------- | ---------------------------- |
@@ -174,7 +174,7 @@ ALTER TABLE users DROP COLUMN email;
 ALTER TABLE users RENAME COLUMN email_normalized TO email;
 ```
 
-The contract phase is where teams get impatient. Don't drop the old column in the same deploy cycle as the code change. Wait at least one full deployment cycle...preferably a week...before removing the old structure. If something goes wrong, you can revert the application code and the old column still has data.
+The contract phase is where teams get impatient. Don't drop the old column in the same deploy cycle as the code change. Wait at least one full deployment cycle... preferably a week... before removing the old structure. If something goes wrong, you can revert the application code and the old column still has data.
 
 ---
 
@@ -225,7 +225,7 @@ Every major migration tool handles `CONCURRENTLY` differently:
 
 ## Testing Against Production-Scale Data
 
-The gap between development and production databases is where migrations fail. A migration that runs in 200ms on 10,000 rows takes 45 minutes on 50 million rows. The relationship isn't linear...it's often worse than linear due to index maintenance, WAL generation, and checkpoint pressure.
+The gap between development and production databases is where migrations fail. A migration that runs in 200ms on 10,000 rows takes 45 minutes on 50 million rows. The relationship isn't linear... it's often worse than linear due to index maintenance, WAL generation, and checkpoint pressure.
 
 ### The Production-Scale Testing Playbook
 
@@ -263,7 +263,7 @@ Any migration that takes more than 30 seconds on production-scale data is not sa
 
 ### Forward-Only Migrations
 
-For expand-contract patterns, rollback means deploying the previous application code...not reverting the database. The expanded schema works with both old and new code. This is why the contract phase waits a full deployment cycle.
+For expand-contract patterns, rollback means deploying the previous application code... not reverting the database. The expanded schema works with both old and new code. This is why the contract phase waits a full deployment cycle.
 
 ### Snapshot Rollback
 
@@ -296,7 +296,7 @@ The snapshot gives you a guaranteed rollback point. The cost is storage (snapsho
 
 ## Multi-Tenant Migration Considerations
 
-SaaS applications with tenant-level schema isolation face unique migration challenges. If you're using PostgreSQL schemas per tenant (one of the patterns from [multi-tenancy with Prisma and RLS](/blog/multi-tenancy-prisma-rls)), every migration runs N times...once per tenant.
+SaaS applications with tenant-level schema isolation face unique migration challenges. If you're using PostgreSQL schemas per tenant (one of the patterns from [multi-tenancy with Prisma and RLS](/blog/multi-tenancy-prisma-rls)), every migration runs N times... once per tenant.
 
 ### The Cascading Risk
 
@@ -375,9 +375,9 @@ Before running any migration in production:
 
 ## When NOT to Apply This
 
-- Pre-launch with no production traffic...run migrations however you want
-- Tables under 100K rows...standard migrations complete in under a second
-- Development and staging environments...save the complexity for production
+- Pre-launch with no production traffic... run migrations however you want
+- Tables under 100K rows... standard migrations complete in under a second
+- Development and staging environments... save the complexity for production
 
 ---
 

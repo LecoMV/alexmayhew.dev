@@ -1,6 +1,6 @@
 ---
 title: "State Management in 2026: Zustand vs Signals vs Server State"
-description: "The state management landscape has fragmented again. Zustand dominates, signals are the new hotness, and server state (React Query, SWR) handles most of what Redux used to do. Here's what to use when...with the decision framework I give to advisory clients."
+description: "The state management landscape has fragmented again. Zustand dominates, signals are the new hotness, and server state (React Query, SWR) handles most of what Redux used to do. Here's what to use when... with the decision framework I give to advisory clients."
 date: "2026-08-11"
 author: "Alex Mayhew"
 tags: ["state-management", "react", "zustand", "signals", "frontend"]
@@ -14,7 +14,7 @@ image: "/images/blog/state-management-2026-featured.webp"
 
 ## TL;DR
 
-State management in 2026 is simpler than the discourse suggests...if you decompose the problem correctly. Server state (data from your API) belongs in React Query or SWR. Client state (UI flags, form inputs, modal visibility) belongs in React's built-in hooks for simple cases or Zustand for shared state. Global application state (auth, theme, feature flags) belongs in Zustand with persistence. Signals (Preact Signals, Solid-style reactivity) solve a real performance problem...fine-grained reactivity without re-renders...but React's adoption story is incomplete and the ecosystem support isn't there yet. For 90% of SaaS applications, the answer is: React Query for server state + Zustand for everything else. That's 2 libraries, both under 10KB, covering every state management need.
+State management in 2026 is simpler than the discourse suggests... if you decompose the problem correctly. Server state (data from your API) belongs in React Query or SWR. Client state (UI flags, form inputs, modal visibility) belongs in React's built-in hooks for simple cases or Zustand for shared state. Global application state (auth, theme, feature flags) belongs in Zustand with persistence. Signals (Preact Signals, Solid-style reactivity) solve a real performance problem... fine-grained reactivity without re-renders... but React's adoption story is incomplete and the ecosystem support isn't there yet. For 90% of SaaS applications, the answer is: React Query for server state + Zustand for everything else. That's 2 libraries, both under 10KB, covering every state management need.
 
 > **Part of the [Modern Frontend Architecture](/blog/modern-frontend-architecture)** ... a comprehensive guide to frontend patterns that scale.
 
@@ -31,13 +31,13 @@ The fundamental mistake teams make: treating all state the same. Server state an
 | **URL state**    | Browser URL      | Synchronous, shareable, navigable | Filters, pagination, search query           |
 | **Global state** | App-wide config  | Persistent, shared across routes  | Auth session, theme, feature flags          |
 
-Redux tried to be the answer for all four categories. That's why Redux applications become unwieldy...they're using a complex tool for simple problems and a simple tool for complex problems.
+Redux tried to be the answer for all four categories. That's why Redux applications become unwieldy... they're using a complex tool for simple problems and a simple tool for complex problems.
 
 ---
 
 ## Server State: React Query (or SWR)
 
-Server state is the most common state in SaaS applications...and the most commonly mismanaged. Teams that put API data in Redux or Zustand end up reimplementing caching, invalidation, retry logic, and optimistic updates from scratch.
+Server state is the most common state in SaaS applications... and the most commonly mismanaged. Teams that put API data in Redux or Zustand end up reimplementing caching, invalidation, retry logic, and optimistic updates from scratch.
 
 ### React Query (Recommended)
 
@@ -114,7 +114,7 @@ function Dashboard() {
 - Retry with exponential backoff
 - Loading and error states without boilerplate
 
-The alternative...managing all of this in Redux...is 200-400 lines of code per API endpoint. React Query does it in 20.
+The alternative... managing all of this in Redux... is 200-400 lines of code per API endpoint. React Query does it in 20.
 
 ### Server State with Server Components
 
@@ -146,11 +146,11 @@ This pattern gives you instant page loads (server-rendered data) with client-sid
 
 ## Client State: Zustand
 
-For state that lives entirely on the client...UI state, form state, selection state...Zustand provides the simplest API with the best performance characteristics.
+For state that lives entirely on the client... UI state, form state, selection state... Zustand provides the simplest API with the best performance characteristics.
 
 ### Why Zustand Over Context + useReducer
 
-React Context re-renders every consumer when any part of the context value changes. For a theme context, that's fine...it changes rarely. For a complex UI state with 10+ values, it causes unnecessary re-renders across the entire component tree.
+React Context re-renders every consumer when any part of the context value changes. For a theme context, that's fine... it changes rarely. For a complex UI state with 10+ values, it causes unnecessary re-renders across the entire component tree.
 
 Zustand uses external stores with selector-based subscriptions. Components only re-render when the specific slice of state they subscribe to changes.
 
@@ -238,7 +238,7 @@ const usePreferences = create(
 
 ## Signals: The Performance Promise
 
-Signals provide fine-grained reactivity...when a signal value changes, only the specific DOM node that reads that signal updates. No component re-renders, no virtual DOM diffing.
+Signals provide fine-grained reactivity... when a signal value changes, only the specific DOM node that reads that signal updates. No component re-renders, no virtual DOM diffing.
 
 ### The Performance Difference
 
@@ -261,7 +261,7 @@ As of 2026, signals in React are available through:
 2. **React compiler (experimental)** ... React's built-in compiler optimizes re-renders automatically, reducing (but not eliminating) the need for manual memoization
 3. **TC39 Signals proposal** ... Stage 1, years from standardization
 
-The honest assessment: signals solve a real problem, but the React ecosystem isn't built around them yet. React Query, form libraries, component libraries...they all assume React's rendering model. Adopting signals means potentially fighting the ecosystem.
+The honest assessment: signals solve a real problem, but the React ecosystem isn't built around them yet. React Query, form libraries, component libraries... they all assume React's rendering model. Adopting signals means potentially fighting the ecosystem.
 
 ### When Signals Make Sense in React (Today)
 
@@ -334,7 +334,7 @@ Compare this to Redux Toolkit + RTK Query + Redux Persist: ~40KB, with significa
 
 ## When NOT to Apply This
 
-- Your Redux application works well and the team is productive...don't migrate for the sake of it
+- Your Redux application works well and the team is productive... don't migrate for the sake of it
 - You need time-travel debugging (Redux DevTools is still the best for this)
 - You're building an offline-first application (Redux Persist with Redux Offline is more mature)
 

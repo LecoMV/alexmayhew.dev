@@ -1,6 +1,6 @@
 ---
 title: "SaaS Reliability at Scale: Monitoring, Alerting, and Incident Response"
-description: "99.9% uptime means 8.7 hours of downtime per year. 99.99% means 52 minutes. Here's the observability infrastructure that gets you there...without alert fatigue burning out your team."
+description: "99.9% uptime means 8.7 hours of downtime per year. 99.99% means 52 minutes. Here's the observability infrastructure that gets you there... without alert fatigue burning out your team."
 date: "2026-01-28"
 author: "Alex Mayhew"
 tags: ["observability", "monitoring", "sre", "devops", "infrastructure"]
@@ -31,7 +31,7 @@ Let's establish what we're actually talking about:
 | 99.99%  | 52.6 minutes    | 4.38 minutes     | 8.6 seconds    |
 | 99.999% | 5.26 minutes    | 26.3 seconds     | 0.86 seconds   |
 
-Most B2B SaaS products target 99.9% as the contractual SLA...which sounds impressive until you realize it's nearly 9 hours of downtime per year. I've built observability stacks for systems running at 99.95% actual uptime, and the difference between 99.9% and 99.95% isn't just 0.05%...it's a fundamentally different operational posture.
+Most B2B SaaS products target 99.9% as the contractual SLA... which sounds impressive until you realize it's nearly 9 hours of downtime per year. I've built observability stacks for systems running at 99.95% actual uptime, and the difference between 99.9% and 99.95% isn't just 0.05%... it's a fundamentally different operational posture.
 
 The infrastructure that gets you to 99.9% will not get you to 99.99%. This guide focuses on the practical middle ground: building observability that catches problems before users notice them, without creating an alert storm that burns out your on-call engineers.
 
@@ -50,7 +50,7 @@ Logs answer "what happened?" They're discrete events with timestamps and context
 - Auditing user actions for compliance
 - Investigating security incidents
 
-Logs are expensive at scale. A busy API generating 1KB per request at 1,000 req/s produces 86GB daily. Structure your logs from day one...JSON, not plaintext.
+Logs are expensive at scale. A busy API generating 1KB per request at 1,000 req/s produces 86GB daily. Structure your logs from day one... JSON, not plaintext.
 
 ```typescript
 // Bad: Unstructured logging
@@ -76,7 +76,7 @@ Metrics answer "how is the system performing?" They're numeric values aggregated
 - Capacity planning
 - SLA tracking
 
-Metrics are cheap to store and query. A 1-minute resolution metric costs roughly 1,440 data points per day...trivial compared to logs.
+Metrics are cheap to store and query. A 1-minute resolution metric costs roughly 1,440 data points per day... trivial compared to logs.
 
 ### Traces: The Request Journey
 
@@ -97,7 +97,7 @@ Google's SRE book introduced the golden signals. I've seen teams implement all f
 
 ### 1. Latency
 
-Not just average latency...percentiles matter.
+Not just average latency... percentiles matter.
 
 | Percentile | Meaning                   | Alert Threshold (typical API) |
 | ---------- | ------------------------- | ----------------------------- |
@@ -137,7 +137,7 @@ Error rate as a percentage of total traffic. Types of errors matter:
 
 - **4xx (Client errors)**: Usually not your fault, but track spikes
 - **5xx (Server errors)**: Your fault. Alert at 1% error rate
-- **Timeouts**: Often worse than crashes...they tie up resources
+- **Timeouts**: Often worse than crashes... they tie up resources
 
 ```yaml
 # Prometheus alerting rule
@@ -173,7 +173,7 @@ Saturation alerts are predictive. High CPU usage at 2am gives you time to scale 
 
 ## OpenTelemetry Instrumentation
 
-OpenTelemetry is the standard. Vendor-specific SDKs lock you in. I've helped three companies migrate away from proprietary instrumentation...it's painful and expensive.
+OpenTelemetry is the standard. Vendor-specific SDKs lock you in. I've helped three companies migrate away from proprietary instrumentation... it's painful and expensive.
 
 ### Node.js/Next.js Setup
 
@@ -585,7 +585,7 @@ Observability tooling should match your scale and budget. I've seen seed-stage s
 - **Uptime Monitoring:** Checkly or Better Uptime ($20/month)
 - **Alerting:** PagerDuty free tier (up to 5 users)
 - **Logs:** Console logs → CloudWatch/Vercel (included)
-- **APM:** None yet...premature optimization
+- **APM:** None yet... premature optimization
 
 **Total:** ~$50/month
 
@@ -626,7 +626,7 @@ At this stage, you need dashboards, historical data, and proper on-call rotation
 
 ## The Cold Start Problem
 
-Monitoring systems have their own reliability requirements. I've seen companies discover their alerting was down...after a 4-hour outage.
+Monitoring systems have their own reliability requirements. I've seen companies discover their alerting was down... after a 4-hour outage.
 
 ### Monitor Your Monitoring
 
@@ -647,13 +647,13 @@ If PagerDuty is down during your incident, you need a fallback.
 
 ## What Actually Matters
 
-I've built observability for systems with 99.95% uptime over 12 months. The difference between mediocre and excellent reliability isn't tooling...it's discipline:
+I've built observability for systems with 99.95% uptime over 12 months. The difference between mediocre and excellent reliability isn't tooling... it's discipline:
 
-1. **Alert on symptoms, not causes**...High CPU isn't an incident; high latency is
-2. **Every alert needs a runbook**...If you can't write remediation steps, you can't alert on it
-3. **Page only for user impact**...Everything else is a Slack notification
-4. **Measure what matters to customers**...Latency, errors, availability
-5. **Practice incident response**...Game days reveal process gaps before real incidents
+1. **Alert on symptoms, not causes**... High CPU isn't an incident; high latency is
+2. **Every alert needs a runbook**... If you can't write remediation steps, you can't alert on it
+3. **Page only for user impact**... Everything else is a Slack notification
+4. **Measure what matters to customers**... Latency, errors, availability
+5. **Practice incident response**... Game days reveal process gaps before real incidents
 
 The goal isn't zero downtime. It's predictable, managed downtime with fast recovery.
 
@@ -663,7 +663,7 @@ For deeper dives into related topics, see my posts on [the Lambda tax and cold s
 
 ## Next Steps
 
-If you're building a SaaS and want to get observability right from the start...or you're struggling with alert fatigue and unclear incident response...I work with startups as a [technical advisor](/services/technical-advisor-for-startups). The cost of getting this wrong is measured in customer churn and engineer burnout. The cost of getting it right is a few hours of architectural guidance.
+If you're building a SaaS and want to get observability right from the start... or you're struggling with alert fatigue and unclear incident response... I work with startups as a [technical advisor](/services/technical-advisor-for-startups). The cost of getting this wrong is measured in customer churn and engineer burnout. The cost of getting it right is a few hours of architectural guidance.
 
 ---
 

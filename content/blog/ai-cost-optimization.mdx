@@ -13,7 +13,7 @@ image: "/images/blog/ai-cost-optimization-featured.webp"
 
 ## TL;DR
 
-Below $2K/month API spend: stick with APIs. Above $5K/month: self-hosting pays for itself within 6 months. Fine-tuning makes sense when you need domain-specific quality that base models cannot match...expect $25/1M training tokens plus ongoing inference savings of 40-60%. Hybrid architectures win: route 80% of traffic to self-hosted models, 20% to APIs for complex tasks. Semantic caching cuts all costs by 40-60% regardless of deployment model.
+Below $2K/month API spend: stick with APIs. Above $5K/month: self-hosting pays for itself within 6 months. Fine-tuning makes sense when you need domain-specific quality that base models cannot match... expect $25/1M training tokens plus ongoing inference savings of 40-60%. Hybrid architectures win: route 80% of traffic to self-hosted models, 20% to APIs for complex tasks. Semantic caching cuts all costs by 40-60% regardless of deployment model.
 
 > **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
 
@@ -25,7 +25,7 @@ Every startup adding LLM capabilities faces the same spreadsheet shock. What sta
 
 I've helped startups reduce AI costs by 70% without degrading quality. The pattern is consistent: they started with APIs because they're fast to integrate, hit a cost wall around $3-5K/month, and faced a build-vs-buy decision they weren't prepared for.
 
-This post provides the framework I use with clients. It covers the three deployment models...APIs, self-hosting, and fine-tuning...with specific cost thresholds, break-even calculations, and implementation patterns that actually work in production.
+This post provides the framework I use with clients. It covers the three deployment models... APIs, self-hosting, and fine-tuning... with specific cost thresholds, break-even calculations, and implementation patterns that actually work in production.
 
 ---
 
@@ -54,7 +54,7 @@ The default choice for most teams. Pay per token, no infrastructure to manage.
 - Tasks requiring frontier model capabilities
 - No DevOps capacity for infrastructure
 
-The hidden cost of APIs isn't the per-token price...it's the lack of control. Rate limits hit during traffic spikes. Latency varies based on provider load. Model updates change behavior without notice.
+The hidden cost of APIs isn't the per-token price... it's the lack of control. Rate limits hit during traffic spikes. Latency varies based on provider load. Model updates change behavior without notice.
 
 ### Model 2: Self-Hosted (Ollama, vLLM, TGI)
 
@@ -71,7 +71,7 @@ Run open-source models on your infrastructure. Fixed cost regardless of usage.
 
 **Amortized Cost per Token:**
 
-Self-hosted Llama 3.3 70B on A100: approximately $0.50 per 1M tokens...compared to $0.59-0.79 via Groq or $10+ for equivalent API quality.
+Self-hosted Llama 3.3 70B on A100: approximately $0.50 per 1M tokens... compared to $0.59-0.79 via Groq or $10+ for equivalent API quality.
 
 **When Self-Hosting Wins:**
 
@@ -81,7 +81,7 @@ Self-hosted Llama 3.3 70B on A100: approximately $0.50 per 1M tokens...compared 
 - Monthly API spend exceeding $3-5K
 - Predictable, high-volume workloads
 
-The hidden cost of self-hosting is operational complexity. Model updates, GPU monitoring, scaling, failover...someone needs to own this. If your team doesn't have DevOps capacity, the cost savings evaporate in engineering time.
+The hidden cost of self-hosting is operational complexity. Model updates, GPU monitoring, scaling, failover... someone needs to own this. If your team doesn't have DevOps capacity, the cost savings evaporate in engineering time.
 
 ### Model 3: Fine-Tuned Models
 
@@ -373,7 +373,7 @@ class LLMService:
         return response
 ```
 
-**Cost Impact:** Applications with repetitive query patterns...support chatbots, FAQ systems, documentation search...see 40-60% cache hit rates. At 50% hit rate, costs drop by half.
+**Cost Impact:** Applications with repetitive query patterns... support chatbots, FAQ systems, documentation search... see 40-60% cache hit rates. At 50% hit rate, costs drop by half.
 
 ### Pattern 3: Batching and Queue Optimization
 
@@ -668,13 +668,13 @@ The pattern I see in successful deployments:
 
 5. **Hybrid architectures win at scale.** Route traffic based on task complexity. Expensive models for complex reasoning. Cheap models for classification and extraction. Local models for latency-sensitive or high-volume tasks.
 
-The teams that manage AI costs effectively treat LLMs as infrastructure, not magic. They measure, optimize, and architect for their specific constraints...not for theoretical best practices.
+The teams that manage AI costs effectively treat LLMs as infrastructure, not magic. They measure, optimize, and architect for their specific constraints... not for theoretical best practices.
 
 Your optimal architecture depends on your volume, latency requirements, data sensitivity, and team capabilities. The frameworks in this post give you the analysis tools. The implementation depends on your specific situation.
 
 ---
 
-**Building AI features and watching costs spiral?** I help teams architect LLM systems that scale cost-effectively...from hybrid routing to semantic caching to fine-tuning decisions.
+**Building AI features and watching costs spiral?** I help teams architect LLM systems that scale cost-effectively... from hybrid routing to semantic caching to fine-tuning decisions.
 
 - [AI Integration for SaaS](/services/ai-integration-developer-for-saas) ... Cost-effective AI at scale
 - [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... AI infrastructure strategy

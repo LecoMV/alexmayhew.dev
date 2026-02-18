@@ -1,6 +1,6 @@
 ---
 title: "Incident Response Playbook for SaaS Teams"
-description: "Most SaaS teams don't have an incident response process until they need one...at 3 AM during a production outage. Here's the playbook I've helped 10+ teams implement before the crisis hits."
+description: "Most SaaS teams don't have an incident response process until they need one... at 3 AM during a production outage. Here's the playbook I've helped 10+ teams implement before the crisis hits."
 date: "2026-05-19"
 author: "Alex Mayhew"
 tags: ["incident-response", "saas", "operations", "on-call", "leadership"]
@@ -14,7 +14,7 @@ image: "/images/blog/incident-response-saas-featured.webp"
 
 ## TL;DR
 
-Every SaaS company will have a production incident. The teams that recover in 10 minutes vs. 4 hours aren't better engineers...they have better processes. The playbook: assign an Incident Commander before you need one, use a severity classification that determines who gets woken up, communicate proactively to customers (silence is worse than bad news), and run blameless postmortems within 48 hours. The biggest mistake I see: teams that conflate "finding the fix" with "restoring service." Restoring service means reverting the last deploy, failing over to a backup, or switching to degraded mode. Finding the root cause happens after the fire is out. The median SaaS company takes 45 minutes from detection to starting mitigation. With this playbook, that drops to under 10 minutes.
+Every SaaS company will have a production incident. The teams that recover in 10 minutes vs. 4 hours aren't better engineers... they have better processes. The playbook: assign an Incident Commander before you need one, use a severity classification that determines who gets woken up, communicate proactively to customers (silence is worse than bad news), and run blameless postmortems within 48 hours. The biggest mistake I see: teams that conflate "finding the fix" with "restoring service." Restoring service means reverting the last deploy, failing over to a backup, or switching to degraded mode. Finding the root cause happens after the fire is out. The median SaaS company takes 45 minutes from detection to starting mitigation. With this playbook, that drops to under 10 minutes.
 
 > **Part of the [Engineering Leadership: Founder to CTO](/blog/engineering-leadership-founder-to-cto)** ... a comprehensive guide to scaling engineering teams and practices.
 
@@ -24,7 +24,7 @@ Every SaaS company will have a production incident. The teams that recover in 10
 
 The failure mode is always the same. Production goes down. Three engineers start investigating independently, duplicating work. Nobody communicates with customers. The CEO sends a Slack message asking "is the site down?" The on-call engineer is debugging while also updating stakeholders, context-switching every 2 minutes. An hour later, someone realizes the fix was reverting the deploy that shipped 45 minutes before the incident started.
 
-I've observed this pattern at 10+ companies. The technical capability to fix problems was never the bottleneck...the coordination was.
+I've observed this pattern at 10+ companies. The technical capability to fix problems was never the bottleneck... the coordination was.
 
 Incident response is an organizational problem, not a technical one.
 
@@ -49,7 +49,7 @@ Not every incident deserves the same response. A cosmetic CSS bug on the marketi
 
 ### Incident Commander (IC)
 
-The IC doesn't fix the problem. The IC coordinates the response. This distinction is critical...the best debugger on the team should be debugging, not managing communications.
+The IC doesn't fix the problem. The IC coordinates the response. This distinction is critical... the best debugger on the team should be debugging, not managing communications.
 
 **IC responsibilities:**
 
@@ -60,7 +60,7 @@ The IC doesn't fix the problem. The IC coordinates the response. This distinctio
 - Track timeline for the postmortem
 - Declare incident resolved
 
-**Who should be IC:** Anyone on the team, rotated weekly. The IC doesn't need to be the most senior engineer...they need to be organized, calm under pressure, and willing to make decisions with incomplete information.
+**Who should be IC:** Anyone on the team, rotated weekly. The IC doesn't need to be the most senior engineer... they need to be organized, calm under pressure, and willing to make decisions with incomplete information.
 
 ### Technical Lead
 
@@ -137,7 +137,7 @@ The IC decides which mitigation to pursue. If reverting the last deploy doesn't 
 
 ### Minute 30+: Root Cause Investigation
 
-Only after service is restored do you investigate the root cause. This investigation can happen during business hours...it doesn't need to happen at 3 AM.
+Only after service is restored do you investigate the root cause. This investigation can happen during business hours... it doesn't need to happen at 3 AM.
 
 ---
 
@@ -170,7 +170,7 @@ Silence during an outage is worse than saying "we're investigating." Every minut
 
 ## Blameless Postmortems
 
-The postmortem is where teams either improve or repeat the same mistakes. The key word is blameless...the goal is to improve the system, not to assign blame.
+The postmortem is where teams either improve or repeat the same mistakes. The key word is blameless... the goal is to improve the system, not to assign blame.
 
 ### The Postmortem Template
 
@@ -269,7 +269,7 @@ Track on-call burden: pages per week, MTTR, and time spent on incidents. If the 
 | **Level 3: Proactive**  | Error budgets, automated rollbacks, runbooks           | 10-15 min | Low           |
 | **Level 4: Preventive** | Chaos engineering, pre-mortems, SLO-driven development | < 5 min   | Rare          |
 
-Most SaaS teams are at Level 1 or 2. Moving from Level 1 to Level 2 requires process documentation and role definition...no new tools. Moving from Level 2 to Level 3 requires monitoring investment and automation. Level 4 requires organizational commitment to reliability as a feature.
+Most SaaS teams are at Level 1 or 2. Moving from Level 1 to Level 2 requires process documentation and role definition... no new tools. Moving from Level 2 to Level 3 requires monitoring investment and automation. Level 4 requires organizational commitment to reliability as a feature.
 
 ---
 
@@ -282,7 +282,7 @@ Most SaaS teams are at Level 1 or 2. Moving from Level 1 to Level 2 requires pro
 
 ## When NOT to Apply This
 
-- Solo founder pre-launch...your incident response process is "fix it yourself"
+- Solo founder pre-launch... your incident response process is "fix it yourself"
 - Consumer app where 15 minutes of downtime doesn't cause churn
 - Internal tools where the users are your own team
 

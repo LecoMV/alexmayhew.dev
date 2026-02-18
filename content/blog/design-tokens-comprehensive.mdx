@@ -1,6 +1,6 @@
 ---
 title: "Design Tokens Beyond Color: Typography, Spacing, and Elevation"
-description: "Most design token implementations stop at colors. A complete token system covers typography, spacing, elevation, animation, and breakpoints...creating true design-to-code synchronization."
+description: "Most design token implementations stop at colors. A complete token system covers typography, spacing, elevation, animation, and breakpoints... creating true design-to-code synchronization."
 date: "2026-01-28"
 author: "Alex Mayhew"
 tags: ["design-systems", "design-tokens", "tailwind", "figma", "frontend"]
@@ -13,7 +13,7 @@ series: "frontend-architecture"
 
 ## TL;DR
 
-Color tokens are table stakes. The real value comes from comprehensive tokens: typography scales, spacing systems, elevation hierarchies, animation curves, and breakpoint definitions. I've implemented token systems for design teams of 5-50 designers and developers...the complete approach reduces design-to-code translation time by 70% and eliminates the "that's not quite right" back-and-forth. Use the Design Tokens Community Group (DTCG) format, organize with primitive/semantic/component layers, and automate the pipeline from Figma to code.
+Color tokens are table stakes. The real value comes from comprehensive tokens: typography scales, spacing systems, elevation hierarchies, animation curves, and breakpoint definitions. I've implemented token systems for design teams of 5-50 designers and developers... the complete approach reduces design-to-code translation time by 70% and eliminates the "that's not quite right" back-and-forth. Use the Design Tokens Community Group (DTCG) format, organize with primitive/semantic/component layers, and automate the pipeline from Figma to code.
 
 > **Part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** ... design systems, component patterns, and Server Components.
 
@@ -21,7 +21,7 @@ Color tokens are table stakes. The real value comes from comprehensive tokens: t
 
 ## The Incomplete Token Problem
 
-Most teams start their design token journey with colors. It makes sense...colors are visible, easy to name, and obviously need consistency. So they create:
+Most teams start their design token journey with colors. It makes sense... colors are visible, easy to name, and obviously need consistency. So they create:
 
 ```json
 {
@@ -37,7 +37,7 @@ And then they stop.
 
 Meanwhile, the designer specifies "16px padding with 24px gap and a medium shadow." The developer interprets this as... whatever they think "medium" means. The designer reviews and says "that's not quite right." Three rounds later, they've burned two hours on spacing that should have taken two minutes.
 
-I've audited codebases where the same "card" component exists in 14 variations across the app...each with slightly different padding, border-radius, and shadow combinations. Not because anyone wanted 14 variations. Because there was no single source of truth for anything except colors.
+I've audited codebases where the same "card" component exists in 14 variations across the app... each with slightly different padding, border-radius, and shadow combinations. Not because anyone wanted 14 variations. Because there was no single source of truth for anything except colors.
 
 A complete token system eliminates this drift.
 
@@ -49,7 +49,7 @@ Design tokens exist in layers. Understanding these layers is the difference betw
 
 ### Layer 1: Primitive Tokens (The Raw Values)
 
-Primitive tokens are the actual values...the building blocks with no semantic meaning.
+Primitive tokens are the actual values... the building blocks with no semantic meaning.
 
 ```json
 {
@@ -413,7 +413,7 @@ Shadows communicate hierarchy. A modal should appear above a card. A tooltip sho
 }
 ```
 
-Notice that elevation tokens bundle both shadow and z-index. They're semantically linked...higher z-index elements should have more prominent shadows.
+Notice that elevation tokens bundle both shadow and z-index. They're semantically linked... higher z-index elements should have more prominent shadows.
 
 ---
 
@@ -463,7 +463,7 @@ Animation consistency is often neglected. One developer uses 200ms, another uses
 
 ## Figma Variables Integration
 
-Figma Variables (released in 2023) changed the token game. Variables sync directly with your token JSON...no more manual translation.
+Figma Variables (released in 2023) changed the token game. Variables sync directly with your token JSON... no more manual translation.
 
 ### Setting Up the Pipeline
 
@@ -756,7 +756,7 @@ When a token value changes, it affects every consumer. Handle with care:
 - Developer uses `p-inset-md` or `var(--space-inset-md)`
 - Done. 2 minutes.
 
-The 70% time reduction isn't hypothetical...I've measured it across four different projects. The initial token setup takes 2-3 days. The payback period is under two weeks.
+The 70% time reduction isn't hypothetical... I've measured it across four different projects. The initial token setup takes 2-3 days. The payback period is under two weeks.
 
 ---
 

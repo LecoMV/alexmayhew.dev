@@ -126,7 +126,7 @@ The killer advantage: tenant filtering happens in the same query as vector searc
 
 ## Option 2: Dedicated Vector Databases
 
-When pgvector's limitations become real constraints...not hypothetical ones...consider a dedicated vector database.
+When pgvector's limitations become real constraints... not hypothetical ones... consider a dedicated vector database.
 
 ### Pinecone (Managed, Zero Ops)
 
@@ -247,7 +247,7 @@ async function migrateToQdrant() {
 }
 ```
 
-The migration is a one-time data copy. Your application code changes are minimal...swap the search function implementation, keep the interface the same.
+The migration is a one-time data copy. Your application code changes are minimal... swap the search function implementation, keep the interface the same.
 
 ---
 
@@ -277,13 +277,13 @@ Do you have > 5M vectors?
 
 ## When NOT to Apply This
 
-- You need exact keyword search only...use PostgreSQL full-text search or Elasticsearch
-- Your "AI feature" is a single prompt with no retrieval...you don't need a vector database
-- Your dataset fits in memory as a flat list...brute force search is fast enough under 10K vectors
+- You need exact keyword search only... use PostgreSQL full-text search or Elasticsearch
+- Your "AI feature" is a single prompt with no retrieval... you don't need a vector database
+- Your dataset fits in memory as a flat list... brute force search is fast enough under 10K vectors
 
 ---
 
-**Choosing a vector database for your SaaS AI feature?** I help teams make this decision based on their actual data scale and query requirements...not vendor marketing.
+**Choosing a vector database for your SaaS AI feature?** I help teams make this decision based on their actual data scale and query requirements... not vendor marketing.
 
 - [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... AI infrastructure decisions
 - [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... AI-powered features in production

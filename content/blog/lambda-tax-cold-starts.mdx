@@ -1,6 +1,6 @@
 ---
 title: "The Lambda Tax: Cold Starts and the True Cost of Serverless"
-description: "Cold starts add 100-500ms+ to user requests. Know when serverless helps and when it hurts...the math might surprise you."
+description: "Cold starts add 100-500ms+ to user requests. Know when serverless helps and when it hurts... the math might surprise you."
 date: "2025-08-26"
 updatedAt: "2026-02-06"
 author: "Alex Mayhew"
@@ -47,7 +47,7 @@ The language runtime boots:
 
 Compiled languages (Go, Rust) have smaller binaries and no runtime to boot. Interpreted languages (Python, Node.js) are moderate. JVM and .NET languages pay a heavy runtime initialization cost.
 
-**Java SnapStart** (introduced 2023) dramatically reduces Java cold starts by snapshotting the initialized state. With SnapStart enabled, Java cold starts drop to ~1.4 seconds. With additional priming optimizations, you can achieve ~781ms...a 6x improvement over baseline.
+**Java SnapStart** (introduced 2023) dramatically reduces Java cold starts by snapshotting the initialized state. With SnapStart enabled, Java cold starts drop to ~1.4 seconds. With additional priming optimizations, you can achieve ~781ms... a 6x improvement over baseline.
 
 ### 3. Code Download and Extraction (Depends on Bundle Size)
 
@@ -62,7 +62,7 @@ This is why bundle size matters. Tree-shaking, selective imports, and external l
 
 ### 4. User Code Initialization
 
-Your initialization code runs...imports, database connections, dependency injection:
+Your initialization code runs... imports, database connections, dependency injection:
 
 ```typescript
 // This runs ONCE per cold start

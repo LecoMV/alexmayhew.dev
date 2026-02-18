@@ -1,6 +1,6 @@
 ---
 title: "CDN Strategy: When to Cache, What to Cache, How to Invalidate"
-description: "A properly configured CDN reduces origin load by 90%+ and cuts TTFB from 800ms to 50ms. Here's the caching strategy that actually works...without serving stale data to your users."
+description: "A properly configured CDN reduces origin load by 90%+ and cuts TTFB from 800ms to 50ms. Here's the caching strategy that actually works... without serving stale data to your users."
 date: "2026-01-28"
 author: "Alex Mayhew"
 tags: ["cdn", "caching", "performance", "infrastructure", "cloudflare"]
@@ -13,7 +13,7 @@ series: "performance-engineering"
 
 ## TL;DR
 
-Cache static assets aggressively (1 year with content hashing). Cache API responses cautiously (stale-while-revalidate patterns). Never cache authenticated responses without Vary headers. Use version strings or tag-based purging...never purge everything. Edge computing beats traditional CDN when you need personalization without sacrificing cache hits. A properly tuned CDN delivers 90%+ cache hit ratios and sub-50ms TTFB globally.
+Cache static assets aggressively (1 year with content hashing). Cache API responses cautiously (stale-while-revalidate patterns). Never cache authenticated responses without Vary headers. Use version strings or tag-based purging... never purge everything. Edge computing beats traditional CDN when you need personalization without sacrificing cache hits. A properly tuned CDN delivers 90%+ cache hit ratios and sub-50ms TTFB globally.
 
 > **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... from TTFB to TTI optimization.
 
@@ -25,7 +25,7 @@ Every request to your application traverses multiple cache layers. Understanding
 
 ### Layer 1: Browser Cache
 
-The browser maintains its own cache, controlled by response headers. This is the fastest cache...zero network latency.
+The browser maintains its own cache, controlled by response headers. This is the fastest cache... zero network latency.
 
 ```
 Cache-Control: max-age=31536000, immutable
@@ -37,13 +37,13 @@ With `immutable`, the browser won't even revalidate. The asset serves instantly 
 
 ### Layer 2: CDN Edge Cache
 
-CDN nodes (Cloudflare, Fastly, CloudFront) cache responses at 300+ locations globally. The nearest edge serves the response...typically 10-50ms latency instead of 100-300ms to origin.
+CDN nodes (Cloudflare, Fastly, CloudFront) cache responses at 300+ locations globally. The nearest edge serves the response... typically 10-50ms latency instead of 100-300ms to origin.
 
 I've seen CDN optimization reduce bandwidth costs by 73% while simultaneously improving TTFB from 800ms to 50ms. The key is understanding what to cache and for how long.
 
 ### Layer 3: Origin Cache
 
-Your origin server can implement its own cache layer...Redis, Varnish, or application-level caching. This reduces database load but still requires the network round trip to origin.
+Your origin server can implement its own cache layer... Redis, Varnish, or application-level caching. This reduces database load but still requires the network round trip to origin.
 
 **The pattern**: Browser cache for static assets, CDN cache for shared responses, origin cache for expensive computations.
 
@@ -269,7 +269,7 @@ Phil Karlton said there are only two hard things in computer science: cache inva
 
 ### Strategy 1: Content Hashing (Best for Static Assets)
 
-Never invalidate...change the URL instead.
+Never invalidate... change the URL instead.
 
 ```typescript
 // Build output with content hash
@@ -329,7 +329,7 @@ curl -X POST "https://api.fastly.com/service/{service}/purge/product-123" \
 
 ### Strategy 5: Time-Based Expiration
 
-The simplest approach...let content expire naturally:
+The simplest approach... let content expire naturally:
 
 ```typescript
 // Content auto-expires after 5 minutes
@@ -433,7 +433,7 @@ export default {
 };
 ```
 
-Unauthenticated requests are rejected at the edge...origin never sees them.
+Unauthenticated requests are rejected at the edge... origin never sees them.
 
 For a deeper look at edge deployment patterns, see [RSC, The Edge, and the Death of the Waterfall](/blog/rsc-edge-death-of-waterfall).
 
@@ -488,7 +488,7 @@ With 90% cache hit ratio, you need 90% fewer origin instances.
 
 ### Database Load Reduction
 
-This is often the biggest win. Database connections are expensive...both in licensing (PostgreSQL connections) and performance (connection overhead).
+This is often the biggest win. Database connections are expensive... both in licensing (PostgreSQL connections) and performance (connection overhead).
 
 If 90% of requests hit CDN cache, your database sees 90% fewer queries. For a Postgres instance hitting connection limits, this is the difference between scaling vertically ($$$) or not.
 
@@ -583,7 +583,7 @@ app.post("/api/submit", (req, res) => {
 
 ### Mistake 4: Relying on CDN Defaults
 
-CDN defaults are conservative...often shorter TTLs than optimal. Explicitly set Cache-Control headers on every response.
+CDN defaults are conservative... often shorter TTLs than optimal. Explicitly set Cache-Control headers on every response.
 
 ---
 

@@ -26,7 +26,7 @@ When Postgres fails, Stack Overflow has the answer.
 
 When your custom database fails, you're on your own.
 
-Boring technology...mature, widely-adopted, battle-tested...has a decisive advantage: its failure modes are documented. Thousands of engineers have hit the same problems and shared solutions. The next error message you encounter probably has a blog post explaining exactly how to fix it.
+Boring technology... mature, widely-adopted, battle-tested... has a decisive advantage: its failure modes are documented. Thousands of engineers have hit the same problems and shared solutions. The next error message you encounter probably has a blog post explaining exactly how to fix it.
 
 Novel technology offers no such safety net. When things break (and they will break), you're pioneering the debugging.
 
@@ -42,7 +42,7 @@ Segment adopted microservices early, following the prevailing wisdom that micros
 
 The architecture grew to 140 distinct services. Each team owned their domain. Independence was achieved.
 
-But Segment used shared libraries for cross-cutting concerns. A change to one of these libraries reportedly required redeploying all of their services. The "independent" services weren't actually independent...they were a distributed monolith with network boundaries.
+But Segment used shared libraries for cross-cutting concerns. A change to one of these libraries reportedly required redeploying all of their services. The "independent" services weren't actually independent... they were a distributed monolith with network boundaries.
 
 Testing became a nightmare. Local development required spinning up dozens of containers. A full integration test took longer than shipping the feature.
 
@@ -108,11 +108,11 @@ Prime Video's workload was high-throughput and data-intensive. Moving everything
 
 ## Case Study: Discord's Rust Migration
 
-Discord's story is different...they migrated to a more exotic technology. But the pattern is instructive: they migrated when they had proof.
+Discord's story is different... they migrated to a more exotic technology. But the pattern is instructive: they migrated when they had proof.
 
 ### The Original Architecture
 
-The "Read States" service...tracking which messages each user has read...ran on Go. Go is a perfectly reasonable choice for server-side applications.
+The "Read States" service... tracking which messages each user has read... ran on Go. Go is a perfectly reasonable choice for server-side applications.
 
 ### The Problem
 
@@ -120,7 +120,7 @@ Go uses garbage collection to manage memory. The garbage collector periodically 
 
 For most applications, these pauses are imperceptible. For Discord's real-time messaging, they created latency spikes every few minutes. Users experienced lag. The service couldn't meet its SLAs.
 
-Discord had to over-provision resources to absorb the spikes...paying for capacity to handle garbage collection, not actual traffic.
+Discord had to over-provision resources to absorb the spikes... paying for capacity to handle garbage collection, not actual traffic.
 
 ### The Migration
 
@@ -145,11 +145,11 @@ This is migration done correctly: data-driven, targeted, and proportionate to th
 
 ## Case Study: Uber's Selective Go Adoption
 
-Uber's early stack was Python and Node.js...productive languages that allowed rapid development during their growth phase.
+Uber's early stack was Python and Node.js... productive languages that allowed rapid development during their growth phase.
 
 ### The Problem
 
-At millions of concurrent trips, interpreted languages created latency and CPU consumption issues. The matching engine...connecting drivers to riders...was particularly sensitive.
+At millions of concurrent trips, interpreted languages created latency and CPU consumption issues. The matching engine... connecting drivers to riders... was particularly sensitive.
 
 ### The Migration
 
@@ -163,7 +163,7 @@ Migration should be proportionate to the problem.
 
 At Uber's scale, language performance translates directly to gross margin. A 20% CPU improvement saves millions annually when you're running hundreds of thousands of servers.
 
-At startup scale, the same optimization might save $50/month...not worth the engineering investment.
+At startup scale, the same optimization might save $50/month... not worth the engineering investment.
 
 Migrate when the cost of the current architecture exceeds the cost of migration. Measure first.
 
@@ -188,7 +188,7 @@ These companies chose "boring" technology because:
 - Failure modes were well-documented
 - They could focus on product instead of infrastructure
 
-The exotic architectures came later...when they had revenue, scale, and data showing exactly where the bottlenecks were.
+The exotic architectures came later... when they had revenue, scale, and data showing exactly where the bottlenecks were.
 
 ---
 
@@ -198,7 +198,7 @@ Boring technology is a default, not an absolute. Consider breaking the rule when
 
 ### Clear, Measured Performance Problem
 
-You have production data showing a specific component can't meet requirements. Not theoretical concern...actual measured failure.
+You have production data showing a specific component can't meet requirements. Not theoretical concern... actual measured failure.
 
 Discord had latency spikes they could trace to GC pauses. Uber had CPU costs they could calculate. These are concrete problems that justify migration.
 
@@ -251,7 +251,7 @@ These interventions are cheaper and lower-risk than full migration.
 
 "We'll need to handle this scale eventually" is not sufficient justification.
 
-Scale problems are good problems...they mean you have customers. Solving scale problems before you have customers is optimizing the wrong thing.
+Scale problems are good problems... they mean you have customers. Solving scale problems before you have customers is optimizing the wrong thing.
 
 Build for the scale you have, with awareness of the next order of magnitude. Don't build for 10x your current scale until you're at 0.5x.
 
@@ -269,7 +269,7 @@ Sometimes teams propose migrations because the work is more interesting than inc
 
 "We should migrate to Kubernetes" often means "I'm bored of our current infrastructure and want to learn something new."
 
-This isn't inherently bad...engineer growth matters...but it should be explicit, not hidden behind technical justifications.
+This isn't inherently bad... engineer growth matters... but it should be explicit, not hidden behind technical justifications.
 
 ---
 
@@ -283,7 +283,7 @@ The constraint at early stages is almost never performance. It's:
 - Shipping features fast enough to learn
 - Not running out of money
 
-Boring technology...Postgres, Django, Rails, Express...optimizes for these actual constraints. It's productive, well-documented, and has deep talent pools.
+Boring technology... Postgres, Django, Rails, Express... optimizes for these actual constraints. It's productive, well-documented, and has deep talent pools.
 
 The companies that succeeded didn't use boring technology because they couldn't do better. They used it because they had the discipline to optimize for business outcomes instead of technical novelty.
 
@@ -293,7 +293,7 @@ Everything else is engineering theater.
 
 ---
 
-**Want help choosing boring, effective technology?** I specialize in proven stacks that let you ship fast...not experimental tech that sounds cool on podcasts.
+**Want help choosing boring, effective technology?** I specialize in proven stacks that let you ship fast... not experimental tech that sounds cool on podcasts.
 
 - [PostgreSQL Development](/services/postgresql-developer-for-fintech) ... The boring database that works
 - [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Mature, well-documented stack

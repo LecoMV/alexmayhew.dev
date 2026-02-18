@@ -14,7 +14,7 @@ image: "/images/blog/hidden-tax-supporting-both-featured.webp"
 
 ## TL;DR
 
-"We support both" is the most expensive sentence in SaaS architecture. Every "both" doubles your surface area: testing, documentation, operational runbooks, security audits, and the mental model your team carries. I've audited 8 SaaS codebases where "we support both MySQL and PostgreSQL" or "we support both AWS and GCP" accounted for 25-40% of total engineering overhead. The cost isn't visible in sprint planning because it's distributed: an extra 30 minutes on every PR review checking both paths, an extra 2 hours on every deployment verifying both configurations, an extra week on every security audit. The fix isn't always eliminating one option...sometimes you genuinely need both. The fix is making the decision consciously, quantifying the tax, and choosing "both" only when the business value exceeds the ongoing engineering cost.
+"We support both" is the most expensive sentence in SaaS architecture. Every "both" doubles your surface area: testing, documentation, operational runbooks, security audits, and the mental model your team carries. I've audited 8 SaaS codebases where "we support both MySQL and PostgreSQL" or "we support both AWS and GCP" accounted for 25-40% of total engineering overhead. The cost isn't visible in sprint planning because it's distributed: an extra 30 minutes on every PR review checking both paths, an extra 2 hours on every deployment verifying both configurations, an extra week on every security audit. The fix isn't always eliminating one option... sometimes you genuinely need both. The fix is making the decision consciously, quantifying the tax, and choosing "both" only when the business value exceeds the ongoing engineering cost.
 
 > **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
 
@@ -46,7 +46,7 @@ I've tracked the actual engineering cost of "both" across 8 advisory clients. Th
 | Two databases                       | 2.3x tests  | 2.5x maintenance |
 | Two databases + two cloud providers | 4.6x tests  | 5x maintenance   |
 
-The multiplier isn't exactly 2x because some tests are configuration-independent. But the configuration-specific tests...the ones that verify behavior unique to each option...are where the bugs hide. And those bugs are the hardest to reproduce because your development environment runs one configuration while production might run the other.
+The multiplier isn't exactly 2x because some tests are configuration-independent. But the configuration-specific tests... the ones that verify behavior unique to each option... are where the bugs hide. And those bugs are the hardest to reproduce because your development environment runs one configuration while production might run the other.
 
 ### Operational Overhead
 
@@ -75,13 +75,13 @@ async function getUser(id: string): Promise<User> {
 }
 ```
 
-This pattern...a function that branches on configuration...appears innocuous. But multiply it by 200 database operations and you have a codebase where every function has two code paths that diverge in subtle ways.
+This pattern... a function that branches on configuration... appears innocuous. But multiply it by 200 database operations and you have a codebase where every function has two code paths that diverge in subtle ways.
 
 ### Security Surface Area
 
 Every "both" doubles your security audit scope. Two databases means two sets of access controls, two sets of encryption configurations, two sets of vulnerability scanning pipelines.
 
-A client discovered this the hard way: their PostgreSQL deployment had Row-Level Security enforcing tenant isolation. Their MongoDB deployment relied on application-level filtering. A bug in the application filter exposed cross-tenant data...but only in the MongoDB configuration. The vulnerability existed for 8 months before discovery because security testing focused on the PostgreSQL path.
+A client discovered this the hard way: their PostgreSQL deployment had Row-Level Security enforcing tenant isolation. Their MongoDB deployment relied on application-level filtering. A bug in the application filter exposed cross-tenant data... but only in the MongoDB configuration. The vulnerability existed for 8 months before discovery because security testing focused on the PostgreSQL path.
 
 ---
 

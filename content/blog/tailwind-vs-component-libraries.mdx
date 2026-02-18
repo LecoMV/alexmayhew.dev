@@ -13,7 +13,7 @@ series: "frontend-architecture"
 
 ## TL;DR
 
-Component libraries: fast to start, expensive to customize. Tailwind: slower start, atomic CSS purges to ~10KB. Material UI adds ~300ms to TTI. shadcn/ui is the middle ground...copy-paste components you own. Decision: internal tools → component libraries; consumer-facing → Tailwind + custom.
+Component libraries: fast to start, expensive to customize. Tailwind: slower start, atomic CSS purges to ~10KB. Material UI adds ~300ms to TTI. shadcn/ui is the middle ground... copy-paste components you own. Decision: internal tools → component libraries; consumer-facing → Tailwind + custom.
 
 > **Part of the [Modern Frontend Architecture Guide](/blog/modern-frontend-architecture)** ... design systems, component patterns, and Server Components.
 
@@ -25,7 +25,7 @@ Component libraries: fast to start, expensive to customize. Tailwind: slower sta
 
 Component libraries promise pre-built, accessible, styled components. Need a modal? Import Modal. Need a date picker? Import DatePicker. Ship features, not infrastructure.
 
-The promise is real...for certain use cases. But the marketing omits important details about bundle size, runtime overhead, and the customization cliff.
+The promise is real... for certain use cases. But the marketing omits important details about bundle size, runtime overhead, and the customization cliff.
 
 ---
 
@@ -119,7 +119,7 @@ export default class Document extends NextDocument {
 }
 ```
 
-This adds server-side overhead and complexity. Static CSS just works with SSR...no extraction needed.
+This adds server-side overhead and complexity. Static CSS just works with SSR... no extraction needed.
 
 ---
 
@@ -225,7 +225,7 @@ You're now maintaining your design system inside a theme object that maps imperf
 
 ## The shadcn/ui Middle Ground
 
-shadcn/ui changed the equation. It's not a library you install...it's components you copy.
+shadcn/ui changed the equation. It's not a library you install... it's components you copy.
 
 ### How It Works
 
@@ -442,7 +442,7 @@ If metrics don't improve, reconsider whether migration is worth the effort.
 
 ## Conclusion
 
-Component libraries solve real problems for certain use cases. Internal tools, admin dashboards, prototypes...the productivity gain is worth the bundle cost.
+Component libraries solve real problems for certain use cases. Internal tools, admin dashboards, prototypes... the productivity gain is worth the bundle cost.
 
 For consumer-facing products, the calculus shifts. Every 100KB costs users time. Every runtime computation delays interaction. When brand differentiation matters, fighting library styles costs engineering time.
 

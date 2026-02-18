@@ -14,7 +14,7 @@ image: "/images/blog/testing-react-server-components-featured.webp"
 
 ## TL;DR
 
-React Server Components (RSCs) are async, run on the server, and can't be rendered in jsdom...which means React Testing Library's `render()` doesn't work on them. The testing strategy that does work: unit test data fetching and business logic as plain functions (no React at all), integration test RSCs via HTTP request to the Next.js server (test the HTML output), and E2E test critical user flows with Playwright. The biggest shift: stop testing "does this component render correctly?" and start testing "does this route return the correct data?" RSCs push data fetching into the component tree, which means testing the component IS testing the data layer. The teams I've advised that adopted this approach reduced their test suite runtime by 40% while catching more real bugs...because they stopped mocking fetch and started testing actual server behavior.
+React Server Components (RSCs) are async, run on the server, and can't be rendered in jsdom... which means React Testing Library's `render()` doesn't work on them. The testing strategy that does work: unit test data fetching and business logic as plain functions (no React at all), integration test RSCs via HTTP request to the Next.js server (test the HTML output), and E2E test critical user flows with Playwright. The biggest shift: stop testing "does this component render correctly?" and start testing "does this route return the correct data?" RSCs push data fetching into the component tree, which means testing the component IS testing the data layer. The teams I've advised that adopted this approach reduced their test suite runtime by 40% while catching more real bugs... because they stopped mocking fetch and started testing actual server behavior.
 
 > **Part of the [Modern Frontend Architecture](/blog/modern-frontend-architecture)** ... a comprehensive guide to frontend patterns that scale.
 
@@ -22,7 +22,7 @@ React Server Components (RSCs) are async, run on the server, and can't be render
 
 ## Why Your Existing Tests Break
 
-React Testing Library (RTL) works by rendering components into a jsdom environment...a browser simulation in Node.js. This works for client components because they're JavaScript that runs in a browser-like environment.
+React Testing Library (RTL) works by rendering components into a jsdom environment... a browser simulation in Node.js. This works for client components because they're JavaScript that runs in a browser-like environment.
 
 Server Components break this model:
 
@@ -182,7 +182,7 @@ describe("Dashboard Page", () => {
 });
 ```
 
-**Why HTTP integration tests work:** They test the entire server-side rendering pipeline...the Server Component, its data fetching, the streaming boundaries, and the HTML output. This is what the user actually receives.
+**Why HTTP integration tests work:** They test the entire server-side rendering pipeline... the Server Component, its data fetching, the streaming boundaries, and the HTML output. This is what the user actually receives.
 
 ### Layer 3: E2E Tests for Critical Flows
 
@@ -223,7 +223,7 @@ test("user can view and filter dashboard metrics", async ({ page }) => {
 
 ## Testing the Client-Server Boundary
 
-The hardest testing challenge with RSCs is the boundary between server and client components. A Server Component passes props to a Client Component...the serialization boundary.
+The hardest testing challenge with RSCs is the boundary between server and client components. A Server Component passes props to a Client Component... the serialization boundary.
 
 ```typescript
 // Server Component (not directly testable with RTL)
@@ -351,8 +351,8 @@ This distribution keeps the test suite fast (under 30 seconds for unit tests, un
 
 ## When NOT to Apply This
 
-- You're using Pages Router or a client-side SPA...RTL still works fine
-- Your components are purely presentational with no data fetching...standard RTL testing applies
+- You're using Pages Router or a client-side SPA... RTL still works fine
+- Your components are purely presentational with no data fetching... standard RTL testing applies
 - You're in a rapid prototyping phase where E2E tests provide sufficient coverage
 
 ---

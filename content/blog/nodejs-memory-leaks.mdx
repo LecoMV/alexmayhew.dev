@@ -13,7 +13,7 @@ series: "performance-engineering"
 
 ## TL;DR
 
-New Space (Scavenger): fast, small objects...where most allocations happen. Old Space (Mark-Sweep-Compact): long-lived objects...where leaks hide. Three-Snapshot Technique: Baseline → Action → Compare. Container rule: `--max-old-space-size` = container RAM × 0.75. Leaks are bugs with systematic causes, not mysteries.
+New Space (Scavenger): fast, small objects... where most allocations happen. Old Space (Mark-Sweep-Compact): long-lived objects... where leaks hide. Three-Snapshot Technique: Baseline → Action → Compare. Container rule: `--max-old-space-size` = container RAM × 0.75. Leaks are bugs with systematic causes, not mysteries.
 
 > **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... from TTFB to TTI optimization.
 
@@ -70,7 +70,7 @@ The Scavenger runs frequently on New Space:
 3. Dead objects left behind, space reclaimed
 4. Survivors tracked for promotion
 
-Scavenger is fast...milliseconds. You rarely notice it.
+Scavenger is fast... milliseconds. You rarely notice it.
 
 ### Mark-Sweep-Compact (Old Generation)
 
@@ -92,7 +92,7 @@ Marking uses three colors:
 - **Gray**: Visited, but children not processed
 - **Black**: Visited, children processed (definitely live)
 
-The algorithm maintains: no black object points to a white object. This allows incremental marking...the GC can pause and resume without losing progress.
+The algorithm maintains: no black object points to a white object. This allows incremental marking... the GC can pause and resume without losing progress.
 
 ---
 
@@ -226,11 +226,11 @@ The definitive method for isolating memory leaks.
 
 ### The Process
 
-1. **Snapshot 1**: Baseline...take heap snapshot before the suspected leaking action
+1. **Snapshot 1**: Baseline... take heap snapshot before the suspected leaking action
 2. **Perform Action**: Execute the leaking operation N times (10-100 repetitions)
 3. **Force GC**: Trigger garbage collection explicitly
-4. **Snapshot 2**: Post-action...take second heap snapshot
-5. **Snapshot 3**: Post-GC...take third snapshot to confirm remaining objects
+4. **Snapshot 2**: Post-action... take second heap snapshot
+5. **Snapshot 3**: Post-GC... take third snapshot to confirm remaining objects
 
 ### In Chrome DevTools
 
@@ -263,7 +263,7 @@ Understanding these metrics is crucial.
 
 ### Shallow Size
 
-The memory the object itself uses. A plain object with two string properties has a small shallow size...just the object structure.
+The memory the object itself uses. A plain object with two string properties has a small shallow size... just the object structure.
 
 ### Retained Size
 
@@ -273,7 +273,7 @@ If a cache object has shallow size of 100 bytes but retains 100MB of cached data
 
 ### Finding the Retainer
 
-When you find a suspiciously large retained size, expand the object in DevTools to see its "retainers"...the reference chain from the GC root.
+When you find a suspiciously large retained size, expand the object in DevTools to see its "retainers"... the reference chain from the GC root.
 
 The retainer path tells you _why_ the object can't be garbage collected. Follow it to find what's holding the reference.
 
@@ -452,7 +452,7 @@ module.exports = {
 
 `detectOpenHandles`: Warns about open handles (timers, sockets) that prevent clean exit.
 
-If your tests pass but Jest hangs, you have open handles...likely timers or event listeners not cleaned up.
+If your tests pass but Jest hangs, you have open handles... likely timers or event listeners not cleaned up.
 
 ---
 

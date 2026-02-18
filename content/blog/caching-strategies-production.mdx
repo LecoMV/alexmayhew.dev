@@ -1,6 +1,6 @@
 ---
 title: "Caching Strategies That Actually Work"
-description: "Everyone knows caching improves performance. Few teams implement it correctly. Here's the multi-layer caching architecture I recommend to SaaS teams...with the invalidation strategies that prevent stale data from becoming a support ticket."
+description: "Everyone knows caching improves performance. Few teams implement it correctly. Here's the multi-layer caching architecture I recommend to SaaS teams... with the invalidation strategies that prevent stale data from becoming a support ticket."
 date: "2026-06-02"
 author: "Alex Mayhew"
 tags: ["caching", "redis", "cdn", "performance", "saas"]
@@ -14,7 +14,7 @@ image: "/images/blog/caching-strategies-production-featured.webp"
 
 ## TL;DR
 
-Caching is a solved problem that teams keep solving wrong. The pattern I see repeatedly: Redis cache in front of PostgreSQL, no invalidation strategy, stale data for 5-30 minutes after writes, and support tickets asking "why doesn't my change show up?" The fix is a multi-layer caching architecture with explicit invalidation at each layer. Application-level cache with write-through invalidation handles 80% of cases. CDN edge caching handles the other 20%. Redis is rarely the right first choice for SaaS applications...HTTP caching headers and in-process caches (Map, LRU) eliminate 60-80% of database queries without the operational overhead of a cache cluster. When you do need Redis, use it for session state and rate limiting, not as a general-purpose query cache.
+Caching is a solved problem that teams keep solving wrong. The pattern I see repeatedly: Redis cache in front of PostgreSQL, no invalidation strategy, stale data for 5-30 minutes after writes, and support tickets asking "why doesn't my change show up?" The fix is a multi-layer caching architecture with explicit invalidation at each layer. Application-level cache with write-through invalidation handles 80% of cases. CDN edge caching handles the other 20%. Redis is rarely the right first choice for SaaS applications... HTTP caching headers and in-process caches (Map, LRU) eliminate 60-80% of database queries without the operational overhead of a cache cluster. When you do need Redis, use it for session state and rate limiting, not as a general-purpose query cache.
 
 > **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to building systems that stay fast under real-world load.
 
@@ -100,7 +100,7 @@ The `stale-while-revalidate` directive is the most underused caching feature. It
 
 ## Layer 2: In-Process Cache (Zero Latency)
 
-An in-process cache...a Map or LRU cache in your application's memory...has zero network latency. For data that's read frequently and changes infrequently, this is faster than Redis by 100-1000x.
+An in-process cache... a Map or LRU cache in your application's memory... has zero network latency. For data that's read frequently and changes infrequently, this is faster than Redis by 100-1000x.
 
 ```typescript
 import { LRUCache } from "lru-cache";
@@ -142,7 +142,7 @@ async function updateTenantConfig(tenantId: string, updates: Partial<TenantConfi
 | **Redis pub/sub invalidation** | Near-instant          | Medium     |
 | **Sticky sessions**            | Strong for same user  | Low        |
 
-For most SaaS applications, a 30-60 second TTL is sufficient. Users don't expect real-time updates on configuration pages...they expect changes to take effect "soon."
+For most SaaS applications, a 30-60 second TTL is sufficient. Users don't expect real-time updates on configuration pages... they expect changes to take effect "soon."
 
 ---
 
@@ -249,7 +249,7 @@ async function getOrderSummary(tenantId: string) {
 
 This creates a cache that's stale 80% of the time and correct 20% of the time. The TTL-based invalidation means users see data that's up to 5 minutes old. Support tickets follow.
 
-**The better approach:** Optimize the query itself. Add appropriate indexes. Use materialized views if the aggregation is expensive. The database is already good at this...you don't need to outsource the problem to Redis.
+**The better approach:** Optimize the query itself. Add appropriate indexes. Use materialized views if the aggregation is expensive. The database is already good at this... you don't need to outsource the problem to Redis.
 
 ---
 

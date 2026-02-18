@@ -82,7 +82,7 @@ Client Components:
 - Are marked with `'use client'` directive
 - Ship JavaScript to the browser
 - Support event handlers, useState, useEffect
-- Should be used sparingly...only where interactivity requires it
+- Should be used sparingly... only where interactivity requires it
 
 ### The Composition Pattern
 
@@ -112,9 +112,9 @@ The page is mostly server-rendered HTML. Only the interactive island ships JavaS
 
 Physics sets a hard limit: the speed of light.
 
-A request from Sydney to a server in Virginia takes ~150ms round trip...just for the photons to travel through fiber optic cables. No optimization can beat physics.
+A request from Sydney to a server in Virginia takes ~150ms round trip... just for the photons to travel through fiber optic cables. No optimization can beat physics.
 
-Edge computing solves this by running code in 300+ locations worldwide. Cloudflare Workers, Vercel Edge Functions, Deno Deploy...they all deploy your code to Points of Presence (PoPs) near your users.
+Edge computing solves this by running code in 300+ locations worldwide. Cloudflare Workers, Vercel Edge Functions, Deno Deploy... they all deploy your code to Points of Presence (PoPs) near your users.
 
 ### The Impact
 
@@ -165,7 +165,7 @@ The edge function fetches data and renders HTML in one step. The browser receive
 
 ## Streaming and Suspense
 
-RSC enables HTML streaming...sending content to the browser as it becomes available.
+RSC enables HTML streaming... sending content to the browser as it becomes available.
 
 ### Without Streaming
 
@@ -218,7 +218,7 @@ For high-traffic pages, cold starts are rare (functions stay warm). For low-traf
 
 ### Database Connections
 
-Edge functions run in many locations. Traditional connection pooling doesn't work...you'd need pools at every edge location.
+Edge functions run in many locations. Traditional connection pooling doesn't work... you'd need pools at every edge location.
 
 **Solutions**:
 
@@ -313,7 +313,7 @@ Edge isn't always the answer:
 
 ### Heavy Computation
 
-ML inference, image processing, complex calculations...these benefit from powerful origin servers, not lightweight edge functions.
+ML inference, image processing, complex calculations... these benefit from powerful origin servers, not lightweight edge functions.
 
 ### Single-Region Users
 
@@ -397,7 +397,7 @@ Monitor CLS (layout shifts), FID (first input delay), and LCP in real user monit
 
 ## The Future is Streaming
 
-The SPA era...where JavaScript downloads, fetches data, and renders everything client-side...is ending for most applications.
+The SPA era... where JavaScript downloads, fetches data, and renders everything client-side... is ending for most applications.
 
 The new default:
 
