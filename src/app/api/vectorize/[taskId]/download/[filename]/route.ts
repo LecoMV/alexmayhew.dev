@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { logger } from "@/lib/logger";
 import { filenameSchema, taskIdSchema, VECTORIZER_CONFIG } from "@/lib/vectorizer";
 
 /**
@@ -10,6 +11,7 @@ export async function GET(
 	_request: NextRequest,
 	{ params }: { params: Promise<{ taskId: string; filename: string }> }
 ) {
+	const requestId = crypto.randomUUID();
 	try {
 		const { taskId, filename } = await params;
 
@@ -58,10 +60,15 @@ export async function GET(
 			},
 		});
 	} catch (error) {
-		console.error(
-			"[TraceForge] Download error:",
-			error instanceof Error ? error.message : "Unknown error"
+		logger.error("Download error", {
+			requestId,
+			route: "/api/vectorize/download",
+			method: "GET",
+			error: error instanceof Error ? error.message : String(error),
+		});
+		return NextResponse.json(
+			{ error: "Internal server error" },
+			{ status: 500, headers: { "x-request-id": requestId } }
 		);
-		return NextResponse.json({ error: "Internal server error" }, { status: 500 });
 	}
 }

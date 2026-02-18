@@ -1,13 +1,22 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { z } from "zod";
 
+import blogIndex from "@/data/blog-index.json";
+import { logger } from "@/lib/logger";
 import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
 
-// Rate limit: 10 messages per minute per IP (generous for legitimate users)
 const RATE_LIMIT_CONFIG = { limit: 10, windowSeconds: 60 };
-
-// Max message length to prevent abuse
 const MAX_MESSAGE_LENGTH = 1000;
 const MAX_MESSAGES_PER_REQUEST = 10;
+
+const ChatMessageSchema = z.object({
+	role: z.enum(["user", "assistant", "system"]),
+	content: z.string().max(MAX_MESSAGE_LENGTH),
+});
+
+const ChatRequestSchema = z.object({
+	messages: z.array(ChatMessageSchema).min(1).max(MAX_MESSAGES_PER_REQUEST),
+});
 
 // System prompt with portfolio context
 const SYSTEM_PROMPT = `You are Alex Mayhew's portfolio AI assistant. Help visitors learn about Alex's work, skills, and services. Be friendly, professional, and concise.
@@ -93,18 +102,33 @@ For specific pricing, direct visitors to the /contact page to discuss their proj
 ## Availability
 Currently accepting new projects. Typical response time: within 24 hours.`;
 
-interface ChatMessage {
-	role: "user" | "assistant" | "system";
-	content: string;
+interface BlogEntry {
+	title: string;
+	description: string;
+	slug: string;
+	category: string;
+	tags: string[];
+	series?: string;
 }
 
-interface ChatRequest {
-	messages: ChatMessage[];
-}
+const blogContext = (blogIndex as BlogEntry[])
+	.map(
+		(post) =>
+			`- **[${post.title}](/blog/${post.slug})** — ${post.description}. Category: ${post.category}. Tags: ${post.tags.join(", ")}.`
+	)
+	.join("\n");
+
+const FULL_PROMPT = `${SYSTEM_PROMPT}
+
+## Alex's Blog Articles
+Alex has written extensively on technical topics. Here are his published articles that you can reference and recommend to visitors:
+
+${blogContext}`;
 
 export async function POST(request: Request) {
+	const requestId = crypto.randomUUID();
+	const start = Date.now();
 	try {
-		// Rate limiting - check before any expensive operations
 		const clientIP = getClientIP(request.headers);
 		const rateLimit = checkRateLimit(`chat:${clientIP}`, RATE_LIMIT_CONFIG);
 
@@ -125,47 +149,33 @@ export async function POST(request: Request) {
 			);
 		}
 
-		const body = (await request.json()) as ChatRequest;
-		const { messages } = body;
-
-		if (!messages || !Array.isArray(messages)) {
-			return Response.json({ error: "Messages array required" }, { status: 400 });
+		let body: unknown;
+		try {
+			body = await request.json();
+		} catch {
+			return Response.json({ error: "Invalid JSON in request body" }, { status: 400 });
 		}
 
-		// Validate message count
-		if (messages.length > MAX_MESSAGES_PER_REQUEST) {
-			return Response.json(
-				{ error: `Too many messages. Maximum ${MAX_MESSAGES_PER_REQUEST} allowed.` },
-				{ status: 400 }
-			);
+		const result = ChatRequestSchema.safeParse(body);
+		if (!result.success) {
+			const firstError = result.error.issues[0];
+			return Response.json({ error: firstError?.message ?? "Invalid request" }, { status: 400 });
 		}
 
-		// Validate message lengths
-		for (const msg of messages) {
-			if (msg.content && msg.content.length > MAX_MESSAGE_LENGTH) {
-				return Response.json(
-					{ error: `Message too long. Maximum ${MAX_MESSAGE_LENGTH} characters.` },
-					{ status: 400 }
-				);
-			}
-		}
+		const { messages } = result.data;
 
-		// Get Cloudflare context for Workers AI
 		const { env } = await getCloudflareContext();
 
-		// Check if AI binding exists
 		if (!env.AI) {
-			console.error("AI binding not configured");
+			logger.error("AI binding not configured", { requestId, route: "/api/chat", method: "POST" });
 			return Response.json(
 				{ error: "AI service not configured. Please check Cloudflare bindings." },
-				{ status: 503 }
+				{ status: 503, headers: { "x-request-id": requestId } }
 			);
 		}
 
-		// Prepare messages with system prompt
-		const chatMessages = [{ role: "system", content: SYSTEM_PROMPT }, ...messages];
+		const chatMessages = [{ role: "system", content: FULL_PROMPT }, ...messages];
 
-		// Call Qwen 2.5-Coder 32B
 		const response = await env.AI.run("@cf/qwen/qwen2.5-coder-32b-instruct", {
 			messages: chatMessages,
 			max_tokens: 500,
@@ -177,7 +187,17 @@ export async function POST(request: Request) {
 			model: "qwen2.5-coder-32b-instruct",
 		});
 	} catch (error) {
-		console.error("Chat API error:", error);
-		return Response.json({ error: "Failed to process chat request" }, { status: 500 });
+		logger.error("Chat API error", {
+			requestId,
+			route: "/api/chat",
+			method: "POST",
+			status: 500,
+			durationMs: Date.now() - start,
+			error: error instanceof Error ? error.message : String(error),
+		});
+		return Response.json(
+			{ error: "Failed to process chat request" },
+			{ status: 500, headers: { "x-request-id": requestId } }
+		);
 	}
 }

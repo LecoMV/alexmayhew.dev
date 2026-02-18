@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { logger } from "@/lib/logger";
 import { POTRACE_PRESETS, VECTORIZER_CONFIG, VTRACER_PRESETS } from "@/lib/vectorizer";
 
 /**
@@ -7,6 +8,7 @@ import { POTRACE_PRESETS, VECTORIZER_CONFIG, VTRACER_PRESETS } from "@/lib/vecto
  * Fetch available generators and presets with fallback data
  */
 export async function GET() {
+	const requestId = crypto.randomUUID();
 	try {
 		const headers: HeadersInit = {
 			"Content-Type": "application/json",
@@ -22,15 +24,18 @@ export async function GET() {
 		});
 
 		if (!response.ok) {
-			// Return fallback data if API is unavailable
 			return NextResponse.json(getFallbackData());
 		}
 
 		const data = await response.json();
 		return NextResponse.json(data);
 	} catch (error) {
-		console.error("[TraceForge] Generators error:", error);
-		// Return fallback data on error
+		logger.error("Generators error", {
+			requestId,
+			route: "/api/vectorize/generators",
+			method: "GET",
+			error: error instanceof Error ? error.message : String(error),
+		});
 		return NextResponse.json(getFallbackData());
 	}
 }

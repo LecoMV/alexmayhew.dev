@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { logger } from "@/lib/logger";
 import { validateFile, VECTORIZER_CONFIG } from "@/lib/vectorizer";
 
 /**
@@ -7,6 +8,8 @@ import { validateFile, VECTORIZER_CONFIG } from "@/lib/vectorizer";
  * Proxy upload requests to vectorizer API with validation
  */
 export async function POST(request: NextRequest) {
+	const requestId = crypto.randomUUID();
+	const start = Date.now();
 	try {
 		const formData = await request.formData();
 		const file = formData.get("file") as File | null;
@@ -15,7 +18,6 @@ export async function POST(request: NextRequest) {
 			return NextResponse.json({ error: "No file provided" }, { status: 400 });
 		}
 
-		// Validate file type and size
 		const validation = validateFile(file);
 		if (!validation.valid) {
 			return NextResponse.json({ error: validation.error }, { status: 400 });
@@ -49,11 +51,17 @@ export async function POST(request: NextRequest) {
 		const data = await response.json();
 		return NextResponse.json(data);
 	} catch (error) {
-		// Log error securely without exposing details to client
-		console.error(
-			"[TraceForge] Upload error:",
-			error instanceof Error ? error.message : "Unknown error"
+		logger.error("Upload error", {
+			requestId,
+			route: "/api/vectorize",
+			method: "POST",
+			status: 500,
+			durationMs: Date.now() - start,
+			error: error instanceof Error ? error.message : String(error),
+		});
+		return NextResponse.json(
+			{ error: "Internal server error" },
+			{ status: 500, headers: { "x-request-id": requestId } }
 		);
-		return NextResponse.json({ error: "Internal server error" }, { status: 500 });
 	}
 }

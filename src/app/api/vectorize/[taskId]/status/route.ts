@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { logger } from "@/lib/logger";
 import { taskIdSchema, VECTORIZER_CONFIG } from "@/lib/vectorizer";
 
 /**
@@ -10,10 +11,10 @@ export async function GET(
 	_request: NextRequest,
 	{ params }: { params: Promise<{ taskId: string }> }
 ) {
+	const requestId = crypto.randomUUID();
 	try {
 		const { taskId } = await params;
 
-		// Validate taskId format (prevents path traversal and injection)
 		const taskIdResult = taskIdSchema.safeParse(taskId);
 		if (!taskIdResult.success) {
 			return NextResponse.json({ error: "Invalid task ID format" }, { status: 400 });
@@ -44,10 +45,15 @@ export async function GET(
 		const data = await response.json();
 		return NextResponse.json(data);
 	} catch (error) {
-		console.error(
-			"[TraceForge] Status error:",
-			error instanceof Error ? error.message : "Unknown error"
+		logger.error("Status check error", {
+			requestId,
+			route: "/api/vectorize/status",
+			method: "GET",
+			error: error instanceof Error ? error.message : String(error),
+		});
+		return NextResponse.json(
+			{ error: "Internal server error" },
+			{ status: 500, headers: { "x-request-id": requestId } }
 		);
-		return NextResponse.json({ error: "Internal server error" }, { status: 500 });
 	}
 }

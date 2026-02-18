@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { logger } from "@/lib/logger";
 import {
 	formatZodError,
 	processOptionsSchema,
@@ -15,16 +16,16 @@ export async function POST(
 	request: NextRequest,
 	{ params }: { params: Promise<{ taskId: string }> }
 ) {
+	const requestId = crypto.randomUUID();
+	const start = Date.now();
 	try {
 		const { taskId } = await params;
 
-		// Validate taskId format (prevents path traversal and injection)
 		const taskIdResult = taskIdSchema.safeParse(taskId);
 		if (!taskIdResult.success) {
 			return NextResponse.json({ error: "Invalid task ID format" }, { status: 400 });
 		}
 
-		// Parse and validate request body
 		const body = await request.json();
 		const optionsResult = processOptionsSchema.safeParse(body);
 
@@ -65,10 +66,17 @@ export async function POST(
 		const data = await response.json();
 		return NextResponse.json(data);
 	} catch (error) {
-		console.error(
-			"[TraceForge] Process error:",
-			error instanceof Error ? error.message : "Unknown error"
+		logger.error("Process error", {
+			requestId,
+			route: "/api/vectorize/process",
+			method: "POST",
+			status: 500,
+			durationMs: Date.now() - start,
+			error: error instanceof Error ? error.message : String(error),
+		});
+		return NextResponse.json(
+			{ error: "Internal server error" },
+			{ status: 500, headers: { "x-request-id": requestId } }
 		);
-		return NextResponse.json({ error: "Internal server error" }, { status: 500 });
 	}
 }
