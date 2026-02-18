@@ -16,6 +16,8 @@
 /playwright-report
 /playwright/.cache
 .playwright-mcp/
+reports/stryker-incremental.json
+reports/mutation/
 
 # next.js
 /.next/
@@ -63,3 +65,6 @@ next-env.d.ts
 
 # Logo source files
 .logo-source/
+
+# Refactoring backups
+.refactor-backup/
