@@ -16,10 +16,10 @@ interface LogFields {
 
 function log(level: LogLevel, message: string, fields?: LogFields): void {
 	const entry = {
+		...fields,
 		level,
 		message,
 		ts: Date.now(),
-		...fields,
 	};
 
 	if (level === "error" || level === "warn") {

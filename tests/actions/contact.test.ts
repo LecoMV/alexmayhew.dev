@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { submitContactForm, __setDependencies, __resetDependencies } from "@/app/actions/contact";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { __resetDependencies, __setDependencies, submitContactForm } from "@/app/actions/contact";
 import { getEnv } from "@/lib/cloudflare-env";
 
 // Mock next/headers
@@ -234,21 +235,24 @@ describe("submitContactForm", () => {
 			});
 		});
 
-		it("should handle API errors", async () => {
+		it("should handle API errors with generic message", async () => {
 			mockSendEmail.mockResolvedValue({
 				success: false,
-				error: "API Error",
+				error: "Resend internal: rate limit exceeded",
 			});
 			const result = await submitContactForm(validData);
 			expect(result.success).toBe(false);
-			expect(result.error).toContain("Failed to send: API Error");
+			expect(result.error).not.toContain("Resend");
+			expect(result.error).not.toContain("rate limit");
+			expect(result.error).toContain("Failed to send message");
 		});
 
-		it("should handle network errors", async () => {
-			mockSendEmail.mockRejectedValue(new Error("Network error"));
+		it("should handle network errors with generic message", async () => {
+			mockSendEmail.mockRejectedValue(new Error("fetch failed: ECONNREFUSED"));
 			const result = await submitContactForm(validData);
 			expect(result.success).toBe(false);
-			expect(result.error).toContain("Send failed: Network error");
+			expect(result.error).not.toContain("ECONNREFUSED");
+			expect(result.error).toContain("Failed to send message");
 		});
 
 		it("should fail when RESEND_API_KEY is not configured", async () => {

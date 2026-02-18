@@ -107,7 +107,6 @@ export async function submitContactAction(
 }
 
 export async function submitContactForm(data: ContactFormValues): Promise<ContactFormState> {
-	// 1. Zod Validation
 	const validation = contactFormSchema.safeParse(data);
 	if (!validation.success) {
 		const fieldErrors = validation.error.flatten().fieldErrors as Record<string, string[]>;
@@ -141,7 +140,6 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 		};
 	}
 
-	// Get environment variables from Cloudflare context
 	const env = await getEnv();
 
 	// 3. Security (Turnstile)
@@ -197,14 +195,19 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 
 		if (!result.success) {
 			console.error("Resend API error:", result.error);
-			return { success: false, error: `Failed to send: ${result.error}` };
+			return {
+				success: false,
+				error: "Failed to send message. Please try again or email alex@alexmayhew.dev directly.",
+			};
 		}
 
 		return { success: true };
 	} catch (err) {
-		const errorMessage = err instanceof Error ? err.message : "Unknown error";
 		console.error("Contact form error:", err);
-		return { success: false, error: `Send failed: ${errorMessage}` };
+		return {
+			success: false,
+			error: "Failed to send message. Please try again or email alex@alexmayhew.dev directly.",
+		};
 	}
 }
 

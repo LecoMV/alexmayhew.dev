@@ -85,4 +85,17 @@ describe("logger", () => {
 		expect(entry.ts).toBeGreaterThanOrEqual(before);
 		expect(entry.ts).toBeLessThanOrEqual(after);
 	});
+
+	it("should not allow fields to override level", () => {
+		logger.error("real error", { level: "debug" } as never);
+		const entry = errorSpy.mock.calls[0][0];
+		expect(entry.level).toBe("error");
+	});
+
+	it("should not allow fields to override ts", () => {
+		const before = Date.now();
+		logger.info("real info", { ts: 0 } as never);
+		const entry = logSpy.mock.calls[0][0];
+		expect(entry.ts).toBeGreaterThanOrEqual(before);
+	});
 });
