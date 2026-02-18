@@ -1,5 +1,11 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { checkRateLimit, getClientIP, type RateLimitConfig } from "@/lib/rate-limit";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import {
+	checkRateLimit,
+	getClientIP,
+	getRateLimitMapSize,
+	type RateLimitConfig,
+} from "@/lib/rate-limit";
 
 describe("rate-limit", () => {
 	describe("checkRateLimit", () => {
@@ -94,25 +100,19 @@ describe("rate-limit", () => {
 		});
 
 		it("should clean up expired entries periodically", () => {
-			const config: RateLimitConfig = { limit: 5, windowSeconds: 1 }; // Short window
+			const config: RateLimitConfig = { limit: 5, windowSeconds: 1 };
 			const id = "cleanup-test";
 
 			checkRateLimit(id, config);
 
-			// Advance time past window and past cleanup interval (60s)
 			vi.advanceTimersByTime(60000 + 1000);
 
-			// The internal map should have been cleaned up.
 			// Since we can't access the map directly (it's not exported),
-			// we can infer it by checking if a new request is treated as fresh (full limit)
 			// AND relying on coverage reports to show the interval callback was executed.
 
-			// However, to be sure the *interval* did the work versus just the *check* logic (which also resets if entry is expired),
 			// we can't easily distinguish from outside without spying on the map.
-			// But the goal is to cover the lines inside the setInterval callback.
 			// Advancing timers by 60s should trigger the interval callback.
 
-			// Trigger interval
 			vi.advanceTimersByTime(1000);
 		});
 	});
@@ -152,6 +152,50 @@ describe("rate-limit", () => {
 				"x-forwarded-for": "  1.2.3.4  , 5.6.7.8",
 			});
 			expect(getClientIP(headers)).toBe("1.2.3.4");
+		});
+
+		it("should clamp IP strings longer than 45 characters", () => {
+			const longIP = "a".repeat(100);
+			const headers = new Headers({ "cf-connecting-ip": longIP });
+			const result = getClientIP(headers);
+			expect(result.length).toBe(45);
+		});
+
+		it("should allow valid IPv6 addresses (45 chars max)", () => {
+			const ipv6 = "2001:0db8:85a3:0000:0000:8a2e:0370:7334";
+			const headers = new Headers({ "cf-connecting-ip": ipv6 });
+			expect(getClientIP(headers)).toBe(ipv6);
+		});
+	});
+
+	describe("map cap enforcement", () => {
+		beforeEach(() => {
+			vi.useFakeTimers();
+		});
+
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		it("should not grow beyond MAX_ENTRIES", () => {
+			const config: RateLimitConfig = { limit: 100, windowSeconds: 3600 };
+			for (let i = 0; i < 10_001; i++) {
+				checkRateLimit(`cap-test-${i}`, config);
+			}
+			expect(getRateLimitMapSize()).toBeLessThanOrEqual(10_000);
+		});
+
+		it("should evict oldest entry when cap is reached", () => {
+			const config: RateLimitConfig = { limit: 100, windowSeconds: 3600 };
+			// Fill to cap with entries that have increasing resetTime
+			for (let i = 0; i < 10_000; i++) {
+				checkRateLimit(`evict-test-${i}`, config);
+			}
+			expect(getRateLimitMapSize()).toBe(10_000);
+
+			// Adding one more should evict the oldest
+			checkRateLimit("evict-test-new", config);
+			expect(getRateLimitMapSize()).toBeLessThanOrEqual(10_000);
 		});
 	});
 });

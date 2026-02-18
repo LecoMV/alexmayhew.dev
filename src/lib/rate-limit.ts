@@ -3,6 +3,9 @@
  * For production at scale, use Cloudflare Rate Limiting or KV
  */
 
+const MAX_ENTRIES = 10_000;
+const MAX_IP_LENGTH = 45; // Max IPv6 string length
+
 interface RateLimitEntry {
 	count: number;
 	resetTime: number;
@@ -35,11 +38,6 @@ export interface RateLimitResult {
 	resetIn: number;
 }
 
-/**
- * Check if a request should be rate limited
- * @param identifier - Unique identifier (IP, user ID, etc.)
- * @param config - Rate limit configuration
- */
 export function checkRateLimit(
 	identifier: string,
 	config: RateLimitConfig = { limit: 5, windowSeconds: 60 }
@@ -47,6 +45,22 @@ export function checkRateLimit(
 	const now = Date.now();
 	const windowMs = config.windowSeconds * 1000;
 	const key = identifier;
+
+	// Prevent unbounded map growth from unique identifiers
+	if (rateLimitMap.size >= MAX_ENTRIES) {
+		cleanupRateLimits();
+		if (rateLimitMap.size >= MAX_ENTRIES) {
+			let oldestKey = "";
+			let oldestTime = Infinity;
+			for (const [k, e] of rateLimitMap) {
+				if (e.resetTime < oldestTime) {
+					oldestTime = e.resetTime;
+					oldestKey = k;
+				}
+			}
+			if (oldestKey) rateLimitMap.delete(oldestKey);
+		}
+	}
 
 	let entry = rateLimitMap.get(key);
 
@@ -67,7 +81,6 @@ export function checkRateLimit(
 	// Increment count
 	entry.count++;
 
-	// Check if over limit
 	if (entry.count > config.limit) {
 		return {
 			success: false,
@@ -88,10 +101,15 @@ export function checkRateLimit(
  * Cloudflare provides the real IP in CF-Connecting-IP
  */
 export function getClientIP(headers: Headers): string {
-	return (
+	const ip =
 		headers.get("cf-connecting-ip") ||
 		headers.get("x-forwarded-for")?.split(",")[0].trim() ||
 		headers.get("x-real-ip") ||
-		"unknown"
-	);
+		"unknown";
+	return ip.length <= MAX_IP_LENGTH ? ip : ip.slice(0, MAX_IP_LENGTH);
+}
+
+/** Test-only accessor for map size */
+export function getRateLimitMapSize(): number {
+	return rateLimitMap.size;
 }
