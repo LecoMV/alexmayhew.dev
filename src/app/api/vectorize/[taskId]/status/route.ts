@@ -12,6 +12,7 @@ export async function GET(
 	{ params }: { params: Promise<{ taskId: string }> }
 ) {
 	const requestId = crypto.randomUUID();
+	const start = Date.now();
 	try {
 		const { taskId } = await params;
 
@@ -49,6 +50,8 @@ export async function GET(
 			requestId,
 			route: "/api/vectorize/status",
 			method: "GET",
+			status: 500,
+			durationMs: Date.now() - start,
 			error: error instanceof Error ? error.message : String(error),
 		});
 		return NextResponse.json(

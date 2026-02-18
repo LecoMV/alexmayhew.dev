@@ -9,6 +9,7 @@ import { POTRACE_PRESETS, VECTORIZER_CONFIG, VTRACER_PRESETS } from "@/lib/vecto
  */
 export async function GET() {
 	const requestId = crypto.randomUUID();
+	const start = Date.now();
 	try {
 		const headers: HeadersInit = {
 			"Content-Type": "application/json",
@@ -34,6 +35,8 @@ export async function GET() {
 			requestId,
 			route: "/api/vectorize/generators",
 			method: "GET",
+			status: 500,
+			durationMs: Date.now() - start,
 			error: error instanceof Error ? error.message : String(error),
 		});
 		return NextResponse.json(getFallbackData());
