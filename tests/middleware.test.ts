@@ -1,5 +1,5 @@
-import { NextRequest } from "next/server";
-import { beforeEach, describe, expect, it } from "vitest";
+import { NextRequest, NextResponse } from "next/server";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { config, middleware } from "../middleware";
 
@@ -136,6 +136,36 @@ describe("middleware", () => {
 
 			expect(csp).toContain("upgrade-insecure-requests");
 		});
+	});
+});
+
+describe("middleware error handling", () => {
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
+	it("should return passthrough response when headers.set throws", () => {
+		const mockRequest = new NextRequest(new URL("https://alexmayhew.dev/"));
+		const originalNext = NextResponse.next;
+		let callCount = 0;
+
+		vi.spyOn(NextResponse, "next").mockImplementation(() => {
+			callCount++;
+			if (callCount === 1) {
+				// First call: return a response whose headers.set throws
+				const badResponse = originalNext.call(NextResponse);
+				vi.spyOn(badResponse.headers, "set").mockImplementation(() => {
+					throw new Error("Simulated header failure");
+				});
+				return badResponse;
+			}
+			// Second call (from catch): return a normal passthrough
+			return originalNext.call(NextResponse);
+		});
+
+		const response = middleware(mockRequest);
+		expect(response).toBeDefined();
+		expect(response.status).toBe(200);
 	});
 });
 
