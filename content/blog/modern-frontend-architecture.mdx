@@ -444,13 +444,13 @@ For implementation details, migration strategies, and edge deployment patterns, 
 
 The key to Server Components is understanding what runs where:
 
-| Capability         | Server Components (default)                              | Client Components ('use client')                     |
-| ------------------ | -------------------------------------------------------- | ---------------------------------------------------- |
-| Execution          | Runs during server render                                | Runs in the browser                                  |
-| Data fetching      | Can fetch directly from databases, file systems, or APIs | Requires useEffect or data fetching library          |
-| React hooks        | Cannot use useState, useEffect, etc.                     | Full hook support                                    |
-| Browser APIs       | Cannot access window, document                           | Full browser API access                              |
-| JavaScript shipped | Zero JS sent to browser                                  | Ships JavaScript to browser                          |
+| Capability         | Server Components (default)                              | Client Components ('use client')                      |
+| ------------------ | -------------------------------------------------------- | ----------------------------------------------------- |
+| Execution          | Runs during server render                                | Runs in the browser                                   |
+| Data fetching      | Can fetch directly from databases, file systems, or APIs | Requires useEffect or data fetching library           |
+| React hooks        | Cannot use useState, useEffect, etc.                     | Full hook support                                     |
+| Browser APIs       | Cannot access window, document                           | Full browser API access                               |
+| JavaScript shipped | Zero JS sent to browser                                  | Ships JavaScript to browser                           |
 | Usage guidance     | Default for all components                               | Use sparingly... only where interactivity requires it |
 
 The composition pattern is powerful:
