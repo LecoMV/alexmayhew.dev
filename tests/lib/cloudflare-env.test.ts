@@ -29,7 +29,7 @@ describe("cloudflare-env", () => {
 		process.env.LISTMONK_API_URL = "http://localhost:9000";
 		process.env.LISTMONK_API_USER = "admin";
 		process.env.LISTMONK_API_KEY = "env-listmonk-key";
-		process.env.NODE_ENV = "test";
+		(process.env as Record<string, string | undefined>).NODE_ENV = "test";
 	});
 
 	afterEach(() => {
@@ -69,12 +69,13 @@ describe("cloudflare-env", () => {
 
 	it("should return undefined values without crashing when both sources are empty", async () => {
 		mockGetCloudflareContext.mockRejectedValue(new Error("Not in CF context"));
-		delete process.env.RESEND_API_KEY;
-		delete process.env.CONTACT_EMAIL;
-		delete process.env.TURNSTILE_SECRET_KEY;
-		delete process.env.LISTMONK_API_URL;
-		delete process.env.LISTMONK_API_USER;
-		delete process.env.LISTMONK_API_KEY;
+		const processEnv = process.env as Record<string, string | undefined>;
+		delete processEnv.RESEND_API_KEY;
+		delete processEnv.CONTACT_EMAIL;
+		delete processEnv.TURNSTILE_SECRET_KEY;
+		delete processEnv.LISTMONK_API_URL;
+		delete processEnv.LISTMONK_API_USER;
+		delete processEnv.LISTMONK_API_KEY;
 
 		const getEnv = await loadGetEnv();
 		const env = await getEnv();

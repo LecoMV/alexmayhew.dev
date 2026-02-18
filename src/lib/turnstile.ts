@@ -2,6 +2,8 @@
  * Server-side Turnstile token verification
  */
 
+import { logger } from "@/lib/logger";
+
 interface TurnstileVerifyResponse {
 	success: boolean;
 	"error-codes"?: string[];
@@ -11,7 +13,7 @@ interface TurnstileVerifyResponse {
 
 export async function verifyTurnstileToken(token: string, secretKey?: string): Promise<boolean> {
 	if (!secretKey) {
-		console.error("[Turnstile] TURNSTILE_SECRET_KEY is not configured");
+		logger.error("Turnstile secret key not configured");
 		return false;
 	}
 
@@ -31,12 +33,16 @@ export async function verifyTurnstileToken(token: string, secretKey?: string): P
 		const data: TurnstileVerifyResponse = await response.json();
 
 		if (!data.success) {
-			console.error("[Turnstile] Verification failed:", data["error-codes"]);
+			logger.error("Turnstile verification failed", {
+				errorCodes: data["error-codes"],
+			});
 		}
 
 		return data.success;
 	} catch (error) {
-		console.error("[Turnstile] Verification error:", error);
+		logger.error("Turnstile verification error", {
+			error: error instanceof Error ? error.message : String(error),
+		});
 		return false;
 	}
 }
