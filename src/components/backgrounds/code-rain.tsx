@@ -3,6 +3,8 @@
 import { m } from "framer-motion";
 import { useEffect, useRef } from "react";
 
+import { useCanvasController } from "@/hooks/use-canvas-controller";
+
 interface CodeRainProps {
 	className?: string;
 	fontSize?: number;
@@ -11,7 +13,6 @@ interface CodeRainProps {
 	density?: number;
 }
 
-// Tech-themed words and symbols instead of random characters
 const techTerms = [
 	"async",
 	"await",
@@ -99,6 +100,7 @@ export function CodeRain({
 }: CodeRainProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const animationRef = useRef<number | undefined>(undefined);
+	const { isActiveRef } = useCanvasController(canvasRef);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -130,7 +132,6 @@ export function CodeRain({
 		const width = canvas.width / (window.devicePixelRatio || 1);
 		const height = canvas.height / (window.devicePixelRatio || 1);
 
-		// Initialize drops
 		const maxDrops = Math.floor((width * height * density) / 1000);
 
 		const createDrop = (): Drop => ({
@@ -144,12 +145,15 @@ export function CodeRain({
 
 		for (let i = 0; i < maxDrops; i++) {
 			const drop = createDrop();
-			drop.y = Math.random() * height; // Spread initial positions
+			drop.y = Math.random() * height;
 			drops.push(drop);
 		}
 
 		const animate = () => {
-			// Semi-transparent clear for trail effect
+			animationRef.current = requestAnimationFrame(animate);
+
+			if (!isActiveRef.current) return;
+
 			ctx.fillStyle = "rgba(11, 14, 20, 0.05)";
 			ctx.fillRect(0, 0, width, height);
 
@@ -157,7 +161,6 @@ export function CodeRain({
 			ctx.textBaseline = "top";
 
 			drops.forEach((drop) => {
-				// Calculate color with opacity
 				const r = parseInt(color.slice(1, 3), 16);
 				const g = parseInt(color.slice(3, 5), 16);
 				const b = parseInt(color.slice(5, 7), 16);
@@ -165,11 +168,9 @@ export function CodeRain({
 				ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${drop.opacity})`;
 				ctx.fillText(drop.term, drop.x, drop.y);
 
-				// Update position
 				drop.y += drop.speed;
 				drop.opacity -= drop.fadeSpeed;
 
-				// Reset if off screen or faded
 				if (drop.y > height || drop.opacity <= 0) {
 					drop.y = -fontSize * 2;
 					drop.x = Math.random() * width;
@@ -178,13 +179,10 @@ export function CodeRain({
 					drop.speed = speed * (0.5 + Math.random() * 0.5);
 				}
 			});
-
-			animationRef.current = requestAnimationFrame(animate);
 		};
 
 		const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 		if (prefersReducedMotion) {
-			// Static render
 			ctx.fillStyle = "rgba(11, 14, 20, 1)";
 			ctx.fillRect(0, 0, width, height);
 			ctx.font = `${fontSize}px "JetBrains Mono", monospace`;
@@ -198,7 +196,6 @@ export function CodeRain({
 				ctx.fillText(drop.term, drop.x, drop.y);
 			});
 		} else {
-			// Initial clear
 			ctx.fillStyle = "rgba(11, 14, 20, 1)";
 			ctx.fillRect(0, 0, width, height);
 			animate();
@@ -212,7 +209,7 @@ export function CodeRain({
 				cancelAnimationFrame(animationRef.current);
 			}
 		};
-	}, [fontSize, color, speed, density]);
+	}, [fontSize, color, speed, density, isActiveRef]);
 
 	return (
 		<m.canvas

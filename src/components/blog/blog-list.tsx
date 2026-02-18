@@ -1,8 +1,8 @@
 "use client";
 
 import { m } from "framer-motion";
+import { Link } from "next-view-transitions";
 import Image from "next/image";
-import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { trackEvent } from "@/components/analytics";
@@ -123,7 +123,10 @@ export function BlogList({ posts, hubPosts = [] }: BlogListProps) {
 											}}
 										>
 											{hub.data.image && (
-												<div className="relative aspect-video overflow-hidden">
+												<div
+													className="relative aspect-video overflow-hidden"
+													style={{ viewTransitionName: `blog-image-${hub.slug}` }}
+												>
 													<Image
 														src={hub.data.image}
 														alt={hub.data.title}

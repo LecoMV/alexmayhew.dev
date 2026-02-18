@@ -3,6 +3,8 @@
 import { m } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useCanvasController } from "@/hooks/use-canvas-controller";
+
 interface Node {
 	id: number;
 	x: number;
@@ -50,19 +52,20 @@ export function DataFlow({
 	labels = defaultLabels,
 }: DataFlowProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
+	const mousePosRef = useRef({ x: -1000, y: -1000 });
 	const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 	const nodesRef = useRef<Node[]>([]);
 	const animationRef = useRef<number | undefined>(undefined);
 	const pulseRef = useRef<{ nodeId: number; progress: number; targetId: number }[]>([]);
+	const { isActiveRef } = useCanvasController(canvasRef);
 
 	const handleMouseMove = useCallback((e: MouseEvent) => {
 		if (canvasRef.current) {
 			const rect = canvasRef.current.getBoundingClientRect();
-			setMousePos({
+			mousePosRef.current = {
 				x: e.clientX - rect.left,
 				y: e.clientY - rect.top,
-			});
+			};
 		}
 	}, []);
 
@@ -83,7 +86,6 @@ export function DataFlow({
 			});
 		}
 
-		// Create connections (each node connects to 2-4 nearest)
 		nodes.forEach((node, i) => {
 			const distances = nodes
 				.map((other, j) => ({
@@ -132,26 +134,28 @@ export function DataFlow({
 		const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
 		const animate = () => {
+			animationRef.current = requestAnimationFrame(animate);
+
+			if (!isActiveRef.current) return;
+
+			const mousePos = mousePosRef.current;
+
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			ctx.save();
 			ctx.scale(dpr, dpr);
 
 			const nodes = nodesRef.current;
 
-			// Update node positions
 			nodes.forEach((node) => {
 				node.x += node.vx;
 				node.y += node.vy;
 
-				// Bounce off edges
 				if (node.x < 0 || node.x > dimensions.width) node.vx *= -1;
 				if (node.y < 0 || node.y > dimensions.height) node.vy *= -1;
 
-				// Clamp
 				node.x = Math.max(0, Math.min(dimensions.width, node.x));
 				node.y = Math.max(0, Math.min(dimensions.height, node.y));
 
-				// Mouse repulsion
 				const mouseDist = Math.sqrt((node.x - mousePos.x) ** 2 + (node.y - mousePos.y) ** 2);
 				if (mouseDist < 100 && mouseDist > 0) {
 					const force = ((100 - mouseDist) / 100) * 0.5;
@@ -159,12 +163,10 @@ export function DataFlow({
 					node.vy += ((node.y - mousePos.y) / mouseDist) * force;
 				}
 
-				// Damping
 				node.vx *= 0.99;
 				node.vy *= 0.99;
 			});
 
-			// Draw connections
 			nodes.forEach((node) => {
 				node.connections.forEach((targetId) => {
 					const target = nodes[targetId];
@@ -182,7 +184,6 @@ export function DataFlow({
 				});
 			});
 
-			// Random data pulses
 			if (Math.random() < 0.02 && pulseRef.current.length < 5) {
 				const sourceNode = nodes[Math.floor(Math.random() * nodes.length)];
 				if (sourceNode.connections.length > 0) {
@@ -195,7 +196,6 @@ export function DataFlow({
 				}
 			}
 
-			// Draw and update pulses
 			pulseRef.current = pulseRef.current.filter((pulse) => {
 				const source = nodes[pulse.nodeId];
 				const target = nodes[pulse.targetId];
@@ -215,12 +215,10 @@ export function DataFlow({
 				return pulse.progress < 1;
 			});
 
-			// Draw nodes
 			nodes.forEach((node) => {
 				const mouseDist = Math.sqrt((node.x - mousePos.x) ** 2 + (node.y - mousePos.y) ** 2);
 				const isNear = mouseDist < 100;
 
-				// Node circle
 				ctx.beginPath();
 				ctx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
 				ctx.fillStyle = isNear ? accentColor : nodeColor;
@@ -231,7 +229,6 @@ export function DataFlow({
 				ctx.fill();
 				ctx.shadowBlur = 0;
 
-				// Label for nearby nodes
 				if (isNear) {
 					ctx.font = "10px 'JetBrains Mono', monospace";
 					ctx.fillStyle = accentColor;
@@ -240,12 +237,10 @@ export function DataFlow({
 			});
 
 			ctx.restore();
-			animationRef.current = requestAnimationFrame(animate);
 		};
 
 		const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 		if (prefersReducedMotion) {
-			// Static render
 			ctx.save();
 			ctx.scale(dpr, dpr);
 
@@ -278,7 +273,7 @@ export function DataFlow({
 				cancelAnimationFrame(animationRef.current);
 			}
 		};
-	}, [dimensions, mousePos, nodeColor, lineColor, accentColor]);
+	}, [dimensions, nodeColor, lineColor, accentColor, isActiveRef]);
 
 	return (
 		<m.canvas

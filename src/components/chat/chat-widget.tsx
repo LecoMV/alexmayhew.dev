@@ -7,6 +7,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { snappySpringTransition as springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
+import { ChatMarkdown } from "./chat-markdown";
+
 interface Message {
 	id: string;
 	role: "user" | "assistant";
@@ -213,13 +215,19 @@ export function ChatWidget() {
 									</div>
 									<div
 										className={cn(
-											"max-w-[260px] border p-3",
+											"max-w-[260px] overflow-x-auto border p-3",
 											message.role === "assistant"
 												? "bg-gunmetal-glass/30 border-white/10"
 												: "border-cyber-lime/30 bg-cyber-lime/5"
 										)}
 									>
-										<p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+										{message.role === "assistant" ? (
+											<ChatMarkdown content={message.content} />
+										) : (
+											<p className="text-sm leading-relaxed whitespace-pre-wrap">
+												{message.content}
+											</p>
+										)}
 									</div>
 								</m.div>
 							))}

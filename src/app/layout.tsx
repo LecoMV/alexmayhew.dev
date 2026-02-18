@@ -1,3 +1,4 @@
+import { ViewTransitions } from "next-view-transitions";
 import dynamic from "next/dynamic";
 
 import { MotionProvider, SmoothScroll } from "@/components/providers";
@@ -151,26 +152,28 @@ export default function RootLayout({
 				/>
 			</head>
 			<body className="relative min-h-dvh overflow-x-clip">
-				<MotionProvider>
-					<NoiseOverlay />
-					<SmoothScroll>
-						<Navigation />
-						<main id="main-content" className="relative z-10 flex min-h-dvh flex-col">
-							{children}
-							<Footer />
-						</main>
-					</SmoothScroll>
-					<ErrorBoundary>
-						<ChatWidget />
-					</ErrorBoundary>
-					<CookieConsent />
-					<CommandPaletteServer />
-				</MotionProvider>
-				<ServiceWorkerRegister />
-				<GoogleAnalytics />
-				<PageAnalytics />
-				<CloudflareAnalytics />
-				<WebVitalsReporter />
+				<ViewTransitions>
+					<MotionProvider>
+						<NoiseOverlay />
+						<SmoothScroll>
+							<Navigation />
+							<main id="main-content" className="relative z-10 flex min-h-dvh flex-col">
+								{children}
+								<Footer />
+							</main>
+						</SmoothScroll>
+						<ErrorBoundary>
+							<ChatWidget />
+						</ErrorBoundary>
+						<CookieConsent />
+						<CommandPaletteServer />
+					</MotionProvider>
+					<ServiceWorkerRegister />
+					<GoogleAnalytics />
+					<PageAnalytics />
+					<CloudflareAnalytics />
+					<WebVitalsReporter />
+				</ViewTransitions>
 			</body>
 		</html>
 	);

@@ -3,6 +3,8 @@
 import { m } from "framer-motion";
 import { useEffect, useRef } from "react";
 
+import { useCanvasController } from "@/hooks/use-canvas-controller";
+
 interface CRTEffectProps {
 	className?: string;
 	scanlineOpacity?: number;
@@ -25,6 +27,7 @@ export function CRTEffect({
 	const containerRef = useRef<HTMLDivElement>(null);
 	const overlayRef = useRef<HTMLCanvasElement>(null);
 	const animationRef = useRef<number | undefined>(undefined);
+	const { isActiveRef } = useCanvasController(overlayRef);
 
 	useEffect(() => {
 		const canvas = overlayRef.current;
@@ -46,7 +49,11 @@ export function CRTEffect({
 		let time = 0;
 
 		const animate = () => {
-			time += 0.016; // ~60fps
+			animationRef.current = requestAnimationFrame(animate);
+
+			if (!isActiveRef.current) return;
+
+			time += 0.016;
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 			// Scanlines
@@ -70,12 +77,11 @@ export function CRTEffect({
 			ctx.fillStyle = gradient;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-			// Subtle flicker
 			const flicker = 1 - Math.random() * flickerIntensity;
 			ctx.fillStyle = `rgba(0, 0, 0, ${(1 - flicker) * 0.1})`;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-			// Phosphor glow (subtle)
+			// Phosphor glow
 			const glowGradient = ctx.createRadialGradient(
 				canvas.width / 2,
 				canvas.height / 2,
@@ -89,7 +95,7 @@ export function CRTEffect({
 			ctx.fillStyle = glowGradient;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-			// Rolling scan line (subtle)
+			// Rolling scan line
 			const scanY = ((time * 50) % (canvas.height + 100)) - 50;
 			const scanGradient = ctx.createLinearGradient(0, scanY - 50, 0, scanY + 50);
 			scanGradient.addColorStop(0, "transparent");
@@ -97,13 +103,10 @@ export function CRTEffect({
 			scanGradient.addColorStop(1, "transparent");
 			ctx.fillStyle = scanGradient;
 			ctx.fillRect(0, scanY - 50, canvas.width, 100);
-
-			animationRef.current = requestAnimationFrame(animate);
 		};
 
 		const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 		if (prefersReducedMotion) {
-			// Static render without animation
 			ctx.fillStyle = `rgba(0, 0, 0, ${scanlineOpacity})`;
 			for (let y = 0; y < canvas.height; y += scanlineSize * 2) {
 				ctx.fillRect(0, y, canvas.width, scanlineSize);
@@ -131,7 +134,7 @@ export function CRTEffect({
 				cancelAnimationFrame(animationRef.current);
 			}
 		};
-	}, [scanlineOpacity, scanlineSize, flickerIntensity, vignetteIntensity, glowColor]);
+	}, [scanlineOpacity, scanlineSize, flickerIntensity, vignetteIntensity, glowColor, isActiveRef]);
 
 	return (
 		<m.div

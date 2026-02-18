@@ -2,8 +2,8 @@
 
 import { m } from "framer-motion";
 import { ArrowUpRight, Calendar, Tag } from "lucide-react";
+import { Link } from "next-view-transitions";
 import Image from "next/image";
-import Link from "next/link";
 
 import { useBlogTheme } from "@/lib/blog-themes";
 
@@ -94,7 +94,10 @@ function HeroCard({ post, index }: { post: Post; index: number }) {
 				<div className="flex flex-col lg:flex-row">
 					{/* Large Featured Image - 16:9 aspect ratio preserved */}
 					{theme.layout.showImages && post.data.image && (
-						<div className="relative aspect-[16/9] w-full flex-shrink-0 overflow-hidden lg:aspect-auto lg:h-auto lg:min-h-[320px] lg:w-1/2">
+						<div
+							className="relative aspect-[16/9] w-full flex-shrink-0 overflow-hidden lg:aspect-auto lg:h-auto lg:min-h-[320px] lg:w-1/2"
+							style={{ viewTransitionName: `blog-image-${post.slug}` }}
+						>
 							<Image
 								src={post.data.image}
 								alt={post.data.title}
@@ -233,7 +236,10 @@ function SecondaryCard({ post, index }: { post: Post; index: number }) {
 
 				{/* Image - preserve aspect ratio */}
 				{theme.layout.showImages && post.data.image && (
-					<div className="relative aspect-[16/9] w-full flex-shrink-0 overflow-hidden">
+					<div
+						className="relative aspect-[16/9] w-full flex-shrink-0 overflow-hidden"
+						style={{ viewTransitionName: `blog-image-${post.slug}` }}
+					>
 						<Image
 							src={post.data.image}
 							alt={post.data.title}
@@ -336,7 +342,10 @@ function CompactCard({ post, index }: { post: Post; index: number }) {
 
 				{/* Compact Image - preserve aspect ratio */}
 				{theme.layout.showImages && post.data.image && (
-					<div className="relative aspect-[16/9] w-full flex-shrink-0 overflow-hidden">
+					<div
+						className="relative aspect-[16/9] w-full flex-shrink-0 overflow-hidden"
+						style={{ viewTransitionName: `blog-image-${post.slug}` }}
+					>
 						<Image
 							src={post.data.image}
 							alt={post.data.title}

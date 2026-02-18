@@ -473,3 +473,70 @@ html {
 		opacity: 1;
 	}
 }
+
+/* ===== CSS Scroll-Driven Animations (Progressive Enhancement) ===== */
+
+@media (prefers-reduced-motion: no-preference) {
+	@supports (animation-timeline: view()) {
+		.reading-progress-bar {
+			transform-origin: left;
+			transform: scaleX(0);
+			animation: expandBar linear;
+			animation-timeline: scroll(root block);
+		}
+
+		@keyframes expandBar {
+			to {
+				transform: scaleX(1);
+			}
+		}
+
+		.scroll-reveal {
+			animation: revealUp linear both;
+			animation-timeline: view();
+			animation-range: entry 0% entry 40%;
+		}
+
+		@keyframes revealUp {
+			from {
+				opacity: 0;
+				transform: translateY(2rem);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+	}
+}
+
+/* ===== View Transitions ===== */
+
+@supports (view-transition-name: none) {
+	::view-transition-old(root) {
+		animation: vt-fade-out 0.2s ease-out;
+	}
+
+	::view-transition-new(root) {
+		animation: vt-fade-in 0.2s ease-in;
+	}
+
+	@keyframes vt-fade-out {
+		to {
+			opacity: 0;
+		}
+	}
+
+	@keyframes vt-fade-in {
+		from {
+			opacity: 0;
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-old(*),
+	::view-transition-new(*) {
+		animation-duration: 0.01s;
+	}
+}

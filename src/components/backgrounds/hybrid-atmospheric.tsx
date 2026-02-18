@@ -3,6 +3,8 @@
 import { m } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useCanvasController } from "@/hooks/use-canvas-controller";
+
 interface HybridAtmosphericProps {
 	className?: string;
 	asciiOpacity?: number;
@@ -20,21 +22,22 @@ export function HybridAtmospheric({
 	primaryColor = "#CCF381",
 }: HybridAtmosphericProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
+	const mousePosRef = useRef({ x: -1000, y: -1000 });
 	const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 	const animationRef = useRef<number | undefined>(undefined);
 	const timeRef = useRef(0);
 	const circuitsRef = useRef<
 		{ points: { x: number; y: number }[]; progress: number; speed: number }[]
 	>([]);
+	const { isActiveRef } = useCanvasController(canvasRef);
 
 	const handleMouseMove = useCallback((e: MouseEvent) => {
 		if (canvasRef.current) {
 			const rect = canvasRef.current.getBoundingClientRect();
-			setMousePos({
+			mousePosRef.current = {
 				x: e.clientX - rect.left,
 				y: e.clientY - rect.top,
-			});
+			};
 		}
 	}, []);
 
@@ -136,8 +139,13 @@ export function HybridAtmospheric({
 		const rows = Math.ceil(dimensions.height / (fontSize * 1.4));
 
 		const animate = () => {
+			animationRef.current = requestAnimationFrame(animate);
+
+			if (!isActiveRef.current) return;
+
 			timeRef.current += 0.008;
 			const t = timeRef.current;
+			const mousePos = mousePosRef.current;
 
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			ctx.save();
@@ -152,7 +160,6 @@ export function HybridAtmospheric({
 					const x = col * fontSize;
 					const y = row * fontSize * 1.4;
 
-					// Add mouse influence
 					const mouseDist = Math.sqrt((x - mousePos.x) ** 2 + (y - mousePos.y) ** 2);
 					const mouseInfluence = mouseDist < 150 ? (1 - mouseDist / 150) * 0.3 : 0;
 
@@ -188,7 +195,6 @@ export function HybridAtmospheric({
 				const drawnLength = totalLength * circuit.progress;
 				let lengthSoFar = 0;
 
-				// Draw base trace
 				ctx.beginPath();
 				ctx.strokeStyle = `rgba(148, 163, 184, ${circuitOpacity * 0.5})`;
 				ctx.lineWidth = 1;
@@ -196,7 +202,6 @@ export function HybridAtmospheric({
 				circuit.points.forEach((point) => ctx.lineTo(point.x, point.y));
 				ctx.stroke();
 
-				// Draw animated portion
 				ctx.beginPath();
 				ctx.strokeStyle = primaryColor;
 				ctx.lineWidth = 1.5;
@@ -230,7 +235,6 @@ export function HybridAtmospheric({
 				ctx.stroke();
 				ctx.shadowBlur = 0;
 
-				// Draw pulse point
 				ctx.beginPath();
 				ctx.arc(pulseX, pulseY, 4, 0, Math.PI * 2);
 				ctx.fillStyle = primaryColor;
@@ -239,7 +243,6 @@ export function HybridAtmospheric({
 				ctx.fill();
 				ctx.shadowBlur = 0;
 
-				// Draw nodes
 				circuit.points.forEach((point) => {
 					ctx.beginPath();
 					ctx.arc(point.x, point.y, 2, 0, Math.PI * 2);
@@ -248,13 +251,13 @@ export function HybridAtmospheric({
 				});
 			});
 
-			// Layer 3: Scanlines (CRT effect)
+			// Layer 3: Scanlines
 			ctx.fillStyle = `rgba(0, 0, 0, ${scanlineOpacity})`;
 			for (let y = 0; y < dimensions.height; y += 3) {
 				ctx.fillRect(0, y, dimensions.width, 1);
 			}
 
-			// Layer 4: Subtle vignette
+			// Layer 4: Vignette
 			const gradient = ctx.createRadialGradient(
 				dimensions.width / 2,
 				dimensions.height / 2,
@@ -268,7 +271,7 @@ export function HybridAtmospheric({
 			ctx.fillStyle = gradient;
 			ctx.fillRect(0, 0, dimensions.width, dimensions.height);
 
-			// Layer 5: Rolling scan (subtle phosphor refresh)
+			// Layer 5: Rolling scan
 			const scanY = ((t * 30) % (dimensions.height + 60)) - 30;
 			const scanGradient = ctx.createLinearGradient(0, scanY - 30, 0, scanY + 30);
 			scanGradient.addColorStop(0, "transparent");
@@ -278,18 +281,15 @@ export function HybridAtmospheric({
 			ctx.fillRect(0, scanY - 30, dimensions.width, 60);
 
 			ctx.restore();
-			animationRef.current = requestAnimationFrame(animate);
 		};
 
 		const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 		if (!prefersReducedMotion) {
 			animate();
 		} else {
-			// Static render
 			ctx.save();
 			ctx.scale(dpr, dpr);
 
-			// ASCII only
 			ctx.font = `${fontSize}px "JetBrains Mono", monospace`;
 			ctx.textBaseline = "top";
 
@@ -304,7 +304,6 @@ export function HybridAtmospheric({
 				}
 			}
 
-			// Static circuits
 			circuitsRef.current.forEach((circuit) => {
 				ctx.beginPath();
 				ctx.strokeStyle = `rgba(148, 163, 184, ${circuitOpacity})`;
@@ -322,7 +321,7 @@ export function HybridAtmospheric({
 				cancelAnimationFrame(animationRef.current);
 			}
 		};
-	}, [dimensions, mousePos, asciiOpacity, circuitOpacity, scanlineOpacity, primaryColor, noise]);
+	}, [dimensions, asciiOpacity, circuitOpacity, scanlineOpacity, primaryColor, noise, isActiveRef]);
 
 	return (
 		<m.canvas

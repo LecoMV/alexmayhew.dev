@@ -3,6 +3,8 @@
 import { m } from "framer-motion";
 import { useCallback, useEffect, useRef } from "react";
 
+import { useCanvasController } from "@/hooks/use-canvas-controller";
+
 interface AsciiFieldProps {
 	className?: string;
 	characters?: string;
@@ -25,6 +27,7 @@ export function AsciiField({
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const animationRef = useRef<number | undefined>(undefined);
 	const timeRef = useRef(0);
+	const { isActiveRef } = useCanvasController(canvasRef);
 
 	const noise = useCallback((x: number, y: number, t: number): number => {
 		const sin1 = Math.sin(x * 0.02 + t);
@@ -56,6 +59,10 @@ export function AsciiField({
 		const rows = Math.ceil(canvas.height / (fontSize * density * 1.2));
 
 		const animate = () => {
+			animationRef.current = requestAnimationFrame(animate);
+
+			if (!isActiveRef.current) return;
+
 			timeRef.current += noiseSpeed;
 			const t = timeRef.current;
 
@@ -74,21 +81,16 @@ export function AsciiField({
 					const charIndex = Math.floor(n * (characters.length - 1));
 					const char = characters[charIndex];
 
-					// Vary opacity based on noise
 					const opacity = 0.1 + n * 0.4;
 					ctx.fillStyle = color.replace(")", `, ${opacity})`).replace("rgb", "rgba");
 
 					ctx.fillText(char, px, py);
 				}
 			}
-
-			animationRef.current = requestAnimationFrame(animate);
 		};
 
-		// Check for reduced motion preference
 		const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 		if (prefersReducedMotion) {
-			// Static render
 			ctx.fillStyle = bgColor;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 			ctx.font = `${fontSize}px "JetBrains Mono", monospace`;
@@ -114,7 +116,7 @@ export function AsciiField({
 				cancelAnimationFrame(animationRef.current);
 			}
 		};
-	}, [characters, fontSize, color, bgColor, noiseSpeed, density, noise]);
+	}, [characters, fontSize, color, bgColor, noiseSpeed, density, noise, isActiveRef]);
 
 	return (
 		<m.canvas

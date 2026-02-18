@@ -3,6 +3,8 @@
 import { m } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useCanvasController } from "@/hooks/use-canvas-controller";
+
 interface BlueprintGridProps {
 	className?: string;
 	gridSize?: number;
@@ -169,15 +171,16 @@ export function BlueprintGrid({
 	animate = true,
 }: BlueprintGridProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
+	const mousePosRef = useRef({ x: -1000, y: -1000 });
 	const [dimensions, setDimensions] = useState<GridDimensions>({ width: 0, height: 0 });
 	const animationRef = useRef<number | undefined>(undefined);
 	const timeRef = useRef(0);
+	const { isActiveRef } = useCanvasController(canvasRef);
 
 	const handleMouseMove = useCallback((e: MouseEvent) => {
 		if (canvasRef.current) {
 			const rect = canvasRef.current.getBoundingClientRect();
-			setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+			mousePosRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
 		}
 	}, []);
 
@@ -213,6 +216,12 @@ export function BlueprintGrid({
 		const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
 		const draw = () => {
+			if (animate) {
+				animationRef.current = requestAnimationFrame(draw);
+			}
+
+			if (!isActiveRef.current) return;
+
 			timeRef.current += 0.01;
 
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -221,14 +230,10 @@ export function BlueprintGrid({
 
 			drawGrid(ctx, dimensions, gridSize, color);
 			if (showDiagonals) drawDiagonals(ctx, dimensions, gridSize, color);
-			drawProximityMarkers(ctx, dimensions, gridSize, mousePos, accentColor);
+			drawProximityMarkers(ctx, dimensions, gridSize, mousePosRef.current, accentColor);
 			if (animate) drawAnimatedLines(ctx, dimensions, gridSize, timeRef.current, accentColor);
 
 			ctx.restore();
-
-			if (animate) {
-				animationRef.current = requestAnimationFrame(draw);
-			}
 		};
 
 		draw();
@@ -236,7 +241,7 @@ export function BlueprintGrid({
 		return () => {
 			if (animationRef.current) cancelAnimationFrame(animationRef.current);
 		};
-	}, [dimensions, mousePos, gridSize, color, accentColor, showDiagonals, animate]);
+	}, [dimensions, gridSize, color, accentColor, showDiagonals, animate, isActiveRef]);
 
 	return (
 		<m.canvas

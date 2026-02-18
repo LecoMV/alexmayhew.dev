@@ -166,7 +166,10 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 							{post.data.image && (
 								<m.div
 									className="relative mb-12 aspect-video w-full overflow-hidden border"
-									style={{ borderColor: theme.colors.border }}
+									style={{
+										borderColor: theme.colors.border,
+										viewTransitionName: `blog-image-${post.slug}`,
+									}}
 									initial={{ opacity: 0, y: 20 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ ...springTransition, delay: 0.2 }}

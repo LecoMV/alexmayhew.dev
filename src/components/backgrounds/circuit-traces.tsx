@@ -3,6 +3,8 @@
 import { m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
+import { useCanvasController } from "@/hooks/use-canvas-controller";
+
 interface Point {
 	x: number;
 	y: number;
@@ -32,9 +34,10 @@ export function CircuitTraces({
 	animated = true,
 }: CircuitTracesProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const [traces, setTraces] = useState<Trace[]>([]);
+	const tracesRef = useRef<Trace[]>([]);
 	const animationRef = useRef<number | undefined>(undefined);
 	const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+	const { isActiveRef } = useCanvasController(canvasRef);
 
 	useEffect(() => {
 		const generateTraces = () => {
@@ -48,7 +51,6 @@ export function CircuitTraces({
 				const startRow = Math.floor(Math.random() * rows);
 				const points: Point[] = [{ x: startCol * gridSize, y: startRow * gridSize }];
 
-				// Generate path with 90-degree turns
 				let currentCol = startCol;
 				let currentRow = startRow;
 				const pathLength = 3 + Math.floor(Math.random() * 8);
@@ -72,7 +74,6 @@ export function CircuitTraces({
 							break;
 					}
 
-					// Clamp to bounds
 					currentCol = Math.max(0, Math.min(cols, currentCol));
 					currentRow = Math.max(0, Math.min(rows, currentRow));
 
@@ -88,7 +89,7 @@ export function CircuitTraces({
 				});
 			}
 
-			setTraces(newTraces);
+			tracesRef.current = newTraces;
 		};
 
 		if (dimensions.width > 0) {
@@ -117,14 +118,17 @@ export function CircuitTraces({
 		if (!ctx) return;
 
 		const animate = () => {
+			animationRef.current = requestAnimationFrame(animate);
+
+			if (!isActiveRef.current) return;
+
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-			setTraces((prev) =>
-				prev.map((trace) => ({
-					...trace,
-					progress: trace.progress >= 1 ? 0 : trace.progress + trace.speed,
-				}))
-			);
+			const traces = tracesRef.current;
+
+			traces.forEach((trace) => {
+				trace.progress = trace.progress >= 1 ? 0 : trace.progress + trace.speed;
+			});
 
 			traces.forEach((trace) => {
 				if (trace.points.length < 2) return;
@@ -158,7 +162,6 @@ export function CircuitTraces({
 						const y = prev.y + (curr.y - prev.y) * ratio;
 						ctx.lineTo(x, y);
 
-						// Draw glowing endpoint
 						ctx.stroke();
 						ctx.beginPath();
 						ctx.arc(x, y, 3, 0, Math.PI * 2);
@@ -173,7 +176,6 @@ export function CircuitTraces({
 
 				ctx.stroke();
 
-				// Draw connection nodes
 				trace.points.forEach((point, i) => {
 					if (i > 0 && lengthSoFar > 0) {
 						ctx.beginPath();
@@ -183,8 +185,6 @@ export function CircuitTraces({
 					}
 				});
 			});
-
-			animationRef.current = requestAnimationFrame(animate);
 		};
 
 		animate();
@@ -194,10 +194,10 @@ export function CircuitTraces({
 				cancelAnimationFrame(animationRef.current);
 			}
 		};
-	}, [traces, animated, color, glowColor]);
+	}, [animated, color, glowColor, isActiveRef]);
 
 	useEffect(() => {
-		if (animated || !canvasRef.current || traces.length === 0) return;
+		if (animated || !canvasRef.current || tracesRef.current.length === 0) return;
 
 		const canvas = canvasRef.current;
 		const ctx = canvas.getContext("2d");
@@ -205,7 +205,7 @@ export function CircuitTraces({
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-		traces.forEach((trace) => {
+		tracesRef.current.forEach((trace) => {
 			if (trace.points.length < 2) return;
 
 			ctx.beginPath();
@@ -219,7 +219,6 @@ export function CircuitTraces({
 
 			ctx.stroke();
 
-			// Draw nodes
 			trace.points.forEach((point) => {
 				ctx.beginPath();
 				ctx.arc(point.x, point.y, 2, 0, Math.PI * 2);
@@ -227,7 +226,7 @@ export function CircuitTraces({
 				ctx.fill();
 			});
 		});
-	}, [traces, animated, color]);
+	}, [dimensions, animated, color]);
 
 	return (
 		<m.canvas
