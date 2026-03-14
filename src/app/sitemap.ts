@@ -20,7 +20,7 @@ function getSlug(path: string): string {
 
 export default function sitemap(): MetadataRoute.Sitemap {
 	// Static pages — use fixed dates to avoid Google distrust of constantly-changing lastmod
-	const siteLastUpdated = new Date("2026-02-06");
+	const siteLastUpdated = new Date("2026-03-14");
 
 	const staticPages: MetadataRoute.Sitemap = [
 		{

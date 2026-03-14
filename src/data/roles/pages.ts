@@ -231,11 +231,7 @@ For specific projects—MVP builds, major architecture decisions, fundraising te
 
 I'm responsive to urgent questions (within hours during business hours) because I know startup problems don't wait for scheduled meetings.`,
 
-		relatedServices: [
-			"fullstack-developer-for-startups",
-			"fullstack-developer-for-startups",
-			"fractional-cto-for-startups",
-		],
+		relatedServices: ["fullstack-developer-for-startups", "fractional-cto-for-startups"],
 
 		faqs: [
 			{
@@ -542,23 +538,14 @@ I can also embed with your team for specific projects—leading a modernization 
 // Helper Functions
 // =============================================================================
 
-/**
- * Get all published role pages
- */
 export function getPublishedRolePages(): RolePage[] {
 	return rolePages.filter((page) => page.published);
 }
 
-/**
- * Get a role page by slug
- */
 export function getRolePageBySlug(slug: string): RolePage | undefined {
 	return rolePages.find((page) => page.slug === slug);
 }
 
-/**
- * Get all role page slugs (for static generation)
- */
 export function getAllRoleSlugs(): string[] {
 	return rolePages.map((page) => page.slug);
 }

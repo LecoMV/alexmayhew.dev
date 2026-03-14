@@ -26,9 +26,9 @@ export default function GlobalError({
 						</p>
 						<button
 							onClick={() => reset()}
-							className="border border-white/20 px-6 py-3 transition-colors duration-300 hover:border-[#ccf381]"
+							className="hover:border-cyber-lime border border-white/20 px-6 py-3 transition-colors duration-300"
 						>
-							<span className="font-mono text-sm tracking-tight text-[#e2e8f0] hover:text-[#ccf381]">
+							<span className="text-mist-white hover:text-cyber-lime font-mono text-sm tracking-tight">
 								Try again
 							</span>
 						</button>
