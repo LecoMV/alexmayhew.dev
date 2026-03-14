@@ -28,29 +28,16 @@ export function ArticleJsonLd({
 		"@type": isHub ? "TechArticle" : "Article",
 		headline: title,
 		description: description,
-		image: image ? `${siteUrl}${image}` : `${siteUrl}/og-image.png`,
+		image: {
+			"@type": "ImageObject",
+			url: image ? `${siteUrl}${image}` : `${siteUrl}/og-image.png`,
+			width: 1200,
+			height: 630,
+		},
 		datePublished: publishedAt.toISOString(),
 		dateModified: (updatedAt ?? publishedAt).toISOString(),
-		author: {
-			"@type": "Person",
-			name: "Alex Mayhew",
-			url: siteUrl,
-			jobTitle: "Technical Advisor & Systems Architect",
-			sameAs: [
-				"https://github.com/LecoMV",
-				"https://www.linkedin.com/in/alexmmayhew",
-				"https://x.com/alexmayhewdev",
-			],
-		},
-		publisher: {
-			"@type": "Person",
-			name: "Alex Mayhew",
-			url: siteUrl,
-			logo: {
-				"@type": "ImageObject",
-				url: `${siteUrl}/favicon.svg`,
-			},
-		},
+		author: { "@id": "https://alexmayhew.dev/#person" },
+		publisher: { "@id": "https://alexmayhew.dev/#person" },
 		mainEntityOfPage: {
 			"@type": "WebPage",
 			"@id": `${siteUrl}/blog/${slug}`,

@@ -85,7 +85,7 @@ ${spokeLines}
 
 - Website: https://alexmayhew.dev
 - Contact: https://alexmayhew.dev/contact
-- LinkedIn: https://linkedin.com/in/alexmayhew
+- LinkedIn: https://www.linkedin.com/in/alexmmayhew
 - X/Twitter: https://x.com/alexmayhewdev
 - RSS: https://alexmayhew.dev/feed.xml
 `;

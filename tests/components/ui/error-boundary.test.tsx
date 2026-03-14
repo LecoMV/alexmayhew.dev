@@ -1,7 +1,12 @@
+import * as Sentry from "@sentry/nextjs";
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ErrorBoundary } from "@/components/ui/error-boundary";
+
+vi.mock("@sentry/nextjs", () => ({
+	captureException: vi.fn(),
+}));
 
 function ThrowingComponent(): never {
 	throw new Error("Test error");
@@ -43,17 +48,17 @@ describe("ErrorBoundary", () => {
 		expect(container.innerHTML).toBe("");
 	});
 
-	it("logs error with [ErrorBoundary] prefix via componentDidCatch", () => {
-		const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+	it("reports error to Sentry via componentDidCatch", () => {
 		render(
 			<ErrorBoundary fallback={<div>Fallback</div>}>
 				<ThrowingComponent />
 			</ErrorBoundary>
 		);
-		expect(consoleSpy).toHaveBeenCalledWith(
-			"[ErrorBoundary]",
+		expect(Sentry.captureException).toHaveBeenCalledWith(
 			expect.any(Error),
-			expect.any(String)
+			expect.objectContaining({
+				contexts: { react: { componentStack: expect.any(String) } },
+			})
 		);
 	});
 

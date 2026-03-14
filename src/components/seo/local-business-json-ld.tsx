@@ -112,6 +112,8 @@ export function LocalBusinessJsonLd() {
 			"AI/ML Integration",
 		],
 
+		founder: { "@id": "https://alexmayhew.dev/#person" },
+
 		// Social profiles
 		sameAs: [
 			"https://github.com/LecoMV",

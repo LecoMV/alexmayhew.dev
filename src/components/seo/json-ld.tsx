@@ -2,6 +2,7 @@ export function JsonLd() {
 	const personSchema = {
 		"@context": "https://schema.org",
 		"@type": "Person",
+		"@id": "https://alexmayhew.dev/#person",
 		name: "Alex Mayhew",
 		url: "https://alexmayhew.dev",
 		image: "https://alexmayhew.dev/og-image.png",
@@ -62,30 +63,36 @@ export function JsonLd() {
 	const websiteSchema = {
 		"@context": "https://schema.org",
 		"@type": "WebSite",
+		"@id": "https://alexmayhew.dev/#website",
 		name: "Alex Mayhew",
 		alternateName: "alexmayhew.dev",
 		url: "https://alexmayhew.dev",
 		description: "Portfolio and blog of Alex Mayhew - Technical Advisor & Systems Architect",
-		author: {
-			"@type": "Person",
-			name: "Alex Mayhew",
-		},
-		potentialAction: {
-			"@type": "SearchAction",
-			target: {
-				"@type": "EntryPoint",
-				urlTemplate: "https://alexmayhew.dev/blog?q={search_term_string}",
-			},
-			"query-input": "required name=search_term_string",
-		},
+		author: { "@id": "https://alexmayhew.dev/#person" },
 	};
 
 	const professionalServiceSchema = {
 		"@context": "https://schema.org",
-		"@type": "ProfessionalService",
+		"@type": "ConsultingService",
+		"@id": "https://alexmayhew.dev/#business",
 		name: "Alex Mayhew - Technical Advisory Services",
 		url: "https://alexmayhew.dev",
 		logo: "https://alexmayhew.dev/favicon.svg",
+		founder: { "@id": "https://alexmayhew.dev/#person" },
+		knowsAbout: [
+			"Software Architecture",
+			"SaaS Development",
+			"Next.js",
+			"React",
+			"TypeScript",
+			"Node.js",
+			"Python",
+			"PostgreSQL",
+			"AI/ML Integration",
+			"Performance Engineering",
+			"Cloud Architecture",
+			"Technical Due Diligence",
+		],
 		description:
 			"Strategic technical guidance for founders and CTOs. Architecture decisions that compound into competitive advantage. Specializing in SaaS, Fintech, Healthcare, and high-growth startups.",
 		priceRange: "$$$$",
