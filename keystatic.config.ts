@@ -1,6 +1,5 @@
-import { config, fields, collection, singleton } from "@keystatic/core";
+import { collection, config, fields, singleton } from "@keystatic/core";
 
-// Use local storage for dev/build, GitHub for production with proper env vars
 const storage =
 	process.env.NODE_ENV === "production" && process.env.KEYSTATIC_GITHUB_CLIENT_ID
 		? {
@@ -14,6 +13,8 @@ const storage =
 		: {
 				kind: "local" as const,
 			};
+
+export const showAdminUI = process.env.NODE_ENV === "development";
 
 export default config({
 	storage,

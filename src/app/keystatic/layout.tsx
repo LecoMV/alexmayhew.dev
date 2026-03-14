@@ -1,5 +1,8 @@
-import KeystaticApp from "./keystatic";
+import { notFound } from "next/navigation";
 
-export default function Layout() {
-	return <KeystaticApp />;
+import { showAdminUI } from "../../../keystatic.config";
+
+export default function KeystaticLayout({ children }: { children: React.ReactNode }) {
+	if (!showAdminUI) notFound();
+	return <>{children}</>;
 }

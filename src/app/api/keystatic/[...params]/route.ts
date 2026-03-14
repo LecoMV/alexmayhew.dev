@@ -1,5 +1,9 @@
 import { makeRouteHandler } from "@keystatic/next/route-handler";
 
-import config from "../../../../../keystatic.config";
+import config, { showAdminUI } from "../../../../../keystatic.config";
 
-export const { POST, GET } = makeRouteHandler({ config });
+const notFoundResponse = () => new Response(null, { status: 404 });
+
+export const { POST, GET } = showAdminUI
+	? makeRouteHandler({ config })
+	: { GET: notFoundResponse, POST: notFoundResponse };
