@@ -37,8 +37,8 @@ export function ArticleJsonLd({
 			url: siteUrl,
 			jobTitle: "Technical Advisor & Systems Architect",
 			sameAs: [
-				"https://github.com/alexmayhew",
-				"https://linkedin.com/in/alexmayhew",
+				"https://github.com/LecoMV",
+				"https://www.linkedin.com/in/alexmmayhew",
 				"https://x.com/alexmayhewdev",
 			],
 		},

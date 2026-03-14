@@ -21,8 +21,8 @@ export function CaseStudyJsonLd({ project }: CaseStudyJsonLdProps) {
 			url: siteUrl,
 			jobTitle: "Technical Advisor",
 			sameAs: [
-				"https://linkedin.com/in/alexmayhewdev",
-				"https://github.com/alexmayhew",
+				"https://www.linkedin.com/in/alexmmayhew",
+				"https://github.com/LecoMV",
 				"https://x.com/alexmayhewdev",
 			],
 		},
