@@ -149,16 +149,16 @@ In my experience, 90% of customers accept this without pushback when you frame i
 
 ## Common "Both" Scenarios and Recommendations
 
-| "Both" Scenario       | Recommendation                         | Reasoning                                                                  |
-| --------------------- | -------------------------------------- | -------------------------------------------------------------------------- |
-| MySQL and PostgreSQL  | Pick PostgreSQL                        | JSONB, RLS, better extension ecosystem for SaaS                            |
-| PostgreSQL and MongoDB | Pick one based on workload            | MongoDB excels at document-heavy workloads; PostgreSQL covers relational + JSONB. Supporting both is rarely worth the adapter complexity. |
-| REST and GraphQL      | Pick one based on clients              | Mobile-heavy = GraphQL; B2B integrations = REST                            |
-| AWS and GCP           | Pick one unless enterprise requires it | Multi-cloud tax is 30-50% of infrastructure engineering time               |
-| Docker and bare metal | Docker                                 | The abstraction cost is negligible; operational benefits are real          |
-| API v1 and v2         | Sunset v1 within 12 months             | Every additional API version is permanent maintenance                      |
-| Webpack and Vite      | Vite                                   | The migration is a one-time cost; the build speed improvement is permanent |
-| Jest and Vitest       | Pick one                               | They're similar enough that maintaining both is pure overhead              |
+| "Both" Scenario        | Recommendation                         | Reasoning                                                                                                                                 |
+| ---------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| MySQL and PostgreSQL   | Pick PostgreSQL                        | JSONB, RLS, better extension ecosystem for SaaS                                                                                           |
+| PostgreSQL and MongoDB | Pick one based on workload             | MongoDB excels at document-heavy workloads; PostgreSQL covers relational + JSONB. Supporting both is rarely worth the adapter complexity. |
+| REST and GraphQL       | Pick one based on clients              | Mobile-heavy = GraphQL; B2B integrations = REST                                                                                           |
+| AWS and GCP            | Pick one unless enterprise requires it | Multi-cloud tax is 30-50% of infrastructure engineering time                                                                              |
+| Docker and bare metal  | Docker                                 | The abstraction cost is negligible; operational benefits are real                                                                         |
+| API v1 and v2          | Sunset v1 within 12 months             | Every additional API version is permanent maintenance                                                                                     |
+| Webpack and Vite       | Vite                                   | The migration is a one-time cost; the build speed improvement is permanent                                                                |
+| Jest and Vitest        | Pick one                               | They're similar enough that maintaining both is pure overhead                                                                             |
 
 ---
 

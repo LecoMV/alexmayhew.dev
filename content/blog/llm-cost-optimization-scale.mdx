@@ -40,14 +40,14 @@ The insight: most queries don't need the most capable model. A factual lookup, a
 
 ### The Model Tier Map
 
-| Tier       | Model              | Input Cost       | Output Cost      | Use Case                                  |
-| ---------- | ------------------ | ---------------- | ---------------- | ----------------------------------------- |
-| **Tier 1** | GPT-4o-mini        | $0.15/1M tokens  | $0.60/1M tokens  | Classification, extraction, simple Q&A    |
-| **Tier 2** | Claude Haiku 4.5   | $0.80/1M tokens  | $4.00/1M tokens  | Moderate reasoning, summarization         |
-| **Tier 3** | Claude Sonnet 4.6  | $3.00/1M tokens  | $15.00/1M tokens | Complex reasoning, nuanced generation     |
-| **Tier 4** | Claude Opus 4.6    | $15.00/1M tokens | $75.00/1M tokens | Expert-level analysis, critical decisions |
+| Tier       | Model             | Input Cost       | Output Cost      | Use Case                                  |
+| ---------- | ----------------- | ---------------- | ---------------- | ----------------------------------------- |
+| **Tier 1** | GPT-4o-mini       | $0.15/1M tokens  | $0.60/1M tokens  | Classification, extraction, simple Q&A    |
+| **Tier 2** | Claude Haiku 4.5  | $0.80/1M tokens  | $4.00/1M tokens  | Moderate reasoning, summarization         |
+| **Tier 3** | Claude Sonnet 4.6 | $3.00/1M tokens  | $15.00/1M tokens | Complex reasoning, nuanced generation     |
+| **Tier 4** | Claude Opus 4.6   | $15.00/1M tokens | $75.00/1M tokens | Expert-level analysis, critical decisions |
 
-*Pricing as of March 2026. LLM costs trend downward... verify current rates before building your cost model.*
+_Pricing as of March 2026. LLM costs trend downward... verify current rates before building your cost model._
 
 ### The Router
 
@@ -318,7 +318,7 @@ async function trackLLMCost(
 ) {
 	const pricing: Record<string, { input: number; output: number }> = {
 		"gpt-4o-mini": { input: 0.15, output: 0.6 },
-		"claude-haiku-4-5-20251001": { input: 0.80, output: 4.0 },
+		"claude-haiku-4-5-20251001": { input: 0.8, output: 4.0 },
 		"claude-sonnet-4-6": { input: 3.0, output: 15.0 },
 		// Verify pricing at https://docs.anthropic.com/en/docs/about-claude/models
 	};

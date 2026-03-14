@@ -208,7 +208,8 @@ async function filterLargeDataset(data: DataRow[], filters: FilterConfig): Promi
 ```
 
 **Browser support note:** `scheduler.yield()` is supported in Chrome 129+, Edge 129+, Firefox 142+, and Opera 115+, but **not in Safari**. The fallback using `setTimeout(resolve, 0)` works everywhere but doesn't preserve task priority. For ~72% of global users, `scheduler.yield()` works natively... for the rest, the fallback is still a significant improvement over blocking the main thread.
-```
+
+````
 
 **8. Virtualize Large Lists**
 
@@ -247,7 +248,7 @@ function DataTable({ rows }: { rows: DataRow[] }) {
     </div>
   );
 }
-```
+````
 
 Virtualization typically reduces INP on data tables from 300-800ms to under 100ms.
 

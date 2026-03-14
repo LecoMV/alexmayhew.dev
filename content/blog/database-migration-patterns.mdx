@@ -52,7 +52,7 @@ CREATE TABLE order_audit_logs (
 
 PostgreSQL 11+ made `ADD COLUMN` with a default value a metadata-only operation... no table rewrite required. This single optimization eliminated the most common migration failure mode.
 
-**Caveat:** This only applies to *static* defaults. `DEFAULT 'active'`, `DEFAULT 0`, `DEFAULT false` are instant. But *volatile* defaults like `DEFAULT gen_random_uuid()`, `DEFAULT now()`, or `DEFAULT random()` still trigger a full table rewrite. The UUID case catches people most often... if you need a UUID column with a default, add it nullable first, backfill in batches, then add the constraint.
+**Caveat:** This only applies to _static_ defaults. `DEFAULT 'active'`, `DEFAULT 0`, `DEFAULT false` are instant. But _volatile_ defaults like `DEFAULT gen_random_uuid()`, `DEFAULT now()`, or `DEFAULT random()` still trigger a full table rewrite. The UUID case catches people most often... if you need a UUID column with a default, add it nullable first, backfill in batches, then add the constraint.
 
 ### Category 2: Data Backfill (Medium Risk)
 

@@ -164,27 +164,27 @@ Pinecone's namespace feature maps cleanly to multi-tenant SaaS: one namespace pe
 
 ### Qdrant (Self-Hosted, High Performance)
 
-| Attribute              | Details                                         |
-| ---------------------- | ----------------------------------------------- |
-| **Hosting**            | Self-hosted (Docker/K8s) or Qdrant Cloud        |
-| **Max vectors**        | Billions (with disk-based storage)              |
-| **Query latency**      | 3-15ms (memory), 10-50ms (disk)                 |
+| Attribute              | Details                                                           |
+| ---------------------- | ----------------------------------------------------------------- |
+| **Hosting**            | Self-hosted (Docker/K8s) or Qdrant Cloud                          |
+| **Max vectors**        | Billions (with disk-based storage)                                |
+| **Query latency**      | 3-15ms (memory), 10-50ms (disk)                                   |
 | **Pricing**            | Open source (self-hosted), or usage-based (Cloud, from $0.014/hr) |
-| **Metadata filtering** | Advanced (nested, array, geo, full-text)        |
-| **Hybrid search**      | Yes (sparse vectors + payload filtering)        |
+| **Metadata filtering** | Advanced (nested, array, geo, full-text)                          |
+| **Hybrid search**      | Yes (sparse vectors + payload filtering)                          |
 
 **Best for:** Teams that want control over their infrastructure and need advanced filtering capabilities. Qdrant's filtering is the most powerful among dedicated vector databases.
 
 ### Weaviate (Hybrid Search Native)
 
-| Attribute              | Details                                           |
-| ---------------------- | ------------------------------------------------- |
-| **Hosting**            | Self-hosted (Docker/K8s) or Weaviate Cloud        |
-| **Max vectors**        | Billions                                          |
-| **Query latency**      | 5-25ms                                            |
+| Attribute              | Details                                                             |
+| ---------------------- | ------------------------------------------------------------------- |
+| **Hosting**            | Self-hosted (Docker/K8s) or Weaviate Cloud                          |
+| **Max vectors**        | Billions                                                            |
+| **Query latency**      | 5-25ms                                                              |
 | **Pricing**            | Open source (self-hosted), or $25/1M vector-dims/month (Cloud Flex) |
-| **Metadata filtering** | GraphQL-based, object-oriented                    |
-| **Hybrid search**      | Built-in BM25 + vector, single query              |
+| **Metadata filtering** | GraphQL-based, object-oriented                                      |
+| **Hybrid search**      | Built-in BM25 + vector, single query                                |
 
 **Best for:** Teams that need hybrid search (BM25 + vector) as a first-class feature without building the merge logic themselves.
 
@@ -194,15 +194,15 @@ Pinecone's namespace feature maps cleanly to multi-tenant SaaS: one namespace pe
 
 For a SaaS with 1M vectors (1536-dim) and 50K queries/day:
 
-| Solution                          | Monthly Cost   | Includes                                        |
-| --------------------------------- | -------------- | ----------------------------------------------- |
-| **pgvector (existing DB)**        | $0 incremental | Runs on existing PostgreSQL                     |
-| **pgvector (dedicated instance)** | $100-200       | db.m7g.large on RDS                             |
-| **Pinecone Serverless**           | ~$75-150       | Read Units + $0.33/GB storage ($50/mo minimum)  |
-| **Qdrant Cloud**                  | ~$100-200      | Usage-based, depends on cluster configuration   |
-| **Qdrant (self-hosted)**          | ~$40           | t3.medium instance                              |
-| **Weaviate Cloud (Flex)**         | ~$40-100       | $25/1M vector-dims/month + storage              |
-| **Turbopuffer**                   | ~$20-60        | Usage-based, S3-backed storage                  |
+| Solution                          | Monthly Cost   | Includes                                       |
+| --------------------------------- | -------------- | ---------------------------------------------- |
+| **pgvector (existing DB)**        | $0 incremental | Runs on existing PostgreSQL                    |
+| **pgvector (dedicated instance)** | $100-200       | db.m7g.large on RDS                            |
+| **Pinecone Serverless**           | ~$75-150       | Read Units + $0.33/GB storage ($50/mo minimum) |
+| **Qdrant Cloud**                  | ~$100-200      | Usage-based, depends on cluster configuration  |
+| **Qdrant (self-hosted)**          | ~$40           | t3.medium instance                             |
+| **Weaviate Cloud (Flex)**         | ~$40-100       | $25/1M vector-dims/month + storage             |
+| **Turbopuffer**                   | ~$20-60        | Usage-based, S3-backed storage                 |
 
 pgvector on your existing database costs literally nothing extra. This is why it's the default recommendation.
 

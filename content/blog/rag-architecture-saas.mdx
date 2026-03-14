@@ -169,15 +169,15 @@ The embedding model converts text into dense vector representations for similari
 
 ### Model Comparison (2026 Benchmarks)
 
-| Model                              | Dimensions | MTEB Score | Cost per 1M tokens | Latency  |
-| ---------------------------------- | ---------- | ---------- | ------------------- | -------- |
-| **Google Gemini Embedding 001**    | 3072       | 68.3       | $0.006              | 40-80ms  |
-| **Voyage AI voyage-3-large**       | 1024       | 67.1       | $0.06               | 40-70ms  |
-| **Cohere Embed 4**                 | 1536       | ~65.2      | $0.12               | 40-80ms  |
-| **OpenAI text-embedding-3-large**  | 3072       | 64.6       | $0.13               | 50-100ms |
-| **Cohere embed-english-v3.0**      | 1024       | 64.5       | $0.10               | 40-80ms  |
-| **BGE-M3 (self-hosted)**           | 1024       | 63.0       | Infrastructure only | 20-50ms  |
-| **OpenAI text-embedding-3-small**  | 1536       | 62.3       | $0.02               | 30-60ms  |
+| Model                             | Dimensions | MTEB Score | Cost per 1M tokens  | Latency  |
+| --------------------------------- | ---------- | ---------- | ------------------- | -------- |
+| **Google Gemini Embedding 001**   | 3072       | 68.3       | $0.006              | 40-80ms  |
+| **Voyage AI voyage-3-large**      | 1024       | 67.1       | $0.06               | 40-70ms  |
+| **Cohere Embed 4**                | 1536       | ~65.2      | $0.12               | 40-80ms  |
+| **OpenAI text-embedding-3-large** | 3072       | 64.6       | $0.13               | 50-100ms |
+| **Cohere embed-english-v3.0**     | 1024       | 64.5       | $0.10               | 40-80ms  |
+| **BGE-M3 (self-hosted)**          | 1024       | 63.0       | Infrastructure only | 20-50ms  |
+| **OpenAI text-embedding-3-small** | 1536       | 62.3       | $0.02               | 30-60ms  |
 
 The landscape shifted significantly in 2025-2026. Google's Gemini Embedding 001 now leads the MTEB leaderboard at a fraction of OpenAI's cost. Cohere's Embed 4 adds multimodal support (text + images) in a single model. BGE-M3 remains the strongest self-hosted option with native support for dense, sparse, and multi-vector retrieval across 100+ languages.
 
@@ -375,15 +375,15 @@ Temperature of 0.1 is deliberate. For factual Q&A grounded in retrieved document
 
 RAG costs scale with query volume. Here's a breakdown for 100K queries/month:
 
-| Component                | Cost Model                       | 100K queries/month                     |
-| ------------------------ | -------------------------------- | -------------------------------------- |
-| **Embedding (query)**    | $0.02/1M tokens                  | ~$2                                    |
-| **Vector search**        | Varies by provider               | $20-50 (managed), $10-20 (self-hosted) |
-| **Reranking**            | $2.00/1K searches (Cohere v3.5)  | $200                                   |
-| **Generation (GPT-4o)**  | ~$0.013 per query (avg)          | $1,300                                 |
-| **Generation (GPT-4o-mini)** | ~$0.001 per query (avg)      | $100                                   |
-| **Total (GPT-4o)**       |                                  | ~$1,550/month                          |
-| **Total (GPT-4o-mini)**  |                                  | ~$350/month                            |
+| Component                    | Cost Model                      | 100K queries/month                     |
+| ---------------------------- | ------------------------------- | -------------------------------------- |
+| **Embedding (query)**        | $0.02/1M tokens                 | ~$2                                    |
+| **Vector search**            | Varies by provider              | $20-50 (managed), $10-20 (self-hosted) |
+| **Reranking**                | $2.00/1K searches (Cohere v3.5) | $200                                   |
+| **Generation (GPT-4o)**      | ~$0.013 per query (avg)         | $1,300                                 |
+| **Generation (GPT-4o-mini)** | ~$0.001 per query (avg)         | $100                                   |
+| **Total (GPT-4o)**           |                                 | ~$1,550/month                          |
+| **Total (GPT-4o-mini)**      |                                 | ~$350/month                            |
 
 The generation model is 80-90% of the cost. For most SaaS knowledge base features, GPT-4o-mini produces answers that are 90% as good as GPT-4o at a fraction of the cost. Start with the smaller model and upgrade only for use cases where quality measurably improves revenue.
 
