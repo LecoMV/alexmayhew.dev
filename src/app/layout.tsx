@@ -122,7 +122,6 @@ export const metadata: Metadata = {
 		creator: "@alexmayhew",
 	},
 	alternates: {
-		canonical: siteUrl,
 		types: {
 			"application/rss+xml": `${siteUrl}/feed.xml`,
 		},

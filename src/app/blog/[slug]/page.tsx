@@ -61,6 +61,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			creator: "@alexmayhewdev",
 		},
 		alternates: {
+			canonical: `${siteUrl}/blog/${slug}`,
 			types: {
 				"application/rss+xml": `${siteUrl}/feed.xml`,
 			},
@@ -75,7 +76,6 @@ export default async function BlogArticlePage({ params }: PageProps) {
 
 	const MDX = post.body;
 
-	// Create data object for BlogArticle component
 	const postData = {
 		slug,
 		data: {
