@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("SEO", () => {
 	test("home page has proper meta tags", async ({ page }) => {
@@ -8,7 +8,6 @@ test.describe("SEO", () => {
 		// Title
 		await expect(page).toHaveTitle(/Alex Mayhew/i);
 
-		// Meta description
 		const description = page.locator('meta[name="description"]');
 		await expect(description).toHaveAttribute("content", /.+/);
 
@@ -27,19 +26,21 @@ test.describe("SEO", () => {
 		await expect(twitterCard).toHaveAttribute("content", "summary_large_image");
 	});
 
-	test("canonical URL is set", async ({ page }) => {
-		await page.goto("/");
+	test("canonical URL is set on blog posts", async ({ page }) => {
+		await page.goto("/blog/ai-assisted-development-guide");
 		await page.waitForLoadState("networkidle");
 
 		const canonical = page.locator('link[rel="canonical"]');
-		await expect(canonical).toHaveAttribute("href", /alexmayhew\.dev/);
+		await expect(canonical).toHaveAttribute(
+			"href",
+			/alexmayhew\.dev\/blog\/ai-assisted-development-guide/
+		);
 	});
 
 	test("robots meta allows indexing", async ({ page }) => {
 		await page.goto("/");
 		await page.waitForLoadState("networkidle");
 
-		// Either no robots meta (default allows) or explicit follow/index
 		const robots = page.locator('meta[name="robots"]');
 		const exists = (await robots.count()) > 0;
 
