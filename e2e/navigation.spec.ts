@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("Navigation", () => {
 	test.beforeEach(async ({ page }) => {
@@ -8,15 +8,15 @@ test.describe("Navigation", () => {
 
 	test("navigation links work correctly", async ({ page, viewport }) => {
 		// Skip this test on mobile viewports - mobile nav is tested separately
-		const isMobile = viewport && viewport.width < 768;
+		const isMobile = viewport && viewport.width < 1024;
 		if (isMobile) {
 			test.skip();
 			return;
 		}
 
 		// Use desktop viewport - target visible desktop nav links
-		// Desktop nav is in a div that's hidden on mobile (hidden md:flex)
-		const desktopNav = page.locator("nav > div > div.hidden.md\\:flex");
+		// Desktop nav is in a div that's hidden on mobile (hidden lg:flex)
+		const desktopNav = page.locator("nav > div > div.hidden.lg\\:flex");
 
 		// Navigate to Work page
 		await desktopNav.locator('a[href="/work"]').click();
@@ -80,7 +80,7 @@ test.describe("Navigation", () => {
 		await page.waitForTimeout(500); // Wait for animation to complete
 
 		// Mobile menu should now be visible
-		const mobileMenu = page.locator("nav div.md\\:hidden");
+		const mobileMenu = page.locator("nav div.lg\\:hidden");
 		await expect(mobileMenu).toBeVisible();
 
 		// Click work link in mobile menu (use visible: true to only match visible elements)
@@ -92,7 +92,7 @@ test.describe("Navigation", () => {
 
 	test("active link is highlighted", async ({ page, viewport }) => {
 		// Skip on mobile - desktop nav tests
-		const isMobile = viewport && viewport.width < 768;
+		const isMobile = viewport && viewport.width < 1024;
 		if (isMobile) {
 			test.skip();
 			return;
@@ -102,7 +102,7 @@ test.describe("Navigation", () => {
 		await page.waitForLoadState("networkidle");
 
 		// Desktop nav - work link should have active styling (cyber-lime color)
-		const desktopNav = page.locator("nav > div > div.hidden.md\\:flex");
+		const desktopNav = page.locator("nav > div > div.hidden.lg\\:flex");
 		const workLink = desktopNav.locator('a[href="/work"]');
 		await expect(workLink).toHaveClass(/text-cyber-lime/);
 	});
