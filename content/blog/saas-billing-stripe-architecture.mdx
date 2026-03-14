@@ -1,13 +1,12 @@
 ---
 title: "SaaS Billing Architecture with Stripe"
 description: "Billing is where SaaS architecture decisions have the most direct revenue impact. Here's the Stripe integration architecture I recommend... webhook-driven state machines, idempotent payment processing, and the subscription lifecycle patterns that prevent revenue leakage."
-date: "2026-10-06"
+date: "2026-03-10"
 author: "Alex Mayhew"
 tags: ["billing", "stripe", "saas", "architecture", "subscriptions"]
 category: "architecture"
 readingTime: "16 min read"
 featured: false
-draft: true
 series: "saas-architecture"
 image: "/images/blog/saas-billing-stripe-architecture-featured.webp"
 ---
@@ -282,7 +281,7 @@ async function upgradeSubscription(
 
 ### Edge Case 2: Failed Payment Retry
 
-Stripe's Smart Retries attempt up to 4 payment retries over 3-4 weeks. During this window, the subscription status is `past_due`. Should the customer keep access?
+When a payment fails, Stripe retries with exponential backoff... up to roughly 8 attempts over 3 days by default. During this window, the subscription status is `past_due`. Should the customer keep access?
 
 The answer depends on your business model:
 

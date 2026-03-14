@@ -1,13 +1,12 @@
 ---
 title: 'The Hidden Tax of "We Support Both"'
 description: 'Every SaaS team eventually says "we''ll support both" ... both databases, both auth providers, both deployment targets. The hidden cost isn''t the initial implementation. It''s the 2x testing matrix, 2x documentation, and the subtle bugs that only appear in one configuration.'
-date: "2026-09-22"
+date: "2026-02-28"
 author: "Alex Mayhew"
 tags: ["architecture", "saas", "technical-debt", "decision-making", "strategy"]
 category: "business"
 readingTime: "13 min read"
 featured: false
-draft: true
 series: "saas-architecture"
 image: "/images/blog/hidden-tax-supporting-both-featured.webp"
 ---
@@ -153,6 +152,7 @@ In my experience, 90% of customers accept this without pushback when you frame i
 | "Both" Scenario       | Recommendation                         | Reasoning                                                                  |
 | --------------------- | -------------------------------------- | -------------------------------------------------------------------------- |
 | MySQL and PostgreSQL  | Pick PostgreSQL                        | JSONB, RLS, better extension ecosystem for SaaS                            |
+| PostgreSQL and MongoDB | Pick one based on workload            | MongoDB excels at document-heavy workloads; PostgreSQL covers relational + JSONB. Supporting both is rarely worth the adapter complexity. |
 | REST and GraphQL      | Pick one based on clients              | Mobile-heavy = GraphQL; B2B integrations = REST                            |
 | AWS and GCP           | Pick one unless enterprise requires it | Multi-cloud tax is 30-50% of infrastructure engineering time               |
 | Docker and bare metal | Docker                                 | The abstraction cost is negligible; operational benefits are real          |

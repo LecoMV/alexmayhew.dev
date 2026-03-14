@@ -1,13 +1,12 @@
 ---
 title: "Database Migrations That Won't Wake You at 3 AM"
 description: "Most SaaS teams treat database migrations as a deployment step. They're an architecture decision. Here's the pattern comparison, rollback strategy, and zero-downtime playbook I use with advisory clients."
-date: "2026-03-02"
+date: "2026-02-03"
 author: "Alex Mayhew"
 tags: ["database", "migrations", "saas", "postgresql", "zero-downtime"]
 category: "infrastructure"
 readingTime: "14 min read"
 featured: false
-draft: false
 series: "performance-engineering"
 image: "/images/blog/database-migration-patterns-featured.webp"
 ---
@@ -52,6 +51,8 @@ CREATE TABLE order_audit_logs (
 ```
 
 PostgreSQL 11+ made `ADD COLUMN` with a default value a metadata-only operation... no table rewrite required. This single optimization eliminated the most common migration failure mode.
+
+**Caveat:** This only applies to *static* defaults. `DEFAULT 'active'`, `DEFAULT 0`, `DEFAULT false` are instant. But *volatile* defaults like `DEFAULT gen_random_uuid()`, `DEFAULT now()`, or `DEFAULT random()` still trigger a full table rewrite. The UUID case catches people most often... if you need a UUID column with a default, add it nullable first, backfill in batches, then add the constraint.
 
 ### Category 2: Data Backfill (Medium Risk)
 
@@ -216,7 +217,7 @@ Every major migration tool handles `CONCURRENTLY` differently:
 | Tool               | Configuration                                                                             |
 | ------------------ | ----------------------------------------------------------------------------------------- |
 | **Alembic**        | `op.execute('CREATE INDEX CONCURRENTLY ...')` with `autocommit=True` in migration context |
-| **Prisma Migrate** | Raw SQL in migration file, requires `-- CreateIndex` comment removal                      |
+| **Prisma Migrate** | Native support added in 2025 (previously required raw SQL workaround)                     |
 | **Knex**           | `knex.raw('CREATE INDEX CONCURRENTLY ...')` outside transaction                           |
 | **Django**         | `AddIndexConcurrently` operation (built-in since Django 3.0)                              |
 | **Rails**          | `add_index :table, :column, algorithm: :concurrently` with `disable_ddl_transaction!`     |
@@ -279,7 +280,7 @@ aws rds create-db-snapshot \
   --db-snapshot-identifier pre-migration-2026-03-01
 ```
 
-The snapshot gives you a guaranteed rollback point. The cost is storage (snapshots on RDS are $0.095/GB-month) and recovery time (15-45 minutes for a 500GB database). Both are cheaper than a botched migration.
+The snapshot gives you a guaranteed rollback point. The cost is storage (snapshots on RDS are $0.095/GB-month for storage beyond the free allocation equal to your provisioned database size) and recovery time (15-45 minutes for a 500GB database). Both are cheaper than a botched migration.
 
 ### The Rollback Decision Framework
 

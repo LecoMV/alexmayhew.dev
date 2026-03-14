@@ -1,20 +1,19 @@
 ---
 title: "Incident Response Playbook for SaaS Teams"
 description: "Most SaaS teams don't have an incident response process until they need one... at 3 AM during a production outage. Here's the playbook I've helped 10+ teams implement before the crisis hits."
-date: "2026-05-19"
+date: "2026-02-07"
 author: "Alex Mayhew"
 tags: ["incident-response", "saas", "operations", "on-call", "leadership"]
 category: "business"
 readingTime: "15 min read"
 featured: false
-draft: true
 series: "engineering-leadership"
 image: "/images/blog/incident-response-saas-featured.webp"
 ---
 
 ## TL;DR
 
-Every SaaS company will have a production incident. The teams that recover in 10 minutes vs. 4 hours aren't better engineers... they have better processes. The playbook: assign an Incident Commander before you need one, use a severity classification that determines who gets woken up, communicate proactively to customers (silence is worse than bad news), and run blameless postmortems within 48 hours. The biggest mistake I see: teams that conflate "finding the fix" with "restoring service." Restoring service means reverting the last deploy, failing over to a backup, or switching to degraded mode. Finding the root cause happens after the fire is out. The median SaaS company takes 45 minutes from detection to starting mitigation. With this playbook, that drops to under 10 minutes.
+Every SaaS company will have a production incident. The teams that recover in 10 minutes vs. 4 hours aren't better engineers... they have better processes. The playbook: assign an Incident Commander before you need one, use a severity classification that determines who gets woken up, communicate proactively to customers (silence is worse than bad news), and run blameless postmortems within 48 hours. The biggest mistake I see: teams that conflate "finding the fix" with "restoring service." Restoring service means reverting the last deploy, failing over to a backup, or switching to degraded mode. Finding the root cause happens after the fire is out. In my advisory work, the median SaaS company I've observed takes roughly 45 minutes from detection to starting mitigation. With this playbook, teams I've worked with have reduced that to under 10 minutes.
 
 > **Part of the [Engineering Leadership: Founder to CTO](/blog/engineering-leadership-founder-to-cto)** ... a comprehensive guide to scaling engineering teams and practices.
 
@@ -243,7 +242,7 @@ The postmortem is where teams either improve or repeat the same mistakes. The ke
 
 I've seen teams lose their best engineers because on-call was unpaid, unrecognized, and unrelenting. At minimum:
 
-- **Stipend:** $500-1,000 per on-call week (adjust for your market)
+- **Stipend:** $500-1,000 per on-call week is a common range, though this varies by market and company stage
 - **Time off:** If you're paged overnight, take the next morning off
 - **Recognition:** On-call load visible to leadership, factored into performance reviews
 

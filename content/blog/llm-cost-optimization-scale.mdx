@@ -1,13 +1,12 @@
 ---
 title: "LLM Cost Optimization at Scale"
 description: "Your AI feature costs $0.03 per query. At 100K queries/day, that's $90K/year in LLM costs alone. Here's the tiered model strategy, caching architecture, and prompt optimization that reduces costs by 60-80% without degrading output quality."
-date: "2026-06-16"
+date: "2026-02-19"
 author: "Alex Mayhew"
 tags: ["llm", "ai", "cost-optimization", "saas", "caching"]
 category: "infrastructure"
 readingTime: "14 min read"
 featured: false
-draft: true
 series: "ai-development"
 image: "/images/blog/llm-cost-optimization-scale-featured.webp"
 ---
@@ -24,12 +23,12 @@ LLM costs follow a power law: 80% of queries can be handled by cheap, fast model
 
 An AI feature that costs $0.03 per query seems cheap. At 10 queries/day during development, that's $9/month. At product launch with 1,000 daily active users averaging 5 queries each, it's $4,500/month. At scale with 50,000 DAU, it's $225,000/month.
 
-| Scale        | Daily Queries | Monthly LLM Cost (GPT-4 Turbo) | Monthly LLM Cost (Optimized) |
-| ------------ | ------------- | ------------------------------ | ---------------------------- |
-| Development  | 10            | $9                             | $9                           |
-| Early launch | 5,000         | $4,500                         | $900                         |
-| Growth       | 50,000        | $45,000                        | $7,500                       |
-| Scale        | 500,000       | $450,000                       | $60,000                      |
+| Scale        | Daily Queries | Monthly LLM Cost (GPT-4o) | Monthly LLM Cost (Optimized) |
+| ------------ | ------------- | ------------------------- | ---------------------------- |
+| Development  | 10            | $4                        | $4                           |
+| Early launch | 5,000         | $2,000                    | $400                         |
+| Growth       | 50,000        | $20,000                   | $3,500                       |
+| Scale        | 500,000       | $200,000                  | $30,000                      |
 
 The "optimized" column uses the techniques in this post. The difference between $450K and $60K per month is the difference between an AI feature that's a strategic advantage and one that's a financial liability.
 
@@ -41,12 +40,14 @@ The insight: most queries don't need the most capable model. A factual lookup, a
 
 ### The Model Tier Map
 
-| Tier       | Model             | Input Cost       | Output Cost      | Use Case                                  |
-| ---------- | ----------------- | ---------------- | ---------------- | ----------------------------------------- |
-| **Tier 1** | GPT-4o-mini       | $0.15/1M tokens  | $0.60/1M tokens  | Classification, extraction, simple Q&A    |
-| **Tier 2** | Claude 3.5 Haiku  | $0.80/1M tokens  | $4.00/1M tokens  | Moderate reasoning, summarization         |
-| **Tier 3** | Claude Sonnet 4.5 | $3.00/1M tokens  | $15.00/1M tokens | Complex reasoning, nuanced generation     |
-| **Tier 4** | Claude Opus 4.6   | $15.00/1M tokens | $75.00/1M tokens | Expert-level analysis, critical decisions |
+| Tier       | Model              | Input Cost       | Output Cost      | Use Case                                  |
+| ---------- | ------------------ | ---------------- | ---------------- | ----------------------------------------- |
+| **Tier 1** | GPT-4o-mini        | $0.15/1M tokens  | $0.60/1M tokens  | Classification, extraction, simple Q&A    |
+| **Tier 2** | Claude Haiku 4.5   | $0.80/1M tokens  | $4.00/1M tokens  | Moderate reasoning, summarization         |
+| **Tier 3** | Claude Sonnet 4.6  | $3.00/1M tokens  | $15.00/1M tokens | Complex reasoning, nuanced generation     |
+| **Tier 4** | Claude Opus 4.6    | $15.00/1M tokens | $75.00/1M tokens | Expert-level analysis, critical decisions |
+
+*Pricing as of March 2026. LLM costs trend downward... verify current rates before building your cost model.*
 
 ### The Router
 
@@ -77,9 +78,9 @@ Respond with ONLY the classification word.`,
 		case "SIMPLE":
 			return { model: "gpt-4o-mini", maxTokens: 500, temperature: 0.1 };
 		case "MODERATE":
-			return { model: "claude-3-5-haiku-latest", maxTokens: 1000, temperature: 0.3 };
+			return { model: "claude-haiku-4-5-20251001", maxTokens: 1000, temperature: 0.3 };
 		case "COMPLEX":
-			return { model: "claude-sonnet-4-5-20250929", maxTokens: 2000, temperature: 0.5 };
+			return { model: "claude-sonnet-4-6", maxTokens: 2000, temperature: 0.5 };
 		default:
 			return { model: "gpt-4o-mini", maxTokens: 500, temperature: 0.1 };
 	}
@@ -317,8 +318,9 @@ async function trackLLMCost(
 ) {
 	const pricing: Record<string, { input: number; output: number }> = {
 		"gpt-4o-mini": { input: 0.15, output: 0.6 },
-		"claude-3-5-haiku-latest": { input: 0.8, output: 4.0 },
-		"claude-sonnet-4-5-20250929": { input: 3.0, output: 15.0 },
+		"claude-haiku-4-5-20251001": { input: 0.80, output: 4.0 },
+		"claude-sonnet-4-6": { input: 3.0, output: 15.0 },
+		// Verify pricing at https://docs.anthropic.com/en/docs/about-claude/models
 	};
 
 	const rates = pricing[model];

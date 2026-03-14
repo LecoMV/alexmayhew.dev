@@ -1,20 +1,19 @@
 ---
 title: "State Management in 2026: Zustand vs Signals vs Server State"
-description: "The state management landscape has fragmented again. Zustand dominates, signals are the new hotness, and server state (React Query, SWR) handles most of what Redux used to do. Here's what to use when... with the decision framework I give to advisory clients."
-date: "2026-08-11"
+description: "The state management landscape has fragmented again. Zustand dominates, signals are the new hotness, and server state (TanStack Query, SWR) handles most of what Redux used to do. Here's what to use when... with the decision framework I give to advisory clients."
+date: "2026-02-26"
 author: "Alex Mayhew"
 tags: ["state-management", "react", "zustand", "signals", "frontend"]
 category: "frontend"
 readingTime: "14 min read"
 featured: false
-draft: true
 series: "frontend-architecture"
 image: "/images/blog/state-management-2026-featured.webp"
 ---
 
 ## TL;DR
 
-State management in 2026 is simpler than the discourse suggests... if you decompose the problem correctly. Server state (data from your API) belongs in React Query or SWR. Client state (UI flags, form inputs, modal visibility) belongs in React's built-in hooks for simple cases or Zustand for shared state. Global application state (auth, theme, feature flags) belongs in Zustand with persistence. Signals (Preact Signals, Solid-style reactivity) solve a real performance problem... fine-grained reactivity without re-renders... but React's adoption story is incomplete and the ecosystem support isn't there yet. For 90% of SaaS applications, the answer is: React Query for server state + Zustand for everything else. That's 2 libraries, both under 10KB, covering every state management need.
+State management in 2026 is simpler than the discourse suggests... if you decompose the problem correctly. Server state (data from your API) belongs in TanStack Query or SWR. Client state (UI flags, form inputs, modal visibility) belongs in React's built-in hooks for simple cases or Zustand for shared state. Global application state (auth, theme, feature flags) belongs in Zustand with persistence. Signals (Preact Signals, Solid-style reactivity) solve a real performance problem... fine-grained reactivity without re-renders... but React's adoption story is incomplete and the ecosystem support isn't there yet. For 90% of SaaS applications, the answer is: TanStack Query for server state + Zustand for everything else. That's 2 libraries, both under 10KB, covering every state management need.
 
 > **Part of the [Modern Frontend Architecture](/blog/modern-frontend-architecture)** ... a comprehensive guide to frontend patterns that scale.
 
@@ -35,11 +34,11 @@ Redux tried to be the answer for all four categories. That's why Redux applicati
 
 ---
 
-## Server State: React Query (or SWR)
+## Server State: TanStack Query (or SWR)
 
 Server state is the most common state in SaaS applications... and the most commonly mismanaged. Teams that put API data in Redux or Zustand end up reimplementing caching, invalidation, retry logic, and optimistic updates from scratch.
 
-### React Query (Recommended)
+### TanStack Query (Recommended)
 
 ```typescript
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -105,7 +104,7 @@ function Dashboard() {
 }
 ```
 
-**What React Query gives you for free:**
+**What TanStack Query gives you for free:**
 
 - Automatic caching with configurable staleness
 - Background refetching when the user returns to the tab
@@ -114,11 +113,11 @@ function Dashboard() {
 - Retry with exponential backoff
 - Loading and error states without boilerplate
 
-The alternative... managing all of this in Redux... is 200-400 lines of code per API endpoint. React Query does it in 20.
+The alternative... managing all of this in Redux... is 200-400 lines of code per API endpoint. TanStack Query does it in 20.
 
 ### Server State with Server Components
 
-In Next.js App Router, Server Components fetch data on the server. React Query's role shifts to client-side cache management and mutations:
+In Next.js App Router, Server Components fetch data on the server. TanStack Query's role shifts to client-side cache management and mutations:
 
 ```typescript
 // Server Component: initial data fetch
@@ -140,7 +139,7 @@ function DashboardClient({ initialMetrics }: { initialMetrics: MetricsData }) {
 }
 ```
 
-This pattern gives you instant page loads (server-rendered data) with client-side interactivity (React Query manages subsequent fetches and mutations).
+This pattern gives you instant page loads (server-rendered data) with client-side interactivity (TanStack Query manages subsequent fetches and mutations).
 
 ---
 
@@ -261,7 +260,7 @@ As of 2026, signals in React are available through:
 2. **React compiler (experimental)** ... React's built-in compiler optimizes re-renders automatically, reducing (but not eliminating) the need for manual memoization
 3. **TC39 Signals proposal** ... Stage 1, years from standardization
 
-The honest assessment: signals solve a real problem, but the React ecosystem isn't built around them yet. React Query, form libraries, component libraries... they all assume React's rendering model. Adopting signals means potentially fighting the ecosystem.
+The honest assessment: signals solve a real problem, but the React ecosystem isn't built around them yet. TanStack Query, form libraries, component libraries... they all assume React's rendering model. Adopting signals means potentially fighting the ecosystem.
 
 ### When Signals Make Sense in React (Today)
 
@@ -272,7 +271,7 @@ The honest assessment: signals solve a real problem, but the React ecosystem isn
 
 ### When Signals Don't Make Sense
 
-- Standard CRUD applications (React Query + Zustand is more than fast enough)
+- Standard CRUD applications (TanStack Query + Zustand is more than fast enough)
 - Applications using many third-party React components (they expect React state)
 - Teams that need the React ecosystem's testing, debugging, and DevTools support
 
@@ -284,7 +283,7 @@ The honest assessment: signals solve a real problem, but the React ecosystem isn
 What type of state?
 │
 ├── API/Database data
-│   └── React Query (or SWR)
+│   └── TanStack Query (or SWR)
 │       └── With Server Components? Use RSC for initial fetch, RQ for client-side
 │
 ├── URL state (filters, pagination, search)
@@ -315,7 +314,7 @@ For 90% of SaaS applications:
 
 | Concern      | Solution              | Bundle Size |
 | ------------ | --------------------- | ----------- |
-| Server state | React Query           | ~13KB       |
+| Server state | TanStack Query        | ~13KB       |
 | Client state | Zustand               | ~1.2KB      |
 | URL state    | nuqs                  | ~2KB        |
 | Form state   | React Hook Form + Zod | ~9KB + ~3KB |

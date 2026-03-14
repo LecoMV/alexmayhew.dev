@@ -1,20 +1,19 @@
 ---
 title: "RAG Architecture for SaaS Products"
-description: "Retrieval-Augmented Generation turns your product's data into an AI feature. Most implementations fail on retrieval quality, not generation quality. Here's the architecture that works in production... chunking strategies, embedding models, and the hybrid search approach that outperforms pure vector similarity by 30-40%."
-date: "2026-03-16"
+description: "Retrieval-Augmented Generation turns your product's data into an AI feature. Most implementations fail on retrieval quality, not generation quality. Here's the architecture that works in production... chunking strategies, embedding models, and the hybrid search approach that outperforms pure vector similarity by 15-30%."
+date: "2026-02-05"
 author: "Alex Mayhew"
 tags: ["rag", "ai", "vector-database", "saas", "llm"]
 category: "architecture"
 readingTime: "16 min read"
 featured: false
-draft: true
 series: "ai-development"
 image: "/images/blog/rag-architecture-saas-featured.webp"
 ---
 
 ## TL;DR
 
-RAG is the fastest path from "we should add AI" to a shipped feature, but 70% of RAG implementations I've audited have the same problem: they focus on the generation model while neglecting retrieval quality. An LLM with perfect retrieval and GPT-4 Turbo produces better answers than an LLM with poor retrieval and Claude Opus. The architecture that works: semantic chunking (not fixed-size), hybrid search combining BM25 keyword matching with vector similarity, a reranking step before generation, and aggressive chunk overlap (20-30%). The median retrieval accuracy I see in production RAG systems is 62%. With the hybrid approach and reranking, that jumps to 85-92%. The retrieval quality is the ceiling for your AI feature's usefulness... no amount of prompt engineering compensates for retrieving the wrong documents.
+RAG is the fastest path from "we should add AI" to a shipped feature, but 70% of RAG implementations I've audited have the same problem: they focus on the generation model while neglecting retrieval quality. An LLM with perfect retrieval and GPT-4 Turbo produces better answers than an LLM with poor retrieval and Claude Opus. The architecture that works: semantic chunking (not fixed-size), hybrid search combining BM25 keyword matching with vector similarity, a reranking step before generation, and aggressive chunk overlap (20-30%). The median retrieval accuracy I see in production RAG systems is 62%. With the hybrid approach and reranking, that jumps to 82-90%. The retrieval quality is the ceiling for your AI feature's usefulness... no amount of prompt engineering compensates for retrieving the wrong documents.
 
 > **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... a comprehensive guide to building AI features that deliver real value.
 
@@ -170,15 +169,19 @@ The embedding model converts text into dense vector representations for similari
 
 ### Model Comparison (2026 Benchmarks)
 
-| Model                             | Dimensions | MTEB Score | Cost per 1M tokens  | Latency  |
-| --------------------------------- | ---------- | ---------- | ------------------- | -------- |
-| **OpenAI text-embedding-3-large** | 3072       | 64.6       | $0.13               | 50-100ms |
-| **OpenAI text-embedding-3-small** | 1536       | 62.3       | $0.02               | 30-60ms  |
-| **Cohere embed-v3**               | 1024       | 64.5       | $0.10               | 40-80ms  |
-| **Voyage AI voyage-3**            | 1024       | 67.1       | $0.06               | 40-70ms  |
-| **BGE-M3 (self-hosted)**          | 1024       | 66.1       | Infrastructure only | 20-50ms  |
+| Model                              | Dimensions | MTEB Score | Cost per 1M tokens | Latency  |
+| ---------------------------------- | ---------- | ---------- | ------------------- | -------- |
+| **Google Gemini Embedding 001**    | 3072       | 68.3       | $0.006              | 40-80ms  |
+| **Voyage AI voyage-3-large**       | 1024       | 67.1       | $0.06               | 40-70ms  |
+| **Cohere Embed 4**                 | 1536       | ~65.2      | $0.12               | 40-80ms  |
+| **OpenAI text-embedding-3-large**  | 3072       | 64.6       | $0.13               | 50-100ms |
+| **Cohere embed-english-v3.0**      | 1024       | 64.5       | $0.10               | 40-80ms  |
+| **BGE-M3 (self-hosted)**           | 1024       | 63.0       | Infrastructure only | 20-50ms  |
+| **OpenAI text-embedding-3-small**  | 1536       | 62.3       | $0.02               | 30-60ms  |
 
-For most SaaS applications, `text-embedding-3-small` provides sufficient quality at 6.5x lower cost than the large model. The quality difference (62.3 vs 64.6 MTEB) is measurable but rarely the bottleneck... chunking and retrieval strategy matter more.
+The landscape shifted significantly in 2025-2026. Google's Gemini Embedding 001 now leads the MTEB leaderboard at a fraction of OpenAI's cost. Cohere's Embed 4 adds multimodal support (text + images) in a single model. BGE-M3 remains the strongest self-hosted option with native support for dense, sparse, and multi-vector retrieval across 100+ languages.
+
+For most SaaS applications, `text-embedding-3-small` still provides sufficient quality at the lowest cost. The quality difference between models is measurable but rarely the bottleneck... chunking and retrieval strategy matter more.
 
 ### Embedding Pipeline
 
@@ -280,7 +283,7 @@ Testing on 3 SaaS knowledge bases (10K-50K documents each):
 | **Precision@5** | 68%         | 71%       | 84%              |
 | **MRR**         | 0.61        | 0.58      | 0.78             |
 
-Hybrid search outperforms either approach alone by 30-40% on recall. The improvement is most dramatic for queries that contain specific technical terms... exactly the queries SaaS users ask most.
+Hybrid search outperforms either approach alone by 15-30% on recall, with gains of up to 40% in terminology-heavy domains like technical documentation and legal content. The improvement is most dramatic for queries that contain specific technical terms... exactly the queries SaaS users ask most.
 
 ---
 
@@ -302,7 +305,7 @@ async function rerankResults(
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({
-			model: "rerank-english-v3.0",
+			model: "rerank-v3.5",
 			query: query,
 			documents: results.map((r) => r.content),
 			top_n: topK,
@@ -320,6 +323,8 @@ async function rerankResults(
 
 The relevance threshold (0.3 in this example) is important. If none of the retrieved documents are actually relevant to the query, it's better to return "I don't have information about that" than to hallucinate from marginally relevant context.
 
+**Note:** Cohere's current recommended model is `rerank-v3.5` (multilingual, unified) at $2.00 per 1,000 searches. One search equals one query with up to 100 documents. The older `rerank-english-v3.0` still works but is no longer the default recommendation.
+
 ---
 
 ## Stage 5: Generation with Citations
@@ -334,7 +339,7 @@ async function generateAnswer(
 	const contextText = context.map((c, i) => `[Source ${i + 1}] ${c.content}`).join("\n\n");
 
 	const response = await openai.chat.completions.create({
-		model: "gpt-4-turbo",
+		model: "gpt-4o",
 		messages: [
 			{
 				role: "system",
@@ -362,7 +367,7 @@ Rules:
 }
 ```
 
-Temperature of 0.1 is deliberate. For factual Q&A grounded in retrieved documents, you want the model to be as deterministic as possible. Higher temperatures increase the risk of hallucinated details that aren't in the source material.
+Temperature of 0.1 is deliberate. For factual Q&A grounded in retrieved documents, you want the model to be as deterministic as possible. Higher temperatures increase the risk of hallucinated details that aren't in the source material. GPT-4o provides the best quality-to-cost ratio for most RAG generation workloads... GPT-4 Turbo is deprecated and no longer the recommended choice.
 
 ---
 
@@ -370,17 +375,17 @@ Temperature of 0.1 is deliberate. For factual Q&A grounded in retrieved document
 
 RAG costs scale with query volume. Here's a breakdown for 100K queries/month:
 
-| Component                    | Cost Model              | 100K queries/month                     |
-| ---------------------------- | ----------------------- | -------------------------------------- |
-| **Embedding (query)**        | $0.02/1M tokens         | ~$2                                    |
-| **Vector search**            | Varies by provider      | $20-50 (managed), $10-20 (self-hosted) |
-| **Reranking**                | $1.00/1K searches       | $100                                   |
-| **Generation (GPT-4 Turbo)** | ~$0.03 per query (avg)  | $3,000                                 |
-| **Generation (GPT-4o-mini)** | ~$0.001 per query (avg) | $100                                   |
-| **Total (GPT-4 Turbo)**      |                         | ~$3,150/month                          |
-| **Total (GPT-4o-mini)**      |                         | ~$250/month                            |
+| Component                | Cost Model                       | 100K queries/month                     |
+| ------------------------ | -------------------------------- | -------------------------------------- |
+| **Embedding (query)**    | $0.02/1M tokens                  | ~$2                                    |
+| **Vector search**        | Varies by provider               | $20-50 (managed), $10-20 (self-hosted) |
+| **Reranking**            | $2.00/1K searches (Cohere v3.5)  | $200                                   |
+| **Generation (GPT-4o)**  | ~$0.013 per query (avg)          | $1,300                                 |
+| **Generation (GPT-4o-mini)** | ~$0.001 per query (avg)      | $100                                   |
+| **Total (GPT-4o)**       |                                  | ~$1,550/month                          |
+| **Total (GPT-4o-mini)**  |                                  | ~$350/month                            |
 
-The generation model is 95% of the cost. For most SaaS knowledge base features, GPT-4o-mini produces answers that are 90% as good as GPT-4 Turbo at 3% of the cost. Start with the smaller model and upgrade only for use cases where quality measurably improves revenue.
+The generation model is 80-90% of the cost. For most SaaS knowledge base features, GPT-4o-mini produces answers that are 90% as good as GPT-4o at a fraction of the cost. Start with the smaller model and upgrade only for use cases where quality measurably improves revenue.
 
 ---
 

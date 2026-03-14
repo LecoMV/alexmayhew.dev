@@ -1,20 +1,19 @@
 ---
 title: "Real-Time Performance Monitoring at Scale"
 description: "Your monitoring dashboard says everything is fine. Your customers say the app is slow. Here's why the gap exists and how to build monitoring that catches performance degradation before users notice."
-date: "2026-07-14"
+date: "2026-03-03"
 author: "Alex Mayhew"
 tags: ["monitoring", "observability", "performance", "saas", "metrics"]
 category: "infrastructure"
 readingTime: "14 min read"
 featured: false
-draft: true
 series: "performance-engineering"
 image: "/images/blog/real-time-performance-monitoring-featured.webp"
 ---
 
 ## TL;DR
 
-The median SaaS company monitors uptime and average response time. Both are nearly useless for catching real performance problems. Averages hide the pain... your p50 is 200ms but your p99 is 4 seconds, and the 1% of users hitting that 4-second response are your highest-paying enterprise customers on complex dashboards. The monitoring stack that actually works: percentile-based latency tracking (p50, p95, p99) per endpoint, real user monitoring (RUM) with device and network segmentation, error budget burn rate alerting (not static thresholds), and distributed tracing that follows a request across all services. I've helped teams cut their MTTR from 45 minutes to under 8 minutes by switching from average-based monitoring to percentile-based alerting with error budgets.
+The median SaaS company monitors uptime and average response time. Both are nearly useless for catching real performance problems. Averages hide the pain... your p50 is 200ms but your p99 is 4 seconds, and the 1% of users hitting that 4-second response are your highest-paying enterprise customers on complex dashboards. The monitoring stack that actually works: percentile-based latency tracking (p50, p95, p99) per endpoint, real user monitoring (RUM) with device and network segmentation, error budget burn rate alerting (not static thresholds), and distributed tracing that follows a request across all services. I helped one team cut their MTTR from 45 minutes to under 8 minutes by switching from average-based monitoring to percentile-based alerting with error budgets.
 
 > **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to building systems that stay fast under real-world load.
 

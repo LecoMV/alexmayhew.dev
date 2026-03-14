@@ -1,13 +1,12 @@
 ---
 title: "Code Review Practices That Scale"
 description: "Code review at 5 engineers is a conversation. At 50, it's a bottleneck. Here's how to scale review practices without sacrificing quality... from async review protocols to automated gates that catch 80% of issues before a human looks at the PR."
-date: "2026-07-28"
+date: "2026-02-21"
 author: "Alex Mayhew"
 tags: ["code-review", "engineering-culture", "leadership", "automation", "developer-experience"]
 category: "business"
 readingTime: "13 min read"
 featured: false
-draft: true
 series: "engineering-leadership"
 image: "/images/blog/code-review-practices-scale-featured.webp"
 ---
@@ -161,16 +160,16 @@ CODEOWNERS ensures the reviewer has context on the code they're reviewing. A fro
 
 ### Small PRs by Default
 
-The single most effective change for review speed: smaller PRs.
+The single most effective change for review speed: smaller PRs. The following are general guidelines based on patterns I've seen across teams — your numbers will vary by codebase and team maturity:
 
-| PR Size       | Review Time | Defect Density | Time to Merge |
-| ------------- | ----------- | -------------- | ------------- |
-| 1-100 lines   | 10-15 min   | Low            | < 4 hours     |
-| 100-250 lines | 20-30 min   | Low-Medium     | < 8 hours     |
-| 250-500 lines | 45-60 min   | Medium         | 1-2 days      |
-| 500+ lines    | 60-90 min   | High           | 2-5 days      |
+| PR Size       | Typical Review Time | Defect Density | Typical Time to Merge |
+| ------------- | ------------------- | -------------- | --------------------- |
+| 1-100 lines   | 10-15 min           | Low            | < 4 hours             |
+| 100-250 lines | 20-30 min           | Low-Medium     | < 8 hours             |
+| 250-500 lines | 45-60 min           | Medium         | 1-2 days              |
+| 500+ lines    | 60-90 min           | High           | 2-5 days              |
 
-Studies from Google and Microsoft show that review quality drops significantly after 200-400 lines. Beyond 500 lines, reviewers miss more defects than they catch... their attention is exhausted.
+Studies suggest that review quality drops significantly after 200-400 lines — research from Microsoft (Czerwonka et al., *"Code Reviews Do Not Find Bugs"*) found diminishing returns on reviewer attention past this threshold. Beyond 500 lines, reviewers tend to miss more defects than they catch as attention is exhausted.
 
 **How to enforce small PRs:**
 

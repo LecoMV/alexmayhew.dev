@@ -1,13 +1,12 @@
 ---
 title: "Edge Computing: When Worth the Complexity"
 description: "Edge computing promises sub-50ms latency worldwide. It also promises configuration nightmares, data consistency puzzles, and debugging sessions you'll regret. Here's the decision framework for when edge actually delivers ROI."
-date: "2026-05-05"
+date: "2026-02-17"
 author: "Alex Mayhew"
 tags: ["edge-computing", "performance", "cloudflare", "latency", "saas"]
 category: "infrastructure"
 readingTime: "14 min read"
 featured: false
-draft: true
 series: "performance-engineering"
 image: "/images/blog/edge-computing-saas-featured.webp"
 ---
@@ -24,7 +23,7 @@ Edge computing reduces latency by running code closer to users...30-50ms instead
 
 A request from Tokyo to a us-east-1 origin server takes 150-200ms in network round-trip time alone. Before your application code runs a single line, the user has already waited 200ms. Add database queries, business logic, and response serialization, and you're looking at 400-800ms total.
 
-Move that same code to an edge node in Tokyo... Cloudflare's network has 310+ locations... and the network round-trip drops to 5-15ms. Your total response time falls to 50-150ms.
+Move that same code to an edge node in Tokyo... Cloudflare's network has 330+ locations... and the network round-trip drops to 5-15ms. Your total response time falls to 50-150ms.
 
 That 300-500ms improvement sounds transformative. For some applications, it is. For others, it's a 300-500ms improvement that costs 200+ engineering hours to implement and maintain.
 
@@ -215,12 +214,12 @@ Edge computing isn't free, and the pricing models are different from traditional
 ### Cloudflare Workers
 
 - **Free tier:** 100,000 requests/day
-- **Paid:** $0.30 per million requests + $0.02 per million ms CPU time
+- **Paid:** ~$0.30 per million requests + ~$0.02 per million ms CPU time (as of early 2026)
 - **KV storage:** $0.50/million reads, $5.00/million writes, $0.50/GB stored
 
 ### AWS Lambda@Edge
 
-- **Compute:** $0.60 per million requests + $0.00005001 per GB-second
+- **Compute:** ~$0.60 per million requests + ~$0.00005001 per GB-second (as of early 2026)
 - **No free tier** for Lambda@Edge (unlike regular Lambda)
 - **Cold starts:** 5-30ms (vs. near-zero for Cloudflare Workers)
 

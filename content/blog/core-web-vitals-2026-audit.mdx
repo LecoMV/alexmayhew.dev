@@ -1,13 +1,12 @@
 ---
 title: "Core Web Vitals Audit Checklist (2026 Update)"
 description: "Google's CWV thresholds haven't changed but the measurement methodology has. Here's the updated audit checklist with INP replacing FID, real-world field data strategies, and the optimizations that actually move the needle."
-date: "2026-04-01"
+date: "2026-02-10"
 author: "Alex Mayhew"
 tags: ["performance", "core-web-vitals", "seo", "inp", "lighthouse"]
 category: "frontend"
 readingTime: "15 min read"
 featured: false
-draft: true
 series: "performance-engineering"
 image: "/images/blog/core-web-vitals-2026-audit-featured.webp"
 ---
@@ -181,9 +180,14 @@ INP is where most SaaS applications fail. Dashboard interactions... filtering, s
 
 **7. Break Up Long Tasks**
 
-Any task that blocks the main thread for more than 50ms degrades INP. Use `scheduler.yield()` (or the polyfill) to break long tasks into smaller chunks:
+Any task that blocks the main thread for more than 50ms degrades INP. Use `scheduler.yield()` to break long tasks into smaller chunks:
 
 ```typescript
+// Feature-detect scheduler.yield (not supported in Safari as of March 2026)
+const yieldToMain = globalThis.scheduler?.yield
+	? () => scheduler.yield()
+	: () => new Promise<void>((resolve) => setTimeout(resolve, 0));
+
 async function filterLargeDataset(data: DataRow[], filters: FilterConfig): Promise<DataRow[]> {
 	const results: DataRow[] = [];
 	const chunkSize = 1000;
@@ -195,12 +199,15 @@ async function filterLargeDataset(data: DataRow[], filters: FilterConfig): Promi
 
 		// Yield to the main thread every 1000 items
 		if (i + chunkSize < data.length) {
-			await scheduler.yield();
+			await yieldToMain();
 		}
 	}
 
 	return results;
 }
+```
+
+**Browser support note:** `scheduler.yield()` is supported in Chrome 129+, Edge 129+, Firefox 142+, and Opera 115+, but **not in Safari**. The fallback using `setTimeout(resolve, 0)` works everywhere but doesn't preserve task priority. For ~72% of global users, `scheduler.yield()` works natively... for the rest, the fallback is still a significant improvement over blocking the main thread.
 ```
 
 **8. Virtualize Large Lists**
@@ -375,19 +382,40 @@ Lighthouse runs on a simulated mid-tier mobile device with simulated 4G. Your us
 Analytics, chat widgets, A/B testing tools, and error monitoring scripts add 200-800ms to LCP and degrade INP by blocking the main thread. Audit every third-party script:
 
 ```typescript
-// Performance observer to catch third-party long tasks
-new PerformanceObserver((list) => {
-	for (const entry of list.getEntries()) {
-		if (entry.duration > 50) {
-			// entry.attribution tells you which script caused the long task
-			console.warn("Long task:", {
-				duration: entry.duration,
-				source: entry.attribution?.[0]?.containerSrc,
-			});
+// Long Animation Frames API (LoAF) ... the modern replacement for longtask observers
+// Shipped in Chrome 123+, provides richer attribution than longtask
+if (PerformanceObserver.supportedEntryTypes.includes("long-animation-frame")) {
+	new PerformanceObserver((list) => {
+		for (const entry of list.getEntries()) {
+			if (entry.duration > 50) {
+				console.warn("Long animation frame:", {
+					duration: entry.duration,
+					blockingDuration: entry.blockingDuration,
+					scripts: entry.scripts?.map((s) => ({
+						sourceURL: s.sourceURL,
+						duration: s.duration,
+						invoker: s.invoker,
+					})),
+				});
+			}
 		}
-	}
-}).observe({ type: "longtask", buffered: true });
+	}).observe({ type: "long-animation-frame", buffered: true });
+} else {
+	// Fallback to longtask API for non-Chromium browsers
+	new PerformanceObserver((list) => {
+		for (const entry of list.getEntries()) {
+			if (entry.duration > 50) {
+				console.warn("Long task:", {
+					duration: entry.duration,
+					source: entry.attribution?.[0]?.containerSrc,
+				});
+			}
+		}
+	}).observe({ type: "longtask", buffered: true });
+}
 ```
+
+The Long Animation Frames API (LoAF) provides script-level attribution... which specific source file caused the long frame, how long each script ran, and what triggered it. The web-vitals library v5+ uses LoAF internally for INP attribution. If you're diagnosing INP issues in Chromium browsers, LoAF is the tool to reach for first.
 
 ---
 
