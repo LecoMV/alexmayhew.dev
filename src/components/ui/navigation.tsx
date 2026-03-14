@@ -122,9 +122,12 @@ export function Navigation() {
 				aria-label="Main navigation"
 				className="mx-auto max-w-[1400px] px-6 py-4 sm:px-12 md:px-24"
 			>
-				<div className="bg-gunmetal-glass/20 flex items-center justify-between gap-2 border border-white/10 px-4 py-3 backdrop-blur-md md:gap-3 md:px-5 md:py-4 lg:gap-4 lg:px-6">
+				<div className="bg-gunmetal-glass/20 flex items-center justify-between gap-2 overflow-hidden border border-white/10 px-4 py-3 backdrop-blur-md md:gap-2 md:px-4 md:py-4 lg:gap-3 lg:px-5 xl:gap-4 xl:px-6">
 					{/* Logo / Brand */}
-					<Link href="/" className="group flex shrink-0 items-center gap-2 md:gap-3 lg:gap-4">
+					<Link
+						href="/"
+						className="group flex shrink-0 items-center gap-2 md:gap-2 lg:gap-3 xl:gap-4"
+					>
 						<Image
 							src="/am-icon-optimized_sized.svg"
 							alt="AM"
@@ -141,7 +144,7 @@ export function Navigation() {
 					</Link>
 
 					{/* Desktop Navigation */}
-					<div className="hidden items-center gap-0 md:flex lg:gap-0.5 xl:gap-1">
+					<div className="hidden min-w-0 items-center gap-0 lg:flex">
 						{navItems.map((item) => {
 							const isActive = item.hasDropdown ? isToolsActive : pathname === item.href;
 
@@ -279,7 +282,7 @@ export function Navigation() {
 					{/* Mobile Menu Button */}
 					<button
 						onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-						className="hover:border-cyber-lime border border-white/20 p-3 transition-colors duration-300 md:hidden"
+						className="hover:border-cyber-lime border border-white/20 p-3 transition-colors duration-300 lg:hidden"
 						aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
 						aria-expanded={mobileMenuOpen}
 					>
@@ -299,7 +302,7 @@ export function Navigation() {
 							animate={{ opacity: 1, height: "auto" }}
 							exit={{ opacity: 0, height: 0 }}
 							transition={springTransition}
-							className="overflow-hidden md:hidden"
+							className="overflow-hidden lg:hidden"
 						>
 							<div className="bg-gunmetal-glass/40 mt-2 border border-white/10 p-4 backdrop-blur-md">
 								{navItems.map((item, index) => {

@@ -1,6 +1,7 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+
 import { Navigation } from "@/components/ui/navigation";
-import { vi, describe, it, expect } from "vitest";
 
 // Mock next/navigation
 vi.mock("next/navigation", () => ({
@@ -76,5 +77,21 @@ describe("Navigation", () => {
 	it("renders skip to content link", () => {
 		render(<Navigation />);
 		expect(screen.getByText("Skip to content")).toBeTruthy();
+	});
+
+	it("nav container has overflow-hidden to prevent items escaping boundary", () => {
+		render(<Navigation />);
+		const navBar = screen.getByRole("navigation", { name: /main navigation/i });
+		const container = navBar.firstElementChild as HTMLElement;
+		expect(container.className).toContain("overflow-hidden");
+	});
+
+	it("desktop nav items container has min-w-0 to allow flex shrinking", () => {
+		render(<Navigation />);
+		const allLinks = screen.getAllByText("Home");
+		const desktopHome = allLinks[0];
+		const desktopNavContainer = desktopHome.closest("div[class*='lg\\:flex']") as HTMLElement;
+		expect(desktopNavContainer).toBeTruthy();
+		expect(desktopNavContainer.className).toContain("min-w-0");
 	});
 });
