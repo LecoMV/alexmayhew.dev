@@ -46,6 +46,14 @@ describe("middleware", () => {
 			expect(permissionsPolicy).toContain("microphone=()");
 			expect(permissionsPolicy).toContain("geolocation=()");
 		});
+
+		it("should set Strict-Transport-Security header", () => {
+			const response = middleware(mockRequest);
+
+			expect(response.headers.get("Strict-Transport-Security")).toBe(
+				"max-age=31536000; includeSubDomains"
+			);
+		});
 	});
 
 	describe("CSP directives", () => {
@@ -93,6 +101,40 @@ describe("middleware", () => {
 			expect(csp).toContain("connect-src 'self'");
 			expect(csp).toContain("https://cloudflareinsights.com");
 			expect(csp).toContain("https://*.ingest.sentry.io");
+		});
+
+		it("should allow GA4 domains in connect-src", () => {
+			const response = middleware(mockRequest);
+			const csp = response.headers.get("Content-Security-Policy");
+
+			expect(csp).toContain("https://*.google-analytics.com");
+			expect(csp).toContain("https://*.analytics.google.com");
+			expect(csp).toContain("https://*.googletagmanager.com");
+		});
+
+		it("should allow GA4 scripts in script-src", () => {
+			const response = middleware(mockRequest);
+			const csp = response.headers.get("Content-Security-Policy");
+
+			expect(csp).toContain("script-src");
+			expect(csp).toContain("https://*.googletagmanager.com");
+		});
+
+		it("should allow GA4 image domains in img-src", () => {
+			const response = middleware(mockRequest);
+			const csp = response.headers.get("Content-Security-Policy");
+
+			expect(csp).toContain("https://*.google-analytics.com");
+			expect(csp).toContain("https://*.googletagmanager.com");
+			expect(csp).toContain("https://*.g.doubleclick.net");
+			expect(csp).toContain("https://*.google.com");
+		});
+
+		it("should allow Google Tag Manager frames in frame-src", () => {
+			const response = middleware(mockRequest);
+			const csp = response.headers.get("Content-Security-Policy");
+
+			expect(csp).toContain("https://www.googletagmanager.com");
 		});
 
 		it("should allow frames from Cloudflare Turnstile", () => {

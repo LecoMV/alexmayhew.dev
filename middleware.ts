@@ -6,12 +6,12 @@ export function middleware(_request: NextRequest) {
 	try {
 		const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://challenges.cloudflare.com;
+    script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://challenges.cloudflare.com https://*.googletagmanager.com;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data:;
+    img-src 'self' blob: data: https://*.google-analytics.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com;
     font-src 'self';
-    connect-src 'self' https://cloudflareinsights.com https://challenges.cloudflare.com https://*.ingest.sentry.io;
-    frame-src 'self' https://challenges.cloudflare.com;
+    connect-src 'self' https://cloudflareinsights.com https://challenges.cloudflare.com https://*.ingest.sentry.io https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com;
+    frame-src 'self' https://challenges.cloudflare.com https://www.googletagmanager.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
@@ -31,6 +31,7 @@ export function middleware(_request: NextRequest) {
 			"Permissions-Policy",
 			"camera=(), microphone=(), geolocation=(), browsing-topics=()"
 		);
+		response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
 
 		return response;
 	} catch {
