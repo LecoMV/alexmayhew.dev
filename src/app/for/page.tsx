@@ -29,6 +29,9 @@ export const metadata: Metadata = {
 			"Strategic technical partnership tailored to your role. Find guidance designed for your specific challenges.",
 		images: ["/og-image.png"],
 	},
+	alternates: {
+		canonical: "/for",
+	},
 };
 
 // Generate JSON-LD for the roles hub page

@@ -26,6 +26,9 @@ export const metadata: Metadata = {
 		description: "Selected projects in AI/ML, SaaS, and web applications.",
 		images: ["/og-image.png"],
 	},
+	alternates: {
+		canonical: "/work",
+	},
 };
 
 export default function Page() {

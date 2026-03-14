@@ -6,6 +6,9 @@ export const metadata: Metadata = {
 	title: "Terms of Service",
 	description:
 		"Terms of Service for alexmayhew.dev - Terms and conditions for using our website and services.",
+	alternates: {
+		canonical: "/terms",
+	},
 };
 
 export default function TermsPage() {

@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			title,
 			description,
 			images: ["/og-image.png"],
-			creator: "@alexmayhew",
+			creator: "@alexmayhewdev",
 		},
 		alternates: {
 			canonical: `${siteUrl}/technologies/${slug}`,

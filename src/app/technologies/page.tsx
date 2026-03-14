@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 		title: "Technology Expertise | Alex Mayhew",
 		description: "Deep expertise in modern web technologies and AI/ML integration.",
 		images: ["/og-image.png"],
-		creator: "@alexmayhew",
+		creator: "@alexmayhewdev",
 	},
 	alternates: {
 		canonical: `${siteUrl}/technologies`,

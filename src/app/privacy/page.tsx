@@ -6,6 +6,9 @@ export const metadata: Metadata = {
 	title: "Privacy Policy",
 	description:
 		"Privacy Policy for alexmayhew.dev - How we handle your data and protect your privacy.",
+	alternates: {
+		canonical: "/privacy",
+	},
 };
 
 export default function PrivacyPage() {

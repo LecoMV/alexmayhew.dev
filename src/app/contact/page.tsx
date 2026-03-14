@@ -27,6 +27,9 @@ export const metadata: Metadata = {
 		description: "Get in touch for web development projects and consulting.",
 		images: ["/og-image.png"],
 	},
+	alternates: {
+		canonical: "/contact",
+	},
 };
 
 export default function Page() {

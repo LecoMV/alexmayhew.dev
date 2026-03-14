@@ -19,6 +19,9 @@ export const metadata: Metadata = {
 			},
 		],
 	},
+	alternates: {
+		canonical: "/tools",
+	},
 };
 
 export default function Page() {

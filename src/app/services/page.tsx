@@ -29,6 +29,9 @@ export const metadata: Metadata = {
 			"Strategic technical guidance for founders and CTOs. Architecture decisions that compound into competitive advantage.",
 		images: ["/og-image.png"],
 	},
+	alternates: {
+		canonical: "/services",
+	},
 };
 
 // Generate JSON-LD for the services hub page

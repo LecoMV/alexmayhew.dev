@@ -119,7 +119,7 @@ export const metadata: Metadata = {
 		title: "Alex Mayhew | Technical Advisor",
 		description: "Architecting production systems that scale from MVP to millions.",
 		images: ["/og-image.png"],
-		creator: "@alexmayhew",
+		creator: "@alexmayhewdev",
 	},
 	alternates: {
 		types: {

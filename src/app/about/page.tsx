@@ -27,6 +27,9 @@ export const metadata: Metadata = {
 			"Technical advisor specializing in React, Next.js, and enterprise system architecture.",
 		images: ["/og-image.png"],
 	},
+	alternates: {
+		canonical: "/about",
+	},
 };
 
 export default function Page() {
