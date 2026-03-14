@@ -1,22 +1,19 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 describe("showAdminUI", () => {
-	const originalEnv = process.env.NODE_ENV;
-
-	afterEach(() => {
-		process.env.NODE_ENV = originalEnv;
-		vi.resetModules();
-	});
-
 	it("should be true in development", async () => {
-		process.env.NODE_ENV = "development";
+		vi.stubEnv("NODE_ENV", "development");
+		vi.resetModules();
 		const { showAdminUI } = await import("../keystatic.config");
 		expect(showAdminUI).toBe(true);
+		vi.unstubAllEnvs();
 	});
 
 	it("should be false in production", async () => {
-		process.env.NODE_ENV = "production";
+		vi.stubEnv("NODE_ENV", "production");
+		vi.resetModules();
 		const { showAdminUI } = await import("../keystatic.config");
 		expect(showAdminUI).toBe(false);
+		vi.unstubAllEnvs();
 	});
 });
