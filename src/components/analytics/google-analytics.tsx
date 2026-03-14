@@ -71,7 +71,7 @@ export function trackLeadEvent(
  * Track content engagement events for blog and technical content
  */
 export function trackContentEvent(
-	eventName: "page_view" | "scroll" | "engagement_time" | "content_view",
+	eventName: "page_view" | "scroll" | "user_engagement" | "content_view",
 	params: {
 		content_type?: string;
 		content_id?: string;

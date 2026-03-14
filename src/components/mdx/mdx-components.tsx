@@ -1,3 +1,4 @@
+import Image, { type StaticImageData } from "next/image";
 import { ComponentProps } from "react";
 
 import { cn } from "@/lib/utils";
@@ -131,13 +132,26 @@ export const mdxComponents = {
 		<hr className={cn("my-8 h-px border-none bg-white/10", className)} {...props} />
 	),
 
-	img: ({ className, alt, ...props }: ComponentProps<"img">) => (
+	img: ({
+		src,
+		alt,
+		width,
+		height,
+		className,
+	}: ComponentProps<"img"> & { src?: string | StaticImageData }) => (
 		<figure className="my-6">
 			<div className="bg-gunmetal-glass/20 relative border border-white/10 p-2">
 				<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r" />
 				<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l" />
-				{/* eslint-disable-next-line @next/next/no-img-element */}
-				<img className={cn("w-full", className)} alt={alt} {...props} />
+				<Image
+					src={src as string | StaticImageData}
+					alt={alt ?? ""}
+					width={typeof width === "number" ? width : 1200}
+					height={typeof height === "number" ? height : 630}
+					className={cn("h-auto w-full", className)}
+					sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 800px"
+					loading="lazy"
+				/>
 			</div>
 			{alt && (
 				<figcaption className="text-slate-text mt-2 font-mono text-xs">{`// ${alt}`}</figcaption>

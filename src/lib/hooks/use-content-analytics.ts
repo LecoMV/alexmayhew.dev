@@ -80,7 +80,6 @@ export function useContentAnalytics(options: UseContentAnalyticsOptions = {}) {
 			maxScrollDepth.current = scrollPercent;
 		}
 
-		// Track scroll milestones (25%, 50%, 75%, 90%)
 		const milestones = [25, 50, 75, 90];
 		for (const milestone of milestones) {
 			if (scrollPercent >= milestone && !trackedMilestones.current.has(milestone)) {
@@ -101,7 +100,7 @@ export function useContentAnalytics(options: UseContentAnalyticsOptions = {}) {
 
 		milestones.forEach((milestone) => {
 			const timeoutId = setTimeout(() => {
-				trackContentEvent("engagement_time", {
+				trackContentEvent("user_engagement", {
 					content_id: contentId,
 					content_type: contentType,
 					engagement_time_msec: milestone,
@@ -113,7 +112,6 @@ export function useContentAnalytics(options: UseContentAnalyticsOptions = {}) {
 		});
 	}, [contentId, contentType, contentCategory]);
 
-	// Set up scroll tracking
 	useEffect(() => {
 		let timeoutId: NodeJS.Timeout;
 
@@ -130,7 +128,6 @@ export function useContentAnalytics(options: UseContentAnalyticsOptions = {}) {
 		};
 	}, [trackScrollDepth]);
 
-	// Set up engagement time tracking
 	useEffect(() => {
 		setupEngagementTracking();
 
@@ -140,13 +137,24 @@ export function useContentAnalytics(options: UseContentAnalyticsOptions = {}) {
 		};
 	}, [setupEngagementTracking]);
 
-	// Track exit engagement time on unmount
+	// Track exit engagement time on unmount and tab-close
 	useEffect(() => {
+		const handleVisibilityChange = () => {
+			if (document.visibilityState === "hidden" && startTime.current) {
+				window.gtag?.("event", "user_engagement", {
+					engagement_time_msec: Date.now() - startTime.current,
+				});
+			}
+		};
+
+		document.addEventListener("visibilitychange", handleVisibilityChange);
+
 		return () => {
+			document.removeEventListener("visibilitychange", handleVisibilityChange);
 			const totalEngagementTime = Date.now() - startTime.current;
 			if (totalEngagementTime > 5000) {
 				// Only track if engaged for >5 seconds
-				trackContentEvent("engagement_time", {
+				trackContentEvent("user_engagement", {
 					content_id: contentId,
 					content_type: contentType,
 					engagement_time_msec: totalEngagementTime,
