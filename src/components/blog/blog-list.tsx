@@ -15,6 +15,8 @@ import type { Post } from "./types";
 const CATEGORIES = ["all", "architecture", "business", "frontend", "infrastructure"] as const;
 type Category = (typeof CATEGORIES)[number];
 
+const POSTS_PER_PAGE = 12;
+
 const CATEGORY_LABELS: Record<Category, string> = {
 	all: "All Posts",
 	architecture: "Architecture",
@@ -31,6 +33,7 @@ interface BlogListProps {
 export function BlogList({ posts, hubPosts = [] }: BlogListProps) {
 	const { theme, springTransition } = useBlogTheme();
 	const [activeCategory, setActiveCategory] = useState<Category>("all");
+	const [visibleCount, setVisibleCount] = useState(POSTS_PER_PAGE);
 
 	// Calculate post counts per category
 	const categoryCounts = useMemo(() => {
@@ -55,6 +58,11 @@ export function BlogList({ posts, hubPosts = [] }: BlogListProps) {
 		if (activeCategory === "all") return posts;
 		return posts.filter((post) => post.data.category === activeCategory);
 	}, [posts, activeCategory]);
+
+	const visiblePosts = useMemo(
+		() => filteredPosts.slice(0, visibleCount),
+		[filteredPosts, visibleCount]
+	);
 
 	// Select layout component based on theme
 	const LayoutComponent = {
@@ -175,6 +183,7 @@ export function BlogList({ posts, hubPosts = [] }: BlogListProps) {
 									key={category}
 									onClick={() => {
 										setActiveCategory(category);
+										setVisibleCount(POSTS_PER_PAGE);
 										trackEvent("blog_filter", { category });
 									}}
 									className="group relative px-4 py-2 font-mono text-xs tracking-wider uppercase transition-all duration-200"
@@ -205,10 +214,50 @@ export function BlogList({ posts, hubPosts = [] }: BlogListProps) {
 							);
 						})}
 					</div>
+					<p className="mt-4 font-mono text-xs" style={{ color: theme.colors.textMuted }}>
+						{visibleCount >= filteredPosts.length
+							? `${filteredPosts.length} articles`
+							: `Showing ${Math.min(visibleCount, filteredPosts.length)} of ${filteredPosts.length} articles`}
+					</p>
 				</m.div>
 
 				{/* Posts - rendered by selected layout */}
-				<LayoutComponent posts={filteredPosts} />
+				<LayoutComponent posts={visiblePosts} />
+
+				{/* Load More */}
+				{visibleCount < filteredPosts.length && (
+					<m.div
+						className="mt-12 flex justify-center"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						transition={springTransition}
+					>
+						<button
+							onClick={() => {
+								setVisibleCount((prev) => prev + POSTS_PER_PAGE);
+								trackEvent("blog_load_more", {
+									page: Math.floor(visibleCount / POSTS_PER_PAGE) + 1,
+								});
+							}}
+							className="group relative border px-8 py-3 font-mono text-sm tracking-wider uppercase transition-all duration-300"
+							style={{
+								borderColor: theme.colors.border,
+								color: theme.colors.textMuted,
+							}}
+						>
+							<span
+								className="relative z-10 transition-colors duration-200 group-hover:text-[var(--accent)]"
+								style={{ "--accent": theme.colors.accent } as React.CSSProperties}
+							>
+								Load More ({filteredPosts.length - visibleCount} remaining)
+							</span>
+							<span
+								className="absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-10"
+								style={{ backgroundColor: theme.colors.accent }}
+							/>
+						</button>
+					</m.div>
+				)}
 
 				{/* Empty State */}
 				{filteredPosts.length === 0 && (
