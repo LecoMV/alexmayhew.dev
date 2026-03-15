@@ -245,6 +245,34 @@ jobs:
             exit 1
           fi
 
+      - name: Submit to IndexNow
+        if: success()
+        run: |
+          echo "Fetching sitemap URLs..."
+          URLS=$(curl -s https://alexmayhew.dev/sitemap.xml | grep -oP '(?<=<loc>)[^<]+')
+          TOTAL=$(echo "$URLS" | wc -l)
+          echo "Submitting $TOTAL URLs to IndexNow..."
+
+          # Build JSON payload
+          URL_JSON=$(echo "$URLS" | jq -R -s 'split("\n") | map(select(length > 0))')
+
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"host\": \"alexmayhew.dev\",
+              \"key\": \"${{ secrets.INDEXNOW_KEY }}\",
+              \"keyLocation\": \"https://alexmayhew.dev/${{ secrets.INDEXNOW_KEY }}.txt\",
+              \"urlList\": $URL_JSON
+            }")
+
+          echo "IndexNow response: $RESPONSE"
+          if [ "$RESPONSE" = "200" ] || [ "$RESPONSE" = "202" ]; then
+            echo "IndexNow submission successful ($TOTAL URLs)"
+          else
+            echo "::warning::IndexNow returned $RESPONSE (non-fatal)"
+          fi
+
       - name: Notify on failure
         if: failure()
         uses: actions/github-script@v8
