@@ -35,6 +35,9 @@ jobs:
       - name: Check formatting
         run: npm run format:check
 
+      - name: Dead code detection
+        run: npx knip --no-exit-code
+
   typecheck:
     name: Type Check
     runs-on: ubuntu-latest
