@@ -141,6 +141,10 @@ jobs:
     needs: validate
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+      issues: write
     environment:
       name: production
       url: https://alexmayhew.dev
