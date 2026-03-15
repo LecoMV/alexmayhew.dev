@@ -53,17 +53,28 @@
 			"bucket_name": "alexmayhew-dev-cache",
 		},
 	],
-	// Rate Limiting bindings (Workers RateLimit — GA Sep 2025)
-	// DEFERRED: Requires rate limiting namespaces to be created in CF Dashboard
-	// before adding to wrangler config. Code in routes handles missing bindings
-	// gracefully (try/catch + null check). Re-enable after Dashboard setup.
-	// See docs/DEFERRED_AUDIT_ITEMS.md D.9 for configuration steps.
-	//
-	// "rate_limits": [
-	// 	{ "binding": "RATE_LIMITER_CHAT", "namespace_id": "chat_api" },
-	// 	{ "binding": "RATE_LIMITER_CONTACT", "namespace_id": "contact_form" },
-	// 	{ "binding": "RATE_LIMITER_NEWSLETTER", "namespace_id": "newsletter" }
-	// ],
+	/**
+	 * Workers Rate Limiting (GA Sep 2025)
+	 * Globally coordinated rate limiting with near-zero latency.
+	 * Namespaces auto-created on first deploy. Limits configured in code.
+	 */
+	"rate_limits": [
+		{
+			"binding": "RATE_LIMITER_CHAT",
+			"namespace_id": "chat_api",
+			"simple": { "limit": 10, "period": 60 }
+		},
+		{
+			"binding": "RATE_LIMITER_CONTACT",
+			"namespace_id": "contact_form",
+			"simple": { "limit": 5, "period": 3600 }
+		},
+		{
+			"binding": "RATE_LIMITER_NEWSLETTER",
+			"namespace_id": "newsletter",
+			"simple": { "limit": 3, "period": 3600 }
+		}
+	],
 	// Keep workers.dev subdomain active until custom domain is set up in dashboard
 	"workers_dev": true,
 	/**
