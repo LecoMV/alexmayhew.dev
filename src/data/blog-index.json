@@ -87,6 +87,14 @@
 		"series": "engineering-leadership"
 	},
 	{
+		"title": "Caching Strategies That Actually Work",
+		"description": "Everyone knows caching improves performance. Few teams implement it correctly. Here's the multi-layer caching architecture I recommend to SaaS teams... with the invalidation strategies that prevent stale data from becoming a support ticket.",
+		"slug": "caching-strategies-production",
+		"category": "infrastructure",
+		"tags": ["caching", "redis", "cdn", "performance", "saas"],
+		"series": "performance-engineering"
+	},
+	{
 		"title": "CDN Strategy: When to Cache, What to Cache, How to Invalidate",
 		"description": "A properly configured CDN reduces origin load by 90%+ and cuts TTFB from 800ms to 50ms. Here's the caching strategy that actually works... without serving stale data to your users.",
 		"slug": "cdn-caching-strategy",
@@ -103,6 +111,28 @@
 		"series": "saas-architecture"
 	},
 	{
+		"title": "Code Review Practices That Scale",
+		"description": "Code review at 5 engineers is a conversation. At 50, it's a bottleneck. Here's how to scale review practices without sacrificing quality... from async review protocols to automated gates that catch 80% of issues before a human looks at the PR.",
+		"slug": "code-review-practices-scale",
+		"category": "business",
+		"tags": [
+			"code-review",
+			"engineering-culture",
+			"leadership",
+			"automation",
+			"developer-experience"
+		],
+		"series": "engineering-leadership"
+	},
+	{
+		"title": "Cognitive Debt: The Hidden Cost Your AI-Assisted Team Isn't Measuring",
+		"description": "Cognitive debt compounds faster than technical debt — when engineers don't understand AI-generated code, the team loses its ability to reason about the system. Here's how to measure and manage it.",
+		"slug": "cognitive-debt-ai-teams",
+		"category": "business",
+		"tags": ["ai", "cognitive-debt", "technical-debt", "engineering-leadership", "code-quality"],
+		"series": "ai-development"
+	},
+	{
 		"title": "Component API Design: Props, Variants, and Composition Patterns",
 		"description": "Design component APIs that developers love to use. Covers prop design, variant patterns, compound components, and building APIs that scale from simple use cases to complex customization.",
 		"slug": "component-api-design",
@@ -111,11 +141,27 @@
 		"series": "frontend-architecture"
 	},
 	{
+		"title": "Core Web Vitals Audit Checklist (2026 Update)",
+		"description": "Google's CWV thresholds haven't changed but the measurement methodology has. Here's the updated audit checklist with INP replacing FID, real-world field data strategies, and the optimizations that actually move the needle.",
+		"slug": "core-web-vitals-2026-audit",
+		"category": "frontend",
+		"tags": ["performance", "core-web-vitals", "seo", "inp", "lighthouse"],
+		"series": "performance-engineering"
+	},
+	{
 		"title": "Core Web Vitals Deep Dive: LCP, INP, CLS Optimization",
 		"description": "Google's Core Web Vitals are a ranking factor... but more importantly, they correlate with conversion rates. Here's how to hit green scores without sacrificing functionality.",
 		"slug": "core-web-vitals-optimization",
 		"category": "frontend",
 		"tags": ["performance", "core-web-vitals", "nextjs", "frontend", "seo"],
+		"series": "performance-engineering"
+	},
+	{
+		"title": "Database Migrations That Won't Wake You at 3 AM",
+		"description": "Most SaaS teams treat database migrations as a deployment step. They're an architecture decision. Here's the pattern comparison, rollback strategy, and zero-downtime playbook I use with advisory clients.",
+		"slug": "database-migration-patterns",
+		"category": "infrastructure",
+		"tags": ["database", "migrations", "saas", "postgresql", "zero-downtime"],
 		"series": "performance-engineering"
 	},
 	{
@@ -133,6 +179,22 @@
 		"category": "frontend",
 		"tags": ["design-systems", "design-tokens", "tailwind", "figma", "frontend"],
 		"series": "frontend-architecture"
+	},
+	{
+		"title": "Documentation That Engineers Actually Read",
+		"description": "Your team has documentation. Nobody reads it. Here's why... and the 4 documentation types that engineers actually use, with the templates and maintenance strategies that keep docs accurate past the first week.",
+		"slug": "documentation-engineers-read",
+		"category": "business",
+		"tags": ["documentation", "engineering-culture", "developer-experience", "leadership"],
+		"series": "engineering-leadership"
+	},
+	{
+		"title": "Edge Computing: When Worth the Complexity",
+		"description": "Edge computing promises sub-50ms latency worldwide. It also promises configuration nightmares, data consistency puzzles, and debugging sessions you'll regret. Here's the decision framework for when edge actually delivers ROI.",
+		"slug": "edge-computing-saas",
+		"category": "infrastructure",
+		"tags": ["edge-computing", "performance", "cloudflare", "latency", "saas"],
+		"series": "performance-engineering"
 	},
 	{
 		"title": "Engineering Leadership: The Founder to CTO Journey",
@@ -175,12 +237,36 @@
 		"series": "saas-architecture"
 	},
 	{
+		"title": "Hiring Your First Staff Engineer",
+		"description": "Staff engineer is the most misunderstood role in SaaS companies. Most teams hire too early, hire for the wrong skills, or create a title without a mandate. Here's when to hire, what to look for, and how to set them up for success.",
+		"slug": "hiring-first-staff-engineer",
+		"category": "business",
+		"tags": ["hiring", "staff-engineer", "leadership", "engineering-culture", "saas"],
+		"series": "engineering-leadership"
+	},
+	{
 		"title": "Hunting Memory Leaks in Node.js: A Forensic Guide",
 		"description": "Memory leaks are systematic, not mystical. This guide provides the methodology and tools to find and fix them.",
 		"slug": "nodejs-memory-leaks",
 		"category": "infrastructure",
 		"tags": ["nodejs", "debugging", "performance", "devops"],
 		"series": "performance-engineering"
+	},
+	{
+		"title": "Incident Response Playbook for SaaS Teams",
+		"description": "Most SaaS teams don't have an incident response process until they need one... at 3 AM during a production outage. Here's the playbook I've helped 10+ teams implement before the crisis hits.",
+		"slug": "incident-response-saas",
+		"category": "business",
+		"tags": ["incident-response", "saas", "operations", "on-call", "leadership"],
+		"series": "engineering-leadership"
+	},
+	{
+		"title": "LLM Cost Optimization at Scale",
+		"description": "Your AI feature costs $0.03 per query. At 100K queries/day, that's $90K/year in LLM costs alone. Here's the tiered model strategy, caching architecture, and prompt optimization that reduces costs by 60-80% without degrading output quality.",
+		"slug": "llm-cost-optimization-scale",
+		"category": "infrastructure",
+		"tags": ["llm", "ai", "cost-optimization", "saas", "caching"],
+		"series": "ai-development"
 	},
 	{
 		"title": "LLM Integration Architecture: From Vector Databases to Production",
@@ -247,6 +333,22 @@
 		"series": "ai-development"
 	},
 	{
+		"title": "RAG Architecture for SaaS Products",
+		"description": "Retrieval-Augmented Generation turns your product's data into an AI feature. Most implementations fail on retrieval quality, not generation quality. Here's the architecture that works in production... chunking strategies, embedding models, and the hybrid search approach that outperforms pure vector similarity by 15-30%.",
+		"slug": "rag-architecture-saas",
+		"category": "architecture",
+		"tags": ["rag", "ai", "vector-database", "saas", "llm"],
+		"series": "ai-development"
+	},
+	{
+		"title": "Real-Time Performance Monitoring at Scale",
+		"description": "Your monitoring dashboard says everything is fine. Your customers say the app is slow. Here's why the gap exists and how to build monitoring that catches performance degradation before users notice.",
+		"slug": "real-time-performance-monitoring",
+		"category": "infrastructure",
+		"tags": ["monitoring", "observability", "performance", "saas", "metrics"],
+		"series": "performance-engineering"
+	},
+	{
 		"title": "RSC, The Edge, and the Death of the Waterfall",
 		"description": "React Server Components + Edge computing collapse traditional data fetching waterfalls into parallel streams. The SPA era is ending.",
 		"slug": "rsc-edge-death-of-waterfall",
@@ -260,6 +362,14 @@
 		"slug": "saas-architecture-decision-framework",
 		"category": "architecture",
 		"tags": ["saas", "architecture", "multi-tenancy", "scaling", "infrastructure"],
+		"series": "saas-architecture"
+	},
+	{
+		"title": "SaaS Billing Architecture with Stripe",
+		"description": "Billing is where SaaS architecture decisions have the most direct revenue impact. Here's the Stripe integration architecture I recommend... webhook-driven state machines, idempotent payment processing, and the subscription lifecycle patterns that prevent revenue leakage.",
+		"slug": "saas-billing-stripe-architecture",
+		"category": "architecture",
+		"tags": ["billing", "stripe", "saas", "architecture", "subscriptions"],
 		"series": "saas-architecture"
 	},
 	{
@@ -277,6 +387,14 @@
 		"category": "infrastructure",
 		"tags": ["security", "compliance", "soc2", "startups", "architecture"],
 		"series": "saas-architecture"
+	},
+	{
+		"title": "State Management in 2026: Zustand vs Signals vs Server State",
+		"description": "The state management landscape has fragmented again. Zustand dominates, signals are the new hotness, and server state (TanStack Query, SWR) handles most of what Redux used to do. Here's what to use when... with the decision framework I give to advisory clients.",
+		"slug": "state-management-2026",
+		"category": "frontend",
+		"tags": ["state-management", "react", "zustand", "signals", "frontend"],
+		"series": "frontend-architecture"
 	},
 	{
 		"title": "Stop Calling It Vibe Coding: What AI-Assisted Development Actually Requires",
@@ -301,6 +419,14 @@
 		"category": "business",
 		"tags": ["technical-debt", "engineering-management", "architecture", "strategy", "startups"],
 		"series": "engineering-leadership"
+	},
+	{
+		"title": "Testing Strategies for React Server Components",
+		"description": "React Server Components break every testing pattern you've built over the past 5 years. No jsdom, no render(), no user events. Here's the testing architecture that works for async server components, streaming boundaries, and the hybrid client-server model.",
+		"slug": "testing-react-server-components",
+		"category": "frontend",
+		"tags": ["react", "testing", "server-components", "next-js", "frontend"],
+		"series": "frontend-architecture"
 	},
 	{
 		"title": "The $500K Architecture Mistake I Helped a Startup Avoid",
@@ -335,12 +461,28 @@
 		"series": "frontend-architecture"
 	},
 	{
+		"title": "The Hidden Tax of \"We Support Both\"",
+		"description": "Every SaaS team eventually says \"we''ll support both\" ... both databases, both auth providers, both deployment targets. The hidden cost isn''t the initial implementation. It''s the 2x testing matrix, 2x documentation, and the subtle bugs that only appear in one configuration.",
+		"slug": "hidden-tax-supporting-both",
+		"category": "business",
+		"tags": ["architecture", "saas", "technical-debt", "decision-making", "strategy"],
+		"series": "saas-architecture"
+	},
+	{
 		"title": "The Lambda Tax: Cold Starts and the True Cost of Serverless",
 		"description": "Cold starts add 100-500ms+ to user requests. Know when serverless helps and when it hurts... the math might surprise you.",
 		"slug": "lambda-tax-cold-starts",
 		"category": "infrastructure",
 		"tags": ["serverless", "aws", "performance", "devops"],
 		"series": "performance-engineering"
+	},
+	{
+		"title": "The METR Paradox: Why AI Makes Your Best Engineers Think They're Faster (While Slowing Them Down)",
+		"description": "A rigorous randomized controlled trial showed experienced devs were 19% slower with AI while believing they were 24% faster. The perception gap is the real danger.",
+		"slug": "metr-paradox-ai-productivity",
+		"category": "business",
+		"tags": ["ai", "developer-productivity", "metr-study", "engineering-leadership", "ai-tools"],
+		"series": "ai-development"
 	},
 	{
 		"title": "The Senior Developer Paradox: Why Expensive Talent Saves Money",
@@ -357,6 +499,14 @@
 		"category": "architecture",
 		"tags": ["typescript", "javascript", "productivity", "engineering"],
 		"series": "frontend-architecture"
+	},
+	{
+		"title": "Vector Databases: When to Build vs Buy",
+		"description": "Every SaaS adding AI features faces the vector database decision. pgvector on your existing PostgreSQL, a managed service like Pinecone, or a dedicated engine like Qdrant? Here's the decision framework based on your data scale, query patterns, and team capacity.",
+		"slug": "vector-database-selection",
+		"category": "architecture",
+		"tags": ["vector-database", "ai", "postgresql", "pgvector", "saas"],
+		"series": "ai-development"
 	},
 	{
 		"title": "Why Boring Technology Wins: Lessons from Unicorn Migrations",
