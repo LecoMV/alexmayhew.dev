@@ -1,8 +1,16 @@
 # Deferred Audit Items (March 2026)
 
-Items identified in the comprehensive site audit planned for upcoming sprints.
+Items identified in the comprehensive site audit. Updated 2026-03-14 after sprint 2.
 
-## D.1 Nonce-Based CSP (Priority: HIGH)
+## Completed This Sprint
+
+- ~~D.2 Workers RateLimit Binding~~ -- DONE. Commit `646e66e`. Migrated /api/chat, contact action, newsletter action to Workers RateLimit binding. Deleted in-memory rate limiter.
+- ~~D.5 IntersectionObserver Scroll Tracking~~ -- DONE. Replaced scroll events with IntersectionObserver sentinel elements. Zero main-thread cost.
+- ~~D.6 Knip in CI~~ -- DONE. Commit `05c26e7`. Added `npx knip --no-exit-code` to CI lint job.
+
+## Remaining Items
+
+### D.1 Nonce-Based CSP (Priority: HIGH)
 
 Remove `'unsafe-inline'` from script-src via nonce generation in middleware.
 
@@ -19,21 +27,7 @@ Evaluate replacing Framer Motion with CSS-only animations before implementing.
 
 **Research:** `docs/research/csp-nextjs15-cloudflare-workers-2026.md`
 
-## D.2 Workers RateLimit Binding (Priority: HIGH)
-
-Replace in-memory rate limiter with Cloudflare Workers RateLimit binding (GA Sep 2025, free tier).
-
-**Steps:**
-
-1. Add `rate_limits` bindings to `wrangler.jsonc`
-2. Add `RateLimit` types to `CloudflareEnv` interface (`cloudflare-env.d.ts`)
-3. Update `/api/chat` route -- replace `checkRateLimit()` with `env.RATE_LIMITER_CHAT.limit()`
-4. Update contact action -- replace `dependencies.rateLimit()` with binding call
-5. Delete `src/lib/rate-limit.ts` after migration complete
-
-**Research:** `docs/research/cloudflare-rate-limiting-2026.md`
-
-## D.3 Register GA4 Custom Dimensions (Priority: HIGH)
+### D.3 Register GA4 Custom Dimensions (Priority: HIGH)
 
 Manual action in GA4 Admin > Custom definitions:
 
@@ -48,25 +42,12 @@ Do NOT register `engagement_time_msec` (GA4 reserved parameter).
 
 **Research:** `docs/research/ga4-analytics-portfolio-2026.md`
 
-## D.4 Blog Pagination (Priority: MEDIUM)
+### D.4 Blog Pagination (Priority: MEDIUM)
 
 Add pagination or virtual scroll to `/blog` page before reaching ~100 posts.
 Currently 62 posts render at once. Plan for implementation at ~80 posts.
 
-## D.5 IntersectionObserver Scroll Tracking (Priority: LOW)
-
-Replace scroll event listeners in `use-content-analytics.ts` with IntersectionObserver
-sentinel elements at 25/50/75/90% article depth. Zero main-thread cost vs current
-scroll event + debounce approach.
-
-**Research:** `docs/research/ga4-analytics-portfolio-2026.md`
-
-## D.6 Knip in CI (Priority: LOW)
-
-Add `npm run knip` to the CI lint job (`.github/workflows/ci.yml`) to catch
-dead code on every push. Currently configured but not enforced in CI.
-
-## D.7 Verify GA4 + CF Analytics Activation (Priority: HIGH)
+### D.7 Verify GA4 + CF Analytics Activation (Priority: HIGH)
 
 Confirm in Cloudflare Pages dashboard that these environment variables are set:
 
@@ -76,3 +57,22 @@ Confirm in Cloudflare Pages dashboard that these environment variables are set:
 Without these, analytics components render `null` and collect zero data.
 
 **Research:** `docs/research/ga4-analytics-portfolio-2026.md`
+
+### D.8 CSP Middleware Headers Not Propagating (Priority: MEDIUM)
+
+Middleware.ts sets CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy headers but they don't appear in production HTTP responses. HSTS and x-content-type-options appear (likely from Cloudflare's own settings, not middleware).
+
+Possible causes: OpenNext/Cloudflare Workers middleware response header limitation, or R2 ISR cache bypassing middleware. Research in progress.
+
+**Research:** Pending -- agent investigating OpenNext middleware header propagation.
+
+### D.9 Configure Workers Rate Limiting in Dashboard (Priority: HIGH)
+
+The Workers RateLimit bindings are deployed but limits need to be configured in the Cloudflare Dashboard:
+
+- **Workers & Pages > alexmayhew-dev > Settings > Rate Limiting**
+- `chat_api` namespace: 10 requests per 60 seconds
+- `contact_form` namespace: 5 requests per 3600 seconds
+- `newsletter` namespace: 3 requests per 3600 seconds
+
+Without Dashboard configuration, the `.limit()` calls may not enforce limits correctly.
