@@ -426,15 +426,6 @@ html {
 	}
 }
 
-/* ===== Content Rendering Optimization ===== */
-
-/* Skip rendering off-screen blog content sections.
-   Applied to direct children only — NOT the article itself (would break sticky TOC/IntersectionObserver). */
-.prose-void > * {
-	content-visibility: auto;
-	contain-intrinsic-size: auto 500px;
-}
-
 /* ===== Accessibility: Reduced Transparency ===== */
 
 /* Users who enable "reduce transparency" in OS accessibility settings
