@@ -18,23 +18,33 @@ vi.mock("@/lib/cloudflare-env", () => ({
 	}),
 }));
 
+const { mockRateLimitFn } = vi.hoisted(() => ({
+	mockRateLimitFn: vi.fn().mockResolvedValue({ success: true }),
+}));
+vi.mock("@opennextjs/cloudflare", () => ({
+	getCloudflareContext: vi.fn().mockResolvedValue({
+		env: {
+			RATE_LIMITER_NEWSLETTER: {
+				limit: mockRateLimitFn,
+			},
+		},
+	}),
+}));
+
 const mockGetEnv = vi.mocked(getEnv);
 
 describe("subscribeToNewsletter", () => {
 	const mockFetch = vi.fn();
-	const mockRateLimit = vi.fn();
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
-		mockRateLimit.mockReturnValue({ success: true, resetIn: 0 });
+		mockRateLimitFn.mockResolvedValue({ success: true });
 		mockFetch.mockResolvedValue({
 			ok: true,
 			json: () => Promise.resolve({}),
 		});
 
 		await __setDependencies({
-			rateLimit: mockRateLimit,
-			getIP: () => "127.0.0.1",
 			fetch: mockFetch,
 		});
 	});
@@ -107,23 +117,23 @@ describe("subscribeToNewsletter", () => {
 
 	describe("Rate limiting", () => {
 		it("should allow when rate limit succeeds", async () => {
-			mockRateLimit.mockReturnValue({ success: true, resetIn: 0 });
+			mockRateLimitFn.mockResolvedValue({ success: true });
 			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(true);
 		});
 
-		it("should block with minutes remaining message when rate limit fails", async () => {
-			mockRateLimit.mockReturnValue({ success: false, resetIn: 120 });
+		it("should block when rate limit binding returns failure", async () => {
+			mockRateLimitFn.mockResolvedValue({ success: false });
 			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(false);
-			expect(result.error).toContain("Try again in 2 minutes");
+			expect(result.error).toContain("Too many attempts");
 		});
 
-		it("should round up partial minutes", async () => {
-			mockRateLimit.mockReturnValue({ success: false, resetIn: 61 });
-			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
-			expect(result.success).toBe(false);
-			expect(result.error).toContain("Try again in 2 minutes");
+		it("should pass client IP key to rate limiter", async () => {
+			await subscribeToNewsletter({ email: "user@example.com", source: "website" });
+			expect(mockRateLimitFn).toHaveBeenCalledWith({
+				key: expect.stringContaining("newsletter:"),
+			});
 		});
 	});
 
@@ -232,11 +242,6 @@ describe("subscribeToNewsletter", () => {
 
 			// Reset deps so fetch defaults to the current globalThis.fetch
 			await __resetDependencies();
-			// Re-inject rateLimit and getIP to avoid real implementations
-			await __setDependencies({
-				rateLimit: mockRateLimit,
-				getIP: () => "127.0.0.1",
-			});
 
 			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(true);

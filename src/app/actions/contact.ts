@@ -1,11 +1,11 @@
 "use server";
 
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { render } from "@react-email/render";
 import { headers } from "next/headers";
 
 import { ContactNotification } from "@/components/emails/contact-notification";
 import { getEnv } from "@/lib/cloudflare-env";
-import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
 import { contactFormSchema, type ContactFormValues } from "@/lib/schemas/contact";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 
@@ -57,8 +57,6 @@ async function sendEmailViaResend(params: {
 let dependencies = {
 	sendEmail: sendEmailViaResend as SendEmailFn,
 	verifyTurnstile: verifyTurnstileToken,
-	rateLimit: checkRateLimit,
-	getIP: getClientIP,
 };
 
 // Internal method to swap dependencies during tests
@@ -66,8 +64,6 @@ export const __setDependencies = async (
 	deps: Partial<{
 		sendEmail: SendEmailFn;
 		verifyTurnstile: typeof verifyTurnstileToken;
-		rateLimit: typeof checkRateLimit;
-		getIP: typeof getClientIP;
 	}>
 ) => {
 	dependencies = { ...dependencies, ...deps };
@@ -78,8 +74,6 @@ export const __resetDependencies = async () => {
 	dependencies = {
 		sendEmail: sendEmailViaResend,
 		verifyTurnstile: verifyTurnstileToken,
-		rateLimit: checkRateLimit,
-		getIP: getClientIP,
 	};
 };
 
@@ -125,19 +119,28 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 	const { name, email, projectType, budget, message, referralSource, turnstileToken } =
 		validation.data;
 
-	// 2. Rate Limiting
+	// 2. Rate Limiting (Workers RateLimit binding)
 	const headersList = await headers();
-	const clientIP = dependencies.getIP(headersList);
-	const limitResult = dependencies.rateLimit(`contact:${clientIP}`, {
-		limit: 5,
-		windowSeconds: 3600,
-	});
+	const clientIP =
+		headersList.get("cf-connecting-ip") ||
+		headersList.get("x-forwarded-for")?.split(",")[0].trim() ||
+		"unknown";
 
-	if (!limitResult.success) {
-		return {
-			success: false,
-			error: `Too many submissions. Try again in ${Math.ceil(limitResult.resetIn / 60)} minutes.`,
-		};
+	try {
+		const { env: cfEnv } = await getCloudflareContext();
+		if (cfEnv.RATE_LIMITER_CONTACT) {
+			const { success } = await cfEnv.RATE_LIMITER_CONTACT.limit({
+				key: `contact:${clientIP}`,
+			});
+			if (!success) {
+				return {
+					success: false,
+					error: "Too many submissions. Please try again later.",
+				};
+			}
+		}
+	} catch {
+		// Rate limiting unavailable in local dev — allow request through
 	}
 
 	const env = await getEnv();

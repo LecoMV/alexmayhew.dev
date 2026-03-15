@@ -23,6 +23,19 @@ vi.mock("@react-email/render", () => ({
 	render: vi.fn().mockResolvedValue("<html>Mocked Email</html>"),
 }));
 
+const { mockRateLimitFn } = vi.hoisted(() => ({
+	mockRateLimitFn: vi.fn().mockResolvedValue({ success: true }),
+}));
+vi.mock("@opennextjs/cloudflare", () => ({
+	getCloudflareContext: vi.fn().mockResolvedValue({
+		env: {
+			RATE_LIMITER_CONTACT: {
+				limit: mockRateLimitFn,
+			},
+		},
+	}),
+}));
+
 const mockGetEnv = vi.mocked(getEnv);
 
 // Mock Data
@@ -38,20 +51,17 @@ const validData = {
 describe("submitContactForm", () => {
 	const mockSendEmail = vi.fn();
 	const mockVerify = vi.fn();
-	const mockRateLimit = vi.fn();
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
 		// Reset default mocks
 		mockSendEmail.mockResolvedValue({ success: true });
 		mockVerify.mockResolvedValue(true);
-		mockRateLimit.mockReturnValue({ success: true, resetIn: 0 });
+		mockRateLimitFn.mockResolvedValue({ success: true });
 
 		await __setDependencies({
 			sendEmail: mockSendEmail,
 			verifyTurnstile: mockVerify,
-			rateLimit: mockRateLimit,
-			getIP: () => "127.0.0.1",
 		});
 	});
 
@@ -125,22 +135,23 @@ describe("submitContactForm", () => {
 	});
 
 	describe("Rate limiting", () => {
-		it("should allow request when rate limit is not exceeded", async () => {
+		it("should allow request when rate limit succeeds", async () => {
 			const result = await submitContactForm(validData);
 			expect(result.success).toBe(true);
 		});
 
-		it("should block when rate limit is exceeded", async () => {
-			mockRateLimit.mockReturnValue({ success: false, resetIn: 60 });
+		it("should block when rate limit binding returns failure", async () => {
+			mockRateLimitFn.mockResolvedValue({ success: false });
 			const result = await submitContactForm(validData);
 			expect(result.success).toBe(false);
 			expect(result.error).toContain("Too many submissions");
 		});
 
-		it("should show reset time in error message", async () => {
-			mockRateLimit.mockReturnValue({ success: false, resetIn: 120 });
-			const result = await submitContactForm(validData);
-			expect(result.error).toContain("2 minutes");
+		it("should pass client IP key to rate limiter", async () => {
+			await submitContactForm(validData);
+			expect(mockRateLimitFn).toHaveBeenCalledWith({
+				key: expect.stringContaining("contact:"),
+			});
 		});
 	});
 

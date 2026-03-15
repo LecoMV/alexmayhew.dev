@@ -17,6 +17,9 @@ declare namespace Cloudflare {
 		LISTMONK_API_KEY: string;
 		RESEND_API_KEY: string;
 		CONTACT_EMAIL: string;
+		RATE_LIMITER_CHAT: RateLimit;
+		RATE_LIMITER_CONTACT: RateLimit;
+		RATE_LIMITER_NEWSLETTER: RateLimit;
 		NEXT_CACHE: R2Bucket;
 		WORKER_SELF_REFERENCE: Service<typeof import("./.open-next/worker").default>;
 		AI: Ai;

@@ -1,10 +1,10 @@
 "use server";
 
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { headers } from "next/headers";
 import { z } from "zod";
 
 import { getEnv } from "@/lib/cloudflare-env";
-import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
 
 // Validation schema
 const newsletterSchema = z.object({
@@ -33,15 +33,11 @@ export async function subscribeNewsletterAction(
 
 // Dependency injection for testing
 let dependencies = {
-	rateLimit: checkRateLimit,
-	getIP: getClientIP,
 	fetch: globalThis.fetch,
 };
 
 export const __setDependencies = async (
 	deps: Partial<{
-		rateLimit: typeof checkRateLimit;
-		getIP: typeof getClientIP;
 		fetch: typeof globalThis.fetch;
 	}>
 ) => {
@@ -50,8 +46,6 @@ export const __setDependencies = async (
 
 export const __resetDependencies = async () => {
 	dependencies = {
-		rateLimit: checkRateLimit,
-		getIP: getClientIP,
 		fetch: globalThis.fetch,
 	};
 };
@@ -70,19 +64,28 @@ export async function subscribeToNewsletter(
 
 	const { email } = validation.data;
 
-	// 2. Rate limiting - 3 attempts per hour per IP
+	// 2. Rate limiting (Workers RateLimit binding)
 	const headersList = await headers();
-	const clientIP = dependencies.getIP(headersList);
-	const limitResult = dependencies.rateLimit(`newsletter:${clientIP}`, {
-		limit: 3,
-		windowSeconds: 3600,
-	});
+	const clientIP =
+		headersList.get("cf-connecting-ip") ||
+		headersList.get("x-forwarded-for")?.split(",")[0].trim() ||
+		"unknown";
 
-	if (!limitResult.success) {
-		return {
-			success: false,
-			error: `Too many attempts. Try again in ${Math.ceil(limitResult.resetIn / 60)} minutes.`,
-		};
+	try {
+		const { env: cfEnv } = await getCloudflareContext();
+		if (cfEnv.RATE_LIMITER_NEWSLETTER) {
+			const { success } = await cfEnv.RATE_LIMITER_NEWSLETTER.limit({
+				key: `newsletter:${clientIP}`,
+			});
+			if (!success) {
+				return {
+					success: false,
+					error: "Too many attempts. Please try again later.",
+				};
+			}
+		}
+	} catch {
+		// Rate limiting unavailable in local dev — allow request through
 	}
 
 	// 3. Subscribe via Listmonk public subscription API

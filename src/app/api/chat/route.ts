@@ -3,9 +3,7 @@ import { z } from "zod";
 
 import blogIndex from "@/data/blog-index.json";
 import { logger } from "@/lib/logger";
-import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
-
-const RATE_LIMIT_CONFIG = { limit: 10, windowSeconds: 60 };
+import { getClientIP } from "@/lib/rate-limit";
 const MAX_MESSAGE_LENGTH = 1000;
 const MAX_MESSAGES_PER_REQUEST = 10;
 
@@ -130,23 +128,22 @@ export async function POST(request: Request) {
 	const start = Date.now();
 	try {
 		const clientIP = getClientIP(request.headers);
-		const rateLimit = checkRateLimit(`chat:${clientIP}`, RATE_LIMIT_CONFIG);
+		const { env } = await getCloudflareContext();
 
-		if (!rateLimit.success) {
-			return Response.json(
-				{
-					error: "Too many requests. Please wait before sending more messages.",
-					retryAfter: rateLimit.resetIn,
-				},
-				{
-					status: 429,
-					headers: {
-						"Retry-After": String(rateLimit.resetIn),
-						"X-RateLimit-Remaining": "0",
-						"X-RateLimit-Reset": String(rateLimit.resetIn),
+		// Rate limiting via Workers binding (globally coordinated)
+		if (env.RATE_LIMITER_CHAT) {
+			const { success } = await env.RATE_LIMITER_CHAT.limit({ key: clientIP });
+			if (!success) {
+				return Response.json(
+					{
+						error: "Too many requests. Please wait before sending more messages.",
 					},
-				}
-			);
+					{
+						status: 429,
+						headers: { "Retry-After": "60" },
+					}
+				);
+			}
 		}
 
 		let body: unknown;
@@ -163,8 +160,6 @@ export async function POST(request: Request) {
 		}
 
 		const { messages } = result.data;
-
-		const { env } = await getCloudflareContext();
 
 		if (!env.AI) {
 			logger.error("AI binding not configured", { requestId, route: "/api/chat", method: "POST" });
