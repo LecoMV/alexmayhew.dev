@@ -1,21 +1,29 @@
 import { describe, expect, it, vi } from "vitest";
 
 describe("instrumentation", () => {
-	it("should import sentry edge config when NEXT_RUNTIME is edge", async () => {
+	it("register function exists and does not import sentry server configs", async () => {
 		vi.stubEnv("NEXT_RUNTIME", "edge");
 		vi.resetModules();
 
 		const edgeMock = vi.fn();
+		const serverMock = vi.fn();
 		vi.doMock("../sentry.edge.config", () => {
 			edgeMock();
 			return {};
 		});
-		vi.doMock("../sentry.server.config", () => ({}));
+		vi.doMock("../sentry.server.config", () => {
+			serverMock();
+			return {};
+		});
 
 		const { register } = await import("../src/instrumentation");
 		await register();
 
-		expect(edgeMock).toHaveBeenCalled();
+		// Server-side Sentry imports are disabled on Cloudflare Workers
+		// (AsyncLocalStorage bound functions crash the runtime).
+		// Server-side tracking handled by @sentry/cloudflare in custom-worker.ts.
+		expect(edgeMock).not.toHaveBeenCalled();
+		expect(serverMock).not.toHaveBeenCalled();
 
 		vi.unstubAllEnvs();
 		vi.restoreAllMocks();
