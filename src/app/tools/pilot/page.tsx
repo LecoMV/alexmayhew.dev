@@ -43,7 +43,7 @@ export const metadata: Metadata = {
 
 export default function ClaudePilotPage() {
 	return (
-		<main id="main-content" className="min-h-dvh px-6 pt-32 pb-24 sm:px-12 md:px-24">
+		<section className="flex-1 px-6 pt-32 pb-24 sm:px-12 md:px-24">
 			<div className="mx-auto max-w-[1400px]">
 				{/* Breadcrumb */}
 				<nav className="mb-8">
@@ -166,6 +166,6 @@ export default function ClaudePilotPage() {
 					</p>
 				</footer>
 			</div>
-		</main>
+		</section>
 	);
 }

@@ -72,8 +72,8 @@ export function BlogList({ posts, hubPosts = [] }: BlogListProps) {
 	}[theme.layout.variant];
 
 	return (
-		<main
-			className="min-h-dvh px-6 pt-44 pb-24 sm:px-12 md:px-24"
+		<section
+			className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24"
 			style={{ backgroundColor: theme.colors.background }}
 		>
 			<div className="mx-auto max-w-[1400px]">
@@ -279,6 +279,6 @@ export function BlogList({ posts, hubPosts = [] }: BlogListProps) {
 					</m.div>
 				)}
 			</div>
-		</main>
+		</section>
 	);
 }

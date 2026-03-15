@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
 	return (
-		<main className="min-h-dvh px-6 pt-44 pb-24 sm:px-12 md:px-24">
+		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
 			<div className="mx-auto max-w-3xl">
 				<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
 					<span className="mr-2 animate-pulse">●</span>
@@ -178,6 +178,6 @@ export default function PrivacyPage() {
 					</Link>
 				</div>
 			</div>
-		</main>
+		</section>
 	);
 }

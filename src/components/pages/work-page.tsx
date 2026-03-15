@@ -16,7 +16,7 @@ export function WorkPage() {
 		activeCategory === "All" ? projects : projects.filter((p) => p.category === activeCategory);
 
 	return (
-		<main className="min-h-dvh px-6 pt-44 pb-24 sm:px-12 md:px-24">
+		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
 			<div className="mx-auto max-w-[1400px]">
 				{/* Header */}
 				<m.div
@@ -207,6 +207,6 @@ export function WorkPage() {
 					</m.div>
 				)}
 			</div>
-		</main>
+		</section>
 	);
 }

@@ -125,7 +125,7 @@ export default function BackgroundsDemoPage() {
 	const currentBg = backgrounds.find((b) => b.id === activeBackground);
 
 	return (
-		<main className="bg-void-navy min-h-dvh">
+		<section className="bg-void-navy flex-1">
 			{/* Fullscreen Preview */}
 			<AnimatePresence>
 				{fullscreen && currentBg && (
@@ -384,6 +384,6 @@ export default function BackgroundsDemoPage() {
 					</m.div>
 				</div>
 			</div>
-		</main>
+		</section>
 	);
 }

@@ -51,7 +51,7 @@ export function RolePageContent({ page }: RolePageContentProps) {
 	const roleLabel = ROLE_LABELS[page.role];
 
 	return (
-		<main className="min-h-dvh px-6 pt-44 pb-24 sm:px-12 md:px-24">
+		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
 			<div className="mx-auto max-w-[1400px]">
 				{/* Breadcrumbs */}
 				<Breadcrumbs roleLabel={roleLabel} />
@@ -85,7 +85,7 @@ export function RolePageContent({ page }: RolePageContentProps) {
 				{/* CTA Section */}
 				<CtaSection />
 			</div>
-		</main>
+		</section>
 	);
 }
 

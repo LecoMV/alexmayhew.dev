@@ -64,7 +64,7 @@ export default function DemoPage() {
 	const [showTerminal, setShowTerminal] = useState(true);
 
 	return (
-		<main className="min-h-dvh px-6 pt-44 pb-24 sm:px-12 md:px-24">
+		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
 			<div className="mx-auto max-w-[1400px]">
 				{/* Back Link */}
 				<m.div
@@ -397,6 +397,6 @@ export default function DemoPage() {
 					</div>
 				</m.div>
 			</div>
-		</main>
+		</section>
 	);
 }

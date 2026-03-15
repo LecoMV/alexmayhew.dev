@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function ServiceNotFound() {
 	return (
-		<main className="flex min-h-dvh flex-col items-center justify-center px-6 py-24">
+		<section className="flex flex-1 flex-col items-center justify-center px-6 py-24">
 			<div className="text-center">
 				<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
 					<span className="mr-2 animate-pulse">●</span>
@@ -37,6 +37,6 @@ export default function ServiceNotFound() {
 					</Link>
 				</div>
 			</div>
-		</main>
+		</section>
 	);
 }

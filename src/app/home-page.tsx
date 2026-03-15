@@ -54,7 +54,7 @@ export default function Home() {
 	return (
 		<>
 			{/* Hero Section */}
-			<main className="flex min-h-dvh flex-col justify-center px-6 pt-36 pb-12 sm:px-12 md:px-24">
+			<section className="flex flex-1 flex-col justify-center px-6 pt-36 pb-12 sm:px-12 md:px-24">
 				<div className="mx-auto grid w-full max-w-[1400px] grid-cols-12 gap-6">
 					{/* Text Content */}
 					<m.section
@@ -161,7 +161,7 @@ export default function Home() {
 						</div>
 					</m.div>
 				</div>
-			</main>
+			</section>
 
 			{/* Services Section */}
 			<section className="border-t border-white/10 px-6 py-24 sm:px-12 md:px-24">

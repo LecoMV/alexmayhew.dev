@@ -48,8 +48,8 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 	return (
 		<>
 			<ReadingProgress />
-			<main
-				className="min-h-dvh px-6 pt-44 pb-24 sm:px-12 md:px-24"
+			<section
+				className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24"
 				style={{ backgroundColor: theme.colors.background }}
 			>
 				<div className="mx-auto max-w-[1280px]">
@@ -288,7 +288,7 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 						</aside>
 					</div>
 				</div>
-			</main>
+			</section>
 		</>
 	);
 }

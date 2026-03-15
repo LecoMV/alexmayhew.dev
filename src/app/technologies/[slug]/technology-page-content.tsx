@@ -24,7 +24,6 @@ interface TechnologyPageContentProps {
 	technology: Technology;
 }
 
-// Get related service pages for this technology
 function getRelatedServicePages(technologyId: string) {
 	const pages = getPublishedPages();
 	// Map technology IDs to the technology slugs used in pages
@@ -47,7 +46,7 @@ export function TechnologyPageContent({ technology }: TechnologyPageContentProps
 	const relatedPages = getRelatedServicePages(technology.id);
 
 	return (
-		<main className="min-h-dvh px-6 pt-44 pb-24 sm:px-12 md:px-24">
+		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
 			<div className="mx-auto max-w-[1400px]">
 				{/* Breadcrumb */}
 				<m.nav
@@ -97,7 +96,7 @@ export function TechnologyPageContent({ technology }: TechnologyPageContentProps
 				{/* CTA Section */}
 				<CtaSection technology={technology} />
 			</div>
-		</main>
+		</section>
 	);
 }
 

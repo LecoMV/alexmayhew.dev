@@ -50,7 +50,7 @@ export default function TraceForgePageRoute() {
 
 function TraceForgePageContent() {
 	return (
-		<main id="main-content" className="min-h-dvh px-6 pt-32 pb-24 sm:px-12 md:px-24">
+		<section className="flex-1 px-6 pt-32 pb-24 sm:px-12 md:px-24">
 			<div className="mx-auto max-w-[1400px]">
 				{/* Breadcrumb */}
 				<nav className="mb-8">
@@ -178,6 +178,6 @@ function TraceForgePageContent() {
 					</div>
 				</section>
 			</div>
-		</main>
+		</section>
 	);
 }
