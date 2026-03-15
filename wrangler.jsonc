@@ -62,18 +62,18 @@
 		{
 			"binding": "RATE_LIMITER_CHAT",
 			"namespace_id": "chat_api",
-			"simple": { "limit": 10, "period": 60 }
+			"simple": { "limit": 10, "period": 60 },
 		},
 		{
 			"binding": "RATE_LIMITER_CONTACT",
 			"namespace_id": "contact_form",
-			"simple": { "limit": 5, "period": 3600 }
+			"simple": { "limit": 5, "period": 3600 },
 		},
 		{
 			"binding": "RATE_LIMITER_NEWSLETTER",
 			"namespace_id": "newsletter",
-			"simple": { "limit": 3, "period": 3600 }
-		}
+			"simple": { "limit": 3, "period": 3600 },
+		},
 	],
 	// Keep workers.dev subdomain active until custom domain is set up in dashboard
 	"workers_dev": true,
