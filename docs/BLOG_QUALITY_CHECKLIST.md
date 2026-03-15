@@ -26,7 +26,7 @@
 - [ ] No emojis in body text
 - [ ] No exclamation points (max 1 in entire post)
 - [ ] No filler phrases ("in today's world", "as we all know", "it goes without saying")
-- [ ] Uses em dashes for emphasis — not parentheses for asides
+- [ ] Uses ellipsis `...` for parenthetical breaks (NEVER em dashes or double dashes)
 - [ ] Specific numbers throughout (40%, 10x, $300K — never "a lot" or "many")
 - [ ] Experience-backed claims ("I've built...", "In my advisory work..." — not "research shows")
 - [ ] Reads like a senior engineer explaining to a peer — not a tutorial for beginners
