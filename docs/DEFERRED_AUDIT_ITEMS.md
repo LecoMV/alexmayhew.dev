@@ -1,10 +1,10 @@
 # Deferred Audit Items (March 2026)
 
-Items identified in the comprehensive site audit. Updated 2026-03-14 after sprint 2.
+Items identified in the comprehensive site audit. Updated 2026-03-15.
 
-## Completed This Sprint
+## Completed (Sprint 1 + Sprint 2)
 
-- ~~D.2 Workers RateLimit Binding~~ -- DONE. Commit `646e66e`. Migrated /api/chat, contact action, newsletter action to Workers RateLimit binding. Deleted in-memory rate limiter.
+- ~~D.2 Workers RateLimit Binding~~ -- DONE. Code migrated (commit `646e66e`). Bindings commented out in wrangler.jsonc pending Dashboard namespace creation (see D.9).
 - ~~D.5 IntersectionObserver Scroll Tracking~~ -- DONE. Replaced scroll events with IntersectionObserver sentinel elements. Zero main-thread cost.
 - ~~D.6 Knip in CI~~ -- DONE. Commit `05c26e7`. Added `npx knip --no-exit-code` to CI lint job.
 
@@ -58,21 +58,52 @@ Without these, analytics components render `null` and collect zero data.
 
 **Research:** `docs/research/ga4-analytics-portfolio-2026.md`
 
-### D.8 CSP Middleware Headers Not Propagating (Priority: MEDIUM)
+### D.8 CSP Security Headers via Custom Worker Wrapper (Priority: HIGH)
 
-Middleware.ts sets CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy headers but they don't appear in production HTTP responses. HSTS and x-content-type-options appear (likely from Cloudflare's own settings, not middleware).
+**Root cause found:** `public/_headers` only applies to CDN-served static assets, not Worker-generated HTML. Middleware headers are set but OpenNext doesn't consistently propagate them through.
 
-Possible causes: OpenNext/Cloudflare Workers middleware response header limitation, or R2 ISR cache bypassing middleware. Research in progress.
+**Solution:** Create `custom-worker.ts` that wraps the OpenNext handler:
 
-**Research:** Pending -- agent investigating OpenNext middleware header propagation.
+1. Create `custom-worker.ts` at project root
+2. Import and re-export the OpenNext handler
+3. Inject CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy on HTML responses
+4. Update `wrangler.jsonc` main entry to `./custom-worker.ts`
 
-### D.9 Configure Workers Rate Limiting in Dashboard (Priority: HIGH)
+Note: HSTS and x-content-type-options already appear from Cloudflare platform settings.
 
-The Workers RateLimit bindings are deployed but limits need to be configured in the Cloudflare Dashboard:
+**Research:** `docs/research/opennext-middleware-headers-cloudflare-2026.md`
 
-- **Workers & Pages > alexmayhew-dev > Settings > Rate Limiting**
-- `chat_api` namespace: 10 requests per 60 seconds
-- `contact_form` namespace: 5 requests per 3600 seconds
-- `newsletter` namespace: 3 requests per 3600 seconds
+### D.9 Configure Workers Rate Limiting in Dashboard + Re-enable Bindings (Priority: HIGH)
 
-Without Dashboard configuration, the `.limit()` calls may not enforce limits correctly.
+Two-step process:
+
+**Step 1 (Cloudflare Dashboard):**
+
+- Workers & Pages > alexmayhew-dev > Settings > Rate Limiting
+- Create namespace `chat_api`: 10 requests per 60 seconds
+- Create namespace `contact_form`: 5 requests per 3600 seconds
+- Create namespace `newsletter`: 3 requests per 3600 seconds
+
+**Step 2 (Code):**
+
+- Uncomment `rate_limits` in `wrangler.jsonc`
+- Deploy and verify Worker starts successfully
+
+Without Dashboard configuration first, Worker fails to start (500 on all pages).
+
+**Research:** `docs/research/cloudflare-rate-limiting-2026.md`
+
+### D.10 Server-Side Sentry via @sentry/cloudflare (Priority: MEDIUM)
+
+`@sentry/nextjs` server-side imports crash Cloudflare Workers due to AsyncLocalStorage
+bound functions crossing request boundaries. Both `nodejs` and `edge` imports must remain
+disabled (the bundler processes both branches regardless of runtime conditions).
+
+**Solution:** Use `@sentry/cloudflare` (v10.43.0, production-ready) for edge error tracking:
+
+1. `npm install @sentry/cloudflare`
+2. Create `sentry.edge.config.ts` using `@sentry/cloudflare` instead of `@sentry/nextjs`
+3. Update `instrumentation.ts` to import `@sentry/cloudflare` for edge runtime
+4. Keep `@sentry/nextjs` for client-side only (`sentry.client.config.ts`)
+
+**Research:** `docs/research/sentry-opennext-cloudflare-2026.md`
