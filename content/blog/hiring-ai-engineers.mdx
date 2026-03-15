@@ -1,0 +1,376 @@
+---
+title: "Hiring for AI Engineering: Separating Real Competence from Resume Fluff"
+description: "AI engineer salaries hit $206K average in 2025, up $50K YoY. Nearly 90% of companies created new AI roles. Most job descriptions are wrong. Here's what to actually look for... and what sounds impressive but indicates nothing."
+date: "2026-03-15"
+author: "Alex Mayhew"
+tags: ["ai", "hiring", "ai-engineer", "engineering-leadership", "talent"]
+category: "business"
+readingTime: "13 min read"
+featured: false
+series: "ai-development"
+image: "/images/blog/hiring-ai-engineers-featured.webp"
+---
+
+## TL;DR
+
+AI engineer salaries averaged $206K in 2025... a $50K year-over-year increase driven by demand that doesn't match the actual supply of qualified candidates. Nearly 90% of companies created new AI-related positions, but most job descriptions conflate three distinct roles: ML Engineer, AI Engineer, and AI-Augmented Engineer. The majority of teams need the third category, not the first two. Staff+ engineers lead AI adoption at 63.5%, while entry-level roles contract as AI handles what juniors used to do. Hiring the wrong profile at these salary levels is a $400K+ mistake when you include recruiting costs, onboarding, and the opportunity cost of a misaligned hire.
+
+> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+
+---
+
+## The $206K Salary Bubble
+
+AI engineer compensation hit $206K average in 2025. That's a $50K increase from the prior year... the fastest salary growth in any engineering discipline since mobile development peaked in 2014.
+
+The demand side is real. Nearly 90% of companies created new AI-related positions. The majority report workforce shortages for AI-fluent engineers. Enterprise spending on AI capabilities is accelerating across every sector.
+
+But the supply side is distorted. The talent pool is shallow, and the signal-to-noise ratio on resumes is terrible. Everyone's an "AI engineer" now. LinkedIn profiles that read "Python developer" 18 months ago now read "AI/ML engineer with expertise in LLMs." The resume inflation is unprecedented.
+
+Here's what's actually happening in compensation:
+
+| Role | Junior (0-3 yrs) | Mid (3-7 yrs) | Senior (7-12 yrs) | Staff+ (12+ yrs) |
+| --- | --- | --- | --- | --- |
+| **ML Engineer** (traditional) | $130-160K | $160-200K | $200-260K | $260-350K |
+| **AI Engineer** (LLM-native) | $140-170K | $170-220K | $220-280K | $280-380K |
+| **AI-Augmented SWE** | $110-140K | $140-180K | $180-240K | $240-320K |
+| **"Prompt Engineer"** (dedicated) | $80-120K | Declining | Role absorbed | N/A |
+
+The premium is real for genuine AI engineering competence. But the market can't distinguish between the three role categories... and most companies are paying AI Engineer salaries for what should be AI-Augmented SWE roles.
+
+In my advisory work, I've audited compensation plans for 8 startups in the past year. Five of them were overpaying by $40-60K per hire because their job descriptions attracted (and their interviews failed to filter) ML Engineers when they needed AI-Augmented SWEs.
+
+The $206K average is real. Whether it's justified for your specific hire depends entirely on which of the three roles you actually need.
+
+---
+
+## What "AI Engineer" Actually Means in 2026
+
+The term "AI Engineer" has become as meaningless as "full-stack developer" was in 2018... everyone claims the title, nobody agrees on what it means. Let's fix that.
+
+### The Role Taxonomy
+
+**ML Engineer:** Trains, fine-tunes, and deploys models. Understands gradient descent, loss functions, data pipelines, and model serving infrastructure. Writes PyTorch or JAX. Works with GPUs and training clusters. This is the traditional machine learning role that existed before the LLM wave.
+
+**AI Engineer:** Builds applications on top of foundation models. Designs prompt pipelines, RAG architectures, agent frameworks, and evaluation systems. Doesn't train models... uses them. Understands context windows, token economics, embedding spaces, and retrieval strategies. This role emerged in 2023-2024 as LLM APIs became the primary interface.
+
+**AI-Augmented Software Engineer:** A software engineer who uses AI tools effectively in their existing workflow. Writes better prompts, reviews AI-generated code critically, understands when to use AI and when not to. Doesn't build AI features... uses AI to build features faster. This is the role 80% of companies actually need.
+
+```typescript
+// What an ML Engineer does
+const model = await trainCustomModel({
+  baseModel: "llama-3-8b",
+  dataset: prepareFineTuningData(customerTickets),
+  hyperparameters: {
+    learningRate: 2e-5,
+    epochs: 3,
+    batchSize: 16,
+    loraRank: 64,
+  },
+});
+
+// What an AI Engineer does
+const pipeline = createRAGPipeline({
+  vectorStore: new PineconeStore(indexName),
+  embedModel: "text-embedding-3-large",
+  llm: "claude-4-sonnet",
+  retrievalStrategy: "hybrid-rerank",
+  maxContext: 128_000,
+  evaluationSuite: ["faithfulness", "relevance", "hallucination"],
+});
+
+// What an AI-Augmented SWE does
+// Uses Claude Code / Cursor to write this function,
+// then critically reviews the output for edge cases
+async function processSubscriptionRenewal(
+  subscriptionId: string
+): Promise<RenewalResult> {
+  const subscription = await db.subscriptions.findUnique({
+    where: { id: subscriptionId },
+    include: { plan: true, paymentMethod: true },
+  });
+
+  if (!subscription) throw new SubscriptionNotFoundError(subscriptionId);
+  if (subscription.status === "cancelled") return { skipped: true, reason: "cancelled" };
+
+  // ... billing logic the engineer understands deeply
+}
+```
+
+### Most Companies Need the Third Category
+
+Here's the uncomfortable truth: unless you're building an AI product (not just using AI in your product), you don't need an ML Engineer or an AI Engineer. You need strong software engineers who use AI tools effectively.
+
+The distinction matters because it changes your hiring criteria entirely. An ML Engineer candidate will talk about model architectures and training infrastructure. An AI-Augmented SWE candidate will talk about how they review AI-generated code, when they choose not to use AI, and how they've improved their team's AI workflows.
+
+Staff+ engineers lead AI adoption at 63.5%... not because they're the most enthusiastic about AI, but because they have the judgment to know when it helps and when it doesn't. That judgment is what you're hiring for in most cases.
+
+---
+
+## Job Description Red Flags
+
+Before you can hire well, you need to stop attracting the wrong candidates. Most AI engineering job descriptions are unintentional honeypots for the wrong talent.
+
+### Red Flag 1: "Proficient in ChatGPT" on a Resume
+
+This tells you nothing. Using ChatGPT is a consumer skill, not an engineering skill. It's the equivalent of listing "proficient in Google" on a 2010 resume.
+
+What you want to see instead: specific examples of building with LLM APIs, evaluating model outputs systematically, or designing human-in-the-loop workflows. The difference between using AI and engineering with AI is the difference between driving a car and designing an engine.
+
+### Red Flag 2: No Production Deployment Experience
+
+The gap between a Jupyter notebook demo and a production AI system is enormous. In my advisory work, I've seen teams hire candidates who built impressive demos... and then watched those candidates struggle for months with latency constraints, cost management, error handling, and monitoring.
+
+Ask: "Tell me about an AI system you shipped to production. What went wrong on day one?"
+
+If they can't answer that question with specifics, they've never shipped AI in production. Demo builders and production engineers are different roles.
+
+### Red Flag 3: Can't Explain Trade-offs
+
+AI engineering is all trade-offs. Latency vs quality. Cost vs accuracy. Context length vs coherence. Fine-tuning vs prompting. If a candidate talks about their work in absolutes... "we used RAG because it's the best approach"... they haven't thought deeply about the problem space.
+
+What you want to hear: "We evaluated RAG vs fine-tuning. RAG gave us 82% accuracy at $0.003 per query. Fine-tuning reached 91% but cost $0.015 per query and required a 2-week update cycle. For our use case... customer support with 50K daily queries... the cost difference was $600/day, and 82% accuracy was above our threshold."
+
+### Red Flag 4: Knows Tools but Not Fundamentals
+
+"I use LangChain" is not a qualification. LangChain is an abstraction layer. If the candidate can't explain what's happening underneath... how embeddings work, what a vector similarity search actually computes, why temperature affects output diversity... they'll be helpless when the abstraction leaks. And abstractions always leak in production.
+
+Test this directly:
+
+```typescript
+// Give them this code and ask what's wrong
+const response = await openai.chat.completions.create({
+  model: "gpt-4o",
+  messages: [
+    { role: "system", content: systemPrompt },
+    ...conversationHistory, // All previous messages
+    { role: "user", content: userQuery },
+  ],
+  temperature: 0,
+  max_tokens: 4096,
+});
+```
+
+A candidate who understands fundamentals will identify at least three issues: unbounded conversation history will exceed context limits, temperature 0 doesn't guarantee determinism (it guarantees greedy decoding), and max_tokens 4096 is arbitrary without knowing the expected output length. A candidate who only knows tools will say "looks fine."
+
+---
+
+## The Interview Framework
+
+Resumes filter poorly for AI competence. Here's a four-part interview framework that actually works.
+
+### Stage 1: Code Review of AI-Generated Code
+
+Give the candidate a 200-line module that was generated by Claude or GPT-4. Seed it with 5-7 bugs of varying subtlety:
+
+- An obvious one (wrong variable name)
+- A logic error (off-by-one in pagination)
+- A security issue (SQL injection via string interpolation)
+- An architectural smell (tight coupling to a specific LLM provider)
+- A performance issue (N+1 query pattern)
+- A subtle correctness issue (race condition in async code)
+- A hallucinated API call (function that doesn't exist in the library)
+
+```typescript
+// Example: AI-generated user search with seeded bugs
+async function searchUsers(query: string, page: number = 1) {
+  const embedding = await openai.embeddings.create({
+    model: "text-embedding-3-small",
+    input: query,
+  });
+
+  // Bug: accessing .embedding directly; actual response nests under .data[0].embedding
+  const queryVector = embedding.embedding;
+
+  const results = await vectorDb.search({
+    vector: queryVector,
+    topK: 20,
+    filter: { active: true },
+  });
+
+  // Bug: N+1 query pattern - fetching each user individually
+  const users = [];
+  for (const result of results.matches) {
+    const user = await db.users.findUnique({
+      where: { id: result.id },
+    });
+    users.push({ ...user, score: result.score });
+  }
+
+  // Bug: pagination is wrong - slicing after fetching all results defeats the purpose
+  const pageSize = 10;
+  const startIndex = (page - 1) * pageSize;
+  return users.slice(startIndex, startIndex + pageSize);
+}
+```
+
+What to measure: how many bugs they find (3-4 is good, 5+ is strong), how they prioritize them (security first?), and whether they suggest architectural improvements beyond just fixing bugs.
+
+Candidates who've built with AI in production will find the hallucinated API response shape immediately... they've hit that exact problem before.
+
+### Stage 2: Architecture Design with Constraints
+
+Present a realistic AI feature request with explicit constraints:
+
+> "Design a document Q&A system for a healthcare platform. Requirements: sub-2-second response time, HIPAA compliance (no data leaves the VPC), ~10K documents averaging 15 pages each, 500 concurrent users at peak, budget of $3K/month for AI infrastructure."
+
+Strong candidates will:
+- Choose self-hosted models for compliance (not API calls to OpenAI)
+- Design a chunking strategy appropriate for medical documents
+- Calculate embedding storage and retrieval costs
+- Propose a caching layer for common queries
+- Identify that 500 concurrent users at sub-2-second latency requires GPU inference optimization
+- Discuss evaluation methodology for medical accuracy
+
+Weak candidates will sketch a generic RAG diagram with "OpenAI API" and "Pinecone" boxes without addressing the constraints.
+
+### Stage 3: The Contrarian Test
+
+Ask: "When would you NOT use AI for this?"
+
+Present three scenarios and ask which ones shouldn't use AI:
+
+1. Generating personalized email subject lines for a marketing platform
+2. Calculating tax withholding for a payroll system
+3. Summarizing patient intake forms for a triage nurse
+
+The right answer: scenario 2 is a terrible AI use case (deterministic calculation, zero error tolerance, regulatory liability). Scenarios 1 and 3 are reasonable... but a great candidate will add caveats about scenario 3 (medical liability, human review requirements, failure modes when the summary misses a critical symptom).
+
+The ability to say "don't use AI here" is the single strongest signal of AI engineering maturity.
+
+### Stage 4: Vibe Code Comprehension
+
+Take a real module from your codebase (or create one) that was generated by AI without much human oversight. Obfuscate identifiers if needed. Give the candidate 20 minutes and ask them to:
+
+1. Explain what the module does
+2. Identify the architectural assumptions baked in
+3. Propose how they'd validate it actually works correctly
+4. Describe what happens when the third-party API it calls goes down
+
+This tests the skill that matters most in 2026: the ability to inherit, understand, and take responsibility for code they didn't write.
+
+---
+
+## The "Senior-Only" Model and Its Problems
+
+Tech layoffs hit 45,000+ by March 2026. Atlassian cut 1,600. Block, Salesforce, and others followed. But the pattern isn't uniform... companies are disproportionately cutting junior and mid-level roles while competing fiercely for senior and staff-level AI-fluent talent.
+
+The logic: AI handles what juniors used to do (scaffolding, boilerplate, simple bug fixes), so invest in senior engineers who can orchestrate AI effectively. IEEE Spectrum reported that AI is fundamentally shifting expectations for entry-level engineers.
+
+This creates three problems.
+
+### Problem 1: The Pipeline Dries Up
+
+If nobody hires junior engineers, where do senior engineers come from in 5 years? The industry is creating a demographic gap that will make the current "AI talent shortage" look trivial.
+
+Every senior engineer I know built their judgment through years of making mistakes on production systems, debugging code they didn't understand, and learning the hard way why certain patterns exist. AI can accelerate parts of that learning. It can't replace it.
+
+### Problem 2: The New Entry-Level Is Undefined
+
+The traditional entry-level job... write CRUD endpoints, fix simple bugs, maintain documentation... is being absorbed by AI. But the new entry-level job hasn't been defined clearly.
+
+In my advisory work, I'm seeing a new role emerge that I'd call the "System Verifier." Entry-level engineers who can't compete with AI at code generation can compete at code comprehension... reading AI output, identifying bugs, validating behavior against requirements, and writing test cases.
+
+```typescript
+// The old entry-level task: write this function
+function formatCurrency(amount: number, currency: string): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+  }).format(amount);
+}
+
+// The new entry-level task: AI wrote this function.
+// Write 8 test cases that would catch bugs in it.
+// Include: negative amounts, zero, non-USD currencies,
+// very large numbers, NaN, undefined, locale edge cases,
+// and concurrency safety if called in a server context.
+```
+
+### Problem 3: Knowledge Transfer Breaks
+
+Senior engineers don't just write code. They transfer knowledge through mentoring, pair programming, and code review with junior team members. When you remove the junior layer, senior engineers lose their primary teaching mechanism... and the organization's ability to develop talent internally collapses.
+
+The company that figures out how to hire and develop AI-native junior engineers will have a structural advantage in 3-5 years. Everyone else will be bidding on the same shrinking pool of expensive senior talent.
+
+---
+
+## Compensation Benchmarks by Market
+
+Compensation varies significantly by geography and company stage. Here's what I've seen across my advisory clients in early 2026:
+
+| Level | SF/NYC | Austin/Seattle | Remote US | Remote Global |
+| --- | --- | --- | --- | --- |
+| **Junior AI-Aug SWE** | $130-160K | $110-140K | $100-130K | $60-100K |
+| **Mid AI Engineer** | $180-230K | $155-195K | $140-180K | $90-140K |
+| **Senior AI Engineer** | $240-300K | $200-260K | $180-240K | $130-200K |
+| **Staff+ AI Engineer** | $300-400K | $260-340K | $230-300K | $170-260K |
+
+These figures include base salary, equity, and target bonus. Total comp, not base.
+
+Two trends worth noting: the remote discount is compressing (down from 25-30% to 15-20% over the past year), and equity components for AI roles are increasing as companies use vesting as a retention mechanism for scarce talent.
+
+Longer hiring cycles are the norm. The average time-to-fill for an AI engineering role is 67 days... nearly double the 35-day average for general software engineering. Higher comp expectations and fewer qualified candidates extend every pipeline stage.
+
+---
+
+## When NOT to Hire an "AI Engineer"
+
+Not every team needs a dedicated AI hire. Here are the situations where training existing engineers is the better investment:
+
+**Your AI usage is consumption, not creation.** If you're using Copilot, Claude Code, or Cursor to write your application faster... but you're not building AI features into your product... you don't need an AI Engineer. You need AI training for your existing team. A 2-day workshop and updated code review standards will get you 80% of the value at 5% of the cost.
+
+**Your product has one AI feature, not an AI platform.** If you're adding a single AI-powered feature (chat support, document summarization, content generation), a strong senior engineer can build it with API calls and good prompt engineering. You don't need a dedicated hire until AI becomes a core product differentiator with multiple features and shared infrastructure.
+
+**Your team is under 15 engineers.** At this size, a generalist who's good at AI is better than an AI specialist who's mediocre at everything else. The "AI-Augmented SWE" profile... a strong engineer who uses AI tools effectively... gives you more value than a narrow AI specialist who can't contribute to the rest of the codebase.
+
+**Your AI vendor does the heavy lifting.** If you're using a managed AI service (AWS Bedrock, Azure AI, Vertex AI) with pre-built components, the integration work is standard software engineering. The vendor's AI engineers built the hard parts. You need engineers who can integrate APIs and handle edge cases... not researchers who understand transformer architectures.
+
+**The exception:** If AI is your product's core value proposition, hire aggressively. If your competitive moat depends on AI capabilities, you need ML Engineers, AI Engineers, and AI-Augmented SWEs at every level. Half measures won't work.
+
+---
+
+## FAQ
+
+### What's the difference between hiring an AI Engineer and training existing engineers?
+
+Hiring solves the "we need someone who already knows" problem. Training solves the "our team needs to level up" problem. If you need to ship an AI product in 3 months, hire. If you need your team to use AI tools 30% more effectively, train. For most companies... those not building AI-native products... training delivers better ROI. A $15K training program across 10 engineers costs less than one month of an AI Engineer's salary and improves the entire team's output.
+
+### Should we require AI skills in all engineering job descriptions?
+
+Yes, but frame it correctly. Don't list "experience with ChatGPT" as a requirement... that's meaningless. Require "demonstrated ability to critically evaluate AI-generated code" and "experience integrating AI tools into development workflows." Test for it in the interview with the code review exercise described above. The skill you're testing isn't "can they use AI" but "can they use AI without introducing risk."
+
+### How do we evaluate AI competence during interviews when the field changes every 6 months?
+
+Focus on fundamentals, not tools. Embeddings, attention mechanisms, token economics, retrieval strategies, and evaluation methodology change slowly. LangChain versions, specific model names, and prompt patterns change weekly. A candidate who understands why RAG works will adapt to new tools. A candidate who only knows how to call LangChain's RetrievalQA chain will be lost when the API changes. The code review exercise and architecture design stages test durable skills, not transient tool knowledge.
+
+### Is "Prompt Engineer" still a real role?
+
+As a dedicated role, it's declining rapidly. The skills have been absorbed into every engineering role. In 2024, companies hired dedicated prompt engineers to wrangle GPT-3.5 and GPT-4 outputs. In 2026, prompting is a standard engineering skill like writing SQL or using git. You don't hire a "SQL Engineer"... you expect every backend developer to write competent queries. Same trajectory for prompting.
+
+### What about hiring junior engineers in an AI-first world?
+
+Redefine the junior role around verification and comprehension rather than generation. The new entry-level engineer writes test cases for AI-generated code, validates outputs against requirements, documents why the AI made certain choices, and identifies where the AI's assumptions don't match your system's constraints. This is harder than writing boilerplate... and it builds the judgment that makes a senior engineer valuable. Companies that figure out this new junior pipeline will outcompete those running a "senior-only" model within 3-5 years.
+
+---
+
+**[CTA]** I help teams build AI hiring frameworks that find real competence in a noisy market.
+
+- [AI Integration for SaaS](/services/ai-integration-developer-for-saas) ... Responsible AI implementation
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Engineering governance strategy
+- [AI Integration for Healthcare](/services/ai-integration-developer-for-healthcare) ... Compliant AI systems
+
+---
+
+## Continue Reading
+
+**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+
+### More in This Series
+
+- [AI-Assisted Development Guide](/blog/ai-assisted-development-guide) ... The comprehensive framework
+- [Hiring Your First Staff Engineer](/blog/hiring-first-staff-engineer) ... The most misunderstood role in engineering
+- [Beyond the Resume](/blog/technical-hiring-framework) ... Work samples predict 3x better than experience
+- [Cognitive Debt](/blog/cognitive-debt-ai-teams) ... The hidden cost your AI-assisted team isn't measuring
+
+**Building an AI engineering team?** [Work with me](/services/technical-advisor-for-startups) on your hiring framework and compensation strategy.

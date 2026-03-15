@@ -1,0 +1,659 @@
+---
+title: "AI TDD: Writing Tests First When Your Code Is Non-Deterministic"
+description: "AI-generated tests tend to test implementation, not intent. 50% of QA leaders cite flaky scripts as the primary AI testing challenge. Here's the TDD pattern that produces measurably better AI-assisted code."
+date: "2026-03-15"
+author: "Alex Mayhew"
+tags: ["ai", "tdd", "testing", "code-quality", "developer-workflow"]
+category: "engineering"
+readingTime: "14 min read"
+featured: false
+series: "ai-development"
+image: "/images/blog/ai-tdd-non-deterministic-code-featured.webp"
+---
+
+## TL;DR
+
+50% of QA leaders cite flaky scripts and maintenance burden as the primary challenge with AI testing (World Quality Report 2025-26). AI-generated tests tend to test implementation rather than intent... which means the test passes even when the bug is in both the code and the test. The TDD pattern that works: human writes failing test (RED), AI implements to pass (GREEN), human reviews for quality (REFACTOR). CodeRabbit data shows 1.7x more bugs and 75% more logic errors in AI-generated code. TDD isn't optional anymore... it's the constraint that makes AI code generation safe.
+
+> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+
+---
+
+## Why TDD Matters More with AI, Not Less
+
+There's a tempting narrative: AI writes code so fast that we don't need the discipline of test-driven development. Ship faster, fix later. The data says the opposite.
+
+CodeRabbit's analysis of AI-generated code found **1.7x more bugs** and **75% more logic errors** compared to human-written code. That's not a rounding error. That's a fundamentally different defect profile that demands a fundamentally different workflow.
+
+Here's the core problem. When a human writes code, they carry a mental model of intent. They know _why_ the function exists, what edge cases they considered, what assumptions they made. When AI generates code, that mental model doesn't transfer. The code is structurally plausible but semantically opaque... nobody on the team truly understands it until they've read every line.
+
+TDD inverts this. Instead of generating code and hoping tests catch problems later, you define the behavior contract first. The test _is_ the specification. The AI becomes an implementation engine constrained by human-defined intent.
+
+A Turing/DORA survey found **96% of developers don't fully trust AI-generated code**... but more than 50% admit they don't review it carefully either. TDD closes that gap. You don't need to trust the AI's implementation if the implementation can't merge without passing your tests.
+
+### The Validation Speed Problem
+
+In my advisory work, I've started calling this "the AI validation problem." The real constraint isn't how fast AI can generate code. It's how fast your team can validate that the generated code is correct.
+
+Without TDD, validation means reading every line, tracing every branch, and mentally simulating every edge case. With TDD, validation means running the test suite. One approach scales. The other doesn't.
+
+A team generating 500 lines of AI code per day with no test constraints is accumulating risk at a rate that manual review can't contain. The same team with TDD generates 500 lines against a pre-existing behavioral specification. The suite either passes or it doesn't. There's no ambiguity.
+
+---
+
+## The AI Testing Trap
+
+Before covering the correct pattern, let's examine what goes wrong when AI writes both the code _and_ the tests.
+
+### Tests That Confirm Bugs
+
+Ask an LLM to implement a pricing calculator, then ask it to write tests for that calculator. The tests will pass. They'll pass because the AI tested its own implementation... not the business requirement.
+
+```typescript
+// AI-generated implementation
+function calculateDiscount(price: number, tierLevel: number): number {
+  if (tierLevel >= 3) return price * 0.8;
+  if (tierLevel >= 2) return price * 0.9;
+  return price;
+}
+
+// AI-generated test (for the same implementation)
+describe("calculateDiscount", () => {
+  it("applies 20% discount for tier 3", () => {
+    expect(calculateDiscount(100, 3)).toBe(80);
+  });
+  it("applies 10% discount for tier 2", () => {
+    expect(calculateDiscount(100, 2)).toBe(90);
+  });
+  it("applies no discount for tier 1", () => {
+    expect(calculateDiscount(100, 1)).toBe(100);
+  });
+});
+```
+
+All green. But the business requirement was: tier 3 gets 25% off, tier 2 gets 15% off, and there's a minimum purchase threshold of $50. The AI got the discount percentages wrong and missed the threshold entirely. The tests confirm the bug because the tests _describe_ the bug.
+
+This is the AI testing trap: **when the same system generates both code and tests, bugs become invisible.** The test suite becomes a tautology... it proves the code does what the code does, not what it should do.
+
+### The World Quality Report Data
+
+The World Quality Report 2025-26 surveyed QA leaders across 1,600 organizations. The findings:
+
+- **50%** cite maintenance burden and flaky scripts as the primary AI testing challenge
+- **43%** report increased false confidence from AI-generated test suites
+- **67%** found AI tests had lower defect detection rates than human-written tests
+
+The flakiness problem is particularly insidious. AI-generated tests often rely on implementation details... specific method calls, internal state, execution order. Change the implementation without changing the behavior, and half the suite breaks. Change the behavior without changing the implementation, and the suite still passes.
+
+---
+
+## The RED-GREEN-REFACTOR Pattern for AI
+
+The fix is straightforward: separate the concerns. Humans define intent. AI implements. Humans verify quality.
+
+### RED: Human Defines Intent Through a Failing Test
+
+The human writes the test first. This is the specification. It encodes business requirements, edge cases, and behavioral expectations that the AI doesn't know.
+
+```typescript
+// HUMAN writes this first... the behavioral specification
+describe("SubscriptionPricingEngine", () => {
+  describe("annual discount calculation", () => {
+    it("applies 25% discount for enterprise tier annual billing", () => {
+      const engine = new SubscriptionPricingEngine();
+      const result = engine.calculatePrice({
+        basePriceMonthly: 99,
+        tier: "enterprise",
+        billingCycle: "annual",
+        seats: 50,
+      });
+
+      expect(result.totalAnnual).toBe(44_550); // 99 * 50 * 12 * 0.75
+      expect(result.monthlyEquivalent).toBe(3_712.5);
+      expect(result.savings).toBe(14_850);
+    });
+
+    it("enforces minimum 10-seat requirement for enterprise", () => {
+      const engine = new SubscriptionPricingEngine();
+
+      expect(() =>
+        engine.calculatePrice({
+          basePriceMonthly: 99,
+          tier: "enterprise",
+          billingCycle: "annual",
+          seats: 5,
+        })
+      ).toThrow("Enterprise tier requires minimum 10 seats");
+    });
+
+    it("caps discount at 30% even with negotiated terms", () => {
+      const engine = new SubscriptionPricingEngine();
+      const result = engine.calculatePrice({
+        basePriceMonthly: 99,
+        tier: "enterprise",
+        billingCycle: "annual",
+        seats: 50,
+        negotiatedDiscount: 0.5, // 50% requested
+      });
+
+      // Capped at 30%, not 50%
+      expect(result.discountApplied).toBe(0.3);
+    });
+  });
+});
+```
+
+These tests encode business knowledge that exists nowhere in the AI's training data: your specific discount tiers, your minimum seat requirements, your cap on negotiated discounts. No LLM will infer these constraints.
+
+Run the suite. Everything fails. RED.
+
+### GREEN: AI Implements to Pass
+
+Now hand the failing test suite to the AI. The prompt is constrained:
+
+```
+Implement the SubscriptionPricingEngine class that makes
+all tests in subscription-pricing.test.ts pass. Don't modify
+the tests. Use TypeScript with strict types.
+```
+
+The AI generates an implementation. You run the suite. If it passes, you have a GREEN state. If it doesn't, the AI iterates... still constrained by your specification.
+
+```typescript
+// AI generates this to satisfy the test specification
+interface PricingInput {
+  basePriceMonthly: number;
+  tier: "starter" | "professional" | "enterprise";
+  billingCycle: "monthly" | "annual";
+  seats: number;
+  negotiatedDiscount?: number;
+}
+
+interface PricingResult {
+  totalAnnual: number;
+  monthlyEquivalent: number;
+  savings: number;
+  discountApplied: number;
+}
+
+const TIER_DISCOUNTS: Record<string, number> = {
+  starter: 0.1,
+  professional: 0.15,
+  enterprise: 0.25,
+};
+
+const MINIMUM_SEATS: Record<string, number> = {
+  enterprise: 10,
+};
+
+const MAX_DISCOUNT = 0.3;
+
+export class SubscriptionPricingEngine {
+  calculatePrice(input: PricingInput): PricingResult {
+    const minSeats = MINIMUM_SEATS[input.tier];
+    if (minSeats && input.seats < minSeats) {
+      throw new Error(
+        `${input.tier.charAt(0).toUpperCase() + input.tier.slice(1)} tier requires minimum ${minSeats} seats`
+      );
+    }
+
+    const annualBase = input.basePriceMonthly * input.seats * 12;
+    let discount = 0;
+
+    if (input.billingCycle === "annual") {
+      discount = TIER_DISCOUNTS[input.tier] ?? 0;
+    }
+
+    if (input.negotiatedDiscount) {
+      discount = Math.max(discount, input.negotiatedDiscount);
+    }
+
+    discount = Math.min(discount, MAX_DISCOUNT);
+
+    const totalAnnual = annualBase * (1 - discount);
+    const savings = annualBase - totalAnnual;
+
+    return {
+      totalAnnual,
+      monthlyEquivalent: totalAnnual / 12,
+      savings,
+      discountApplied: discount,
+    };
+  }
+}
+```
+
+The AI's implementation is constrained by your tests. It can't get the discount wrong because the test specifies the exact expected output. It can't skip the minimum seat check because the test asserts the exception. The specification acts as a guardrail.
+
+### REFACTOR: Human Reviews for Quality
+
+GREEN doesn't mean done. The human reviews for:
+
+- **DRY violations**: Is the AI duplicating logic that exists elsewhere in the codebase?
+- **Security**: Are there injection vectors, missing input validation, or unsafe type assertions?
+- **Performance**: Is the AI doing unnecessary computation, missing caching opportunities?
+- **Architecture fit**: Does this follow your service layer patterns, naming conventions, module boundaries?
+- **Maintainability**: Will a new team member understand this in six months?
+
+The refactoring phase is where the human applies judgment that AI can't. The tests provide safety during refactoring... any structural change that breaks behavior shows up immediately.
+
+---
+
+## Testing Non-Deterministic AI Output
+
+Standard TDD assumes deterministic systems: same input, same output. AI systems break this assumption. A prompt sent to an LLM returns different text each time. A classification model produces probabilities, not binary answers. How do you write tests for systems where the "correct" answer varies?
+
+### Evaluation Test Suites
+
+Instead of asserting exact outputs, assert properties of outputs. This is the eval suite pattern.
+
+```typescript
+// Evaluation test suite for an LLM summarization feature
+describe("ArticleSummarizer", () => {
+  const summarizer = new ArticleSummarizer();
+  const testArticle = loadFixture("financial-report-q4.txt");
+
+  it("preserves key financial figures from source", async () => {
+    const summary = await summarizer.summarize(testArticle);
+
+    // Key figures that MUST appear in any valid summary
+    expect(summary).toContain("$4.2M");
+    expect(summary).toContain("revenue");
+    expect(summary).toContain("23%");
+  });
+
+  it("stays within length bounds", async () => {
+    const summary = await summarizer.summarize(testArticle);
+    const wordCount = summary.split(/\s+/).length;
+
+    expect(wordCount).toBeGreaterThan(50);
+    expect(wordCount).toBeLessThan(200);
+  });
+
+  it("does not hallucinate entities not in source", async () => {
+    const summary = await summarizer.summarize(testArticle);
+    const sourceEntities = extractEntities(testArticle);
+    const summaryEntities = extractEntities(summary);
+
+    // Every entity in the summary must exist in the source
+    for (const entity of summaryEntities) {
+      expect(sourceEntities).toContain(entity);
+    }
+  });
+
+  it("maintains factual consistency across 10 runs", async () => {
+    const summaries = await Promise.all(
+      Array.from({ length: 10 }, () => summarizer.summarize(testArticle))
+    );
+
+    const keyFacts = summaries.map(extractKeyFacts);
+
+    // Core facts should be consistent across all runs
+    const baselineFacts = keyFacts[0];
+    for (const facts of keyFacts.slice(1)) {
+      expect(factOverlap(baselineFacts, facts)).toBeGreaterThan(0.8);
+    }
+  });
+});
+```
+
+The tests don't assert _what_ the summary says. They assert _properties_ the summary must have: includes source figures, stays within bounds, doesn't hallucinate, and produces consistent facts across runs. Each run produces different text, but valid summaries share these properties.
+
+### Golden Dataset Testing
+
+For classification and extraction tasks, maintain a curated dataset of inputs with known-correct outputs.
+
+```typescript
+// Golden dataset for a customer intent classifier
+const GOLDEN_DATASET: GoldenExample[] = [
+  {
+    input: "I want to cancel my subscription immediately",
+    expectedIntent: "cancellation",
+    minimumConfidence: 0.85,
+    tags: ["churn-risk", "urgent"],
+  },
+  {
+    input: "How do I upgrade to the enterprise plan?",
+    expectedIntent: "upgrade",
+    minimumConfidence: 0.8,
+    tags: ["expansion"],
+  },
+  {
+    input: "Your API has been down for 3 hours",
+    expectedIntent: "support_critical",
+    minimumConfidence: 0.9,
+    tags: ["incident"],
+  },
+  {
+    input: "Can you explain the difference between plans?",
+    expectedIntent: "inquiry",
+    minimumConfidence: 0.7,
+    tags: ["pre-sales"],
+  },
+];
+
+describe("CustomerIntentClassifier", () => {
+  const classifier = new CustomerIntentClassifier();
+
+  it.each(GOLDEN_DATASET)(
+    "classifies '$input' as $expectedIntent",
+    async ({ input, expectedIntent, minimumConfidence }) => {
+      const result = await classifier.classify(input);
+
+      expect(result.intent).toBe(expectedIntent);
+      expect(result.confidence).toBeGreaterThanOrEqual(minimumConfidence);
+    }
+  );
+
+  it("achieves >= 90% accuracy on full golden dataset", async () => {
+    let correct = 0;
+    for (const example of GOLDEN_DATASET) {
+      const result = await classifier.classify(example.input);
+      if (result.intent === example.expectedIntent) correct++;
+    }
+
+    const accuracy = correct / GOLDEN_DATASET.length;
+    expect(accuracy).toBeGreaterThanOrEqual(0.9);
+  });
+});
+```
+
+The golden dataset grows over time. Every production misclassification becomes a new test case. Every edge case discovered during QA gets added. The dataset is version-controlled alongside the code.
+
+### Prompt Regression Testing
+
+When you change a prompt, you need to know if the change improved or degraded output quality. Prompt regression tests formalize this.
+
+```typescript
+// Prompt regression test suite
+describe("PromptRegression", () => {
+  const currentPrompt = loadPrompt("summarizer-v3.txt");
+  const previousPrompt = loadPrompt("summarizer-v2.txt");
+  const testCases = loadGoldenDataset("summarizer-golden.json");
+
+  it("new prompt does not regress on established test cases", async () => {
+    const currentScores: number[] = [];
+    const previousScores: number[] = [];
+
+    for (const testCase of testCases) {
+      const currentResult = await runWithPrompt(currentPrompt, testCase.input);
+      const previousResult = await runWithPrompt(previousPrompt, testCase.input);
+
+      currentScores.push(
+        scoreOutput(currentResult, testCase.expectedProperties)
+      );
+      previousScores.push(
+        scoreOutput(previousResult, testCase.expectedProperties)
+      );
+    }
+
+    const currentAvg =
+      currentScores.reduce((a, b) => a + b, 0) / currentScores.length;
+    const previousAvg =
+      previousScores.reduce((a, b) => a + b, 0) / previousScores.length;
+
+    // New prompt must score at least as well as previous
+    expect(currentAvg).toBeGreaterThanOrEqual(previousAvg * 0.95);
+
+    // No individual test case should regress by more than 20%
+    for (let i = 0; i < testCases.length; i++) {
+      expect(currentScores[i]).toBeGreaterThanOrEqual(
+        previousScores[i] * 0.8
+      );
+    }
+  });
+});
+```
+
+This treats prompts like code with test coverage. Change the prompt, run the regression suite. If the suite passes, ship it. If it doesn't, iterate. No more "I think this prompt is better" based on vibes.
+
+---
+
+## The Eval Suite Pattern: Treating Prompts Like Code
+
+The eval suite pattern extends prompt regression testing into a full development workflow.
+
+Every prompt in your system gets:
+
+1. **A version-controlled prompt file** (`prompts/summarizer-v3.txt`)
+2. **A golden dataset** (`evals/summarizer-golden.json`)
+3. **A scoring function** that evaluates output quality
+4. **CI integration** that runs evals on every PR that touches prompts
+
+```typescript
+// CI eval runner
+interface EvalResult {
+  promptVersion: string;
+  accuracy: number;
+  avgLatency: number;
+  costPerRun: number;
+  regressions: string[];
+}
+
+async function runEvalSuite(
+  promptPath: string,
+  datasetPath: string
+): Promise<EvalResult> {
+  const prompt = await readFile(promptPath, "utf-8");
+  const dataset = JSON.parse(await readFile(datasetPath, "utf-8"));
+
+  const results = [];
+  for (const example of dataset) {
+    const start = performance.now();
+    const output = await callLLM(prompt, example.input);
+    const latency = performance.now() - start;
+
+    results.push({
+      correct: meetsExpectations(output, example.expected),
+      latency,
+      tokens: countTokens(prompt + example.input + output),
+    });
+  }
+
+  const accuracy =
+    results.filter((r) => r.correct).length / results.length;
+  const avgLatency =
+    results.reduce((a, r) => a + r.latency, 0) / results.length;
+  const totalTokens = results.reduce((a, r) => a + r.tokens, 0);
+
+  return {
+    promptVersion: basename(promptPath),
+    accuracy,
+    avgLatency,
+    costPerRun: totalTokens * 0.000003, // adjust per model
+    regressions: findRegressions(results, dataset),
+  };
+}
+```
+
+In my advisory work, teams that adopt eval suites report ~40% fewer production incidents from prompt changes. The reason is straightforward: you can't ship a prompt regression if CI catches it.
+
+The eval suite also gives you a decision framework for model upgrades. When a new model version drops, run your eval suite against it. If accuracy stays above threshold and cost drops, migrate. If accuracy drops on specific categories, investigate before migrating. No guesswork.
+
+---
+
+## Property-Based Testing for AI Systems
+
+Property-based testing generates thousands of random inputs and asserts that certain invariants always hold. For AI systems, this catches edge cases that neither humans nor AI anticipated.
+
+```typescript
+import fc from "fast-check";
+
+describe("ContentModerationPipeline", () => {
+  const moderator = new ContentModerationPipeline();
+
+  it("never approves content containing blocked patterns", () => {
+    fc.assert(
+      fc.property(
+        fc.stringOf(fc.constantFrom(...BLOCKED_PHRASES)),
+        (maliciousContent) => {
+          const result = moderator.evaluate(maliciousContent);
+          return result.decision !== "approved";
+        }
+      )
+    );
+  });
+
+  it("is idempotent: same input always produces same decision", () => {
+    fc.assert(
+      fc.property(fc.string({ minLength: 1, maxLength: 1000 }), (content) => {
+        const first = moderator.evaluate(content);
+        const second = moderator.evaluate(content);
+        return first.decision === second.decision;
+      })
+    );
+  });
+
+  it("processes within latency budget for any input length", () => {
+    fc.assert(
+      fc.property(
+        fc.string({ minLength: 1, maxLength: 10_000 }),
+        (content) => {
+          const start = performance.now();
+          moderator.evaluate(content);
+          const elapsed = performance.now() - start;
+          return elapsed < 500; // 500ms latency budget
+        }
+      )
+    );
+  });
+
+  it("empty or whitespace-only input returns safe default", () => {
+    fc.assert(
+      fc.property(
+        fc.stringOf(fc.constantFrom(" ", "\t", "\n", "")),
+        (emptyish) => {
+          const result = moderator.evaluate(emptyish);
+          return result.decision === "approved" && result.confidence === 1.0;
+        }
+      )
+    );
+  });
+});
+```
+
+Property-based tests shine for AI systems because they test invariants rather than specific cases. You don't know what the AI will generate, but you know certain things must _always_ be true:
+
+- Content moderation never approves blocked content
+- Price calculations never return negative values
+- Latency stays within budget regardless of input
+- The same input produces the same classification
+
+These are the safety properties that prevent AI systems from producing dangerous outputs in production.
+
+### Combining Properties with Evals
+
+The most robust testing strategy for AI systems combines three layers:
+
+| Layer | What It Tests | Who Writes It | When It Runs |
+|---|---|---|---|
+| Unit tests (TDD) | Deterministic business logic | Human (RED phase) | Every commit |
+| Eval suite | Prompt quality and model accuracy | Human + AI collaboration | Every prompt change |
+| Property-based tests | System invariants | Human defines properties | Every commit |
+
+Each layer catches different classes of defects. Unit tests catch implementation bugs. Eval suites catch prompt regressions. Property-based tests catch invariant violations across the input space.
+
+---
+
+## Integration with AI Coding Assistants
+
+The RED-GREEN-REFACTOR pattern works directly with AI coding tools like Cursor, GitHub Copilot, and Claude Code. The key is configuring your workflow so the AI operates within the GREEN phase only.
+
+```yaml
+# .cursor/rules.yaml (example AI assistant configuration)
+guidelines:
+  - "Never modify test files. Tests are the specification."
+  - "Implement only what is needed to make failing tests pass."
+  - "Follow existing patterns in the codebase for naming and structure."
+  - "If a test seems wrong, flag it... don't work around it."
+```
+
+Practical workflow in a terminal-based AI tool:
+
+1. **Human**: Write failing tests in `pricing.test.ts`
+2. **Human**: Run `npx vitest pricing.test.ts` to confirm RED state
+3. **AI**: "Implement `SubscriptionPricingEngine` to pass all tests in `pricing.test.ts`"
+4. **Human**: Run tests again to confirm GREEN
+5. **Human**: Review implementation for architecture fit, security, DRY
+6. **Human**: Refactor with tests as safety net
+
+The constraint is structural, not verbal. The AI can't introduce untested behavior because the test suite defines what "correct" means. Any behavior the AI adds beyond the test specification is caught during human review in the REFACTOR phase.
+
+---
+
+## Measuring TDD Effectiveness with AI
+
+Track these metrics to verify your TDD-AI workflow is working:
+
+**Defect Escape Rate**: Bugs that reach production per sprint. Should decrease after adopting TDD-AI workflow. Compare to your pre-AI baseline.
+
+**Test-to-Code Ratio**: Lines of test code per lines of implementation. For AI-generated code, aim for 1:1 or higher. Human-written code typically runs 0.5:1. The higher ratio compensates for the comprehension gap.
+
+**MTTU on AI-Generated Modules**: Mean time to understand. When an incident occurs in an AI-generated module, how long does it take the on-call engineer to diagnose the root cause? TDD reduces this because the test suite documents the expected behavior.
+
+**Prompt-to-Green Time**: How many AI iterations does it take to reach GREEN from RED? If it consistently takes 5+ iterations, your test specifications are either too vague or too complex. Break them into smaller test files.
+
+---
+
+## When NOT to Apply AI TDD
+
+TDD with AI adds overhead. It's worth it for production code. It isn't always worth it for everything.
+
+**Simple CRUD operations.** If the function reads from a database and returns a JSON response with no business logic, the test provides minimal value beyond what TypeScript's type system already guarantees.
+
+**Disposable prototypes.** Code with a 30-day lifespan doesn't benefit from a test suite that takes longer to write than the feature takes to build.
+
+**One-off data scripts.** Migration scripts, backfill operations, and analytics queries that run once. Write them, verify them manually, archive them.
+
+**Styling and layout.** Visual components don't benefit from behavioral tests. Use visual regression testing (Chromatic, Percy) instead.
+
+**Exploratory AI integration.** When you're experimenting with prompts and model configurations to see what's even possible, TDD slows exploration. Switch to TDD once you've identified the approach and are building for production.
+
+The rule of thumb: if the code will be maintained by someone other than its author, or if it touches money, security, or user data, apply TDD. Otherwise, use your judgment.
+
+---
+
+## FAQ
+
+### Does AI TDD slow down development?
+
+In the short term, writing tests first adds ~20-30% to initial development time. But CodeRabbit's data shows AI-generated code without tests requires 1.7x more bug fixes downstream. A team spending 30% more time upfront to avoid 70% more rework downstream comes out ahead within the first sprint. In my advisory work, teams consistently report faster _net_ delivery after adopting TDD-AI, because the rework cycle shrinks from days to minutes.
+
+### Can AI write the RED tests too?
+
+It can, but it shouldn't. The entire value of TDD with AI is the separation of concerns: human intent vs. AI implementation. If the AI writes both, you're back in the trap where tests confirm bugs instead of catching them. The human doesn't need to write _perfect_ tests... they need to encode _business intent_ that the AI doesn't know. Missing edge cases can be added later. The wrong business logic can't be fixed by adding more AI-generated tests.
+
+### How do you handle non-deterministic LLM outputs in CI?
+
+Three strategies: (1) use deterministic settings (temperature=0) for CI runs, (2) assert properties rather than exact outputs, (3) use statistical thresholds ("90% of runs must classify correctly"). For production evals, run each test case 5-10 times and assert that the success rate exceeds your threshold. This accounts for LLM variance without making your CI flaky.
+
+### What's the minimum golden dataset size for reliable evals?
+
+Start with 20-30 examples covering your core use cases. Grow to 100+ as you discover edge cases in production. The dataset should cover: happy path (40%), edge cases (30%), adversarial inputs (20%), and regression cases from production bugs (10%). Every production incident involving AI output should add at least one new golden example.
+
+### How does this work with agentic AI that takes multiple steps?
+
+For multi-step AI agents, test the overall outcome rather than individual steps. Define the expected end state given specific inputs, and let the agent take whatever path it needs. Property-based tests work particularly well here: "given any valid customer query, the agent must respond within 30 seconds, must not access unauthorized data, and must produce a response that addresses the original query." Test the contract, not the implementation.
+
+---
+
+**Building AI-powered features that need to work reliably in production?** I help teams implement TDD workflows for AI systems... from eval suites to property-based testing to CI integration.
+
+- [AI Integration for SaaS](/services/ai-integration-developer-for-saas) ... Responsible AI implementation
+- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Engineering governance strategy
+- [AI Integration for Healthcare](/services/ai-integration-developer-for-healthcare) ... Compliant AI systems
+
+---
+
+## Continue Reading
+
+**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+
+### More in This Series
+
+- [AI Code Review](/blog/ai-code-review) ... Catching what LLMs miss
+- [Prompt Engineering for Developers](/blog/prompt-engineering-developers) ... Systematic approaches to better results
+- [Testing React Server Components](/blog/testing-react-server-components) ... Testing architecture for modern React
+- [The Generative Debt Crisis](/blog/ai-assisted-development-generative-debt) ... When AI code becomes liability
+
+**Implementing AI TDD in your engineering workflow?** [Work with me](/services/technical-advisor-for-startups) on your testing and quality strategy.
