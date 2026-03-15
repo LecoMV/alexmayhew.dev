@@ -1,6 +1,8 @@
-// Custom Worker wrapper — injects security headers on HTML responses.
-// Cloudflare's public/_headers only applies to CDN static assets,
-// not Worker-generated HTML. This wrapper covers ALL responses.
+import * as Sentry from "@sentry/cloudflare";
+
+// Custom Worker wrapper:
+// 1. Wraps OpenNext handler with Sentry for server-side error tracking
+// 2. Injects security headers on HTML responses (public/_headers only covers CDN static assets)
 // @ts-expect-error — .open-next/worker.js generated at build time
 import handler from "./.open-next/worker.js";
 
@@ -25,24 +27,32 @@ const SECURITY_HEADERS: Record<string, string> = {
 	"Permissions-Policy": "camera=(), microphone=(), geolocation=(), browsing-topics=()",
 };
 
-export default {
-	async fetch(request: Request, env: CloudflareEnv, ctx: ExecutionContext): Promise<Response> {
-		const response = await handler.fetch(request, env, ctx);
+export default Sentry.withSentry(
+	(env) => ({
+		dsn: (env as CloudflareEnv).NEXT_PUBLIC_SENTRY_DSN,
+		tracesSampleRate: 0.1,
+		environment: "production",
+		sendDefaultPii: false,
+	}),
+	{
+		async fetch(request: Request, env: CloudflareEnv, ctx: ExecutionContext): Promise<Response> {
+			const response = await handler.fetch(request, env, ctx);
 
-		const contentType = response.headers.get("content-type") ?? "";
-		if (!contentType.includes("text/html")) {
-			return response;
-		}
+			const contentType = response.headers.get("content-type") ?? "";
+			if (!contentType.includes("text/html")) {
+				return response;
+			}
 
-		const newHeaders = new Headers(response.headers);
-		for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
-			newHeaders.set(name, value);
-		}
+			const newHeaders = new Headers(response.headers);
+			for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+				newHeaders.set(name, value);
+			}
 
-		return new Response(response.body, {
-			status: response.status,
-			statusText: response.statusText,
-			headers: newHeaders,
-		});
-	},
-} satisfies ExportedHandler<CloudflareEnv>;
+			return new Response(response.body, {
+				status: response.status,
+				statusText: response.statusText,
+				headers: newHeaders,
+			});
+		},
+	} satisfies ExportedHandler<CloudflareEnv>
+);
