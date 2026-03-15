@@ -240,4 +240,40 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 				"Focus on five features: union types for modeling states (type Status = 'loading' | 'success' | 'error'), generics for reusable utilities, discriminated unions for type-safe branching, utility types (Pick, Omit, Partial), and type narrowing with typeof/instanceof guards. These cover 90% of real-world TypeScript usage. Avoid overusing advanced features like conditional types and template literal types — they hurt readability.",
 		},
 	],
+
+	"metr-paradox-ai-productivity": [
+		{
+			question: "What did the METR study find about AI and developer productivity?",
+			answer:
+				"The METR randomized controlled trial (n=16, 246 tasks) found that experienced open-source developers completed tasks 19% slower when using AI tools, while believing they were 24% faster. The 43-percentage-point perception gap means teams cannot self-correct — engineers genuinely feel more productive while delivering less.",
+		},
+		{
+			question: "Why does AI make experienced developers slower?",
+			answer:
+				"The METR study tested experienced developers on their own mature codebases. Three likely mechanisms: context switching between coding and AI interaction fragments deep work, verification overhead from reviewing AI suggestions exceeds the time saved, and hallucinated solutions create false starts that waste time on dead-end approaches.",
+		},
+		{
+			question: "Does the METR study mean AI coding tools are useless?",
+			answer:
+				"No. The METR study tested complex tasks in mature codebases — the hardest scenario. AI tools demonstrably accelerate short, well-scoped tasks: boilerplate generation, test scaffolding, documentation, and greenfield exploration. The pattern: AI excels where the 'what' is defined and the 'why' doesn't require deep codebase knowledge.",
+		},
+	],
+
+	"cognitive-debt-ai-teams": [
+		{
+			question: "What is cognitive debt in AI-assisted development?",
+			answer:
+				"Cognitive debt is the gap between what a codebase does and what the team understands about why it does it. Unlike technical debt (a conscious trade-off), cognitive debt accumulates invisibly when engineers accept AI-generated code without fully understanding its logic. It compounds faster than technical debt because it erodes the team's capacity to make architectural decisions, debug production incidents, and onboard new engineers.",
+		},
+		{
+			question: "How do you measure cognitive debt?",
+			answer:
+				"Five signals indicate cognitive debt accumulation: (1) time to explain a module exceeds time to rewrite it, (2) PR reviews default to 'LGTM' on AI-generated code, (3) incident investigation takes 3x longer because nobody understands the flow, (4) refactoring declines — GitClear measured a 60% decline in refactored code from 2021 to 2024, (5) architecture decisions default to 'whatever AI suggests' rather than intentional design.",
+		},
+		{
+			question: "Is cognitive debt the same as technical debt?",
+			answer:
+				"No. Technical debt is a conscious trade-off — you know you're cutting corners and plan to pay it back. Cognitive debt is invisible — the code works, passes tests, and looks professional, but nobody on the team understands why it works. Technical debt costs time to fix. Cognitive debt costs the ability to know what needs fixing. The second is categorically more dangerous.",
+		},
+	],
 };
