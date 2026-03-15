@@ -37,16 +37,16 @@ In my advisory work, I've started calling this "phantom velocity." The sprint ve
 
 This distinction matters because the remediation strategies are fundamentally different.
 
-| Dimension | Traditional Tech Debt | AI-Generated Tech Debt |
-|---|---|---|
-| **How it accumulates** | Conscious trade-offs (skip tests, defer refactors) | Unconscious acceptance of generated code |
-| **Visibility** | Teams know it exists; can estimate magnitude | Invisible until Year 2 maintenance spike |
-| **Who understands the code** | Original author + reviewers | Often nobody... author accepted, didn't design |
-| **Refactoring cost** | Proportional to complexity | Proportional to comprehension gap |
-| **Duplication pattern** | Spotted in review, caught by linters | Subtle variations that evade tooling |
-| **Architectural coherence** | Degrades slowly with team turnover | Degrades immediately... AI doesn't know your patterns |
-| **Documentation** | Missing but could be retroactively written | Writing docs for code you don't understand is circular |
-| **Interest rate** | Linear... maintenance grows proportionally | Exponential... Year 2 costs 4x, Year 3 costs 8-12x |
+| Dimension                    | Traditional Tech Debt                              | AI-Generated Tech Debt                                 |
+| ---------------------------- | -------------------------------------------------- | ------------------------------------------------------ |
+| **How it accumulates**       | Conscious trade-offs (skip tests, defer refactors) | Unconscious acceptance of generated code               |
+| **Visibility**               | Teams know it exists; can estimate magnitude       | Invisible until Year 2 maintenance spike               |
+| **Who understands the code** | Original author + reviewers                        | Often nobody... author accepted, didn't design         |
+| **Refactoring cost**         | Proportional to complexity                         | Proportional to comprehension gap                      |
+| **Duplication pattern**      | Spotted in review, caught by linters               | Subtle variations that evade tooling                   |
+| **Architectural coherence**  | Degrades slowly with team turnover                 | Degrades immediately... AI doesn't know your patterns  |
+| **Documentation**            | Missing but could be retroactively written         | Writing docs for code you don't understand is circular |
+| **Interest rate**            | Linear... maintenance grows proportionally         | Exponential... Year 2 costs 4x, Year 3 costs 8-12x     |
 
 The exponential interest rate is the critical difference. Traditional debt grows linearly because the team that created it still understands it. They can estimate the cost to fix it. They can navigate around it. AI debt compounds because the comprehension gap widens with every new feature built on top of code nobody fully understands.
 
@@ -75,26 +75,26 @@ This isn't the obvious copy-paste that linters catch. It's structural duplicatio
 ```typescript
 // AI generates this pattern in user-service.ts
 async function getUserSubscription(userId: string): Promise<Subscription> {
-  const response = await db.query(
-    'SELECT * FROM subscriptions WHERE user_id = $1 AND status = $2',
-    [userId, 'active']
-  );
-  if (!response.rows.length) {
-    throw new NotFoundError('No active subscription');
-  }
-  return mapSubscription(response.rows[0]);
+	const response = await db.query(
+		"SELECT * FROM subscriptions WHERE user_id = $1 AND status = $2",
+		[userId, "active"]
+	);
+	if (!response.rows.length) {
+		throw new NotFoundError("No active subscription");
+	}
+	return mapSubscription(response.rows[0]);
 }
 
 // Then generates this near-identical pattern in billing-service.ts
 async function getActiveSubscription(customerId: string): Promise<BillingSubscription> {
-  const result = await db.query(
-    'SELECT * FROM subscriptions WHERE user_id = $1 AND status = $2',
-    [customerId, 'active']
-  );
-  if (!result.rows.length) {
-    throw new Error('Subscription not found');
-  }
-  return toBillingSubscription(result.rows[0]);
+	const result = await db.query("SELECT * FROM subscriptions WHERE user_id = $1 AND status = $2", [
+		customerId,
+		"active",
+	]);
+	if (!result.rows.length) {
+		throw new Error("Subscription not found");
+	}
+	return toBillingSubscription(result.rows[0]);
 }
 ```
 
@@ -119,10 +119,10 @@ You can't manage what you don't measure. Every merged PR should be tagged with i
 ```yaml
 # PR template addition
 code_origin:
-  - fully_human        # Written by hand
-  - ai_assisted         # AI suggested, human modified significantly
-  - ai_generated        # AI generated, human reviewed and accepted
-  - ai_unreviewed       # AI generated, merged without deep review (be honest)
+  - fully_human # Written by hand
+  - ai_assisted # AI suggested, human modified significantly
+  - ai_generated # AI generated, human reviewed and accepted
+  - ai_unreviewed # AI generated, merged without deep review (be honest)
 ```
 
 Most teams resist the "ai_unreviewed" category. Use it anyway. The point isn't blame... it's risk mapping. In my advisory work, I've found that teams underestimate the percentage of AI-generated code they merge without deep review by ~40%. The label forces honesty.
@@ -142,10 +142,10 @@ Not all AI debt is equal. Different categories require different remediation str
 The cost curve for unmanaged AI debt isn't linear. It's exponential.
 
 | Time Period | Traditional Debt Maintenance | AI Debt Maintenance | Multiplier |
-|---|---|---|---|
-| Year 1 | 1x (baseline) | 1.2x | 1.2x |
-| Year 2 | 1.3x | 4.0x | 3.1x |
-| Year 3 | 1.5x | 8-12x | 5.3-8x |
+| ----------- | ---------------------------- | ------------------- | ---------- |
+| Year 1      | 1x (baseline)                | 1.2x                | 1.2x       |
+| Year 2      | 1.3x                         | 4.0x                | 3.1x       |
+| Year 3      | 1.5x                         | 8-12x               | 5.3-8x     |
 
 The Year 2 spike happens because that's when the original developers start leaving or rotating to new projects. The comprehension that lived in their heads... partial as it was... leaves with them. New team members face a codebase where both the code and the institutional knowledge about that code are opaque.
 
@@ -220,7 +220,9 @@ Identifying the debt is step one. Paying it down requires disciplined, sustained
 
 ```markdown
 <!-- .ai-context.md (project root) -->
+
 # Architecture Constraints
+
 - All database access goes through the repository layer
 - Business logic lives in service classes, never in controllers
 - Error handling uses typed Result<T, E> pattern

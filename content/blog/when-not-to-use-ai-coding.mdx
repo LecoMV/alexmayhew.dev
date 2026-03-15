@@ -3,7 +3,8 @@ title: "When NOT to Use AI for Coding: The Decision Framework"
 description: "66% of developers spend more time fixing AI code than expected. Seven task categories where AI assistance produces net-negative outcomes... and the decision tree to know before you start."
 date: "2026-03-15"
 author: "Alex Mayhew"
-tags: ["ai", "developer-productivity", "decision-framework", "engineering-leadership", "code-quality"]
+tags:
+  ["ai", "developer-productivity", "decision-framework", "engineering-leadership", "code-quality"]
 category: "business"
 readingTime: "13 min read"
 featured: false
@@ -23,19 +24,19 @@ METR found experienced developers were 19% slower with AI on complex tasks in ma
 
 Before reaching for AI assistance on any coding task, run it through this filter. It takes 30 seconds and prevents hours of cleanup.
 
-| Task Characteristic | AI Suitability | Why |
-|---|---|---|
-| Greenfield, no existing codebase | High | No conventions to violate, no context to miss |
-| Boilerplate with known patterns | High | Pattern reproduction is AI's strongest capability |
-| Test scaffolding from existing code | High | Mechanical transformation, low ambiguity |
-| Documentation generation | High | Summarization and formatting are reliable |
-| Debugging in a mature codebase | Low | Requires deep context AI doesn't have |
-| Security-critical code paths | Low | 2.74x more vulnerabilities in AI code |
-| Architectural decisions | Low | AI optimizes locally, not systemically |
-| Cross-module refactoring | Low | Requires understanding coupling AI can't see |
-| Performance-critical hot paths | Low | AI generates "correct" code, not fast code |
-| Compliance/regulatory code | Low | Errors have legal consequences AI can't assess |
-| Business logic invariants | Low | AI doesn't understand your domain constraints |
+| Task Characteristic                 | AI Suitability | Why                                               |
+| ----------------------------------- | -------------- | ------------------------------------------------- |
+| Greenfield, no existing codebase    | High           | No conventions to violate, no context to miss     |
+| Boilerplate with known patterns     | High           | Pattern reproduction is AI's strongest capability |
+| Test scaffolding from existing code | High           | Mechanical transformation, low ambiguity          |
+| Documentation generation            | High           | Summarization and formatting are reliable         |
+| Debugging in a mature codebase      | Low            | Requires deep context AI doesn't have             |
+| Security-critical code paths        | Low            | 2.74x more vulnerabilities in AI code             |
+| Architectural decisions             | Low            | AI optimizes locally, not systemically            |
+| Cross-module refactoring            | Low            | Requires understanding coupling AI can't see      |
+| Performance-critical hot paths      | Low            | AI generates "correct" code, not fast code        |
+| Compliance/regulatory code          | Low            | Errors have legal consequences AI can't assess    |
+| Business logic invariants           | Low            | AI doesn't understand your domain constraints     |
 
 This isn't a suggestion. In my advisory work with 6 SaaS teams over the past year, every team that skipped this assessment burned 2-4 sprint days on AI-generated code that needed to be rewritten. Every one.
 
@@ -52,12 +53,12 @@ The failure mode is specific: AI generates code that handles the happy path corr
 ```typescript
 // AI-generated authentication middleware
 async function authenticateRequest(req: Request): Promise<User> {
-  const token = req.headers.get("authorization")?.replace("Bearer ", "");
-  if (!token) throw new Error("No token provided");
+	const token = req.headers.get("authorization")?.replace("Bearer ", "");
+	if (!token) throw new Error("No token provided");
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  const user = await db.users.findById(decoded.sub);
-  return user;
+	const decoded = jwt.verify(token, process.env.JWT_SECRET);
+	const user = await db.users.findById(decoded.sub);
+	return user;
 }
 ```
 
@@ -73,36 +74,36 @@ This looks correct. It's not. Missing:
 ```typescript
 // What production actually needs
 async function authenticateRequest(req: Request): Promise<User> {
-  const token = req.headers.get("authorization")?.replace("Bearer ", "");
-  if (!token) {
-    throw new AuthError("MISSING_TOKEN", "No token provided");
-  }
+	const token = req.headers.get("authorization")?.replace("Bearer ", "");
+	if (!token) {
+		throw new AuthError("MISSING_TOKEN", "No token provided");
+	}
 
-  let decoded: JwtPayload;
-  try {
-    decoded = jwt.verify(token, process.env.JWT_SECRET, {
-      algorithms: ["RS256"],
-      audience: process.env.JWT_AUDIENCE,
-      issuer: process.env.JWT_ISSUER,
-      clockTolerance: 30,
-    }) as JwtPayload;
-  } catch (err) {
-    await rateLimiter.recordFailedAuth(req.ip);
-    throw new AuthError("INVALID_TOKEN", "Token verification failed");
-  }
+	let decoded: JwtPayload;
+	try {
+		decoded = jwt.verify(token, process.env.JWT_SECRET, {
+			algorithms: ["RS256"],
+			audience: process.env.JWT_AUDIENCE,
+			issuer: process.env.JWT_ISSUER,
+			clockTolerance: 30,
+		}) as JwtPayload;
+	} catch (err) {
+		await rateLimiter.recordFailedAuth(req.ip);
+		throw new AuthError("INVALID_TOKEN", "Token verification failed");
+	}
 
-  // Check token revocation
-  const isRevoked = await tokenRevocationStore.isRevoked(decoded.jti);
-  if (isRevoked) {
-    throw new AuthError("REVOKED_TOKEN", "Token has been revoked");
-  }
+	// Check token revocation
+	const isRevoked = await tokenRevocationStore.isRevoked(decoded.jti);
+	if (isRevoked) {
+		throw new AuthError("REVOKED_TOKEN", "Token has been revoked");
+	}
 
-  const user = await db.users.findById(decoded.sub);
-  if (!user || user.status !== "active") {
-    throw new AuthError("USER_NOT_FOUND", "User not found or inactive");
-  }
+	const user = await db.users.findById(decoded.sub);
+	if (!user || user.status !== "active") {
+		throw new AuthError("USER_NOT_FOUND", "User not found or inactive");
+	}
 
-  return user;
+	return user;
 }
 ```
 
@@ -150,30 +151,24 @@ AI generates functionally correct code. It doesn't generate performant code unle
 
 ```typescript
 // AI-generated: correct but O(n*m)
-function findMatchingOrders(
-  users: User[],
-  orders: Order[]
-): Map<string, Order[]> {
-  const result = new Map<string, Order[]>();
-  for (const user of users) {
-    const userOrders = orders.filter((o) => o.userId === user.id);
-    result.set(user.id, userOrders);
-  }
-  return result;
+function findMatchingOrders(users: User[], orders: Order[]): Map<string, Order[]> {
+	const result = new Map<string, Order[]>();
+	for (const user of users) {
+		const userOrders = orders.filter((o) => o.userId === user.id);
+		result.set(user.id, userOrders);
+	}
+	return result;
 }
 
 // What a performance-aware engineer writes: O(n+m)
-function findMatchingOrders(
-  users: User[],
-  orders: Order[]
-): Map<string, Order[]> {
-  const ordersByUser = new Map<string, Order[]>();
-  for (const order of orders) {
-    const existing = ordersByUser.get(order.userId) ?? [];
-    existing.push(order);
-    ordersByUser.set(order.userId, existing);
-  }
-  return ordersByUser;
+function findMatchingOrders(users: User[], orders: Order[]): Map<string, Order[]> {
+	const ordersByUser = new Map<string, Order[]>();
+	for (const order of orders) {
+		const existing = ordersByUser.get(order.userId) ?? [];
+		existing.push(order);
+		ordersByUser.set(order.userId, existing);
+	}
+	return ordersByUser;
 }
 ```
 
@@ -192,9 +187,9 @@ AI-generated compliance code has two specific failure modes:
 ```typescript
 // AI-generated GDPR data deletion
 async function deleteUserData(userId: string): Promise<void> {
-  await db.users.delete({ where: { id: userId } });
-  await db.orders.deleteMany({ where: { userId } });
-  await db.sessions.deleteMany({ where: { userId } });
+	await db.users.delete({ where: { id: userId } });
+	await db.orders.deleteMany({ where: { userId } });
+	await db.sessions.deleteMany({ where: { userId } });
 }
 ```
 
@@ -215,29 +210,26 @@ These invariants define the correctness of your business. AI doesn't know they e
 
 ```typescript
 // AI-generated subscription upgrade
-async function upgradeSubscription(
-  userId: string,
-  newPlan: Plan
-): Promise<Subscription> {
-  const subscription = await db.subscriptions.findUnique({
-    where: { userId },
-  });
+async function upgradeSubscription(userId: string, newPlan: Plan): Promise<Subscription> {
+	const subscription = await db.subscriptions.findUnique({
+		where: { userId },
+	});
 
-  const proratedAmount = calculateProration(
-    subscription.currentPeriodEnd,
-    subscription.plan.price,
-    newPlan.price
-  );
+	const proratedAmount = calculateProration(
+		subscription.currentPeriodEnd,
+		subscription.plan.price,
+		newPlan.price
+	);
 
-  await stripe.charges.create({
-    amount: proratedAmount,
-    customer: subscription.stripeCustomerId,
-  });
+	await stripe.charges.create({
+		amount: proratedAmount,
+		customer: subscription.stripeCustomerId,
+	});
 
-  return db.subscriptions.update({
-    where: { userId },
-    data: { planId: newPlan.id },
-  });
+	return db.subscriptions.update({
+		where: { userId },
+		data: { planId: newPlan.id },
+	});
 }
 ```
 
@@ -309,16 +301,16 @@ The takeaway: match AI usage to task complexity, not developer seniority.
 
 Use this matrix before starting any AI-assisted coding task.
 
-| | New Codebase | Small Codebase (under 50K lines) | Large Codebase (50K+ lines) |
-|---|---|---|---|
-| **Boilerplate/scaffolding** | Use AI freely | Use AI with conventions check | Use AI with architecture review |
-| **Feature implementation** | Use AI for draft | Use AI for draft, review carefully | Write core logic manually |
-| **Bug fixing** | Use AI to explore | Use AI for isolated bugs | Debug manually, AI for hypothesis only |
-| **Security code** | Write manually | Write manually | Write manually |
-| **Refactoring** | Use AI freely | Use AI for single-file | Refactor manually |
-| **Tests** | Use AI for scaffolding | Use AI for scaffolding | Use AI for scaffolding, verify assertions |
-| **Performance optimization** | Use AI for first pass | Profile first, then decide | Profile first, optimize manually |
-| **Business logic** | Use AI for structure | Write core invariants manually | Write manually |
+|                              | New Codebase           | Small Codebase (under 50K lines)   | Large Codebase (50K+ lines)               |
+| ---------------------------- | ---------------------- | ---------------------------------- | ----------------------------------------- |
+| **Boilerplate/scaffolding**  | Use AI freely          | Use AI with conventions check      | Use AI with architecture review           |
+| **Feature implementation**   | Use AI for draft       | Use AI for draft, review carefully | Write core logic manually                 |
+| **Bug fixing**               | Use AI to explore      | Use AI for isolated bugs           | Debug manually, AI for hypothesis only    |
+| **Security code**            | Write manually         | Write manually                     | Write manually                            |
+| **Refactoring**              | Use AI freely          | Use AI for single-file             | Refactor manually                         |
+| **Tests**                    | Use AI for scaffolding | Use AI for scaffolding             | Use AI for scaffolding, verify assertions |
+| **Performance optimization** | Use AI for first pass  | Profile first, then decide         | Profile first, optimize manually          |
+| **Business logic**           | Use AI for structure   | Write core invariants manually     | Write manually                            |
 
 The pattern: as codebase maturity and task complexity increase, AI suitability decreases. As task repetitiveness and pattern-matching requirements increase, AI suitability increases.
 

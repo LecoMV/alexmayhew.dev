@@ -58,9 +58,9 @@ MCP tool parameters arrive as JSON. The server trusts whatever the client sends.
 ```typescript
 // What most community servers do
 server.tool("query_database", async (params) => {
-  // params.query comes directly from LLM output
-  const results = await db.query(params.query);
-  return { content: [{ type: "text", text: JSON.stringify(results) }] };
+	// params.query comes directly from LLM output
+	const results = await db.query(params.query);
+	return { content: [{ type: "text", text: JSON.stringify(results) }] };
 });
 ```
 
@@ -89,43 +89,43 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 
 interface AuthContext {
-  userId: string;
-  scopes: string[];
-  rateLimit: { maxRequests: number; windowMs: number };
+	userId: string;
+	scopes: string[];
+	rateLimit: { maxRequests: number; windowMs: number };
 }
 
 async function validateToken(token: string): Promise<AuthContext | null> {
-  // Verify JWT or API key against your auth service
-  // Return null if invalid, AuthContext if valid
-  const decoded = await verifyJwt(token, process.env.MCP_JWT_SECRET);
-  if (!decoded) return null;
+	// Verify JWT or API key against your auth service
+	// Return null if invalid, AuthContext if valid
+	const decoded = await verifyJwt(token, process.env.MCP_JWT_SECRET);
+	if (!decoded) return null;
 
-  return {
-    userId: decoded.sub,
-    scopes: decoded.scopes ?? [],
-    rateLimit: {
-      maxRequests: decoded.tier === "enterprise" ? 1000 : 100,
-      windowMs: 60_000,
-    },
-  };
+	return {
+		userId: decoded.sub,
+		scopes: decoded.scopes ?? [],
+		rateLimit: {
+			maxRequests: decoded.tier === "enterprise" ? 1000 : 100,
+			windowMs: 60_000,
+		},
+	};
 }
 
 // Middleware that runs before every tool invocation
 function authMiddleware(handler: RequestHandler): RequestHandler {
-  return async (request, context) => {
-    const token = context.headers?.["authorization"]?.replace("Bearer ", "");
-    if (!token) {
-      return { error: { code: -32001, message: "Authentication required" } };
-    }
+	return async (request, context) => {
+		const token = context.headers?.["authorization"]?.replace("Bearer ", "");
+		if (!token) {
+			return { error: { code: -32001, message: "Authentication required" } };
+		}
 
-    const auth = await validateToken(token);
-    if (!auth) {
-      return { error: { code: -32001, message: "Invalid credentials" } };
-    }
+		const auth = await validateToken(token);
+		if (!auth) {
+			return { error: { code: -32001, message: "Invalid credentials" } };
+		}
 
-    context.auth = auth;
-    return handler(request, context);
-  };
+		context.auth = auth;
+		return handler(request, context);
+	};
 }
 ```
 
@@ -145,33 +145,33 @@ import { RateLimiterMemory } from "rate-limiter-flexible";
 const rateLimiters = new Map<string, RateLimiterMemory>();
 
 function getRateLimiter(auth: AuthContext): RateLimiterMemory {
-  const key = `${auth.userId}:${auth.rateLimit.maxRequests}`;
-  if (!rateLimiters.has(key)) {
-    rateLimiters.set(
-      key,
-      new RateLimiterMemory({
-        points: auth.rateLimit.maxRequests,
-        duration: auth.rateLimit.windowMs / 1000,
-      })
-    );
-  }
-  return rateLimiters.get(key);
+	const key = `${auth.userId}:${auth.rateLimit.maxRequests}`;
+	if (!rateLimiters.has(key)) {
+		rateLimiters.set(
+			key,
+			new RateLimiterMemory({
+				points: auth.rateLimit.maxRequests,
+				duration: auth.rateLimit.windowMs / 1000,
+			})
+		);
+	}
+	return rateLimiters.get(key);
 }
 
 async function rateLimitMiddleware(
-  toolName: string,
-  auth: AuthContext
+	toolName: string,
+	auth: AuthContext
 ): Promise<{ allowed: boolean; retryAfterMs?: number }> {
-  const limiter = getRateLimiter(auth);
-  try {
-    await limiter.consume(auth.userId);
-    return { allowed: true };
-  } catch (rateLimiterRes) {
-    return {
-      allowed: false,
-      retryAfterMs: Math.ceil(rateLimiterRes.msBeforeNext),
-    };
-  }
+	const limiter = getRateLimiter(auth);
+	try {
+		await limiter.consume(auth.userId);
+		return { allowed: true };
+	} catch (rateLimiterRes) {
+		return {
+			allowed: false,
+			retryAfterMs: Math.ceil(rateLimiterRes.msBeforeNext),
+		};
+	}
 }
 ```
 
@@ -185,35 +185,42 @@ Every tool parameter needs validation. Use Zod schemas that match your tool's ac
 import { z } from "zod";
 
 const queryDatabaseSchema = z.object({
-  table: z.enum(["users", "orders", "products"]),
-  filters: z.array(
-    z.object({
-      column: z.string().max(64).regex(/^[a-zA-Z_][a-zA-Z0-9_]*$/),
-      operator: z.enum(["eq", "gt", "lt", "gte", "lte", "like"]),
-      value: z.union([z.string().max(256), z.number(), z.boolean()]),
-    })
-  ).max(10),
-  limit: z.number().int().min(1).max(100).default(20),
-  offset: z.number().int().min(0).default(0),
+	table: z.enum(["users", "orders", "products"]),
+	filters: z
+		.array(
+			z.object({
+				column: z
+					.string()
+					.max(64)
+					.regex(/^[a-zA-Z_][a-zA-Z0-9_]*$/),
+				operator: z.enum(["eq", "gt", "lt", "gte", "lte", "like"]),
+				value: z.union([z.string().max(256), z.number(), z.boolean()]),
+			})
+		)
+		.max(10),
+	limit: z.number().int().min(1).max(100).default(20),
+	offset: z.number().int().min(0).default(0),
 });
 
 server.tool(
-  "query_database",
-  "Query the database with structured filters",
-  queryDatabaseSchema.shape,
-  async (params) => {
-    // params are validated and typed by this point
-    // Build parameterized query from validated filters
-    const query = buildParameterizedQuery(params);
-    const results = await db.query(query.text, query.values);
+	"query_database",
+	"Query the database with structured filters",
+	queryDatabaseSchema.shape,
+	async (params) => {
+		// params are validated and typed by this point
+		// Build parameterized query from validated filters
+		const query = buildParameterizedQuery(params);
+		const results = await db.query(query.text, query.values);
 
-    return {
-      content: [{
-        type: "text",
-        text: JSON.stringify(results, null, 2),
-      }],
-    };
-  }
+		return {
+			content: [
+				{
+					type: "text",
+					text: JSON.stringify(results, null, 2),
+				},
+			],
+		};
+	}
 );
 ```
 
@@ -230,53 +237,57 @@ Errors need to be informative for the LLM (so it can recover) without leaking in
 
 ```typescript
 class McpToolError extends Error {
-  constructor(
-    public readonly userMessage: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly internalDetail?: string
-  ) {
-    super(userMessage);
-    this.name = "McpToolError";
-  }
+	constructor(
+		public readonly userMessage: string,
+		public readonly code: string,
+		public readonly retryable: boolean,
+		public readonly internalDetail?: string
+	) {
+		super(userMessage);
+		this.name = "McpToolError";
+	}
 }
 
 function handleToolError(error: unknown): ToolResult {
-  if (error instanceof McpToolError) {
-    // Log internal details, return safe message to client
-    logger.error("Tool error", {
-      code: error.code,
-      message: error.userMessage,
-      internal: error.internalDetail,
-      retryable: error.retryable,
-    });
+	if (error instanceof McpToolError) {
+		// Log internal details, return safe message to client
+		logger.error("Tool error", {
+			code: error.code,
+			message: error.userMessage,
+			internal: error.internalDetail,
+			retryable: error.retryable,
+		});
 
-    return {
-      isError: true,
-      content: [{
-        type: "text",
-        text: JSON.stringify({
-          error: error.userMessage,
-          code: error.code,
-          retryable: error.retryable,
-        }),
-      }],
-    };
-  }
+		return {
+			isError: true,
+			content: [
+				{
+					type: "text",
+					text: JSON.stringify({
+						error: error.userMessage,
+						code: error.code,
+						retryable: error.retryable,
+					}),
+				},
+			],
+		};
+	}
 
-  // Unknown errors get a generic response
-  logger.error("Unexpected error", { error: String(error) });
-  return {
-    isError: true,
-    content: [{
-      type: "text",
-      text: JSON.stringify({
-        error: "Internal server error",
-        code: "INTERNAL_ERROR",
-        retryable: false,
-      }),
-    }],
-  };
+	// Unknown errors get a generic response
+	logger.error("Unexpected error", { error: String(error) });
+	return {
+		isError: true,
+		content: [
+			{
+				type: "text",
+				text: JSON.stringify({
+					error: "Internal server error",
+					code: "INTERNAL_ERROR",
+					retryable: false,
+				}),
+			},
+		],
+	};
 }
 ```
 
@@ -316,46 +327,47 @@ Tool poisoning defenses require changes at multiple layers.
 ```typescript
 // 1. Sanitize tool descriptions - strip hidden instructions
 function sanitizeToolDescription(description: string): string {
-  // Remove zero-width characters used to hide text
-  const cleaned = description.replace(/[\u200B-\u200F\u2028-\u202F\uFEFF]/g, "");
-  // Enforce maximum description length
-  return cleaned.slice(0, 500);
+	// Remove zero-width characters used to hide text
+	const cleaned = description.replace(/[\u200B-\u200F\u2028-\u202F\uFEFF]/g, "");
+	// Enforce maximum description length
+	return cleaned.slice(0, 500);
 }
 
 // 2. Scope tool permissions narrowly
 server.tool(
-  "read_repository_file",
-  sanitizeToolDescription("Read a file from the current repository"),
-  {
-    path: z.string()
-      .max(256)
-      .regex(/^[a-zA-Z0-9\/_\-\.]+$/)
-      // Prevent path traversal
-      .refine((p) => !p.includes(".."), "Path traversal not allowed")
-      // Restrict to current repo only
-      .refine((p) => !p.startsWith("/"), "Absolute paths not allowed"),
-  },
-  async (params, context) => {
-    // 3. Verify the request is within the authorized scope
-    if (!context.auth.scopes.includes("repo:read")) {
-      throw new McpToolError(
-        "Insufficient permissions to read repository files",
-        "AUTHZ_DENIED",
-        false
-      );
-    }
+	"read_repository_file",
+	sanitizeToolDescription("Read a file from the current repository"),
+	{
+		path: z
+			.string()
+			.max(256)
+			.regex(/^[a-zA-Z0-9\/_\-\.]+$/)
+			// Prevent path traversal
+			.refine((p) => !p.includes(".."), "Path traversal not allowed")
+			// Restrict to current repo only
+			.refine((p) => !p.startsWith("/"), "Absolute paths not allowed"),
+	},
+	async (params, context) => {
+		// 3. Verify the request is within the authorized scope
+		if (!context.auth.scopes.includes("repo:read")) {
+			throw new McpToolError(
+				"Insufficient permissions to read repository files",
+				"AUTHZ_DENIED",
+				false
+			);
+		}
 
-    // 4. Audit log every file access
-    await auditLog.record({
-      action: "file_read",
-      userId: context.auth.userId,
-      resource: params.path,
-      timestamp: Date.now(),
-    });
+		// 4. Audit log every file access
+		await auditLog.record({
+			action: "file_read",
+			userId: context.auth.userId,
+			resource: params.path,
+			timestamp: Date.now(),
+		});
 
-    const content = await readFile(context.auth.repoId, params.path);
-    return { content: [{ type: "text", text: content }] };
-  }
+		const content = await readFile(context.auth.repoId, params.path);
+		return { content: [{ type: "text", text: content }] };
+	}
 );
 ```
 
@@ -386,38 +398,38 @@ You can't secure what you can't see. MCP servers need the same observability sta
 import pino from "pino";
 
 const logger = pino({
-  level: process.env.LOG_LEVEL ?? "info",
-  formatters: {
-    level: (label) => ({ level: label }),
-  },
-  serializers: {
-    params: (params) => {
-      // Redact sensitive parameter values
-      const redacted = { ...params };
-      for (const key of ["password", "token", "secret", "apiKey"]) {
-        if (key in redacted) redacted[key] = "[REDACTED]";
-      }
-      return redacted;
-    },
-  },
+	level: process.env.LOG_LEVEL ?? "info",
+	formatters: {
+		level: (label) => ({ level: label }),
+	},
+	serializers: {
+		params: (params) => {
+			// Redact sensitive parameter values
+			const redacted = { ...params };
+			for (const key of ["password", "token", "secret", "apiKey"]) {
+				if (key in redacted) redacted[key] = "[REDACTED]";
+			}
+			return redacted;
+		},
+	},
 });
 
 function logToolInvocation(
-  toolName: string,
-  params: Record<string, unknown>,
-  auth: AuthContext,
-  durationMs: number,
-  success: boolean
+	toolName: string,
+	params: Record<string, unknown>,
+	auth: AuthContext,
+	durationMs: number,
+	success: boolean
 ) {
-  logger.info({
-    event: "tool_invocation",
-    tool: toolName,
-    userId: auth.userId,
-    params: params,
-    durationMs,
-    success,
-    timestamp: new Date().toISOString(),
-  });
+	logger.info({
+		event: "tool_invocation",
+		tool: toolName,
+		userId: auth.userId,
+		params: params,
+		durationMs,
+		success,
+		timestamp: new Date().toISOString(),
+	});
 }
 ```
 
@@ -427,27 +439,27 @@ Every tool invocation should log: who called it, what parameters were passed (re
 
 Track four categories of metrics:
 
-| Category | Metrics | Why |
-|----------|---------|-----|
-| Traffic | Invocations per tool, per user, per minute | Detect abuse, capacity planning |
-| Latency | p50, p95, p99 per tool | SLA compliance, performance regression |
-| Errors | Error rate per tool, error rate by type | Reliability monitoring, alert thresholds |
-| Saturation | Connection pool usage, memory, CPU | Capacity limits, scaling triggers |
+| Category   | Metrics                                    | Why                                      |
+| ---------- | ------------------------------------------ | ---------------------------------------- |
+| Traffic    | Invocations per tool, per user, per minute | Detect abuse, capacity planning          |
+| Latency    | p50, p95, p99 per tool                     | SLA compliance, performance regression   |
+| Errors     | Error rate per tool, error rate by type    | Reliability monitoring, alert thresholds |
+| Saturation | Connection pool usage, memory, CPU         | Capacity limits, scaling triggers        |
 
 ```typescript
 import { Counter, Histogram } from "prom-client";
 
 const toolInvocations = new Counter({
-  name: "mcp_tool_invocations_total",
-  help: "Total MCP tool invocations",
-  labelNames: ["tool", "status", "user_tier"],
+	name: "mcp_tool_invocations_total",
+	help: "Total MCP tool invocations",
+	labelNames: ["tool", "status", "user_tier"],
 });
 
 const toolDuration = new Histogram({
-  name: "mcp_tool_duration_seconds",
-  help: "MCP tool invocation duration",
-  labelNames: ["tool"],
-  buckets: [0.01, 0.05, 0.1, 0.5, 1, 5, 10, 30],
+	name: "mcp_tool_duration_seconds",
+	help: "MCP tool invocation duration",
+	labelNames: ["tool"],
+	buckets: [0.01, 0.05, 0.1, 0.5, 1, 5, 10, 30],
 });
 ```
 
@@ -462,30 +474,27 @@ import { trace, SpanKind } from "@opentelemetry/api";
 
 const tracer = trace.getTracer("mcp-server");
 
-async function instrumentedToolHandler(
-  toolName: string,
-  handler: ToolHandler
-): ToolHandler {
-  return async (params, context) => {
-    const traceId = context.headers?.["x-trace-id"] ?? generateTraceId();
+async function instrumentedToolHandler(toolName: string, handler: ToolHandler): ToolHandler {
+	return async (params, context) => {
+		const traceId = context.headers?.["x-trace-id"] ?? generateTraceId();
 
-    return tracer.startActiveSpan(
-      `mcp.tool.${toolName}`,
-      { kind: SpanKind.SERVER, attributes: { "mcp.tool": toolName } },
-      async (span) => {
-        try {
-          const result = await handler(params, { ...context, traceId });
-          span.setStatus({ code: 0 });
-          return result;
-        } catch (error) {
-          span.setStatus({ code: 2, message: String(error) });
-          throw error;
-        } finally {
-          span.end();
-        }
-      }
-    );
-  };
+		return tracer.startActiveSpan(
+			`mcp.tool.${toolName}`,
+			{ kind: SpanKind.SERVER, attributes: { "mcp.tool": toolName } },
+			async (span) => {
+				try {
+					const result = await handler(params, { ...context, traceId });
+					span.setStatus({ code: 0 });
+					return result;
+				} catch (error) {
+					span.setStatus({ code: 2, message: String(error) });
+					throw error;
+				} finally {
+					span.end();
+				}
+			}
+		);
+	};
 }
 ```
 
@@ -571,16 +580,16 @@ import { createCommunityServer } from "@mcp/postgres-server";
 
 // Community server handles protocol + SQL
 const baseServer = createCommunityServer({
-  connectionString: process.env.DATABASE_URL,
+	connectionString: process.env.DATABASE_URL,
 });
 
 // Your wrapper adds production concerns
 const productionServer = withMiddleware(baseServer, [
-  authMiddleware,
-  rateLimitMiddleware,
-  inputValidationMiddleware,
-  auditLogMiddleware,
-  errorHandlingMiddleware,
+	authMiddleware,
+	rateLimitMiddleware,
+	inputValidationMiddleware,
+	auditLogMiddleware,
+	errorHandlingMiddleware,
 ]);
 ```
 

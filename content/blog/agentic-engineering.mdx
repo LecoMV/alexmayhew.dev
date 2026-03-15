@@ -51,21 +51,25 @@ The fix isn't complicated, but it requires discipline. Decompose every story int
 ## Story: Implement rate limiting for API endpoints
 
 ### Phase 1: Specification (1 point)
+
 - Define rate limit thresholds per endpoint tier
 - Document failure behavior (429 response, retry-after header)
 - Specify monitoring requirements (metrics, alerts)
 
 ### Phase 2: Agent-Assisted Implementation (1 point)
+
 - Direct agent to implement with specification as context
 - Provide architectural constraints (middleware pattern, Redis backend)
 
 ### Phase 3: Verification (3 points)
+
 - Review generated code for architectural conformance
 - Verify edge cases: concurrent requests, Redis unavailability, distributed deployment
 - Load test at 2x expected peak
 - Security review: timing attacks, header spoofing
 
 ### Phase 4: Integration (2 points)
+
 - Merge with existing middleware chain
 - Update API documentation
 - Deploy to staging, verify with production-like traffic
@@ -119,16 +123,16 @@ The review shifts from "does this implementation look correct" to three distinct
 // [ ] Concern: hardcoded timeout (5000ms) should use config ✗
 
 export async function processPayment(
-  paymentId: string,
-  amount: number,
+	paymentId: string,
+	amount: number
 ): Promise<Result<PaymentReceipt, AppError>> {
-  const payment = await paymentRepository.findById(paymentId);
-  if (!payment) {
-    return err(new NotFoundError(`Payment ${paymentId} not found`));
-  }
-  // Agent didn't add retry logic for Stripe API calls
-  const stripeResult = await stripeClient.charge(payment.customerId, amount);
-  // ...
+	const payment = await paymentRepository.findById(paymentId);
+	if (!payment) {
+		return err(new NotFoundError(`Payment ${paymentId} not found`));
+	}
+	// Agent didn't add retry logic for Stripe API calls
+	const stripeResult = await stripeClient.charge(payment.customerId, amount);
+	// ...
 }
 ```
 
@@ -150,12 +154,12 @@ The skill profile for agentic engineering is closer to a technical architect tha
 
 The agentic tool market has consolidated rapidly. Understanding the landscape matters because tool choice shapes workflow.
 
-| Tool | Market Position | Primary User Base | Key Differentiator |
-|---|---|---|---|
-| Claude Code | 63% adoption (startups: 75%) | Staff+ engineers, startups | Terminal-native, full codebase context, agentic by default |
-| Cursor | 42% adoption | Mid-level engineers, frontend teams | IDE-native, strong editor integration |
-| GitHub Copilot | 56% enterprise (10K+ employees) | Enterprise teams | Procurement-friendly, GitHub ecosystem integration |
-| OpenAI Codex | Growing | Research teams, AI-native startups | Deep reasoning, multi-file refactoring |
+| Tool           | Market Position                 | Primary User Base                   | Key Differentiator                                         |
+| -------------- | ------------------------------- | ----------------------------------- | ---------------------------------------------------------- |
+| Claude Code    | 63% adoption (startups: 75%)    | Staff+ engineers, startups          | Terminal-native, full codebase context, agentic by default |
+| Cursor         | 42% adoption                    | Mid-level engineers, frontend teams | IDE-native, strong editor integration                      |
+| GitHub Copilot | 56% enterprise (10K+ employees) | Enterprise teams                    | Procurement-friendly, GitHub ecosystem integration         |
+| OpenAI Codex   | Growing                         | Research teams, AI-native startups  | Deep reasoning, multi-file refactoring                     |
 
 The adoption pattern tells a story. Startups choose Claude Code at 75% because it requires the least workflow change for experienced developers... it runs in the terminal, understands git, and operates on the full codebase. Large enterprises choose GitHub Copilot at 56% because it clears procurement, integrates with existing GitHub Enterprise workflows, and has Microsoft's enterprise support infrastructure. The tool preference is driven by procurement process, not by capability.
 
@@ -187,24 +191,29 @@ The pattern works best for tasks that can be decomposed into independent work st
 
 ```markdown
 ## Multi-Agent Task Decomposition Example
+
 ### Feature: User notification preferences system
 
 Agent 1 (Backend): Build notification preferences API
+
 - Specification: REST endpoints for CRUD on notification preferences
 - Constraints: Repository pattern, PostgreSQL, typed responses
 - Interface contract: OpenAPI spec (provided)
 
 Agent 2 (Frontend): Build notification preferences UI
+
 - Specification: React component with form validation
 - Constraints: Design system components, server actions for mutations
 - Interface contract: Same OpenAPI spec
 
 Agent 3 (Testing): Generate integration test suite
+
 - Specification: Test preference CRUD, edge cases, error states
 - Constraints: Vitest, test-database pattern, no mocking of core logic
 - Interface contract: Same OpenAPI spec
 
 Human orchestrator responsibilities:
+
 - Define the interface contract BEFORE agents start
 - Review each agent's output for specification conformance
 - Verify integration between Agent 1 and Agent 2 outputs
@@ -234,12 +243,12 @@ Lines of code, commits per day, and PRs merged are noise metrics in the agentic 
 ```typescript
 // Example: tracking specification-to-production ratio
 interface AgentTaskMetrics {
-  taskId: string;
-  specificationVersion: number;  // How many spec revisions before agent start
-  agentIterations: number;       // How many agent runs to get acceptable output
-  reviewCycles: number;          // How many review rounds before merge
-  totalTimeMinutes: number;      // Wall clock from spec to merge
-  productionIncidents: number;   // Incidents in first 30 days post-merge
+	taskId: string;
+	specificationVersion: number; // How many spec revisions before agent start
+	agentIterations: number; // How many agent runs to get acceptable output
+	reviewCycles: number; // How many review rounds before merge
+	totalTimeMinutes: number; // Wall clock from spec to merge
+	productionIncidents: number; // Incidents in first 30 days post-merge
 }
 
 // Target: agentIterations <= 3, reviewCycles <= 2

@@ -140,32 +140,32 @@ Run pair debugging sessions. Take a Severity 1 or 2 module and have two engineer
 ```typescript
 // Comprehension gap tracking
 interface ComprehensionGap {
-  module: string;
-  file_path: string;
-  line_range: [number, number];
-  description: string;
-  severity: "critical" | "high" | "medium" | "low";
-  gap_type:
-    | "no_one_understands"
-    | "conflicting_understanding"
-    | "missing_context"
-    | "undocumented_invariant";
-  discovered_by: string[];
-  date: string;
+	module: string;
+	file_path: string;
+	line_range: [number, number];
+	description: string;
+	severity: "critical" | "high" | "medium" | "low";
+	gap_type:
+		| "no_one_understands"
+		| "conflicting_understanding"
+		| "missing_context"
+		| "undocumented_invariant";
+	discovered_by: string[];
+	date: string;
 }
 
 // Real example from an audit I conducted
 const auth_gap: ComprehensionGap = {
-  module: "auth",
-  file_path: "src/lib/auth/session-manager.ts",
-  line_range: [47, 112],
-  description:
-    "Token refresh logic uses a sliding window that nobody can explain. " +
-    "Why 15 minutes? Why not use the provider's built-in refresh?",
-  severity: "critical",
-  gap_type: "no_one_understands",
-  discovered_by: ["eng_1", "eng_2"],
-  date: "2026-03-15",
+	module: "auth",
+	file_path: "src/lib/auth/session-manager.ts",
+	line_range: [47, 112],
+	description:
+		"Token refresh logic uses a sliding window that nobody can explain. " +
+		"Why 15 minutes? Why not use the provider's built-in refresh?",
+	severity: "critical",
+	gap_type: "no_one_understands",
+	discovered_by: ["eng_1", "eng_2"],
+	date: "2026-03-15",
 };
 ```
 
@@ -175,10 +175,10 @@ const auth_gap: ComprehensionGap = {
 
 Not all comprehension gaps deserve equal attention. Prioritize using a 2x2 matrix:
 
-| | High Change Frequency | Low Change Frequency |
-|---|---|---|
-| **High Blast Radius** | Fix immediately (Severity 1) | Document thoroughly (Severity 2) |
-| **Low Blast Radius** | Refactor when touched (Severity 3) | Ignore until relevant (Severity 4) |
+|                       | High Change Frequency              | Low Change Frequency               |
+| --------------------- | ---------------------------------- | ---------------------------------- |
+| **High Blast Radius** | Fix immediately (Severity 1)       | Document thoroughly (Severity 2)   |
+| **Low Blast Radius**  | Refactor when touched (Severity 3) | Ignore until relevant (Severity 4) |
 
 A billing module that nobody understands but never changes is less urgent than an API middleware that nobody understands and gets modified every sprint.
 
@@ -218,22 +218,26 @@ Every Severity 1 and 2 module gets an ADR. Not after the fact... during the comp
 ## Status: Accepted (retroactive)
 
 ## Context
+
 The session manager uses a 15-minute sliding window for token refresh.
 This was AI-generated during the MVP sprint. No documentation existed.
 
 ## Decision
+
 After investigation, the 15-minute window exists because the original
 AI-generated code used a generic OAuth2 pattern. Our auth provider
 (Clerk) handles refresh internally. The custom refresh logic is
 redundant and creates a race condition under concurrent requests.
 
 ## Consequences
+
 - Remove custom refresh logic (reduces auth module by ~65 lines)
 - Rely on Clerk's built-in token management
 - Eliminates the race condition reported in INCIDENT-023
 - Reduces session-related support tickets by estimated 40%
 
 ## Alternatives Considered
+
 - Keep custom refresh with mutex: adds complexity, still redundant
 - Reduce window to 5 minutes: doesn't fix the root cause
 ```
@@ -254,40 +258,36 @@ Structure:
 ```typescript
 // Tests as executable documentation
 describe("PaymentProcessor", () => {
-  // These tests document CURRENT behavior, not desired behavior.
-  // If any test fails, investigate before changing the assertion.
+	// These tests document CURRENT behavior, not desired behavior.
+	// If any test fails, investigate before changing the assertion.
 
-  it("retries failed charges exactly 3 times with exponential backoff", async () => {
-    const processor = new PaymentProcessor(mockStripe);
-    mockStripe.charges.create.mockRejectedValue(
-      new StripeError("card_declined")
-    );
+	it("retries failed charges exactly 3 times with exponential backoff", async () => {
+		const processor = new PaymentProcessor(mockStripe);
+		mockStripe.charges.create.mockRejectedValue(new StripeError("card_declined"));
 
-    await processor.processPayment(validPaymentIntent);
+		await processor.processPayment(validPaymentIntent);
 
-    // Why 3 retries? ADR-012 documents: Stripe's recommendation
-    // for idempotent charges. The 2/4/8 second backoff matches
-    // their rate limit recovery window.
-    expect(mockStripe.charges.create).toHaveBeenCalledTimes(4); // 1 + 3 retries
-    expect(mockDelay).toHaveBeenCalledWith(2000); // 1st retry
-    expect(mockDelay).toHaveBeenCalledWith(4000); // 2nd retry
-    expect(mockDelay).toHaveBeenCalledWith(8000); // 3rd retry
-  });
+		// Why 3 retries? ADR-012 documents: Stripe's recommendation
+		// for idempotent charges. The 2/4/8 second backoff matches
+		// their rate limit recovery window.
+		expect(mockStripe.charges.create).toHaveBeenCalledTimes(4); // 1 + 3 retries
+		expect(mockDelay).toHaveBeenCalledWith(2000); // 1st retry
+		expect(mockDelay).toHaveBeenCalledWith(4000); // 2nd retry
+		expect(mockDelay).toHaveBeenCalledWith(8000); // 3rd retry
+	});
 
-  it("does NOT retry on authentication errors", async () => {
-    const processor = new PaymentProcessor(mockStripe);
-    mockStripe.charges.create.mockRejectedValue(
-      new StripeError("authentication_required")
-    );
+	it("does NOT retry on authentication errors", async () => {
+		const processor = new PaymentProcessor(mockStripe);
+		mockStripe.charges.create.mockRejectedValue(new StripeError("authentication_required"));
 
-    await processor.processPayment(validPaymentIntent);
+		await processor.processPayment(validPaymentIntent);
 
-    // Why no retry on auth errors? Because retrying won't help.
-    // The customer needs to complete 3D Secure.
-    // This was a bug in the original AI-generated code that
-    // retried ALL errors, causing duplicate charge attempts.
-    expect(mockStripe.charges.create).toHaveBeenCalledTimes(1);
-  });
+		// Why no retry on auth errors? Because retrying won't help.
+		// The customer needs to complete 3D Secure.
+		// This was a bug in the original AI-generated code that
+		// retried ALL errors, causing duplicate charge attempts.
+		expect(mockStripe.charges.create).toHaveBeenCalledTimes(1);
+	});
 });
 ```
 
@@ -391,14 +391,14 @@ Otherwise → Remediate
 
 For a 10-person team with a moderate hangover (3-4 of the symptoms described above), here's the realistic timeline:
 
-| Phase | Duration | Effort | Outcome |
-|-------|----------|--------|---------|
-| Triage | 1 week | 20 engineer-hours | Severity map |
-| Audit (Weeks 1-4) | 4 weeks | 120 engineer-hours | Comprehension gap inventory |
-| Severity 1 remediation | 4-6 weeks | 200 engineer-hours | Critical paths documented + tested |
-| Severity 2 remediation | 6-8 weeks | 150 engineer-hours | Core business logic documented |
-| Governance implementation | 2 weeks | 40 engineer-hours | Prevention framework active |
-| **Total** | **~4 months** | **~530 engineer-hours** | **Codebase comprehension restored** |
+| Phase                     | Duration      | Effort                  | Outcome                             |
+| ------------------------- | ------------- | ----------------------- | ----------------------------------- |
+| Triage                    | 1 week        | 20 engineer-hours       | Severity map                        |
+| Audit (Weeks 1-4)         | 4 weeks       | 120 engineer-hours      | Comprehension gap inventory         |
+| Severity 1 remediation    | 4-6 weeks     | 200 engineer-hours      | Critical paths documented + tested  |
+| Severity 2 remediation    | 6-8 weeks     | 150 engineer-hours      | Core business logic documented      |
+| Governance implementation | 2 weeks       | 40 engineer-hours       | Prevention framework active         |
+| **Total**                 | **~4 months** | **~530 engineer-hours** | **Codebase comprehension restored** |
 
 At a $75/hour loaded rate, that's ~$40,000. Compare to the alternative: continuing to operate with 3-5x incident resolution times, 2x onboarding costs, and the ongoing risk of a Severity 1 incident in a path nobody understands.
 

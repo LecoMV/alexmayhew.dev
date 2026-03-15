@@ -61,15 +61,15 @@ Here's the model I use in advisory engagements. All numbers are annualized from 
 
 ### Component 1: Licensing Costs
 
-| Tool | Plan | Per Seat/Month | 10 Seats/Month | Annual |
-|------|------|----------------|-----------------|--------|
-| GitHub Copilot Business | Business | $19 | $190 | $2,280 |
-| Cursor | Pro | $20 | $200 | $2,400 |
-| Cursor | Business | $40 | $400 | $4,800 |
-| Claude Code | Pro (w/ Anthropic) | $20 | $200 | $2,400 |
-| Claude Code | Max 5x | $100 | $1,000 | $12,000 |
-| Claude Code | Max 20x | $200 | $2,000 | $24,000 |
-| Claude Code | API-direct | Varies | $2,000+ | $24,000+ |
+| Tool                    | Plan               | Per Seat/Month | 10 Seats/Month | Annual   |
+| ----------------------- | ------------------ | -------------- | -------------- | -------- |
+| GitHub Copilot Business | Business           | $19            | $190           | $2,280   |
+| Cursor                  | Pro                | $20            | $200           | $2,400   |
+| Cursor                  | Business           | $40            | $400           | $4,800   |
+| Claude Code             | Pro (w/ Anthropic) | $20            | $200           | $2,400   |
+| Claude Code             | Max 5x             | $100           | $1,000         | $12,000  |
+| Claude Code             | Max 20x            | $200           | $2,000         | $24,000  |
+| Claude Code             | API-direct         | Varies         | $2,000+        | $24,000+ |
 
 Licensing is where most cost analyses stop. It shouldn't be where any cost analysis starts.
 
@@ -83,12 +83,12 @@ Cursor Pro includes 500 "fast" premium requests per month. After that, you're qu
 
 Here's what this looks like in practice:
 
-| Usage Pattern | Cursor Pro | Cursor Business | Claude Code Max 5x |
-|---------------|------------|-----------------|---------------------|
-| Light (autocomplete, occasional chat) | Included | Included | Included |
-| Medium (daily chat, weekly agentic) | $0-50 overage | Included | Included |
-| Heavy (multi-file agentic, daily) | $100-200 overage | $50-100 overage | Included |
-| Power user (API-direct, automated) | N/A | N/A | $500-2,000+/month |
+| Usage Pattern                         | Cursor Pro       | Cursor Business | Claude Code Max 5x |
+| ------------------------------------- | ---------------- | --------------- | ------------------ |
+| Light (autocomplete, occasional chat) | Included         | Included        | Included           |
+| Medium (daily chat, weekly agentic)   | $0-50 overage    | Included        | Included           |
+| Heavy (multi-file agentic, daily)     | $100-200 overage | $50-100 overage | Included           |
+| Power user (API-direct, automated)    | N/A              | N/A             | $500-2,000+/month  |
 
 For API-direct Claude Code users... engineers who run Claude Code against the Anthropic API with their own key... costs scale linearly with usage. I've seen individual power users hit $2,000/month in API spend during heavy sprint weeks. That's not typical, but it's not rare either.
 
@@ -98,13 +98,13 @@ For API-direct Claude Code users... engineers who run Claude Code against the An
 
 This is where the architecture difference hits your budget directly.
 
-| Metric | Cursor | Claude Code |
-|--------|--------|-------------|
-| Time to first productive use | 2-4 hours | 1-2 days |
-| Time to full proficiency | 1-2 weeks | 3-6 weeks |
-| Training investment (per dev) | ~4 engineer-hours | ~16 engineer-hours |
+| Metric                        | Cursor             | Claude Code         |
+| ----------------------------- | ------------------ | ------------------- |
+| Time to first productive use  | 2-4 hours          | 1-2 days            |
+| Time to full proficiency      | 1-2 weeks          | 3-6 weeks           |
+| Training investment (per dev) | ~4 engineer-hours  | ~16 engineer-hours  |
 | Total team training (10 devs) | ~40 engineer-hours | ~160 engineer-hours |
-| Cost at $75/hr loaded rate | $3,000 | $12,000 |
+| Cost at $75/hr loaded rate    | $3,000             | $12,000             |
 
 Cursor's familiarity advantage is real. If your team lives in VS Code, the adoption cost is minimal. Claude Code's CLI-first approach requires developers to learn a different interaction model... which pays off for senior engineers doing complex work but costs real money in training time.
 
@@ -125,14 +125,14 @@ The $20,000 delta in disruption costs matters more than the licensing delta for 
 
 ### Component 5: Total Cost of Ownership (90-Day Comparison)
 
-| Cost Component | Cursor Business | Claude Code Max 5x |
-|----------------|-----------------|---------------------|
-| Licensing (90 days) | $1,200 | $3,000 |
-| Token overages (estimated) | $300 | $0 |
-| Training costs | $3,000 | $12,000 |
-| Workflow disruption | $8,650 | $28,800 |
-| **Total 90-day cost** | **$13,150** | **$43,800** |
-| **Monthly ongoing (post-adoption)** | **$400-500** | **$1,000** |
+| Cost Component                      | Cursor Business | Claude Code Max 5x |
+| ----------------------------------- | --------------- | ------------------ |
+| Licensing (90 days)                 | $1,200          | $3,000             |
+| Token overages (estimated)          | $300            | $0                 |
+| Training costs                      | $3,000          | $12,000            |
+| Workflow disruption                 | $8,650          | $28,800            |
+| **Total 90-day cost**               | **$13,150**     | **$43,800**        |
+| **Monthly ongoing (post-adoption)** | **$400-500**    | **$1,000**         |
 
 Cursor wins on total cost of ownership for the first 90 days by a wide margin. But this doesn't account for the productivity delta... which is where Claude Code can close the gap.
 
@@ -146,18 +146,18 @@ The truth is task-dependent.
 
 ### Task-Type Breakdown
 
-| Task Type | Cursor Advantage | Claude Code Advantage | Notes |
-|-----------|-----------------|----------------------|-------|
-| Autocomplete / inline edits | Strong | Weak | Cursor's core strength |
-| Boilerplate / scaffolding | Moderate | Strong | Claude Code handles multi-file better |
-| Multi-file refactoring | Moderate | Strong | Agentic approach wins at scale |
-| Debugging with log analysis | Weak | Strong | CLI-native, reads logs directly |
-| Writing tests from scratch | Moderate | Strong | Claude Code runs tests in-loop |
-| Documentation generation | Moderate | Moderate | Similar capability |
-| Architecture exploration | Weak | Strong | Extended context + tool use |
-| Quick one-line fixes | Strong | Weak | Cursor's tab-complete is instant |
-| Infrastructure/DevOps | Weak | Strong | Terminal-native advantage |
-| UI component building | Strong | Moderate | Visual context matters |
+| Task Type                   | Cursor Advantage | Claude Code Advantage | Notes                                 |
+| --------------------------- | ---------------- | --------------------- | ------------------------------------- |
+| Autocomplete / inline edits | Strong           | Weak                  | Cursor's core strength                |
+| Boilerplate / scaffolding   | Moderate         | Strong                | Claude Code handles multi-file better |
+| Multi-file refactoring      | Moderate         | Strong                | Agentic approach wins at scale        |
+| Debugging with log analysis | Weak             | Strong                | CLI-native, reads logs directly       |
+| Writing tests from scratch  | Moderate         | Strong                | Claude Code runs tests in-loop        |
+| Documentation generation    | Moderate         | Moderate              | Similar capability                    |
+| Architecture exploration    | Weak             | Strong                | Extended context + tool use           |
+| Quick one-line fixes        | Strong           | Weak                  | Cursor's tab-complete is instant      |
+| Infrastructure/DevOps       | Weak             | Strong                | Terminal-native advantage             |
+| UI component building       | Strong           | Moderate              | Visual context matters                |
 
 The pattern: Cursor excels at high-frequency, small-scope edits inside an editor. Claude Code excels at lower-frequency, large-scope operations that span files, tests, and shell commands.
 
@@ -166,16 +166,19 @@ The pattern: Cursor excels at high-frequency, small-scope edits inside an editor
 In my advisory work, the seniority breakdown is the single strongest predictor of which tool delivers more value:
 
 **Junior developers (0-3 years):**
+
 - Cursor provides more value. Visual feedback, guided suggestions, familiar IDE. Juniors need guardrails, and an IDE-integrated tool provides them implicitly.
 - Claude Code's CLI interface creates friction. Juniors who aren't comfortable in a terminal spend more time fighting the tool than using it.
 - Productivity lift with Cursor: 15-25% on routine tasks. With Claude Code: 5-10% (after training period).
 
 **Mid-level developers (3-7 years):**
+
 - Both tools provide similar value. Mid-level developers have enough context to direct Claude Code effectively but also benefit from Cursor's speed on small edits.
 - The deciding factor is task mix. If they're doing mostly in-file work, Cursor. If they're doing cross-cutting work, Claude Code.
 - Productivity lift: 15-20% with either tool on their best task types.
 
 **Senior developers (7+ years):**
+
 - Claude Code provides significantly more value. Senior developers think architecturally. They want to describe intent at a high level and have the tool handle implementation details across multiple files. Claude Code's agentic model matches how senior engineers think.
 - Cursor's autocomplete is still useful for senior devs but doesn't fundamentally change their workflow.
 - Productivity lift with Claude Code: 20-35% on complex tasks. With Cursor: 10-15%.
@@ -201,25 +204,53 @@ Some teams skip subscriptions entirely and run Claude Code against the Anthropic
 ```typescript
 // Typical API-direct cost tracking
 interface DailyUsageReport {
-  developer_id: string;
-  input_tokens: number;
-  output_tokens: number;
-  total_cost_usd: number;
-  sessions: number;
-  avg_session_tokens: number;
+	developer_id: string;
+	input_tokens: number;
+	output_tokens: number;
+	total_cost_usd: number;
+	sessions: number;
+	avg_session_tokens: number;
 }
 
 // Real numbers from a 10-person team (30-day average)
 const team_usage: DailyUsageReport[] = [
-  // Power users: 2-3 devs consuming $80-150/day
-  { developer_id: "senior_1", input_tokens: 2_400_000, output_tokens: 800_000, total_cost_usd: 127.20, sessions: 12, avg_session_tokens: 266_667 },
-  { developer_id: "senior_2", input_tokens: 1_800_000, output_tokens: 600_000, total_cost_usd: 95.40, sessions: 8, avg_session_tokens: 300_000 },
+	// Power users: 2-3 devs consuming $80-150/day
+	{
+		developer_id: "senior_1",
+		input_tokens: 2_400_000,
+		output_tokens: 800_000,
+		total_cost_usd: 127.2,
+		sessions: 12,
+		avg_session_tokens: 266_667,
+	},
+	{
+		developer_id: "senior_2",
+		input_tokens: 1_800_000,
+		output_tokens: 600_000,
+		total_cost_usd: 95.4,
+		sessions: 8,
+		avg_session_tokens: 300_000,
+	},
 
-  // Regular users: 4-5 devs at $20-50/day
-  { developer_id: "mid_1", input_tokens: 600_000, output_tokens: 200_000, total_cost_usd: 31.80, sessions: 5, avg_session_tokens: 160_000 },
+	// Regular users: 4-5 devs at $20-50/day
+	{
+		developer_id: "mid_1",
+		input_tokens: 600_000,
+		output_tokens: 200_000,
+		total_cost_usd: 31.8,
+		sessions: 5,
+		avg_session_tokens: 160_000,
+	},
 
-  // Light users: 2-3 devs at $5-15/day
-  { developer_id: "junior_1", input_tokens: 150_000, output_tokens: 50_000, total_cost_usd: 7.95, sessions: 3, avg_session_tokens: 66_667 },
+	// Light users: 2-3 devs at $5-15/day
+	{
+		developer_id: "junior_1",
+		input_tokens: 150_000,
+		output_tokens: 50_000,
+		total_cost_usd: 7.95,
+		sessions: 3,
+		avg_session_tokens: 66_667,
+	},
 ];
 
 // Monthly team total: $2,000-4,000 depending on sprint intensity
@@ -229,14 +260,14 @@ At $2,000-4,000/month for 10 developers, API-direct costs 2-4x the Max 5x subscr
 
 ### Security and Compliance Considerations
 
-| Requirement | Copilot | Cursor | Claude Code |
-|-------------|---------|--------|-------------|
-| SOC 2 Type II | Yes | Yes | Yes |
-| Data residency options | Azure regions | Limited | Limited |
-| On-premise deployment | GitHub Enterprise Server | No | No (API-direct = your infra) |
-| Code retention policy | Configurable | 30-day default | No retention (API) |
-| Admin controls | Full (GitHub org) | Workspace-level | API key management |
-| SSO/SAML | Yes | Yes (Business) | Via Anthropic console |
+| Requirement            | Copilot                  | Cursor          | Claude Code                  |
+| ---------------------- | ------------------------ | --------------- | ---------------------------- |
+| SOC 2 Type II          | Yes                      | Yes             | Yes                          |
+| Data residency options | Azure regions            | Limited         | Limited                      |
+| On-premise deployment  | GitHub Enterprise Server | No              | No (API-direct = your infra) |
+| Code retention policy  | Configurable             | 30-day default  | No retention (API)           |
+| Admin controls         | Full (GitHub org)        | Workspace-level | API key management           |
+| SSO/SAML               | Yes                      | Yes (Business)  | Via Anthropic console        |
 
 For regulated industries (healthcare, finance), Copilot's Azure integration provides the clearest compliance story. Claude Code API-direct gives you full control over data flow... but you're responsible for the compliance infrastructure.
 

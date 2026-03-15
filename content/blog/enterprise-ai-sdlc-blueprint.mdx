@@ -41,13 +41,13 @@ The fix isn't more technology. It's organizational engineering.
 
 Before any AI development tool enters your SDLC, it must pass through five organizational gates. Skip one, and you'll hit a wall when you try to scale.
 
-| Gate | Key Questions | Responsible Party | Typical Timeline |
-| --- | --- | --- | --- |
-| **1. Security** | What code/metadata/context leaves the boundary? Where are prompts stored? Is the connection encrypted? Can we audit data flows? | CISO / Security Engineering | 2-4 weeks |
-| **2. Legal** | Who owns AI-generated code? What's the IP exposure? What's the indemnification clause? Is there acceptable use policy coverage? | General Counsel / IP Attorney | 3-6 weeks |
-| **3. Compliance** | Are prompts, outputs, and approvals auditable? Does this meet SOC 2 / ISO 27001 / HIPAA requirements? Can we prove provenance? | Compliance Officer | 2-4 weeks |
-| **4. Architecture** | Where does this fit in the SDLC? What changes to CI/CD? How does it interact with existing code review? What's the rollback plan? | VP Engineering / Principal Engineer | 2-3 weeks |
-| **5. Procurement** | Enterprise-grade contract? SLA commitments? Data processing agreement? Exit clause and data portability? | Procurement / Vendor Management | 4-8 weeks |
+| Gate                | Key Questions                                                                                                                     | Responsible Party                   | Typical Timeline |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ---------------- |
+| **1. Security**     | What code/metadata/context leaves the boundary? Where are prompts stored? Is the connection encrypted? Can we audit data flows?   | CISO / Security Engineering         | 2-4 weeks        |
+| **2. Legal**        | Who owns AI-generated code? What's the IP exposure? What's the indemnification clause? Is there acceptable use policy coverage?   | General Counsel / IP Attorney       | 3-6 weeks        |
+| **3. Compliance**   | Are prompts, outputs, and approvals auditable? Does this meet SOC 2 / ISO 27001 / HIPAA requirements? Can we prove provenance?    | Compliance Officer                  | 2-4 weeks        |
+| **4. Architecture** | Where does this fit in the SDLC? What changes to CI/CD? How does it interact with existing code review? What's the rollback plan? | VP Engineering / Principal Engineer | 2-3 weeks        |
+| **5. Procurement**  | Enterprise-grade contract? SLA commitments? Data processing agreement? Exit clause and data portability?                          | Procurement / Vendor Management     | 4-8 weeks        |
 
 ### Gate 1: Security
 
@@ -132,20 +132,21 @@ The wrong answer: AI is a free-for-all. Developers use it whenever they want, ho
 
 The right answer: AI assistance is mapped to specific SDLC phases with defined inputs, outputs, and quality gates.
 
-| SDLC Phase | AI Role | Quality Gate | Human Responsibility |
-| --- | --- | --- | --- |
-| **Requirements** | Generating user stories, edge case identification | Product owner validates completeness | Prioritization, stakeholder alignment |
-| **Design** | Architecture options, trade-off analysis | Principal engineer reviews | Final architectural decision |
-| **Implementation** | Code generation, boilerplate, test scaffolding | Automated CI + human code review | Business logic, security-critical paths |
-| **Testing** | Test case generation, mutation testing, edge cases | Coverage thresholds enforced in CI | Integration tests, E2E scenarios |
-| **Code Review** | Style enforcement, common bug detection | Human reviewer signs off | Architectural fit, business logic validation |
-| **Deployment** | Release notes, runbook generation | Ops team validates | Deployment decision, rollback criteria |
+| SDLC Phase         | AI Role                                            | Quality Gate                         | Human Responsibility                         |
+| ------------------ | -------------------------------------------------- | ------------------------------------ | -------------------------------------------- |
+| **Requirements**   | Generating user stories, edge case identification  | Product owner validates completeness | Prioritization, stakeholder alignment        |
+| **Design**         | Architecture options, trade-off analysis           | Principal engineer reviews           | Final architectural decision                 |
+| **Implementation** | Code generation, boilerplate, test scaffolding     | Automated CI + human code review     | Business logic, security-critical paths      |
+| **Testing**        | Test case generation, mutation testing, edge cases | Coverage thresholds enforced in CI   | Integration tests, E2E scenarios             |
+| **Code Review**    | Style enforcement, common bug detection            | Human reviewer signs off             | Architectural fit, business logic validation |
+| **Deployment**     | Release notes, runbook generation                  | Ops team validates                   | Deployment decision, rollback criteria       |
 
 ### Gate 5: Procurement
 
 Enterprise AI tool procurement isn't like buying SaaS. The contract terms matter more because you're sending proprietary source code to the vendor.
 
 Non-negotiable contract terms:
+
 - **Zero-retention clause:** Vendor doesn't store prompts or outputs beyond the session
 - **No-training clause:** Vendor doesn't use your code to train models
 - **Data processing agreement (DPA):** Explicit terms for data handling, compatible with your existing regulatory requirements
@@ -176,7 +177,7 @@ pilot_scope:
       rationale: "Low blast radius, rapid iteration, willing volunteers"
   allowed_tools:
     - "GitHub Copilot" # code completion
-    - "Claude Code"    # agentic coding
+    - "Claude Code" # agentic coding
   restrictions:
     - "No AI for security-critical code paths (auth, encryption, payment processing)"
     - "No AI for database migration scripts"
@@ -215,58 +216,56 @@ Take the lessons from Phase 1 and build governance scaffolding before expanding.
 // Flags patterns common in AI-generated code that indicate quality risk
 
 interface AiDebtPattern {
-  pattern: RegExp;
-  severity: "warning" | "error";
-  message: string;
+	pattern: RegExp;
+	severity: "warning" | "error";
+	message: string;
 }
 
 const AI_DEBT_PATTERNS: AiDebtPattern[] = [
-  {
-    pattern: /\/\/ TODO:?\s*(implement|add|fix|handle)/i,
-    severity: "warning",
-    message: "AI-generated TODO found. Resolve before merging.",
-  },
-  {
-    pattern: /catch\s*\(\s*(?:e|err|error)\s*\)\s*\{\s*\}/,
-    severity: "error",
-    message: "Empty catch block. AI often generates swallowed exceptions.",
-  },
-  {
-    pattern: /as\s+any/,
-    severity: "error",
-    message: "TypeScript 'as any' cast. AI frequently bypasses type safety.",
-  },
-  {
-    pattern: /console\.(log|debug|info)\(/,
-    severity: "warning",
-    message: "Console statement in production code. Common AI artifact.",
-  },
-  {
-    pattern: /\/\/ @ts-ignore/,
-    severity: "error",
-    message: "TypeScript suppression. AI uses these to avoid type errors.",
-  },
-  {
-    pattern: /eslint-disable(?!-next-line)/,
-    severity: "error",
-    message: "Broad ESLint disable. AI generates these to suppress warnings.",
-  },
+	{
+		pattern: /\/\/ TODO:?\s*(implement|add|fix|handle)/i,
+		severity: "warning",
+		message: "AI-generated TODO found. Resolve before merging.",
+	},
+	{
+		pattern: /catch\s*\(\s*(?:e|err|error)\s*\)\s*\{\s*\}/,
+		severity: "error",
+		message: "Empty catch block. AI often generates swallowed exceptions.",
+	},
+	{
+		pattern: /as\s+any/,
+		severity: "error",
+		message: "TypeScript 'as any' cast. AI frequently bypasses type safety.",
+	},
+	{
+		pattern: /console\.(log|debug|info)\(/,
+		severity: "warning",
+		message: "Console statement in production code. Common AI artifact.",
+	},
+	{
+		pattern: /\/\/ @ts-ignore/,
+		severity: "error",
+		message: "TypeScript suppression. AI uses these to avoid type errors.",
+	},
+	{
+		pattern: /eslint-disable(?!-next-line)/,
+		severity: "error",
+		message: "Broad ESLint disable. AI generates these to suppress warnings.",
+	},
 ];
 
 function scanForAiDebt(fileContent: string, filePath: string): AiDebtResult[] {
-  const results: AiDebtResult[] = [];
+	const results: AiDebtResult[] = [];
 
-  for (const { pattern, severity, message } of AI_DEBT_PATTERNS) {
-    const matches = fileContent.matchAll(new RegExp(pattern, "gm"));
-    for (const match of matches) {
-      const lineNumber = fileContent
-        .substring(0, match.index)
-        .split("\n").length;
-      results.push({ filePath, lineNumber, severity, message });
-    }
-  }
+	for (const { pattern, severity, message } of AI_DEBT_PATTERNS) {
+		const matches = fileContent.matchAll(new RegExp(pattern, "gm"));
+		for (const match of matches) {
+			const lineNumber = fileContent.substring(0, match.index).split("\n").length;
+			results.push({ filePath, lineNumber, severity, message });
+		}
+	}
 
-  return results;
+	return results;
 }
 ```
 
@@ -274,13 +273,13 @@ function scanForAiDebt(fileContent: string, filePath: string): AiDebtResult[] {
 
 Training is the #1 barrier to enterprise AI adoption. Not technology. Not budget. Skills gap. Here's what works based on programs I've helped design:
 
-| Training Component | Duration | Format | Outcome |
-| --- | --- | --- | --- |
-| **AI Tool Proficiency** | 4 hours | Hands-on workshop | Can use tools effectively |
-| **Prompt Engineering for Code** | 4 hours | Hands-on workshop | Can write effective prompts |
-| **AI Code Review** | 8 hours | Paired review sessions | Can identify AI-specific failure modes |
-| **Architecture with AI** | 4 hours | Case study discussion | Knows when AI fits and when it doesn't |
-| **Security and Compliance** | 2 hours | Lecture + Q&A | Understands data handling requirements |
+| Training Component              | Duration | Format                 | Outcome                                |
+| ------------------------------- | -------- | ---------------------- | -------------------------------------- |
+| **AI Tool Proficiency**         | 4 hours  | Hands-on workshop      | Can use tools effectively              |
+| **Prompt Engineering for Code** | 4 hours  | Hands-on workshop      | Can write effective prompts            |
+| **AI Code Review**              | 8 hours  | Paired review sessions | Can identify AI-specific failure modes |
+| **Architecture with AI**        | 4 hours  | Case study discussion  | Knows when AI fits and when it doesn't |
+| **Security and Compliance**     | 2 hours  | Lecture + Q&A          | Understands data handling requirements |
 
 Total investment: ~22 hours per engineer. At $100/hour loaded cost for a senior engineer, that's $2,200 per person. For a 50-person engineering org, $110K... less than one AI Engineer hire and applicable across the entire team.
 
@@ -305,12 +304,12 @@ Only 3.1% of developers highly trust AI output. 46% actively distrust it. This i
 
 Not all code carries the same risk. Your review process should scale with consequence.
 
-| Risk Level | Code Category | AI Involvement | Review Requirement |
-| --- | --- | --- | --- |
-| **Critical** | Auth, payments, encryption, PII handling | AI-assisted drafting only, human writes final | 2 senior reviewers, security team sign-off |
-| **High** | Core business logic, data processing, API contracts | AI generates, human reviews thoroughly | 1 senior reviewer + automated security scan |
-| **Medium** | Feature code, UI components, internal tools | AI generates with standard review | 1 reviewer + CI quality gates |
-| **Low** | Tests, documentation, config, boilerplate | AI generates with light review | 1 reviewer, primarily automated checks |
+| Risk Level   | Code Category                                       | AI Involvement                                | Review Requirement                          |
+| ------------ | --------------------------------------------------- | --------------------------------------------- | ------------------------------------------- |
+| **Critical** | Auth, payments, encryption, PII handling            | AI-assisted drafting only, human writes final | 2 senior reviewers, security team sign-off  |
+| **High**     | Core business logic, data processing, API contracts | AI generates, human reviews thoroughly        | 1 senior reviewer + automated security scan |
+| **Medium**   | Feature code, UI components, internal tools         | AI generates with standard review             | 1 reviewer + CI quality gates               |
+| **Low**      | Tests, documentation, config, boilerplate           | AI generates with light review                | 1 reviewer, primarily automated checks      |
 
 The key insight: 89% of CTOs reported production issues from AI-generated code. The majority of those issues were in the "medium" category... feature code that passed standard review but contained subtle logic errors. Raising the review bar for medium-risk AI code eliminates most production incidents.
 
@@ -355,17 +354,17 @@ This is where less than 30% executive satisfaction with AI ROI intersects with g
 
 The enterprise AI coding tool market has consolidated around three tiers. Choosing between them depends on your security posture, compliance requirements, and developer workflow.
 
-| Criterion | GitHub Copilot Enterprise | Claude Code (Anthropic) | Cursor Business |
-| --- | --- | --- | --- |
-| **Deployment** | Cloud (Microsoft Azure) | Cloud or BYOK | Cloud (custom infra) |
-| **Data retention** | Optional zero-retention | Zero-retention enterprise | Configurable retention |
-| **SSO/SCIM** | Yes (Azure AD native) | Yes (SAML/OIDC) | Yes (SAML) |
-| **Audit logs** | Yes (Azure-integrated) | Yes (API-accessible) | Limited |
-| **Self-hosted option** | No | API with VPC deployment | No |
-| **IDE support** | VS Code, JetBrains, Neovim | Terminal-native, IDE extensions | Cursor IDE (VS Code fork) |
-| **Agentic capabilities** | Copilot Workspace | Full agentic coding | Agentic via Composer |
-| **Enterprise contract** | Standard Microsoft EA | Custom enterprise agreement | Custom agreement |
-| **Bundling** | M365/Azure discounts | Standalone | Standalone |
+| Criterion                | GitHub Copilot Enterprise  | Claude Code (Anthropic)         | Cursor Business           |
+| ------------------------ | -------------------------- | ------------------------------- | ------------------------- |
+| **Deployment**           | Cloud (Microsoft Azure)    | Cloud or BYOK                   | Cloud (custom infra)      |
+| **Data retention**       | Optional zero-retention    | Zero-retention enterprise       | Configurable retention    |
+| **SSO/SCIM**             | Yes (Azure AD native)      | Yes (SAML/OIDC)                 | Yes (SAML)                |
+| **Audit logs**           | Yes (Azure-integrated)     | Yes (API-accessible)            | Limited                   |
+| **Self-hosted option**   | No                         | API with VPC deployment         | No                        |
+| **IDE support**          | VS Code, JetBrains, Neovim | Terminal-native, IDE extensions | Cursor IDE (VS Code fork) |
+| **Agentic capabilities** | Copilot Workspace          | Full agentic coding             | Agentic via Composer      |
+| **Enterprise contract**  | Standard Microsoft EA      | Custom enterprise agreement     | Custom agreement          |
+| **Bundling**             | M365/Azure discounts       | Standalone                      | Standalone                |
 
 At 10K+ employees, Copilot dominates because of Microsoft bundling. Companies already paying for M365 E5 or GitHub Enterprise get Copilot at marginal cost. This makes the procurement gate trivially easy... but it doesn't mean Copilot is the right tool for every team.
 

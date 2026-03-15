@@ -52,22 +52,22 @@ Ask an LLM to implement a pricing calculator, then ask it to write tests for tha
 ```typescript
 // AI-generated implementation
 function calculateDiscount(price: number, tierLevel: number): number {
-  if (tierLevel >= 3) return price * 0.8;
-  if (tierLevel >= 2) return price * 0.9;
-  return price;
+	if (tierLevel >= 3) return price * 0.8;
+	if (tierLevel >= 2) return price * 0.9;
+	return price;
 }
 
 // AI-generated test (for the same implementation)
 describe("calculateDiscount", () => {
-  it("applies 20% discount for tier 3", () => {
-    expect(calculateDiscount(100, 3)).toBe(80);
-  });
-  it("applies 10% discount for tier 2", () => {
-    expect(calculateDiscount(100, 2)).toBe(90);
-  });
-  it("applies no discount for tier 1", () => {
-    expect(calculateDiscount(100, 1)).toBe(100);
-  });
+	it("applies 20% discount for tier 3", () => {
+		expect(calculateDiscount(100, 3)).toBe(80);
+	});
+	it("applies 10% discount for tier 2", () => {
+		expect(calculateDiscount(100, 2)).toBe(90);
+	});
+	it("applies no discount for tier 1", () => {
+		expect(calculateDiscount(100, 1)).toBe(100);
+	});
 });
 ```
 
@@ -98,48 +98,48 @@ The human writes the test first. This is the specification. It encodes business 
 ```typescript
 // HUMAN writes this first... the behavioral specification
 describe("SubscriptionPricingEngine", () => {
-  describe("annual discount calculation", () => {
-    it("applies 25% discount for enterprise tier annual billing", () => {
-      const engine = new SubscriptionPricingEngine();
-      const result = engine.calculatePrice({
-        basePriceMonthly: 99,
-        tier: "enterprise",
-        billingCycle: "annual",
-        seats: 50,
-      });
+	describe("annual discount calculation", () => {
+		it("applies 25% discount for enterprise tier annual billing", () => {
+			const engine = new SubscriptionPricingEngine();
+			const result = engine.calculatePrice({
+				basePriceMonthly: 99,
+				tier: "enterprise",
+				billingCycle: "annual",
+				seats: 50,
+			});
 
-      expect(result.totalAnnual).toBe(44_550); // 99 * 50 * 12 * 0.75
-      expect(result.monthlyEquivalent).toBe(3_712.5);
-      expect(result.savings).toBe(14_850);
-    });
+			expect(result.totalAnnual).toBe(44_550); // 99 * 50 * 12 * 0.75
+			expect(result.monthlyEquivalent).toBe(3_712.5);
+			expect(result.savings).toBe(14_850);
+		});
 
-    it("enforces minimum 10-seat requirement for enterprise", () => {
-      const engine = new SubscriptionPricingEngine();
+		it("enforces minimum 10-seat requirement for enterprise", () => {
+			const engine = new SubscriptionPricingEngine();
 
-      expect(() =>
-        engine.calculatePrice({
-          basePriceMonthly: 99,
-          tier: "enterprise",
-          billingCycle: "annual",
-          seats: 5,
-        })
-      ).toThrow("Enterprise tier requires minimum 10 seats");
-    });
+			expect(() =>
+				engine.calculatePrice({
+					basePriceMonthly: 99,
+					tier: "enterprise",
+					billingCycle: "annual",
+					seats: 5,
+				})
+			).toThrow("Enterprise tier requires minimum 10 seats");
+		});
 
-    it("caps discount at 30% even with negotiated terms", () => {
-      const engine = new SubscriptionPricingEngine();
-      const result = engine.calculatePrice({
-        basePriceMonthly: 99,
-        tier: "enterprise",
-        billingCycle: "annual",
-        seats: 50,
-        negotiatedDiscount: 0.5, // 50% requested
-      });
+		it("caps discount at 30% even with negotiated terms", () => {
+			const engine = new SubscriptionPricingEngine();
+			const result = engine.calculatePrice({
+				basePriceMonthly: 99,
+				tier: "enterprise",
+				billingCycle: "annual",
+				seats: 50,
+				negotiatedDiscount: 0.5, // 50% requested
+			});
 
-      // Capped at 30%, not 50%
-      expect(result.discountApplied).toBe(0.3);
-    });
-  });
+			// Capped at 30%, not 50%
+			expect(result.discountApplied).toBe(0.3);
+		});
+	});
 });
 ```
 
@@ -162,64 +162,64 @@ The AI generates an implementation. You run the suite. If it passes, you have a 
 ```typescript
 // AI generates this to satisfy the test specification
 interface PricingInput {
-  basePriceMonthly: number;
-  tier: "starter" | "professional" | "enterprise";
-  billingCycle: "monthly" | "annual";
-  seats: number;
-  negotiatedDiscount?: number;
+	basePriceMonthly: number;
+	tier: "starter" | "professional" | "enterprise";
+	billingCycle: "monthly" | "annual";
+	seats: number;
+	negotiatedDiscount?: number;
 }
 
 interface PricingResult {
-  totalAnnual: number;
-  monthlyEquivalent: number;
-  savings: number;
-  discountApplied: number;
+	totalAnnual: number;
+	monthlyEquivalent: number;
+	savings: number;
+	discountApplied: number;
 }
 
 const TIER_DISCOUNTS: Record<string, number> = {
-  starter: 0.1,
-  professional: 0.15,
-  enterprise: 0.25,
+	starter: 0.1,
+	professional: 0.15,
+	enterprise: 0.25,
 };
 
 const MINIMUM_SEATS: Record<string, number> = {
-  enterprise: 10,
+	enterprise: 10,
 };
 
 const MAX_DISCOUNT = 0.3;
 
 export class SubscriptionPricingEngine {
-  calculatePrice(input: PricingInput): PricingResult {
-    const minSeats = MINIMUM_SEATS[input.tier];
-    if (minSeats && input.seats < minSeats) {
-      throw new Error(
-        `${input.tier.charAt(0).toUpperCase() + input.tier.slice(1)} tier requires minimum ${minSeats} seats`
-      );
-    }
+	calculatePrice(input: PricingInput): PricingResult {
+		const minSeats = MINIMUM_SEATS[input.tier];
+		if (minSeats && input.seats < minSeats) {
+			throw new Error(
+				`${input.tier.charAt(0).toUpperCase() + input.tier.slice(1)} tier requires minimum ${minSeats} seats`
+			);
+		}
 
-    const annualBase = input.basePriceMonthly * input.seats * 12;
-    let discount = 0;
+		const annualBase = input.basePriceMonthly * input.seats * 12;
+		let discount = 0;
 
-    if (input.billingCycle === "annual") {
-      discount = TIER_DISCOUNTS[input.tier] ?? 0;
-    }
+		if (input.billingCycle === "annual") {
+			discount = TIER_DISCOUNTS[input.tier] ?? 0;
+		}
 
-    if (input.negotiatedDiscount) {
-      discount = Math.max(discount, input.negotiatedDiscount);
-    }
+		if (input.negotiatedDiscount) {
+			discount = Math.max(discount, input.negotiatedDiscount);
+		}
 
-    discount = Math.min(discount, MAX_DISCOUNT);
+		discount = Math.min(discount, MAX_DISCOUNT);
 
-    const totalAnnual = annualBase * (1 - discount);
-    const savings = annualBase - totalAnnual;
+		const totalAnnual = annualBase * (1 - discount);
+		const savings = annualBase - totalAnnual;
 
-    return {
-      totalAnnual,
-      monthlyEquivalent: totalAnnual / 12,
-      savings,
-      discountApplied: discount,
-    };
-  }
+		return {
+			totalAnnual,
+			monthlyEquivalent: totalAnnual / 12,
+			savings,
+			discountApplied: discount,
+		};
+	}
 }
 ```
 
@@ -250,50 +250,50 @@ Instead of asserting exact outputs, assert properties of outputs. This is the ev
 ```typescript
 // Evaluation test suite for an LLM summarization feature
 describe("ArticleSummarizer", () => {
-  const summarizer = new ArticleSummarizer();
-  const testArticle = loadFixture("financial-report-q4.txt");
+	const summarizer = new ArticleSummarizer();
+	const testArticle = loadFixture("financial-report-q4.txt");
 
-  it("preserves key financial figures from source", async () => {
-    const summary = await summarizer.summarize(testArticle);
+	it("preserves key financial figures from source", async () => {
+		const summary = await summarizer.summarize(testArticle);
 
-    // Key figures that MUST appear in any valid summary
-    expect(summary).toContain("$4.2M");
-    expect(summary).toContain("revenue");
-    expect(summary).toContain("23%");
-  });
+		// Key figures that MUST appear in any valid summary
+		expect(summary).toContain("$4.2M");
+		expect(summary).toContain("revenue");
+		expect(summary).toContain("23%");
+	});
 
-  it("stays within length bounds", async () => {
-    const summary = await summarizer.summarize(testArticle);
-    const wordCount = summary.split(/\s+/).length;
+	it("stays within length bounds", async () => {
+		const summary = await summarizer.summarize(testArticle);
+		const wordCount = summary.split(/\s+/).length;
 
-    expect(wordCount).toBeGreaterThan(50);
-    expect(wordCount).toBeLessThan(200);
-  });
+		expect(wordCount).toBeGreaterThan(50);
+		expect(wordCount).toBeLessThan(200);
+	});
 
-  it("does not hallucinate entities not in source", async () => {
-    const summary = await summarizer.summarize(testArticle);
-    const sourceEntities = extractEntities(testArticle);
-    const summaryEntities = extractEntities(summary);
+	it("does not hallucinate entities not in source", async () => {
+		const summary = await summarizer.summarize(testArticle);
+		const sourceEntities = extractEntities(testArticle);
+		const summaryEntities = extractEntities(summary);
 
-    // Every entity in the summary must exist in the source
-    for (const entity of summaryEntities) {
-      expect(sourceEntities).toContain(entity);
-    }
-  });
+		// Every entity in the summary must exist in the source
+		for (const entity of summaryEntities) {
+			expect(sourceEntities).toContain(entity);
+		}
+	});
 
-  it("maintains factual consistency across 10 runs", async () => {
-    const summaries = await Promise.all(
-      Array.from({ length: 10 }, () => summarizer.summarize(testArticle))
-    );
+	it("maintains factual consistency across 10 runs", async () => {
+		const summaries = await Promise.all(
+			Array.from({ length: 10 }, () => summarizer.summarize(testArticle))
+		);
 
-    const keyFacts = summaries.map(extractKeyFacts);
+		const keyFacts = summaries.map(extractKeyFacts);
 
-    // Core facts should be consistent across all runs
-    const baselineFacts = keyFacts[0];
-    for (const facts of keyFacts.slice(1)) {
-      expect(factOverlap(baselineFacts, facts)).toBeGreaterThan(0.8);
-    }
-  });
+		// Core facts should be consistent across all runs
+		const baselineFacts = keyFacts[0];
+		for (const facts of keyFacts.slice(1)) {
+			expect(factOverlap(baselineFacts, facts)).toBeGreaterThan(0.8);
+		}
+	});
 });
 ```
 
@@ -306,55 +306,55 @@ For classification and extraction tasks, maintain a curated dataset of inputs wi
 ```typescript
 // Golden dataset for a customer intent classifier
 const GOLDEN_DATASET: GoldenExample[] = [
-  {
-    input: "I want to cancel my subscription immediately",
-    expectedIntent: "cancellation",
-    minimumConfidence: 0.85,
-    tags: ["churn-risk", "urgent"],
-  },
-  {
-    input: "How do I upgrade to the enterprise plan?",
-    expectedIntent: "upgrade",
-    minimumConfidence: 0.8,
-    tags: ["expansion"],
-  },
-  {
-    input: "Your API has been down for 3 hours",
-    expectedIntent: "support_critical",
-    minimumConfidence: 0.9,
-    tags: ["incident"],
-  },
-  {
-    input: "Can you explain the difference between plans?",
-    expectedIntent: "inquiry",
-    minimumConfidence: 0.7,
-    tags: ["pre-sales"],
-  },
+	{
+		input: "I want to cancel my subscription immediately",
+		expectedIntent: "cancellation",
+		minimumConfidence: 0.85,
+		tags: ["churn-risk", "urgent"],
+	},
+	{
+		input: "How do I upgrade to the enterprise plan?",
+		expectedIntent: "upgrade",
+		minimumConfidence: 0.8,
+		tags: ["expansion"],
+	},
+	{
+		input: "Your API has been down for 3 hours",
+		expectedIntent: "support_critical",
+		minimumConfidence: 0.9,
+		tags: ["incident"],
+	},
+	{
+		input: "Can you explain the difference between plans?",
+		expectedIntent: "inquiry",
+		minimumConfidence: 0.7,
+		tags: ["pre-sales"],
+	},
 ];
 
 describe("CustomerIntentClassifier", () => {
-  const classifier = new CustomerIntentClassifier();
+	const classifier = new CustomerIntentClassifier();
 
-  it.each(GOLDEN_DATASET)(
-    "classifies '$input' as $expectedIntent",
-    async ({ input, expectedIntent, minimumConfidence }) => {
-      const result = await classifier.classify(input);
+	it.each(GOLDEN_DATASET)(
+		"classifies '$input' as $expectedIntent",
+		async ({ input, expectedIntent, minimumConfidence }) => {
+			const result = await classifier.classify(input);
 
-      expect(result.intent).toBe(expectedIntent);
-      expect(result.confidence).toBeGreaterThanOrEqual(minimumConfidence);
-    }
-  );
+			expect(result.intent).toBe(expectedIntent);
+			expect(result.confidence).toBeGreaterThanOrEqual(minimumConfidence);
+		}
+	);
 
-  it("achieves >= 90% accuracy on full golden dataset", async () => {
-    let correct = 0;
-    for (const example of GOLDEN_DATASET) {
-      const result = await classifier.classify(example.input);
-      if (result.intent === example.expectedIntent) correct++;
-    }
+	it("achieves >= 90% accuracy on full golden dataset", async () => {
+		let correct = 0;
+		for (const example of GOLDEN_DATASET) {
+			const result = await classifier.classify(example.input);
+			if (result.intent === example.expectedIntent) correct++;
+		}
 
-    const accuracy = correct / GOLDEN_DATASET.length;
-    expect(accuracy).toBeGreaterThanOrEqual(0.9);
-  });
+		const accuracy = correct / GOLDEN_DATASET.length;
+		expect(accuracy).toBeGreaterThanOrEqual(0.9);
+	});
 });
 ```
 
@@ -367,41 +367,33 @@ When you change a prompt, you need to know if the change improved or degraded ou
 ```typescript
 // Prompt regression test suite
 describe("PromptRegression", () => {
-  const currentPrompt = loadPrompt("summarizer-v3.txt");
-  const previousPrompt = loadPrompt("summarizer-v2.txt");
-  const testCases = loadGoldenDataset("summarizer-golden.json");
+	const currentPrompt = loadPrompt("summarizer-v3.txt");
+	const previousPrompt = loadPrompt("summarizer-v2.txt");
+	const testCases = loadGoldenDataset("summarizer-golden.json");
 
-  it("new prompt does not regress on established test cases", async () => {
-    const currentScores: number[] = [];
-    const previousScores: number[] = [];
+	it("new prompt does not regress on established test cases", async () => {
+		const currentScores: number[] = [];
+		const previousScores: number[] = [];
 
-    for (const testCase of testCases) {
-      const currentResult = await runWithPrompt(currentPrompt, testCase.input);
-      const previousResult = await runWithPrompt(previousPrompt, testCase.input);
+		for (const testCase of testCases) {
+			const currentResult = await runWithPrompt(currentPrompt, testCase.input);
+			const previousResult = await runWithPrompt(previousPrompt, testCase.input);
 
-      currentScores.push(
-        scoreOutput(currentResult, testCase.expectedProperties)
-      );
-      previousScores.push(
-        scoreOutput(previousResult, testCase.expectedProperties)
-      );
-    }
+			currentScores.push(scoreOutput(currentResult, testCase.expectedProperties));
+			previousScores.push(scoreOutput(previousResult, testCase.expectedProperties));
+		}
 
-    const currentAvg =
-      currentScores.reduce((a, b) => a + b, 0) / currentScores.length;
-    const previousAvg =
-      previousScores.reduce((a, b) => a + b, 0) / previousScores.length;
+		const currentAvg = currentScores.reduce((a, b) => a + b, 0) / currentScores.length;
+		const previousAvg = previousScores.reduce((a, b) => a + b, 0) / previousScores.length;
 
-    // New prompt must score at least as well as previous
-    expect(currentAvg).toBeGreaterThanOrEqual(previousAvg * 0.95);
+		// New prompt must score at least as well as previous
+		expect(currentAvg).toBeGreaterThanOrEqual(previousAvg * 0.95);
 
-    // No individual test case should regress by more than 20%
-    for (let i = 0; i < testCases.length; i++) {
-      expect(currentScores[i]).toBeGreaterThanOrEqual(
-        previousScores[i] * 0.8
-      );
-    }
-  });
+		// No individual test case should regress by more than 20%
+		for (let i = 0; i < testCases.length; i++) {
+			expect(currentScores[i]).toBeGreaterThanOrEqual(previousScores[i] * 0.8);
+		}
+	});
 });
 ```
 
@@ -423,46 +415,41 @@ Every prompt in your system gets:
 ```typescript
 // CI eval runner
 interface EvalResult {
-  promptVersion: string;
-  accuracy: number;
-  avgLatency: number;
-  costPerRun: number;
-  regressions: string[];
+	promptVersion: string;
+	accuracy: number;
+	avgLatency: number;
+	costPerRun: number;
+	regressions: string[];
 }
 
-async function runEvalSuite(
-  promptPath: string,
-  datasetPath: string
-): Promise<EvalResult> {
-  const prompt = await readFile(promptPath, "utf-8");
-  const dataset = JSON.parse(await readFile(datasetPath, "utf-8"));
+async function runEvalSuite(promptPath: string, datasetPath: string): Promise<EvalResult> {
+	const prompt = await readFile(promptPath, "utf-8");
+	const dataset = JSON.parse(await readFile(datasetPath, "utf-8"));
 
-  const results = [];
-  for (const example of dataset) {
-    const start = performance.now();
-    const output = await callLLM(prompt, example.input);
-    const latency = performance.now() - start;
+	const results = [];
+	for (const example of dataset) {
+		const start = performance.now();
+		const output = await callLLM(prompt, example.input);
+		const latency = performance.now() - start;
 
-    results.push({
-      correct: meetsExpectations(output, example.expected),
-      latency,
-      tokens: countTokens(prompt + example.input + output),
-    });
-  }
+		results.push({
+			correct: meetsExpectations(output, example.expected),
+			latency,
+			tokens: countTokens(prompt + example.input + output),
+		});
+	}
 
-  const accuracy =
-    results.filter((r) => r.correct).length / results.length;
-  const avgLatency =
-    results.reduce((a, r) => a + r.latency, 0) / results.length;
-  const totalTokens = results.reduce((a, r) => a + r.tokens, 0);
+	const accuracy = results.filter((r) => r.correct).length / results.length;
+	const avgLatency = results.reduce((a, r) => a + r.latency, 0) / results.length;
+	const totalTokens = results.reduce((a, r) => a + r.tokens, 0);
 
-  return {
-    promptVersion: basename(promptPath),
-    accuracy,
-    avgLatency,
-    costPerRun: totalTokens * 0.000003, // adjust per model
-    regressions: findRegressions(results, dataset),
-  };
+	return {
+		promptVersion: basename(promptPath),
+		accuracy,
+		avgLatency,
+		costPerRun: totalTokens * 0.000003, // adjust per model
+		regressions: findRegressions(results, dataset),
+	};
 }
 ```
 
@@ -480,55 +467,46 @@ Property-based testing generates thousands of random inputs and asserts that cer
 import fc from "fast-check";
 
 describe("ContentModerationPipeline", () => {
-  const moderator = new ContentModerationPipeline();
+	const moderator = new ContentModerationPipeline();
 
-  it("never approves content containing blocked patterns", () => {
-    fc.assert(
-      fc.property(
-        fc.stringOf(fc.constantFrom(...BLOCKED_PHRASES)),
-        (maliciousContent) => {
-          const result = moderator.evaluate(maliciousContent);
-          return result.decision !== "approved";
-        }
-      )
-    );
-  });
+	it("never approves content containing blocked patterns", () => {
+		fc.assert(
+			fc.property(fc.stringOf(fc.constantFrom(...BLOCKED_PHRASES)), (maliciousContent) => {
+				const result = moderator.evaluate(maliciousContent);
+				return result.decision !== "approved";
+			})
+		);
+	});
 
-  it("is idempotent: same input always produces same decision", () => {
-    fc.assert(
-      fc.property(fc.string({ minLength: 1, maxLength: 1000 }), (content) => {
-        const first = moderator.evaluate(content);
-        const second = moderator.evaluate(content);
-        return first.decision === second.decision;
-      })
-    );
-  });
+	it("is idempotent: same input always produces same decision", () => {
+		fc.assert(
+			fc.property(fc.string({ minLength: 1, maxLength: 1000 }), (content) => {
+				const first = moderator.evaluate(content);
+				const second = moderator.evaluate(content);
+				return first.decision === second.decision;
+			})
+		);
+	});
 
-  it("processes within latency budget for any input length", () => {
-    fc.assert(
-      fc.property(
-        fc.string({ minLength: 1, maxLength: 10_000 }),
-        (content) => {
-          const start = performance.now();
-          moderator.evaluate(content);
-          const elapsed = performance.now() - start;
-          return elapsed < 500; // 500ms latency budget
-        }
-      )
-    );
-  });
+	it("processes within latency budget for any input length", () => {
+		fc.assert(
+			fc.property(fc.string({ minLength: 1, maxLength: 10_000 }), (content) => {
+				const start = performance.now();
+				moderator.evaluate(content);
+				const elapsed = performance.now() - start;
+				return elapsed < 500; // 500ms latency budget
+			})
+		);
+	});
 
-  it("empty or whitespace-only input returns safe default", () => {
-    fc.assert(
-      fc.property(
-        fc.stringOf(fc.constantFrom(" ", "\t", "\n", "")),
-        (emptyish) => {
-          const result = moderator.evaluate(emptyish);
-          return result.decision === "approved" && result.confidence === 1.0;
-        }
-      )
-    );
-  });
+	it("empty or whitespace-only input returns safe default", () => {
+		fc.assert(
+			fc.property(fc.stringOf(fc.constantFrom(" ", "\t", "\n", "")), (emptyish) => {
+				const result = moderator.evaluate(emptyish);
+				return result.decision === "approved" && result.confidence === 1.0;
+			})
+		);
+	});
 });
 ```
 
@@ -545,11 +523,11 @@ These are the safety properties that prevent AI systems from producing dangerous
 
 The most robust testing strategy for AI systems combines three layers:
 
-| Layer | What It Tests | Who Writes It | When It Runs |
-|---|---|---|---|
-| Unit tests (TDD) | Deterministic business logic | Human (RED phase) | Every commit |
-| Eval suite | Prompt quality and model accuracy | Human + AI collaboration | Every prompt change |
-| Property-based tests | System invariants | Human defines properties | Every commit |
+| Layer                | What It Tests                     | Who Writes It            | When It Runs        |
+| -------------------- | --------------------------------- | ------------------------ | ------------------- |
+| Unit tests (TDD)     | Deterministic business logic      | Human (RED phase)        | Every commit        |
+| Eval suite           | Prompt quality and model accuracy | Human + AI collaboration | Every prompt change |
+| Property-based tests | System invariants                 | Human defines properties | Every commit        |
 
 Each layer catches different classes of defects. Unit tests catch implementation bugs. Eval suites catch prompt regressions. Property-based tests catch invariant violations across the input space.
 
