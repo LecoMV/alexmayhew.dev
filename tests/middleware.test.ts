@@ -101,6 +101,7 @@ describe("middleware", () => {
 			expect(csp).toContain("connect-src 'self'");
 			expect(csp).toContain("https://cloudflareinsights.com");
 			expect(csp).toContain("https://*.ingest.sentry.io");
+			expect(csp).toContain("https://*.ingest.us.sentry.io");
 		});
 
 		it("should allow GA4 domains in connect-src", () => {
