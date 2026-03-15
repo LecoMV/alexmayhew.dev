@@ -63,36 +63,9 @@ export function useContentAnalytics(options: UseContentAnalyticsOptions = {}) {
 		}
 	}, [contentId, contentType, contentCategory, pathname, serviceType, technology, industry]);
 
-	// Track scroll depth
+	// Track scroll depth via IntersectionObserver sentinels
 	const trackedMilestones = useRef<Set<number>>(new Set());
-
-	const trackScrollDepth = useCallback(() => {
-		const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-		const windowHeight = window.innerHeight;
-		const documentHeight = document.documentElement.scrollHeight;
-
-		const scrollPercent = Math.min(
-			100,
-			Math.round(((scrollTop + windowHeight) / documentHeight) * 100)
-		);
-
-		if (scrollPercent > maxScrollDepth.current) {
-			maxScrollDepth.current = scrollPercent;
-		}
-
-		const milestones = [25, 50, 75, 90];
-		for (const milestone of milestones) {
-			if (scrollPercent >= milestone && !trackedMilestones.current.has(milestone)) {
-				trackedMilestones.current.add(milestone);
-				trackContentEvent("scroll", {
-					content_id: contentId,
-					content_type: contentType,
-					scroll_depth: milestone,
-					content_category: contentCategory,
-				});
-			}
-		}
-	}, [contentId, contentType, contentCategory]);
+	const observerRef = useRef<IntersectionObserver | null>(null);
 
 	// Track engagement time at milestones (30s, 60s, 2min, 5min)
 	const setupEngagementTracking = useCallback(() => {
@@ -113,20 +86,62 @@ export function useContentAnalytics(options: UseContentAnalyticsOptions = {}) {
 	}, [contentId, contentType, contentCategory]);
 
 	useEffect(() => {
-		let timeoutId: NodeJS.Timeout;
+		const article = document.querySelector("article") || document.querySelector("main");
+		if (!article) return;
 
-		const handleScroll = () => {
-			clearTimeout(timeoutId);
-			timeoutId = setTimeout(trackScrollDepth, 100);
-		};
+		const sentinels: HTMLElement[] = [];
+		const milestones = [25, 50, 75, 90];
 
-		window.addEventListener("scroll", handleScroll, { passive: true });
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (!entry.isIntersecting) continue;
+					const milestone = Number(entry.target.getAttribute("data-scroll-depth"));
+					if (!milestone || trackedMilestones.current.has(milestone)) continue;
+
+					trackedMilestones.current.add(milestone);
+					if (milestone > maxScrollDepth.current) {
+						maxScrollDepth.current = milestone;
+					}
+
+					trackContentEvent("scroll", {
+						content_id: contentId,
+						content_type: contentType,
+						scroll_depth: milestone,
+						content_category: contentCategory,
+					});
+
+					observer.unobserve(entry.target);
+				}
+			},
+			{ threshold: 0 }
+		);
+
+		observerRef.current = observer;
+
+		// Ensure article has relative positioning for absolute sentinel placement
+		const computedPosition = window.getComputedStyle(article).position;
+		if (computedPosition === "static" || !computedPosition) {
+			(article as HTMLElement).style.position = "relative";
+		}
+
+		for (const milestone of milestones) {
+			const sentinel = document.createElement("div");
+			sentinel.setAttribute("data-scroll-depth", String(milestone));
+			sentinel.setAttribute("aria-hidden", "true");
+			sentinel.style.cssText =
+				"position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;";
+			sentinel.style.top = `${(milestone / 100) * article.scrollHeight}px`;
+			article.appendChild(sentinel);
+			sentinels.push(sentinel);
+			observer.observe(sentinel);
+		}
 
 		return () => {
-			window.removeEventListener("scroll", handleScroll);
-			clearTimeout(timeoutId);
+			observer.disconnect();
+			sentinels.forEach((s) => s.remove());
 		};
-	}, [trackScrollDepth]);
+	}, [contentId, contentType, contentCategory]);
 
 	useEffect(() => {
 		setupEngagementTracking();
