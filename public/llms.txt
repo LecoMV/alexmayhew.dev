@@ -86,10 +86,79 @@ Comprehensive technical assessment for investors and acquirers. Codebase audit, 
 ## Key Content
 
 - /work - Portfolio with 10 featured projects demonstrating technical depth
-- /blog - Technical articles on architecture, performance, and engineering practices
+- /blog - 69 technical articles on architecture, performance, AI, and engineering leadership
 - /about - Background, approach, and engagement philosophy
 - /contact - Consultation booking
 - /tools/traceforge - Live GPU-accelerated vectorization tool
+
+## Blog: AI-Assisted Development Series (12 posts)
+
+Hub guide plus 11 spokes covering the full AI development landscape for CTOs and senior engineers.
+
+- /blog/ai-assisted-development-guide - Hub: comprehensive framework for AI in software development
+- /blog/cognitive-debt-ai-teams - Cognitive debt: the hidden cost when teams don't understand AI-generated code
+- /blog/metr-paradox-ai-productivity - METR study: experienced devs 19% slower with AI, believed 24% faster
+- /blog/production-mcp-servers - Building production MCP servers: what 8,600 community servers got wrong
+- /blog/when-not-to-use-ai-coding - 7 task categories where AI coding produces net-negative outcomes
+- /blog/ai-technical-debt-bomb - $1.5T projected AI technical debt by 2027, audit checklist and remediation
+- /blog/agentic-engineering - How sprint structure, code ownership, and hiring change with AI agents
+- /blog/ai-tdd-non-deterministic-code - TDD pattern for AI: human writes failing test, AI implements, human reviews
+- /blog/ai-security-red-team-playbook - 7 confirmed AI attack vectors with red team checklist
+- /blog/claude-code-vs-cursor-cost-analysis - Total cost of ownership comparison for a 10-person team over 90 days
+- /blog/vibe-coding-hangover-recovery - Triage, audit, and remediation for codebases nobody understands
+- /blog/hiring-ai-engineers - Interview framework separating real AI competence from resume fluff
+- /blog/enterprise-ai-sdlc-blueprint - 5 evaluation gates for enterprise AI coding tool adoption
+
+## Blog: SaaS Architecture Series (12 posts)
+
+- /blog/saas-architecture-decision-framework - Hub: architecture decisions at each growth stage
+- /blog/500k-architecture-mistake - War story: avoiding premature microservices
+- /blog/anatomy-of-high-precision-saas - Technical deep-dive from zero to 100k users
+- /blog/build-vs-buy - When free open source actually costs more
+- /blog/boring-technology-wins - Lessons from unicorn tech stack migrations
+- /blog/database-query-optimization - Systematic N+1 elimination and query optimization
+- /blog/event-driven-architecture-saas - Decision framework for event-driven patterns
+- /blog/hidden-tax-supporting-both - The cost of "we support both" decisions
+- /blog/multi-region-saas-architecture - Global replication and data residency
+- /blog/multi-tenancy-prisma-rls - Row-Level Security implementation guide
+- /blog/saas-billing-stripe-architecture - Webhook-driven billing state machines
+- /blog/saas-reliability-monitoring - Monitoring and alerting for 99.99% uptime
+
+## Blog: Engineering Leadership Series (8 posts)
+
+- /blog/engineering-leadership-founder-to-cto - Hub: the founder to CTO journey
+- /blog/code-review-practices-scale - Scaling code review from 5 to 50 engineers
+- /blog/first-engineering-team-playbook - Hiring your first 5 engineers
+- /blog/fractional-cto-vs-full-time - Decision framework by ARR stage
+- /blog/hiring-first-staff-engineer - The most misunderstood role in SaaS
+- /blog/ic-to-tech-lead - Leadership without the title
+- /blog/senior-developer-paradox - Why expensive talent saves money
+- /blog/technical-debt-strategy - When to accumulate, when to pay down
+
+## Blog: Frontend Architecture Series (10 posts)
+
+- /blog/modern-frontend-architecture - Hub: design systems to server components
+- /blog/accessibility-design-systems - Testing and enforcement for accessible components
+- /blog/atmospheric-animations-framer-motion - Spring physics for natural animations
+- /blog/component-api-design - Props, variants, and composition patterns
+- /blog/design-tokens-comprehensive - Typography, spacing, and elevation systems
+- /blog/neo-brutalism-developer-guide - Anti-generic design with Tailwind CSS
+- /blog/optimistic-ui - Making apps feel faster than physics allows
+- /blog/state-management-2026 - Zustand vs Signals vs Server State
+- /blog/tailwind-vs-component-libraries - Performance deep dive
+- /blog/testing-react-server-components - Testing architecture for RSC
+
+## Blog: Performance Engineering Series (9 posts)
+
+- /blog/performance-engineering-playbook - Hub: from TTFB to TTI
+- /blog/caching-strategies-production - Multi-layer caching that actually works
+- /blog/cdn-caching-strategy - When to cache, what to cache, how to invalidate
+- /blog/core-web-vitals-optimization - LCP, INP, CLS optimization guide
+- /blog/core-web-vitals-2026-audit - Updated audit checklist with INP
+- /blog/database-migration-patterns - Zero-downtime migration playbook
+- /blog/edge-computing-saas - When edge is worth the complexity
+- /blog/lambda-tax-cold-starts - True cost of serverless
+- /blog/rsc-edge-death-of-waterfall - React Server Components + Edge computing
 
 ## Industry Expertise
 
@@ -122,4 +191,4 @@ MVP scoping, tech stack selection, hiring support, investor technical due dilige
 
 ---
 
-Last updated: 2026-01-26
+Last updated: 2026-03-15
