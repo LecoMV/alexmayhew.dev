@@ -39,15 +39,15 @@ Technical debt is well understood. Ward Cunningham coined the metaphor in 1992. 
 
 Cognitive debt is different in every dimension that matters.
 
-| Dimension | Technical Debt | Cognitive Debt |
-|-----------|---------------|----------------|
-| **Visibility** | Measurable (code complexity, test coverage, static analysis) | Invisible until a crisis |
-| **Accumulation** | Conscious trade-off (ideally) | Accumulates silently with every accepted AI suggestion |
-| **Interest rate** | Linear... maintenance costs grow proportionally | Exponential... each layer of opacity multiplies debugging time |
-| **Who holds it** | The codebase | The team's collective understanding |
-| **Payoff mechanism** | Refactoring, rewriting | Teaching, documenting, pair programming |
-| **Detection** | Linters, code review, static analysis | Only surfaces during incidents, onboarding, or architecture changes |
-| **Impact of turnover** | Code remains; new hires can read it | Knowledge leaves with the person; AI-generated code resists reverse-engineering |
+| Dimension              | Technical Debt                                               | Cognitive Debt                                                                  |
+| ---------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| **Visibility**         | Measurable (code complexity, test coverage, static analysis) | Invisible until a crisis                                                        |
+| **Accumulation**       | Conscious trade-off (ideally)                                | Accumulates silently with every accepted AI suggestion                          |
+| **Interest rate**      | Linear... maintenance costs grow proportionally              | Exponential... each layer of opacity multiplies debugging time                  |
+| **Who holds it**       | The codebase                                                 | The team's collective understanding                                             |
+| **Payoff mechanism**   | Refactoring, rewriting                                       | Teaching, documenting, pair programming                                         |
+| **Detection**          | Linters, code review, static analysis                        | Only surfaces during incidents, onboarding, or architecture changes             |
+| **Impact of turnover** | Code remains; new hires can read it                          | Knowledge leaves with the person; AI-generated code resists reverse-engineering |
 
 Technical debt is a balance sheet liability. You can see it. You can quantify it. You can allocate sprints to pay it down.
 
@@ -197,18 +197,21 @@ Implementation: add a PR template field for "Comprehension Notes." Reviewers rej
 ## Comprehension Notes (required for AI-assisted code)
 
 ### Why this approach?
+
 The rate limiter uses a sliding window counter instead of a fixed window
 because our traffic patterns have burst characteristics at the top of
 each hour. A fixed window would allow 2x the intended rate at window
 boundaries.
 
 ### Alternatives considered
+
 - Token bucket: more complex state management, not justified for our
   current traffic volume (< 1000 req/s per tenant)
 - Leaky bucket: smooths bursts too aggressively for our use case where
   legitimate burst traffic is common during batch operations
 
 ### Assumptions
+
 - Redis availability (falls open... allows traffic if Redis is down)
 - Clock synchronization within 1 second across service instances
 - Tenant ID is always present in request context (enforced by auth middleware)
@@ -227,17 +230,17 @@ Enforce architecture through automated tooling, not human vigilance. Humans get 
 
 // VIOLATION: AI generated this, it works, but it bypasses the service layer
 export async function GET(request: Request) {
-  const users = await prisma.user.findMany({
-    where: { teamId: params.teamId },
-    include: { roles: true },
-  });
-  return Response.json(users);
+	const users = await prisma.user.findMany({
+		where: { teamId: params.teamId },
+		include: { roles: true },
+	});
+	return Response.json(users);
 }
 
 // CORRECT: Goes through the service layer where business logic lives
 export async function GET(request: Request) {
-  const users = await userService.getByTeam(params.teamId);
-  return Response.json(users);
+	const users = await userService.getByTeam(params.teamId);
+	return Response.json(users);
 }
 ```
 
@@ -262,30 +265,30 @@ When AI generates code, record what was asked and what was generated. Not the fu
 // Records AI generation context for future debugging
 
 interface AIGenerationRecord {
-  module: string;
-  promptIntent: string;     // What was the developer trying to achieve?
-  keyDecisions: string[];   // What choices did the AI make?
-  assumptions: string[];    // What does this code assume about the system?
-  generatedAt: string;
-  verifiedBy: string;       // Who reviewed and confirmed understanding?
+	module: string;
+	promptIntent: string; // What was the developer trying to achieve?
+	keyDecisions: string[]; // What choices did the AI make?
+	assumptions: string[]; // What does this code assume about the system?
+	generatedAt: string;
+	verifiedBy: string; // Who reviewed and confirmed understanding?
 }
 
 // Example record
 const rateLimiterAudit: AIGenerationRecord = {
-  module: "src/middleware/rate-limiter.ts",
-  promptIntent: "Per-tenant rate limiting with sliding window",
-  keyDecisions: [
-    "Sliding window counter (not token bucket) for simplicity",
-    "Redis-backed with fail-open behavior",
-    "Separate limits for authenticated vs anonymous requests",
-  ],
-  assumptions: [
-    "Redis is available (degrades to allow-all if not)",
-    "Tenant ID is present on all authenticated requests",
-    "Clock drift between instances is < 1 second",
-  ],
-  generatedAt: "2026-03-10",
-  verifiedBy: "jane.doe",
+	module: "src/middleware/rate-limiter.ts",
+	promptIntent: "Per-tenant rate limiting with sliding window",
+	keyDecisions: [
+		"Sliding window counter (not token bucket) for simplicity",
+		"Redis-backed with fail-open behavior",
+		"Separate limits for authenticated vs anonymous requests",
+	],
+	assumptions: [
+		"Redis is available (degrades to allow-all if not)",
+		"Tenant ID is present on all authenticated requests",
+		"Clock drift between instances is < 1 second",
+	],
+	generatedAt: "2026-03-10",
+	verifiedBy: "jane.doe",
 };
 ```
 
