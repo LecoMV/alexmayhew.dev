@@ -2,14 +2,24 @@ import { describe, expect, it } from "vitest";
 
 import { hubFaqs } from "@/app/blog/[slug]/hub-faqs";
 
-describe("hub-faqs", () => {
-	it("has FAQ entries for cognitive-debt-ai-teams post", () => {
-		expect(hubFaqs["cognitive-debt-ai-teams"]).toBeDefined();
-		expect(hubFaqs["cognitive-debt-ai-teams"].length).toBeGreaterThanOrEqual(3);
-	});
+const AI_SERIES_FAQ_SLUGS = [
+	"cognitive-debt-ai-teams",
+	"metr-paradox-ai-productivity",
+	"production-mcp-servers",
+	"when-not-to-use-ai-coding",
+	"ai-technical-debt-bomb",
+	"agentic-engineering",
+	"ai-tdd-non-deterministic-code",
+	"ai-security-red-team-playbook",
+	"claude-code-vs-cursor-cost-analysis",
+	"vibe-coding-hangover-recovery",
+	"hiring-ai-engineers",
+	"enterprise-ai-sdlc-blueprint",
+];
 
-	it("has FAQ entries for metr-paradox-ai-productivity post", () => {
-		expect(hubFaqs["metr-paradox-ai-productivity"]).toBeDefined();
-		expect(hubFaqs["metr-paradox-ai-productivity"].length).toBeGreaterThanOrEqual(3);
+describe("hub-faqs", () => {
+	it.each(AI_SERIES_FAQ_SLUGS)("has FAQ entries for %s post", (slug) => {
+		expect(hubFaqs[slug]).toBeDefined();
+		expect(hubFaqs[slug].length).toBeGreaterThanOrEqual(3);
 	});
 });

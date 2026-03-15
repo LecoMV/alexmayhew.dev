@@ -16,6 +16,20 @@
 		"series": "frontend-architecture"
 	},
 	{
+		"title": "Agentic Engineering: What Changes When Developers Become Orchestrators",
+		"description": "Staff+ engineers lead AI agent adoption at 63.5%. Claude Code went from 4% to 63% adoption in 8 months. The shift from writing code to directing agents changes everything... sprints, ownership, reviews, and hiring.",
+		"slug": "agentic-engineering",
+		"category": "business",
+		"tags": [
+			"ai",
+			"agentic-engineering",
+			"engineering-leadership",
+			"developer-productivity",
+			"ai-agents"
+		],
+		"series": "ai-development"
+	},
+	{
 		"title": "AI Code Review: Catching What LLMs Miss and Validating What They Generate",
 		"description": "Use AI for code review without the blind spots. Covers what LLMs excel at, where they fail, hybrid review workflows, and building trust in AI-generated code through systematic validation.",
 		"slug": "ai-code-review",
@@ -29,6 +43,14 @@
 		"slug": "ai-cost-optimization",
 		"category": "infrastructure",
 		"tags": ["ai", "llm", "cost-optimization", "infrastructure", "self-hosting"],
+		"series": "ai-development"
+	},
+	{
+		"title": "AI TDD: Writing Tests First When Your Code Is Non-Deterministic",
+		"description": "AI-generated tests tend to test implementation, not intent. 50% of QA leaders cite flaky scripts as the primary AI testing challenge. Here's the TDD pattern that produces measurably better AI-assisted code.",
+		"slug": "ai-tdd-non-deterministic-code",
+		"category": "engineering",
+		"tags": ["ai", "tdd", "testing", "code-quality", "developer-workflow"],
 		"series": "ai-development"
 	},
 	{
@@ -79,6 +101,14 @@
 		"tags": ["engineering", "philosophy", "web-development"]
 	},
 	{
+		"title": "Building Production MCP Servers: What the 8,600 Community Servers Got Wrong",
+		"description": "97M monthly SDK downloads, 8,600 community servers, and most will fail in production. Here's the production engineering they skipped... auth, rate limiting, observability, and the security checklist.",
+		"slug": "production-mcp-servers",
+		"category": "architecture",
+		"tags": ["ai", "mcp", "model-context-protocol", "security", "production-engineering"],
+		"series": "ai-development"
+	},
+	{
 		"title": "Building Your First Engineering Team: The 5-Person Playbook",
 		"description": "The order you hire your first 5 engineers determines your startup's velocity for the next 2 years. Here's the sequence that works... based on helping 15+ startups make these decisions.",
 		"slug": "first-engineering-team-playbook",
@@ -111,6 +141,14 @@
 		"series": "saas-architecture"
 	},
 	{
+		"title": "Claude Code vs Cursor: A CTO's 90-Day Cost Analysis",
+		"description": "Not a feature matrix. A total cost analysis across licensing, tokens, workflow adoption, training time, and productivity delta. Real numbers from running both tools on a 10-person team.",
+		"slug": "claude-code-vs-cursor-cost-analysis",
+		"category": "business",
+		"tags": ["ai", "claude-code", "cursor", "developer-tools", "cost-analysis", "cto"],
+		"series": "ai-development"
+	},
+	{
 		"title": "Code Review Practices That Scale",
 		"description": "Code review at 5 engineers is a conversation. At 50, it's a bottleneck. Here's how to scale review practices without sacrificing quality... from async review protocols to automated gates that catch 80% of issues before a human looks at the PR.",
 		"slug": "code-review-practices-scale",
@@ -126,7 +164,7 @@
 	},
 	{
 		"title": "Cognitive Debt: The Hidden Cost Your AI-Assisted Team Isn't Measuring",
-		"description": "Cognitive debt compounds faster than technical debt — when engineers don't understand AI-generated code, the team loses its ability to reason about the system. Here's how to measure and manage it.",
+		"description": "Cognitive debt compounds faster than technical debt ... when engineers don't understand AI-generated code, the team loses its ability to reason about the system. Here's how to measure and manage it.",
 		"slug": "cognitive-debt-ai-teams",
 		"category": "business",
 		"tags": ["ai", "cognitive-debt", "technical-debt", "engineering-leadership", "code-quality"],
@@ -235,6 +273,14 @@
 		"category": "business",
 		"tags": ["saas", "architecture", "bootstrapping", "startup"],
 		"series": "saas-architecture"
+	},
+	{
+		"title": "Hiring for AI Engineering: Separating Real Competence from Resume Fluff",
+		"description": "AI engineer salaries hit $206K average in 2025, up $50K YoY. Nearly 90% of companies created new AI roles. Most job descriptions are wrong. Here's what to actually look for... and what sounds impressive but indicates nothing.",
+		"slug": "hiring-ai-engineers",
+		"category": "business",
+		"tags": ["ai", "hiring", "ai-engineer", "engineering-leadership", "talent"],
+		"series": "ai-development"
 	},
 	{
 		"title": "Hiring Your First Staff Engineer",
@@ -437,6 +483,22 @@
 		"series": "saas-architecture"
 	},
 	{
+		"title": "The AI Security Red Team Playbook: What to Test Before You Ship",
+		"description": "45% of AI-generated code contains security vulnerabilities. 7 confirmed production attack vectors from prompt injection to tool poisoning. Here's the CTO's checklist before shipping any AI-augmented system.",
+		"slug": "ai-security-red-team-playbook",
+		"category": "architecture",
+		"tags": ["ai", "security", "red-team", "mcp-security", "owasp", "llm-security"],
+		"series": "ai-development"
+	},
+	{
+		"title": "The AI Technical Debt Bomb: A CTO's Accounting Framework",
+		"description": "$1.5T projected AI-generated technical debt by 2027. GitClear shows 60% decline in refactoring, 8x increase in copy-paste code. Here's the audit checklist and remediation playbook.",
+		"slug": "ai-technical-debt-bomb",
+		"category": "business",
+		"tags": ["ai", "technical-debt", "code-quality", "engineering-leadership", "cto"],
+		"series": "ai-development"
+	},
+	{
 		"title": "The Anatomy of a High-Precision SaaS: From Zero to 100k Users",
 		"description": "A technical deep-dive into architecting B2B SaaS that scales. Infrastructure economics, multi-tenant PostgreSQL, type-safe APIs, and the decisions that matter.",
 		"slug": "anatomy-of-high-precision-saas",
@@ -459,6 +521,14 @@
 		"category": "frontend",
 		"tags": ["design-systems", "figma", "frontend", "workflow"],
 		"series": "frontend-architecture"
+	},
+	{
+		"title": "The Enterprise AI-SDLC Integration Blueprint",
+		"description": "30%+ of enterprise AI projects die after POC. Only 3.1% of developers highly trust AI output. Going from 'we let people use Copilot' to a coherent AI development practice requires 5 evaluation gates.",
+		"slug": "enterprise-ai-sdlc-blueprint",
+		"category": "business",
+		"tags": ["ai", "enterprise", "sdlc", "governance", "compliance", "engineering-leadership"],
+		"series": "ai-development"
 	},
 	{
 		"title": "The Hidden Tax of \"We Support Both\"",
@@ -493,6 +563,14 @@
 		"series": "engineering-leadership"
 	},
 	{
+		"title": "The Vibe Coding Hangover: A Recovery Playbook for CTOs",
+		"description": "89% of CTOs reported production disasters from AI code. Year 2 maintenance costs 4x traditional. You shipped it fast... now nobody understands it. Here's the triage, audit, and remediation process.",
+		"slug": "vibe-coding-hangover-recovery",
+		"category": "business",
+		"tags": ["ai", "vibe-coding", "technical-debt", "code-quality", "cto", "remediation"],
+		"series": "ai-development"
+	},
+	{
 		"title": "TypeScript: The Business Case for Static Types",
 		"description": "15-38% of bugs preventable with types. Faster refactoring, better onboarding, fearless code changes. The ROI of TypeScript is measurable.",
 		"slug": "typescript-business-case",
@@ -506,6 +584,20 @@
 		"slug": "vector-database-selection",
 		"category": "architecture",
 		"tags": ["vector-database", "ai", "postgresql", "pgvector", "saas"],
+		"series": "ai-development"
+	},
+	{
+		"title": "When NOT to Use AI for Coding: The Decision Framework",
+		"description": "66% of developers spend more time fixing AI code than expected. Seven task categories where AI assistance produces net-negative outcomes... and the decision tree to know before you start.",
+		"slug": "when-not-to-use-ai-coding",
+		"category": "business",
+		"tags": [
+			"ai",
+			"developer-productivity",
+			"decision-framework",
+			"engineering-leadership",
+			"code-quality"
+		],
 		"series": "ai-development"
 	},
 	{

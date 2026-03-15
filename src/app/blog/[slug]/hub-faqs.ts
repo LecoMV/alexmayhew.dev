@@ -276,4 +276,184 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 				"No. Technical debt is a conscious trade-off — you know you're cutting corners and plan to pay it back. Cognitive debt is invisible — the code works, passes tests, and looks professional, but nobody on the team understands why it works. Technical debt costs time to fix. Cognitive debt costs the ability to know what needs fixing. The second is categorically more dangerous.",
 		},
 	],
+
+	"production-mcp-servers": [
+		{
+			question: "What is MCP and why does it matter for AI development?",
+			answer:
+				"MCP (Model Context Protocol) is the open standard for connecting AI models to external tools and data sources. It has 97M+ monthly SDK downloads and is backed by Anthropic, OpenAI, Google, and Microsoft. MCP won the integration standard war — no serious competing standard exists. It matters because it defines how AI agents interact with your codebase, databases, APIs, and infrastructure.",
+		},
+		{
+			question: "What are the biggest security risks with MCP servers?",
+			answer:
+				"The three most critical risks are tool poisoning (malicious servers embed hidden instructions in tool descriptions that are visible to AI but invisible to users), indirect prompt injection (attackers embed instructions in external content like GitHub issues that get processed through MCP), and supply chain compromise (43 agent framework components identified with embedded vulnerabilities in November 2026). The Invariant Labs exploit demonstrated real data exfiltration through a GitHub MCP server.",
+		},
+		{
+			question: "How do I secure a production MCP server?",
+			answer:
+				"Start with five non-negotiable controls: authentication on every tool call (not just the connection), input validation and sanitization for all tool parameters, rate limiting per client and per tool, structured logging with audit trails for every operation, and tool description integrity checks to prevent poisoning. Most community MCP servers skip all five, which is why 8,600 servers exist but few are production-ready.",
+		},
+	],
+
+	"when-not-to-use-ai-coding": [
+		{
+			question: "When does AI coding actually slow developers down?",
+			answer:
+				"The METR randomized controlled trial (n=16, 246 tasks) found experienced developers were 19% slower on complex tasks in mature codebases when using AI tools. AI slows you down on security-critical code paths, cross-module refactoring, debugging in mature codebases, performance-critical hot paths, compliance-regulated code, and architectural decisions. The pattern: AI hurts most when deep codebase knowledge matters more than code generation speed.",
+		},
+		{
+			question: "What coding tasks are best suited for AI assistance?",
+			answer:
+				"AI demonstrably accelerates five task categories: boilerplate generation (CRUD endpoints, data models, configuration files), test scaffolding (unit test structure, mock setup, assertion patterns), documentation (inline comments, API docs, README updates), greenfield exploration (prototyping, proof-of-concept work), and code explanation (understanding unfamiliar codebases). The common thread is that these tasks have well-defined patterns where the 'what' is clear.",
+		},
+		{
+			question: "How do I decide whether to use AI for a specific task?",
+			answer:
+				"Use the two-axis framework: task complexity (simple, moderate, complex) crossed with codebase familiarity (greenfield, known patterns, deep institutional knowledge). AI delivers positive ROI in the simple-to-moderate complexity range on greenfield or pattern-matching work. It delivers negative ROI on complex tasks in codebases with deep institutional knowledge. 66% of developers report spending more time fixing AI code than expected, confirming the mismatch on complex tasks.",
+		},
+	],
+
+	"ai-technical-debt-bomb": [
+		{
+			question: "How much technical debt does AI-generated code create?",
+			answer:
+				"Industry projections estimate $1.5T in accumulated AI-generated technical debt by 2027. GitClear's analysis of 211M lines found refactoring declined 60% (from 25% of changes in 2021 to under 10% in 2024), while copy-paste code increased 8x. Year 2 maintenance costs for unmanaged AI-generated code run 4x higher than traditional code. Forrester predicts 75% of technology decision-makers will face moderate-to-severe AI-generated tech debt by 2026.",
+		},
+		{
+			question: "How is AI technical debt different from regular technical debt?",
+			answer:
+				"Traditional technical debt is a conscious trade-off with known costs. AI technical debt is invisible — it accumulates when developers accept AI-generated code without understanding it, creating code that works but nobody can maintain. AI debt has three unique components: comprehension debt (nobody understands why the code works), duplication debt (8x increase in copy-paste code), and architectural drift (locally optimal AI suggestions that don't compose into a coherent system).",
+		},
+		{
+			question: "How do I audit my codebase for AI-generated technical debt?",
+			answer:
+				"Track four metrics: code duplication rate (GitClear-style analysis of copy-paste blocks exceeding 5 lines), refactoring rate (percentage of commits that improve existing code without changing behavior — healthy is 15-25%), churn rate (code rewritten within 14 days of commit), and comprehension ratio (time to explain a module vs time to rewrite it). If duplication is rising, refactoring is declining, and churn exceeds 15%, AI debt is accumulating faster than your team can manage.",
+		},
+	],
+
+	"agentic-engineering": [
+		{
+			question: "What is agentic engineering?",
+			answer:
+				"Agentic engineering is the management discipline of directing AI agents to write code rather than writing it directly. It changes sprint structure (velocity metrics no longer measure what matters), code ownership (git blame becomes meaningless when agents write the code), code review (PR review time increased 91% with AI tools), and hiring criteria (orchestration skill matters more than typing speed). Staff+ engineers lead adoption at 63.5% because the skill is architectural judgment, not code generation.",
+		},
+		{
+			question: "Which AI coding tools are leading in 2026?",
+			answer:
+				"Claude Code is the #1 AI coding tool, jumping from 4% to 63% adoption in 8 months since May 2025 (Pragmatic Engineer survey, n=906). Cursor is growing 35% over 9 months. GitHub Copilot dominates large enterprises (56% at 10K+ employees) through Microsoft bundling, not developer preference. At startups: 75% use Claude Code, 42% Cursor, 35% Copilot. 95% of developers use AI tools weekly, and 55% regularly use AI agents.",
+		},
+		{
+			question: "How do you measure productivity in an agentic engineering team?",
+			answer:
+				"Traditional metrics (lines of code, commits, PRs merged) are meaningless when agents generate the code. Measure instead: decision quality (architecture decisions that hold up under review), comprehension depth (can the team explain the code the agents wrote?), incident resolution speed (MTTU as proxy for system understanding), and review effectiveness (bugs caught per review hour). The goal is measuring engineering judgment, not output volume.",
+		},
+	],
+
+	"ai-tdd-non-deterministic-code": [
+		{
+			question: "Why does TDD matter more with AI-generated code?",
+			answer:
+				"AI-generated tests tend to test implementation, not intent — they pass when the bug exists in both the code and the test. 50% of QA leaders cite maintenance burden and flaky scripts as the primary AI testing challenge (World Quality Report 2025-26). TDD inverts the problem: the human defines intent through a failing test, the AI implements to pass it, and the human reviews the result. This constrains AI output to verifiable behavior rather than letting it generate both the code and its own validation.",
+		},
+		{
+			question: "What is the RED-GREEN-REFACTOR pattern for AI-assisted development?",
+			answer:
+				"RED: the human writes a failing test that precisely defines the intended behavior. GREEN: the AI implements code to pass that test, constrained by the test specification. REFACTOR: the human reviews the AI output for DRY violations, security issues, and maintainability concerns. This pattern produces measurably better AI-assisted code because the test acts as a contract — the AI can't silently introduce bugs that the test doesn't cover.",
+		},
+		{
+			question: "How do you test non-deterministic AI output?",
+			answer:
+				"Three patterns work for non-deterministic systems: property-based testing (assert invariants that must hold regardless of specific output — response is valid JSON, contains required fields, stays within length bounds), golden dataset testing (curate input-output pairs representing expected behavior and test against them with similarity thresholds), and eval suites (structured scoring of AI output across dimensions like accuracy, relevance, and safety with pass/fail thresholds per dimension).",
+		},
+	],
+
+	"ai-security-red-team-playbook": [
+		{
+			question: "What are the main security threats from AI coding tools?",
+			answer:
+				"Seven confirmed production attack vectors: prompt injection (direct and indirect), tool poisoning (hidden instructions in MCP tool descriptions), indirect prompt injection (via external content like GitHub issues), memory poisoning (corrupting RAG data sources), supply chain compromise (43 agent framework components with embedded vulnerabilities), AI-generated vulnerable code (45% of samples contain security issues, +322% more than human code), and agentic AI as insider threat (agents with broad permissions can access and exfiltrate data).",
+		},
+		{
+			question: "How do I red team an AI-augmented system?",
+			answer:
+				"Test each of the seven attack vectors systematically: inject adversarial instructions in all user-controlled inputs, audit MCP tool descriptions for hidden instructions, test whether external content (issues, emails, documents) can influence agent behavior, verify RAG data sources can't be poisoned, audit all AI framework dependencies for supply chain risks, scan AI-generated code with SAST tools before merge, and verify agent permissions follow least-privilege principles. Document findings in a threat model specific to your AI architecture.",
+		},
+		{
+			question: "What is tool poisoning in MCP and how do I prevent it?",
+			answer:
+				"Tool poisoning occurs when a malicious MCP server embeds hidden instructions in tool descriptions that are visible to the AI model but invisible to users. Real example: a 'random fact of the day' MCP tool secretly exfiltrated WhatsApp history by embedding exfiltration instructions in the tool description. Prevention requires tool description integrity verification, allowlisting approved MCP servers, monitoring tool behavior for unexpected data access patterns, and sandboxing MCP server execution.",
+		},
+	],
+
+	"claude-code-vs-cursor-cost-analysis": [
+		{
+			question: "How much does Claude Code vs Cursor cost for a 10-person team?",
+			answer:
+				"Monthly licensing: Cursor Business costs $400/month (10 seats at $40/seat). Claude Code at Max 5x tier costs ~$1,000/month (10 seats at $100/seat). But licensing is only 30-40% of total cost. Token overages for heavy agentic use add $500-2,000/month. Workflow adoption costs 2-5 engineer-days per person. The 90-day total cost of ownership ranges from $5,000-8,000 for Cursor to $12,000-20,000 for Claude Code at the Max tier.",
+		},
+		{
+			question: "Should I choose Claude Code or Cursor for my engineering team?",
+			answer:
+				"It depends on team composition and work patterns. Cursor suits junior-to-mid teams doing IDE-centric work — it's visual, guided, and has a gentler learning curve. Claude Code suits senior-heavy teams doing complex, multi-file, agentic work — it's CLI-first, autonomous, and optimized for architectural tasks. At enterprise scale (10K+ employees), GitHub Copilot often wins through Microsoft procurement bundling regardless of feature comparison.",
+		},
+		{
+			question: "What are the hidden costs of AI coding tools?",
+			answer:
+				"Four hidden costs that don't appear in pricing pages: token overages (agentic usage multiplies base subscription costs 2-5x for heavy users), training and adoption time (2-5 engineer-days per person to become proficient), workflow disruption during transition (measured in sprint velocity dips of 10-20% for 2-4 weeks), and the review burden (PR review time increased 91% with AI tools, meaning more code requires proportionally more human review capacity).",
+		},
+	],
+
+	"vibe-coding-hangover-recovery": [
+		{
+			question: "What is the vibe coding hangover?",
+			answer:
+				"The vibe coding hangover is what happens 6-12 months after a product is built primarily with AI assistance without adequate human comprehension of the generated code. Symptoms include: nobody can explain the auth flow, incident investigation takes 3x longer than expected, new hires take 2x longer to onboard, and refactoring attempts introduce more bugs than they fix. 89% of CTOs report production disasters from AI-generated code, and Year 2 maintenance costs run 4x traditional levels.",
+		},
+		{
+			question: "How do I assess the severity of AI-generated code problems in my codebase?",
+			answer:
+				"Use a four-tier severity model. Severity 1: critical paths nobody understands (auth, billing, data pipelines) — immediate triage required. Severity 2: core business logic with no documentation or design rationale — address within 30 days. Severity 3: non-critical features with high complexity — schedule for quarterly remediation. Severity 4: internal tooling with single maintainer — lowest priority. Map every module to a severity tier and address them in order.",
+		},
+		{
+			question: "Should I rewrite my vibe-coded codebase or try to fix it?",
+			answer:
+				"Apply the 50% rule: if more than 50% of modules are Severity 1 or 2, a phased rewrite of critical paths is more cost-effective than remediation. If under 50%, targeted remediation works — start with comprehension sprints (not refactoring sprints), create Architecture Decision Records for every module, and establish ownership transfer protocols. The rewrite threshold also depends on team turnover: if the original team has left, remediation costs approach rewrite costs because nobody holds any mental model.",
+		},
+	],
+
+	"hiring-ai-engineers": [
+		{
+			question: "What skills should I look for when hiring AI engineers?",
+			answer:
+				"Most companies need AI-augmented engineers (engineers who use AI tools effectively), not ML engineers or AI researchers. Look for: ability to critically evaluate AI-generated code (give them a buggy AI-generated module and ask them to find the issues), architectural judgment under constraints (design an AI feature with cost, quality, and latency trade-offs), and the contrarian test (when would you NOT use AI for this task?). Resume keywords like 'proficient in ChatGPT' are red flags, not qualifications.",
+		},
+		{
+			question: "What is the current salary range for AI engineers?",
+			answer:
+				"AI engineer average salary reached $206K in 2025, a $50K year-over-year increase. However, the 'AI engineer' title spans a wide range: ML infrastructure engineers command $250K-400K at major tech companies, AI-augmented software engineers earn $150K-250K depending on seniority, and dedicated prompt engineers (a declining role) earn $120K-180K. Nearly 90% of companies have created new AI-related positions, but the majority report workforce shortages for genuinely AI-fluent talent.",
+		},
+		{
+			question: "Should I hire dedicated AI engineers or train my existing team?",
+			answer:
+				"For most teams under 50 engineers, training existing staff is more cost-effective. The skills gap is in AI-assisted workflow adoption and judgment, not deep ML expertise. Staff+ engineers already lead AI adoption at 63.5% vs 49.7% for regular engineers — they need refinement, not replacement. Hire dedicated AI engineers only when you're building AI as your core product (not just using AI tools), or when you need ML infrastructure expertise that doesn't exist on your current team.",
+		},
+	],
+
+	"enterprise-ai-sdlc-blueprint": [
+		{
+			question: "Why do enterprise AI development projects fail?",
+			answer:
+				"30%+ of enterprise generative AI projects are abandoned after POC. The three most common failure causes are: no scalable integration plan (the POC works in isolation but doesn't fit the SDLC), governance gaps discovered post-POC (security, legal, and compliance requirements weren't addressed during POC), and the training gap (46% of developers distrust AI accuracy, and only 3.1% highly trust it — adoption stalls without structured training programs that build confidence through verification).",
+		},
+		{
+			question: "What are the 5 enterprise evaluation gates for AI coding tools?",
+			answer:
+				"Five enterprise functions must evaluate before AI coding tools touch internal repos: Security (what code, metadata, and context leaves the organizational boundary?), Legal (IP ownership, liability, indemnity, acceptable use terms), Compliance (are prompts, outputs, and approvals auditable for regulatory requirements?), Architecture (where does AI fit in the existing SDLC workflow?), and Procurement (enterprise-grade contract terms, SLAs, support, and pricing). Skipping any gate creates exposure that surfaces later at higher remediation cost.",
+		},
+		{
+			question: "How do I move from pilot to production with AI coding tools?",
+			answer:
+				"Follow a three-phase model. Phase 1 (Controlled Pilot, 4-8 weeks): select 2-3 teams, define scope and success metrics, measure outcomes against baselines. Phase 2 (Governed Expansion, 8-16 weeks): establish quality gates, review standards, and training programs based on pilot learnings. Phase 3 (Mature Practice, ongoing): automated compliance checks, continuous monitoring, org-wide standards, and regular audit cycles. Less than 30% of AI initiative leaders report executive satisfaction with ROI — the phased approach prevents the 'pilot works, production fails' pattern.",
+		},
+	],
 };
