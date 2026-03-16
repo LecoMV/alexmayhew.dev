@@ -129,7 +129,7 @@ Communication happens through your preferred channels—Slack, email, or a dedic
 		],
 
 		seo: {
-			title: "Technical Advisor for CTOs | Alex Mayhew",
+			title: "Technical Advisor for CTOs",
 			description:
 				"Strategic technical partnership for CTOs. Architecture reviews, hiring support, incident response, and hands-on implementation from a seasoned technical leader.",
 			keywords: [
@@ -257,7 +257,7 @@ I'm responsive to urgent questions (within hours during business hours) because 
 		],
 
 		seo: {
-			title: "Technical Advisor for Technical Founders | Alex Mayhew",
+			title: "Technical Advisor for Technical Founders",
 			description:
 				"Strategic technical guidance for technical founders. MVP architecture, scaling, hiring, and build/buy decisions from someone who has been in your seat.",
 			keywords: [
@@ -388,7 +388,7 @@ The goal is always to build your technical capability, not create dependency. As
 		],
 
 		seo: {
-			title: "Fractional CTO for Non-Technical Founders | Alex Mayhew",
+			title: "Fractional CTO for Non-Technical Founders",
 			description:
 				"Technical strategy for seed-stage founders without a technical co-founder. Vendor oversight, architecture guidance, and investor-ready technical narratives.",
 			keywords: [
@@ -519,7 +519,7 @@ I can also embed with your team for specific projects—leading a modernization 
 		],
 
 		seo: {
-			title: "Technical Advisor for VPs of Engineering | Alex Mayhew",
+			title: "Technical Advisor for VPs of Engineering",
 			description:
 				"External perspective for engineering leaders. Team building, architecture decisions, legacy modernization, and executive communication from a seasoned technical advisor.",
 			keywords: [

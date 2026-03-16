@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 		keywords: page.seo.keywords,
 		authors: [{ name: "Alex Mayhew", url: siteUrl }],
 		openGraph: {
-			title: page.seo.ogTitle || page.seo.title,
+			title: page.seo.ogTitle || `${page.seo.title} | Alex Mayhew`,
 			description: page.seo.ogDescription || page.seo.description,
 			type: "website",
 			url: pageUrl,
