@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 	description:
 		"Technical advisor helping founders make architectural decisions that compound into competitive advantage. Specializing in React, Next.js, TypeScript, and enterprise-grade systems.",
 	openGraph: {
-		title: "About | Alex Mayhew",
+		title: "About",
 		description:
 			"Technical advisor partnering with select clients to architect enterprise-grade solutions. Specializing in React, Next.js, and system architecture.",
 		type: "profile",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "About | Alex Mayhew",
+		title: "About",
 		description:
 			"Technical advisor specializing in React, Next.js, and enterprise system architecture.",
 		images: ["/og-image.png"],

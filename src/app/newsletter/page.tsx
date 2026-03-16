@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 const siteUrl = "https://alexmayhew.dev";
 
 export const metadata: Metadata = {
-	title: "The Architect's Brief | Alex Mayhew",
+	title: "The Architect's Brief",
 	description:
 		"Weekly newsletter on SaaS architecture decisions, engineering leadership, and technical strategy. Real patterns from advising startups at $0-$10M ARR.",
 	openGraph: {

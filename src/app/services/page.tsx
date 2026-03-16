@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 	description:
 		"Strategic technical guidance for founders and CTOs. Architecture decisions that compound into competitive advantage. Next.js, React, TypeScript, and enterprise systems.",
 	openGraph: {
-		title: "Technical Advisory Services | Alex Mayhew",
+		title: "Technical Advisory Services",
 		description:
 			"Strategic technical guidance for founders and CTOs. Architecture decisions that compound into competitive advantage.",
 		type: "website",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Technical Advisory Services | Alex Mayhew",
+		title: "Technical Advisory Services",
 		description:
 			"Strategic technical guidance for founders and CTOs. Architecture decisions that compound into competitive advantage.",
 		images: ["/og-image.png"],

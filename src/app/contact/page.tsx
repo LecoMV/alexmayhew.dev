@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 	description:
 		"Get in touch for web development projects, technical consulting, or collaboration opportunities. Accepting select engagements worldwide.",
 	openGraph: {
-		title: "Contact | Alex Mayhew",
+		title: "Contact",
 		description:
 			"Get in touch for web development projects, consulting, or collaboration. Serving select clients worldwide.",
 		type: "website",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Contact | Alex Mayhew",
+		title: "Contact",
 		description: "Get in touch for web development projects and consulting.",
 		images: ["/og-image.png"],
 	},

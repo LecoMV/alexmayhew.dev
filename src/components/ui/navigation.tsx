@@ -122,7 +122,7 @@ export function Navigation() {
 				aria-label="Main navigation"
 				className="mx-auto max-w-[1400px] px-6 py-4 sm:px-12 md:px-24"
 			>
-				<div className="bg-gunmetal-glass/20 flex items-center justify-between gap-2 overflow-hidden border border-white/10 px-4 py-3 backdrop-blur-md md:gap-2 md:px-4 md:py-4 lg:gap-3 lg:px-5 xl:gap-4 xl:px-6">
+				<div className="bg-gunmetal-glass/20 flex items-center justify-between gap-2 border border-white/10 px-4 py-3 backdrop-blur-md md:gap-2 md:px-4 md:py-4 lg:gap-3 lg:px-5 xl:gap-4 xl:px-6">
 					{/* Logo / Brand */}
 					<Link
 						href="/"

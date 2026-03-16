@@ -79,11 +79,11 @@ describe("Navigation", () => {
 		expect(screen.getByText("Skip to content")).toBeTruthy();
 	});
 
-	it("nav container has overflow-hidden to prevent items escaping boundary", () => {
+	it("nav container allows overflow for dropdown menus", () => {
 		render(<Navigation />);
 		const navBar = screen.getByRole("navigation", { name: /main navigation/i });
 		const container = navBar.firstElementChild as HTMLElement;
-		expect(container.className).toContain("overflow-hidden");
+		expect(container.className).not.toContain("overflow-hidden");
 	});
 
 	it("desktop nav items container has min-w-0 to allow flex shrinking", () => {

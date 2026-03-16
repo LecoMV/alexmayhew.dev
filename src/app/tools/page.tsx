@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 	description:
 		"Developer tools built with precision. Try TraceForge for instant SVG vectorization or download Claude Pilot for Claude Code management.",
 	openGraph: {
-		title: "Tools | Alex Mayhew",
+		title: "Tools",
 		description: "Developer tools built with precision. TraceForge, Claude Pilot, and more.",
 		type: "website",
 		images: [

@@ -4,11 +4,11 @@ import { BlogList } from "@/components/blog/blog-list";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "Blog | Alex Mayhew",
+	title: "Blog",
 	description:
 		"Technical articles on engineering, architecture, and modern web development patterns.",
 	openGraph: {
-		title: "Blog | Alex Mayhew",
+		title: "Blog",
 		description: "Technical articles on engineering, architecture, and modern web development.",
 		type: "website",
 		images: [
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Blog | Alex Mayhew",
+		title: "Blog",
 		description: "Technical articles on engineering, architecture, and modern web development.",
 		images: ["/og-image.png"],
 	},

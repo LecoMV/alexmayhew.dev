@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Technology Expertise | Alex Mayhew",
+		title: "Technology Expertise",
 		description: "Deep expertise in modern web technologies and AI/ML integration.",
 		images: ["/og-image.png"],
 		creator: "@alexmayhewdev",

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 	description:
 		"Selected projects and experiments in AI/ML, SaaS platforms, and web applications. Enterprise-grade solutions built with precision.",
 	openGraph: {
-		title: "Work | Alex Mayhew",
+		title: "Work",
 		description:
 			"Selected projects in AI/ML, SaaS, and web applications. Enterprise-grade solutions built with precision.",
 		type: "website",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Work | Alex Mayhew",
+		title: "Work",
 		description: "Selected projects in AI/ML, SaaS, and web applications.",
 		images: ["/og-image.png"],
 	},

@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	if (!page) return {};
 
 	return {
-		title: `${page.data.title} | Docs | Alex Mayhew`,
+		title: `${page.data.title} | Docs`,
 		description: page.data.description,
 	};
 }

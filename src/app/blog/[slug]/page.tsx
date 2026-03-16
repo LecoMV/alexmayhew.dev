@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	const ogImage = `/og?title=${encodeURIComponent(post.title)}&description=${encodeURIComponent(post.description || "")}&category=${encodeURIComponent(post.category || "Blog")}`;
 
 	return {
-		title: `${post.title} | Alex Mayhew`,
+		title: post.title,
 		description: post.description,
 		authors: [{ name: "Alex Mayhew", url: siteUrl }],
 		openGraph: {

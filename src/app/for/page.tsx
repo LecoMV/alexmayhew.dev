@@ -5,11 +5,11 @@ import { ForHubPage } from "./for-hub-page";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "Technical Advisory by Role | Alex Mayhew",
+	title: "Technical Advisory by Role",
 	description:
 		"Strategic technical partnership tailored to your role. CTOs, Technical Founders, Seed Founders, and VPs of Engineering all have unique challenges. Find guidance designed for you.",
 	openGraph: {
-		title: "Technical Advisory by Role | Alex Mayhew",
+		title: "Technical Advisory by Role",
 		description:
 			"Strategic technical partnership tailored to your role. Find guidance designed for CTOs, Technical Founders, Seed Founders, and Engineering Leaders.",
 		type: "website",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Technical Advisory by Role | Alex Mayhew",
+		title: "Technical Advisory by Role",
 		description:
 			"Strategic technical partnership tailored to your role. Find guidance designed for your specific challenges.",
 		images: ["/og-image.png"],
