@@ -5,7 +5,8 @@
 
 import { google } from "googleapis";
 
-const SITE_URL = "https://alexmayhew.dev/";
+// Domain property format — must match GSC property type
+const SITE_URL = "sc-domain:alexmayhew.dev";
 const SITEMAP_URL = "https://alexmayhew.dev/sitemap.xml";
 
 const raw = process.env.GSC_SERVICE_ACCOUNT_JSON;
@@ -16,14 +17,16 @@ if (!raw) {
 
 const credentials = JSON.parse(Buffer.from(raw, "base64").toString("utf8"));
 
-const auth = new google.auth.JWT(credentials.client_email, null, credentials.private_key, [
-	"https://www.googleapis.com/auth/webmasters",
-]);
+const auth = new google.auth.JWT({
+	email: credentials.client_email,
+	key: credentials.private_key,
+	scopes: ["https://www.googleapis.com/auth/webmasters"],
+});
 
-const searchConsole = google.webmasters({ version: "v3", auth });
+const webmasters = google.webmasters({ version: "v3", auth });
 
 try {
-	await searchConsole.sitemaps.submit({
+	await webmasters.sitemaps.submit({
 		siteUrl: SITE_URL,
 		feedpath: SITEMAP_URL,
 	});
