@@ -390,10 +390,10 @@ Lighthouse tests on your machine. Real users have different conditions:
 
 ```tsx
 // web-vitals library
-import { onCLS, onFID, onLCP } from "web-vitals";
+import { onCLS, onINP, onLCP } from "web-vitals";
 
 onCLS(console.log); // Cumulative Layout Shift
-onFID(console.log); // First Input Delay
+onINP(console.log); // Interaction to Next Paint
 onLCP(console.log); // Largest Contentful Paint
 
 // Send to analytics

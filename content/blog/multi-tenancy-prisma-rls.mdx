@@ -125,7 +125,7 @@ CREATE POLICY tenant_insert ON orders
   WITH CHECK (tenant_id = current_setting('app.current_tenant_id')::uuid);
 ```
 
-### The Tri-Color Algorithm
+### Permissive vs Restrictive Policies
 
 PostgreSQL RLS uses two types of policies:
 

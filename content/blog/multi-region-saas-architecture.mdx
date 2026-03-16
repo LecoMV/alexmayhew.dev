@@ -23,7 +23,7 @@ Single-region works until you hit 200ms latency for half your users or a GDPR Ar
 
 I've watched startups hit this wall repeatedly. The pattern is always the same: you launch in us-east-1 because that's where the tutorials told you to deploy. Your first European customers complain about "slowness." Your first Australian customers churn.
 
-The math is simple. Light travels at 299,792 km/s through fiber. New York to London is 5,500 km. That's 18ms one way, 36ms round trip... in perfect conditions. Real-world internet routing adds another 30-50ms. Your API response time is now 80-120ms before your server even processes the request.
+The math is simple. Light travels at ~200,000 km/s through fiber (about two-thirds its vacuum speed due to the glass refractive index). New York to London is 5,500 km. That's ~28ms one way, ~55ms round trip... in perfect conditions. Real-world internet routing adds another 30-50ms. Your API response time is now 80-120ms before your server even processes the request.
 
 For users in Singapore connecting to us-east-1? 250-300ms round trip. For every database query, every API call, every WebSocket ping. Your snappy 50ms API becomes a 350ms slog.
 
@@ -680,7 +680,7 @@ const order = await replicaDb.order.findUnique({ where: { id: orderId } });
 response.headers.set("X-Read-Primary-Until", Date.now() + 5000);
 
 // On subsequent requests, check the header
-if (request.headers.get("X-Read-Primary-Until") > Date.now()) {
+if (parseInt(request.headers.get("X-Read-Primary-Until") ?? "0", 10) > Date.now()) {
 	return primaryDb;
 }
 return replicaDb;

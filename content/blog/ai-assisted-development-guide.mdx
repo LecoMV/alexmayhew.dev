@@ -253,7 +253,7 @@ Semantic caching can reduce LLM calls by 40-60% for applications with repetitive
 
 Not every query needs GPT-4.
 
-Train a small classifier on query complexity. Route simple queries to cheap models (GPT-3.5-turbo at $0.50/1M tokens). Reserve expensive models (GPT-4o at $2.50/1M tokens) for complex reasoning.
+Train a small classifier on query complexity. Route simple queries to cheap models (GPT-4o-mini at $0.15/1M input tokens). Reserve expensive models (GPT-4o at $2.50/1M tokens) for complex reasoning.
 
 ### Cost Breakdown
 
@@ -484,7 +484,7 @@ AI catches 60-80% of style violations, formatting issues, and common bug pattern
 
 ### How do I integrate LLMs into a production SaaS product?
 
-Start with a retrieval-augmented generation (RAG) architecture: your data stays in a vector database, the LLM generates responses grounded in your specific content. This avoids hallucination on domain-specific questions. Key decisions: choose an embedding model (OpenAI ada-002 or open-source alternatives), a vector store (pgvector for PostgreSQL users, Pinecone for managed), and implement guardrails for output validation.
+Start with a retrieval-augmented generation (RAG) architecture: your data stays in a vector database, the LLM generates responses grounded in your specific content. This avoids hallucination on domain-specific questions. Key decisions: choose an embedding model (OpenAI text-embedding-3-small or open-source alternatives), a vector store (pgvector for PostgreSQL users, Pinecone for managed), and implement guardrails for output validation.
 
 ### How much does it cost to run AI features in production?
 

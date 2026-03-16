@@ -171,24 +171,9 @@ For most UI work, increase damping for a more professional feel:
 - Default (1): Standard behavior
 - High (>1): Heavy, continued momentum
 
-### Presets
+### Custom Presets
 
-Framer Motion provides named presets:
-
-```tsx
-import { motion } from 'framer-motion'
-
-// Gentle, slow motion
-<motion.div transition={{ type: 'spring', ...presets.gentle }} />
-
-// Bouncy, playful
-<motion.div transition={{ type: 'spring', ...presets.wobbly }} />
-
-// Snappy, immediate
-<motion.div transition={{ type: 'spring', ...presets.stiff }} />
-```
-
-Or define your own:
+Define reusable spring configurations for your design system:
 
 ```tsx
 // config/animation.ts
