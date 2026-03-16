@@ -35,6 +35,7 @@ export const defaultTheme: BlogTheme = {
 			year: "numeric",
 			month: "short",
 			day: "numeric",
+			timeZone: "UTC",
 		},
 	},
 

@@ -85,6 +85,7 @@ export default function NewsletterArchivePage() {
 									month: "short",
 									day: "numeric",
 									year: "numeric",
+									timeZone: "UTC",
 								})}
 							</time>
 						</Link>

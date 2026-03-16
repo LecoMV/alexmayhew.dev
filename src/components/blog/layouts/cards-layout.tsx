@@ -373,6 +373,7 @@ function CompactCard({ post, index }: { post: Post; index: number }) {
 								{post.data.publishedAt.toLocaleDateString("en-US", {
 									month: "short",
 									day: "numeric",
+									timeZone: "UTC",
 								})}
 							</span>
 							<span style={{ color: theme.colors.accentMuted }}>{theme.typography.listMarker}</span>

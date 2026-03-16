@@ -87,6 +87,7 @@ export default async function NewsletterIssuePage({ params }: PageProps) {
 								year: "numeric",
 								month: "long",
 								day: "numeric",
+								timeZone: "UTC",
 							})}
 						</time>
 					</header>

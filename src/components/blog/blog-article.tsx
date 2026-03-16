@@ -99,6 +99,7 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 											year: "numeric",
 											month: "long",
 											day: "numeric",
+											timeZone: "UTC",
 										})}
 									</span>
 									{post.data.readingTime && (
@@ -125,6 +126,7 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 													month: "short",
 													day: "numeric",
 													year: "numeric",
+													timeZone: "UTC",
 												})}
 											</span>
 										)}
