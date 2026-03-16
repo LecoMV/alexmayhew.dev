@@ -286,7 +286,7 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "What are the biggest security risks with MCP servers?",
 			answer:
-				"The three most critical risks are tool poisoning (malicious servers embed hidden instructions in tool descriptions that are visible to AI but invisible to users), indirect prompt injection (attackers embed instructions in external content like GitHub issues that get processed through MCP), and supply chain compromise (43 agent framework components identified with embedded vulnerabilities in November 2026). The Invariant Labs exploit demonstrated real data exfiltration through a GitHub MCP server.",
+				"The three most critical risks are tool poisoning (malicious servers embed hidden instructions in tool descriptions that are visible to AI but invisible to users), indirect prompt injection (attackers embed instructions in external content like GitHub issues that get processed through MCP), and supply chain compromise (43 agent framework components identified with embedded vulnerabilities by Barracuda Security). The Invariant Labs exploit demonstrated real data exfiltration through a GitHub MCP server.",
 		},
 		{
 			question: "How do I secure a production MCP server?",
@@ -309,7 +309,7 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "How do I decide whether to use AI for a specific task?",
 			answer:
-				"Use the two-axis framework: task complexity (simple, moderate, complex) crossed with codebase familiarity (greenfield, known patterns, deep institutional knowledge). AI delivers positive ROI in the simple-to-moderate complexity range on greenfield or pattern-matching work. It delivers negative ROI on complex tasks in codebases with deep institutional knowledge. 66% of developers report spending more time fixing AI code than expected, confirming the mismatch on complex tasks.",
+				"Use the two-axis framework: task complexity (simple, moderate, complex) crossed with codebase familiarity (greenfield, known patterns, deep institutional knowledge). AI delivers positive ROI in the simple-to-moderate complexity range on greenfield or pattern-matching work. It delivers negative ROI on complex tasks in codebases with deep institutional knowledge. The Harness 2025 survey found a majority of developers spend more time fixing AI code than expected, confirming the mismatch on complex tasks.",
 		},
 	],
 

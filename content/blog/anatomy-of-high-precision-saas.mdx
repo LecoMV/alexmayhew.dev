@@ -37,7 +37,7 @@ Before we dive in, here's what we're building toward:
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  PRESENTATION                                               │
-│  Next.js 16 (App Router) → Vercel/Cloudflare → CDN Edge    │
+│  Next.js 15 (App Router) → Vercel/Cloudflare → CDN Edge    │
 ├─────────────────────────────────────────────────────────────┤
 │  API LAYER                                                  │
 │  tRPC (internal) + REST (public) → Type-safe end-to-end    │
@@ -345,7 +345,7 @@ I default to tRPC + TanStack Query. The bundle cost (~18kB combined) is justifie
 
 ### App Router in 2026
 
-Next.js 16 (released October 2025) made React Server Components the default. This is no longer experimental... it's the standard.
+Next.js 15 made React Server Components the default with the App Router. This is no longer experimental... it's the standard.
 
 The trade-off is explicit: **smaller client bundles in exchange for potentially slower Time to First Byte (TTFB).**
 

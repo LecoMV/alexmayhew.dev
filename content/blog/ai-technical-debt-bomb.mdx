@@ -162,11 +162,15 @@ Run this quarterly. It takes 2-3 days for a mid-sized engineering org (~20-50 en
 Pull your git metrics for the past quarter. What percentage of code changes were refactors vs new code? If it's below 15%, your codebase is accumulating structural debt faster than you're paying it down.
 
 ```bash
-# Calculate refactoring ratio from git history
-# Refactors: commits touching existing files without adding new features
-# New code: commits adding new files or significant new functionality
-git log --since="3 months ago" --stat --oneline | \
-  grep -c "files changed" # total changes
+# Approximate refactoring ratio from git history
+# Compare commits that modify existing files vs add new files
+TOTAL=$(git log --since="3 months ago" --oneline | wc -l)
+NEW_FILES=$(git log --since="3 months ago" --diff-filter=A --name-only --pretty="" | wc -l)
+MODIFIED=$(git log --since="3 months ago" --diff-filter=M --name-only --pretty="" | wc -l)
+echo "Total commits: $TOTAL"
+echo "New files added: $NEW_FILES"
+echo "Existing files modified: $MODIFIED"
+echo "Refactor ratio (rough): $(echo "scale=1; $MODIFIED * 100 / ($MODIFIED + $NEW_FILES)" | bc)%"
 ```
 
 ### 2. Run the Duplication Scan

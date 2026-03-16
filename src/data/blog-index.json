@@ -588,16 +588,10 @@
 	},
 	{
 		"title": "When NOT to Use AI for Coding: The Decision Framework",
-		"description": "66% of developers spend more time fixing AI code than expected. Seven task categories where AI assistance produces net-negative outcomes... and the decision tree to know before you start.",
+		"description": "Most developers spend more time fixing AI code than expected. Seven task categories where AI assistance produces net-negative outcomes... and the decision tree to know before you start.",
 		"slug": "when-not-to-use-ai-coding",
 		"category": "business",
-		"tags": [
-			"ai",
-			"developer-productivity",
-			"decision-framework",
-			"engineering-leadership",
-			"code-quality"
-		],
+		"tags": [],
 		"series": "ai-development"
 	},
 	{

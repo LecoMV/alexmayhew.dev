@@ -238,8 +238,9 @@ class OnboardingService:
     def __init__(self, payment_service: PaymentServiceInterface):
         self._payment = payment_service
 
-    def complete_signup(self, user_id: str, plan: str):
+    def complete_signup(self, user_id: str, plan_id: str):
         # Use the interface, not the implementation
+        plan = self._plans.get(plan_id)
         result = self._payment.charge(user_id, plan.price_cents)
         if not result.success:
             raise PaymentFailedError(result.error_message)

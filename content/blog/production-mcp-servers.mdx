@@ -576,10 +576,11 @@ Not every integration needs a custom server. Before writing code, check whether 
 The pragmatic middle ground: use a community server's protocol handling but wrap it with your production middleware.
 
 ```typescript
-import { createCommunityServer } from "@mcp/postgres-server";
+// Hypothetical: wrapping a community MCP server with production middleware
+import { createServer } from "your-community-mcp-server";
 
 // Community server handles protocol + SQL
-const baseServer = createCommunityServer({
+const baseServer = createServer({
 	connectionString: process.env.DATABASE_URL,
 });
 

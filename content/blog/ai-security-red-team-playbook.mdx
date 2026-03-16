@@ -248,7 +248,7 @@ describe("RAGDataIntegrity", () => {
 
 The attacker compromises agent framework components to gain access to production systems.
 
-**The exploit:** Barracuda Security's November 2026 analysis identified **43 agent framework components** with embedded supply chain vulnerabilities. These aren't hypothetical CVEs. They're production-deployed packages with malicious payloads... keyloggers, credential harvesters, and data exfiltration routines hidden in LangChain plugins, AutoGPT extensions, and CrewAI tool wrappers.
+**The exploit:** Barracuda Security identified **43 agent framework components** with embedded supply chain vulnerabilities. These aren't hypothetical CVEs. They're production-deployed packages with malicious payloads... keyloggers, credential harvesters, and data exfiltration routines hidden in LangChain plugins, AutoGPT extensions, and CrewAI tool wrappers.
 
 The attack pattern is familiar from npm/PyPI supply chain attacks, but the blast radius is larger. An AI agent framework with compromised dependencies typically has access to API keys, database connections, and tool invocation capabilities. A single compromised dependency can exfiltrate every secret the agent has access to.
 
