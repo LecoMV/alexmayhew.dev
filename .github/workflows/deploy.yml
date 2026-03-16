@@ -273,6 +273,14 @@ jobs:
             echo "::warning::IndexNow returned $RESPONSE (non-fatal)"
           fi
 
+      - name: Submit sitemap to Google Search Console
+        if: success()
+        env:
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+        run: |
+          npm install googleapis --no-save --silent
+          node scripts/submit-sitemap-gsc.mjs
+
       - name: Notify on failure
         if: failure()
         uses: actions/github-script@v8
