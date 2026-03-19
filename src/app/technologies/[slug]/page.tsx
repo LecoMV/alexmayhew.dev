@@ -11,6 +11,8 @@ type PageProps = {
 	params: Promise<{ slug: string }>;
 };
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
 	return getTechnologyIds().map((slug) => ({ slug }));
 }

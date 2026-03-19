@@ -113,11 +113,78 @@ describe("P1-11: Schema consolidation", () => {
 			"src/components/seo/local-business-json-ld.tsx",
 			"utf-8"
 		);
-		// Both files should not independently define business entities
-		// One should reference the other via @id, or they should be merged
 		const jsonLdHasBusiness = jsonLdSource.includes("ConsultingService");
 		const localBizHasBusiness = localBizSource.includes("ProfessionalService");
-		// At most one independent business schema definition should exist
 		expect(jsonLdHasBusiness && localBizHasBusiness).toBe(false);
+	});
+});
+
+describe("P2-13/14: _headers deprecated directives", () => {
+	it("should use browsing-topics, not interest-cohort", () => {
+		const headers = fs.readFileSync("public/_headers", "utf-8");
+		expect(headers).not.toContain("interest-cohort");
+	});
+});
+
+describe("P2-16: dynamicParams = false on dynamic routes", () => {
+	it("blog/[slug] should export dynamicParams = false", () => {
+		const source = fs.readFileSync("src/app/blog/[slug]/page.tsx", "utf-8");
+		expect(source).toContain("dynamicParams");
+	});
+
+	it("services/[slug] should export dynamicParams = false", () => {
+		const source = fs.readFileSync("src/app/services/[slug]/page.tsx", "utf-8");
+		expect(source).toContain("dynamicParams");
+	});
+
+	it("for/[role] should export dynamicParams = false", () => {
+		const source = fs.readFileSync("src/app/for/[role]/page.tsx", "utf-8");
+		expect(source).toContain("dynamicParams");
+	});
+
+	it("technologies/[slug] should export dynamicParams = false", () => {
+		const source = fs.readFileSync("src/app/technologies/[slug]/page.tsx", "utf-8");
+		expect(source).toContain("dynamicParams");
+	});
+
+	it("work/[slug] should export dynamicParams = false", () => {
+		const source = fs.readFileSync("src/app/work/[slug]/page.tsx", "utf-8");
+		expect(source).toContain("dynamicParams");
+	});
+
+	it("services/migrations/[slug] should export dynamicParams = false", () => {
+		const source = fs.readFileSync("src/app/services/migrations/[slug]/page.tsx", "utf-8");
+		expect(source).toContain("dynamicParams");
+	});
+
+	it("services/integrations/[slug] should export dynamicParams = false", () => {
+		const source = fs.readFileSync("src/app/services/integrations/[slug]/page.tsx", "utf-8");
+		expect(source).toContain("dynamicParams");
+	});
+
+	it("services/comparisons/[slug] should export dynamicParams = false", () => {
+		const source = fs.readFileSync("src/app/services/comparisons/[slug]/page.tsx", "utf-8");
+		expect(source).toContain("dynamicParams");
+	});
+});
+
+describe("P2-17: Canonical URL consistency", () => {
+	it("blog hub should use relative canonical, not absolute", async () => {
+		const source = fs.readFileSync("src/app/blog/page.tsx", "utf-8");
+		expect(source).not.toMatch(/canonical:\s*["']https?:\/\//);
+	});
+});
+
+describe("P2-18: Blog generateStaticParams excludes drafts", () => {
+	it("should filter out drafts in generateStaticParams", () => {
+		const source = fs.readFileSync("src/app/blog/[slug]/page.tsx", "utf-8");
+		expect(source).toMatch(/generateStaticParams[\s\S]*?filter[\s\S]*?draft/);
+	});
+});
+
+describe("P2-20: HSTS preload", () => {
+	it("middleware should include preload in HSTS header", () => {
+		const source = fs.readFileSync("middleware.ts", "utf-8");
+		expect(source).toContain("preload");
 	});
 });

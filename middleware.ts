@@ -31,7 +31,10 @@ export function middleware(_request: NextRequest) {
 			"Permissions-Policy",
 			"camera=(), microphone=(), geolocation=(), browsing-topics=()"
 		);
-		response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+		response.headers.set(
+			"Strict-Transport-Security",
+			"max-age=31536000; includeSubDomains; preload"
+		);
 
 		return response;
 	} catch {

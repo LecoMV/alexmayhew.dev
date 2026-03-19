@@ -51,7 +51,7 @@ describe("middleware", () => {
 			const response = middleware(mockRequest);
 
 			expect(response.headers.get("Strict-Transport-Security")).toBe(
-				"max-age=31536000; includeSubDomains"
+				"max-age=31536000; includeSubDomains; preload"
 			);
 		});
 	});

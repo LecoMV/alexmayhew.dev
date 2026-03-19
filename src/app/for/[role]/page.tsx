@@ -13,6 +13,8 @@ interface PageProps {
 	params: Promise<{ role: string }>;
 }
 
+export const dynamicParams = false;
+
 /**
  * Generate static params for all published role pages.
  */

@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 		images: ["/og-image.png"],
 	},
 	alternates: {
-		canonical: "https://alexmayhew.dev/blog",
+		canonical: "/blog",
 		types: {
 			"application/rss+xml": "/blog/rss.xml",
 		},

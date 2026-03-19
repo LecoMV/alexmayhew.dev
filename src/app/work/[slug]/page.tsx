@@ -12,6 +12,8 @@ interface PageProps {
 	params: Promise<{ slug: string }>;
 }
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
 	return getCaseStudyProjects().map((project) => ({
 		slug: project.id,

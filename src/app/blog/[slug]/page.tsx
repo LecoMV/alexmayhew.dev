@@ -20,8 +20,10 @@ function getSlug(path: string): string {
 	return path.replace(/^\//, "").replace(/\.mdx$/, "");
 }
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
-	return blog.map((post) => ({ slug: getSlug(post.info.path) }));
+	return blog.filter((post) => !post.draft).map((post) => ({ slug: getSlug(post.info.path) }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

@@ -13,6 +13,8 @@ interface PageProps {
 	params: Promise<{ slug: string }>;
 }
 
+export const dynamicParams = false;
+
 /**
  * Generate static params for all published comparison pages.
  */
