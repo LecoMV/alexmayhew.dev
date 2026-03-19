@@ -39,6 +39,9 @@ export const metadata: Metadata = {
 		title: "Claude Pilot | All-in-One Claude Code Manager",
 		description: "The missing UI for Claude Code. Cross-platform, open source.",
 	},
+	alternates: {
+		canonical: "/tools/pilot",
+	},
 };
 
 export default function ClaudePilotPage() {

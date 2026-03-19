@@ -45,6 +45,13 @@ export default Sentry.withSentry(
 			}
 
 			const newHeaders = new Headers(response.headers);
+
+			// Prevent Google from indexing the .pages.dev mirror (duplicate content)
+			const host = request.headers.get("host") ?? "";
+			if (host.endsWith(".pages.dev")) {
+				newHeaders.set("X-Robots-Tag", "noindex, nofollow");
+			}
+
 			for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
 				newHeaders.set(name, value);
 			}

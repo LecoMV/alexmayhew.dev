@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 		type: "website",
 	},
 	alternates: {
+		canonical: "/newsletter",
 		types: {
 			"application/rss+xml": `${siteUrl}/feed.xml`,
 		},

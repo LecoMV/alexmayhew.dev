@@ -19,9 +19,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	const page = source.getPage(slug);
 	if (!page) return {};
 
+	const canonicalPath = slug && slug.length > 0 ? `/docs/${slug.join("/")}` : "/docs";
+
 	return {
 		title: `${page.data.title} | Docs`,
 		description: page.data.description,
+		alternates: {
+			canonical: canonicalPath,
+		},
 	};
 }
 

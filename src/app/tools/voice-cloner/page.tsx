@@ -65,6 +65,9 @@ export const metadata: Metadata = {
 		description:
 			"41 curated voices, zero-shot cloning, multi-voice conversations, and manuscript-to-audiobook production. Try it free.",
 	},
+	alternates: {
+		canonical: "/tools/voice-cloner",
+	},
 };
 
 const stats = [

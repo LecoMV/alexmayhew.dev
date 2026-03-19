@@ -60,6 +60,26 @@ export function JsonLd() {
 		],
 	};
 
+	const organizationSchema = {
+		"@context": "https://schema.org",
+		"@type": "Organization",
+		"@id": "https://alexmayhew.dev/#organization",
+		name: "Alex Mayhew",
+		url: "https://alexmayhew.dev",
+		logo: {
+			"@type": "ImageObject",
+			url: "https://alexmayhew.dev/og-image.png",
+			width: 1200,
+			height: 630,
+		},
+		founder: { "@id": "https://alexmayhew.dev/#person" },
+		sameAs: [
+			"https://github.com/LecoMV",
+			"https://www.linkedin.com/in/alexmmayhew",
+			"https://x.com/alexmayhewdev",
+		],
+	};
+
 	const websiteSchema = {
 		"@context": "https://schema.org",
 		"@type": "WebSite",
@@ -69,6 +89,7 @@ export function JsonLd() {
 		url: "https://alexmayhew.dev",
 		description: "Portfolio and blog of Alex Mayhew - Technical Advisor & Systems Architect",
 		author: { "@id": "https://alexmayhew.dev/#person" },
+		publisher: { "@id": "https://alexmayhew.dev/#organization" },
 	};
 
 	const professionalServiceSchema = {
@@ -163,6 +184,10 @@ export function JsonLd() {
 			<script
 				type="application/ld+json"
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+			/>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
 			/>
 			<script
 				type="application/ld+json"

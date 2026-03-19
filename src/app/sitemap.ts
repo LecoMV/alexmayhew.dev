@@ -8,6 +8,7 @@ import {
 } from "@/data/pseo";
 import { getTechnologyIds } from "@/data/pseo/technologies";
 import { getPublishedRolePages } from "@/data/roles";
+import { source } from "@/lib/source";
 
 import type { MetadataRoute } from "next";
 
@@ -84,6 +85,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			lastModified: siteLastUpdated,
 			changeFrequency: "monthly",
 			priority: 0.9,
+		},
+		{
+			url: `${siteUrl}/tools/voice-cloner`,
+			lastModified: siteLastUpdated,
+			changeFrequency: "monthly",
+			priority: 0.95,
 		},
 		{
 			url: `${siteUrl}/privacy`,
@@ -203,6 +210,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		priority: 0.8,
 	}));
 
+	// Documentation pages (Fumadocs)
+	const docsPages: MetadataRoute.Sitemap = source.getPages().map((page) => ({
+		url: `${siteUrl}${page.url}`,
+		lastModified: siteLastUpdated,
+		changeFrequency: "monthly" as const,
+		priority: 0.6,
+	}));
+
 	return [
 		...staticPages,
 		...blogPosts,
@@ -214,5 +229,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		...rolePages,
 		...newsletterPages,
 		...caseStudyPages,
+		...docsPages,
 	];
 }

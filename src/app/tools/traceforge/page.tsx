@@ -42,6 +42,9 @@ export const metadata: Metadata = {
 		title: "TraceForge | GPU-Accelerated Vectorization",
 		description: "Neural upscaling meets precision tracing. Open source portfolio project.",
 	},
+	alternates: {
+		canonical: "/tools/traceforge",
+	},
 };
 
 export default function TraceForgePageRoute() {

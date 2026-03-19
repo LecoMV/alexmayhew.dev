@@ -102,7 +102,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
 				publishedAt={post.publishedAt}
 				updatedAt={post.updatedAt}
 				image={post.image}
-				slug={slug}
+				slug={`blog/${slug}`}
 				category={post.category}
 				tags={post.tags}
 				isHub={post.isHub}

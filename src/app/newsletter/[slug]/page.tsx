@@ -35,6 +35,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			type: "article",
 			publishedTime: issue.publishedAt.toISOString(),
 		},
+		alternates: {
+			canonical: `/newsletter/${slug}`,
+		},
 	};
 }
 

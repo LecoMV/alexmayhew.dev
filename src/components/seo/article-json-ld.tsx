@@ -37,10 +37,10 @@ export function ArticleJsonLd({
 		datePublished: publishedAt.toISOString(),
 		dateModified: (updatedAt ?? publishedAt).toISOString(),
 		author: { "@id": "https://alexmayhew.dev/#person" },
-		publisher: { "@id": "https://alexmayhew.dev/#person" },
+		publisher: { "@id": "https://alexmayhew.dev/#organization" },
 		mainEntityOfPage: {
 			"@type": "WebPage",
-			"@id": `${siteUrl}/blog/${slug}`,
+			"@id": `${siteUrl}/${slug}`,
 		},
 		articleSection: category,
 		keywords: tags.join(", "),
