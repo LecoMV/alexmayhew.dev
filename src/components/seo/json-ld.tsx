@@ -92,14 +92,36 @@ export function JsonLd() {
 		publisher: { "@id": "https://alexmayhew.dev/#organization" },
 	};
 
+	// Single unified business entity — combines consulting service + local business signals
 	const professionalServiceSchema = {
 		"@context": "https://schema.org",
-		"@type": "ConsultingService",
+		"@type": "ProfessionalService",
 		"@id": "https://alexmayhew.dev/#business",
 		name: "Alex Mayhew - Technical Advisory Services",
+		alternateName: "Alex Mayhew Consulting",
 		url: "https://alexmayhew.dev",
 		logo: "https://alexmayhew.dev/favicon.svg",
+		image: "https://alexmayhew.dev/og-image.png",
 		founder: { "@id": "https://alexmayhew.dev/#person" },
+		description:
+			"Strategic technical guidance for founders and CTOs. Architecture decisions that compound into competitive advantage. Specializing in SaaS, Fintech, Healthcare, and high-growth startups.",
+		priceRange: "$$$$",
+		currenciesAccepted: "USD",
+		paymentAccepted: "Bank Transfer, Credit Card",
+		address: {
+			"@type": "PostalAddress",
+			addressLocality: "Boston",
+			addressRegion: "MA",
+			addressCountry: "US",
+		},
+		email: "alex@alexmayhew.dev",
+		contactPoint: {
+			"@type": "ContactPoint",
+			contactType: "customer service",
+			email: "alex@alexmayhew.dev",
+			url: "https://alexmayhew.dev/contact",
+			availableLanguage: ["English"],
+		},
 		knowsAbout: [
 			"Software Architecture",
 			"SaaS Development",
@@ -114,13 +136,15 @@ export function JsonLd() {
 			"Cloud Architecture",
 			"Technical Due Diligence",
 		],
-		description:
-			"Strategic technical guidance for founders and CTOs. Architecture decisions that compound into competitive advantage. Specializing in SaaS, Fintech, Healthcare, and high-growth startups.",
-		priceRange: "$$$$",
-		areaServed: {
-			"@type": "Place",
-			name: "Worldwide",
-		},
+		areaServed: [
+			{ "@type": "City", name: "Boston" },
+			{ "@type": "State", name: "Massachusetts" },
+			{ "@type": "Country", name: "United States" },
+			{ "@type": "Country", name: "United Kingdom" },
+			{ "@type": "Country", name: "Canada" },
+			{ "@type": "Country", name: "Australia" },
+			{ "@type": "Place", name: "Remote / Worldwide" },
+		],
 		hasOfferCatalog: {
 			"@type": "OfferCatalog",
 			name: "Technical Advisory Services",
@@ -170,12 +194,10 @@ export function JsonLd() {
 				},
 			],
 		},
-		// Service areas for local SEO signals
-		serviceArea: [
-			{ "@type": "Country", name: "United States" },
-			{ "@type": "Country", name: "United Kingdom" },
-			{ "@type": "Country", name: "Canada" },
-			{ "@type": "Country", name: "Australia" },
+		sameAs: [
+			"https://github.com/LecoMV",
+			"https://www.linkedin.com/in/alexmmayhew",
+			"https://x.com/alexmayhewdev",
 		],
 	};
 

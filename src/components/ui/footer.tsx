@@ -42,6 +42,7 @@ const footerLinks = [
 	{ href: "/for", label: "Advisory" },
 	{ href: "/tools", label: "Tools" },
 	{ href: "/blog", label: "Blog" },
+	{ href: "/newsletter", label: "Newsletter" },
 	{ href: "/docs", label: "Docs" },
 	{ href: "/about", label: "About" },
 	{ href: "/contact", label: "Contact" },

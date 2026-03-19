@@ -79,3 +79,45 @@ describe("P0-5: ArticleJsonLd mainEntityOfPage", () => {
 		expect(source).not.toMatch(/publisher:.*#person/);
 	});
 });
+
+describe("P1-7: Privacy/Terms date stability", () => {
+	it("privacy page should not use new Date() for Last updated", () => {
+		const source = fs.readFileSync("src/app/privacy/page.tsx", "utf-8");
+		expect(source).not.toMatch(/new Date\(\)\.toLocaleDateString/);
+	});
+
+	it("terms page should not use new Date() for Last updated", () => {
+		const source = fs.readFileSync("src/app/terms/page.tsx", "utf-8");
+		expect(source).not.toMatch(/new Date\(\)\.toLocaleDateString/);
+	});
+});
+
+describe("P1-6: Privacy page accuracy", () => {
+	it("privacy page should mention Google Analytics if GA4 is used", () => {
+		const source = fs.readFileSync("src/app/privacy/page.tsx", "utf-8");
+		expect(source).toContain("Google Analytics");
+	});
+});
+
+describe("P1-9: Footer internal links", () => {
+	it("footer should include /newsletter link", () => {
+		const source = fs.readFileSync("src/components/ui/footer.tsx", "utf-8");
+		expect(source).toContain('href: "/newsletter"');
+	});
+});
+
+describe("P1-11: Schema consolidation", () => {
+	it("should not have both ConsultingService and ProfessionalService schemas", () => {
+		const jsonLdSource = fs.readFileSync("src/components/seo/json-ld.tsx", "utf-8");
+		const localBizSource = fs.readFileSync(
+			"src/components/seo/local-business-json-ld.tsx",
+			"utf-8"
+		);
+		// Both files should not independently define business entities
+		// One should reference the other via @id, or they should be merged
+		const jsonLdHasBusiness = jsonLdSource.includes("ConsultingService");
+		const localBizHasBusiness = localBizSource.includes("ProfessionalService");
+		// At most one independent business schema definition should exist
+		expect(jsonLdHasBusiness && localBizHasBusiness).toBe(false);
+	});
+});

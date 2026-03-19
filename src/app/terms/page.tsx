@@ -20,15 +20,7 @@ export default function TermsPage() {
 					Legal
 				</h1>
 				<h2 className="mb-8 text-4xl font-bold tracking-tight md:text-5xl">Terms of Service</h2>
-				<p className="text-slate-text mb-12 text-sm">
-					Last updated:{" "}
-					{new Date().toLocaleDateString("en-US", {
-						month: "long",
-						day: "numeric",
-						year: "numeric",
-						timeZone: "UTC",
-					})}
-				</p>
+				<p className="text-slate-text mb-12 text-sm">Last updated: March 19, 2026</p>
 
 				<div className="prose prose-invert max-w-none space-y-8">
 					<section>

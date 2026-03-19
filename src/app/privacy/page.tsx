@@ -20,15 +20,7 @@ export default function PrivacyPage() {
 					Legal
 				</h1>
 				<h2 className="mb-8 text-4xl font-bold tracking-tight md:text-5xl">Privacy Policy</h2>
-				<p className="text-slate-text mb-12 text-sm">
-					Last updated:{" "}
-					{new Date().toLocaleDateString("en-US", {
-						month: "long",
-						day: "numeric",
-						year: "numeric",
-						timeZone: "UTC",
-					})}
-				</p>
+				<p className="text-slate-text mb-12 text-sm">Last updated: March 19, 2026</p>
 
 				<div className="prose prose-invert max-w-none space-y-8">
 					<section>
@@ -62,14 +54,19 @@ export default function PrivacyPage() {
 						</p>
 
 						<h4 className="mt-6 mb-2 font-semibold">Analytics Data</h4>
-						<p className="text-slate-text leading-relaxed">
-							We use Cloudflare Web Analytics, a privacy-first analytics service that:
-						</p>
-						<ul className="text-slate-text mt-2 list-inside list-disc space-y-1">
-							<li>Does not use cookies</li>
-							<li>Does not track individual users</li>
-							<li>Does not collect personal information</li>
-							<li>Only collects aggregate, anonymous data (page views, referrers, browser type)</li>
+						<p className="text-slate-text leading-relaxed">We use two analytics services:</p>
+						<ul className="text-slate-text mt-2 list-inside list-disc space-y-2">
+							<li>
+								<strong>Cloudflare Web Analytics:</strong> A privacy-first service that does not use
+								cookies, does not track individual users, and only collects aggregate, anonymous
+								data (page views, referrers, browser type).
+							</li>
+							<li>
+								<strong>Google Analytics (GA4):</strong> Used with Consent Mode v2. Analytics
+								cookies are denied by default and only enabled if you grant consent via the cookie
+								banner. When consent is denied, Google Analytics collects only anonymous, cookieless
+								pings with no personally identifiable information.
+							</li>
 						</ul>
 					</section>
 
@@ -95,7 +92,11 @@ export default function PrivacyPage() {
 						</p>
 						<ul className="text-slate-text list-inside list-disc space-y-2">
 							<li>
-								<strong>Cloudflare:</strong> Website hosting, CDN, and analytics
+								<strong>Cloudflare:</strong> Website hosting, CDN, and privacy-first analytics
+							</li>
+							<li>
+								<strong>Google Analytics:</strong> Website analytics with Consent Mode v2 (consent
+								required for cookies)
 							</li>
 							<li>
 								<strong>Resend:</strong> Email delivery for contact form submissions
