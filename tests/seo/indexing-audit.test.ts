@@ -158,6 +158,18 @@ describe("P2-15: Dynamic OG images on all page types", () => {
 		const source = fs.readFileSync("src/app/services/integrations/[slug]/page.tsx", "utf-8");
 		expect(source).toContain("/og?");
 	});
+
+	it("comparison pages should use dynamic OG images via /og route", () => {
+		const source = fs.readFileSync("src/app/services/comparisons/[slug]/page.tsx", "utf-8");
+		expect(source).toContain("/og?");
+	});
+});
+
+describe("P3-22: Image sitemap for blog posts", () => {
+	it("sitemap should include images for blog posts", () => {
+		const source = fs.readFileSync("src/app/sitemap.ts", "utf-8");
+		expect(source).toContain("images:");
+	});
 });
 
 describe("P3-23: RSS lastBuildDate consistency", () => {

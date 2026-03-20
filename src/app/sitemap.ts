@@ -114,6 +114,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			lastModified: post.updatedAt ?? post.publishedAt,
 			changeFrequency: "monthly" as const,
 			priority: post.isHub ? 0.9 : 0.7,
+			images: post.image ? [`${siteUrl}${post.image}`] : [],
 		}));
 
 	// Service pages (pSEO)
