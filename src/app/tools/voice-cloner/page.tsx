@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+import { SoftwareJsonLd } from "@/components/seo/software-json-ld";
+
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -217,209 +219,225 @@ const specs = [
 
 export default function VoiceClonerPage() {
 	return (
-		<section className="flex-1 px-6 pt-32 pb-24 sm:px-12 md:px-24">
-			<div className="mx-auto max-w-[1400px]">
-				{/* Breadcrumb */}
-				<nav className="mb-8">
-					<Link
-						href="/tools"
-						className="text-slate-text hover:text-cyber-lime inline-flex items-center gap-2 font-mono text-xs transition-colors"
-					>
-						<ArrowLeft className="h-3 w-3" strokeWidth={1.5} />
-						<span>Back to Tools</span>
-					</Link>
-				</nav>
-
-				{/* Hero */}
-				<header className="mb-16">
-					<div className="mb-4 flex items-center gap-3">
-						<div className="text-cyber-lime">
-							<Mic className="h-8 w-8" strokeWidth={1.5} />
-						</div>
-						<div className="flex items-center gap-2">
-							<span className="border-cyber-lime/50 text-cyber-lime border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
-								Live
-							</span>
-							<span className="text-slate-text border border-white/20 px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
-								Public Beta
-							</span>
-						</div>
-					</div>
-
-					<h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
-						Turn Any Text Into a
-						<br />
-						<span className="text-cyber-lime">Professional Audiobook</span>
-					</h1>
-
-					<p className="text-slate-text mb-8 max-w-2xl text-lg leading-relaxed">
-						AI voices that sound human. 41 curated voices — presidents, actors, narrators. Upload
-						your own voice to clone. Build conversations, produce full audiobooks, or generate quick
-						clips. All free during beta.
-					</p>
-
-					<div className="flex flex-wrap items-center gap-4">
-						<a
-							href="https://voicecloner.alexmayhew.dev"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="bg-cyber-lime text-void-navy hover:bg-cyber-lime/90 flex items-center gap-2 px-6 py-3 font-mono text-sm font-bold tracking-tight transition-colors"
+		<>
+			<SoftwareJsonLd
+				name="Voice Cloner"
+				description="AI text-to-speech with voice cloning. 41 curated voices, multi-voice conversations, and full audiobook studio. Powered by Qwen3-TTS."
+				url="/tools/voice-cloner"
+				applicationCategory="MultimediaApplication"
+				operatingSystem="Web Browser"
+				featureList={[
+					"41 curated AI voices",
+					"Zero-shot voice cloning",
+					"Multi-voice conversations",
+					"Audiobook studio with chapter markers",
+					"M4B/MP3/WAV export",
+				]}
+			/>
+			<section className="flex-1 px-6 pt-32 pb-24 sm:px-12 md:px-24">
+				<div className="mx-auto max-w-[1400px]">
+					{/* Breadcrumb */}
+					<nav className="mb-8">
+						<Link
+							href="/tools"
+							className="text-slate-text hover:text-cyber-lime inline-flex items-center gap-2 font-mono text-xs transition-colors"
 						>
-							<span>Try Voice Cloner Free</span>
-							<ExternalLink className="h-4 w-4" strokeWidth={2} />
-						</a>
-						<span className="text-slate-text/60 text-sm">No credit card required</span>
-					</div>
-				</header>
+							<ArrowLeft className="h-3 w-3" strokeWidth={1.5} />
+							<span>Back to Tools</span>
+						</Link>
+					</nav>
 
-				{/* Stats */}
-				<section className="mb-16">
-					<div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-						{stats.map((stat) => (
-							<div
-								key={stat.label}
-								className="border-cyber-lime/20 bg-cyber-lime/5 border p-4 text-center"
-							>
-								<div className="text-cyber-lime text-2xl font-bold">{stat.value}</div>
-								<div className="text-slate-text mt-1 font-mono text-xs">{stat.label}</div>
+					{/* Hero */}
+					<header className="mb-16">
+						<div className="mb-4 flex items-center gap-3">
+							<div className="text-cyber-lime">
+								<Mic className="h-8 w-8" strokeWidth={1.5} />
 							</div>
-						))}
-					</div>
-				</section>
+							<div className="flex items-center gap-2">
+								<span className="border-cyber-lime/50 text-cyber-lime border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
+									Live
+								</span>
+								<span className="text-slate-text border border-white/20 px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
+									Public Beta
+								</span>
+							</div>
+						</div>
 
-				{/* Three Modes */}
-				<section className="mb-16">
-					<h2 className="text-mist-white mb-8 font-mono text-sm tracking-wider uppercase">
-						Three Ways to Create
-					</h2>
-					<div className="grid gap-6 sm:grid-cols-3">
-						{capabilities.map((cap) => (
-							<div
-								key={cap.title}
-								className="group relative border border-white/10 p-6 transition-colors hover:border-white/20"
+						<h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+							Turn Any Text Into a
+							<br />
+							<span className="text-cyber-lime">Professional Audiobook</span>
+						</h1>
+
+						<p className="text-slate-text mb-8 max-w-2xl text-lg leading-relaxed">
+							AI voices that sound human. 41 curated voices — presidents, actors, narrators. Upload
+							your own voice to clone. Build conversations, produce full audiobooks, or generate
+							quick clips. All free during beta.
+						</p>
+
+						<div className="flex flex-wrap items-center gap-4">
+							<a
+								href="https://voicecloner.alexmayhew.dev"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="bg-cyber-lime text-void-navy hover:bg-cyber-lime/90 flex items-center gap-2 px-6 py-3 font-mono text-sm font-bold tracking-tight transition-colors"
 							>
-								<div className="border-cyber-lime absolute top-0 right-0 h-4 w-4 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-								<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-								<div className="mb-3 flex items-center justify-between">
-									<div className="text-cyber-lime">{cap.icon}</div>
-									<span className="border-cyber-lime/30 text-cyber-lime/70 border px-2 py-0.5 font-mono text-[9px] tracking-wider uppercase">
-										{cap.badge}
-									</span>
+								<span>Try Voice Cloner Free</span>
+								<ExternalLink className="h-4 w-4" strokeWidth={2} />
+							</a>
+							<span className="text-slate-text/60 text-sm">No credit card required</span>
+						</div>
+					</header>
+
+					{/* Stats */}
+					<section className="mb-16">
+						<div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+							{stats.map((stat) => (
+								<div
+									key={stat.label}
+									className="border-cyber-lime/20 bg-cyber-lime/5 border p-4 text-center"
+								>
+									<div className="text-cyber-lime text-2xl font-bold">{stat.value}</div>
+									<div className="text-slate-text mt-1 font-mono text-xs">{stat.label}</div>
 								</div>
-								<h3 className="text-mist-white mb-2 font-mono text-sm">{cap.title}</h3>
-								<p className="text-slate-text text-xs leading-relaxed">{cap.description}</p>
-							</div>
-						))}
-					</div>
-				</section>
+							))}
+						</div>
+					</section>
 
-				{/* Feature Grid */}
-				<section className="mb-16">
-					<h2 className="text-mist-white mb-8 font-mono text-sm tracking-wider uppercase">
-						Features
-					</h2>
-					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-						{features.map((feature) => (
-							<div
-								key={feature.title}
-								className="group relative border border-white/10 p-6 transition-colors hover:border-white/20"
-							>
-								<div className="border-cyber-lime absolute top-0 right-0 h-4 w-4 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-								<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-								<div className="text-cyber-lime mb-3">{feature.icon}</div>
-								<h3 className="text-mist-white mb-2 font-mono text-sm">{feature.title}</h3>
-								<p className="text-slate-text text-xs leading-relaxed">{feature.description}</p>
-							</div>
-						))}
-					</div>
-				</section>
+					{/* Three Modes */}
+					<section className="mb-16">
+						<h2 className="text-mist-white mb-8 font-mono text-sm tracking-wider uppercase">
+							Three Ways to Create
+						</h2>
+						<div className="grid gap-6 sm:grid-cols-3">
+							{capabilities.map((cap) => (
+								<div
+									key={cap.title}
+									className="group relative border border-white/10 p-6 transition-colors hover:border-white/20"
+								>
+									<div className="border-cyber-lime absolute top-0 right-0 h-4 w-4 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+									<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+									<div className="mb-3 flex items-center justify-between">
+										<div className="text-cyber-lime">{cap.icon}</div>
+										<span className="border-cyber-lime/30 text-cyber-lime/70 border px-2 py-0.5 font-mono text-[9px] tracking-wider uppercase">
+											{cap.badge}
+										</span>
+									</div>
+									<h3 className="text-mist-white mb-2 font-mono text-sm">{cap.title}</h3>
+									<p className="text-slate-text text-xs leading-relaxed">{cap.description}</p>
+								</div>
+							))}
+						</div>
+					</section>
 
-				{/* How It Works */}
-				<section className="mb-16">
-					<h2 className="text-mist-white mb-8 font-mono text-sm tracking-wider uppercase">
-						How It Works
-					</h2>
-					<div className="grid gap-6 sm:grid-cols-3">
-						{steps.map((item, index) => (
-							<div key={item.step} className="relative border border-white/10 p-6">
-								<div className="flex items-start gap-4">
-									<span className="text-cyber-lime font-mono text-2xl leading-none font-bold opacity-40">
-										{item.step}
-									</span>
+					{/* Feature Grid */}
+					<section className="mb-16">
+						<h2 className="text-mist-white mb-8 font-mono text-sm tracking-wider uppercase">
+							Features
+						</h2>
+						<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+							{features.map((feature) => (
+								<div
+									key={feature.title}
+									className="group relative border border-white/10 p-6 transition-colors hover:border-white/20"
+								>
+									<div className="border-cyber-lime absolute top-0 right-0 h-4 w-4 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+									<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+									<div className="text-cyber-lime mb-3">{feature.icon}</div>
+									<h3 className="text-mist-white mb-2 font-mono text-sm">{feature.title}</h3>
+									<p className="text-slate-text text-xs leading-relaxed">{feature.description}</p>
+								</div>
+							))}
+						</div>
+					</section>
+
+					{/* How It Works */}
+					<section className="mb-16">
+						<h2 className="text-mist-white mb-8 font-mono text-sm tracking-wider uppercase">
+							How It Works
+						</h2>
+						<div className="grid gap-6 sm:grid-cols-3">
+							{steps.map((item, index) => (
+								<div key={item.step} className="relative border border-white/10 p-6">
+									<div className="flex items-start gap-4">
+										<span className="text-cyber-lime font-mono text-2xl leading-none font-bold opacity-40">
+											{item.step}
+										</span>
+										<div>
+											<h3 className="text-mist-white mb-1 font-mono text-sm">{item.label}</h3>
+											<p className="text-slate-text text-xs leading-relaxed">{item.description}</p>
+										</div>
+									</div>
+									{index < steps.length - 1 && (
+										<div className="text-slate-text absolute top-1/2 -right-3 z-10 hidden -translate-y-1/2 font-mono text-xs sm:block">
+											&rarr;
+										</div>
+									)}
+								</div>
+							))}
+						</div>
+					</section>
+
+					{/* Audiobook Studio Deep Dive */}
+					<section className="mb-16 border-t border-white/10 pt-12">
+						<h2 className="text-mist-white mb-2 font-mono text-sm tracking-wider uppercase">
+							Audiobook Studio
+						</h2>
+						<p className="text-slate-text mb-8 max-w-2xl text-sm">
+							Go from manuscript to distribution-ready audiobook. Upload your document, let AI
+							detect chapters and characters, assign voices, and export with chapter markers.
+						</p>
+						<div className="grid gap-6 sm:grid-cols-2">
+							{audiobookFeatures.map((af) => (
+								<div key={af.title} className="flex items-start gap-3">
+									{af.icon}
 									<div>
-										<h3 className="text-mist-white mb-1 font-mono text-sm">{item.label}</h3>
-										<p className="text-slate-text text-xs leading-relaxed">{item.description}</p>
+										<h3 className="text-mist-white mb-1 font-mono text-xs">{af.title}</h3>
+										<p className="text-slate-text text-xs leading-relaxed">{af.description}</p>
 									</div>
 								</div>
-								{index < steps.length - 1 && (
-									<div className="text-slate-text absolute top-1/2 -right-3 z-10 hidden -translate-y-1/2 font-mono text-xs sm:block">
-										&rarr;
-									</div>
-								)}
-							</div>
-						))}
-					</div>
-				</section>
-
-				{/* Audiobook Studio Deep Dive */}
-				<section className="mb-16 border-t border-white/10 pt-12">
-					<h2 className="text-mist-white mb-2 font-mono text-sm tracking-wider uppercase">
-						Audiobook Studio
-					</h2>
-					<p className="text-slate-text mb-8 max-w-2xl text-sm">
-						Go from manuscript to distribution-ready audiobook. Upload your document, let AI detect
-						chapters and characters, assign voices, and export with chapter markers.
-					</p>
-					<div className="grid gap-6 sm:grid-cols-2">
-						{audiobookFeatures.map((af) => (
-							<div key={af.title} className="flex items-start gap-3">
-								{af.icon}
-								<div>
-									<h3 className="text-mist-white mb-1 font-mono text-xs">{af.title}</h3>
-									<p className="text-slate-text text-xs leading-relaxed">{af.description}</p>
-								</div>
-							</div>
-						))}
-					</div>
-				</section>
-
-				{/* Tech Specs */}
-				<section className="mb-16 border-t border-white/10 pt-12">
-					<h2 className="text-mist-white mb-6 font-mono text-sm tracking-wider uppercase">
-						Technical Stack
-					</h2>
-					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-						{specs.map((spec) => (
-							<div key={spec.label} className="space-y-1">
-								<h3 className="text-cyber-lime font-mono text-sm">{spec.label}</h3>
-								<p className="text-slate-text text-xs">{spec.value}</p>
-							</div>
-						))}
-					</div>
-				</section>
-
-				{/* CTA */}
-				<section className="border-t border-white/10 pt-12">
-					<div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
-						<div>
-							<h3 className="text-mist-white mb-2 font-mono text-lg">Try it free during beta</h3>
-							<p className="text-slate-text text-sm">
-								41 voices, conversations, audiobook production — all included. No credit card
-								required.
-							</p>
+							))}
 						</div>
-						<a
-							href="https://voicecloner.alexmayhew.dev"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="bg-cyber-lime text-void-navy hover:bg-cyber-lime/90 flex shrink-0 items-center gap-2 px-6 py-3 font-mono text-sm font-bold tracking-tight transition-colors"
-						>
-							<span>Try Voice Cloner</span>
-							<ExternalLink className="h-4 w-4" strokeWidth={2} />
-						</a>
-					</div>
-				</section>
-			</div>
-		</section>
+					</section>
+
+					{/* Tech Specs */}
+					<section className="mb-16 border-t border-white/10 pt-12">
+						<h2 className="text-mist-white mb-6 font-mono text-sm tracking-wider uppercase">
+							Technical Stack
+						</h2>
+						<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+							{specs.map((spec) => (
+								<div key={spec.label} className="space-y-1">
+									<h3 className="text-cyber-lime font-mono text-sm">{spec.label}</h3>
+									<p className="text-slate-text text-xs">{spec.value}</p>
+								</div>
+							))}
+						</div>
+					</section>
+
+					{/* CTA */}
+					<section className="border-t border-white/10 pt-12">
+						<div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+							<div>
+								<h3 className="text-mist-white mb-2 font-mono text-lg">Try it free during beta</h3>
+								<p className="text-slate-text text-sm">
+									41 voices, conversations, audiobook production — all included. No credit card
+									required.
+								</p>
+							</div>
+							<a
+								href="https://voicecloner.alexmayhew.dev"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="bg-cyber-lime text-void-navy hover:bg-cyber-lime/90 flex shrink-0 items-center gap-2 px-6 py-3 font-mono text-sm font-bold tracking-tight transition-colors"
+							>
+								<span>Try Voice Cloner</span>
+								<ExternalLink className="h-4 w-4" strokeWidth={2} />
+							</a>
+						</div>
+					</section>
+				</div>
+			</section>
+		</>
 	);
 }

@@ -172,6 +172,23 @@ describe("P3-22: Image sitemap for blog posts", () => {
 	});
 });
 
+describe("P2-21: SoftwareApplication schema for tools", () => {
+	it("traceforge should have SoftwareApplication structured data", () => {
+		const source = fs.readFileSync("src/app/tools/traceforge/page.tsx", "utf-8");
+		expect(source).toContain("SoftwareJsonLd");
+	});
+
+	it("voice-cloner should have SoftwareApplication structured data", () => {
+		const source = fs.readFileSync("src/app/tools/voice-cloner/page.tsx", "utf-8");
+		expect(source).toContain("SoftwareJsonLd");
+	});
+
+	it("pilot should have SoftwareApplication structured data", () => {
+		const source = fs.readFileSync("src/app/tools/pilot/page.tsx", "utf-8");
+		expect(source).toContain("SoftwareJsonLd");
+	});
+});
+
 describe("P3-23: RSS lastBuildDate consistency", () => {
 	it("blog/rss.xml should not use new Date() for lastBuildDate", () => {
 		const source = fs.readFileSync("src/app/blog/rss.xml/route.ts", "utf-8");

@@ -1,6 +1,7 @@
 import { ArrowLeft, Layers, Zap } from "lucide-react";
 import Link from "next/link";
 
+import { SoftwareJsonLd } from "@/components/seo/software-json-ld";
 import { TraceForgeApp } from "@/components/traceforge";
 import { SystemStatus } from "@/components/traceforge/system-status";
 
@@ -48,7 +49,25 @@ export const metadata: Metadata = {
 };
 
 export default function TraceForgePageRoute() {
-	return <TraceForgePageContent />;
+	return (
+		<>
+			<SoftwareJsonLd
+				name="TraceForge"
+				description="GPU-accelerated vectorization engine combining Real-ESRGAN neural upscaling with Potrace and VTracer. 10+ presets for logos, illustrations, and line art."
+				url="/tools/traceforge"
+				applicationCategory="DeveloperApplication"
+				operatingSystem="Web Browser"
+				featureList={[
+					"Real-ESRGAN neural upscaling",
+					"Potrace bitmap tracing",
+					"VTracer multi-color vectorization",
+					"SVGO optimization pipeline",
+					"10+ preset configurations",
+				]}
+			/>
+			<TraceForgePageContent />
+		</>
+	);
 }
 
 function TraceForgePageContent() {
