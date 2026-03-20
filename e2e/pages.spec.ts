@@ -1,25 +1,24 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("Page Load", () => {
 	test("home page loads correctly", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 
 		await expect(page).toHaveTitle(/Alex Mayhew/i);
 
-		// Main content should exist
 		const main = page.locator("#main-content");
 		await expect(main).toBeAttached();
 	});
 
 	test("work page loads and displays projects", async ({ page }) => {
 		await page.goto("/work");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 
 		await expect(page).toHaveTitle(/Work.*Alex Mayhew/i);
 
 		// Wait for content to render
-		await page.waitForTimeout(500);
+		await expect(page.locator("#main-content")).toBeAttached();
 
 		// Should have main-content (the one from layout with id)
 		const mainContent = page.locator("#main-content");
@@ -28,26 +27,25 @@ test.describe("Page Load", () => {
 
 	test("about page loads", async ({ page }) => {
 		await page.goto("/about");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 
 		await expect(page).toHaveTitle(/About.*Alex Mayhew/i);
 	});
 
 	test("contact page loads with form", async ({ page }) => {
 		await page.goto("/contact");
-		await page.waitForLoadState("networkidle");
-		await page.waitForTimeout(500);
+		await page.waitForLoadState("domcontentloaded");
+		await expect(page.locator("#main-content")).toBeAttached();
 
 		await expect(page).toHaveTitle(/Contact.*Alex Mayhew/i);
 
-		// Should have form elements
 		const form = page.locator("form");
 		await expect(form.first()).toBeAttached();
 	});
 
 	test("blog page loads", async ({ page }) => {
 		await page.goto("/blog");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 
 		await expect(page).toHaveTitle(/Blog.*Alex Mayhew/i);
 	});
@@ -64,12 +62,12 @@ test.describe("Page Content", () => {
 
 		for (const path of pages) {
 			await page.goto(path);
-			await page.waitForLoadState("networkidle");
-			await page.waitForTimeout(300);
+			await page.waitForLoadState("domcontentloaded");
+			await expect(page.locator("footer")).toBeAttached();
 
 			// Scroll to bottom
 			await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-			await page.waitForTimeout(200);
+			await page.waitForLoadState("domcontentloaded");
 
 			const footer = page.locator("footer");
 			await expect(footer).toBeAttached();
@@ -81,7 +79,7 @@ test.describe("Page Content", () => {
 
 		for (const path of pages) {
 			await page.goto(path);
-			await page.waitForLoadState("networkidle");
+			await page.waitForLoadState("domcontentloaded");
 
 			const nav = page.locator("nav").first();
 			await expect(nav).toBeVisible();

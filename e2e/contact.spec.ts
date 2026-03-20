@@ -11,8 +11,8 @@ function contactForm(page: Page) {
 test.describe("Contact Page", () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto("/contact");
-		await page.waitForLoadState("networkidle");
-		await page.waitForTimeout(500);
+		await page.waitForLoadState("domcontentloaded");
+		await expect(page.locator("form")).toBeVisible();
 	});
 
 	test("should display all form fields", async ({ page }) => {
@@ -58,7 +58,7 @@ test.describe("Contact Page", () => {
 	test("should be responsive on mobile", async ({ page }) => {
 		await page.setViewportSize({ width: 375, height: 667 });
 		await page.goto("/contact");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 
 		await expect(contactForm(page).locator('input[name="name"]')).toBeVisible();
 
@@ -72,7 +72,7 @@ test.describe("Contact Page", () => {
 test.describe("Contact Form Validation", () => {
 	test("should prevent submission with empty required fields", async ({ page }) => {
 		await page.goto("/contact");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 
 		const form = contactForm(page);
 		const submitButton = form.locator('button[type="submit"]');
@@ -84,7 +84,7 @@ test.describe("Contact Form Validation", () => {
 
 	test("should accept valid form data", async ({ page }) => {
 		await page.goto("/contact");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 
 		const form = contactForm(page);
 

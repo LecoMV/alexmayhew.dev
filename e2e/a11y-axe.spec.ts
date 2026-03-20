@@ -1,5 +1,5 @@
-import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { expect, test } from "@playwright/test";
 
 test.describe("Accessibility (WCAG 2.1 AA)", () => {
 	// Helper to run axe and check violations
@@ -28,43 +28,43 @@ test.describe("Accessibility (WCAG 2.1 AA)", () => {
 
 	test("home page should be accessible", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 		await checkAccessibility(page);
 	});
 
 	test("work page should be accessible", async ({ page }) => {
 		await page.goto("/work");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 		await checkAccessibility(page);
 	});
 
 	test("about page should be accessible", async ({ page }) => {
 		await page.goto("/about");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 		await checkAccessibility(page);
 	});
 
 	test("contact page should be accessible", async ({ page }) => {
 		await page.goto("/contact");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 		await checkAccessibility(page);
 	});
 
 	test("blog page should be accessible", async ({ page }) => {
 		await page.goto("/blog");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 		await checkAccessibility(page);
 	});
 
 	test("privacy page should be accessible", async ({ page }) => {
 		await page.goto("/privacy");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 		await checkAccessibility(page);
 	});
 
 	test("terms page should be accessible", async ({ page }) => {
 		await page.goto("/terms");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 		await checkAccessibility(page);
 	});
 });
@@ -72,9 +72,8 @@ test.describe("Accessibility (WCAG 2.1 AA)", () => {
 test.describe("Accessibility - Contact Form", () => {
 	test("contact form inputs should have proper labels", async ({ page }) => {
 		await page.goto("/contact");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 
-		// Check that all form inputs have associated labels
 		const nameInput = page.locator('input[name="name"], input[id="name"]');
 		await expect(nameInput).toBeVisible();
 
@@ -89,7 +88,7 @@ test.describe("Accessibility - Contact Form", () => {
 
 	test("form error states should be accessible", async ({ page }) => {
 		await page.goto("/contact");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 
 		// Try to submit empty form to trigger validation (scope to contact form)
 		const contactForm = page.locator("form", { has: page.locator('textarea[name="message"]') });
@@ -98,9 +97,8 @@ test.describe("Accessibility - Contact Form", () => {
 		await submitButton.click();
 
 		// Wait for validation states
-		await page.waitForTimeout(500);
+		await expect(page.locator("#main-content")).toBeAttached();
 
-		// Check accessibility with error states
 		const accessibilityScanResults = await new AxeBuilder({ page })
 			.withTags(["wcag2a", "wcag2aa"])
 			.analyze();
@@ -117,12 +115,11 @@ test.describe("Accessibility - Contact Form", () => {
 test.describe("Accessibility - Keyboard Navigation", () => {
 	test("should be able to navigate using keyboard", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 
 		// Focus should start at beginning of page
 		await page.keyboard.press("Tab");
 
-		// Check that skip link is first focusable element
 		const skipLink = page.locator("#skip-to-content");
 		if (await skipLink.isVisible()) {
 			await expect(skipLink).toBeFocused();
@@ -140,13 +137,12 @@ test.describe("Accessibility - Keyboard Navigation", () => {
 
 	test("interactive elements should have visible focus states", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 
 		// Find a button and tab to it
 		const buttons = page.locator("button, a").first();
 		await buttons.focus();
 
-		// Check that focus is visible (outline or ring)
 		const focusedStyles = await buttons.evaluate((el) => {
 			const styles = window.getComputedStyle(el);
 			return {
@@ -167,7 +163,7 @@ test.describe("Accessibility - Keyboard Navigation", () => {
 test.describe("Accessibility - Color Contrast", () => {
 	test("should pass color contrast requirements", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 
 		const accessibilityScanResults = await new AxeBuilder({ page })
 			.withTags(["cat.color"])

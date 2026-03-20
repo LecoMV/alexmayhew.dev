@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test.describe("SEO", () => {
 	test("home page has proper meta tags", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 
 		// Title
 		await expect(page).toHaveTitle(/Alex Mayhew/i);
@@ -28,7 +28,7 @@ test.describe("SEO", () => {
 
 	test("canonical URL is set on blog posts", async ({ page }) => {
 		await page.goto("/blog/ai-assisted-development-guide");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 
 		const canonical = page.locator('link[rel="canonical"]');
 		await expect(canonical).toHaveAttribute(
@@ -39,7 +39,7 @@ test.describe("SEO", () => {
 
 	test("robots meta allows indexing", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 
 		const robots = page.locator('meta[name="robots"]');
 		const exists = (await robots.count()) > 0;
@@ -63,7 +63,7 @@ test.describe("SEO", () => {
 
 	test("JSON-LD structured data is present", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("networkidle");
+		await page.waitForLoadState("domcontentloaded");
 
 		const jsonLd = page.locator('script[type="application/ld+json"]');
 		await expect(jsonLd.first()).toBeAttached();
@@ -83,7 +83,7 @@ test.describe("SEO", () => {
 
 		for (const path of pages) {
 			await page.goto(path);
-			await page.waitForLoadState("networkidle");
+			await page.waitForLoadState("domcontentloaded");
 			const title = await page.title();
 			titles.push(title);
 		}
@@ -98,7 +98,7 @@ test.describe("SEO", () => {
 
 		for (const path of pages) {
 			await page.goto(path);
-			await page.waitForLoadState("networkidle");
+			await page.waitForLoadState("domcontentloaded");
 
 			const description = page.locator('meta[name="description"]');
 			await expect(description).toHaveAttribute("content", /.+/);
