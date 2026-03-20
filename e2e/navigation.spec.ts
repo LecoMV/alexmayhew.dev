@@ -18,24 +18,23 @@ test.describe("Navigation", () => {
 
 		const desktopNav = page.locator("nav > div > div.hidden.lg\\:flex");
 
-		// Navigate to Work page — use waitForURL instead of networkidle
-		await desktopNav.locator('a[href="/work"]').click();
+		// Use force:true to bypass Lenis smooth scroll intercepting pointer events.
+		// Lenis attaches to <html> and intercepts clicks during scroll animations,
+		// causing Playwright's actionability check to time out waiting for the
+		// overlay to clear.
+		await desktopNav.locator('a[href="/work"]').click({ force: true });
 		await expect(page).toHaveURL("/work");
 
-		// Navigate to About page
-		await desktopNav.locator('a[href="/about"]').click();
+		await desktopNav.locator('a[href="/about"]').click({ force: true });
 		await expect(page).toHaveURL("/about");
 
-		// Navigate to Contact page
-		await desktopNav.locator('a[href="/contact"]').click();
+		await desktopNav.locator('a[href="/contact"]').click({ force: true });
 		await expect(page).toHaveURL("/contact");
 
-		// Navigate to Blog page
-		await desktopNav.locator('a[href="/blog"]').click();
+		await desktopNav.locator('a[href="/blog"]').click({ force: true });
 		await expect(page).toHaveURL("/blog");
 
-		// Navigate back to Home via logo
-		await page.locator('header a[href="/"]').first().click();
+		await page.locator('header a[href="/"]').first().click({ force: true });
 		await expect(page).toHaveURL("/");
 	});
 
