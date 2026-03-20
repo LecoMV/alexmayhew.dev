@@ -6,7 +6,7 @@ test.describe("Navigation", () => {
 		// Use domcontentloaded instead of networkidle — Next.js 15 prefetching
 		// keeps the network active indefinitely, causing networkidle to never settle
 		await page.waitForLoadState("domcontentloaded");
-		await expect(page.locator("nav")).toBeVisible();
+		await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
 	});
 
 	test("navigation links work correctly", async ({ page, viewport }) => {

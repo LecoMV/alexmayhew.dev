@@ -12,7 +12,7 @@ test.describe("Contact Page", () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto("/contact");
 		await page.waitForLoadState("domcontentloaded");
-		await expect(page.locator("form")).toBeVisible();
+		await expect(contactForm(page)).toBeVisible();
 	});
 
 	test("should display all form fields", async ({ page }) => {
