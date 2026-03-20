@@ -37,6 +37,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 	const roleLabel = ROLE_LABELS[page.role];
 	const pageUrl = `${siteUrl}/for/${role}`;
+	const ogImage = `/og?title=${encodeURIComponent(page.seo.title)}&description=${encodeURIComponent(page.seo.description)}&category=${encodeURIComponent("Advisory")}`;
 
 	return {
 		title: page.seo.title,
@@ -51,7 +52,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			siteName: "Alex Mayhew",
 			images: [
 				{
-					url: `${siteUrl}/og-image.png`,
+					url: ogImage,
 					width: 1200,
 					height: 630,
 					alt: `Technical Advisor for ${roleLabel}`,
@@ -62,7 +63,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			card: "summary_large_image",
 			title: page.seo.title,
 			description: page.seo.description,
-			images: [`${siteUrl}/og-image.png`],
+			images: [ogImage],
 			creator: "@alexmayhewdev",
 		},
 		alternates: {

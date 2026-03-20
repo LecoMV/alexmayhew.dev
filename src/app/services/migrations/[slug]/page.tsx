@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 
-import { generateMigrationHowToSteps, HowToJsonLd } from "@/components/seo/howto-json-ld";
 import { MigrationJsonLd } from "@/components/seo/migration-json-ld";
 import { getAllMigrationSlugs, getMigrationPageBySlug } from "@/data/pseo";
 
@@ -37,6 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	}
 
 	const pageUrl = `${siteUrl}/services/migrations/${slug}`;
+	const ogImage = `/og?title=${encodeURIComponent(page.seo.title)}&description=${encodeURIComponent(page.seo.description)}&category=${encodeURIComponent("Migration")}`;
 
 	return {
 		title: page.seo.title,
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			siteName: "Alex Mayhew",
 			images: [
 				{
-					url: `${siteUrl}/og-image.png`,
+					url: ogImage,
 					width: 1200,
 					height: 630,
 					alt: `${page.legacyTech.name} to ${page.modernTech.name} Migration`,
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			card: "summary_large_image",
 			title: page.seo.title,
 			description: page.seo.description,
-			images: [`${siteUrl}/og-image.png`],
+			images: [ogImage],
 			creator: "@alexmayhewdev",
 		},
 		alternates: {
@@ -82,32 +82,9 @@ export default async function MigrationPage({ params }: PageProps) {
 		notFound();
 	}
 
-	const howToSteps = generateMigrationHowToSteps(page.legacyTech.name, page.modernTech.name);
-
-	// Calculate total weeks from migration timeline phases
-	const totalWeeks =
-		page.timeline.assessmentWeeks + page.timeline.mvpWeeks + page.timeline.fullMigrationWeeks;
-
 	return (
 		<>
 			<MigrationJsonLd page={page} />
-			<HowToJsonLd
-				name={`How to Migrate from ${page.legacyTech.name} to ${page.modernTech.name}`}
-				description={`Step-by-step guide for migrating your ${page.legacyTech.name} application to ${page.modernTech.name}. Covers assessment, architecture planning, incremental migration, and production cutover.`}
-				steps={howToSteps}
-				totalTime={`P${totalWeeks}W`}
-				estimatedCost={{
-					currency: "USD",
-					minValue: page.budgetGuidance.mvpMin,
-					maxValue: page.budgetGuidance.fullMax,
-				}}
-				tool={[
-					"Code Analysis Tools",
-					"CI/CD Pipeline",
-					"Monitoring Dashboard",
-					"Feature Flag System",
-				]}
-			/>
 			<MigrationPageContent page={page} />
 		</>
 	);

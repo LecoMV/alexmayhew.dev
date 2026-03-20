@@ -119,6 +119,54 @@ describe("P1-11: Schema consolidation", () => {
 	});
 });
 
+describe("P1-10: Navigation internal links", () => {
+	it("navigation should include /newsletter link", () => {
+		const source = fs.readFileSync("src/components/ui/navigation.tsx", "utf-8");
+		expect(source).toContain('href: "/newsletter"');
+	});
+});
+
+describe("P2-19: Remove deprecated HowTo schema", () => {
+	it("migration pages should not use HowToJsonLd", () => {
+		const source = fs.readFileSync("src/app/services/migrations/[slug]/page.tsx", "utf-8");
+		expect(source).not.toContain("HowToJsonLd");
+	});
+
+	it("integration pages should not use HowToJsonLd", () => {
+		const source = fs.readFileSync("src/app/services/integrations/[slug]/page.tsx", "utf-8");
+		expect(source).not.toContain("HowToJsonLd");
+	});
+});
+
+describe("P2-15: Dynamic OG images on all page types", () => {
+	it("role pages should use dynamic OG images via /og route", () => {
+		const source = fs.readFileSync("src/app/for/[role]/page.tsx", "utf-8");
+		expect(source).toContain("/og?");
+	});
+
+	it("technology pages should use dynamic OG images via /og route", () => {
+		const source = fs.readFileSync("src/app/technologies/[slug]/page.tsx", "utf-8");
+		expect(source).toContain("/og?");
+	});
+
+	it("migration pages should use dynamic OG images via /og route", () => {
+		const source = fs.readFileSync("src/app/services/migrations/[slug]/page.tsx", "utf-8");
+		expect(source).toContain("/og?");
+	});
+
+	it("integration pages should use dynamic OG images via /og route", () => {
+		const source = fs.readFileSync("src/app/services/integrations/[slug]/page.tsx", "utf-8");
+		expect(source).toContain("/og?");
+	});
+});
+
+describe("P3-23: RSS lastBuildDate consistency", () => {
+	it("blog/rss.xml should not use new Date() for lastBuildDate", () => {
+		const source = fs.readFileSync("src/app/blog/rss.xml/route.ts", "utf-8");
+		expect(source).not.toContain("new Date().toUTCString()");
+	});
+});
+
 describe("P2-13/14: _headers deprecated directives", () => {
 	it("should use browsing-topics, not interest-cohort", () => {
 		const headers = fs.readFileSync("public/_headers", "utf-8");

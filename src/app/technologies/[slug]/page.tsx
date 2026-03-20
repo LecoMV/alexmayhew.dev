@@ -30,6 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	const siteUrl = "https://alexmayhew.dev";
 	const title = `${technology.displayName} Developer | Technical Advisor`;
 	const description = `Expert ${technology.displayName} development and consulting. ${technology.expertiseLevel.slice(0, 120)}...`;
+	const ogImage = `/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&category=${encodeURIComponent("Technology")}`;
 
 	return {
 		title,
@@ -44,7 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			description,
 			images: [
 				{
-					url: "/og-image.png",
+					url: ogImage,
 					width: 1200,
 					height: 630,
 					alt: `${technology.displayName} Development`,
@@ -55,7 +56,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			card: "summary_large_image",
 			title,
 			description,
-			images: ["/og-image.png"],
+			images: [ogImage],
 			creator: "@alexmayhewdev",
 		},
 		alternates: {

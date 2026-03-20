@@ -21,6 +21,8 @@ export async function GET() {
 		.filter((post) => !post.draft)
 		.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
 
+	const lastBuildDate = posts[0]?.publishedAt.toUTCString() ?? new Date("2026-01-01").toUTCString();
+
 	const rssItems = posts
 		.map((post) => {
 			const slug = getSlug(post.info.path);
@@ -46,7 +48,7 @@ export async function GET() {
     <link>${siteUrl}/blog</link>
     <description>Technical articles on engineering, architecture, and modern web development patterns.</description>
     <language>en-us</language>
-    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    <lastBuildDate>${lastBuildDate}</lastBuildDate>
     <atom:link href="${siteUrl}/blog/rss.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>${siteUrl}/og-image.png</url>

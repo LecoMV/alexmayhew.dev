@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 
-import { generateIntegrationHowToSteps, HowToJsonLd } from "@/components/seo/howto-json-ld";
 import { IntegrationJsonLd } from "@/components/seo/integration-json-ld";
 import { getAllIntegrationSlugs, getIntegrationPageBySlug } from "@/data/pseo";
 
@@ -37,6 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	}
 
 	const pageUrl = `${siteUrl}/services/integrations/${slug}`;
+	const ogImage = `/og?title=${encodeURIComponent(page.seo.title)}&description=${encodeURIComponent(page.seo.description)}&category=${encodeURIComponent("Integration")}`;
 
 	return {
 		title: page.seo.title,
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			siteName: "Alex Mayhew",
 			images: [
 				{
-					url: `${siteUrl}/og-image.png`,
+					url: ogImage,
 					width: 1200,
 					height: 630,
 					alt: `${page.saasA.name} + ${page.saasB.name} Integration`,
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			card: "summary_large_image",
 			title: page.seo.title,
 			description: page.seo.description,
-			images: [`${siteUrl}/og-image.png`],
+			images: [ogImage],
 			creator: "@alexmayhewdev",
 		},
 		alternates: {
@@ -82,27 +82,9 @@ export default async function IntegrationPage({ params }: PageProps) {
 		notFound();
 	}
 
-	const howToSteps = generateIntegrationHowToSteps(page.saasA.name, page.saasB.name);
-
-	// Calculate total weeks from integration timeline phases
-	const totalWeeks =
-		page.timeline.discoveryWeeks + page.timeline.mvpWeeks + page.timeline.productionWeeks;
-
 	return (
 		<>
 			<IntegrationJsonLd page={page} />
-			<HowToJsonLd
-				name={`How to Integrate ${page.saasA.name} with ${page.saasB.name}`}
-				description={`Enterprise-grade integration guide for connecting ${page.saasA.name} and ${page.saasB.name}. Covers API setup, data mapping, middleware architecture, and compliance requirements.`}
-				steps={howToSteps}
-				totalTime={`P${totalWeeks}W`}
-				estimatedCost={{
-					currency: "USD",
-					minValue: page.budgetGuidance.mvpMin,
-					maxValue: page.budgetGuidance.fullMax,
-				}}
-				tool={["API Documentation", "Middleware Platform", "Monitoring Tools", "Testing Framework"]}
-			/>
 			<IntegrationPageContent page={page} />
 		</>
 	);
