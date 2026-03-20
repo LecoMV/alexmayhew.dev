@@ -74,12 +74,17 @@ test.describe("Accessibility - Contact Form", () => {
 		await page.goto("/contact");
 		await page.waitForLoadState("domcontentloaded");
 
-		const nameInput = page.locator('input[name="name"], input[id="name"]');
-		await expect(nameInput).toBeVisible();
+		// Scope to the contact form (has textarea), not the footer newsletter form
+		const contactForm = page.locator("form", { has: page.locator('textarea[name="message"]') });
+		await expect(contactForm.locator('input[name="name"]')).toBeVisible();
 
-		// Verify form has accessible labels via axe
+		// Verify form has accessible labels via axe — scope to contact form only
+		const formId = await contactForm.evaluate((el) => {
+			if (!el.id) el.id = "contact-form-axe";
+			return el.id;
+		});
 		const accessibilityScanResults = await new AxeBuilder({ page })
-			.include("form")
+			.include(`#${formId}`)
 			.withTags(["wcag2a", "wcag2aa"])
 			.analyze();
 
