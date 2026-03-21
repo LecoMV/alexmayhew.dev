@@ -152,15 +152,61 @@ Image sitemaps help Google discover images that might not otherwise be found —
 </url>
 ```
 
-**Next.js 15 support:** The `MetadataRoute.Sitemap` type now supports an `images` array property:
+**Next.js 15 support — CONFIRMED:** The `MetadataRoute.Sitemap` type supports an `images` property. The TypeScript type definition (verified from `node_modules/next/dist/lib/metadata/types/metadata-interface.d.ts`) is:
+
+```typescript
+type SitemapFile = Array<{
+	url: string;
+	lastModified?: string | Date | undefined;
+	changeFrequency?:
+		| "always"
+		| "hourly"
+		| "daily"
+		| "weekly"
+		| "monthly"
+		| "yearly"
+		| "never"
+		| undefined;
+	priority?: number | undefined;
+	alternates?: { languages?: Languages<string> | undefined } | undefined;
+	images?: string[] | undefined; // <-- native support
+	videos?: Videos[] | undefined;
+}>;
+```
+
+Usage (the `images` value is `string[]` — array of fully-qualified image URLs):
 
 ```typescript
 {
   url: `${siteUrl}/blog/${slug}`,
-  lastModified: post.updatedAt,
+  lastModified: post.updatedAt ?? post.publishedAt,
+  changeFrequency: "monthly" as const,
+  priority: post.isHub ? 0.9 : 0.7,
   images: [`${siteUrl}/images/blog/${slug}-featured.webp`],
 }
 ```
+
+Next.js generates the correct `<image:image><image:loc>` XML output automatically — no custom XML needed.
+
+**Implementation pattern for blog posts in `sitemap.ts`:**
+
+```typescript
+// Blog posts with image sitemap entries
+const blogPosts: MetadataRoute.Sitemap = blog
+	.filter((post) => !post.draft)
+	.map((post) => {
+		const slug = getSlug(post.info.path);
+		return {
+			url: `${siteUrl}/blog/${slug}`,
+			lastModified: post.updatedAt ?? post.publishedAt,
+			changeFrequency: "monthly" as const,
+			priority: post.isHub ? 0.9 : 0.7,
+			images: [`${siteUrl}/images/blog/${slug}-featured.webp`],
+		};
+	});
+```
+
+**Note:** Since every blog post has a featured image at a predictable path (`/images/blog/{slug}-featured.webp`), this is safe to add unconditionally. If a post is missing its image, the sitemap entry still validates — Google simply won't crawl an image that returns 404.
 
 **Should alexmayhew.dev use image sitemaps?**
 
@@ -170,7 +216,7 @@ Conditionally. Featured images for blog posts are static WebP files at predictab
 - Images are hosted on a CDN subdomain (Googlebot may not follow cross-origin lazy-load)
 - You want Google Image Search indexing for portfolio/case study screenshots
 
-**Verdict:** Not required for SEO correctness, but adding featured blog post images to the sitemap is low-cost and provides a Google Image Search signal. Can be deferred.
+**Verdict:** Not required for SEO correctness, but adding featured blog post images to the sitemap is low-cost and provides a Google Image Search signal. Can be added with a one-line change per blog post entry.
 
 ---
 
