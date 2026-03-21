@@ -3,9 +3,6 @@ import { expect, test } from "@playwright/test";
 test.describe("Navigation", () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto("/");
-		// Use domcontentloaded instead of networkidle — Next.js 15 prefetching
-		// keeps the network active indefinitely, causing networkidle to never settle
-		await page.waitForLoadState("domcontentloaded");
 		await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
 	});
 
@@ -47,7 +44,7 @@ test.describe("Navigation", () => {
 	test("mobile menu opens and closes", async ({ page }) => {
 		await page.setViewportSize({ width: 375, height: 667 });
 		await page.goto("/");
-		await page.waitForLoadState("domcontentloaded");
+		await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
 
 		const menuButton = page.getByRole("button", { name: /open menu/i });
 		await expect(menuButton).toBeVisible();
@@ -65,7 +62,7 @@ test.describe("Navigation", () => {
 	test("mobile menu navigation works", async ({ page }) => {
 		await page.setViewportSize({ width: 375, height: 667 });
 		await page.goto("/");
-		await page.waitForLoadState("domcontentloaded");
+		await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
 
 		const menuButton = page.getByRole("button", { name: /open menu/i });
 		await menuButton.click();
@@ -85,7 +82,7 @@ test.describe("Navigation", () => {
 		}
 
 		await page.goto("/work");
-		await page.waitForLoadState("domcontentloaded");
+		await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
 
 		const desktopNav = page.locator("nav > div > div.hidden.lg\\:flex");
 		const workLink = desktopNav.locator('a[href="/work"]');
@@ -94,7 +91,7 @@ test.describe("Navigation", () => {
 
 	test("logo links to home", async ({ page }) => {
 		await page.goto("/work");
-		await page.waitForLoadState("domcontentloaded");
+		await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
 
 		const logoLink = page.locator('header a[href="/"]').first();
 		await logoLink.click();

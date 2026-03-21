@@ -3,8 +3,6 @@ import { expect, test } from "@playwright/test";
 test.describe("Chat Widget", () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("domcontentloaded");
-		// Wait for lazy-loaded chat widget to render
 		await expect(page.locator('button[aria-label="Open chat"]')).toBeVisible();
 	});
 

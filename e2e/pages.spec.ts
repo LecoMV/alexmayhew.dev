@@ -3,7 +3,6 @@ import { expect, test } from "@playwright/test";
 test.describe("Page Load", () => {
 	test("home page loads correctly", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("domcontentloaded");
 
 		await expect(page).toHaveTitle(/Alex Mayhew/i);
 
@@ -13,39 +12,26 @@ test.describe("Page Load", () => {
 
 	test("work page loads and displays projects", async ({ page }) => {
 		await page.goto("/work");
-		await page.waitForLoadState("domcontentloaded");
 
 		await expect(page).toHaveTitle(/Work.*Alex Mayhew/i);
-
-		// Wait for content to render
 		await expect(page.locator("#main-content")).toBeAttached();
-
-		// Should have main-content (the one from layout with id)
-		const mainContent = page.locator("#main-content");
-		await expect(mainContent).toBeAttached();
 	});
 
 	test("about page loads", async ({ page }) => {
 		await page.goto("/about");
-		await page.waitForLoadState("domcontentloaded");
 
 		await expect(page).toHaveTitle(/About.*Alex Mayhew/i);
 	});
 
 	test("contact page loads with form", async ({ page }) => {
 		await page.goto("/contact");
-		await page.waitForLoadState("domcontentloaded");
-		await expect(page.locator("#main-content")).toBeAttached();
 
 		await expect(page).toHaveTitle(/Contact.*Alex Mayhew/i);
-
-		const form = page.locator("form");
-		await expect(form.first()).toBeAttached();
+		await expect(page.locator("form").first()).toBeAttached();
 	});
 
 	test("blog page loads", async ({ page }) => {
 		await page.goto("/blog");
-		await page.waitForLoadState("domcontentloaded");
 
 		await expect(page).toHaveTitle(/Blog.*Alex Mayhew/i);
 	});
@@ -62,15 +48,10 @@ test.describe("Page Content", () => {
 
 		for (const path of pages) {
 			await page.goto(path);
-			await page.waitForLoadState("domcontentloaded");
-			await expect(page.locator("footer")).toBeAttached();
 
-			// Scroll to bottom
+			// Scroll to bottom to ensure footer is in view
 			await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-			await page.waitForLoadState("domcontentloaded");
-
-			const footer = page.locator("footer");
-			await expect(footer).toBeAttached();
+			await expect(page.locator("footer")).toBeVisible();
 		}
 	});
 
@@ -79,7 +60,6 @@ test.describe("Page Content", () => {
 
 		for (const path of pages) {
 			await page.goto(path);
-			await page.waitForLoadState("domcontentloaded");
 
 			const nav = page.locator("nav").first();
 			await expect(nav).toBeVisible();

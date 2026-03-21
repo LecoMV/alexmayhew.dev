@@ -28,43 +28,43 @@ test.describe("Accessibility (WCAG 2.1 AA)", () => {
 
 	test("home page should be accessible", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("domcontentloaded");
+
 		await checkAccessibility(page);
 	});
 
 	test("work page should be accessible", async ({ page }) => {
 		await page.goto("/work");
-		await page.waitForLoadState("domcontentloaded");
+
 		await checkAccessibility(page);
 	});
 
 	test("about page should be accessible", async ({ page }) => {
 		await page.goto("/about");
-		await page.waitForLoadState("domcontentloaded");
+
 		await checkAccessibility(page);
 	});
 
 	test("contact page should be accessible", async ({ page }) => {
 		await page.goto("/contact");
-		await page.waitForLoadState("domcontentloaded");
+
 		await checkAccessibility(page);
 	});
 
 	test("blog page should be accessible", async ({ page }) => {
 		await page.goto("/blog");
-		await page.waitForLoadState("domcontentloaded");
+
 		await checkAccessibility(page);
 	});
 
 	test("privacy page should be accessible", async ({ page }) => {
 		await page.goto("/privacy");
-		await page.waitForLoadState("domcontentloaded");
+
 		await checkAccessibility(page);
 	});
 
 	test("terms page should be accessible", async ({ page }) => {
 		await page.goto("/terms");
-		await page.waitForLoadState("domcontentloaded");
+
 		await checkAccessibility(page);
 	});
 });
@@ -72,7 +72,6 @@ test.describe("Accessibility (WCAG 2.1 AA)", () => {
 test.describe("Accessibility - Contact Form", () => {
 	test("contact form inputs should have proper labels", async ({ page }) => {
 		await page.goto("/contact");
-		await page.waitForLoadState("domcontentloaded");
 
 		// Scope to the contact form (has textarea), not the footer newsletter form
 		const contactForm = page.locator("form", { has: page.locator('textarea[name="message"]') });
@@ -93,7 +92,6 @@ test.describe("Accessibility - Contact Form", () => {
 
 	test("form error states should be accessible", async ({ page }) => {
 		await page.goto("/contact");
-		await page.waitForLoadState("domcontentloaded");
 
 		// Try to submit empty form to trigger validation (scope to contact form)
 		const contactForm = page.locator("form", { has: page.locator('textarea[name="message"]') });
@@ -120,7 +118,6 @@ test.describe("Accessibility - Contact Form", () => {
 test.describe("Accessibility - Keyboard Navigation", () => {
 	test("should be able to navigate using keyboard", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("domcontentloaded");
 
 		// Focus should start at beginning of page
 		await page.keyboard.press("Tab");
@@ -142,7 +139,6 @@ test.describe("Accessibility - Keyboard Navigation", () => {
 
 	test("interactive elements should have visible focus states", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("domcontentloaded");
 
 		// Find a button and tab to it
 		const buttons = page.locator("button, a").first();
@@ -168,7 +164,6 @@ test.describe("Accessibility - Keyboard Navigation", () => {
 test.describe("Accessibility - Color Contrast", () => {
 	test("should pass color contrast requirements", async ({ page }) => {
 		await page.goto("/");
-		await page.waitForLoadState("domcontentloaded");
 
 		const accessibilityScanResults = await new AxeBuilder({ page })
 			.withTags(["cat.color"])
