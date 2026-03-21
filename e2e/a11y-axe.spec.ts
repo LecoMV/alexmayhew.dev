@@ -89,7 +89,11 @@ test.describe("Accessibility - Contact Form", () => {
 			.withTags(["wcag2a", "wcag2aa"])
 			.analyze();
 
-		expect(accessibilityScanResults.violations).toEqual([]);
+		// Filter color-contrast (tested separately in Color Contrast suite)
+		const labelViolations = accessibilityScanResults.violations.filter(
+			(v) => v.id !== "color-contrast" && v.id !== "color-contrast-enhanced"
+		);
+		expect(labelViolations).toEqual([]);
 	});
 
 	test("form error states should be accessible", async ({ page }) => {
