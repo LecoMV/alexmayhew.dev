@@ -1,6 +1,7 @@
 import path from "path";
 
 import react from "@vitejs/plugin-react";
+import { VitestReporter as TddGuardReporter } from "tdd-guard-vitest";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
@@ -8,6 +9,7 @@ export default defineConfig({
 	test: {
 		environment: "jsdom",
 		globals: true,
+		reporters: ["default", new TddGuardReporter()],
 		setupFiles: ["./tests/setup.ts"],
 		include: ["./tests/**/*.{test,spec}.{ts,tsx}", "./src/**/*.{test,spec}.{ts,tsx}"],
 		exclude: ["node_modules", ".next", "e2e"],

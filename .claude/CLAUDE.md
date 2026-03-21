@@ -61,6 +61,45 @@ Act as a Principal Software Engineer. Your goal is **Operational Resiliency**, *
   - No hardcoded secrets. Use `pass show claude/<service>/key` for all credentials.
   - Never commit `.env` files, credentials, or API keys.
 
+# **Verification Protocol (MANDATORY)**
+
+## Before Every Commit
+
+```bash
+npm run build          # Typecheck + lint + build (catches what tests miss)
+npx vitest run         # All tests pass
+```
+
+NEVER commit if either fails. NEVER claim work is "done" until both pass.
+
+## Before Every Push
+
+- Verify the build passes locally — CI has stricter rules than local dev
+- Run full lint — CI catches `no-require-imports`, `exhaustive-deps`, `no-unused-expressions` that tests don't
+- Check git diff — make sure only intended files are staged
+
+## After Every Deploy
+
+- Monitor the GitHub Actions run until CI Passed gate is green
+- Check the deploy job completes successfully
+- Verify the health endpoint: `curl -s https://alexmayhew.dev/api/health | jq`
+- NEVER say "deployed" until the deploy job shows success
+
+# **Problem-Solving Protocol**
+
+## When Diagnosing Issues
+
+1. **Scan ALL problems first** — never stop at the first issue found
+2. **Research before acting** — verify root cause with data, not assumptions
+3. **Fix ALL issues** — don't fix one and assume the rest resolved themselves
+4. **Verify fixes work** — test each fix before moving to the next
+
+## When Blocked
+
+- After 2 failed attempts at the same approach: STOP and rethink
+- Don't brute force — consider alternative approaches
+- Ask the user if the right path is unclear
+
 # **Refactoring Protocol (Command: /refactor)**
 
 When asked to refactor, do not just "clean up." Apply the **Rule of Five**:
@@ -70,3 +109,22 @@ When asked to refactor, do not just "clean up." Apply the **Rule of Five**:
 3. **Sanitize:** Remove dead code and unused imports immediately.
 4. **Strengthen:** Add missing error handling for edge cases.
 5. **Test:** Ensure the build passes; verify refactored logic works as expected.
+
+# **Commands**
+
+```bash
+npm run dev                    # Local dev server
+npm run build                  # Full build (typecheck + lint + build)
+npm run lint                   # ESLint check
+npm run test:run               # Vitest (all tests)
+npm run test:coverage          # Coverage report
+npm run test:e2e               # Playwright E2E
+npm run validate               # Full validation suite
+curl -s https://alexmayhew.dev/api/health | jq  # Production health
+```
+
+# **Credentials**
+
+```bash
+pass show claude/<service>/key  # All secrets via pass
+```
