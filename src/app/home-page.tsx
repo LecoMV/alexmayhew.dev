@@ -1,7 +1,7 @@
 "use client";
 
 import { m } from "framer-motion";
-import { ArrowRight, Layers, Terminal, Zap } from "lucide-react";
+import { ArrowRight, BookOpen, Layers, Terminal, Zap } from "lucide-react";
 import Link from "next/link";
 
 import { trackCTAClick } from "@/components/analytics";
@@ -47,6 +47,34 @@ const services = [
 		title: "Performance Engineering",
 		description: "Optimized experiences that convert users and reduce infrastructure costs.",
 		code: "perf.optimize()",
+	},
+];
+
+const featuredInsights = [
+	{
+		title: "SaaS Architecture Decision Framework",
+		slug: "saas-architecture-decision-framework",
+		category: "architecture",
+	},
+	{
+		title: "Engineering Leadership: Founder to CTO",
+		slug: "engineering-leadership-founder-to-cto",
+		category: "business",
+	},
+	{
+		title: "Modern Frontend Architecture Guide",
+		slug: "modern-frontend-architecture-guide",
+		category: "frontend",
+	},
+	{
+		title: "Performance Engineering Playbook",
+		slug: "performance-engineering-playbook",
+		category: "infrastructure",
+	},
+	{
+		title: "AI-Assisted Development Guide",
+		slug: "ai-assisted-development-guide",
+		category: "architecture",
 	},
 ];
 
@@ -184,34 +212,100 @@ export default function Home() {
 
 					<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
 						{services.map((service, index) => (
-							<m.article
-								key={service.title}
-								className="group bg-gunmetal-glass/10 hover:border-cyber-lime/50 relative border border-white/10 p-6 backdrop-blur-sm transition-colors duration-300"
-								initial={{ opacity: 0, y: 30 }}
-								whileInView={{ opacity: 1, y: 0 }}
-								viewport={{ once: true, margin: "-50px" }}
-								transition={{ ...springTransition, delay: index * 0.1 }}
-							>
-								{/* Corner accents */}
-								<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-								<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+							<Link key={service.title} href="/services">
+								<m.article
+									className="group bg-gunmetal-glass/10 hover:border-cyber-lime/50 relative h-full border border-white/10 p-6 backdrop-blur-sm transition-colors duration-300"
+									initial={{ opacity: 0, y: 30 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									viewport={{ once: true, margin: "-50px" }}
+									transition={{ ...springTransition, delay: index * 0.1 }}
+								>
+									{/* Corner accents */}
+									<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+									<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-								<div className="mb-4 flex items-start justify-between">
-									<service.icon className="text-cyber-lime h-8 w-8" strokeWidth={1.5} />
-									<span className="text-slate-text font-mono text-xs opacity-50">
-										{String(index + 1).padStart(2, "0")}
-									</span>
-								</div>
+									<div className="mb-4 flex items-start justify-between">
+										<service.icon className="text-cyber-lime h-8 w-8" strokeWidth={1.5} />
+										<span className="text-slate-text font-mono text-xs opacity-50">
+											{String(index + 1).padStart(2, "0")}
+										</span>
+									</div>
 
-								<h3 className="mb-2 font-mono text-lg tracking-tight">{service.title}</h3>
-								<p className="text-slate-text mb-4 text-sm leading-relaxed">
-									{service.description}
-								</p>
+									<h3 className="mb-2 font-mono text-lg tracking-tight">{service.title}</h3>
+									<p className="text-slate-text mb-4 text-sm leading-relaxed">
+										{service.description}
+									</p>
 
-								<code className="text-cyber-lime/60 font-mono text-xs">{service.code}</code>
-							</m.article>
+									<code className="text-cyber-lime/60 font-mono text-xs">{service.code}</code>
+								</m.article>
+							</Link>
 						))}
 					</div>
+
+					<Link
+						href="/services"
+						className="text-cyber-lime mt-8 inline-flex items-center gap-2 font-mono text-sm hover:underline"
+					>
+						View all services
+						<ArrowRight className="h-4 w-4" strokeWidth={1.5} />
+					</Link>
+				</div>
+			</section>
+
+			{/* Featured Insights Section */}
+			<section className="border-t border-white/10 px-6 py-24 sm:px-12 md:px-24">
+				<div className="mx-auto max-w-[1400px]">
+					<m.div
+						className="mb-12"
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, margin: "-100px" }}
+						transition={springTransition}
+					>
+						<h2 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+							<span className="mr-2 animate-pulse">●</span>
+							Featured Insights
+						</h2>
+						<p className="text-slate-text max-w-2xl text-lg">
+							Deep-dive guides on the decisions that define your architecture.
+						</p>
+					</m.div>
+
+					<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+						{featuredInsights.map((post, index) => (
+							<m.div
+								key={post.slug}
+								initial={{ opacity: 0, y: 20 }}
+								whileInView={{ opacity: 1, y: 0 }}
+								viewport={{ once: true, margin: "-50px" }}
+								transition={{ ...springTransition, delay: index * 0.08 }}
+							>
+								<Link
+									href={`/blog/${post.slug}`}
+									className="group bg-gunmetal-glass/10 hover:border-cyber-lime/50 relative flex flex-col gap-3 border border-white/10 p-5 transition-colors duration-300"
+								>
+									<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+									<div className="flex items-center gap-2">
+										<BookOpen className="text-cyber-lime/60 h-4 w-4" strokeWidth={1.5} />
+										<span className="text-slate-text font-mono text-xs capitalize">
+											{post.category}
+										</span>
+									</div>
+									<h3 className="group-hover:text-cyber-lime font-mono text-sm leading-snug tracking-tight transition-colors">
+										{post.title}
+									</h3>
+								</Link>
+							</m.div>
+						))}
+					</div>
+
+					<Link
+						href="/blog"
+						className="text-cyber-lime mt-8 inline-flex items-center gap-2 font-mono text-sm hover:underline"
+					>
+						View all articles
+						<ArrowRight className="h-4 w-4" strokeWidth={1.5} />
+					</Link>
 				</div>
 			</section>
 
