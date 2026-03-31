@@ -25,7 +25,7 @@ export function ArticleJsonLd({
 }: ArticleJsonLdProps) {
 	const articleSchema = {
 		"@context": "https://schema.org",
-		"@type": isHub ? "TechArticle" : "Article",
+		"@type": isHub ? "TechArticle" : "BlogPosting",
 		headline: title,
 		description: description,
 		image: {

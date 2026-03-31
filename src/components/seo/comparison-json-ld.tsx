@@ -3,7 +3,7 @@ import {
 	breadcrumbSchema,
 	faqSchema,
 	JsonLdScript,
-	PROVIDER_PERSON,
+	PERSON_REF,
 	SCHEMA_CONTEXT,
 	SITE_URL,
 	webPageSchema,
@@ -25,7 +25,7 @@ export function ComparisonJsonLd({ page }: ComparisonJsonLdProps) {
 		"@id": pageUrl,
 		name: `${page.optionA.name} vs ${page.optionB.name} Technical Advisory`,
 		description: page.seo.description,
-		provider: PROVIDER_PERSON,
+		provider: PERSON_REF,
 		serviceType: "Technology Selection Advisory",
 		areaServed: AREA_SERVED,
 		hasOfferCatalog: {

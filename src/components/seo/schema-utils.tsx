@@ -1,6 +1,7 @@
 export const SITE_URL = "https://alexmayhew.dev";
 export const SCHEMA_CONTEXT = "https://schema.org" as const;
 
+/** @deprecated Use PERSON_REF instead to reference the canonical Person entity from global layout */
 export const PROVIDER_PERSON = {
 	"@type": "Person" as const,
 	name: "Alex Mayhew",
@@ -8,6 +9,12 @@ export const PROVIDER_PERSON = {
 	image: `${SITE_URL}/og-image.png`,
 	jobTitle: "Technical Advisor & Systems Architect",
 };
+
+/** Reference to the canonical Person entity defined in global layout JSON-LD */
+export const PERSON_REF = { "@id": `${SITE_URL}/#person` } as const;
+
+/** Reference to the canonical Organization entity defined in global layout JSON-LD */
+export const ORG_REF = { "@id": `${SITE_URL}/#organization` } as const;
 
 export const AREA_SERVED = {
 	"@type": "Place" as const,

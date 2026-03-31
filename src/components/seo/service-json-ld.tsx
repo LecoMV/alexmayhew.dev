@@ -5,7 +5,7 @@ import {
 	breadcrumbSchema,
 	faqSchema,
 	JsonLdScript,
-	PROVIDER_PERSON,
+	PERSON_REF,
 	SCHEMA_CONTEXT,
 	SITE_URL,
 	webPageSchema,
@@ -28,7 +28,7 @@ export function ServiceJsonLd({ page }: ServiceJsonLdProps) {
 		"@id": pageUrl,
 		name: `${techLabel} Development for ${industryLabel}`,
 		description: page.seo.description,
-		provider: PROVIDER_PERSON,
+		provider: PERSON_REF,
 		serviceType: "Web Development",
 		areaServed: AREA_SERVED,
 		hasOfferCatalog: {

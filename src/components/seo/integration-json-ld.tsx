@@ -3,7 +3,7 @@ import {
 	breadcrumbSchema,
 	faqSchema,
 	JsonLdScript,
-	PROVIDER_PERSON,
+	PERSON_REF,
 	SCHEMA_CONTEXT,
 	SITE_URL,
 	webPageSchema,
@@ -25,7 +25,7 @@ export function IntegrationJsonLd({ page }: IntegrationJsonLdProps) {
 		"@id": pageUrl,
 		name: serviceName,
 		description: page.seo.description,
-		provider: PROVIDER_PERSON,
+		provider: PERSON_REF,
 		serviceType: "API Integration Services",
 		areaServed: AREA_SERVED,
 		hasOfferCatalog: {

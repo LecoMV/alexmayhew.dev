@@ -95,7 +95,7 @@ export function JsonLd() {
 	// Single unified business entity — combines consulting service + local business signals
 	const professionalServiceSchema = {
 		"@context": "https://schema.org",
-		"@type": "ProfessionalService",
+		"@type": "ConsultingService",
 		"@id": "https://alexmayhew.dev/#business",
 		name: "Alex Mayhew - Technical Advisory Services",
 		alternateName: "Alex Mayhew Consulting",
