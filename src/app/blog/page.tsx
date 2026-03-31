@@ -62,5 +62,41 @@ export default function BlogPage() {
 	const hubPosts = allPosts.filter((post) => post.data.isHub);
 	const posts = allPosts.filter((post) => !post.data.isHub);
 
-	return <BlogList posts={posts} hubPosts={hubPosts} />;
+	return (
+		<>
+			<BlogList posts={posts} hubPosts={hubPosts} />
+			<BlogPostNav posts={allPosts} />
+		</>
+	);
+}
+
+/**
+ * Server-rendered navigation with links to ALL blog posts.
+ * Ensures Googlebot can discover every post from the listing page
+ * without needing to click the client-side "Load More" button.
+ */
+function BlogPostNav({ posts }: { posts: Array<{ slug: string; data: { title: string } }> }) {
+	return (
+		<nav
+			aria-label="All blog posts"
+			className="mx-auto max-w-[1400px] border-t border-white/10 px-6 py-12 sm:px-12 md:px-24"
+		>
+			<h2 className="text-cyber-lime mb-6 font-mono text-xs tracking-wider uppercase">
+				<span className="mr-2 animate-pulse">●</span>
+				All Articles
+			</h2>
+			<ul className="grid gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
+				{posts.map((post) => (
+					<li key={post.slug}>
+						<a
+							href={`/blog/${post.slug}`}
+							className="text-slate-text hover:text-cyber-lime block truncate font-mono text-xs transition-colors"
+						>
+							{post.data.title}
+						</a>
+					</li>
+				))}
+			</ul>
+		</nav>
+	);
 }
