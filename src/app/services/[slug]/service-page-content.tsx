@@ -18,7 +18,7 @@ import { useState } from "react";
 
 import { trackCTAClick } from "@/components/analytics";
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
-import { TopicClusterNav } from "@/components/seo";
+import { RelatedBlogPostsSection, TopicClusterNav } from "@/components/seo";
 import { INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
 import { useContentAnalytics } from "@/lib/hooks/use-content-analytics";
 import { springTransition } from "@/lib/motion-constants";
@@ -113,6 +113,9 @@ export function ServicePageContent({ page, relatedPages }: ServicePageContentPro
 
 				{/* FAQs */}
 				<FaqSection faqs={page.faqs} />
+
+				{/* Related Blog Posts */}
+				<RelatedBlogPostsSection slugs={page.relatedBlogPosts} />
 
 				{/* Related Services */}
 				{relatedPages.length > 0 && <RelatedServicesSection relatedPages={relatedPages} />}

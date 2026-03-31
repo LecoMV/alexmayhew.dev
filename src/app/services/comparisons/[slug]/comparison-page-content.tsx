@@ -17,6 +17,7 @@ import { useState } from "react";
 
 import { trackCTAClick } from "@/components/analytics";
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
+import { RelatedBlogPostsSection } from "@/components/seo";
 import { getPageBySlug, INDUSTRY_LABELS } from "@/data/pseo";
 import { springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
@@ -94,6 +95,9 @@ export function ComparisonPageContent({ page }: ComparisonPageContentProps) {
 
 				{/* FAQs */}
 				<FaqSection faqs={page.faqs} />
+
+				{/* Related Blog Posts */}
+				<RelatedBlogPostsSection slugs={page.relatedBlogPosts} />
 
 				{/* Related Services */}
 				{page.relatedServices.length > 0 && (
