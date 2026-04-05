@@ -279,6 +279,45 @@ describe("submitContactForm", () => {
 			expect(result.error).toBe("Email service not configured.");
 		});
 
+		it("should retry on network error and succeed on second attempt", async () => {
+			mockSendEmail
+				.mockRejectedValueOnce(new Error("fetch failed: ECONNREFUSED"))
+				.mockResolvedValueOnce({ success: true });
+			const result = await submitContactForm(validData);
+			expect(result.success).toBe(true);
+			expect(mockSendEmail).toHaveBeenCalledTimes(2);
+		});
+
+		it("should retry on 5xx response and succeed on second attempt", async () => {
+			mockSendEmail
+				.mockResolvedValueOnce({ success: false, error: "HTTP 503" })
+				.mockResolvedValueOnce({ success: true });
+			const result = await submitContactForm(validData);
+			expect(result.success).toBe(true);
+			expect(mockSendEmail).toHaveBeenCalledTimes(2);
+		});
+
+		it("should NOT retry on 4xx response", async () => {
+			mockSendEmail.mockResolvedValueOnce({
+				success: false,
+				error: "HTTP 422 Unprocessable Entity",
+			});
+			const result = await submitContactForm(validData);
+			expect(result.success).toBe(false);
+			expect(mockSendEmail).toHaveBeenCalledTimes(1);
+		});
+
+		it("should exhaust all 3 attempts on persistent network failure", async () => {
+			mockSendEmail
+				.mockRejectedValueOnce(new Error("ECONNREFUSED"))
+				.mockRejectedValueOnce(new Error("ECONNREFUSED"))
+				.mockRejectedValueOnce(new Error("ECONNREFUSED"));
+			const result = await submitContactForm(validData);
+			expect(result.success).toBe(false);
+			expect(result.error).toContain("Failed to send message");
+			expect(mockSendEmail).toHaveBeenCalledTimes(3);
+		});
+
 		it("should use default sendEmail function if dependency not injected", async () => {
 			// Reset to defaults
 			await __resetDependencies();

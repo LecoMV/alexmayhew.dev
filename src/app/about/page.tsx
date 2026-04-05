@@ -43,7 +43,8 @@ function AboutProfileJsonLd() {
 		description:
 			"Technical advisor helping founders make architectural decisions that compound into competitive advantage.",
 		mainEntity: PERSON_REF,
-		dateModified: "2026-04-05",
+		dateModified:
+			process.env.NEXT_PUBLIC_BUILD_TIME?.split("T")[0] || new Date().toISOString().split("T")[0],
 	};
 	return <JsonLdScript data={schema} />;
 }

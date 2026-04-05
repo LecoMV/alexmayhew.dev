@@ -9,6 +9,38 @@ import { getEnv } from "@/lib/cloudflare-env";
 import { contactFormSchema, type ContactFormValues } from "@/lib/schemas/contact";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 
+// Retry delays in ms: 1s first retry, 3s second retry
+const RETRY_DELAYS = [1000, 3000];
+
+async function withRetry<T>(
+	fn: () => Promise<T>,
+	opts: {
+		shouldRetry: (error: unknown) => boolean;
+		delays: number[];
+	}
+): Promise<T> {
+	let lastError: unknown;
+	for (let attempt = 0; attempt <= opts.delays.length; attempt++) {
+		try {
+			return await fn();
+		} catch (error) {
+			lastError = error;
+			if (attempt < opts.delays.length && opts.shouldRetry(error)) {
+				console.warn(`Retry attempt ${attempt + 1}/${opts.delays.length} after error:`, error);
+				await new Promise((resolve) => setTimeout(resolve, opts.delays[attempt]));
+				continue;
+			}
+			throw error;
+		}
+	}
+	throw lastError;
+}
+
+function isRetryableError(error: unknown): boolean {
+	// 4xx errors from Resend come back as { success: false } not thrown errors,
+	return error instanceof Error;
+}
+
 // Email sending function type for dependency injection
 type SendEmailFn = (params: {
 	apiKey: string;
@@ -186,15 +218,27 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 			})
 		);
 
-		// Send via direct API call (avoids SDK bundling issues on Cloudflare Workers)
-		const result = await dependencies.sendEmail({
+		// Send via direct API call with retry (avoids SDK bundling issues on Cloudflare Workers)
+		const emailParams = {
 			apiKey: env.RESEND_API_KEY,
 			from: "alexmayhew.dev <noreply@alexmayhew.dev>",
 			to: env.CONTACT_EMAIL || "alex@alexmayhew.dev",
 			replyTo: email,
 			subject: `[INCOMING_TRANSMISSION] ${name} - ${formatProjectType(projectType)}`,
 			html: emailHtml,
-		});
+		};
+
+		const result = await withRetry(
+			async () => {
+				const res = await dependencies.sendEmail(emailParams);
+				if (!res.success && res.error && /^HTTP 5\d{2}/.test(res.error)) {
+					// Convert 5xx to thrown error so retry logic catches it
+					throw new Error(`Resend 5xx: ${res.error}`);
+				}
+				return res;
+			},
+			{ shouldRetry: isRetryableError, delays: RETRY_DELAYS }
+		);
 
 		if (!result.success) {
 			console.error("Resend API error:", result.error);

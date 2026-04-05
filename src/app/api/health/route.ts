@@ -1,5 +1,18 @@
 import { NextResponse } from "next/server";
 
+async function checkResend(): Promise<"reachable" | "unreachable"> {
+	try {
+		const res = await fetch("https://api.resend.com", {
+			method: "HEAD",
+			signal: AbortSignal.timeout(3000),
+		});
+		// 401 is expected without auth -- proves API is up
+		return res.ok || res.status === 401 ? "reachable" : "unreachable";
+	} catch {
+		return "unreachable";
+	}
+}
+
 /**
  * Health check endpoint for deployment validation
  * Used by GitHub Actions to verify successful deployments
@@ -11,11 +24,16 @@ export async function GET() {
 		version: process.env.NEXT_PUBLIC_SITE_VERSION || "0.0.0",
 	};
 
+	const resendStatus = await checkResend();
+	const dependencies = { resend: resendStatus };
+	const allReachable = Object.values(dependencies).every((s) => s === "reachable");
+
 	return NextResponse.json(
 		{
-			status: "ok",
+			status: allReachable ? "ok" : "degraded",
 			timestamp: new Date().toISOString(),
 			deployment: buildInfo,
+			dependencies,
 		},
 		{
 			status: 200,
