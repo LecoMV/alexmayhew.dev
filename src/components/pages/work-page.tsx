@@ -17,7 +17,7 @@ export function WorkPage() {
 
 	return (
 		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
-			<div className="mx-auto max-w-[1400px]">
+			<div className="max-w-content mx-auto">
 				{/* Header */}
 				<m.div
 					className="mb-16"
@@ -25,15 +25,15 @@ export function WorkPage() {
 					animate={{ opacity: 1, y: 0 }}
 					transition={springTransition}
 				>
-					<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+					<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
 						<span className="mr-2 animate-pulse">●</span>
 						Selected Work
-					</h1>
-					<h2 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+					</p>
+					<h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
 						Digital Instruments
 						<br />
 						<span className="text-slate-text">& Case Studies.</span>
-					</h2>
+					</h1>
 					<p className="text-slate-text max-w-2xl text-lg">
 						Enterprise-grade solutions that push boundaries, solve complex problems, and deliver
 						measurable business outcomes.

@@ -117,7 +117,7 @@ const timeline = [
 export function AboutPage() {
 	return (
 		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
-			<div className="mx-auto max-w-[1400px]">
+			<div className="max-w-content mx-auto">
 				{/* Header - Opening Hook */}
 				<m.div
 					className="mb-16"
@@ -125,15 +125,15 @@ export function AboutPage() {
 					animate={{ opacity: 1, y: 0 }}
 					transition={springTransition}
 				>
-					<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+					<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
 						<span className="mr-2 animate-pulse">●</span>
 						About
-					</h1>
-					<h2 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+					</p>
+					<h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
 						The difference between
 						<br />
 						<span className="text-slate-text">architecture and accidents.</span>
-					</h2>
+					</h1>
 				</m.div>
 
 				{/* Opening Hook - Problem Statement */}

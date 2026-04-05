@@ -17,7 +17,7 @@ export default function TraceForgeError({
 	}, [error]);
 
 	return (
-		<main className="flex min-h-[60vh] flex-col items-center justify-center px-6">
+		<section className="flex min-h-[60vh] flex-col items-center justify-center px-6">
 			<div className="text-center">
 				<h1 className="text-burnt-ember mb-4 font-mono text-6xl font-bold">Error</h1>
 				<p className="text-mist-white mb-2 font-mono text-xl">TraceForge crashed</p>
@@ -43,6 +43,6 @@ export default function TraceForgeError({
 					</Link>
 				</div>
 			</div>
-		</main>
+		</section>
 	);
 }

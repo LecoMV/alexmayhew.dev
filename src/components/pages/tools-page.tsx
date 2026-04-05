@@ -65,7 +65,7 @@ const tools: Tool[] = [
 export function ToolsPage() {
 	return (
 		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
-			<div className="mx-auto max-w-[1400px]">
+			<div className="max-w-content mx-auto">
 				{/* Header */}
 				<m.div
 					className="mb-16"
@@ -73,15 +73,15 @@ export function ToolsPage() {
 					animate={{ opacity: 1, y: 0 }}
 					transition={springTransition}
 				>
-					<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+					<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
 						<span className="mr-2 animate-pulse">●</span>
 						Developer Tools
-					</h1>
-					<h2 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+					</p>
+					<h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
 						Precision Instruments
 						<br />
 						<span className="text-slate-text">Built for Developers.</span>
-					</h2>
+					</h1>
 					<p className="text-slate-text max-w-2xl text-lg">
 						Tools I built to solve real problems. Try them instantly in your browser or download for
 						your desktop.

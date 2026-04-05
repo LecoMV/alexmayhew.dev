@@ -6,27 +6,7 @@ import Link from "next/link";
 
 import { trackCTAClick } from "@/components/analytics";
 import { NewsletterSignup } from "@/components/newsletter";
-import { springTransition } from "@/lib/motion-constants";
-
-const staggerContainer = {
-	hidden: { opacity: 0 },
-	visible: {
-		opacity: 1,
-		transition: {
-			staggerChildren: 0.1,
-			delayChildren: 0.2,
-		},
-	},
-};
-
-const fadeInUp = {
-	hidden: { opacity: 0, y: 30 },
-	visible: {
-		opacity: 1,
-		y: 0,
-		transition: springTransition,
-	},
-};
+import { fadeInUp, springTransition, staggerContainer } from "@/lib/motion-constants";
 
 const services = [
 	{
@@ -83,7 +63,7 @@ export default function Home() {
 		<>
 			{/* Hero Section */}
 			<section className="flex flex-1 flex-col justify-center px-6 pt-36 pb-12 sm:px-12 md:px-24">
-				<div className="mx-auto grid w-full max-w-[1400px] grid-cols-12 gap-6">
+				<div className="max-w-content mx-auto grid w-full grid-cols-12 gap-6">
 					{/* Text Content */}
 					<m.section
 						className="col-span-12 flex flex-col justify-center gap-8 md:col-span-7 md:col-start-2 lg:col-span-6"
@@ -193,7 +173,7 @@ export default function Home() {
 
 			{/* Services Section */}
 			<section className="border-t border-white/10 px-6 py-24 sm:px-12 md:px-24">
-				<div className="mx-auto max-w-[1400px]">
+				<div className="max-w-content mx-auto">
 					<m.div
 						className="mb-12"
 						initial={{ opacity: 0, y: 20 }}
@@ -255,7 +235,7 @@ export default function Home() {
 
 			{/* About Snippet */}
 			<section className="border-t border-white/10 px-6 py-24 sm:px-12 md:px-24">
-				<div className="mx-auto max-w-[1400px]">
+				<div className="max-w-content mx-auto">
 					<m.div
 						className="grid grid-cols-1 items-center gap-12 md:grid-cols-2"
 						initial={{ opacity: 0, y: 20 }}
@@ -313,7 +293,7 @@ export default function Home() {
 
 			{/* Featured Insights Section */}
 			<section className="border-t border-white/10 px-6 py-24 sm:px-12 md:px-24">
-				<div className="mx-auto max-w-[1400px]">
+				<div className="max-w-content mx-auto">
 					<m.div
 						className="mb-12"
 						initial={{ opacity: 0, y: 20 }}
@@ -371,7 +351,7 @@ export default function Home() {
 			{/* Newsletter Section */}
 			<section className="border-t border-white/10 px-6 py-24 sm:px-12 md:px-24">
 				<m.div
-					className="mx-auto max-w-[1400px]"
+					className="max-w-content mx-auto"
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true, margin: "-100px" }}
@@ -401,7 +381,7 @@ export default function Home() {
 			{/* CTA Section */}
 			<section className="border-t border-white/10 px-6 py-24 sm:px-12 md:px-24">
 				<m.div
-					className="mx-auto max-w-[1400px]"
+					className="max-w-content mx-auto"
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true, margin: "-100px" }}

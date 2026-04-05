@@ -6,29 +6,9 @@ import Link from "next/link";
 
 import { trackCTAClick } from "@/components/analytics";
 import { ROLE_LABELS } from "@/data/roles";
-import { springTransition } from "@/lib/motion-constants";
+import { fadeInUp, springTransition, staggerContainer } from "@/lib/motion-constants";
 
 import type { Role, RolePage } from "@/data/roles";
-
-const staggerContainer = {
-	hidden: { opacity: 0 },
-	visible: {
-		opacity: 1,
-		transition: {
-			staggerChildren: 0.1,
-			delayChildren: 0.15,
-		},
-	},
-};
-
-const fadeInUp = {
-	hidden: { opacity: 0, y: 20 },
-	visible: {
-		opacity: 1,
-		y: 0,
-		transition: springTransition,
-	},
-};
 
 interface ForHubPageProps {
 	pages: RolePage[];
@@ -45,7 +25,7 @@ const roleIcons: Record<Role, React.ComponentType<{ className?: string; strokeWi
 export function ForHubPage({ pages }: ForHubPageProps) {
 	return (
 		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
-			<div className="mx-auto max-w-[1400px]">
+			<div className="max-w-content mx-auto">
 				{/* Breadcrumbs */}
 				<m.nav
 					className="mb-8"

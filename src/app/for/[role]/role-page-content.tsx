@@ -18,30 +18,10 @@ import { useState } from "react";
 
 import { trackCTAClick } from "@/components/analytics";
 import { ROLE_LABELS, SERVICE_TIER_DESCRIPTIONS, SERVICE_TIER_LABELS } from "@/data/roles";
-import { springTransition } from "@/lib/motion-constants";
+import { fadeInUp, springTransition, staggerContainer } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 import type { RolePage } from "@/data/roles";
-
-const staggerContainer = {
-	hidden: { opacity: 0 },
-	visible: {
-		opacity: 1,
-		transition: {
-			staggerChildren: 0.08,
-			delayChildren: 0.1,
-		},
-	},
-};
-
-const fadeInUp = {
-	hidden: { opacity: 0, y: 20 },
-	visible: {
-		opacity: 1,
-		y: 0,
-		transition: springTransition,
-	},
-};
 
 interface RolePageContentProps {
 	page: RolePage;
@@ -52,7 +32,7 @@ export function RolePageContent({ page }: RolePageContentProps) {
 
 	return (
 		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
-			<div className="mx-auto max-w-[1400px]">
+			<div className="max-w-content mx-auto">
 				{/* Breadcrumbs */}
 				<Breadcrumbs roleLabel={roleLabel} />
 

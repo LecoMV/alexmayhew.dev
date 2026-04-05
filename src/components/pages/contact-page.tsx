@@ -118,7 +118,7 @@ export function ContactPage() {
 
 	return (
 		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
-			<div className="mx-auto max-w-[1400px]">
+			<div className="max-w-content mx-auto">
 				{/* Header */}
 				<m.div
 					className="mb-16"
@@ -126,17 +126,17 @@ export function ContactPage() {
 					animate={{ opacity: 1, y: 0 }}
 					transition={springTransition}
 				>
-					<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+					<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
 						<span className="mr-2 animate-pulse" aria-hidden="true">
 							●
 						</span>
 						Contact
-					</h1>
-					<h2 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+					</p>
+					<h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
 						Initialize
 						<br />
 						<span className="text-slate-text">Connection.</span>
-					</h2>
+					</h1>
 					<p className="text-slate-text max-w-2xl text-lg">
 						Ready to architect something exceptional? Initiate a transmission to discuss a potential
 						partnership.
@@ -166,7 +166,7 @@ export function ContactPage() {
 										id="name"
 										name="name"
 										required
-										className="bg-gunmetal-glass/20 focus:border-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 placeholder:text-white/30 focus:outline-none"
+										className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 placeholder:text-white/30 focus:outline-none focus-visible:ring-2"
 										placeholder="Your name"
 									/>
 								</div>
@@ -182,7 +182,7 @@ export function ContactPage() {
 										id="email"
 										name="email"
 										required
-										className="bg-gunmetal-glass/20 focus:border-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 placeholder:text-white/30 focus:outline-none"
+										className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 placeholder:text-white/30 focus:outline-none focus-visible:ring-2"
 										placeholder="your@email.com"
 									/>
 								</div>
@@ -202,7 +202,7 @@ export function ContactPage() {
 										name="projectType"
 										required
 										defaultValue=""
-										className="bg-gunmetal-glass/20 focus:border-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none"
+										className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
 									>
 										<option value="" className="bg-void-navy">
 											Select type...
@@ -236,7 +236,7 @@ export function ContactPage() {
 										name="budget"
 										required
 										defaultValue=""
-										className="bg-gunmetal-glass/20 focus:border-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none"
+										className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
 									>
 										<option value="" className="bg-void-navy">
 											Select range...
@@ -272,7 +272,7 @@ export function ContactPage() {
 									id="referralSource"
 									name="referralSource"
 									defaultValue=""
-									className="bg-gunmetal-glass/20 focus:border-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none"
+									className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
 								>
 									<option value="" className="bg-void-navy">
 										Select source...
@@ -314,7 +314,7 @@ export function ContactPage() {
 									name="message"
 									required
 									rows={6}
-									className="bg-gunmetal-glass/20 focus:border-cyber-lime text-mist-white w-full resize-none border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 placeholder:text-white/30 focus:outline-none"
+									className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white w-full resize-none border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 placeholder:text-white/30 focus:outline-none focus-visible:ring-2"
 									placeholder="Describe your project, goals, and timeline..."
 								/>
 							</div>

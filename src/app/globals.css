@@ -13,6 +13,8 @@
 	--font-sans: var(--font-sans);
 	--font-mono: var(--font-mono);
 
+	--max-width-content: 1400px;
+
 	/* Fumadocs variable overrides for void aesthetic */
 	--fd-background: #0b0e14;
 	--fd-foreground: #e2e8f0;
@@ -356,8 +358,8 @@ html {
 		font-size: 18px;
 	}
 
-	/* Targets Tailwind v4 JIT class max-w-[1400px] — update if the utility changes */
-	.max-w-\[1400px\] {
+	/* Override max-w-content token for larger viewports */
+	.max-w-content {
 		max-width: 1600px;
 	}
 }
@@ -368,8 +370,8 @@ html {
 		font-size: 20px;
 	}
 
-	/* Targets Tailwind v4 JIT class max-w-[1400px] — update if the utility changes */
-	.max-w-\[1400px\] {
+	/* Override max-w-content token for largest viewports */
+	.max-w-content {
 		max-width: 1800px;
 	}
 }

@@ -25,11 +25,11 @@ export default function TermsPage() {
 	return (
 		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
 			<div className="mx-auto max-w-3xl">
-				<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+				<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
 					<span className="mr-2 animate-pulse">●</span>
 					Legal
-				</h1>
-				<h2 className="mb-8 text-4xl font-bold tracking-tight md:text-5xl">Terms of Service</h2>
+				</p>
+				<h1 className="mb-8 text-4xl font-bold tracking-tight md:text-5xl">Terms of Service</h1>
 				<p className="text-slate-text mb-12 text-sm">Last updated: March 19, 2026</p>
 
 				<div className="prose prose-invert max-w-none space-y-8">

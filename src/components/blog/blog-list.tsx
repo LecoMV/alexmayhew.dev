@@ -76,7 +76,7 @@ export function BlogList({ posts, hubPosts = [] }: BlogListProps) {
 			className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24"
 			style={{ backgroundColor: theme.colors.background }}
 		>
-			<div className="mx-auto max-w-[1400px]">
+			<div className="max-w-content mx-auto">
 				{/* Header */}
 				<m.div
 					className="mb-16"
@@ -84,21 +84,21 @@ export function BlogList({ posts, hubPosts = [] }: BlogListProps) {
 					animate={{ opacity: 1, y: 0 }}
 					transition={springTransition}
 				>
-					<h1
+					<p
 						className="mb-4 font-mono text-xs tracking-wider uppercase"
 						style={{ color: theme.colors.accent }}
 					>
 						<span className="mr-2 animate-pulse">{theme.typography.headingPrefix}</span>
 						Technical Articles
-					</h1>
-					<h2
+					</p>
+					<h1
 						className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl"
 						style={{ color: theme.colors.text }}
 					>
 						Engineering
 						<br />
 						<span style={{ color: theme.colors.textMuted }}>&amp; Architecture.</span>
-					</h2>
+					</h1>
 					<p className="max-w-2xl text-lg" style={{ color: theme.colors.textMuted }}>
 						Deep dives into system design, performance optimization, and modern web development
 						patterns.

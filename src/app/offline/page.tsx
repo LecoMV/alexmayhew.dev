@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function OfflinePage() {
 	return (
-		<main className="flex min-h-[60vh] flex-col items-center justify-center px-6">
+		<section className="flex min-h-[60vh] flex-col items-center justify-center px-6">
 			<div className="text-center">
 				<WifiOff className="text-cyber-lime mx-auto mb-6 h-16 w-16" strokeWidth={1} />
 				<h1 className="mb-4 font-mono text-4xl font-bold">CONNECTION_LOST</h1>
@@ -33,6 +33,6 @@ export default function OfflinePage() {
 					</Link>
 				</div>
 			</div>
-		</main>
+		</section>
 	);
 }

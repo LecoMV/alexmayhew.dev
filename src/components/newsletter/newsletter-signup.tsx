@@ -100,7 +100,7 @@ export function NewsletterSignup({
 							className={cn(
 								"w-full border bg-transparent px-4 py-3 font-mono text-sm transition-colors",
 								"placeholder:text-slate-text/50",
-								"focus:border-cyber-lime focus:outline-none",
+								"focus:border-cyber-lime focus-visible:ring-cyber-lime focus:outline-none focus-visible:ring-2",
 								state.error ? "border-burnt-ember" : "border-white/20"
 							)}
 						/>
@@ -169,7 +169,7 @@ export function NewsletterSignup({
 							className={cn(
 								"w-full border bg-transparent px-4 py-2 font-mono text-sm md:w-64",
 								"placeholder:text-slate-text/50",
-								"focus:border-cyber-lime focus:outline-none",
+								"focus:border-cyber-lime focus-visible:ring-cyber-lime focus:outline-none focus-visible:ring-2",
 								state.error ? "border-burnt-ember" : "border-white/20"
 							)}
 						/>
@@ -217,7 +217,7 @@ export function NewsletterSignup({
 				className={cn(
 					"w-full border bg-transparent px-3 py-2 font-mono text-sm",
 					"placeholder:text-slate-text/50",
-					"focus:border-cyber-lime focus:outline-none",
+					"focus:border-cyber-lime focus-visible:ring-cyber-lime focus:outline-none focus-visible:ring-2",
 					state.error ? "border-burnt-ember" : "border-white/20"
 				)}
 			/>

@@ -7,30 +7,10 @@ import Link from "next/link";
 import { trackCTAClick } from "@/components/analytics";
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import { INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
-import { springTransition } from "@/lib/motion-constants";
+import { fadeInUp, springTransition, staggerContainer } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 import type { PseoPage } from "@/data/pseo";
-
-const staggerContainer = {
-	hidden: { opacity: 0 },
-	visible: {
-		opacity: 1,
-		transition: {
-			staggerChildren: 0.08,
-			delayChildren: 0.1,
-		},
-	},
-};
-
-const fadeInUp = {
-	hidden: { opacity: 0, y: 20 },
-	visible: {
-		opacity: 1,
-		y: 0,
-		transition: springTransition,
-	},
-};
 
 // Service tiers for the framework section
 const serviceTiers = [
@@ -109,7 +89,7 @@ export function ServicesPage({ pages }: ServicesPageProps) {
 
 	return (
 		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
-			<div className="mx-auto max-w-[1400px]">
+			<div className="max-w-content mx-auto">
 				{/* Breadcrumbs */}
 				<m.nav
 					className="text-slate-text mb-8 font-mono text-xs"

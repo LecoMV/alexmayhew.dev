@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 
 import { MotionProvider, SmoothScroll } from "@/components/providers";
 import { JsonLd, LocalBusinessJsonLd } from "@/components/seo";
-import { CommandPaletteServer } from "@/components/ui/command-palette-server";
+import { LazyCommandPaletteServer } from "@/components/ui/command-palette-server";
 
 import "./globals.css";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
@@ -168,7 +168,7 @@ export default function RootLayout({
 							<ChatWidget />
 						</ErrorBoundary>
 						<CookieConsent />
-						<CommandPaletteServer />
+						<LazyCommandPaletteServer />
 					</MotionProvider>
 					<ServiceWorkerRegister />
 					<GoogleAnalytics />

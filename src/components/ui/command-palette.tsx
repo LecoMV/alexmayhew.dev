@@ -81,6 +81,8 @@ export function CommandPalette({ items }: CommandPaletteProps) {
 
 					{/* Dialog */}
 					<m.div
+						role="dialog"
+						aria-modal="true"
 						className="bg-gunmetal-glass relative z-10 w-full max-w-lg overflow-hidden rounded-md border border-white/10"
 						initial={{ opacity: 0, scale: 0.96, y: -10 }}
 						animate={{ opacity: 1, scale: 1, y: 0 }}

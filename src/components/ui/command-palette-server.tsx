@@ -1,8 +1,8 @@
 import { buildSearchIndex } from "@/data/search-index";
 
-import { CommandPalette } from "./command-palette";
+import { LazyCommandPalette } from "./lazy-command-palette";
 
-export function CommandPaletteServer() {
+export function LazyCommandPaletteServer() {
 	const items = buildSearchIndex();
-	return <CommandPalette items={items} />;
+	return <LazyCommandPalette items={items} />;
 }
