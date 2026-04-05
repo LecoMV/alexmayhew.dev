@@ -1,3 +1,4 @@
+import { PERSON_REF } from "@/components/seo/schema-utils";
 import { getPublishedRolePages, ROLE_LABELS } from "@/data/roles";
 
 import { ForHubPage } from "./for-hub-page";
@@ -55,11 +56,7 @@ function RolesHubJsonLd() {
 				name: `Technical Advisory for ${ROLE_LABELS[page.role]}`,
 				description: page.seo.description,
 				url: `${siteUrl}/for/${page.slug}`,
-				provider: {
-					"@type": "Person",
-					name: "Alex Mayhew",
-					url: siteUrl,
-				},
+				provider: PERSON_REF,
 			},
 		})),
 	};

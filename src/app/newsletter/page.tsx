@@ -18,6 +18,12 @@ export const metadata: Metadata = {
 		url: `${siteUrl}/newsletter`,
 		type: "website",
 	},
+	twitter: {
+		card: "summary_large_image",
+		title: "The Architect's Brief",
+		description:
+			"Weekly newsletter on SaaS architecture decisions, engineering leadership, and technical strategy.",
+	},
 	alternates: {
 		canonical: "/newsletter",
 		types: {

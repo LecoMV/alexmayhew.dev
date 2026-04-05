@@ -6,6 +6,16 @@ export const metadata: Metadata = {
 	title: "Terms of Service",
 	description:
 		"Terms of Service for alexmayhew.dev - Terms and conditions for using our website and services.",
+	openGraph: {
+		title: "Terms of Service",
+		description: "Terms and conditions for using alexmayhew.dev and its services.",
+		type: "website",
+	},
+	twitter: {
+		card: "summary",
+		title: "Terms of Service",
+		description: "Terms and conditions for using alexmayhew.dev and its services.",
+	},
 	alternates: {
 		canonical: "/terms",
 	},

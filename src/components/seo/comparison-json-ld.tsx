@@ -3,6 +3,7 @@ import {
 	breadcrumbSchema,
 	faqSchema,
 	JsonLdScript,
+	ORG_REF,
 	PERSON_REF,
 	SCHEMA_CONTEXT,
 	SITE_URL,
@@ -71,19 +72,13 @@ export function ComparisonJsonLd({ page }: ComparisonJsonLdProps) {
 
 	const comparisonSchema = {
 		"@context": SCHEMA_CONTEXT,
-		"@type": "Article",
+		"@type": "TechArticle",
 		headline: page.seo.title,
 		description: page.seo.description,
-		author: {
-			"@type": "Person",
-			name: "Alex Mayhew",
-			url: SITE_URL,
-		},
-		publisher: {
-			"@type": "Person",
-			name: "Alex Mayhew",
-			url: SITE_URL,
-		},
+		author: PERSON_REF,
+		publisher: ORG_REF,
+		datePublished: "2026-03-01",
+		image: `${SITE_URL}/og-image.png`,
 		mainEntityOfPage: pageUrl,
 		articleSection: "Technology Comparison",
 		keywords: page.seo.keywords.join(", "),

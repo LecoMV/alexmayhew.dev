@@ -6,7 +6,6 @@ import {
 	breadcrumbSchema,
 	faqSchema,
 	JsonLdScript,
-	PROVIDER_PERSON,
 	SCHEMA_CONTEXT,
 	SITE_URL,
 	webPageSchema,
@@ -22,13 +21,6 @@ describe("SEO schema constants", () => {
 		expect(SCHEMA_CONTEXT).toBe("https://schema.org");
 	});
 
-	it("PROVIDER_PERSON has correct type and identity", () => {
-		expect(PROVIDER_PERSON["@type"]).toBe("Person");
-		expect(PROVIDER_PERSON.name).toBe("Alex Mayhew");
-		expect(PROVIDER_PERSON.jobTitle).toBe("Technical Advisor & Systems Architect");
-		expect(PROVIDER_PERSON.url).toBe(SITE_URL);
-	});
-
 	it("AREA_SERVED represents worldwide coverage", () => {
 		expect(AREA_SERVED["@type"]).toBe("Place");
 		expect(AREA_SERVED.name).toBe("Worldwide");
@@ -36,7 +28,7 @@ describe("SEO schema constants", () => {
 
 	it("WEBSITE_REF has correct structure", () => {
 		expect(WEBSITE_REF["@type"]).toBe("WebSite");
-		expect(WEBSITE_REF["@id"]).toBe(SITE_URL);
+		expect(WEBSITE_REF["@id"]).toBe(`${SITE_URL}/#website`);
 		expect(WEBSITE_REF.url).toBe(SITE_URL);
 		expect(WEBSITE_REF.name).toBe("Alex Mayhew");
 	});

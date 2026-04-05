@@ -22,7 +22,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "Next.js Developer for SaaS | 99.95% Uptime Proven",
+			title: "Next.js for SaaS | 99.95% Uptime",
 			description:
 				"Scale your SaaS with battle-tested Next.js patterns. Multi-tenant architecture serving 100k+ users. From MVP to enterprise in 8 weeks. Free architecture review.",
 			keywords: [
@@ -234,7 +234,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "React Developer for Fintech | PCI-DSS Certified",
+			title: "React for Fintech | PCI-DSS Certified",
 			description:
 				"Build compliant fintech apps with React. Real-time trading dashboards, secure payment UIs, audit-ready code. Passed 3 SOC2 audits. Free security review.",
 			keywords: [
@@ -423,7 +423,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "Python Developer for Healthcare | HIPAA Expert",
+			title: "Python for Healthcare | HIPAA Expert",
 			description:
 				"Build HIPAA-compliant healthcare systems with Python. EHR integrations, clinical AI, HL7/FHIR pipelines. Zero PHI breaches. Free compliance assessment.",
 			keywords: [
@@ -648,7 +648,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "Technical Advisor for Startups | CTO Alternative",
+			title: "Startup Technical Advisor | CTO Alt",
 			description:
 				"Strategic tech guidance without the equity. MVP in 8 weeks, scale to Series A. Saved founders $2M+ in avoided rewrites. Free strategy call.",
 			keywords: [
@@ -838,7 +838,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "Fractional CTO for Startups | 10% of Full-Time Cost",
+			title: "Fractional CTO | 10% of Full-Time Cost",
 			description:
 				"CTO expertise without the equity or $300K salary. Helped 12+ startups reach Series A. Architecture, hiring, due diligence prep. Weekly retainer available.",
 			keywords: [
@@ -989,7 +989,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "Next.js Developer for Fintech | Sub-100ms Latency",
+			title: "Next.js for Fintech | Sub-100ms Latency",
 			description:
 				"Build blazing-fast fintech apps with Next.js. Real-time trading UIs, PCI-DSS compliance baked in. Reduced latency 85% for trading platform. Free audit.",
 			keywords: [
@@ -1178,7 +1178,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "Next.js Developer for Healthcare | HIPAA Certified",
+			title: "Next.js for Healthcare | HIPAA Certified",
 			description:
 				"Build secure patient portals with Next.js. HIPAA compliance from day one, EHR integrations, telehealth ready. Zero audit findings. Free architecture call.",
 			keywords: [
@@ -1379,7 +1379,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "Next.js Developer for E-commerce | 400% Revenue Lift",
+			title: "Next.js for E-commerce | 400% Revenue Lift",
 			description:
 				"Build lightning-fast e-commerce with Next.js. Headless Shopify, sub-second loads, 23% checkout conversion. Scaled stores to $50M+ ARR. Free performance audit.",
 			keywords: [
@@ -1594,7 +1594,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "React Developer for SaaS | Enterprise Dashboard Expert",
+			title: "React for SaaS | Dashboard Expert",
 			description:
 				"Build powerful B2B dashboards with React. Real-time data, complex filtering, accessible UIs. Reduced dashboard load time 85%. Free architecture review.",
 			keywords: [
@@ -1796,7 +1796,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "React Developer for Healthcare | WCAG AAA Accessible",
+			title: "React for Healthcare | WCAG AAA",
 			description:
 				"Build accessible healthcare UIs with React. HIPAA-compliant patient portals, clinical dashboards, screen-reader optimized. Free accessibility audit.",
 			keywords: [
@@ -1997,7 +1997,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "Node.js Developer for Logistics | 10M Events/Day",
+			title: "Node.js for Logistics | 10M Events/Day",
 			description:
 				"Build real-time logistics systems with Node.js. Fleet tracking, route optimization, event streams. Processing 10M+ events/day. Free scalability assessment.",
 			keywords: [
@@ -2199,7 +2199,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "Python Developer for Fintech | Quant Systems Expert",
+			title: "Python for Fintech | Quant Systems",
 			description:
 				"Build quantitative fintech systems with Python. Trading algorithms, risk models, FastAPI pipelines. Reduced processing latency 73%. Free architecture call.",
 			keywords: [
@@ -2401,7 +2401,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "AI Integration Developer for SaaS | RAG Expert",
+			title: "AI Integration for SaaS | RAG Expert",
 			description:
 				"Add AI superpowers to your SaaS. RAG systems, LLM integrations, intelligent search. Built PenQWEN domain-specific LLM. Free AI feasibility assessment.",
 			keywords: [
@@ -2613,7 +2613,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "AI for Healthcare | HIPAA-Compliant LLM Integration",
+			title: "AI for Healthcare | HIPAA-Compliant LLM",
 			description:
 				"Deploy AI safely in healthcare. HIPAA-compliant LLMs, clinical decision support, PHI-secure RAG. Zero compliance violations. Free AI safety assessment.",
 			keywords: [
@@ -2814,7 +2814,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "PostgreSQL Expert for Fintech | 99.999% Uptime",
+			title: "PostgreSQL for Fintech | 99.999% Uptime",
 			description:
 				"Build bulletproof fintech databases with PostgreSQL. ACID transactions, 99.999% uptime, audit-ready. Scaled to $10B+ in transactions. Free database audit.",
 			keywords: [
@@ -2983,7 +2983,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "Fractional CTO | Investor-Ready Technical Strategy",
+			title: "Fractional CTO | Investor-Ready Strategy",
 			description:
 				"Strategic CTO expertise on your timeline. Due diligence prep, technical hiring, architecture decisions. Helped close $15M+ in funding. Free strategy session.",
 			keywords: [
@@ -3282,7 +3282,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "Legacy Migration Architect | Zero-Downtime Expert",
+			title: "Legacy Migration | Zero-Downtime Expert",
 			description:
 				"Modernize legacy systems without business disruption. Strangler fig, incremental migration, zero-downtime cutover. Migrated 15+ enterprise apps. Free assessment.",
 			keywords: [
@@ -3430,7 +3430,7 @@ export const pseoPages: PseoPage[] = [
 		published: true,
 
 		seo: {
-			title: "Performance Optimization | 337x Speed Improvement",
+			title: "Performance Optimization | 337x Faster",
 			description:
 				"Make your app blazing fast. TraceForge: 337x faster than Inkscape. PhotoKeep: 73% cost reduction. Load testing, profiling, edge deployment. Free performance audit.",
 			keywords: [
@@ -3598,44 +3598,26 @@ export const pseoPages: PseoPage[] = [
 	},
 ];
 
-/**
- * Get a page by its slug
- */
 export function getPageBySlug(slug: string): PseoPage | undefined {
 	return pseoPages.find((page) => page.slug === slug);
 }
 
-/**
- * Get all published pages
- */
 export function getPublishedPages(): PseoPage[] {
 	return pseoPages.filter((page) => page.published);
 }
 
-/**
- * Get all page slugs (for generateStaticParams)
- */
 export function getAllPageSlugs(): string[] {
 	return pseoPages.filter((page) => page.published).map((page) => page.slug);
 }
 
-/**
- * Get pages by technology
- */
 export function getPagesByTechnology(technology: string): PseoPage[] {
 	return pseoPages.filter((page) => page.technology === technology && page.published);
 }
 
-/**
- * Get pages by industry
- */
 export function getPagesByIndustry(industry: string): PseoPage[] {
 	return pseoPages.filter((page) => page.industry === industry && page.published);
 }
 
-/**
- * Get related pages for a given page
- */
 export function getRelatedPages(slug: string, limit = 4): PseoPage[] {
 	const page = getPageBySlug(slug);
 	if (!page) return [];

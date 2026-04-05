@@ -1,3 +1,5 @@
+import { PERSON_REF } from "./schema-utils";
+
 import type { Project } from "@/data/projects";
 
 const siteUrl = "https://alexmayhew.dev";
@@ -15,17 +17,7 @@ export function CaseStudyJsonLd({ project }: CaseStudyJsonLdProps) {
 		name: `${project.title} — Case Study`,
 		description: project.description,
 		url: pageUrl,
-		author: {
-			"@type": "Person",
-			name: "Alex Mayhew",
-			url: siteUrl,
-			jobTitle: "Technical Advisor",
-			sameAs: [
-				"https://www.linkedin.com/in/alexmmayhew",
-				"https://github.com/LecoMV",
-				"https://x.com/alexmayhewdev",
-			],
-		},
+		author: PERSON_REF,
 		datePublished: `${project.year}-01-01`,
 		keywords: project.tech.join(", "),
 		about: {

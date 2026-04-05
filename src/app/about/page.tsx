@@ -1,4 +1,5 @@
 import { AboutPage } from "@/components/pages";
+import { JsonLdScript, PERSON_REF, SCHEMA_CONTEXT, SITE_URL } from "@/components/seo/schema-utils";
 
 import type { Metadata } from "next";
 
@@ -32,6 +33,26 @@ export const metadata: Metadata = {
 	},
 };
 
+function AboutProfileJsonLd() {
+	const schema = {
+		"@context": SCHEMA_CONTEXT,
+		"@type": "ProfilePage",
+		"@id": `${SITE_URL}/about`,
+		url: `${SITE_URL}/about`,
+		name: "About Alex Mayhew",
+		description:
+			"Technical advisor helping founders make architectural decisions that compound into competitive advantage.",
+		mainEntity: PERSON_REF,
+		dateModified: "2026-04-05",
+	};
+	return <JsonLdScript data={schema} />;
+}
+
 export default function Page() {
-	return <AboutPage />;
+	return (
+		<>
+			<AboutProfileJsonLd />
+			<AboutPage />
+		</>
+	);
 }

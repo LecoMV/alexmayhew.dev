@@ -31,6 +31,11 @@ describe("Navigation", () => {
 		expect(screen.getByText("Blog")).toBeTruthy();
 	});
 
+	it("includes /for advisory link in navigation", () => {
+		render(<Navigation />);
+		expect(screen.getByText("Advisory")).toBeTruthy();
+	});
+
 	it("renders mobile menu button on small screens", () => {
 		render(<Navigation />);
 		const menuButton = screen.getByLabelText(/open menu/i);

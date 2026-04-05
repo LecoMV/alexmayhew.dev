@@ -5,6 +5,7 @@ import {
 	breadcrumbSchema,
 	faqSchema,
 	JsonLdScript,
+	PERSON_REF,
 	SCHEMA_CONTEXT,
 	SITE_URL,
 	webPageSchema,
@@ -26,13 +27,7 @@ export function RoleJsonLd({ page }: RoleJsonLdProps) {
 		"@id": pageUrl,
 		name: `Technical Advisory for ${roleLabel}`,
 		description: page.seo.description,
-		provider: {
-			"@type": "Person",
-			name: "Alex Mayhew",
-			url: SITE_URL,
-			image: `${SITE_URL}/og-image.png`,
-			jobTitle: "Technical Advisor & Software Architect",
-		},
+		provider: PERSON_REF,
 		serviceType: "Technical Consulting",
 		areaServed: AREA_SERVED,
 		hasOfferCatalog: {

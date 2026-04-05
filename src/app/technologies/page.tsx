@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 		creator: "@alexmayhewdev",
 	},
 	alternates: {
-		canonical: `${siteUrl}/technologies`,
+		canonical: "/technologies",
 	},
 };
 

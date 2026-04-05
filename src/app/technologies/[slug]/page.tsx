@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			creator: "@alexmayhewdev",
 		},
 		alternates: {
-			canonical: `${siteUrl}/technologies/${slug}`,
+			canonical: `/technologies/${slug}`,
 		},
 	};
 }

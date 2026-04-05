@@ -19,6 +19,12 @@ export const metadata: Metadata = {
 			},
 		],
 	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Tools",
+		description: "Developer tools built with precision. TraceForge, Claude Pilot, and more.",
+		images: ["/og-image.png"],
+	},
 	alternates: {
 		canonical: "/tools",
 	},

@@ -1,5 +1,6 @@
 import { blog } from "@/../.source/server";
 import { BlogList } from "@/components/blog/blog-list";
+import { JsonLdScript, SCHEMA_CONTEXT, SITE_URL } from "@/components/seo/schema-utils";
 
 import type { Metadata } from "next";
 
@@ -39,6 +40,33 @@ function getSlug(path: string): string {
 	return path.replace(/^\//, "").replace(/\.mdx$/, "");
 }
 
+function BlogCollectionJsonLd({
+	posts,
+}: {
+	posts: Array<{ slug: string; data: { title: string } }>;
+}) {
+	const schema = {
+		"@context": SCHEMA_CONTEXT,
+		"@type": "CollectionPage",
+		"@id": `${SITE_URL}/blog`,
+		url: `${SITE_URL}/blog`,
+		name: "Blog",
+		description:
+			"Technical articles on engineering, architecture, and modern web development patterns.",
+		mainEntity: {
+			"@type": "ItemList",
+			numberOfItems: posts.length,
+			itemListElement: posts.map((post, index) => ({
+				"@type": "ListItem",
+				position: index + 1,
+				url: `${SITE_URL}/blog/${post.slug}`,
+				name: post.data.title,
+			})),
+		},
+	};
+	return <JsonLdScript data={schema} />;
+}
+
 export default function BlogPage() {
 	// Frontmatter is spread at top level of entry, file info is in entry.info
 	const allPosts = blog
@@ -64,6 +92,7 @@ export default function BlogPage() {
 
 	return (
 		<>
+			<BlogCollectionJsonLd posts={allPosts} />
 			<BlogList posts={posts} hubPosts={hubPosts} />
 			<BlogPostNav posts={allPosts} />
 		</>

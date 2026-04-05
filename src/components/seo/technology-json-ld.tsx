@@ -2,6 +2,7 @@ import {
 	AREA_SERVED,
 	breadcrumbSchema,
 	JsonLdScript,
+	PERSON_REF,
 	SCHEMA_CONTEXT,
 	SITE_URL,
 	WEBSITE_REF,
@@ -22,12 +23,7 @@ export function TechnologyJsonLd({ technology }: TechnologyJsonLdProps) {
 		"@id": `${pageUrl}#service`,
 		name: `${technology.displayName} Development`,
 		description: technology.expertiseLevel,
-		provider: {
-			"@type": "Person",
-			name: "Alex Mayhew",
-			url: SITE_URL,
-			jobTitle: "Technical Advisor & Systems Architect",
-		},
+		provider: PERSON_REF,
 		serviceType: "Software Development",
 		areaServed: AREA_SERVED,
 		hasOfferCatalog: {
@@ -77,10 +73,7 @@ export function TechnologyJsonLd({ technology }: TechnologyJsonLdProps) {
 		url: pageUrl,
 		name: `${technology.displayName} Developer | Technical Advisor`,
 		description: technology.expertiseLevel,
-		isPartOf: {
-			...WEBSITE_REF,
-			"@id": `${SITE_URL}#website`,
-		},
+		isPartOf: WEBSITE_REF,
 		about: {
 			"@type": "Thing",
 			name: technology.displayName,

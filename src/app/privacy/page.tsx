@@ -6,6 +6,16 @@ export const metadata: Metadata = {
 	title: "Privacy Policy",
 	description:
 		"Privacy Policy for alexmayhew.dev - How we handle your data and protect your privacy.",
+	openGraph: {
+		title: "Privacy Policy",
+		description: "How alexmayhew.dev handles your data and protects your privacy.",
+		type: "website",
+	},
+	twitter: {
+		card: "summary",
+		title: "Privacy Policy",
+		description: "How alexmayhew.dev handles your data and protects your privacy.",
+	},
 	alternates: {
 		canonical: "/privacy",
 	},

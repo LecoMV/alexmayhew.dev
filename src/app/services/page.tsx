@@ -1,3 +1,4 @@
+import { PERSON_REF } from "@/components/seo/schema-utils";
 import { getPublishedPages, INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
 
 import { ServicesPage } from "./services-page-content";
@@ -55,11 +56,7 @@ function ServicesHubJsonLd() {
 				name: `${TECHNOLOGY_LABELS[page.technology]} for ${INDUSTRY_LABELS[page.industry]}`,
 				description: page.seo.description,
 				url: `${siteUrl}/services/${page.slug}`,
-				provider: {
-					"@type": "Person",
-					name: "Alex Mayhew",
-					url: siteUrl,
-				},
+				provider: PERSON_REF,
 			},
 		})),
 	};
