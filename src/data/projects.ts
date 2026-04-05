@@ -59,7 +59,7 @@ export const projects: Project[] = [
 		id: "traceforge",
 		title: "TraceForge",
 		description:
-			"Cut vector conversion time from 45 minutes to 8 seconds per asset—a 337x speedup. Design teams were hemorrhaging billable hours manually tracing logos and icons in Illustrator. Built a GPU-accelerated pipeline combining neural upscaling with dual vectorization engines (Potrace + VTracer), plus an SVGO optimization stage that reduces file sizes by 40-60%. Now processing 2,000+ conversions monthly with zero manual intervention.",
+			"Cut vector conversion time from 45 minutes to 8 seconds per asset...a 337x speedup. Design teams were hemorrhaging billable hours manually tracing logos and icons in Illustrator. Built a GPU-accelerated pipeline combining neural upscaling with dual vectorization engines (Potrace + VTracer), plus an SVGO optimization stage that reduces file sizes by 40-60%. Now processing 2,000+ conversions monthly with zero manual intervention.",
 		category: "Developer Tools",
 		tech: ["Python", "FastAPI", "Potrace", "VTracer", "CUDA", "SVGO", "React", "TypeScript"],
 		year: "2025",
@@ -85,11 +85,11 @@ export const projects: Project[] = [
 				type: "Open Source",
 			},
 			challenge:
-				"Design teams at agencies and product companies were spending 45+ minutes per asset manually tracing rasters in Illustrator. Existing automated tools like Adobe's Live Trace produced noisy output requiring extensive cleanup. Batch processing didn't exist—each asset required individual attention. For teams processing hundreds of brand assets during rebrands or design system migrations, this meant weeks of tedious manual work. The core technical problem: raster-to-vector conversion requires understanding image topology, not just edge detection. Single-algorithm approaches either over-simplify (losing detail) or over-trace (creating thousands of unnecessary nodes).",
+				"Design teams at agencies and product companies were spending 45+ minutes per asset manually tracing rasters in Illustrator. Existing automated tools like Adobe's Live Trace produced noisy output requiring extensive cleanup. Batch processing didn't exist...each asset required individual attention. For teams processing hundreds of brand assets during rebrands or design system migrations, this meant weeks of tedious manual work. The core technical problem: raster-to-vector conversion requires understanding image topology, not just edge detection. Single-algorithm approaches either over-simplify (losing detail) or over-trace (creating thousands of unnecessary nodes).",
 			approach:
-				"Started by benchmarking every open-source vectorization engine available. Potrace excelled at clean geometric shapes (logos, icons) while VTracer handled photographic complexity better. Rather than picking one, I built a dual-engine architecture letting users choose the right tool per asset. The key insight was that GPU-accelerated neural upscaling before vectorization dramatically improves output quality—feeding a 4x upscaled image to Potrace produces cleaner paths than running Potrace on the original. Built the pipeline on FastAPI with async processing, WebSocket progress streaming for long batch operations, and an SVGO post-processing stage that strips metadata and optimizes path data. Added 14 vectorization presets tuned for different asset types: logos, icons, illustrations, technical drawings, and photographs.",
+				"Started by benchmarking every open-source vectorization engine available. Potrace excelled at clean geometric shapes (logos, icons) while VTracer handled photographic complexity better. Rather than picking one, I built a dual-engine architecture letting users choose the right tool per asset. The key insight was that GPU-accelerated neural upscaling before vectorization dramatically improves output quality...feeding a 4x upscaled image to Potrace produces cleaner paths than running Potrace on the original. Built the pipeline on FastAPI with async processing, WebSocket progress streaming for long batch operations, and an SVGO post-processing stage that strips metadata and optimizes path data. Added 14 vectorization presets tuned for different asset types: logos, icons, illustrations, technical drawings, and photographs.",
 			solution:
-				"TraceForge ships as a self-hosted web application with a React frontend and FastAPI backend. The GPU pipeline handles neural upscaling via CUDA-accelerated models, then routes to either Potrace or VTracer based on user selection or automatic detection. WebSocket connections stream real-time progress for batch operations processing hundreds of assets. The SVGO optimization stage runs 12 plugins that reduce SVG file sizes by 40-60% without visual degradation. Currently processing 2,000+ conversions monthly with zero manual intervention. The entire pipeline runs on a single RTX 3080 with 8-second average processing time per asset—down from 45 minutes of manual work.",
+				"TraceForge ships as a self-hosted web application with a React frontend and FastAPI backend. The GPU pipeline handles neural upscaling via CUDA-accelerated models, then routes to either Potrace or VTracer based on user selection or automatic detection. WebSocket connections stream real-time progress for batch operations processing hundreds of assets. The SVGO optimization stage runs 12 plugins that reduce SVG file sizes by 40-60% without visual degradation. Currently processing 2,000+ conversions monthly with zero manual intervention. The entire pipeline runs on a single RTX 3080 with 8-second average processing time per asset...down from 45 minutes of manual work.",
 			metrics: [
 				{ label: "Processing Speed", value: "337x", context: "45 min to 8 sec per asset" },
 				{
@@ -113,7 +113,7 @@ export const projects: Project[] = [
 					component: "GPU Pipeline",
 					technology: "CUDA + Neural Upscaling",
 					rationale:
-						"4x neural upscaling before vectorization produces dramatically cleaner SVG paths. GPU acceleration makes this practical at batch scale—CPU-only upscaling would add 3-5 minutes per asset, negating the speed advantage.",
+						"4x neural upscaling before vectorization produces dramatically cleaner SVG paths. GPU acceleration makes this practical at batch scale...CPU-only upscaling would add 3-5 minutes per asset, negating the speed advantage.",
 				},
 				{
 					component: "Dual Engine",
@@ -141,7 +141,7 @@ export const projects: Project[] = [
 					problem:
 						"Aggressive SVGO optimization sometimes merged paths that should remain separate, breaking CSS targeting and animation capabilities.",
 					solution:
-						"Built a custom SVGO plugin configuration that preserves path IDs and class attributes while still optimizing coordinates and removing redundant metadata. Tuned precision settings per asset type—logos get higher precision than decorative illustrations.",
+						"Built a custom SVGO plugin configuration that preserves path IDs and class attributes while still optimizing coordinates and removing redundant metadata. Tuned precision settings per asset type...logos get higher precision than decorative illustrations.",
 				},
 				{
 					title: "Consistent Output Across Engine Switches",
@@ -152,10 +152,10 @@ export const projects: Project[] = [
 				},
 			],
 			takeaways: [
-				"GPU parallelism transforms image processing economics—operations that are impractical on CPU become trivial with even a mid-range GPU.",
+				"GPU parallelism transforms image processing economics...operations that are impractical on CPU become trivial with even a mid-range GPU.",
 				"Offering multiple algorithms with sensible defaults beats any single one-size-fits-all approach for creative tools.",
-				"WebSocket progress streaming is table stakes for any operation longer than 3 seconds—users will assume the process is broken without real-time feedback.",
-				"Post-processing optimization (SVGO) often delivers more practical value than improving the core algorithm—a 40% smaller file loads faster regardless of path quality.",
+				"WebSocket progress streaming is table stakes for any operation longer than 3 seconds...users will assume the process is broken without real-time feedback.",
+				"Post-processing optimization (SVGO) often delivers more practical value than improving the core algorithm...a 40% smaller file loads faster regardless of path quality.",
 			],
 		},
 	},
@@ -163,7 +163,7 @@ export const projects: Project[] = [
 		id: "claude-pilot",
 		title: "Claude Pilot",
 		description:
-			"Recovered 2+ hours daily lost to context-switching between terminal, database clients, and config files. Claude Code power users were drowning in fragmented tooling—no unified view of sessions, memory state, or MCP server health. Architected a native Electron control center with 25 tRPC endpoints managing PostgreSQL, Memgraph, and Qdrant memory systems. 80% test coverage, zero production incidents since launch.",
+			"Recovered 2+ hours daily lost to context-switching between terminal, database clients, and config files. Claude Code power users were drowning in fragmented tooling...no unified view of sessions, memory state, or MCP server health. Architected a native Electron control center with 25 tRPC endpoints managing PostgreSQL, Memgraph, and Qdrant memory systems. 80% test coverage, zero production incidents since launch.",
 		category: "Developer Tools",
 		tech: ["Electron", "React", "TypeScript", "tRPC", "Zod", "PostgreSQL", "Memgraph"],
 		year: "2025",
@@ -186,7 +186,7 @@ export const projects: Project[] = [
 			challenge:
 				"Claude Code power users manage sessions across multiple projects, each with their own memory state stored across PostgreSQL (structured data), Memgraph (knowledge graphs), and Qdrant (vector embeddings). Without a unified dashboard, developers context-switch between terminal sessions, database clients, and config files constantly. There's no way to visualize the knowledge graph, inspect memory health, or manage MCP server configurations without diving into raw database queries. The typical workflow involves 4-5 separate tools just to understand the state of a single project's AI memory. For developers running Claude Code 8+ hours daily, this fragmentation costs 2+ hours of productive time.",
 			approach:
-				"Chose Electron deliberately—this tool needs native OS access for process management, file system watching, and system tray integration that web apps can't provide. The critical architecture decision was using tRPC for all IPC communication between main and renderer processes. This gives full type safety from the database query layer through to the React UI without any serialization boundaries or manual type definitions. Built 25 tRPC endpoints covering session management, memory inspection, MCP health monitoring, and configuration. Zod schemas validate every message crossing the IPC bridge, catching type mismatches at runtime that TypeScript can't catch at compile time.",
+				"Chose Electron deliberately...this tool needs native OS access for process management, file system watching, and system tray integration that web apps can't provide. The critical architecture decision was using tRPC for all IPC communication between main and renderer processes. This gives full type safety from the database query layer through to the React UI without any serialization boundaries or manual type definitions. Built 25 tRPC endpoints covering session management, memory inspection, MCP health monitoring, and configuration. Zod schemas validate every message crossing the IPC bridge, catching type mismatches at runtime that TypeScript can't catch at compile time.",
 			solution:
 				"Claude Pilot runs as a native desktop application with a React frontend communicating through tRPC to the Electron main process. The dashboard provides real-time views of all active Claude Code sessions, memory utilization across all three database systems, and MCP server health status. The knowledge graph visualizer renders Memgraph data as an interactive force-directed graph, letting developers see relationship patterns in their project's AI memory. Configuration management handles MCP server setup, memory retention policies, and session preferences through a unified interface. 80% test coverage across both main and renderer processes, with zero production incidents since launch.",
 			metrics: [
@@ -214,20 +214,20 @@ export const projects: Project[] = [
 					component: "IPC Layer",
 					technology: "tRPC + Zod",
 					rationale:
-						"Type-safe communication between Electron main and renderer processes eliminates an entire category of serialization bugs. Zod runtime validation catches edge cases that compile-time TypeScript misses—critical when database queries return dynamic shapes.",
+						"Type-safe communication between Electron main and renderer processes eliminates an entire category of serialization bugs. Zod runtime validation catches edge cases that compile-time TypeScript misses...critical when database queries return dynamic shapes.",
 				},
 				{
 					component: "Knowledge Graph",
 					technology: "Memgraph over Neo4j",
 					rationale:
-						"Memgraph's in-memory architecture delivers sub-millisecond query latency for the interactive graph visualizer. Neo4j's disk-based storage adds 10-50ms per query—noticeable when rendering force-directed graphs with hundreds of nodes updating in real-time.",
+						"Memgraph's in-memory architecture delivers sub-millisecond query latency for the interactive graph visualizer. Neo4j's disk-based storage adds 10-50ms per query...noticeable when rendering force-directed graphs with hundreds of nodes updating in real-time.",
 				},
 			],
 			challenges: [
 				{
 					title: "Electron IPC Type Safety",
 					problem:
-						"Standard Electron IPC (ipcMain/ipcRenderer) is completely untyped—any message shape can be sent or received without compile-time checks, leading to subtle serialization bugs.",
+						"Standard Electron IPC (ipcMain/ipcRenderer) is completely untyped...any message shape can be sent or received without compile-time checks, leading to subtle serialization bugs.",
 					solution:
 						"Replaced raw IPC with tRPC, treating the main process as a server and renderer as a client. Every endpoint has input/output Zod schemas. TypeScript errors surface immediately when database schema changes would break the UI layer.",
 				},
@@ -247,9 +247,9 @@ export const projects: Project[] = [
 				},
 			],
 			takeaways: [
-				"Type-safe IPC via tRPC eliminates an entire error category in Electron apps—the overhead of setting it up pays for itself within the first week of development.",
+				"Type-safe IPC via tRPC eliminates an entire error category in Electron apps...the overhead of setting it up pays for itself within the first week of development.",
 				"Graph databases are the right tool for relationship-heavy data that needs real-time traversal, but the visualization layer needs careful performance engineering.",
-				"Electron is still the pragmatic choice for developer tools that need native OS integration—the resource overhead is negligible next to the AI workloads it manages.",
+				"Electron is still the pragmatic choice for developer tools that need native OS integration...the resource overhead is negligible next to the AI workloads it manages.",
 				"Zod runtime validation catches bugs that TypeScript's compile-time checks miss, especially at serialization boundaries where data shapes can drift.",
 			],
 		},
@@ -258,7 +258,7 @@ export const projects: Project[] = [
 		id: "photokeep-pro",
 		title: "PhotoKeep Pro",
 		description:
-			"Slashed cloud GPU costs by 73% while boosting restoration quality by 4dB over commercial alternatives. A restoration startup was burning $12k/month on fragmented API calls with inconsistent results. Engineered a unified orchestration layer managing 14+ deep learning models (SUPIR, HAT, CodeFormer) with thread-safe VRAM allocation and LRU eviction across 49GB. Now delivering 28.5dB PSNR quality at 99.95% uptime—outperforming Magnific AI and Topaz on blind tests.",
+			"Slashed cloud GPU costs by 73% while boosting restoration quality by 4dB over commercial alternatives. A restoration startup was burning $12k/month on fragmented API calls with inconsistent results. Engineered a unified orchestration layer managing 14+ deep learning models (SUPIR, HAT, CodeFormer) with thread-safe VRAM allocation and LRU eviction across 49GB. Now delivering 28.5dB PSNR quality at 99.95% uptime...outperforming Magnific AI and Topaz on blind tests.",
 		category: "AI/ML",
 		tech: ["Python", "FastAPI", "PyTorch", "React", "TypeScript", "Celery", "Redis", "Stripe"],
 		year: "2024",
@@ -281,11 +281,11 @@ export const projects: Project[] = [
 				type: "SaaS Product",
 			},
 			challenge:
-				"A photo restoration startup was spending $12,000/month on fragmented cloud GPU API calls—Replicate for upscaling, a separate service for face restoration, another for colorization. Each API had different quality levels, inconsistent processing times, and no coordination between stages. Results varied wildly between runs. Customers receiving professionally restored family photos expected consistency, but the patchwork architecture couldn't deliver it. The core technical challenge: orchestrating 14+ deep learning models with different VRAM requirements, processing characteristics, and failure modes into a single reliable pipeline. Models ranged from 2GB (CodeFormer for faces) to 12GB (SUPIR for general restoration), and naive sequential loading would exhaust even 49GB of GPU memory.",
+				"A photo restoration startup was spending $12,000/month on fragmented cloud GPU API calls...Replicate for upscaling, a separate service for face restoration, another for colorization. Each API had different quality levels, inconsistent processing times, and no coordination between stages. Results varied wildly between runs. Customers receiving professionally restored family photos expected consistency, but the patchwork architecture couldn't deliver it. The core technical challenge: orchestrating 14+ deep learning models with different VRAM requirements, processing characteristics, and failure modes into a single reliable pipeline. Models ranged from 2GB (CodeFormer for faces) to 12GB (SUPIR for general restoration), and naive sequential loading would exhaust even 49GB of GPU memory.",
 			approach:
-				"Rejected the multi-cloud API approach entirely. Instead, consolidated all models onto dedicated GPU infrastructure with a custom orchestration layer. The key insight was treating VRAM like a managed memory pool—building an LRU eviction system that keeps frequently-used models loaded while swapping cold models to CPU memory. This eliminated the 15-30 second model loading penalty for common workflows. Built the orchestration on Celery with Redis for distributed task queuing, allowing horizontal scaling across multiple GPU nodes. Each restoration job gets decomposed into a dependency graph: analyze → denoise → upscale → face restore → colorize (optional). Failed stages retry independently without reprocessing the entire pipeline.",
+				"Rejected the multi-cloud API approach entirely. Instead, consolidated all models onto dedicated GPU infrastructure with a custom orchestration layer. The key insight was treating VRAM like a managed memory pool...building an LRU eviction system that keeps frequently-used models loaded while swapping cold models to CPU memory. This eliminated the 15-30 second model loading penalty for common workflows. Built the orchestration on Celery with Redis for distributed task queuing, allowing horizontal scaling across multiple GPU nodes. Each restoration job gets decomposed into a dependency graph: analyze → denoise → upscale → face restore → colorize (optional). Failed stages retry independently without reprocessing the entire pipeline.",
 			solution:
-				"PhotoKeep Pro runs a unified pipeline managing SUPIR, HAT, Real-ESRGAN, CodeFormer, GFPGAN, and 8 other specialized models through a thread-safe VRAM allocator. The LRU eviction system maintains a working set of 3-4 models in GPU memory while keeping the rest warm in CPU RAM. Average restoration completes in 45 seconds for a 12MP image—down from 3-5 minutes with the previous API-chaining approach. Quality improved to 28.5dB PSNR on our benchmark suite, a 4dB improvement over commercial alternatives. The Stripe-integrated billing system charges per restoration with volume discounts, aligning costs directly with usage. Running at 99.95% uptime with automatic failover between GPU nodes.",
+				"PhotoKeep Pro runs a unified pipeline managing SUPIR, HAT, Real-ESRGAN, CodeFormer, GFPGAN, and 8 other specialized models through a thread-safe VRAM allocator. The LRU eviction system maintains a working set of 3-4 models in GPU memory while keeping the rest warm in CPU RAM. Average restoration completes in 45 seconds for a 12MP image...down from 3-5 minutes with the previous API-chaining approach. Quality improved to 28.5dB PSNR on our benchmark suite, a 4dB improvement over commercial alternatives. The Stripe-integrated billing system charges per restoration with volume discounts, aligning costs directly with usage. Running at 99.95% uptime with automatic failover between GPU nodes.",
 			metrics: [
 				{ label: "Cost Reduction", value: "73%", context: "$12k/mo to $3.2k/mo GPU costs" },
 				{
@@ -344,9 +344,9 @@ export const projects: Project[] = [
 				},
 			],
 			takeaways: [
-				"Custom GPU memory management delivers order-of-magnitude cost improvements over cloud API chaining—the engineering investment pays for itself within 2 months.",
-				"Async job queues with stage-level checkpointing are essential for ML pipelines—any stage can fail, and full reprocessing is unacceptable for production workloads.",
-				"Usage-based billing aligns incentives perfectly for compute-heavy SaaS—customers pay for value received, and revenue scales linearly with infrastructure costs.",
+				"Custom GPU memory management delivers order-of-magnitude cost improvements over cloud API chaining...the engineering investment pays for itself within 2 months.",
+				"Async job queues with stage-level checkpointing are essential for ML pipelines...any stage can fail, and full reprocessing is unacceptable for production workloads.",
+				"Usage-based billing aligns incentives perfectly for compute-heavy SaaS...customers pay for value received, and revenue scales linearly with infrastructure costs.",
 				"LRU model eviction between GPU and CPU memory eliminates the cold-start penalty that makes multi-model architectures impractical for real-time workloads.",
 			],
 		},
@@ -377,9 +377,9 @@ export const projects: Project[] = [
 				type: "Open Source",
 			},
 			challenge:
-				"Penetration testing teams spend the first 4+ hours of every engagement on boilerplate reconnaissance: port scanning, service enumeration, vulnerability identification, and report scaffolding. Senior pentesters doing $200/hour work were wasting time on tasks that should be automated. General-purpose LLMs (GPT-4, Claude) produce plausible-looking but technically dangerous output—recommending tools that don't exist, generating commands with wrong flags, or suggesting techniques that violate scope agreements. The security domain requires extreme precision: a hallucinated Nmap flag could scan out-of-scope networks, and a fabricated CVE reference wastes hours of investigation time. No existing LLM solution understood OPSEC constraints, tool-specific syntax, or the structured methodology (PTES) that professional assessments follow.",
+				"Penetration testing teams spend the first 4+ hours of every engagement on boilerplate reconnaissance: port scanning, service enumeration, vulnerability identification, and report scaffolding. Senior pentesters doing $200/hour work were wasting time on tasks that should be automated. General-purpose LLMs (GPT-4, Claude) produce plausible-looking but technically dangerous output...recommending tools that don't exist, generating commands with wrong flags, or suggesting techniques that violate scope agreements. The security domain requires extreme precision: a hallucinated Nmap flag could scan out-of-scope networks, and a fabricated CVE reference wastes hours of investigation time. No existing LLM solution understood OPSEC constraints, tool-specific syntax, or the structured methodology (PTES) that professional assessments follow.",
 			approach:
-				"Built a two-stage fine-tuning pipeline on Qwen2.5-7B. Stage one: cybersecurity corpus adaptation using 12GB of curated data—MITRE ATT&CK techniques, CVE databases, tool documentation (Nmap, Burp Suite, Metasploit, BloodHound), and penetration testing methodology guides. This gives the model domain vocabulary and factual grounding. Stage two: agentic fine-tuning for structured tool calling with OPSEC awareness. Trained on real engagement workflows to output properly formatted commands, respect scope constraints, and flag when a requested action might violate rules of engagement. Used LoRA (Low-Rank Adaptation) to keep adapter size at 3.6GB—practical for deployment on consumer GPUs.",
+				"Built a two-stage fine-tuning pipeline on Qwen2.5-7B. Stage one: cybersecurity corpus adaptation using 12GB of curated data...MITRE ATT&CK techniques, CVE databases, tool documentation (Nmap, Burp Suite, Metasploit, BloodHound), and penetration testing methodology guides. This gives the model domain vocabulary and factual grounding. Stage two: agentic fine-tuning for structured tool calling with OPSEC awareness. Trained on real engagement workflows to output properly formatted commands, respect scope constraints, and flag when a requested action might violate rules of engagement. Used LoRA (Low-Rank Adaptation) to keep adapter size at 3.6GB...practical for deployment on consumer GPUs.",
 			solution:
 				"PenQWEN deploys as a 3.6GB LoRA adapter on top of Qwen2.5-7B, runnable on any GPU with 12GB+ VRAM. The model handles reconnaissance automation, vulnerability prioritization, and report generation following PTES methodology. It generates syntactically correct tool commands with proper flags, understands scope constraints, and refuses to suggest techniques outside the defined engagement rules. The two-stage training approach means the model has both factual knowledge (CVEs, techniques, tool syntax) and procedural understanding (when to use which tool, how to chain findings, OPSEC considerations). Currently automating 60% of routine enumeration tasks with zero hallucinated commands in production use.",
 			metrics: [
@@ -426,15 +426,15 @@ export const projects: Project[] = [
 				{
 					title: "Tool Command Syntax Accuracy",
 					problem:
-						"Generated commands often had correct structure but wrong flags—Nmap syntax that was plausible but wouldn't actually work as intended.",
+						"Generated commands often had correct structure but wrong flags...Nmap syntax that was plausible but wouldn't actually work as intended.",
 					solution:
 						"Built a synthetic training dataset by programmatically generating valid command combinations from official tool documentation, then training against these verified examples. Post-generation validation checks command syntax against known-good patterns before presenting to the user.",
 				},
 			],
 			takeaways: [
-				"Domain fine-tuning consistently beats prompt engineering for specialized tasks—a 7B fine-tuned model outperforms a 70B general model in its specific domain.",
+				"Domain fine-tuning consistently beats prompt engineering for specialized tasks...a 7B fine-tuned model outperforms a 70B general model in its specific domain.",
 				"LoRA makes fine-tuning practical on consumer GPUs, democratizing domain adaptation that previously required cloud compute budgets.",
-				"Dataset quality matters more than quantity for domain-specific LLMs—12GB of curated, verified data outperforms 100GB of scraped, unverified content.",
+				"Dataset quality matters more than quantity for domain-specific LLMs...12GB of curated, verified data outperforms 100GB of scraped, unverified content.",
 				"Two-stage curriculum learning (knowledge then behavior) produces more reliable outputs than single-stage training that conflates both objectives.",
 				"In safety-critical domains, hallucination prevention must be an explicit training objective, not an afterthought.",
 			],
@@ -444,7 +444,7 @@ export const projects: Project[] = [
 		id: "voice-cloner",
 		title: "Voice Cloner",
 		description:
-			"Built a production AI voice platform handling single-voice TTS, multi-speaker conversations, and full audiobook production from manuscript uploads — all on a single RTX 3080. The platform runs Qwen3-TTS 1.7B with 12-second P50 latency, 41+ curated voices, and zero-shot cloning from short reference audio. The Audiobook Studio parses DOCX/PDF/TXT manuscripts into chapters with dialogue detection, assigns character voices, applies pronunciation dictionaries, and exports distribution-ready M4B with chapter markers. Multi-voice conversations support drag-and-drop line ordering, per-line effects (speed, volume, gap), stage directions, multiple takes, ambient audio, and a waveform timeline editor. 99.95% uptime, 0.03% error rate, Stripe subscription billing.",
+			"Built a production AI voice platform handling single-voice TTS, multi-speaker conversations, and full audiobook production from manuscript uploads ... all on a single RTX 3080. The platform runs Qwen3-TTS 1.7B with 12-second P50 latency, 41+ curated voices, and zero-shot cloning from short reference audio. The Audiobook Studio parses DOCX/PDF/TXT manuscripts into chapters with dialogue detection, assigns character voices, applies pronunciation dictionaries, and exports distribution-ready M4B with chapter markers. Multi-voice conversations support drag-and-drop line ordering, per-line effects (speed, volume, gap), stage directions, multiple takes, ambient audio, and a waveform timeline editor. 99.95% uptime, 0.03% error rate, Stripe subscription billing.",
 		category: "AI/ML",
 		tech: [
 			"Python",
@@ -478,16 +478,16 @@ export const projects: Project[] = [
 		caseStudy: {
 			published: true,
 			subtitle:
-				"Production voice platform — TTS, conversations, and audiobook production on a single RTX 3080",
+				"Production voice platform ... TTS, conversations, and audiobook production on a single RTX 3080",
 			context: {
 				duration: "8 weeks",
 				industry: "AI/ML SaaS",
 				type: "SaaS Product",
 			},
 			challenge:
-				"Professional voice talent costs $500+/hour, and 95% of books lack audio versions because producing a single audiobook costs $2K-$5K in human narration fees. Existing AI TTS solutions (ElevenLabs, Play.ht) handle single-voice generation but offer nothing for multi-character production workflows — no conversation builder, no manuscript parsing, no chapter management, no pronunciation dictionaries. Content creators need a complete production pipeline: from raw manuscript to distribution-ready M4B with chapter markers and consistent multi-voice narration. The core engineering challenge: running a 1.7B parameter TTS model in bfloat16 on a single RTX 3080 (10GB VRAM) with consistent sub-15-second latency while supporting three distinct production modes (single TTS, multi-speaker conversations, full audiobook chapters) through a unified inference pipeline.",
+				"Professional voice talent costs $500+/hour, and 95% of books lack audio versions because producing a single audiobook costs $2K-$5K in human narration fees. Existing AI TTS solutions (ElevenLabs, Play.ht) handle single-voice generation but offer nothing for multi-character production workflows ... no conversation builder, no manuscript parsing, no chapter management, no pronunciation dictionaries. Content creators need a complete production pipeline: from raw manuscript to distribution-ready M4B with chapter markers and consistent multi-voice narration. The core engineering challenge: running a 1.7B parameter TTS model in bfloat16 on a single RTX 3080 (10GB VRAM) with consistent sub-15-second latency while supporting three distinct production modes (single TTS, multi-speaker conversations, full audiobook chapters) through a unified inference pipeline.",
 			approach:
-				"Chose Qwen3-TTS 1.7B after benchmarking against XTTS, Bark, and Tortoise — best quality-to-VRAM ratio for zero-shot cloning from 10-30 second reference samples. Built the inference pipeline on FastAPI with a 4-tier Redis priority queue (admin > enterprise > pro > free). The critical architectural decision was making each audiobook chapter a Conversation record internally, reusing the entire existing TTS pipeline, per-line effects engine, takes system, and timeline editor with zero code duplication. The Audiobook Studio layer adds manuscript parsing (DOCX via python-docx, PDF via PyMuPDF, TXT via regex), chapter management, character-to-voice casting that propagates across all chapters, and a pronunciation dictionary that applies regex substitutions before TTS generation. Implemented proactive worker recycling every 500 generations to combat PyTorch VRAM fragmentation.",
+				"Chose Qwen3-TTS 1.7B after benchmarking against XTTS, Bark, and Tortoise ... best quality-to-VRAM ratio for zero-shot cloning from 10-30 second reference samples. Built the inference pipeline on FastAPI with a 4-tier Redis priority queue (admin > enterprise > pro > free). The critical architectural decision was making each audiobook chapter a Conversation record internally, reusing the entire existing TTS pipeline, per-line effects engine, takes system, and timeline editor with zero code duplication. The Audiobook Studio layer adds manuscript parsing (DOCX via python-docx, PDF via PyMuPDF, TXT via regex), chapter management, character-to-voice casting that propagates across all chapters, and a pronunciation dictionary that applies regex substitutions before TTS generation. Implemented proactive worker recycling every 500 generations to combat PyTorch VRAM fragmentation.",
 			solution:
 				"Voice Cloner runs three production modes through a unified FastAPI backend: (1) Single-voice TTS for quick generation, (2) Multi-speaker Conversations with drag-and-drop line ordering, per-line effects (speed/volume/gap), stage directions, multiple takes per line, ambient audio layers, and a waveform timeline editor, (3) Audiobook Studio that parses manuscripts into chapters, detects dialogue and character names, assigns AI voices to each character, applies book-wide pronunciation dictionaries, and exports as M4B with chapter markers or MP3/WAV zip with LUFS mastering. The frontend is Next.js 15 on Cloudflare Workers with wavesurfer.js visualization. 41+ curated voices plus custom uploads with SNR quality gating. Stripe handles tiered billing, Clerk manages auth, Sentry + Amplitude provide observability. Running at 99.95% uptime with 0.03% error rate on a single server.",
 			metrics: [
@@ -517,7 +517,7 @@ export const projects: Project[] = [
 					component: "Queue System",
 					technology: "Redis 4-Tier Priority Queue",
 					rationale:
-						"Subscription tiers need differentiated service levels without separate infrastructure. Redis sorted sets with tier-based scoring ensure Enterprise requests process before Pro, Pro before Free — all on the same GPU.",
+						"Subscription tiers need differentiated service levels without separate infrastructure. Redis sorted sets with tier-based scoring ensure Enterprise requests process before Pro, Pro before Free ... all on the same GPU.",
 				},
 				{
 					component: "VRAM Management",
@@ -537,7 +537,7 @@ export const projects: Project[] = [
 				{
 					title: "Manuscript Chapter Detection",
 					problem:
-						"Manuscripts use wildly inconsistent chapter formatting — Heading styles in DOCX, font-size changes in PDF, or plain-text markers like 'Chapter 1', 'CHAPTER ONE', 'Part II'. No single regex pattern handles all cases.",
+						"Manuscripts use wildly inconsistent chapter formatting ... Heading styles in DOCX, font-size changes in PDF, or plain-text markers like 'Chapter 1', 'CHAPTER ONE', 'Part II'. No single regex pattern handles all cases.",
 					solution:
 						"Built a three-tier detection pipeline: first check document-native structure (DOCX Heading styles, PDF font-size analysis), then fall back to regex patterns for common chapter markers, and finally use blank-line paragraph splitting as a last resort. Each tier feeds the next only when it produces zero results.",
 				},
@@ -553,7 +553,7 @@ export const projects: Project[] = [
 					problem:
 						"Server-Sent Events for real-time generation progress held database connections open for the duration of each generation (12-38 seconds). Under load, this exhausted the connection pool.",
 					solution:
-						"Separated SSE connections from the main database pool. SSE endpoints use a dedicated pool sized for concurrent stream count rather than request rate. Added graceful degradation — if the SSE pool is exhausted, clients fall back to polling.",
+						"Separated SSE connections from the main database pool. SSE endpoints use a dedicated pool sized for concurrent stream count rather than request rate. Added graceful degradation ... if the SSE pool is exhausted, clients fall back to polling.",
 				},
 				{
 					title: "Reference Audio Quality Variance",
@@ -565,7 +565,7 @@ export const projects: Project[] = [
 			],
 			takeaways: [
 				"Reusing existing systems through smart data modeling (chapter-as-conversation) avoids the trap of building parallel pipelines for related features.",
-				"GPU inference services need proactive VRAM management — memory fragmentation is silent and cumulative, degrading latency until the service appears broken.",
+				"GPU inference services need proactive VRAM management ... memory fragmentation is silent and cumulative, degrading latency until the service appears broken.",
 				"Zero-shot voice cloning quality is bounded by reference audio quality. Input validation on uploads is the highest-ROI investment for user satisfaction.",
 				"Multi-tier manuscript parsing (structure > regex > fallback) handles real-world document diversity better than any single detection strategy.",
 				"Single-server GPU deployments can serve production SaaS workloads at 99.95% uptime with proper queue management and proactive maintenance.",

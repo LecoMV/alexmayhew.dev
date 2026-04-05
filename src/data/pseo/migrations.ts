@@ -221,12 +221,12 @@ export const migrationPages: MigrationPage[] = [
 			],
 		},
 		uniqueInsights: [
-			"AngularJS's $digest cycle becomes a critical bottleneck at 2000+ watchers—React's virtual DOM diffing provides O(n) updates versus AngularJS's O(n²) dirty checking, yielding 10x improvement in complex dashboard scenarios.",
+			"AngularJS's $digest cycle becomes a critical bottleneck at 2000+ watchers...React's virtual DOM diffing provides O(n) updates versus AngularJS's O(n²) dirty checking, yielding 10x improvement in complex dashboard scenarios.",
 			"The most successful AngularJS migrations preserve AngularJS services as the 'source of truth' initially, wrapping them in React hooks via ngReact, allowing gradual state migration without big-bang data layer rewrites.",
-			"AngularJS's lack of tree-shaking means even unused code ships to production—migrating a typical 500KB AngularJS bundle to Next.js with Server Components typically yields a 150KB initial load, a 70% reduction.",
-			"AngularJS directive-to-React-component mapping is rarely 1:1—directives with link functions and transclusion require decomposition into multiple React components with render props or compound component patterns.",
-			"Post-EOL AngularJS applications face insurance and compliance scrutiny—healthcare and fintech clients report 30-40% premium increases on cyber liability policies for applications running unsupported frameworks.",
-			"The angular2react and ngReact bridges allow AngularJS and React to coexist, but performance degrades when crossing framework boundaries more than 50 times per render cycle—strategic boundary placement is critical.",
+			"AngularJS's lack of tree-shaking means even unused code ships to production...migrating a typical 500KB AngularJS bundle to Next.js with Server Components typically yields a 150KB initial load, a 70% reduction.",
+			"AngularJS directive-to-React-component mapping is rarely 1:1...directives with link functions and transclusion require decomposition into multiple React components with render props or compound component patterns.",
+			"Post-EOL AngularJS applications face insurance and compliance scrutiny...healthcare and fintech clients report 30-40% premium increases on cyber liability policies for applications running unsupported frameworks.",
+			"The angular2react and ngReact bridges allow AngularJS and React to coexist, but performance degrades when crossing framework boundaries more than 50 times per render cycle...strategic boundary placement is critical.",
 		],
 		complianceConsiderations: [
 			{
@@ -292,26 +292,26 @@ export const migrationPages: MigrationPage[] = [
 			},
 		],
 		urgencyDrivers: [
-			"AngularJS reached end-of-life December 31, 2021—no security patches for 4+ years",
+			"AngularJS reached end-of-life December 31, 2021...no security patches for 4+ years",
 			"Known CVEs (including XSS vulnerabilities) remain unpatched in production",
 			"Cyber insurance premiums increasing 30-40% for EOL framework exposure",
-			"AngularJS developer talent pool shrinking 15% annually—maintenance costs rising",
+			"AngularJS developer talent pool shrinking 15% annually...maintenance costs rising",
 			"SOC 2 and PCI-DSS auditors flagging AngularJS as compliance findings",
 			"Unable to leverage modern browser APIs (Web Components, CSS Container Queries)",
 			"Performance gap widening as React Server Components set new baseline expectations",
 		],
-		migrationApproach: `The AngularJS to Next.js migration follows a proven five-phase methodology designed to minimize risk while maintaining business continuity. Phase one conducts a comprehensive codebase audit, mapping every directive, service, and factory to equivalent React patterns. This phase identifies high-risk components—those with complex scope inheritance, heavy $watch usage, or tight coupling to AngularJS internals.
+		migrationApproach: `The AngularJS to Next.js migration follows a proven five-phase methodology designed to minimize risk while maintaining business continuity. Phase one conducts a comprehensive codebase audit, mapping every directive, service, and factory to equivalent React patterns. This phase identifies high-risk components...those with complex scope inheritance, heavy $watch usage, or tight coupling to AngularJS internals.
 
 Phase two establishes the migration infrastructure: a Next.js application shell that can host both AngularJS and React components simultaneously. Using module federation or iframe isolation, the legacy application continues serving users while new React components are developed and tested in parallel.
 
 Phase three begins the strangler fig pattern execution, starting with leaf components that have no downstream dependencies. Each migrated component maintains API compatibility with its AngularJS predecessor, allowing gradual replacement without disrupting the broader application. State synchronization between frameworks uses a shared event bus during transition.
 
-Phase four addresses the core application logic—services, state management, and routing. This phase typically requires the most careful planning as it touches shared infrastructure. Next.js API routes replace AngularJS $http services, React Query or TanStack Query replaces $resource patterns, and Next.js App Router absorbs UI Router configuration.
+Phase four addresses the core application logic...services, state management, and routing. This phase typically requires the most careful planning as it touches shared infrastructure. Next.js API routes replace AngularJS $http services, React Query or TanStack Query replaces $resource patterns, and Next.js App Router absorbs UI Router configuration.
 
 Phase five completes the migration with comprehensive regression testing, performance benchmarking, and the final cutover. The legacy AngularJS code is archived, and the team transitions fully to Next.js development practices. Post-migration optimization focuses on Server Components adoption and edge deployment for maximum performance gains.`,
 		roiNarrative: `Migrating from AngularJS to Next.js delivers measurable ROI across four dimensions. First, security risk reduction: eliminating EOL software exposure typically reduces cyber insurance premiums by 20-30% and removes compliance findings that can block enterprise sales. Second, developer productivity: teams report 40-60% faster feature development velocity in React versus maintaining AngularJS, with access to modern tooling, better documentation, and abundant community resources.
 
-Third, performance improvements directly impact business metrics. Organizations migrating dashboard-heavy applications see 60-80% improvements in initial load time and 40% reductions in Time to Interactive. For SaaS applications, this translates to reduced churn and improved conversion rates—a 1-second improvement in load time typically yields 7% improvement in conversions.
+Third, performance improvements directly impact business metrics. Organizations migrating dashboard-heavy applications see 60-80% improvements in initial load time and 40% reductions in Time to Interactive. For SaaS applications, this translates to reduced churn and improved conversion rates...a 1-second improvement in load time typically yields 7% improvement in conversions.
 
 Fourth, talent acquisition and retention improve dramatically. React/Next.js developers are 10x more available than AngularJS specialists, with average salaries 15-20% lower due to market supply. Teams working on modern stacks report higher satisfaction and lower turnover. The total cost of ownership for a Next.js application is typically 30-40% lower than maintaining equivalent AngularJS functionality over a 3-year horizon.`,
 		budgetGuidance: {
@@ -485,12 +485,12 @@ Fourth, talent acquisition and retention improve dramatically. React/Next.js dev
 			],
 		},
 		uniqueInsights: [
-			"ColdFusion's CFQuery tag creates implicit connection pooling that's often misconfigured—migrating to Node.js with explicit connection pools (pg-pool, mysql2) typically reveals and fixes connection leak issues that caused intermittent production failures.",
-			"CFML's Application.cfc lifecycle hooks map to Express/Fastify middleware, but the execution order differs—onRequestStart maps to route-level middleware, while onApplicationStart maps to server bootstrap, a distinction that causes bugs if not carefully mapped.",
-			"ColdFusion's cflock tag implements JVM-level locking that doesn't translate to Node.js's single-threaded model—race conditions 'fixed' by cflock may resurface in Node unless explicitly handled with Redis locks or database-level transactions.",
-			"The most expensive ColdFusion migration mistake is 1:1 CFComponent to Node.js class translation—ColdFusion's implicit this scoping and method chaining patterns should be decomposed into functional modules with explicit dependency injection.",
-			"ColdFusion Enterprise licensing at $16,000/server/year means a 10-server deployment costs $160,000 annually—Node.js elimination of licensing typically funds the entire migration within 18-24 months.",
-			"ColdFusion's <cfinclude> and custom tag libraries create implicit dependencies that static analysis misses—successful migrations require runtime instrumentation to map actual include/tag execution paths.",
+			"ColdFusion's CFQuery tag creates implicit connection pooling that's often misconfigured...migrating to Node.js with explicit connection pools (pg-pool, mysql2) typically reveals and fixes connection leak issues that caused intermittent production failures.",
+			"CFML's Application.cfc lifecycle hooks map to Express/Fastify middleware, but the execution order differs...onRequestStart maps to route-level middleware, while onApplicationStart maps to server bootstrap, a distinction that causes bugs if not carefully mapped.",
+			"ColdFusion's cflock tag implements JVM-level locking that doesn't translate to Node.js's single-threaded model...race conditions 'fixed' by cflock may resurface in Node unless explicitly handled with Redis locks or database-level transactions.",
+			"The most expensive ColdFusion migration mistake is 1:1 CFComponent to Node.js class translation...ColdFusion's implicit this scoping and method chaining patterns should be decomposed into functional modules with explicit dependency injection.",
+			"ColdFusion Enterprise licensing at $16,000/server/year means a 10-server deployment costs $160,000 annually...Node.js elimination of licensing typically funds the entire migration within 18-24 months.",
+			"ColdFusion's <cfinclude> and custom tag libraries create implicit dependencies that static analysis misses...successful migrations require runtime instrumentation to map actual include/tag execution paths.",
 		],
 		complianceConsiderations: [
 			{
@@ -554,13 +554,13 @@ Fourth, talent acquisition and retention improve dramatically. React/Next.js dev
 			},
 		],
 		urgencyDrivers: [
-			"CVE-2023-29300 and CVE-2023-38203 allow remote code execution—actively exploited in the wild",
-			"ColdFusion 2016 reached EOL April 2024—security patches no longer available",
+			"CVE-2023-29300 and CVE-2023-38203 allow remote code execution...actively exploited in the wild",
+			"ColdFusion 2016 reached EOL April 2024...security patches no longer available",
 			"Licensing costs $8,000-$16,000/server/year eating into IT budgets",
-			"Only 3% of developers know ColdFusion—maintenance increasingly expensive",
+			"Only 3% of developers know ColdFusion...maintenance increasingly expensive",
 			"Cloud migration impossible without containerization support",
 			"Integration with modern SaaS tools requires API capabilities CF lacks",
-			"Performance ceiling reached—CF's synchronous model can't scale to modern traffic",
+			"Performance ceiling reached...CF's synchronous model can't scale to modern traffic",
 		],
 		migrationApproach: `ColdFusion to Node.js migration requires careful handling of ColdFusion's unique runtime characteristics. The first phase conducts comprehensive code archaeology, mapping every CFC, custom tag, and cfinclude chain. We instrument the production ColdFusion application to capture actual runtime paths, as static analysis misses dynamic includes.
 
@@ -577,7 +577,7 @@ Throughout the migration, we maintain comprehensive test coverage and implement 
 
 Infrastructure costs drop 60-80% as Node.js's efficient event loop handles 5-10x more concurrent connections per server. Organizations typically consolidate from 10 ColdFusion servers to 2-3 Node.js containers, with horizontal scaling available on demand.
 
-Developer productivity improves 40-60% as teams access modern tooling, extensive npm ecosystem, and better debugging capabilities. Hiring becomes dramatically easier—recruiting Node.js developers takes weeks instead of months, with 20x the candidate pool and 15-25% lower salaries due to market supply.
+Developer productivity improves 40-60% as teams access modern tooling, extensive npm ecosystem, and better debugging capabilities. Hiring becomes dramatically easier...recruiting Node.js developers takes weeks instead of months, with 20x the candidate pool and 15-25% lower salaries due to market supply.
 
 Security posture improves immediately by eliminating known ColdFusion CVEs. Cyber insurance premiums typically decrease 15-25% after completing migration from EOL software. Compliance audits no longer flag ColdFusion as a finding, removing blockers in enterprise sales cycles.`,
 		budgetGuidance: {
@@ -616,7 +616,7 @@ Security posture improves immediately by eliminating known ColdFusion CVEs. Cybe
 			{
 				question: "How do we migrate our stored procedures?",
 				answer:
-					"We evaluate each stored procedure individually. Simple queries move to application code with Prisma or Knex. Complex business logic stored procedures often indicate technical debt—we migrate these to application services where they can be properly tested and maintained. Critical performance-sensitive queries may remain as optimized SQL.",
+					"We evaluate each stored procedure individually. Simple queries move to application code with Prisma or Knex. Complex business logic stored procedures often indicate technical debt...we migrate these to application services where they can be properly tested and maintained. Critical performance-sensitive queries may remain as optimized SQL.",
 			},
 			{
 				question: "What about ColdFusion features like cfdocument for PDF generation?",
@@ -751,12 +751,12 @@ Security posture improves immediately by eliminating known ColdFusion CVEs. Cybe
 			],
 		},
 		uniqueInsights: [
-			"jQuery's $(document).ready() pattern has no direct React equivalent—initialization logic moves to useEffect with empty dependency arrays, but must be audited for assumptions about DOM state that React's virtual DOM may invalidate.",
+			"jQuery's $(document).ready() pattern has no direct React equivalent...initialization logic moves to useEffect with empty dependency arrays, but must be audited for assumptions about DOM state that React's virtual DOM may invalidate.",
 			"The biggest jQuery-to-React migration trap is event delegation translation: jQuery's $(parent).on('click', '.child') works with dynamic elements, but React's onClick requires explicit handling of dynamically rendered children or refs.",
 			"jQuery AJAX callbacks with chained .done()/.fail()/.always() map cleanly to React Query's useQuery/useMutation patterns, which add caching, retry logic, and loading states that jQuery implementations typically lack.",
-			"jQuery plugins that mutate the DOM (DataTables, Select2, jQuery UI) require React wrapper components with refs and useEffect cleanup—failing to destroy plugin instances causes memory leaks in React's reconciliation cycle.",
-			"jQuery's $.extend() deep merge has subtle differences from JavaScript spread operators and Object.assign()—migrating state management requires careful handling of nested object updates to prevent reference equality bugs.",
-			"Performance profiling jQuery-heavy pages often reveals that 60-70% of DOM operations are redundant (setting the same value repeatedly)—React's diffing algorithm eliminates these automatically, explaining dramatic performance gains.",
+			"jQuery plugins that mutate the DOM (DataTables, Select2, jQuery UI) require React wrapper components with refs and useEffect cleanup...failing to destroy plugin instances causes memory leaks in React's reconciliation cycle.",
+			"jQuery's $.extend() deep merge has subtle differences from JavaScript spread operators and Object.assign()...migrating state management requires careful handling of nested object updates to prevent reference equality bugs.",
+			"Performance profiling jQuery-heavy pages often reveals that 60-70% of DOM operations are redundant (setting the same value repeatedly)...React's diffing algorithm eliminates these automatically, explaining dramatic performance gains.",
 		],
 		complianceConsiderations: [
 			{
@@ -810,11 +810,11 @@ Security posture improves immediately by eliminating known ColdFusion CVEs. Cybe
 		urgencyDrivers: [
 			"jQuery's DOM manipulation model can't scale to complex, interactive UIs",
 			"Developer productivity 40-60% lower compared to React component model",
-			"Testing jQuery code requires brittle DOM mocking—React components test cleanly",
-			"Junior developers expect modern frameworks—jQuery hurts recruiting",
-			"Performance ceiling reached—virtual DOM necessary for complex interactions",
+			"Testing jQuery code requires brittle DOM mocking...React components test cleanly",
+			"Junior developers expect modern frameworks...jQuery hurts recruiting",
+			"Performance ceiling reached...virtual DOM necessary for complex interactions",
 			"Modern browser APIs (IntersectionObserver, etc.) better supported in React",
-			"TypeScript integration limited in jQuery—type safety improves code quality",
+			"TypeScript integration limited in jQuery...type safety improves code quality",
 		],
 		migrationApproach: `jQuery to React migration follows a component-first methodology. Phase one analyzes the existing jQuery codebase, identifying discrete functional areas that can become React components. We map jQuery selectors to component boundaries, event handlers to props and state, and AJAX calls to data fetching hooks.
 
@@ -822,12 +822,12 @@ Phase two establishes the React infrastructure alongside the existing jQuery cod
 
 Phase three migrates functionality component by component, starting with isolated features that don't depend on other jQuery code. Each migrated component receives comprehensive tests. We use React Query or TanStack Query to handle data fetching, replacing jQuery AJAX patterns.
 
-Phase four addresses shared functionality—navigation, authentication, and global state. These cross-cutting concerns move to React Context providers or state management libraries. The jQuery-React boundary gradually moves until jQuery handles only the diminishing legacy portions.
+Phase four addresses shared functionality...navigation, authentication, and global state. These cross-cutting concerns move to React Context providers or state management libraries. The jQuery-React boundary gradually moves until jQuery handles only the diminishing legacy portions.
 
 Phase five completes the migration, removing jQuery entirely. We optimize the React application with code splitting, lazy loading, and potentially Server Components if using Next.js. The final application is a modern, maintainable React codebase.`,
-		roiNarrative: `jQuery to React migration delivers ROI through developer productivity, performance, and maintainability. Teams report 40-60% faster feature development in React compared to jQuery—the component model enables reuse and the unidirectional data flow simplifies debugging.
+		roiNarrative: `jQuery to React migration delivers ROI through developer productivity, performance, and maintainability. Teams report 40-60% faster feature development in React compared to jQuery...the component model enables reuse and the unidirectional data flow simplifies debugging.
 
-Performance improvements range from 40-60% for complex interactive UIs. React's virtual DOM eliminates redundant DOM operations that jQuery code accumulates over time. For e-commerce sites, this directly impacts conversion rates—a 1-second improvement in interactivity correlates with 7% conversion lift.
+Performance improvements range from 40-60% for complex interactive UIs. React's virtual DOM eliminates redundant DOM operations that jQuery code accumulates over time. For e-commerce sites, this directly impacts conversion rates...a 1-second improvement in interactivity correlates with 7% conversion lift.
 
 Code quality improves dramatically with TypeScript integration and component-based architecture. Bugs that took hours to trace through jQuery callback chains become immediately apparent in React's predictable data flow. Test coverage becomes practical where it was previously prohibitive.
 
@@ -1003,12 +1003,12 @@ Hiring and retention improve as developers prefer working with modern tools. Rea
 			],
 		},
 		uniqueInsights: [
-			"PHP's request-per-process model allocates memory independently per request, while Node.js shares memory across connections—migrating a PHP app handling 100 concurrent users might reduce memory usage by 60% in Node.js.",
-			"Laravel's Eloquent ORM query builder syntax maps closely to Prisma's fluent API, making model migration more straightforward than arbitrary PHP to JS translation—schema migrations convert almost 1:1.",
-			"PHP's synchronous database calls in loops become N+1 query problems visible in Node.js—migration often reveals performance issues that were hidden by PHP's isolation, requiring query optimization.",
-			"The most common PHP-to-Node migration pitfall is session handling: PHP's built-in session_start() has no Node equivalent—explicit session stores (Redis, database) must be configured from the start.",
-			"PHP's error handling with try/catch and set_error_handler differs from Node's uncaughtException and unhandledRejection patterns—error boundaries must be redesigned to prevent silent failures.",
-			"Composer to npm package mapping is rarely 1:1—PHP packages often include features that Node splits across multiple packages, requiring careful dependency analysis during migration planning.",
+			"PHP's request-per-process model allocates memory independently per request, while Node.js shares memory across connections...migrating a PHP app handling 100 concurrent users might reduce memory usage by 60% in Node.js.",
+			"Laravel's Eloquent ORM query builder syntax maps closely to Prisma's fluent API, making model migration more straightforward than arbitrary PHP to JS translation...schema migrations convert almost 1:1.",
+			"PHP's synchronous database calls in loops become N+1 query problems visible in Node.js...migration often reveals performance issues that were hidden by PHP's isolation, requiring query optimization.",
+			"The most common PHP-to-Node migration pitfall is session handling: PHP's built-in session_start() has no Node equivalent...explicit session stores (Redis, database) must be configured from the start.",
+			"PHP's error handling with try/catch and set_error_handler differs from Node's uncaughtException and unhandledRejection patterns...error boundaries must be redesigned to prevent silent failures.",
+			"Composer to npm package mapping is rarely 1:1...PHP packages often include features that Node splits across multiple packages, requiring careful dependency analysis during migration planning.",
 		],
 		complianceConsiderations: [
 			{
@@ -1072,7 +1072,7 @@ Hiring and retention improve as developers prefer working with modern tools. Rea
 			},
 		],
 		urgencyDrivers: [
-			"PHP 7.x reached EOL—security vulnerabilities unpatched",
+			"PHP 7.x reached EOL...security vulnerabilities unpatched",
 			"PHP's process-per-request model limits scalability for real-time features",
 			"Full-stack JavaScript eliminates context switching between languages",
 			"Node.js developers more available than PHP specialists",
@@ -1082,14 +1082,14 @@ Hiring and retention improve as developers prefer working with modern tools. Rea
 		],
 		migrationApproach: `PHP to Node.js migration leverages the familiarity of web development patterns while modernizing the runtime. Phase one conducts architectural analysis, mapping Laravel/PHP patterns to Node.js equivalents. Controllers become Express routes or Next.js API handlers. Eloquent models map to Prisma schemas. Service classes translate to Node modules with dependency injection.
 
-Phase two establishes the Node.js infrastructure parallel to PHP. We configure shared infrastructure—Redis for sessions and cache, PostgreSQL or MySQL connections, queue systems—to work with both stacks simultaneously. This enables gradual traffic migration.
+Phase two establishes the Node.js infrastructure parallel to PHP. We configure shared infrastructure...Redis for sessions and cache, PostgreSQL or MySQL connections, queue systems...to work with both stacks simultaneously. This enables gradual traffic migration.
 
 Phase three migrates the backend API layer. We start with high-traffic, I/O-bound endpoints where Node.js's async model provides immediate performance benefits. Authentication and session handling migrate as a dedicated workstream to ensure security continuity.
 
 Phase four addresses the frontend if migrating to Next.js full-stack. Blade templates convert to React components, with Server Components providing similar server-rendering capabilities. Static assets migrate to CDN with Next.js Image optimization.
 
 Phase five completes the migration with queue workers, scheduled tasks, and CLI commands. We verify feature parity through comprehensive E2E testing, then gradually shift traffic from PHP to Node.js. The final PHP servers are decommissioned once all traffic flows through Node.js.`,
-		roiNarrative: `PHP to Node.js migration delivers ROI through unified development, performance, and cloud efficiency. The most immediate benefit is developer productivity—teams working in a single language (JavaScript/TypeScript) across frontend and backend report 30-40% faster development cycles with reduced context switching.
+		roiNarrative: `PHP to Node.js migration delivers ROI through unified development, performance, and cloud efficiency. The most immediate benefit is developer productivity...teams working in a single language (JavaScript/TypeScript) across frontend and backend report 30-40% faster development cycles with reduced context switching.
 
 Performance improvements are significant for I/O-bound applications. Node.js's event loop handles concurrent database queries and API calls more efficiently than PHP's process model. Applications commonly see 3-5x throughput improvements with equivalent or fewer server resources.
 
@@ -1132,7 +1132,7 @@ Hiring dynamics favor Node.js significantly. JavaScript developers are the most 
 			{
 				question: "How does Laravel's Eloquent compare to Prisma?",
 				answer:
-					"Both are excellent ORMs with similar capabilities. Prisma offers stronger TypeScript integration and a declarative schema. Eloquent has more mature features for complex queries. Migration between them is straightforward—model definitions and relationships translate almost 1:1.",
+					"Both are excellent ORMs with similar capabilities. Prisma offers stronger TypeScript integration and a declarative schema. Eloquent has more mature features for complex queries. Migration between them is straightforward...model definitions and relationships translate almost 1:1.",
 			},
 			{
 				question: "What about WordPress or Drupal migrations?",
@@ -1147,7 +1147,7 @@ Hiring dynamics favor Node.js significantly. JavaScript developers are the most 
 			{
 				question: "Is PHP really dying? Many enterprises still use it.",
 				answer:
-					"PHP isn't dying—PHP 8.x is a capable modern language. However, the JavaScript ecosystem is growing faster, with better cloud platform support and more abundant talent. Migration decisions should be based on your specific context: team skills, business needs, and long-term strategy.",
+					"PHP isn't dying...PHP 8.x is a capable modern language. However, the JavaScript ecosystem is growing faster, with better cloud platform support and more abundant talent. Migration decisions should be based on your specific context: team skills, business needs, and long-term strategy.",
 			},
 		],
 		relatedServices: [
@@ -1179,10 +1179,10 @@ Hiring dynamics favor Node.js significantly. JavaScript developers are the most 
 			talentAvailability: 60,
 			salaryPremium: "0% (baseline)",
 			limitations: [
-				"Single deployment unit—any change requires full deploy",
+				"Single deployment unit...any change requires full deploy",
 				"Scaling requires scaling everything, not just bottlenecks",
-				"Technology lock-in—entire app uses same stack",
-				"Team coupling—changes require cross-team coordination",
+				"Technology lock-in...entire app uses same stack",
+				"Team coupling...changes require cross-team coordination",
 				"Long build and test cycles as codebase grows",
 				"Database coupling makes feature isolation difficult",
 			],
@@ -1198,7 +1198,7 @@ Hiring dynamics favor Node.js significantly. JavaScript developers are the most 
 				"Scale specific services based on demand",
 				"Technology flexibility per service",
 				"Team autonomy with clear ownership",
-				"Fault isolation—one service failure doesn't crash all",
+				"Fault isolation...one service failure doesn't crash all",
 				"Enables organizational scaling (Conway's Law)",
 			],
 		},
@@ -1267,11 +1267,11 @@ Hiring dynamics favor Node.js significantly. JavaScript developers are the most 
 			],
 		},
 		uniqueInsights: [
-			"The most common microservices migration failure is extracting services before establishing clear contracts—services with implicit dependencies become a 'distributed monolith' that's worse than the original.",
-			"Database decomposition is the hardest part of microservices migration: shared database access creates tight coupling that negates service independence—plan database separation strategy before extracting first service.",
+			"The most common microservices migration failure is extracting services before establishing clear contracts...services with implicit dependencies become a 'distributed monolith' that's worse than the original.",
+			"Database decomposition is the hardest part of microservices migration: shared database access creates tight coupling that negates service independence...plan database separation strategy before extracting first service.",
 			"Strangler fig works for monolith decomposition, but the 'fig' proxy must handle cross-cutting concerns (auth, logging, tracing) consistently or you'll rebuild these in every service.",
-			"Microservices migration without investment in observability (distributed tracing, centralized logging) creates a debugging nightmare—instrumentation should precede first service extraction.",
-			"Conway's Law applies in reverse: trying to build microservices with a monolithic team structure creates communication overhead that negates technical benefits—org design and architecture must align.",
+			"Microservices migration without investment in observability (distributed tracing, centralized logging) creates a debugging nightmare...instrumentation should precede first service extraction.",
+			"Conway's Law applies in reverse: trying to build microservices with a monolithic team structure creates communication overhead that negates technical benefits...org design and architecture must align.",
 			"The 'two-pizza team' rule for microservices often means 5-8 services per team is sustainable; more services create cognitive overload and operational burden that slow development.",
 		],
 		complianceConsiderations: [
@@ -1279,7 +1279,7 @@ Hiring dynamics favor Node.js significantly. JavaScript developers are the most 
 				name: "SOC 2",
 				fullName: "System and Organization Controls 2",
 				technicalImplications:
-					"Microservices increase the audit surface—each service needs its own access controls, logging, and security review.",
+					"Microservices increase the audit surface...each service needs its own access controls, logging, and security review.",
 				requirements: [
 					"Service-to-service authentication (mTLS, JWT)",
 					"Centralized audit logging across services",
@@ -1339,12 +1339,12 @@ Hiring dynamics favor Node.js significantly. JavaScript developers are the most 
 		],
 		urgencyDrivers: [
 			"Deployment cycles measured in weeks instead of hours",
-			"Team coupling—changes require coordination across multiple teams",
+			"Team coupling...changes require coordination across multiple teams",
 			"Cannot scale specific bottlenecks without scaling everything",
-			"Technology debt accumulating—can't adopt new tools without full rewrite",
-			"Reliability issues—one component failure affects entire application",
-			"Organizational growth blocked—can't add teams productively",
-			"Cloud costs inefficient—paying for resources not needed by most components",
+			"Technology debt accumulating...can't adopt new tools without full rewrite",
+			"Reliability issues...one component failure affects entire application",
+			"Organizational growth blocked...can't add teams productively",
+			"Cloud costs inefficient...paying for resources not needed by most components",
 		],
 		migrationApproach: `Monolith to microservices migration requires careful planning to avoid creating a distributed monolith. Phase one establishes the foundation: comprehensive observability (distributed tracing, centralized logging), CI/CD infrastructure for independent deployments, and service mesh or API gateway for traffic management.
 
@@ -1356,7 +1356,7 @@ Phase four continues extraction, prioritizing based on business value and techni
 
 Phase five addresses cross-cutting concerns: authentication, authorization, rate limiting, and shared business logic. These either become shared libraries or dedicated services. The migration completes when the remaining monolith is either eliminated or is itself a well-bounded service.
 
-Throughout, we emphasize the modular monolith as a valid intermediate or end state. Not every organization needs full microservices—the goal is appropriate modularity for your scale and team structure.`,
+Throughout, we emphasize the modular monolith as a valid intermediate or end state. Not every organization needs full microservices...the goal is appropriate modularity for your scale and team structure.`,
 		roiNarrative: `Monolith to microservices migration ROI depends heavily on organizational scale. For teams experiencing deployment bottlenecks, the ability to deploy services independently can improve deployment frequency from weekly to daily or hourly, directly accelerating feature delivery.
 
 Scaling efficiency improves dramatically. Instead of scaling the entire application to handle a single component's load, resources target specific services. Organizations commonly report 40-60% reduction in compute costs after achieving service-level scaling.
@@ -1397,7 +1397,7 @@ However, microservices also add complexity. The ROI is only positive when the or
 			{
 				question: "Do we need microservices, or would a modular monolith be better?",
 				answer:
-					"It depends on your scale and constraints. Microservices shine when you need independent deployment, scaling, or technology choices per component—typically at 10+ engineers with mature DevOps. For smaller teams, a modular monolith provides similar code organization benefits without distributed systems complexity.",
+					"It depends on your scale and constraints. Microservices shine when you need independent deployment, scaling, or technology choices per component...typically at 10+ engineers with mature DevOps. For smaller teams, a modular monolith provides similar code organization benefits without distributed systems complexity.",
 			},
 			{
 				question: "How do we handle transactions that span multiple services?",
@@ -1449,11 +1449,11 @@ However, microservices also add complexity. The ROI is only positive when the or
 			talentAvailability: 12,
 			salaryPremium: "50-80% premium for maintenance",
 			limitations: [
-				"No security patches since EOL—actively exploited vulnerabilities remain unpatched",
+				"No security patches since EOL...actively exploited vulnerabilities remain unpatched",
 				"PHP 5.x/7.x dependencies create additional EOL exposure",
 				"Monolithic architecture cannot scale content delivery independently",
 				"Coupled frontend limits performance optimization and CDN strategies",
-				"Module ecosystem stagnating—contributors migrating to Drupal 10+",
+				"Module ecosystem stagnating...contributors migrating to Drupal 10+",
 				"WYSIWYG editor and content modeling outdated compared to modern headless CMS",
 			],
 		},
@@ -1464,7 +1464,7 @@ However, microservices also add complexity. The ROI is only positive when the or
 			talentAvailability: 75,
 			performanceGain: "70-90% faster page loads, 99.99% CDN uptime",
 			advantages: [
-				"Content API decouples content from presentation—scale independently",
+				"Content API decouples content from presentation...scale independently",
 				"Global CDN edge delivery for sub-100ms response times worldwide",
 				"Real-time collaboration and structured content modeling",
 				"React-based frontend with Server Components eliminates JS bloat",
@@ -1542,13 +1542,13 @@ However, microservices also add complexity. The ROI is only positive when the or
 			],
 		},
 		uniqueInsights: [
-			"Drupal 7's hook system and module weight ordering has no equivalent in headless architecture—business logic embedded in hook_node_presave, hook_form_alter, and custom modules must be extracted to Next.js API routes or serverless functions, a process that typically reveals undocumented business rules.",
-			"The Drupal 7 Field API's complex field storage (field_data_* and field_revision_* tables) creates migration challenges when mapping to headless CMS structured content—field cardinality, entity references, and field collections require careful schema design in the target CMS.",
-			"Drupal 7's path alias system with Pathauto-generated URLs represents significant SEO equity—headless CMS migrations must implement comprehensive 301 redirect mapping, often requiring custom migration scripts to preserve thousands of URL patterns.",
+			"Drupal 7's hook system and module weight ordering has no equivalent in headless architecture...business logic embedded in hook_node_presave, hook_form_alter, and custom modules must be extracted to Next.js API routes or serverless functions, a process that typically reveals undocumented business rules.",
+			"The Drupal 7 Field API's complex field storage (field_data_* and field_revision_* tables) creates migration challenges when mapping to headless CMS structured content...field cardinality, entity references, and field collections require careful schema design in the target CMS.",
+			"Drupal 7's path alias system with Pathauto-generated URLs represents significant SEO equity...headless CMS migrations must implement comprehensive 301 redirect mapping, often requiring custom migration scripts to preserve thousands of URL patterns.",
 			"Organizations running Drupal 7 past EOL face immediate compliance violations: HIPAA, FedRAMP, PCI-DSS, and SOC 2 auditors flag EOL CMS as critical findings requiring remediation within 30-90 days, with some cyber insurance policies voiding coverage entirely.",
-			"Drupal 7's Views module queries cannot be directly ported—the denormalized query builder must be replaced with headless CMS GROQ (Sanity), GraphQL (Contentful), or filtered REST endpoints, often requiring pagination and caching strategy redesign.",
-			"The 'Drupalgeddon' vulnerabilities (SA-CORE-2014-005, SA-CORE-2018-002) demonstrated Drupal 7's attack surface—post-EOL, similar critical vulnerabilities discovered in 2025+ will not receive patches, creating zero-day exposure for all remaining installations.",
-			"Content editors accustomed to Drupal 7's admin interface often experience productivity gains with modern headless CMS—real-time collaboration, instant preview, and structured content blocks replace Drupal's dated WYSIWYG and revision comparison workflows.",
+			"Drupal 7's Views module queries cannot be directly ported...the denormalized query builder must be replaced with headless CMS GROQ (Sanity), GraphQL (Contentful), or filtered REST endpoints, often requiring pagination and caching strategy redesign.",
+			"The 'Drupalgeddon' vulnerabilities (SA-CORE-2014-005, SA-CORE-2018-002) demonstrated Drupal 7's attack surface...post-EOL, similar critical vulnerabilities discovered in 2025+ will not receive patches, creating zero-day exposure for all remaining installations.",
+			"Content editors accustomed to Drupal 7's admin interface often experience productivity gains with modern headless CMS...real-time collaboration, instant preview, and structured content blocks replace Drupal's dated WYSIWYG and revision comparison workflows.",
 		],
 		complianceConsiderations: [
 			{
@@ -1636,7 +1636,7 @@ However, microservices also add complexity. The ROI is only positive when the or
 			},
 		],
 		urgencyDrivers: [
-			"Drupal 7 reached end-of-life January 5, 2025—no security patches for discovered vulnerabilities",
+			"Drupal 7 reached end-of-life January 5, 2025...no security patches for discovered vulnerabilities",
 			"Known CVEs including remote code execution (Drupalgeddon variants) remain unpatched",
 			"Cyber insurance carriers increasingly excluding or pricing out EOL CMS coverage",
 			"FedRAMP, HIPAA, PCI-DSS, and SOC 2 auditors flagging Drupal 7 as critical compliance findings",
@@ -1662,7 +1662,7 @@ Performance improvements are dramatic and measurable. Drupal 7's PHP rendering t
 
 Infrastructure costs typically decrease 40-60%. Drupal 7's monolithic architecture requires beefy servers handling both content management and delivery. Headless architecture separates these concerns: lightweight CMS handles content operations while static/cached frontend serves from global CDN. The result is better performance at lower cost, with automatic scaling eliminating over-provisioning.
 
-Editorial productivity improves significantly. Modern headless CMS platforms offer real-time collaboration, instant preview, and structured content blocks that Drupal 7's dated interface cannot match. Content teams report 30-40% faster content publishing workflows. The talent market also favors modern stacks—Next.js and headless CMS developers are abundant and engaged, while Drupal 7 specialists command premiums and are increasingly rare.
+Editorial productivity improves significantly. Modern headless CMS platforms offer real-time collaboration, instant preview, and structured content blocks that Drupal 7's dated interface cannot match. Content teams report 30-40% faster content publishing workflows. The talent market also favors modern stacks...Next.js and headless CMS developers are abundant and engaged, while Drupal 7 specialists command premiums and are increasingly rare.
 
 Total cost of ownership over three years is typically 35-50% lower than maintaining Drupal 7 with Extended Security Support, accounting for ESS licensing, premium developer rates, compliance remediation costs, and opportunity costs of degraded performance.`,
 		budgetGuidance: {
@@ -1700,12 +1700,12 @@ Total cost of ownership over three years is typically 35-50% lower than maintain
 			{
 				question: "Which headless CMS should we choose: Contentful, Sanity, or Strapi?",
 				answer:
-					"The choice depends on your requirements. Contentful excels for enterprise teams needing polished editorial UX and extensive integrations—expect $300-1,000+/month. Sanity offers developer flexibility with its open-source Studio and real-time collaboration—pricing scales with usage. Strapi provides self-hosting control for compliance-sensitive environments (HIPAA, FedRAMP)—free to host, pay for cloud convenience. We assess your team size, compliance needs, budget, and technical capacity to recommend the best fit.",
+					"The choice depends on your requirements. Contentful excels for enterprise teams needing polished editorial UX and extensive integrations...expect $300-1,000+/month. Sanity offers developer flexibility with its open-source Studio and real-time collaboration...pricing scales with usage. Strapi provides self-hosting control for compliance-sensitive environments (HIPAA, FedRAMP)...free to host, pay for cloud convenience. We assess your team size, compliance needs, budget, and technical capacity to recommend the best fit.",
 			},
 			{
 				question: "Can we migrate to Drupal 10 instead of going headless?",
 				answer:
-					"Drupal 10 migration is a valid option if your team has Drupal expertise and you want to preserve Drupal's content model. However, Drupal 7 to 10 is not an upgrade—it's a rebuild, similar in scope to headless migration. Going headless with Next.js provides performance benefits (edge delivery, React ecosystem) and broader developer talent access. We can assess both paths and recommend based on your specific context.",
+					"Drupal 10 migration is a valid option if your team has Drupal expertise and you want to preserve Drupal's content model. However, Drupal 7 to 10 is not an upgrade...it's a rebuild, similar in scope to headless migration. Going headless with Next.js provides performance benefits (edge delivery, React ecosystem) and broader developer talent access. We can assess both paths and recommend based on your specific context.",
 			},
 			{
 				question: "How do we preserve SEO value during migration?",
@@ -1857,13 +1857,13 @@ Total cost of ownership over three years is typically 35-50% lower than maintain
 			],
 		},
 		uniqueInsights: [
-			"ASP.NET Web Forms ViewState deserialization is one of the most actively exploited vulnerability classes in enterprise applications—Microsoft identified 3,000+ publicly disclosed machine keys that enable remote code execution attacks (CVE-2020-0688, CVE-2025-53690).",
-			"The Web Forms Page lifecycle (Init, Load, PreRender, Render) creates implicit ordering dependencies that don't exist in React's declarative model—migrating complex pages requires decomposing lifecycle hooks into useEffect dependencies with careful attention to execution order.",
-			"Web Forms server controls like GridView and Repeater generate HTML tables with inline styles—migrating to React requires semantic HTML restructuring and CSS extraction, often revealing accessibility issues hidden by control abstractions.",
-			"The UpdatePanel AJAX pattern creates partial postbacks that serialize entire ViewState on every interaction—replacing a single UpdatePanel with React Query typically reduces API payload by 90% and eliminates ViewState serialization overhead entirely.",
-			"Web Forms Master Pages map conceptually to Next.js layouts, but ContentPlaceHolder injection points require refactoring to React composition patterns—complex nested Master Pages often reveal circular dependencies during migration analysis.",
-			"Code-behind event handlers (Button_Click, GridView_RowCommand) embed business logic in the presentation layer—successful migrations extract this logic into domain services before building React components, preventing 1:1 translation of anti-patterns.",
-			"Web Forms .aspx markup with runat='server' controls cannot be incrementally migrated within the same page—unlike AngularJS strangler patterns, Web Forms requires page-level boundaries for migration units.",
+			"ASP.NET Web Forms ViewState deserialization is one of the most actively exploited vulnerability classes in enterprise applications...Microsoft identified 3,000+ publicly disclosed machine keys that enable remote code execution attacks (CVE-2020-0688, CVE-2025-53690).",
+			"The Web Forms Page lifecycle (Init, Load, PreRender, Render) creates implicit ordering dependencies that don't exist in React's declarative model...migrating complex pages requires decomposing lifecycle hooks into useEffect dependencies with careful attention to execution order.",
+			"Web Forms server controls like GridView and Repeater generate HTML tables with inline styles...migrating to React requires semantic HTML restructuring and CSS extraction, often revealing accessibility issues hidden by control abstractions.",
+			"The UpdatePanel AJAX pattern creates partial postbacks that serialize entire ViewState on every interaction...replacing a single UpdatePanel with React Query typically reduces API payload by 90% and eliminates ViewState serialization overhead entirely.",
+			"Web Forms Master Pages map conceptually to Next.js layouts, but ContentPlaceHolder injection points require refactoring to React composition patterns...complex nested Master Pages often reveal circular dependencies during migration analysis.",
+			"Code-behind event handlers (Button_Click, GridView_RowCommand) embed business logic in the presentation layer...successful migrations extract this logic into domain services before building React components, preventing 1:1 translation of anti-patterns.",
+			"Web Forms .aspx markup with runat='server' controls cannot be incrementally migrated within the same page...unlike AngularJS strangler patterns, Web Forms requires page-level boundaries for migration units.",
 		],
 		complianceConsiderations: [
 			{
@@ -1951,13 +1951,13 @@ Total cost of ownership over three years is typically 35-50% lower than maintain
 			},
 		],
 		urgencyDrivers: [
-			"ViewState deserialization attacks actively exploited in the wild—Microsoft documented 3,000+ exposed machine keys enabling RCE",
-			"ASP.NET Web Forms not available in modern .NET—permanent lock-in to legacy .NET Framework",
+			"ViewState deserialization attacks actively exploited in the wild...Microsoft documented 3,000+ exposed machine keys enabling RCE",
+			"ASP.NET Web Forms not available in modern .NET...permanent lock-in to legacy .NET Framework",
 			"Windows Server licensing costs $1,000-6,000/server/year versus containerized Node.js deployment",
-			"Web Forms developer pool shrinking 20% annually—talent increasingly expensive and scarce",
-			"No path to cloud-native architecture without migration—PaaS and serverless options unavailable",
+			"Web Forms developer pool shrinking 20% annually...talent increasingly expensive and scarce",
+			"No path to cloud-native architecture without migration...PaaS and serverless options unavailable",
 			"Cyber insurance premiums increasing for organizations running maintenance-mode frameworks",
-			"Mobile performance unacceptable—ViewState bloat creates 2-5 second load times on 4G connections",
+			"Mobile performance unacceptable...ViewState bloat creates 2-5 second load times on 4G connections",
 			"SOC 2 and PCI-DSS auditors flagging Web Forms as security finding requiring remediation plan",
 		],
 		migrationApproach: `ASP.NET Web Forms to Next.js migration requires a methodical approach that addresses the fundamental architectural differences between the page lifecycle model and React's component architecture. Phase one conducts comprehensive application archaeology, cataloging every Web Forms page, user control, server control, and code-behind dependency. We instrument the production application to capture actual ViewState sizes, postback frequencies, and session state usage patterns that inform the migration strategy.
@@ -1966,9 +1966,9 @@ Phase two designs the target Next.js architecture, establishing clear mappings b
 
 Phase three implements the infrastructure bridge. We deploy an API gateway (Kong, AWS API Gateway, or Cloudflare) that routes traffic between the legacy IIS deployment and the new Next.js application. Session state migrates to Redis, accessible from both .NET and Node.js. Authentication creates a shared JWT or session mechanism that works across both systems. This infrastructure enables incremental migration without user disruption.
 
-Phase four executes the strangler fig pattern at page-level granularity. Unlike single-page application migrations, Web Forms requires complete page boundaries—we cannot mix Web Forms controls and React components on the same page. We prioritize pages by business value and technical complexity, typically starting with read-heavy pages that benefit most from Next.js static generation and Server Components.
+Phase four executes the strangler fig pattern at page-level granularity. Unlike single-page application migrations, Web Forms requires complete page boundaries...we cannot mix Web Forms controls and React components on the same page. We prioritize pages by business value and technical complexity, typically starting with read-heavy pages that benefit most from Next.js static generation and Server Components.
 
-Phase five migrates the complex transactional pages—forms with extensive validation, multi-step wizards, and pages with heavy code-behind logic. These require the most careful business logic extraction and testing. We implement comprehensive end-to-end test coverage comparing behavior between legacy and migrated versions.
+Phase five migrates the complex transactional pages...forms with extensive validation, multi-step wizards, and pages with heavy code-behind logic. These require the most careful business logic extraction and testing. We implement comprehensive end-to-end test coverage comparing behavior between legacy and migrated versions.
 
 Phase six completes the migration with background services, scheduled tasks, and report generation. Windows services become Node.js processes managed by PM2 or container orchestration. SSRS reports either migrate to modern alternatives or remain as a standalone service. The final IIS servers are decommissioned, eliminating Windows licensing and ViewState security exposure.
 
@@ -1979,9 +1979,9 @@ Infrastructure cost savings are substantial and immediate. Windows Server licens
 
 Developer productivity improvements compound over time. Teams report 40-60% faster feature development velocity after migrating to React/Next.js, with access to modern tooling, extensive npm ecosystem, and component reusability that Web Forms controls never achieved. The component model enables design system implementation that accelerates UI development across the organization.
 
-Talent acquisition transforms from a critical risk to a competitive advantage. Web Forms developers are increasingly scarce and expensive—the remaining talent pool skews senior with 45-70% salary premiums. React/Next.js developers are abundant, enthusiastic, and typically less expensive despite higher market demand. Recruiting cycles shorten from months to weeks, and retention improves as developers prefer working with modern frameworks.
+Talent acquisition transforms from a critical risk to a competitive advantage. Web Forms developers are increasingly scarce and expensive...the remaining talent pool skews senior with 45-70% salary premiums. React/Next.js developers are abundant, enthusiastic, and typically less expensive despite higher market demand. Recruiting cycles shorten from months to weeks, and retention improves as developers prefer working with modern frameworks.
 
-Performance improvements directly impact business metrics. Eliminating ViewState reduces page weight by 30-60%, while Server Components and static generation achieve 70-85% faster initial page loads. For e-commerce and SaaS applications, this translates directly to conversion rate improvements—industry benchmarks show 7% conversion lift per second of load time reduction.
+Performance improvements directly impact business metrics. Eliminating ViewState reduces page weight by 30-60%, while Server Components and static generation achieve 70-85% faster initial page loads. For e-commerce and SaaS applications, this translates directly to conversion rate improvements...industry benchmarks show 7% conversion lift per second of load time reduction.
 
 The total cost of ownership comparison over five years strongly favors migration. While upfront investment is significant, the combination of eliminated licensing, reduced infrastructure, lower talent costs, faster development, and eliminated security risk typically delivers 200-400% ROI within three years of completed migration.`,
 		budgetGuidance: {
@@ -2023,7 +2023,7 @@ The total cost of ownership comparison over five years strongly favors migration
 			{
 				question: "Can we migrate incrementally without disrupting users?",
 				answer:
-					"Yes, using the strangler fig pattern with an API gateway. Traffic routes to either IIS (Web Forms) or the Next.js application based on URL patterns. As pages migrate, the routing shifts progressively. Session state in Redis ensures users don't lose context when crossing system boundaries. The key constraint is that migration happens at page-level granularity—you cannot mix Web Forms controls and React components on the same page.",
+					"Yes, using the strangler fig pattern with an API gateway. Traffic routes to either IIS (Web Forms) or the Next.js application based on URL patterns. As pages migrate, the routing shifts progressively. Session state in Redis ensures users don't lose context when crossing system boundaries. The key constraint is that migration happens at page-level granularity...you cannot mix Web Forms controls and React components on the same page.",
 			},
 			{
 				question: "How do we handle complex GridView and FormView controls?",
@@ -2067,30 +2067,18 @@ The total cost of ownership comparison over five years strongly favors migration
 // Helper Functions
 // =============================================================================
 
-/**
- * Get all published migration page slugs
- */
 export function getAllMigrationSlugs(): string[] {
 	return migrationPages.filter((p) => p.published).map((p) => p.slug);
 }
 
-/**
- * Get a migration page by slug
- */
 export function getMigrationPageBySlug(slug: string): MigrationPage | undefined {
 	return migrationPages.find((p) => p.slug === slug && p.published);
 }
 
-/**
- * Get migration pages by target industry
- */
 export function getMigrationPagesByIndustry(industry: Industry): MigrationPage[] {
 	return migrationPages.filter((p) => p.published && p.targetIndustries.includes(industry));
 }
 
-/**
- * Get all migration pages
- */
 export function getAllMigrationPages(): MigrationPage[] {
 	return migrationPages.filter((p) => p.published);
 }

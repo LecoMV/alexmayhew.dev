@@ -253,6 +253,9 @@ export function ContactPage() {
 										<option value="50k+" className="bg-void-navy">
 											$50,000+
 										</option>
+										<option value="not-sure" className="bg-void-navy">
+											Not sure yet
+										</option>
 									</select>
 								</div>
 							</div>
@@ -263,7 +266,7 @@ export function ContactPage() {
 									htmlFor="referralSource"
 									className="text-slate-text mb-2 block font-mono text-xs tracking-wider uppercase"
 								>
-									How did you hear about us?
+									How did you find me?
 								</label>
 								<select
 									id="referralSource"

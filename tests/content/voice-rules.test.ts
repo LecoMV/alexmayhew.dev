@@ -32,6 +32,13 @@ function checkVoiceViolations(slug: string): string[] {
 	return violations;
 }
 
+describe("VOICE_GUIDE uses ellipsis not em dashes", () => {
+	it("docs/VOICE_GUIDE.md should not recommend em dashes", () => {
+		const content = readFileSync("docs/VOICE_GUIDE.md", "utf-8");
+		expect(content).not.toMatch(/Em dashes.*for emphasis/i);
+	});
+});
+
 describe("blog voice rules", () => {
 	it.each(AI_SERIES_POSTS)("%s contains no em dashes or double dashes", (slug) => {
 		const violations = checkVoiceViolations(slug);

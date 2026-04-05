@@ -6,7 +6,7 @@ export const contactFormSchema = z.object({
 	projectType: z.enum(["web-app", "saas", "ecommerce", "consulting", "other"], {
 		message: "Please select a valid project type",
 	}),
-	budget: z.enum(["5k-10k", "10k-25k", "25k-50k", "50k+"], {
+	budget: z.enum(["5k-10k", "10k-25k", "25k-50k", "50k+", "not-sure"], {
 		message: "Please select a valid budget range",
 	}),
 	message: z

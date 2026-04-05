@@ -110,7 +110,7 @@ Challenge conventional wisdom with evidence.
 
 ### Do Use
 
-- **Em dashes** for emphasis—like this
+- **Ellipsis** (`...`) for parenthetical breaks and pauses...like this. NEVER use em dashes (`—`) or double dashes (`--`)
 - **Specific numbers** (40%, 10x, 100k+)
 - **Technical terms** with context
 - **Code examples** when illustrating a point
@@ -250,7 +250,7 @@ Never use:
 
 Always use:
 - Specific numbers (40%, 10x, 100k+)
-- Em dashes for emphasis
+- Ellipsis for pauses and breaks
 - Decision frameworks (if X then Y)
 - Experience-based proof points
 ```

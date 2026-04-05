@@ -216,12 +216,12 @@ export const integrationPages: IntegrationPage[] = [
 			],
 		},
 		uniqueInsights: [
-			"Salesforce's Platform Events provide near-real-time sync (under 1 second) for Stripe webhooks, but require careful subscription management—unsubscribed listeners create silent data gaps that only surface during reconciliation.",
-			"The most common Salesforce-Stripe integration mistake is mapping Stripe Customers 1:1 to Salesforce Contacts—B2B scenarios require mapping to Accounts, with Contacts as billing contacts, to properly model multi-user subscriptions.",
-			"Stripe's idempotency keys should incorporate Salesforce record IDs to prevent duplicate charges when retrying failed API calls—a Salesforce workflow retry without idempotency can result in double-billing.",
-			"Salesforce's 100 API calls/minute limit becomes critical during bulk operations (end-of-month reconciliation, price changes)—batch Stripe events using Salesforce Bulk API 2.0 to stay within limits.",
-			"Stripe Billing's proration logic doesn't map directly to Salesforce CPQ amendments—custom proration calculation in the integration layer ensures financial accuracy for mid-cycle subscription changes.",
-			"Platform Event replay (last 72 hours) enables recovery from integration outages without Stripe webhook replay, which has a 3-day limit—implementing dual recovery paths ensures data consistency.",
+			"Salesforce's Platform Events provide near-real-time sync (under 1 second) for Stripe webhooks, but require careful subscription management...unsubscribed listeners create silent data gaps that only surface during reconciliation.",
+			"The most common Salesforce-Stripe integration mistake is mapping Stripe Customers 1:1 to Salesforce Contacts...B2B scenarios require mapping to Accounts, with Contacts as billing contacts, to properly model multi-user subscriptions.",
+			"Stripe's idempotency keys should incorporate Salesforce record IDs to prevent duplicate charges when retrying failed API calls...a Salesforce workflow retry without idempotency can result in double-billing.",
+			"Salesforce's 100 API calls/minute limit becomes critical during bulk operations (end-of-month reconciliation, price changes)...batch Stripe events using Salesforce Bulk API 2.0 to stay within limits.",
+			"Stripe Billing's proration logic doesn't map directly to Salesforce CPQ amendments...custom proration calculation in the integration layer ensures financial accuracy for mid-cycle subscription changes.",
+			"Platform Event replay (last 72 hours) enables recovery from integration outages without Stripe webhook replay, which has a 3-day limit...implementing dual recovery paths ensures data consistency.",
 		],
 		complianceConsiderations: [
 			{
@@ -334,13 +334,13 @@ Phase three delivers revenue intelligence: payment success/failure visibility on
 Phase four automates quote-to-cash: Salesforce CPQ quotes automatically provision Stripe subscriptions when opportunities close. Amendment handling syncs pricing changes bidirectionally. Dunning workflows trigger Salesforce tasks when payments fail.
 
 Phase five implements reconciliation and monitoring: scheduled jobs compare Salesforce and Stripe data, flagging discrepancies. Dashboards track sync health, payment volumes, and error rates. Alerts notify teams of integration issues before they impact revenue.`,
-		benefitsNarrative: `Salesforce-Stripe integration delivers measurable ROI across sales, finance, and customer success. Sales teams gain real-time payment visibility—knowing immediately when a deal converts to revenue improves forecasting accuracy from 70% to 90%+ typical range. Commission calculations automate, eliminating month-end spreadsheet reconciliation.
+		benefitsNarrative: `Salesforce-Stripe integration delivers measurable ROI across sales, finance, and customer success. Sales teams gain real-time payment visibility...knowing immediately when a deal converts to revenue improves forecasting accuracy from 70% to 90%+ typical range. Commission calculations automate, eliminating month-end spreadsheet reconciliation.
 
 Finance teams benefit from automated revenue recognition. Stripe Billing events flow to Salesforce, enabling ASC 606 compliance with accurate deferred revenue tracking. Monthly close cycles compress from days to hours with real-time payment data.
 
 Customer success teams see subscription health directly in Salesforce. Failed payments, approaching renewals, and expansion opportunities surface automatically. Churn prediction improves with payment pattern visibility. Support tickets link to payment history, reducing resolution time.
 
-The integration eliminates manual data entry between systems—a typical mid-market company saves 20-40 hours monthly in payment reconciliation and data sync. Data accuracy improves from 85% (with manual entry) to 99%+ with automated sync, reducing billing disputes and revenue leakage.`,
+The integration eliminates manual data entry between systems...a typical mid-market company saves 20-40 hours monthly in payment reconciliation and data sync. Data accuracy improves from 85% (with manual entry) to 99%+ with automated sync, reducing billing disputes and revenue leakage.`,
 		budgetGuidance: {
 			mvpMin: 25000,
 			mvpMax: 50000,
@@ -510,12 +510,12 @@ The integration eliminates manual data entry between systems—a typical mid-mar
 			],
 		},
 		uniqueInsights: [
-			"HubSpot's native Slack integration lacks deal stage change notifications—custom webhooks with workflow triggers fill this gap, but require careful rate limit management as active pipelines can generate 100+ events daily.",
-			"Slack's Block Kit provides rich formatting for HubSpot data, but attachment payloads over 3000 characters silently truncate—design message templates with field prioritization to stay within limits.",
-			"HubSpot workflow webhooks don't retry on failure—implementing a queue (SQS, Redis) between HubSpot and Slack ensures no notifications are lost during Slack API hiccups.",
-			"The most valuable HubSpot-Slack integration isn't notifications—it's enabling Slack users to update HubSpot records via interactive messages, reducing context switching and improving CRM data quality.",
-			"Slack channel management at scale requires programmatic approach: auto-create deal channels from HubSpot, archive on close, and manage membership based on deal team—manual channel creation doesn't scale past 50 active deals.",
-			"HubSpot's timeline API accepts custom event types, enabling Slack conversation summaries to appear as engagement records—this creates a complete communication history across both platforms.",
+			"HubSpot's native Slack integration lacks deal stage change notifications...custom webhooks with workflow triggers fill this gap, but require careful rate limit management as active pipelines can generate 100+ events daily.",
+			"Slack's Block Kit provides rich formatting for HubSpot data, but attachment payloads over 3000 characters silently truncate...design message templates with field prioritization to stay within limits.",
+			"HubSpot workflow webhooks don't retry on failure...implementing a queue (SQS, Redis) between HubSpot and Slack ensures no notifications are lost during Slack API hiccups.",
+			"The most valuable HubSpot-Slack integration isn't notifications...it's enabling Slack users to update HubSpot records via interactive messages, reducing context switching and improving CRM data quality.",
+			"Slack channel management at scale requires programmatic approach: auto-create deal channels from HubSpot, archive on close, and manage membership based on deal team...manual channel creation doesn't scale past 50 active deals.",
+			"HubSpot's timeline API accepts custom event types, enabling Slack conversation summaries to appear as engagement records...this creates a complete communication history across both platforms.",
 		],
 		complianceConsiderations: [
 			{
@@ -624,7 +624,7 @@ Phase three implements smart routing: new inbound leads post to triage channels 
 Phase four enables conversation sync: Slack threads about deals/contacts appear in HubSpot timeline. HubSpot notes and emails surface in relevant Slack channels. This creates a unified communication history regardless of where the conversation happened.
 
 Phase five adds analytics and automation: track response times from Slack notifications, measure deal velocity for Slack-engaged deals versus others, and automate sequences based on Slack engagement patterns.`,
-		benefitsNarrative: `HubSpot-Slack integration delivers ROI through productivity gains and improved CRM data quality. Sales teams report 40% reduction in context switching when deal updates arrive in Slack with action buttons. Time spent in HubSpot drops while data quality improves—a paradox explained by frictionless updates.
+		benefitsNarrative: `HubSpot-Slack integration delivers ROI through productivity gains and improved CRM data quality. Sales teams report 40% reduction in context switching when deal updates arrive in Slack with action buttons. Time spent in HubSpot drops while data quality improves...a paradox explained by frictionless updates.
 
 Response time to new leads improves dramatically. Real-time Slack notifications with claim buttons reduce lead response time from hours to minutes. Studies show leads contacted within 5 minutes convert at 9x the rate of those contacted after 30 minutes.
 
@@ -806,11 +806,11 @@ The integration typically pays for itself within 3-6 months through time savings
 			],
 		},
 		uniqueInsights: [
-			"NetSuite's 5 concurrent request limit makes real-time Shopify order sync challenging during flash sales—implementing a queue with rate limiting is essential, not optional, for production reliability.",
-			"Shopify's order editing (changing line items post-creation) doesn't map cleanly to NetSuite's sales order model—integrations must handle order modifications as new transactions or void-and-recreate patterns.",
+			"NetSuite's 5 concurrent request limit makes real-time Shopify order sync challenging during flash sales...implementing a queue with rate limiting is essential, not optional, for production reliability.",
+			"Shopify's order editing (changing line items post-creation) doesn't map cleanly to NetSuite's sales order model...integrations must handle order modifications as new transactions or void-and-recreate patterns.",
 			"The most expensive integration mistake is 1:1 customer mapping: Shopify guests create duplicate NetSuite customers. Implement email-based customer matching with fallback to 'Web Customer' generic for one-time buyers.",
 			"NetSuite's multi-currency handling differs fundamentally from Shopify: NetSuite uses transaction exchange rates while Shopify stores original currency. Reconciliation requires consistent exchange rate source and rounding handling.",
-			"Shopify's GraphQL Admin API reduces rate limiting issues for product sync—a single GraphQL query can fetch/update what would require 10+ REST calls, staying well within NetSuite's concurrency limits.",
+			"Shopify's GraphQL Admin API reduces rate limiting issues for product sync...a single GraphQL query can fetch/update what would require 10+ REST calls, staying well within NetSuite's concurrency limits.",
 			"Inventory sync timing is critical: a 15-minute delay during high-volume periods can result in 3-5% overselling rate. Near-real-time sync (under 1 minute) via NetSuite webhooks or SuiteScript reduces overselling to under 0.1%.",
 		],
 		complianceConsiderations: [
@@ -919,7 +919,7 @@ Phase three enables fulfillment sync: NetSuite fulfillments (item fulfillment re
 Phase four implements inventory sync: NetSuite inventory levels propagate to Shopify locations. A scheduled job (every 5-15 minutes) pulls NetSuite inventory via saved searches and updates Shopify inventory levels. For high-velocity items, event-driven updates via SuiteScript provide faster sync.
 
 Phase five adds reconciliation and monitoring: daily reconciliation jobs compare order, inventory, and financial data between systems. Dashboards track sync health, error rates, and processing latency. Alerts notify operations of issues before they impact fulfillment or financials.`,
-		benefitsNarrative: `Shopify-NetSuite integration eliminates the manual data entry that plagues growing e-commerce businesses. A typical mid-market merchant manually entering 100+ orders daily spends 15-20 hours weekly on data entry—completely eliminated with automation. This represents $25,000-$40,000 annual savings in labor costs alone.
+		benefitsNarrative: `Shopify-NetSuite integration eliminates the manual data entry that plagues growing e-commerce businesses. A typical mid-market merchant manually entering 100+ orders daily spends 15-20 hours weekly on data entry...completely eliminated with automation. This represents $25,000-$40,000 annual savings in labor costs alone.
 
 Order accuracy improves from 95% (with manual entry) to 99.9%+ with automated sync. Data entry errors cause fulfillment issues, customer complaints, and accounting discrepancies. Eliminating these errors reduces customer service burden by 20-30%.
 
@@ -1010,7 +1010,7 @@ The integration typically achieves ROI within 3-6 months through labor savings, 
 				requestsPerMinute: 120,
 				burstLimit: 40,
 				notes:
-					"GraphQL Admin API uses cost-based rate limiting: 50 points/second standard, up to 500 points/second for Shopify Plus. REST API deprecated for new apps—use GraphQL. Bulk operations available for large data exports.",
+					"GraphQL Admin API uses cost-based rate limiting: 50 points/second standard, up to 500 points/second for Shopify Plus. REST API deprecated for new apps...use GraphQL. Bulk operations available for large data exports.",
 			},
 			webhookSupport: true,
 			sandboxAvailable: true,
@@ -1032,7 +1032,7 @@ The integration typically achieves ROI within 3-6 months through labor savings, 
 				requestsPerMinute: 700,
 				burstLimit: 350,
 				notes:
-					"Burst: 350/s for client events, 100/s for consent endpoints. Steady: 3500/m for events, 700/m for consent. OAuth apps receive isolated rate limits per installed instance—higher effective throughput for integrations.",
+					"Burst: 350/s for client events, 100/s for consent endpoints. Steady: 3500/m for events, 700/m for consent. OAuth apps receive isolated rate limits per installed instance...higher effective throughput for integrations.",
 			},
 			webhookSupport: true,
 			sandboxAvailable: true,
@@ -1101,12 +1101,12 @@ The integration typically achieves ROI within 3-6 months through labor savings, 
 			],
 		},
 		uniqueInsights: [
-			"Klaviyo's native Shopify integration syncs the last 90 days on install, then backsync historically—but custom integrations can leverage Shopify's Bulk Operations API to export years of order data in JSONL format, enabling CLV calculations from day one rather than waiting months for data accumulation.",
-			"The most common integration mistake is relying solely on Klaviyo's JavaScript SDK for browse events—server-side event tracking via Shopify webhooks captures 15-20% more customer activity that ad blockers would otherwise suppress, significantly improving flow trigger accuracy.",
-			"Shopify's Checkout Extensibility (replacing checkout.liquid) requires migrating from DOM-based Klaviyo tracking to Shopify Pixels API—integrations built before 2024 need refactoring, as legacy checkout tracking will stop working entirely in 2025.",
-			"Klaviyo's predictive analytics (CLV, churn risk, next order date) require 90+ days of synced order history to generate—custom integrations that pre-populate historical data unlock these features immediately rather than after a 3-month cold start.",
-			"OAuth apps in Klaviyo receive isolated rate limits per account installation, meaning your integration's 3500/m event quota doesn't compete with the merchant's other apps—a critical advantage over API key integrations during Black Friday traffic spikes.",
-			"Shopify's order.tags sync to Klaviyo only at order creation time—tags added later (like 'VIP' or 'Wholesale' from fulfillment apps) require a separate reconciliation job to maintain segment accuracy, a gap the native integration doesn't address.",
+			"Klaviyo's native Shopify integration syncs the last 90 days on install, then backsync historically...but custom integrations can leverage Shopify's Bulk Operations API to export years of order data in JSONL format, enabling CLV calculations from day one rather than waiting months for data accumulation.",
+			"The most common integration mistake is relying solely on Klaviyo's JavaScript SDK for browse events...server-side event tracking via Shopify webhooks captures 15-20% more customer activity that ad blockers would otherwise suppress, significantly improving flow trigger accuracy.",
+			"Shopify's Checkout Extensibility (replacing checkout.liquid) requires migrating from DOM-based Klaviyo tracking to Shopify Pixels API...integrations built before 2024 need refactoring, as legacy checkout tracking will stop working entirely in 2025.",
+			"Klaviyo's predictive analytics (CLV, churn risk, next order date) require 90+ days of synced order history to generate...custom integrations that pre-populate historical data unlock these features immediately rather than after a 3-month cold start.",
+			"OAuth apps in Klaviyo receive isolated rate limits per account installation, meaning your integration's 3500/m event quota doesn't compete with the merchant's other apps...a critical advantage over API key integrations during Black Friday traffic spikes.",
+			"Shopify's order.tags sync to Klaviyo only at order creation time...tags added later (like 'VIP' or 'Wholesale' from fulfillment apps) require a separate reconciliation job to maintain segment accuracy, a gap the native integration doesn't address.",
 		],
 		complianceConsiderations: [
 			{
@@ -1252,7 +1252,7 @@ Post-purchase automation builds customer lifetime value systematically. Thank-yo
 
 Segmentation capabilities enable precision targeting that mass-email approaches cannot match. Integration data powers segments based on purchase behavior (high-value customers, at-risk churners, win-back candidates), engagement (email openers, SMS responders), and product affinity. Targeted campaigns to these segments typically achieve 2-3x the conversion rate of broadcast sends.
 
-The integration eliminates manual data entry between systems, saving 5-10 hours weekly for marketing teams that previously exported customer lists and manually imported to Klaviyo. More importantly, real-time sync ensures campaigns always target current customer status—no more emailing customers who purchased yesterday, or missing high-value customers who should receive VIP treatment.
+The integration eliminates manual data entry between systems, saving 5-10 hours weekly for marketing teams that previously exported customer lists and manually imported to Klaviyo. More importantly, real-time sync ensures campaigns always target current customer status...no more emailing customers who purchased yesterday, or missing high-value customers who should receive VIP treatment.
 
 Compliance automation reduces legal risk and operational burden. GDPR consent status, CAN-SPAM unsubscribe processing, and CCPA data requests are handled automatically, with audit trails maintained for regulatory documentation. This automation typically saves 10-15 hours monthly in compliance-related manual work while reducing the risk of costly violations.`,
 		budgetGuidance: {
@@ -1286,7 +1286,7 @@ Compliance automation reduces legal risk and operational burden. GDPR consent st
 			{
 				question: "Should we use Klaviyo's native Shopify integration or build custom?",
 				answer:
-					"Start with Klaviyo's native integration for core functionality—it handles 80% of use cases with zero development. Build custom extensions for: historical backfill beyond 90 days, custom Shopify metafield sync, advanced consent management, or multi-storefront architectures. Most merchants use native integration supplemented by custom webhooks for specific business logic.",
+					"Start with Klaviyo's native integration for core functionality...it handles 80% of use cases with zero development. Build custom extensions for: historical backfill beyond 90 days, custom Shopify metafield sync, advanced consent management, or multi-storefront architectures. Most merchants use native integration supplemented by custom webhooks for specific business logic.",
 			},
 			{
 				question: "How do we handle GDPR consent for EU customers?",
@@ -1296,7 +1296,7 @@ Compliance automation reduces legal risk and operational burden. GDPR consent st
 			{
 				question: "What happens to abandoned cart flows during Shopify downtime?",
 				answer:
-					"Klaviyo's native integration queues events during brief outages. For extended downtime or webhook failures, implement a queue (SQS, Redis) between Shopify webhooks and Klaviyo API calls. Monitor webhook delivery success rates. Configure Klaviyo flow timing to account for potential delays—a 1-hour abandoned cart trigger provides buffer for temporary sync issues.",
+					"Klaviyo's native integration queues events during brief outages. For extended downtime or webhook failures, implement a queue (SQS, Redis) between Shopify webhooks and Klaviyo API calls. Monitor webhook delivery success rates. Configure Klaviyo flow timing to account for potential delays...a 1-hour abandoned cart trigger provides buffer for temporary sync issues.",
 			},
 			{
 				question: "Can we sync custom Shopify customer metafields to Klaviyo?",
@@ -1306,7 +1306,7 @@ Compliance automation reduces legal risk and operational burden. GDPR consent st
 			{
 				question: "How do we prevent duplicate profiles in Klaviyo?",
 				answer:
-					"Klaviyo deduplicates by email address—ensure consistent email formatting (lowercase, trimmed). For SMS-first customers without email, use phone number as identifier with Klaviyo's phone-based profiles. Handle Shopify guest checkout (no account) carefully: use checkout email, not empty customer email. Implement merge logic for customers who checkout as guest then create account.",
+					"Klaviyo deduplicates by email address...ensure consistent email formatting (lowercase, trimmed). For SMS-first customers without email, use phone number as identifier with Klaviyo's phone-based profiles. Handle Shopify guest checkout (no account) carefully: use checkout email, not empty customer email. Implement merge logic for customers who checkout as guest then create account.",
 			},
 		],
 		relatedServices: [
@@ -1433,13 +1433,13 @@ Compliance automation reduces legal risk and operational burden. GDPR consent st
 			],
 		},
 		uniqueInsights: [
-			"HubSpot's native Stripe integration via Commerce Hub only supports HubSpot-initiated payments—Stripe subscriptions created outside HubSpot (via API, Checkout, or other channels) don't sync automatically, requiring custom webhook integration for complete revenue visibility.",
-			"The most costly Stripe-HubSpot mapping error is treating Stripe Customers as HubSpot Contacts 1:1—B2B scenarios require mapping to Companies with associated Contacts, and guest checkouts need deduplication logic to prevent duplicate contacts from repeated purchases.",
-			"Stripe's subscription lifecycle events (created, updated, deleted, paused, resumed) each require distinct HubSpot workflow triggers—a single 'subscription changed' event misses critical signals like payment failure sequences that should trigger customer success intervention.",
-			"HubSpot's 110 requests/10 seconds limit becomes critical during Stripe webhook bursts (flash sales, subscription renewals at month-end)—implementing a queue with rate limiting and batch updates is essential for production reliability, not optional.",
-			"Stripe's MRR calculations differ from HubSpot's deal-based revenue tracking—proration, discounts, and multi-currency conversions require a normalization layer to ensure financial accuracy across systems.",
-			"Payment failure sequences in Stripe (invoice.payment_failed → smart retries → subscription.past_due) should map to HubSpot deal stage changes AND contact timeline events—treating these as separate concerns enables both sales visibility and automated dunning workflows.",
-			"Stripe webhook signature verification (webhook_signature auth method) must happen before any HubSpot API calls—processing unsigned or replayed webhooks risks data corruption and duplicate deal updates in your CRM.",
+			"HubSpot's native Stripe integration via Commerce Hub only supports HubSpot-initiated payments...Stripe subscriptions created outside HubSpot (via API, Checkout, or other channels) don't sync automatically, requiring custom webhook integration for complete revenue visibility.",
+			"The most costly Stripe-HubSpot mapping error is treating Stripe Customers as HubSpot Contacts 1:1...B2B scenarios require mapping to Companies with associated Contacts, and guest checkouts need deduplication logic to prevent duplicate contacts from repeated purchases.",
+			"Stripe's subscription lifecycle events (created, updated, deleted, paused, resumed) each require distinct HubSpot workflow triggers...a single 'subscription changed' event misses critical signals like payment failure sequences that should trigger customer success intervention.",
+			"HubSpot's 110 requests/10 seconds limit becomes critical during Stripe webhook bursts (flash sales, subscription renewals at month-end)...implementing a queue with rate limiting and batch updates is essential for production reliability, not optional.",
+			"Stripe's MRR calculations differ from HubSpot's deal-based revenue tracking...proration, discounts, and multi-currency conversions require a normalization layer to ensure financial accuracy across systems.",
+			"Payment failure sequences in Stripe (invoice.payment_failed → smart retries → subscription.past_due) should map to HubSpot deal stage changes AND contact timeline events...treating these as separate concerns enables both sales visibility and automated dunning workflows.",
+			"Stripe webhook signature verification (webhook_signature auth method) must happen before any HubSpot API calls...processing unsigned or replayed webhooks risks data corruption and duplicate deal updates in your CRM.",
 		],
 		complianceConsiderations: [
 			{
@@ -1580,7 +1580,7 @@ Compliance automation reduces legal risk and operational burden. GDPR consent st
 		],
 		integrationApproach: `Stripe-HubSpot integration connects payment infrastructure to customer relationship management, enabling revenue-aware marketing automation and sales visibility. The integration architecture prioritizes data accuracy, real-time responsiveness for critical events, and resilience during peak payment volumes.
 
-Phase one establishes the data model and mapping strategy. Stripe entities (Customers, Subscriptions, Invoices, Charges) map to HubSpot objects (Contacts, Companies, Deals, Custom Objects). Critical decisions include: Contact vs. Company mapping for B2B scenarios, Deal pipeline design for subscription lifecycle, and custom property schema for payment attributes (MRR, LTV, subscription status, next billing date, payment method type). This phase also addresses historical data migration—extracting existing Stripe payment history and importing to HubSpot with proper associations.
+Phase one establishes the data model and mapping strategy. Stripe entities (Customers, Subscriptions, Invoices, Charges) map to HubSpot objects (Contacts, Companies, Deals, Custom Objects). Critical decisions include: Contact vs. Company mapping for B2B scenarios, Deal pipeline design for subscription lifecycle, and custom property schema for payment attributes (MRR, LTV, subscription status, next billing date, payment method type). This phase also addresses historical data migration...extracting existing Stripe payment history and importing to HubSpot with proper associations.
 
 Phase two implements the core sync infrastructure. A serverless integration layer (AWS Lambda, Cloudflare Workers, or similar) receives Stripe webhooks with signature verification. The layer transforms Stripe event payloads to HubSpot API format and queues updates. A rate-limited worker processes the queue, respecting HubSpot's API limits while prioritizing critical events (payment failures, new subscriptions) over routine updates (customer metadata changes). Dead-letter handling ensures no events are lost during API failures.
 
@@ -1591,13 +1591,13 @@ Phase four adds monitoring, reconciliation, and self-healing. Scheduled jobs com
 Phase five optimizes for scale and performance. As payment volume grows, the integration evolves: batch updates for high-frequency events, caching to reduce API calls, and priority queues for time-sensitive operations. Performance tuning ensures the integration handles 10x current volume without degradation, preparing for growth and seasonal peaks like Black Friday or end-of-year renewals.`,
 		benefitsNarrative: `Stripe-HubSpot integration delivers measurable ROI across marketing, sales, and customer success by connecting payment reality to CRM operations. The integration eliminates the data silos that fragment customer understanding and enables revenue-aware decision making at every touchpoint.
 
-Marketing teams gain closed-loop revenue attribution. Instead of measuring campaign success by deal creation or pipeline value, marketers see actual revenue generated—which campaigns drove payments, not just leads. This clarity typically shifts marketing spend toward higher-performing channels, improving marketing efficiency by 15-25%. Segmentation based on payment behavior (high-LTV customers, churning subscriptions, payment failures) enables personalized campaigns that generic demographics cannot match.
+Marketing teams gain closed-loop revenue attribution. Instead of measuring campaign success by deal creation or pipeline value, marketers see actual revenue generated...which campaigns drove payments, not just leads. This clarity typically shifts marketing spend toward higher-performing channels, improving marketing efficiency by 15-25%. Segmentation based on payment behavior (high-LTV customers, churning subscriptions, payment failures) enables personalized campaigns that generic demographics cannot match.
 
 Sales teams benefit from payment visibility in their CRM. Deal stages reflect payment status, not just verbal commitments. Commission calculations automate based on actual payments, eliminating month-end reconciliation spreadsheets. Sales sees customer payment history before calls, improving upsell conversations with data on usage patterns and expansion signals. Pipeline forecasting accuracy improves from 70% to 90%+ when deals progress based on payment confirmation rather than optimistic stage updates.
 
-Customer success teams receive automated signals for intervention. Subscription downgrades, payment failures, and approaching renewal dates trigger workflows before customers churn. A typical integration reduces involuntary churn (failed payments) by 2-5 percentage points through timely dunning sequences that combine HubSpot email automation with Stripe's retry logic. Customer health scores incorporate payment patterns—late payments and partial refunds signal at-risk accounts before explicit complaints arrive.
+Customer success teams receive automated signals for intervention. Subscription downgrades, payment failures, and approaching renewal dates trigger workflows before customers churn. A typical integration reduces involuntary churn (failed payments) by 2-5 percentage points through timely dunning sequences that combine HubSpot email automation with Stripe's retry logic. Customer health scores incorporate payment patterns...late payments and partial refunds signal at-risk accounts before explicit complaints arrive.
 
-The integration typically achieves ROI within 3-6 months through efficiency gains alone. A team processing 500+ monthly transactions saves 20-40 hours monthly in manual data entry and reconciliation. Data accuracy improves from 85% (manual entry) to 99%+ with automated sync, reducing billing disputes and revenue recognition errors. For subscription businesses, the churn reduction impact often exceeds the efficiency gains—a 1% churn improvement on $1M ARR adds $10,000 annually to revenue.`,
+The integration typically achieves ROI within 3-6 months through efficiency gains alone. A team processing 500+ monthly transactions saves 20-40 hours monthly in manual data entry and reconciliation. Data accuracy improves from 85% (manual entry) to 99%+ with automated sync, reducing billing disputes and revenue recognition errors. For subscription businesses, the churn reduction impact often exceeds the efficiency gains...a 1% churn improvement on $1M ARR adds $10,000 annually to revenue.`,
 		budgetGuidance: {
 			mvpMin: 20000,
 			mvpMax: 45000,
@@ -1679,30 +1679,18 @@ The integration typically achieves ROI within 3-6 months through efficiency gain
 // Helper Functions
 // =============================================================================
 
-/**
- * Get all published integration page slugs
- */
 export function getAllIntegrationSlugs(): string[] {
 	return integrationPages.filter((p) => p.published).map((p) => p.slug);
 }
 
-/**
- * Get an integration page by slug
- */
 export function getIntegrationPageBySlug(slug: string): IntegrationPage | undefined {
 	return integrationPages.find((p) => p.slug === slug && p.published);
 }
 
-/**
- * Get integration pages by target industry
- */
 export function getIntegrationPagesByIndustry(industry: Industry): IntegrationPage[] {
 	return integrationPages.filter((p) => p.published && p.targetIndustries.includes(industry));
 }
 
-/**
- * Get all integration pages
- */
 export function getAllIntegrationPages(): IntegrationPage[] {
 	return integrationPages.filter((p) => p.published);
 }

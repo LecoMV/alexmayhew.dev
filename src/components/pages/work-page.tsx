@@ -32,7 +32,7 @@ export function WorkPage() {
 					<h2 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
 						Digital Instruments
 						<br />
-						<span className="text-slate-text">& Experiments.</span>
+						<span className="text-slate-text">& Case Studies.</span>
 					</h2>
 					<p className="text-slate-text max-w-2xl text-lg">
 						Enterprise-grade solutions that push boundaries, solve complex problems, and deliver

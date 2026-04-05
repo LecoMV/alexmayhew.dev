@@ -272,6 +272,14 @@ export function Navigation() {
 						})}
 					</div>
 
+					{/* Desktop CTA */}
+					<Link
+						href="/contact"
+						className="bg-cyber-lime text-void-navy hidden shrink-0 px-4 py-2 font-mono text-xs font-bold tracking-wider uppercase transition-opacity hover:opacity-90 lg:block"
+					>
+						Book a Call
+					</Link>
+
 					{/* Search Trigger */}
 					<button
 						onClick={() => window.dispatchEvent(new CustomEvent("toggle-command-palette"))}

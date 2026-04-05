@@ -110,7 +110,7 @@ export default function Home() {
 							variants={fadeInUp}
 						>
 							I architect production systems that scale from MVP to millions. When your tech
-							decisions have business consequences, you need strategic guidance—not just code.
+							decisions have business consequences, you need strategic guidance...not just code.
 						</m.p>
 
 						<m.div className="mt-4 flex items-center gap-6" variants={fadeInUp}>
@@ -206,7 +206,8 @@ export default function Home() {
 							Services
 						</h2>
 						<p className="text-slate-text max-w-2xl text-lg">
-							Specialized capabilities engineered for digital excellence.
+							Architecture, performance, and AI integration for SaaS teams scaling from $0 to $10M
+							ARR.
 						</p>
 					</m.div>
 
@@ -249,6 +250,64 @@ export default function Home() {
 						View all services
 						<ArrowRight className="h-4 w-4" strokeWidth={1.5} />
 					</Link>
+				</div>
+			</section>
+
+			{/* About Snippet */}
+			<section className="border-t border-white/10 px-6 py-24 sm:px-12 md:px-24">
+				<div className="mx-auto max-w-[1400px]">
+					<m.div
+						className="grid grid-cols-1 items-center gap-12 md:grid-cols-2"
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, margin: "-100px" }}
+						transition={springTransition}
+					>
+						<div>
+							<h2 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+								<span className="mr-2 animate-pulse">●</span>
+								About
+							</h2>
+							<p className="text-mist-white mb-4 text-lg leading-relaxed">
+								15+ years building production systems across fintech, healthcare, SaaS, and
+								e-commerce. I partner with founders and CTOs who need architectural decisions that
+								compound into competitive advantage...not just code that ships.
+							</p>
+							<p className="text-slate-text mb-6 text-sm leading-relaxed">
+								My clients typically face a specific inflection point: scaling past their first
+								architecture, integrating AI into production workflows, or preparing for technical
+								due diligence. I bring the pattern recognition that comes from seeing dozens of
+								these transitions firsthand.
+							</p>
+							<Link
+								href="/about"
+								className="text-cyber-lime inline-flex items-center gap-2 font-mono text-sm hover:underline"
+							>
+								Full background
+								<ArrowRight className="h-4 w-4" strokeWidth={1.5} />
+							</Link>
+						</div>
+						<div className="bg-gunmetal-glass/10 border border-white/10 p-8">
+							<div className="grid grid-cols-2 gap-6">
+								<div>
+									<p className="text-cyber-lime font-mono text-2xl font-bold">15+</p>
+									<p className="text-slate-text text-sm">Years in Production Systems</p>
+								</div>
+								<div>
+									<p className="text-cyber-lime font-mono text-2xl font-bold">50+</p>
+									<p className="text-slate-text text-sm">Architecture Reviews</p>
+								</div>
+								<div>
+									<p className="text-cyber-lime font-mono text-2xl font-bold">337x</p>
+									<p className="text-slate-text text-sm">Best Performance Gain</p>
+								</div>
+								<div>
+									<p className="text-cyber-lime font-mono text-2xl font-bold">99.95%</p>
+									<p className="text-slate-text text-sm">Uptime Track Record</p>
+								</div>
+							</div>
+						</div>
+					</m.div>
 				</div>
 			</section>
 
