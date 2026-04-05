@@ -32,7 +32,7 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 
 	return (
 		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
-			<div className="mx-auto max-w-[1400px]">
+			<div className="max-w-content mx-auto">
 				{/* Breadcrumbs */}
 				<m.nav
 					className="text-slate-text mb-8 font-mono text-xs"

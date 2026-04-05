@@ -57,7 +57,7 @@ export function Footer() {
 			<div className="border-cyber-lime absolute top-0 left-6 h-4 w-4 -translate-y-1/2 border-t border-l sm:left-12 md:left-24" />
 			<div className="border-cyber-lime absolute top-0 right-6 h-4 w-4 -translate-y-1/2 border-t border-r sm:right-12 md:right-24" />
 
-			<div className="mx-auto max-w-[1400px] px-6 py-12 sm:px-12 md:px-24">
+			<div className="max-w-content mx-auto px-6 py-12 sm:px-12 md:px-24">
 				<div className="grid grid-cols-1 gap-8 md:grid-cols-12">
 					{/* Brand Section */}
 					<div className="md:col-span-5">

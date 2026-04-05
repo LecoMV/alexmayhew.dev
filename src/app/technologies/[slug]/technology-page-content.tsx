@@ -47,7 +47,7 @@ export function TechnologyPageContent({ technology }: TechnologyPageContentProps
 
 	return (
 		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
-			<div className="mx-auto max-w-[1400px]">
+			<div className="max-w-content mx-auto">
 				{/* Breadcrumb */}
 				<m.nav
 					className="text-slate-text mb-8 flex items-center gap-2 font-mono text-xs"

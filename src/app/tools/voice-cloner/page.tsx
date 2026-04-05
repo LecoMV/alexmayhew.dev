@@ -235,7 +235,7 @@ export default function VoiceClonerPage() {
 				]}
 			/>
 			<section className="flex-1 px-6 pt-32 pb-24 sm:px-12 md:px-24">
-				<div className="mx-auto max-w-[1400px]">
+				<div className="max-w-content mx-auto">
 					{/* Breadcrumb */}
 					<nav className="mb-8">
 						<Link
