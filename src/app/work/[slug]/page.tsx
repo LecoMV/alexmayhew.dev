@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	}
 
 	const pageUrl = `${siteUrl}/work/${slug}`;
-	const title = `${project.title} Case Study — Alex Mayhew`;
+	const title = `${project.title} Case Study ... Alex Mayhew`;
 	const description = project.caseStudy.subtitle;
 
 	const ogImage = `/og?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&category=${encodeURIComponent("Case Study")}`;

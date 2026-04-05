@@ -1,5 +1,5 @@
 /**
- * FAQ data for blog posts — rendered as FAQPage JSON-LD schema.
+ * FAQ data for blog posts ... rendered as FAQPage JSON-LD schema.
  * Each key is the blog post slug. Hub posts and high-value spokes get FAQs.
  * Answers are concise (2-4 sentences) for AI citation optimization.
  */
@@ -69,7 +69,7 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "Should I use React Server Components in production?",
 			answer:
-				"Yes, if you are on Next.js 14+. React Server Components reduce client-side JavaScript by 30-60% by rendering data-fetching components on the server. They eliminate client-server waterfalls for data loading. The main constraint is that Server Components cannot use hooks, browser APIs, or event handlers — those require Client Components with the 'use client' directive.",
+				"Yes, if you are on Next.js 14+. React Server Components reduce client-side JavaScript by 30-60% by rendering data-fetching components on the server. They eliminate client-server waterfalls for data loading. The main constraint is that Server Components cannot use hooks, browser APIs, or event handlers ... those require Client Components with the 'use client' directive.",
 		},
 		{
 			question: "How do I choose between Tailwind CSS and component libraries?",
@@ -160,7 +160,7 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "What is a modular monolith and how does it differ from microservices?",
 			answer:
-				"A modular monolith is a single deployable application with strictly enforced module boundaries — modules communicate through defined interfaces, not direct database access. Unlike microservices, it avoids network latency, distributed transactions, and deployment orchestration. You get most of the organizational benefits of microservices (team autonomy, clear ownership) without the operational overhead.",
+				"A modular monolith is a single deployable application with strictly enforced module boundaries ... modules communicate through defined interfaces, not direct database access. Unlike microservices, it avoids network latency, distributed transactions, and deployment orchestration. You get most of the organizational benefits of microservices (team autonomy, clear ownership) without the operational overhead.",
 		},
 		{
 			question: "What are the signs that a monolith needs to be broken apart?",
@@ -173,7 +173,7 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "What is the difference between Server Components and Client Components in React?",
 			answer:
-				"Server Components render on the server and send zero JavaScript to the browser — they can directly access databases, file systems, and APIs. Client Components render on both server (for HTML) and client (for interactivity) and include JavaScript bundles. The rule: use Server Components by default, add 'use client' only when you need hooks, event handlers, or browser APIs.",
+				"Server Components render on the server and send zero JavaScript to the browser ... they can directly access databases, file systems, and APIs. Client Components render on both server (for HTML) and client (for interactivity) and include JavaScript bundles. The rule: use Server Components by default, add 'use client' only when you need hooks, event handlers, or browser APIs.",
 		},
 		{
 			question: "Can Server Components and Client Components be mixed in the same page?",
@@ -196,12 +196,12 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "How much time should engineering teams spend on technical debt?",
 			answer:
-				"Allocate 15-20% of sprint capacity to debt reduction as a baseline. Teams that allocate 0% slow down by approximately 25% per year as debt compounds. The most effective approach is not dedicated 'tech debt sprints' but embedding debt work into feature development — when you touch a module for a feature, also clean up that module.",
+				"Allocate 15-20% of sprint capacity to debt reduction as a baseline. Teams that allocate 0% slow down by approximately 25% per year as debt compounds. The most effective approach is not dedicated 'tech debt sprints' but embedding debt work into feature development ... when you touch a module for a feature, also clean up that module.",
 		},
 		{
 			question: "How do you prioritize which technical debt to pay down first?",
 			answer:
-				"Prioritize by blast radius multiplied by change frequency. Debt in code that changes weekly costs more than debt in code that hasn't been touched in a year. Map your debt items on a 2x2 matrix: high-change-frequency + high-blast-radius items go first. Debt in stable, rarely-modified code can wait indefinitely — it costs nothing if nobody touches it.",
+				"Prioritize by blast radius multiplied by change frequency. Debt in code that changes weekly costs more than debt in code that hasn't been touched in a year. Map your debt items on a 2x2 matrix: high-change-frequency + high-blast-radius items go first. Debt in stable, rarely-modified code can wait indefinitely ... it costs nothing if nobody touches it.",
 		},
 	],
 
@@ -214,12 +214,12 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "When should I add a database index?",
 			answer:
-				"Add an index when a query scans more than 5-10% of a table's rows to return its results (visible in EXPLAIN as sequential scans on large tables). Focus on columns used in WHERE clauses, JOIN conditions, and ORDER BY. Every index speeds up reads but slows down writes — on write-heavy tables, only index columns that appear in your most frequent queries.",
+				"Add an index when a query scans more than 5-10% of a table's rows to return its results (visible in EXPLAIN as sequential scans on large tables). Focus on columns used in WHERE clauses, JOIN conditions, and ORDER BY. Every index speeds up reads but slows down writes ... on write-heavy tables, only index columns that appear in your most frequent queries.",
 		},
 		{
 			question: "What is the N+1 query problem and how do I fix it?",
 			answer:
-				"The N+1 problem occurs when code fetches a list of N items, then makes one additional query per item to load related data — resulting in N+1 total queries instead of 2. Fix it by using JOINs or batch loading (WHERE id IN (...)) to fetch related data in a single query. ORMs often hide N+1 problems behind lazy loading — use query logging to detect them.",
+				"The N+1 problem occurs when code fetches a list of N items, then makes one additional query per item to load related data ... resulting in N+1 total queries instead of 2. Fix it by using JOINs or batch loading (WHERE id IN (...)) to fetch related data in a single query. ORMs often hide N+1 problems behind lazy loading ... use query logging to detect them.",
 		},
 	],
 
@@ -237,7 +237,7 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "What TypeScript features should every developer know?",
 			answer:
-				"Focus on five features: union types for modeling states (type Status = 'loading' | 'success' | 'error'), generics for reusable utilities, discriminated unions for type-safe branching, utility types (Pick, Omit, Partial), and type narrowing with typeof/instanceof guards. These cover 90% of real-world TypeScript usage. Avoid overusing advanced features like conditional types and template literal types — they hurt readability.",
+				"Focus on five features: union types for modeling states (type Status = 'loading' | 'success' | 'error'), generics for reusable utilities, discriminated unions for type-safe branching, utility types (Pick, Omit, Partial), and type narrowing with typeof/instanceof guards. These cover 90% of real-world TypeScript usage. Avoid overusing advanced features like conditional types and template literal types ... they hurt readability.",
 		},
 	],
 
@@ -245,7 +245,7 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "What did the METR study find about AI and developer productivity?",
 			answer:
-				"The METR randomized controlled trial (n=16, 246 tasks) found that experienced open-source developers completed tasks 19% slower when using AI tools, while believing they were 24% faster. The 43-percentage-point perception gap means teams cannot self-correct — engineers genuinely feel more productive while delivering less.",
+				"The METR randomized controlled trial (n=16, 246 tasks) found that experienced open-source developers completed tasks 19% slower when using AI tools, while believing they were 24% faster. The 43-percentage-point perception gap means teams cannot self-correct ... engineers genuinely feel more productive while delivering less.",
 		},
 		{
 			question: "Why does AI make experienced developers slower?",
@@ -255,7 +255,7 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "Does the METR study mean AI coding tools are useless?",
 			answer:
-				"No. The METR study tested complex tasks in mature codebases — the hardest scenario. AI tools demonstrably accelerate short, well-scoped tasks: boilerplate generation, test scaffolding, documentation, and greenfield exploration. The pattern: AI excels where the 'what' is defined and the 'why' doesn't require deep codebase knowledge.",
+				"No. The METR study tested complex tasks in mature codebases ... the hardest scenario. AI tools demonstrably accelerate short, well-scoped tasks: boilerplate generation, test scaffolding, documentation, and greenfield exploration. The pattern: AI excels where the 'what' is defined and the 'why' doesn't require deep codebase knowledge.",
 		},
 	],
 
@@ -268,12 +268,12 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "How do you measure cognitive debt?",
 			answer:
-				"Five signals indicate cognitive debt accumulation: (1) time to explain a module exceeds time to rewrite it, (2) PR reviews default to 'LGTM' on AI-generated code, (3) incident investigation takes 3x longer because nobody understands the flow, (4) refactoring declines — GitClear measured a 60% decline in refactored code from 2021 to 2024, (5) architecture decisions default to 'whatever AI suggests' rather than intentional design.",
+				"Five signals indicate cognitive debt accumulation: (1) time to explain a module exceeds time to rewrite it, (2) PR reviews default to 'LGTM' on AI-generated code, (3) incident investigation takes 3x longer because nobody understands the flow, (4) refactoring declines ... GitClear measured a 60% decline in refactored code from 2021 to 2024, (5) architecture decisions default to 'whatever AI suggests' rather than intentional design.",
 		},
 		{
 			question: "Is cognitive debt the same as technical debt?",
 			answer:
-				"No. Technical debt is a conscious trade-off — you know you're cutting corners and plan to pay it back. Cognitive debt is invisible — the code works, passes tests, and looks professional, but nobody on the team understands why it works. Technical debt costs time to fix. Cognitive debt costs the ability to know what needs fixing. The second is categorically more dangerous.",
+				"No. Technical debt is a conscious trade-off ... you know you're cutting corners and plan to pay it back. Cognitive debt is invisible ... the code works, passes tests, and looks professional, but nobody on the team understands why it works. Technical debt costs time to fix. Cognitive debt costs the ability to know what needs fixing. The second is categorically more dangerous.",
 		},
 	],
 
@@ -281,7 +281,7 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "What is MCP and why does it matter for AI development?",
 			answer:
-				"MCP (Model Context Protocol) is the open standard for connecting AI models to external tools and data sources. It has 97M+ monthly SDK downloads and is backed by Anthropic, OpenAI, Google, and Microsoft. MCP won the integration standard war — no serious competing standard exists. It matters because it defines how AI agents interact with your codebase, databases, APIs, and infrastructure.",
+				"MCP (Model Context Protocol) is the open standard for connecting AI models to external tools and data sources. It has 97M+ monthly SDK downloads and is backed by Anthropic, OpenAI, Google, and Microsoft. MCP won the integration standard war ... no serious competing standard exists. It matters because it defines how AI agents interact with your codebase, databases, APIs, and infrastructure.",
 		},
 		{
 			question: "What are the biggest security risks with MCP servers?",
@@ -322,12 +322,12 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "How is AI technical debt different from regular technical debt?",
 			answer:
-				"Traditional technical debt is a conscious trade-off with known costs. AI technical debt is invisible — it accumulates when developers accept AI-generated code without understanding it, creating code that works but nobody can maintain. AI debt has three unique components: comprehension debt (nobody understands why the code works), duplication debt (8x increase in copy-paste code), and architectural drift (locally optimal AI suggestions that don't compose into a coherent system).",
+				"Traditional technical debt is a conscious trade-off with known costs. AI technical debt is invisible ... it accumulates when developers accept AI-generated code without understanding it, creating code that works but nobody can maintain. AI debt has three unique components: comprehension debt (nobody understands why the code works), duplication debt (8x increase in copy-paste code), and architectural drift (locally optimal AI suggestions that don't compose into a coherent system).",
 		},
 		{
 			question: "How do I audit my codebase for AI-generated technical debt?",
 			answer:
-				"Track four metrics: code duplication rate (GitClear-style analysis of copy-paste blocks exceeding 5 lines), refactoring rate (percentage of commits that improve existing code without changing behavior — healthy is 15-25%), churn rate (code rewritten within 14 days of commit), and comprehension ratio (time to explain a module vs time to rewrite it). If duplication is rising, refactoring is declining, and churn exceeds 15%, AI debt is accumulating faster than your team can manage.",
+				"Track four metrics: code duplication rate (GitClear-style analysis of copy-paste blocks exceeding 5 lines), refactoring rate (percentage of commits that improve existing code without changing behavior ... healthy is 15-25%), churn rate (code rewritten within 14 days of commit), and comprehension ratio (time to explain a module vs time to rewrite it). If duplication is rising, refactoring is declining, and churn exceeds 15%, AI debt is accumulating faster than your team can manage.",
 		},
 	],
 
@@ -353,17 +353,17 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "Why does TDD matter more with AI-generated code?",
 			answer:
-				"AI-generated tests tend to test implementation, not intent — they pass when the bug exists in both the code and the test. 50% of QA leaders cite maintenance burden and flaky scripts as the primary AI testing challenge (World Quality Report 2025-26). TDD inverts the problem: the human defines intent through a failing test, the AI implements to pass it, and the human reviews the result. This constrains AI output to verifiable behavior rather than letting it generate both the code and its own validation.",
+				"AI-generated tests tend to test implementation, not intent ... they pass when the bug exists in both the code and the test. 50% of QA leaders cite maintenance burden and flaky scripts as the primary AI testing challenge (World Quality Report 2025-26). TDD inverts the problem: the human defines intent through a failing test, the AI implements to pass it, and the human reviews the result. This constrains AI output to verifiable behavior rather than letting it generate both the code and its own validation.",
 		},
 		{
 			question: "What is the RED-GREEN-REFACTOR pattern for AI-assisted development?",
 			answer:
-				"RED: the human writes a failing test that precisely defines the intended behavior. GREEN: the AI implements code to pass that test, constrained by the test specification. REFACTOR: the human reviews the AI output for DRY violations, security issues, and maintainability concerns. This pattern produces measurably better AI-assisted code because the test acts as a contract — the AI can't silently introduce bugs that the test doesn't cover.",
+				"RED: the human writes a failing test that precisely defines the intended behavior. GREEN: the AI implements code to pass that test, constrained by the test specification. REFACTOR: the human reviews the AI output for DRY violations, security issues, and maintainability concerns. This pattern produces measurably better AI-assisted code because the test acts as a contract ... the AI can't silently introduce bugs that the test doesn't cover.",
 		},
 		{
 			question: "How do you test non-deterministic AI output?",
 			answer:
-				"Three patterns work for non-deterministic systems: property-based testing (assert invariants that must hold regardless of specific output — response is valid JSON, contains required fields, stays within length bounds), golden dataset testing (curate input-output pairs representing expected behavior and test against them with similarity thresholds), and eval suites (structured scoring of AI output across dimensions like accuracy, relevance, and safety with pass/fail thresholds per dimension).",
+				"Three patterns work for non-deterministic systems: property-based testing (assert invariants that must hold regardless of specific output ... response is valid JSON, contains required fields, stays within length bounds), golden dataset testing (curate input-output pairs representing expected behavior and test against them with similarity thresholds), and eval suites (structured scoring of AI output across dimensions like accuracy, relevance, and safety with pass/fail thresholds per dimension).",
 		},
 	],
 
@@ -394,7 +394,7 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "Should I choose Claude Code or Cursor for my engineering team?",
 			answer:
-				"It depends on team composition and work patterns. Cursor suits junior-to-mid teams doing IDE-centric work — it's visual, guided, and has a gentler learning curve. Claude Code suits senior-heavy teams doing complex, multi-file, agentic work — it's CLI-first, autonomous, and optimized for architectural tasks. At enterprise scale (10K+ employees), GitHub Copilot often wins through Microsoft procurement bundling regardless of feature comparison.",
+				"It depends on team composition and work patterns. Cursor suits junior-to-mid teams doing IDE-centric work ... it's visual, guided, and has a gentler learning curve. Claude Code suits senior-heavy teams doing complex, multi-file, agentic work ... it's CLI-first, autonomous, and optimized for architectural tasks. At enterprise scale (10K+ employees), GitHub Copilot often wins through Microsoft procurement bundling regardless of feature comparison.",
 		},
 		{
 			question: "What are the hidden costs of AI coding tools?",
@@ -412,12 +412,12 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "How do I assess the severity of AI-generated code problems in my codebase?",
 			answer:
-				"Use a four-tier severity model. Severity 1: critical paths nobody understands (auth, billing, data pipelines) — immediate triage required. Severity 2: core business logic with no documentation or design rationale — address within 30 days. Severity 3: non-critical features with high complexity — schedule for quarterly remediation. Severity 4: internal tooling with single maintainer — lowest priority. Map every module to a severity tier and address them in order.",
+				"Use a four-tier severity model. Severity 1: critical paths nobody understands (auth, billing, data pipelines) ... immediate triage required. Severity 2: core business logic with no documentation or design rationale ... address within 30 days. Severity 3: non-critical features with high complexity ... schedule for quarterly remediation. Severity 4: internal tooling with single maintainer ... lowest priority. Map every module to a severity tier and address them in order.",
 		},
 		{
 			question: "Should I rewrite my vibe-coded codebase or try to fix it?",
 			answer:
-				"Apply the 50% rule: if more than 50% of modules are Severity 1 or 2, a phased rewrite of critical paths is more cost-effective than remediation. If under 50%, targeted remediation works — start with comprehension sprints (not refactoring sprints), create Architecture Decision Records for every module, and establish ownership transfer protocols. The rewrite threshold also depends on team turnover: if the original team has left, remediation costs approach rewrite costs because nobody holds any mental model.",
+				"Apply the 50% rule: if more than 50% of modules are Severity 1 or 2, a phased rewrite of critical paths is more cost-effective than remediation. If under 50%, targeted remediation works ... start with comprehension sprints (not refactoring sprints), create Architecture Decision Records for every module, and establish ownership transfer protocols. The rewrite threshold also depends on team turnover: if the original team has left, remediation costs approach rewrite costs because nobody holds any mental model.",
 		},
 	],
 
@@ -435,7 +435,7 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "Should I hire dedicated AI engineers or train my existing team?",
 			answer:
-				"For most teams under 50 engineers, training existing staff is more cost-effective. The skills gap is in AI-assisted workflow adoption and judgment, not deep ML expertise. Staff+ engineers already lead AI adoption at 63.5% vs 49.7% for regular engineers — they need refinement, not replacement. Hire dedicated AI engineers only when you're building AI as your core product (not just using AI tools), or when you need ML infrastructure expertise that doesn't exist on your current team.",
+				"For most teams under 50 engineers, training existing staff is more cost-effective. The skills gap is in AI-assisted workflow adoption and judgment, not deep ML expertise. Staff+ engineers already lead AI adoption at 63.5% vs 49.7% for regular engineers ... they need refinement, not replacement. Hire dedicated AI engineers only when you're building AI as your core product (not just using AI tools), or when you need ML infrastructure expertise that doesn't exist on your current team.",
 		},
 	],
 
@@ -443,7 +443,7 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "Why do enterprise AI development projects fail?",
 			answer:
-				"30%+ of enterprise generative AI projects are abandoned after POC. The three most common failure causes are: no scalable integration plan (the POC works in isolation but doesn't fit the SDLC), governance gaps discovered post-POC (security, legal, and compliance requirements weren't addressed during POC), and the training gap (46% of developers distrust AI accuracy, and only 3.1% highly trust it — adoption stalls without structured training programs that build confidence through verification).",
+				"30%+ of enterprise generative AI projects are abandoned after POC. The three most common failure causes are: no scalable integration plan (the POC works in isolation but doesn't fit the SDLC), governance gaps discovered post-POC (security, legal, and compliance requirements weren't addressed during POC), and the training gap (46% of developers distrust AI accuracy, and only 3.1% highly trust it ... adoption stalls without structured training programs that build confidence through verification).",
 		},
 		{
 			question: "What are the 5 enterprise evaluation gates for AI coding tools?",
@@ -453,7 +453,7 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		{
 			question: "How do I move from pilot to production with AI coding tools?",
 			answer:
-				"Follow a three-phase model. Phase 1 (Controlled Pilot, 4-8 weeks): select 2-3 teams, define scope and success metrics, measure outcomes against baselines. Phase 2 (Governed Expansion, 8-16 weeks): establish quality gates, review standards, and training programs based on pilot learnings. Phase 3 (Mature Practice, ongoing): automated compliance checks, continuous monitoring, org-wide standards, and regular audit cycles. Less than 30% of AI initiative leaders report executive satisfaction with ROI — the phased approach prevents the 'pilot works, production fails' pattern.",
+				"Follow a three-phase model. Phase 1 (Controlled Pilot, 4-8 weeks): select 2-3 teams, define scope and success metrics, measure outcomes against baselines. Phase 2 (Governed Expansion, 8-16 weeks): establish quality gates, review standards, and training programs based on pilot learnings. Phase 3 (Mature Practice, ongoing): automated compliance checks, continuous monitoring, org-wide standards, and regular audit cycles. Less than 30% of AI initiative leaders report executive satisfaction with ROI ... the phased approach prevents the 'pilot works, production fails' pattern.",
 		},
 	],
 };

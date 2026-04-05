@@ -1,6 +1,6 @@
 /**
  * Structured logger for Cloudflare Workers edge runtime.
- * Outputs plain objects via console.log/console.error — Workers Logs auto-indexes JSON fields.
+ * Outputs plain objects via console.log/console.error ... Workers Logs auto-indexes JSON fields.
  */
 
 type LogLevel = "debug" | "info" | "warn" | "error";

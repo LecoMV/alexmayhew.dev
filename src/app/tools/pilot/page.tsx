@@ -101,7 +101,7 @@ export default function ClaudePilotPage() {
 						<p className="text-slate-text mb-8 max-w-2xl text-lg">
 							The unified management app for Claude Code power users. Monitor active sessions,
 							browse memory systems, configure MCP servers, and streamline your AI-assisted
-							development — all from one interface.
+							development ... all from one interface.
 						</p>
 
 						{/* Download buttons */}

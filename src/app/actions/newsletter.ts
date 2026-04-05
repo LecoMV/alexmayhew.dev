@@ -85,7 +85,7 @@ export async function subscribeToNewsletter(
 			}
 		}
 	} catch {
-		// Rate limiting unavailable in local dev — allow request through
+		// Rate limiting unavailable in local dev ... allow request through
 	}
 
 	// 3. Subscribe via Listmonk public subscription API

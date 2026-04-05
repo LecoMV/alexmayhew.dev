@@ -25,11 +25,11 @@ interface TocSection {
 // --- Terminal Color Palette ---
 
 const SECTION_COLORS = [
-	"#4ade80", // green — functions
-	"#facc15", // yellow — types
-	"#60a5fa", // blue — imports
-	"#c084fc", // purple — exports
-	"#22d3ee", // cyan — constants
+	"#4ade80", // green ... functions
+	"#facc15", // yellow ... types
+	"#60a5fa", // blue ... imports
+	"#c084fc", // purple ... exports
+	"#22d3ee", // cyan ... constants
 ];
 
 function getSectionColor(index: number): string {
@@ -268,7 +268,6 @@ export function TableOfContents({ variant = "mobile" }: { variant?: "mobile" | "
 		return "";
 	}, [activeId, sections]);
 
-	// Update hash on scroll-based active changes
 	const prevActiveRef = useRef(activeId);
 	useEffect(() => {
 		if (activeId && activeId !== prevActiveRef.current) {
@@ -372,7 +371,7 @@ export function TableOfContents({ variant = "mobile" }: { variant?: "mobile" | "
 									<span className="truncate">{section.text}</span>
 								</button>
 
-								{/* H3 children — expand active section, collapse others */}
+								{/* H3 children ... expand active section, collapse others */}
 								{section.children.length > 0 && (
 									<AnimatePresence initial={false}>
 										{isExpanded && (
@@ -438,7 +437,7 @@ export function TableOfContents({ variant = "mobile" }: { variant?: "mobile" | "
 	// Active section label for collapsed preview
 	const activeSection = sections.find((s) => s.id === activeSectionId);
 	const collapsedLabel = activeSection
-		? `Table of Contents — §${formatSectionNum(activeSection.sectionIndex)} ${activeSection.text}`
+		? `Table of Contents ... §${formatSectionNum(activeSection.sectionIndex)} ${activeSection.text}`
 		: "Table of Contents";
 
 	return (

@@ -148,7 +148,7 @@ export function NewsletterSignup({
 						</h3>
 						{showDescription && (
 							<p className="text-slate-text text-sm">
-								Join The Architect&apos;s Brief — one actionable insight every Tuesday.
+								Join The Architect&apos;s Brief ... one actionable insight every Tuesday.
 							</p>
 						)}
 					</div>

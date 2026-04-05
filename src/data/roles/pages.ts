@@ -31,7 +31,7 @@ export const rolePages: RolePage[] = [
 				description:
 					"Every sprint, your team spends more time fighting legacy code than building features. Refactoring feels impossible when the business needs velocity.",
 				whyMatters:
-					"Technical debt isn't just an engineering problem—it's a revenue problem. Every hour spent on workarounds is an hour not spent on features that drive growth.",
+					"Technical debt isn't just an engineering problem...it's a revenue problem. Every hour spent on workarounds is an hour not spent on features that drive growth.",
 				solution:
 					"I conduct surgical technical debt assessments that identify high-impact, low-risk refactoring opportunities. We create a debt reduction roadmap that aligns with business priorities, not engineering perfectionism.",
 			},
@@ -49,7 +49,7 @@ export const rolePages: RolePage[] = [
 				description:
 					"Every traffic spike is a held breath. Incidents happen at 3 AM. The team is reactive, not proactive, and burnout is spreading.",
 				whyMatters:
-					"Downtime doesn't just cost revenue—it costs trust. Customers don't remember the 99.9% uptime, they remember the outage during their demo.",
+					"Downtime doesn't just cost revenue...it costs trust. Customers don't remember the 99.9% uptime, they remember the outage during their demo.",
 				solution:
 					"I implement observability-first architectures with SLOs tied to business outcomes. We build runbooks, conduct game days, and establish incident response processes that prevent 3 AM fires, not just fight them.",
 			},
@@ -69,7 +69,7 @@ export const rolePages: RolePage[] = [
 				whyMatters:
 					"Echo chambers produce blind spots. The decisions that seem obvious internally are often the ones that need the most scrutiny.",
 				solution:
-					"I serve as an external architecture review partner—someone who challenges assumptions, asks uncomfortable questions, and brings patterns from other high-growth companies. Not to override your judgment, but to pressure-test it.",
+					"I serve as an external architecture review partner...someone who challenges assumptions, asks uncomfortable questions, and brings patterns from other high-growth companies. Not to override your judgment, but to pressure-test it.",
 			},
 		],
 
@@ -83,21 +83,21 @@ export const rolePages: RolePage[] = [
 			"Hired 12 senior engineers with 100% retention at 18 months",
 		],
 
-		positioning: `As a CTO, you don't need another consultant who speaks in abstractions. You need someone who has been in the trenches—who has made the 2 AM decision about whether to roll back or push forward, who has explained technical debt to a board that just wants to know why features are slow.
+		positioning: `As a CTO, you don't need another consultant who speaks in abstractions. You need someone who has been in the trenches...who has made the 2 AM decision about whether to roll back or push forward, who has explained technical debt to a board that just wants to know why features are slow.
 
 I've been the technical leader at companies from seed to Series C. I've inherited codebases that made me question every architectural decision ever made, and I've built systems that scaled to millions of users without breaking. That experience is what I bring to every engagement.
 
-My role isn't to replace your judgment—it's to augment it. When you're evaluating a major architecture change, I'm the person who asks the questions your team might not think to ask. When you're hiring a VP of Engineering, I'm the one who can calibrate your interview process against what high-performing teams actually need. When an incident happens, I'm the advisor who helps you conduct a blameless post-mortem that actually improves the system.
+My role isn't to replace your judgment...it's to augment it. When you're evaluating a major architecture change, I'm the person who asks the questions your team might not think to ask. When you're hiring a VP of Engineering, I'm the one who can calibrate your interview process against what high-performing teams actually need. When an incident happens, I'm the advisor who helps you conduct a blameless post-mortem that actually improves the system.
 
 I work with CTOs on retainer because technical leadership is a continuous challenge, not a project. The most valuable conversations happen when I understand your codebase, your team dynamics, and your business context deeply enough to give advice that accounts for your specific constraints.
 
-The goal isn't to create dependency—it's to level up your team's capabilities while providing you with a thinking partner who has no internal politics to navigate. I'm here for the decisions that keep you up at night.`,
+The goal isn't to create dependency...it's to level up your team's capabilities while providing you with a thinking partner who has no internal politics to navigate. I'm here for the decisions that keep you up at night.`,
 
-		timelineExpectations: `Advisory retainer engagements typically start with a technical deep-dive: 2-3 days understanding your architecture, codebase, and team. From there, we establish a regular cadence—usually weekly 60-90 minute calls plus async access for time-sensitive decisions.
+		timelineExpectations: `Advisory retainer engagements typically start with a technical deep-dive: 2-3 days understanding your architecture, codebase, and team. From there, we establish a regular cadence...usually weekly 60-90 minute calls plus async access for time-sensitive decisions.
 
 For strategic implementation work, I embed with your team for specific initiatives: typically 2-4 months of focused effort on a critical system. The goal is always to leave your team more capable, not create dependency on external help.
 
-Communication happens through your preferred channels—Slack, email, or a dedicated space. I maintain context between conversations so we're not starting from scratch each week.`,
+Communication happens through your preferred channels...Slack, email, or a dedicated space. I maintain context between conversations so we're not starting from scratch each week.`,
 
 		relatedServices: [
 			"nextjs-developer-for-saas",
@@ -109,17 +109,17 @@ Communication happens through your preferred channels—Slack, email, or a dedic
 			{
 				question: "How is this different from hiring a consulting firm?",
 				answer:
-					"Consulting firms send junior analysts who follow playbooks. I bring 15+ years of hands-on technical leadership experience. When I review your architecture, I'm drawing on patterns I've seen succeed and fail across dozens of high-growth companies. There's no bait-and-switch—you work directly with me, every engagement.",
+					"Consulting firms send junior analysts who follow playbooks. I bring 15+ years of hands-on technical leadership experience. When I review your architecture, I'm drawing on patterns I've seen succeed and fail across dozens of high-growth companies. There's no bait-and-switch...you work directly with me, every engagement.",
 			},
 			{
 				question: "What if I need hands-on implementation, not just advice?",
 				answer:
-					"Many of my CTO engagements include implementation work. I can embed with your team for critical initiatives—building the foundational architecture for a new product line, leading a complex migration, or mentoring senior engineers through a challenging project. The advisory component ensures the implementation aligns with your long-term strategy.",
+					"Many of my CTO engagements include implementation work. I can embed with your team for critical initiatives...building the foundational architecture for a new product line, leading a complex migration, or mentoring senior engineers through a challenging project. The advisory component ensures the implementation aligns with your long-term strategy.",
 			},
 			{
 				question: "How do you handle confidentiality with competitive clients?",
 				answer:
-					"I maintain strict information barriers between engagements. I never work with direct competitors simultaneously, and I'm explicit about what knowledge transfers between engagements (general patterns, not proprietary details). Many CTOs value this—they get insights from across the industry without compromising their own confidential information.",
+					"I maintain strict information barriers between engagements. I never work with direct competitors simultaneously, and I'm explicit about what knowledge transfers between engagements (general patterns, not proprietary details). Many CTOs value this...they get insights from across the industry without compromising their own confidential information.",
 			},
 			{
 				question: "What's the minimum commitment for an advisory retainer?",
@@ -165,7 +165,7 @@ Communication happens through your preferred channels—Slack, email, or a dedic
 				whyMatters:
 					"The code you write in the first 6 months becomes the foundation for everything that follows. Get it wrong, and you're rebuilding while competitors ship.",
 				solution:
-					"I help you identify which corners to cut and which foundations to build right the first time. We prioritize ruthlessly—investing in the 20% of architecture that prevents 80% of future problems, while shipping fast everywhere else.",
+					"I help you identify which corners to cut and which foundations to build right the first time. We prioritize ruthlessly...investing in the 20% of architecture that prevents 80% of future problems, while shipping fast everywhere else.",
 			},
 			{
 				title: "Attracting Engineers Before Product-Market Fit",
@@ -174,14 +174,14 @@ Communication happens through your preferred channels—Slack, email, or a dedic
 				whyMatters:
 					"The first 3-5 engineers set the culture and codebase standards for everyone who follows. Hiring wrong early is catastrophic.",
 				solution:
-					"I help you craft an engineering narrative that attracts talent despite uncertainty—the technical challenges, the ownership opportunity, the learning velocity. And I provide a sounding board for early hires, helping you evaluate culture fit alongside technical skill.",
+					"I help you craft an engineering narrative that attracts talent despite uncertainty...the technical challenges, the ownership opportunity, the learning velocity. And I provide a sounding board for early hires, helping you evaluate culture fit alongside technical skill.",
 			},
 			{
 				title: "Scaling Before You Have Revenue to Fund It",
 				description:
 					"Your prototype works, but it won't survive real traffic. Cloud costs are unpredictable. You're terrified of the Hacker News hug of death.",
 				whyMatters:
-					"Premature scaling wastes runway. Insufficient scaling kills momentum at the worst possible moment—when people are finally paying attention.",
+					"Premature scaling wastes runway. Insufficient scaling kills momentum at the worst possible moment...when people are finally paying attention.",
 				solution:
 					"I architect for predictable scaling: infrastructure that grows linearly with usage, not exponentially with features. We identify the real bottlenecks (hint: it's usually not the code) and build just enough infrastructure to handle 10x your current load.",
 			},
@@ -192,7 +192,7 @@ Communication happens through your preferred channels—Slack, email, or a dedic
 				whyMatters:
 					"Technical founders often lack a peer who can engage at their level. That isolation leads to blind spots in decision-making.",
 				solution:
-					"I serve as a technical peer—someone who can engage with your architecture decisions at depth, challenge your assumptions, and share patterns from other companies at your stage. Not a replacement for a co-founder, but a resource when you need a second technical perspective.",
+					"I serve as a technical peer...someone who can engage with your architecture decisions at depth, challenge your assumptions, and share patterns from other companies at your stage. Not a replacement for a co-founder, but a resource when you need a second technical perspective.",
 			},
 			{
 				title: "When to Build vs. When to Buy",
@@ -217,17 +217,17 @@ Communication happens through your preferred channels—Slack, email, or a dedic
 
 		positioning: `As a technical founder, you're used to being the smartest technical person in the room. Your co-founder defers to you on architecture decisions. Your early hires look to you for direction. But that can be isolating when you're facing decisions with 5-year consequences and no one to pressure-test your thinking.
 
-I work with technical founders because I understand the unique challenges of your role. You're not just a CTO—you're a founder. The technical decisions you make are inseparable from the business strategy. You can't just optimize for engineering elegance; you have to balance velocity, runway, and long-term maintainability in ways that pure technical leaders never face.
+I work with technical founders because I understand the unique challenges of your role. You're not just a CTO...you're a founder. The technical decisions you make are inseparable from the business strategy. You can't just optimize for engineering elegance; you have to balance velocity, runway, and long-term maintainability in ways that pure technical leaders never face.
 
-My approach is collaborative, not prescriptive. I'm not here to tell you what to do—I'm here to help you think through the implications of your options. When you're considering a major architecture change, I ask the questions that surface hidden risks. When you're evaluating a vendor, I bring perspective from companies that made similar decisions at your stage. When you're frustrated with progress, I help distinguish between real problems and founder anxiety.
+My approach is collaborative, not prescriptive. I'm not here to tell you what to do...I'm here to help you think through the implications of your options. When you're considering a major architecture change, I ask the questions that surface hidden risks. When you're evaluating a vendor, I bring perspective from companies that made similar decisions at your stage. When you're frustrated with progress, I help distinguish between real problems and founder anxiety.
 
-The best technical founders I work with use me as a thinking partner—someone who can engage at technical depth but also understands the business context that shapes every decision. We might spend one session debugging a production issue and the next discussing hiring strategy. That range is the point.
+The best technical founders I work with use me as a thinking partner...someone who can engage at technical depth but also understands the business context that shapes every decision. We might spend one session debugging a production issue and the next discussing hiring strategy. That range is the point.
 
 I'm especially valuable in the early stages, when decisions compound quickly and the cost of getting things wrong is highest. The architecture you build now becomes the foundation for everything that follows. I help you get that foundation right without over-engineering for problems you don't have yet.`,
 
 		timelineExpectations: `Early-stage technical founders benefit most from flexible, ongoing access. We typically start with a focused session to understand your current architecture and near-term priorities, then establish an async communication rhythm (usually Slack) with periodic deep-dive calls as needed.
 
-For specific projects—MVP builds, major architecture decisions, fundraising technical prep—I can provide more intensive support. The goal is always to match the engagement to your actual needs, not force you into a rigid structure.
+For specific projects...MVP builds, major architecture decisions, fundraising technical prep...I can provide more intensive support. The goal is always to match the engagement to your actual needs, not force you into a rigid structure.
 
 I'm responsive to urgent questions (within hours during business hours) because I know startup problems don't wait for scheduled meetings.`,
 
@@ -235,9 +235,9 @@ I'm responsive to urgent questions (within hours during business hours) because 
 
 		faqs: [
 			{
-				question: "I'm technical—why would I need a technical advisor?",
+				question: "I'm technical...why would I need a technical advisor?",
 				answer:
-					"Being technical doesn't mean you have experience with every problem you'll face. The value isn't filling knowledge gaps—it's having a peer who can engage at depth and challenge your thinking. The best technical decisions come from pressure-tested reasoning, not isolated judgment.",
+					"Being technical doesn't mean you have experience with every problem you'll face. The value isn't filling knowledge gaps...it's having a peer who can engage at depth and challenge your thinking. The best technical decisions come from pressure-tested reasoning, not isolated judgment.",
 			},
 			{
 				question: "How do you work with my existing team?",
@@ -247,12 +247,12 @@ I'm responsive to urgent questions (within hours during business hours) because 
 			{
 				question: "What stage founders do you work with?",
 				answer:
-					"Most of my technical founder work is with companies from pre-seed through Series A. At this stage, technical decisions have the highest leverage—and the least margin for error. Post-Series A, I typically transition to CTO-level engagements as the role becomes more about leading teams than making architecture decisions.",
+					"Most of my technical founder work is with companies from pre-seed through Series A. At this stage, technical decisions have the highest leverage...and the least margin for error. Post-Series A, I typically transition to CTO-level engagements as the role becomes more about leading teams than making architecture decisions.",
 			},
 			{
 				question: "Can you help with fundraising technical due diligence?",
 				answer:
-					"Yes. I've been on both sides of the technical due diligence table. I help founders prepare for investor technical reviews—ensuring your architecture, security posture, and technical roadmap tell a compelling story. I can also provide independent technical assessments for investors evaluating deals.",
+					"Yes. I've been on both sides of the technical due diligence table. I help founders prepare for investor technical reviews...ensuring your architecture, security posture, and technical roadmap tell a compelling story. I can also provide independent technical assessments for investors evaluating deals.",
 			},
 		],
 
@@ -282,7 +282,7 @@ I'm responsive to urgent questions (within hours during business hours) because 
 
 		headline: "Technical Guidance for Non-Technical Founders",
 		subheadline:
-			"You have the vision and the business acumen. I provide the technical strategy to make it real—without the cost or commitment of a full-time technical co-founder.",
+			"You have the vision and the business acumen. I provide the technical strategy to make it real...without the cost or commitment of a full-time technical co-founder.",
 
 		painPoints: [
 			{
@@ -292,7 +292,7 @@ I'm responsive to urgent questions (within hours during business hours) because 
 				whyMatters:
 					"The wrong tech stack decision today becomes a $100K migration project in 18 months. Or worse, it limits what your product can do.",
 				solution:
-					"I provide vendor-agnostic technical guidance based on your specific requirements. We evaluate options against your product roadmap, budget, and hiring plans—not against what's trendy or what agencies want to sell.",
+					"I provide vendor-agnostic technical guidance based on your specific requirements. We evaluate options against your product roadmap, budget, and hiring plans...not against what's trendy or what agencies want to sell.",
 			},
 			{
 				title: "Limited Budget, Unlimited Technical Ambition",
@@ -326,7 +326,7 @@ I'm responsive to urgent questions (within hours during business hours) because 
 				description:
 					"You need to hire a senior developer or CTO, but you can't evaluate technical skills. How do you know if a candidate is actually good or just good at interviews?",
 				whyMatters:
-					"Your first technical hire becomes your de facto technical co-founder. Getting this wrong is potentially fatal—bad hires at this stage take months to identify and more months to unwind.",
+					"Your first technical hire becomes your de facto technical co-founder. Getting this wrong is potentially fatal...bad hires at this stage take months to identify and more months to unwind.",
 				solution:
 					"I design technical interview processes you can run and evaluate. I conduct final-round architecture interviews and provide calibrated assessments. We discuss not just skills but culture fit, growth potential, and red flags you might miss without technical experience.",
 			},
@@ -342,19 +342,19 @@ I'm responsive to urgent questions (within hours during business hours) because 
 			"Helped 8 non-technical founders hire their first senior engineer",
 		],
 
-		positioning: `As a non-technical founder, you're at a disadvantage in conversations about technology—and everyone in the room knows it. Developers, agencies, and vendors can tell you anything, and you have limited ability to evaluate whether their advice serves your interests or theirs.
+		positioning: `As a non-technical founder, you're at a disadvantage in conversations about technology...and everyone in the room knows it. Developers, agencies, and vendors can tell you anything, and you have limited ability to evaluate whether their advice serves your interests or theirs.
 
-I exist to level that playing field. I'm not here to sell you development services or push a particular technology stack. I'm here to be your technical advocate—someone who evaluates options from your perspective, challenges vendor recommendations, and ensures your interests are protected in technical decisions.
+I exist to level that playing field. I'm not here to sell you development services or push a particular technology stack. I'm here to be your technical advocate...someone who evaluates options from your perspective, challenges vendor recommendations, and ensures your interests are protected in technical decisions.
 
 Think of it as having a technical co-founder on retainer, without the equity dilution or commitment of a full-time hire. When you're evaluating an agency proposal, I review it and identify the red flags you wouldn't see. When a contractor says they need more time, I can assess whether that's legitimate or scope creep. When you're preparing for investor meetings, I help you articulate the technical vision with confidence.
 
-The most common mistake non-technical founders make is deferring all technical decisions to whoever they've hired to build. That creates misaligned incentives—developers optimize for their convenience, agencies optimize for billable hours. My incentives are aligned with yours because my success is measured by your outcome, not by how much code gets written.
+The most common mistake non-technical founders make is deferring all technical decisions to whoever they've hired to build. That creates misaligned incentives...developers optimize for their convenience, agencies optimize for billable hours. My incentives are aligned with yours because my success is measured by your outcome, not by how much code gets written.
 
 I work with seed-stage founders specifically because this is when technical decisions have the highest leverage. The architecture chosen now becomes the foundation for everything that follows. The contractor relationships established now set the patterns for how you engage with technical talent. Getting this stage right is worth disproportionate investment.`,
 
 		timelineExpectations: `For non-technical founders, I typically recommend starting with a technical audit: a 1-2 week deep-dive into your current situation. We assess existing code (if any), evaluate your development partners, and create a technical roadmap aligned with your business goals.
 
-From there, ongoing engagement depends on your needs. Some founders want fractional CTO involvement—active participation in technical decisions, regular contractor oversight, and investor prep. Others prefer lighter-touch advisory access for specific decisions.
+From there, ongoing engagement depends on your needs. Some founders want fractional CTO involvement...active participation in technical decisions, regular contractor oversight, and investor prep. Others prefer lighter-touch advisory access for specific decisions.
 
 The goal is always to build your technical capability, not create dependency. As you hire internal technical talent, my role naturally evolves toward higher-level strategy and eventually phases out.`,
 
@@ -368,12 +368,12 @@ The goal is always to build your technical capability, not create dependency. As
 			{
 				question: "How is this different from just hiring a CTO?",
 				answer:
-					"A full-time CTO at seed stage is usually overkill—and often not the best use of precious equity. Fractional CTO engagement gives you senior technical leadership when you need it, without the $200K+ salary and 3-5% equity. As you scale, you can hire a full-time CTO with my help, at which point I transition to an advisory role.",
+					"A full-time CTO at seed stage is usually overkill...and often not the best use of precious equity. Fractional CTO engagement gives you senior technical leadership when you need it, without the $200K+ salary and 3-5% equity. As you scale, you can hire a full-time CTO with my help, at which point I transition to an advisory role.",
 			},
 			{
 				question: "Can you help me evaluate agency proposals?",
 				answer:
-					"Absolutely—this is one of my most common engagements. I review agency proposals, contracts, and technical recommendations. I identify red flags, suggest alternative approaches, and help you negotiate from a position of knowledge rather than uncertainty.",
+					"Absolutely...this is one of my most common engagements. I review agency proposals, contracts, and technical recommendations. I identify red flags, suggest alternative approaches, and help you negotiate from a position of knowledge rather than uncertainty.",
 			},
 			{
 				question: "What if I've already started building with a contractor?",
@@ -383,7 +383,7 @@ The goal is always to build your technical capability, not create dependency. As
 			{
 				question: "How much technical involvement do I need to have?",
 				answer:
-					"My job is to translate technical complexity into business decisions you can evaluate. You don't need to understand the code—you need to understand the tradeoffs. I'll present options in terms of cost, risk, timeline, and business impact. Your job is to make informed decisions; my job is to ensure you have the information you need.",
+					"My job is to translate technical complexity into business decisions you can evaluate. You don't need to understand the code...you need to understand the tradeoffs. I'll present options in terms of cost, risk, timeline, and business impact. Your job is to make informed decisions; my job is to ensure you have the information you need.",
 			},
 		],
 
@@ -430,7 +430,7 @@ The goal is always to build your technical capability, not create dependency. As
 				description:
 					"The team is split on a major architecture decision. Both sides have valid points. You need to make a call, but the stakes are high and your internal expertise is conflicted.",
 				whyMatters:
-					"Major architecture decisions shape the next 2-5 years of engineering work. Getting these wrong is expensive—not just in dollars, but in team morale and velocity.",
+					"Major architecture decisions shape the next 2-5 years of engineering work. Getting these wrong is expensive...not just in dollars, but in team morale and velocity.",
 				solution:
 					"I provide external architecture review that's independent of internal politics. We evaluate options against your specific constraints, not abstract best practices. I ask the uncomfortable questions and help surface considerations that internal debate might miss.",
 			},
@@ -441,7 +441,7 @@ The goal is always to build your technical capability, not create dependency. As
 				whyMatters:
 					"Failed modernization projects destroy team morale and executive confidence. Successful ones unlock engineering velocity for years. The difference is in the approach.",
 				solution:
-					"I design incremental modernization strategies—strangler patterns, modular decomposition, and targeted rewrites. We identify the highest-leverage interventions and sequence them to deliver value continuously, not in a big-bang release.",
+					"I design incremental modernization strategies...strangler patterns, modular decomposition, and targeted rewrites. We identify the highest-leverage interventions and sequence them to deliver value continuously, not in a big-bang release.",
 			},
 			{
 				title: "Scaling the Team Without Losing What Works",
@@ -475,19 +475,19 @@ The goal is always to build your technical capability, not create dependency. As
 
 		positioning: `As VP Engineering, you're often caught between technical reality and business expectations. Your team wants more time for quality; executives want faster delivery. Your engineers have strong opinions about architecture; you need to make decisions that stick. You're accountable for outcomes, but you can't dictate how every technical decision gets made.
 
-I work with VPs of Engineering as an external thought partner—someone who understands the organizational dynamics you navigate daily but isn't enmeshed in your internal politics. When you need to challenge a senior engineer's recommendation, I provide independent perspective. When you need to explain technical constraints to the board, I help you craft the narrative. When you're evaluating whether your team structure is working, I bring patterns from other organizations at similar scale.
+I work with VPs of Engineering as an external thought partner...someone who understands the organizational dynamics you navigate daily but isn't enmeshed in your internal politics. When you need to challenge a senior engineer's recommendation, I provide independent perspective. When you need to explain technical constraints to the board, I help you craft the narrative. When you're evaluating whether your team structure is working, I bring patterns from other organizations at similar scale.
 
-My approach is not to impose external best practices but to understand your specific context and help you think through options. What works at a 20-person engineering org doesn't work at 200, and what works in fintech doesn't work in healthcare. Generic advice is worse than no advice—I start from your constraints and work toward solutions that fit your reality.
+My approach is not to impose external best practices but to understand your specific context and help you think through options. What works at a 20-person engineering org doesn't work at 200, and what works in fintech doesn't work in healthcare. Generic advice is worse than no advice...I start from your constraints and work toward solutions that fit your reality.
 
-I'm especially valuable for high-stakes decisions where you need independent validation. Major architecture changes, team reorganizations, build vs. buy decisions for core infrastructure—these are moments when external perspective pays for itself many times over. Not because you need someone smarter, but because you need someone without blind spots created by being inside the organization.
+I'm especially valuable for high-stakes decisions where you need independent validation. Major architecture changes, team reorganizations, build vs. buy decisions for core infrastructure...these are moments when external perspective pays for itself many times over. Not because you need someone smarter, but because you need someone without blind spots created by being inside the organization.
 
 The goal of every engagement is to make you and your team more capable, not to create dependency on external consulting. I share frameworks, document decision processes, and build internal muscle for the kinds of challenges I help you navigate.`,
 
-		timelineExpectations: `VP Engineering engagements typically start with a listening tour: 2-3 days of conversations with you, your senior engineers, and key stakeholders. This surfaces the real challenges—which are often different from the presenting problems.
+		timelineExpectations: `VP Engineering engagements typically start with a listening tour: 2-3 days of conversations with you, your senior engineers, and key stakeholders. This surfaces the real challenges...which are often different from the presenting problems.
 
 From there, we establish a regular cadence. For most VPs, that's bi-weekly strategy sessions plus async access for time-sensitive decisions. Major initiatives (modernization projects, reorgs, architecture changes) get more intensive involvement.
 
-I can also embed with your team for specific projects—leading a modernization initiative, conducting a team health assessment, or facilitating a difficult technical decision. The format adapts to what you actually need.`,
+I can also embed with your team for specific projects...leading a modernization initiative, conducting a team health assessment, or facilitating a difficult technical decision. The format adapts to what you actually need.`,
 
 		relatedServices: [
 			"technical-advisor-for-startups",
@@ -499,22 +499,22 @@ I can also embed with your team for specific projects—leading a modernization 
 			{
 				question: "How do you work with my senior engineers?",
 				answer:
-					"Collaboratively, not hierarchically. I'm not here to override their expertise—I'm here to add perspective. In architecture discussions, I ask questions and surface considerations they might not have thought of. I never present recommendations without understanding their reasoning first. The goal is to make the team's decisions better, not to impose external decisions.",
+					"Collaboratively, not hierarchically. I'm not here to override their expertise...I'm here to add perspective. In architecture discussions, I ask questions and surface considerations they might not have thought of. I never present recommendations without understanding their reasoning first. The goal is to make the team's decisions better, not to impose external decisions.",
 			},
 			{
 				question: "What if my company has confidentiality concerns?",
 				answer:
-					"I work under NDA and maintain strict information barriers between engagements. I never work with direct competitors simultaneously. Your company's strategic and technical information stays confidential. The patterns I share are abstracted from specific implementations—useful insights without identifiable details.",
+					"I work under NDA and maintain strict information barriers between engagements. I never work with direct competitors simultaneously. Your company's strategic and technical information stays confidential. The patterns I share are abstracted from specific implementations...useful insights without identifiable details.",
 			},
 			{
 				question: "How do you measure impact?",
 				answer:
-					"Together, we define success criteria at the start of each engagement. These might be quantitative (deployment frequency, incident metrics, time-to-productivity) or qualitative (team satisfaction, stakeholder confidence). I track progress and adjust approach based on what's working. If an engagement isn't delivering value, I'll say so—continued billing isn't success.",
+					"Together, we define success criteria at the start of each engagement. These might be quantitative (deployment frequency, incident metrics, time-to-productivity) or qualitative (team satisfaction, stakeholder confidence). I track progress and adjust approach based on what's working. If an engagement isn't delivering value, I'll say so...continued billing isn't success.",
 			},
 			{
 				question: "Can you help with executive communication?",
 				answer:
-					"Yes—this is often where VPs need the most support. I help you develop dashboards, reports, and narratives that translate engineering reality into business terms. I can also participate in board presentations or executive meetings as an external technical voice when that's helpful.",
+					"Yes...this is often where VPs need the most support. I help you develop dashboards, reports, and narratives that translate engineering reality into business terms. I can also participate in board presentations or executive meetings as an external technical voice when that's helpful.",
 			},
 		],
 

@@ -8,7 +8,7 @@ import type { ThemeOverride } from "../types";
  *
  * - Amber/gold accent (#fbbf24)
  * - Dossier layout with document metaphor
- * - "—" list markers, "◆" heading prefix
+ * - "..." list markers, "◆" heading prefix
  * - Deliberate, weighty animations
  */
 export const classifiedTheme: ThemeOverride = {
@@ -31,7 +31,7 @@ export const classifiedTheme: ThemeOverride = {
 	},
 
 	typography: {
-		listMarker: "—",
+		listMarker: "...",
 		headingPrefix: "◆",
 		categoryFormat: (cat: string) => `${cat.toUpperCase()} // EYES ONLY`,
 	},

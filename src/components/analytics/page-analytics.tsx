@@ -7,7 +7,7 @@ import { Suspense, useEffect } from "react";
  * Page Analytics Component for Next.js App Router
  *
  * Tracks SPA page views via gtag event (not config call, to avoid duplicate PVs).
- * Custom dimensions are sent as event parameters — register them in GA4 admin.
+ * Custom dimensions are sent as event parameters ... register them in GA4 admin.
  */
 export function PageAnalytics() {
 	return (

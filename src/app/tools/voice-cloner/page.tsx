@@ -24,7 +24,7 @@ import { SoftwareJsonLd } from "@/components/seo/software-json-ld";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "Voice Cloner — AI Text-to-Speech & Audiobook Studio",
+	title: "Voice Cloner ... AI Text-to-Speech & Audiobook Studio",
 	description:
 		"Turn any text into professional audio with AI voice cloning. 41 curated voices, multi-voice conversations, and a full audiobook studio. Powered by Qwen3-TTS. Free during beta.",
 	keywords: [
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
 				url: "/og-voice-cloner.png",
 				width: 1200,
 				height: 630,
-				alt: "Voice Cloner — AI Text-to-Speech with Voice Cloning & Audiobook Studio",
+				alt: "Voice Cloner ... AI Text-to-Speech with Voice Cloning & Audiobook Studio",
 			},
 		],
 	},
@@ -108,7 +108,7 @@ const features = [
 		icon: <AudioWaveform className="h-5 w-5" strokeWidth={1.5} />,
 		title: "Zero-Shot Voice Cloning",
 		description:
-			"Clone any voice from a short audio sample. No fine-tuning — the model captures speaker identity from reference audio alone.",
+			"Clone any voice from a short audio sample. No fine-tuning ... the model captures speaker identity from reference audio alone.",
 	},
 	{
 		icon: <Sparkles className="h-5 w-5" strokeWidth={1.5} />,
@@ -270,9 +270,9 @@ export default function VoiceClonerPage() {
 						</h1>
 
 						<p className="text-slate-text mb-8 max-w-2xl text-lg leading-relaxed">
-							AI voices that sound human. 41 curated voices — presidents, actors, narrators. Upload
-							your own voice to clone. Build conversations, produce full audiobooks, or generate
-							quick clips. All free during beta.
+							AI voices that sound human. 41 curated voices ... presidents, actors, narrators.
+							Upload your own voice to clone. Build conversations, produce full audiobooks, or
+							generate quick clips. All free during beta.
 						</p>
 
 						<div className="flex flex-wrap items-center gap-4">
@@ -421,7 +421,7 @@ export default function VoiceClonerPage() {
 							<div>
 								<h3 className="text-mist-white mb-2 font-mono text-lg">Try it free during beta</h3>
 								<p className="text-slate-text text-sm">
-									41 voices, conversations, audiobook production — all included. No credit card
+									41 voices, conversations, audiobook production ... all included. No credit card
 									required.
 								</p>
 							</div>

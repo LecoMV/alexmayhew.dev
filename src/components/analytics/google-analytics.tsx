@@ -4,7 +4,7 @@ import Script from "next/script";
  * Google Analytics 4 (GA4) via gtag.js
  *
  * Implements GA4 tracking with Consent Mode v2 for GDPR compliance.
- * PageAnalytics component handles SPA page views — initial page view disabled here.
+ * PageAnalytics component handles SPA page views ... initial page view disabled here.
  *
  * @see https://developers.google.com/analytics/devguides/collection/ga4
  * @see https://developers.google.com/tag-platform/security/guides/consent

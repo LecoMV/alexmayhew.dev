@@ -227,7 +227,7 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 								<NewsletterSignup variant="inline" source={`blog-${post.slug}`} />
 							</m.div>
 
-							{/* Consultation CTA — secondary to newsletter */}
+							{/* Consultation CTA ... secondary to newsletter */}
 							{!post.data.isHub && (
 								<m.div
 									className="mt-6 border-t border-white/10 pt-6"

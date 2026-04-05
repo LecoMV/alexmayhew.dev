@@ -19,7 +19,6 @@ export interface CommandContext {
 
 export type CommandHandler = (args: string[], ctx: CommandContext) => CommandResult;
 
-// Get projects from unified data layer
 const projects = getProjectsRecord();
 
 // Command Implementations
@@ -27,7 +26,7 @@ const commands: Record<string, CommandHandler> = {
 	help: () => ({
 		output: `
 ┌─────────────────────────────────────────────────────────────┐
-│ ALEX_OS v1.0.0 — Available Commands                         │
+│ ALEX_OS v1.0.0 ... Available Commands                         │
 ├─────────────────────────────────────────────────────────────┤
 │  whoami          Who is Alex Mayhew?                        │
 │  ls [path]       List contents (projects/, blog/, skills/)  │
@@ -105,7 +104,6 @@ drwxr-xr-x  skills/
 
 		const file = args[0].replace(/^\//, "").replace(/\.md$/, "");
 
-		// Check projects
 		if (file.startsWith("projects/")) {
 			const projectSlug = file.replace("projects/", "");
 			const project = projects[projectSlug as keyof typeof projects];
@@ -126,7 +124,6 @@ ${project.url ? `\n## URL\n${project.url}` : ""}`,
 			}
 		}
 
-		// Check blog
 		if (file.startsWith("blog/")) {
 			const blogSlug = file.replace("blog/", "");
 			const post = blogPosts.find((p) => p.slug === blogSlug);
@@ -268,7 +265,7 @@ Built with atmospheric precision. ◆`,
 			};
 		}
 		return {
-			output: `Theme switched to '${args[0]}' — but this is just a demo! The real thing would change colors.`,
+			output: `Theme switched to '${args[0]}' ... but this is just a demo! The real thing would change colors.`,
 		};
 	},
 

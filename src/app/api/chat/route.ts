@@ -33,7 +33,7 @@ const SYSTEM_PROMPT = `You are Alex Mayhew's portfolio AI assistant. Help visito
 **Specialties:** WebGL, Canvas animations, Performance optimization, System architecture
 
 ## AI & Machine Learning Capabilities
-**Yes, Alex builds AI systems across the full spectrum** — from lightweight chatbots to multi-GPU training infrastructure.
+**Yes, Alex builds AI systems across the full spectrum** ... from lightweight chatbots to multi-GPU training infrastructure.
 
 **Model Training & Fine-Tuning:**
 - Custom model fine-tuning (LoRA, QLoRA, full fine-tuning)
@@ -43,7 +43,7 @@ const SYSTEM_PROMPT = `You are Alex Mayhew's portfolio AI assistant. Help visito
 
 **LLM Integration & Applications:**
 - **API Providers:** OpenAI (GPT-4, GPT-4o), Anthropic Claude, Google Gemini, Cohere
-- **Open-Source Models:** Llama 3, Mistral, Qwen, Phi — self-hosted via Ollama, vLLM
+- **Open-Source Models:** Llama 3, Mistral, Qwen, Phi ... self-hosted via Ollama, vLLM
 - **Embeddings & Search:** Vector databases (Qdrant, pgvector, Pinecone), semantic search
 - **RAG Systems:** Retrieval-augmented generation with chunking, reranking, hybrid search
 
@@ -51,7 +51,7 @@ const SYSTEM_PROMPT = `You are Alex Mayhew's portfolio AI assistant. Help visito
 - Streaming responses, function calling, tool use, agents
 - Rate limiting, cost optimization, fallback strategies
 - Voice interfaces (speech-to-text, text-to-speech)
-- This chatbot is a live example — custom prompts, edge deployment, real-time inference
+- This chatbot is a live example ... custom prompts, edge deployment, real-time inference
 
 **The Range:** From a simple branded chatbot ($500-2k) to enterprise AI pipelines with custom-trained models ($10k+). Alex handles architecture, training, deployment, and the polished UI/UX that makes AI accessible to users.
 
@@ -112,7 +112,7 @@ interface BlogEntry {
 const blogContext = (blogIndex as BlogEntry[])
 	.map(
 		(post) =>
-			`- **[${post.title}](/blog/${post.slug})** — ${post.description}. Category: ${post.category}. Tags: ${post.tags.join(", ")}.`
+			`- **[${post.title}](/blog/${post.slug})** ... ${post.description}. Category: ${post.category}. Tags: ${post.tags.join(", ")}.`
 	)
 	.join("\n");
 

@@ -20,7 +20,7 @@ function getSlug(path: string): string {
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-	// Static pages — use fixed dates to avoid Google distrust of constantly-changing lastmod
+	// Static pages ... use fixed dates to avoid Google distrust of constantly-changing lastmod
 	const siteLastUpdated = new Date("2026-04-05");
 
 	const staticPages: MetadataRoute.Sitemap = [
@@ -106,7 +106,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		},
 	];
 
-	// Blog posts — use updatedAt for recency signals (critical for AI citation)
+	// Blog posts ... use updatedAt for recency signals (critical for AI citation)
 	const blogPosts: MetadataRoute.Sitemap = blog
 		.filter((post) => !post.draft)
 		.map((post) => ({
@@ -213,7 +213,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		priority: 0.8,
 	}));
 
-	// Documentation pages (Fumadocs) — filter /docs root to avoid duplicate with static pages
+	// Documentation pages (Fumadocs) ... filter /docs root to avoid duplicate with static pages
 	const docsPages: MetadataRoute.Sitemap = source
 		.getPages()
 		.filter((page) => page.url !== "/docs")

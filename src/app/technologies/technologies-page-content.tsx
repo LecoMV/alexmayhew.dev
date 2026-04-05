@@ -61,7 +61,7 @@ export function TechnologiesPageContent() {
 					</h2>
 
 					<p className="text-slate-text max-w-3xl text-lg leading-relaxed">
-						Production experience across the full stack—from React and Next.js on the frontend to
+						Production experience across the full stack...from React and Next.js on the frontend to
 						PostgreSQL and Python on the backend. I don&apos;t just use these technologies; I
 						understand their internals, trade-offs, and when each one is the right choice.
 					</p>

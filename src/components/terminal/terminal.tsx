@@ -158,7 +158,7 @@ export function Terminal({
 				<div className="flex items-center gap-3">
 					<span className="text-cyber-lime animate-pulse text-xs">●</span>
 					<span className="text-mist-white font-mono text-xs tracking-wider">
-						ALEX_OS v1.0.0 — bash
+						ALEX_OS v1.0.0 ... bash
 					</span>
 				</div>
 				<div className="flex items-center gap-1">

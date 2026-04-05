@@ -319,7 +319,7 @@ export function ContactPage() {
 								/>
 							</div>
 
-							{/* Turnstile Bot Protection — token piped via hidden input */}
+							{/* Turnstile Bot Protection ... token piped via hidden input */}
 							<div>
 								<Turnstile
 									ref={turnstileRef}

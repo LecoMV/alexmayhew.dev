@@ -140,7 +140,7 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 			}
 		}
 	} catch {
-		// Rate limiting unavailable in local dev — allow request through
+		// Rate limiting unavailable in local dev ... allow request through
 	}
 
 	const env = await getEnv();

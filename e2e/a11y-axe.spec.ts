@@ -110,11 +110,9 @@ test.describe("Accessibility - Contact Form", () => {
 
 		const accessibilityScanResults = await new AxeBuilder({ page })
 			.withTags(["wcag2a", "wcag2aa"])
-			.disableRules(["color-contrast"])
 			.analyze();
 
-		// Filter to critical/serious violations (color-contrast excluded
-		// as error states change background colors which is tested separately)
+		// Filter to critical/serious violations
 		const criticalViolations = accessibilityScanResults.violations.filter(
 			(v) => v.impact === "critical" || v.impact === "serious"
 		);

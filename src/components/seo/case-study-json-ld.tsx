@@ -14,7 +14,7 @@ export function CaseStudyJsonLd({ project }: CaseStudyJsonLdProps) {
 	const creativeWorkSchema = {
 		"@context": "https://schema.org",
 		"@type": "CreativeWork",
-		name: `${project.title} — Case Study`,
+		name: `${project.title} ... Case Study`,
 		description: project.description,
 		url: pageUrl,
 		author: PERSON_REF,

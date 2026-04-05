@@ -92,7 +92,7 @@ export function JsonLd() {
 		publisher: { "@id": "https://alexmayhew.dev/#organization" },
 	};
 
-	// Single unified business entity — combines consulting service + local business signals
+	// Single unified business entity ... combines consulting service + local business signals
 	const professionalServiceSchema = {
 		"@context": "https://schema.org",
 		"@type": "ConsultingService",

@@ -135,7 +135,7 @@ function TraceForgePageContent() {
 										Neural Upscaling
 									</p>
 									<p className="text-slate-text mt-2 text-xs leading-relaxed">
-										Full vectorization is functional — Potrace, VTracer, all presets, and SVGO
+										Full vectorization is functional ... Potrace, VTracer, all presets, and SVGO
 										optimization work as expected. Real-ESRGAN neural upscaling requires GPU backend
 										to be online.
 									</p>
