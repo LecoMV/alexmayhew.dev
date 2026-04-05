@@ -221,9 +221,57 @@ describe("subscribeToNewsletter", () => {
 		});
 	});
 
+	describe("Duplicate email handling", () => {
+		it("should return generic failure on 409 Conflict (duplicate subscriber)", async () => {
+			mockFetch.mockResolvedValue({
+				ok: false,
+				status: 409,
+				json: () => Promise.resolve({ message: "Subscriber already exists" }),
+			});
+
+			const result = await subscribeToNewsletter({
+				email: "existing@example.com",
+				source: "website",
+			});
+			expect(result.success).toBe(false);
+			expect(result.error).toBe("Failed to subscribe. Please try again.");
+		});
+	});
+
+	describe("Request payload structure", () => {
+		it("should send correct list UUID and email to Listmonk", async () => {
+			await subscribeToNewsletter({ email: "payload@example.com", source: "website" });
+
+			expect(mockFetch).toHaveBeenCalledTimes(1);
+			const [url, options] = mockFetch.mock.calls[0] as [string, RequestInit];
+			expect(url).toBe("http://localhost:9000/api/public/subscription");
+			expect(options.method).toBe("POST");
+
+			const body = JSON.parse(options.body as string) as Record<string, unknown>;
+			expect(body.email).toBe("payload@example.com");
+			expect(body.name).toBe("");
+			expect(body.list_uuids).toEqual(["41e24d1e-f13b-45b5-8a73-483ffe85def2"]);
+		});
+
+		it("should include AbortSignal with 8-second timeout", async () => {
+			await subscribeToNewsletter({ email: "timeout@example.com", source: "website" });
+
+			const [, options] = mockFetch.mock.calls[0] as [string, RequestInit];
+			expect(options.signal).toBeDefined();
+		});
+	});
+
 	describe("Network/timeout errors", () => {
 		it("should return unexpected error when fetch throws", async () => {
 			mockFetch.mockRejectedValue(new Error("Network timeout"));
+
+			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
+			expect(result.success).toBe(false);
+			expect(result.error).toBe("An unexpected error occurred.");
+		});
+
+		it("should return unexpected error when AbortError is NOT thrown (non-abort error)", async () => {
+			mockFetch.mockRejectedValue(new TypeError("Failed to fetch"));
 
 			const result = await subscribeToNewsletter({ email: "user@example.com", source: "website" });
 			expect(result.success).toBe(false);

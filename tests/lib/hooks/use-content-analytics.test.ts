@@ -13,7 +13,7 @@ vi.mock("@/components/analytics", () => ({
 	trackServiceEvent: vi.fn(),
 }));
 
-import { trackContentEvent } from "@/components/analytics";
+import { trackContentEvent, trackEvent, trackServiceEvent } from "@/components/analytics";
 import { useContentAnalytics } from "@/lib/hooks/use-content-analytics";
 
 type IntersectionCallback = (entries: Partial<IntersectionObserverEntry>[]) => void;
@@ -216,5 +216,36 @@ describe("useContentAnalytics scroll tracking", () => {
 		expect((sentinels[0] as HTMLElement).style.top).toBe("500px");
 
 		main.remove();
+	});
+});
+
+describe("useContentAnalytics content view tracking", () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+		const article = document.createElement("article");
+		Object.defineProperty(article, "scrollHeight", { value: 2000, configurable: true });
+		document.body.appendChild(article);
+	});
+
+	afterEach(() => {
+		document.querySelector("article")?.remove();
+		document.querySelectorAll("[data-scroll-depth]").forEach((el) => el.remove());
+	});
+
+	it("tracks content_view on mount with correct parameters", () => {
+		renderHook(() =>
+			useContentAnalytics({
+				contentId: "my-post",
+				contentType: "blog_post",
+				contentCategory: "engineering",
+			})
+		);
+
+		expect(trackContentEvent).toHaveBeenCalledWith("content_view", {
+			content_id: "my-post",
+			content_type: "blog_post",
+			content_category: "engineering",
+			content_group: "blog",
+		});
 	});
 });
