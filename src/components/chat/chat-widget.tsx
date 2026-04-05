@@ -263,7 +263,7 @@ export function ChatWidget() {
 									onKeyDown={handleKeyDown}
 									placeholder="Ask me anything..."
 									disabled={isLoading}
-									className="bg-gunmetal-glass/30 focus:border-cyber-lime text-mist-white flex-1 border border-white/10 px-4 py-2.5 font-mono text-sm transition-colors placeholder:text-white/30 focus:outline-none disabled:opacity-50"
+									className="bg-gunmetal-glass/30 focus:border-cyber-lime text-mist-white focus-visible:ring-cyber-lime flex-1 border border-white/10 px-4 py-2.5 font-mono text-sm transition-colors placeholder:text-white/30 focus:outline-none focus-visible:ring-2 disabled:opacity-50"
 								/>
 								<button
 									onClick={sendMessage}

@@ -130,7 +130,7 @@ export function GpuControl({ apiUrl, isOnline, gpuEnabled, onToggleComplete }: G
 								disabled={isToggling}
 								className={cn(
 									"w-full flex-1 border bg-white/5 px-3 py-2.5 font-mono text-sm transition-colors",
-									"text-mist-white placeholder:text-slate-text/50 focus:outline-none",
+									"text-mist-white placeholder:text-slate-text/50 focus-visible:ring-cyber-lime focus:outline-none focus-visible:ring-2",
 									destructive
 										? "border-burnt-ember/30 focus:border-burnt-ember"
 										: "border-cyber-lime/30 focus:border-cyber-lime"

@@ -65,7 +65,7 @@ export default async function NewsletterIssuePage({ params }: PageProps) {
 				]}
 			/>
 			<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
-				<div className="mx-auto max-w-[700px]">
+				<div className="max-w-newsletter mx-auto">
 					<Link
 						href="/newsletter"
 						className="text-slate-text hover:text-cyber-lime group mb-8 inline-flex items-center gap-2 font-mono text-sm transition-colors"

@@ -14,6 +14,9 @@
 	--font-mono: var(--font-mono);
 
 	--max-width-content: 1400px;
+	--max-width-article: 1280px;
+	--max-width-narrow: 900px;
+	--max-width-newsletter: 700px;
 
 	/* Fumadocs variable overrides for void aesthetic */
 	--fd-background: #0b0e14;

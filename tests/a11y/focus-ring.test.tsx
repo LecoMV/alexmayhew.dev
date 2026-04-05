@@ -1,3 +1,6 @@
+import fs from "fs";
+import path from "path";
+
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
@@ -100,5 +103,47 @@ describe("Focus ring — NewsletterSignup form inputs", () => {
 				"focus-visible:ring-cyber-lime"
 			);
 		}
+	});
+});
+
+describe("Focus ring — ChatWidget input (source-level)", () => {
+	it("chat input className includes focus-visible:ring-2 and focus-visible:ring-cyber-lime", () => {
+		const filePath = path.resolve(__dirname, "../../src/components/chat/chat-widget.tsx");
+		const source = fs.readFileSync(filePath, "utf-8");
+
+		// The chat input is the <input> with placeholder "Ask me anything..."
+		const inputMatch = source.match(
+			/placeholder="Ask me anything\.\.\."[\s\S]*?className="([^"]+)"/
+		);
+		expect(inputMatch, "Could not find chat input className").toBeTruthy();
+
+		const className = inputMatch![1];
+		expect(className, "Missing focus-visible:ring-2 on chat input").toContain(
+			"focus-visible:ring-2"
+		);
+		expect(className, "Missing focus-visible:ring-cyber-lime on chat input").toContain(
+			"focus-visible:ring-cyber-lime"
+		);
+	});
+});
+
+describe("Focus ring — GpuControl password input (source-level)", () => {
+	it("GPU password input cn() call includes focus-visible:ring-2 and focus-visible:ring-cyber-lime", () => {
+		const filePath = path.resolve(__dirname, "../../src/components/traceforge/gpu-control.tsx");
+		const source = fs.readFileSync(filePath, "utf-8");
+
+		// The password input uses cn() with multiple string args; find the block
+		const inputBlock = source.match(
+			/placeholder="Admin password\.\.\."[\s\S]*?className=\{cn\(([\s\S]*?)\)\}/
+		);
+		expect(inputBlock, "Could not find GPU password input cn() block").toBeTruthy();
+
+		const cnArgs = inputBlock![1];
+		expect(cnArgs, "Missing focus-visible:ring-2 on GPU password input").toContain(
+			"focus-visible:ring-2"
+		);
+		expect(cnArgs, "Missing focus-visible:ring-cyber-lime on GPU password input").toContain(
+			"focus-visible:ring-cyber-lime"
+		);
 	});
 });
