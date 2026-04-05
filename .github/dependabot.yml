@@ -11,6 +11,9 @@ updates:
     groups:
       dev-dependencies:
         dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
         patterns:
           - "*"
         exclude-patterns:
@@ -19,17 +22,26 @@ updates:
           - "@types/*"
       production-dependencies:
         dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
         patterns:
           - "*"
         exclude-patterns:
           - "next"
           - "react*"
       typescript-eslint:
+        update-types:
+          - "minor"
+          - "patch"
         patterns:
           - "eslint*"
           - "typescript"
           - "@types/*"
       react-next:
+        update-types:
+          - "minor"
+          - "patch"
         patterns:
           - "next"
           - "react*"
