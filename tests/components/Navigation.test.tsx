@@ -26,7 +26,7 @@ describe("Navigation", () => {
 
 	it("renders desktop navigation items", () => {
 		render(<Navigation />);
-		expect(screen.getByText("Home")).toBeTruthy();
+		expect(screen.getByText("Services")).toBeTruthy();
 		expect(screen.getByText("Work")).toBeTruthy();
 		expect(screen.getByText("Blog")).toBeTruthy();
 	});
@@ -50,9 +50,11 @@ describe("Navigation", () => {
 		fireEvent.click(menuButton);
 		expect(screen.getByLabelText(/close menu/i)).toBeTruthy();
 
-		// Mobile menu items
-		const mobileLinks = screen.getAllByText("Home");
-		expect(mobileLinks.length).toBeGreaterThan(1);
+		// Mobile menu should show pages not in desktop nav
+		expect(screen.getByText("Home")).toBeTruthy();
+		expect(screen.getByText("Contact")).toBeTruthy();
+		expect(screen.getByText("Newsletter")).toBeTruthy();
+		expect(screen.getByText("Technologies")).toBeTruthy();
 	});
 
 	it("closes mobile menu when a link is clicked", () => {
@@ -62,16 +64,8 @@ describe("Navigation", () => {
 		// Open menu
 		fireEvent.click(menuButton);
 
-		// Find mobile link (last one is usually mobile duplications in this setup, or we can filter by visibility if we monitored styles,
-		// but checking for the one in the mobile container is safer.
-		// However, in the current DOM structure logic provided in the test file earlier,
-		// 'getAllByText("Home")' returns duplicates.
-		// The mobile menu renders: <Link ... onClick={() => setMobileMenuOpen(false)}>
-
-		const mobileLinks = screen.getAllByText("Home");
-		// The second one should be the mobile one based on the component structure (desktop first, then mobile)
-		const mobileLink = mobileLinks[1];
-
+		// "Home" is mobile-only, so there's exactly one instance
+		const mobileLink = screen.getByText("Home");
 		fireEvent.click(mobileLink);
 
 		// Menu button should go back to "open menu" state (icon changes)
@@ -93,9 +87,8 @@ describe("Navigation", () => {
 
 	it("desktop nav items container has min-w-0 to allow flex shrinking", () => {
 		render(<Navigation />);
-		const allLinks = screen.getAllByText("Home");
-		const desktopHome = allLinks[0];
-		const desktopNavContainer = desktopHome.closest("div[class*='lg\\:flex']") as HTMLElement;
+		const servicesLink = screen.getAllByText("Services")[0];
+		const desktopNavContainer = servicesLink.closest("div[class*='lg\\:flex']") as HTMLElement;
 		expect(desktopNavContainer).toBeTruthy();
 		expect(desktopNavContainer.className).toContain("min-w-0");
 	});

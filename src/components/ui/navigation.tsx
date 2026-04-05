@@ -27,15 +27,18 @@ interface ToolItem {
 }
 
 const navItems: NavItem[] = [
-	{ href: "/", label: "Home", code: "00" },
-	{ href: "/work", label: "Work", code: "01" },
-	{ href: "/services", label: "Services", code: "02" },
-	{ href: "/technologies", label: "Technologies", code: "03" },
+	{ href: "/services", label: "Services", code: "01" },
+	{ href: "/for", label: "Advisory", code: "02" },
+	{ href: "/work", label: "Work", code: "03" },
 	{ href: "/tools", label: "Tools", code: "04", hasDropdown: true },
-	{ href: "/for", label: "Advisory", code: "05" },
-	{ href: "/blog", label: "Blog", code: "06" },
-	{ href: "/newsletter", label: "Newsletter", code: "07" },
-	{ href: "/about", label: "About", code: "08" },
+	{ href: "/blog", label: "Blog", code: "05" },
+	{ href: "/about", label: "About", code: "06" },
+];
+
+const mobileOnlyItems: NavItem[] = [
+	{ href: "/", label: "Home", code: "00" },
+	{ href: "/technologies", label: "Technologies", code: "07" },
+	{ href: "/newsletter", label: "Newsletter", code: "08" },
 	{ href: "/contact", label: "Contact", code: "09" },
 ];
 
@@ -400,6 +403,33 @@ export function Navigation() {
 										</m.div>
 									);
 								})}
+								{mobileOnlyItems.map((item, index) => (
+									<m.div
+										key={item.href}
+										initial={{ opacity: 0, x: -20 }}
+										animate={{ opacity: 1, x: 0 }}
+										transition={{ ...springTransition, delay: (navItems.length + index) * 0.1 }}
+									>
+										<Link
+											href={item.href}
+											onClick={() => setMobileMenuOpen(false)}
+											className={cn(
+												"flex items-center gap-4 border-b border-white/5 py-4 font-mono text-sm tracking-wider uppercase transition-colors duration-300",
+												pathname === item.href
+													? "text-cyber-lime"
+													: "text-slate-text hover:text-mist-white"
+											)}
+										>
+											<span className="text-xs opacity-40" aria-hidden="true">
+												{item.code}
+											</span>
+											{item.label}
+											{pathname === item.href && (
+												<span className="bg-cyber-lime ml-auto h-2 w-2 animate-pulse" />
+											)}
+										</Link>
+									</m.div>
+								))}
 							</div>
 						</m.div>
 					)}
