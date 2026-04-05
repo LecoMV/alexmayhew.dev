@@ -46,8 +46,8 @@ const EU_COUNTRIES = new Set([
 // EEA countries (EU + Iceland, Liechtenstein, Norway)
 const EEA_COUNTRIES = new Set([...EU_COUNTRIES, "IS", "LI", "NO"]);
 
-// GDPR applies to EU, EEA, and UK
-const GDPR_COUNTRIES = new Set([...EEA_COUNTRIES, "GB"]);
+// GDPR/nDSG applies to EU, EEA, UK, and Switzerland
+const GDPR_COUNTRIES = new Set([...EEA_COUNTRIES, "GB", "CH"]);
 
 /**
  * Extract geo data from Cloudflare headers
@@ -65,25 +65,16 @@ export function getGeoFromHeaders(headers: Headers): GeoData {
 	};
 }
 
-/**
- * Check if GDPR applies to this visitor
- */
 export function isGDPRCountry(countryCode: string | null): boolean {
 	if (!countryCode) return false;
 	return GDPR_COUNTRIES.has(countryCode.toUpperCase());
 }
 
-/**
- * Check if visitor is from EU
- */
 export function isEUCountry(countryCode: string | null): boolean {
 	if (!countryCode) return false;
 	return EU_COUNTRIES.has(countryCode.toUpperCase());
 }
 
-/**
- * Get geo data for client-side use (via API route)
- */
 export function getGeoDataForClient(headers: Headers): {
 	country: string | null;
 	isEU: boolean;

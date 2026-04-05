@@ -21,7 +21,7 @@ function getSlug(path: string): string {
 
 export default function sitemap(): MetadataRoute.Sitemap {
 	// Static pages — use fixed dates to avoid Google distrust of constantly-changing lastmod
-	const siteLastUpdated = new Date("2026-03-14");
+	const siteLastUpdated = new Date("2026-04-05");
 
 	const staticPages: MetadataRoute.Sitemap = [
 		{
@@ -179,12 +179,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			changeFrequency: "monthly" as const,
 			priority: 0.7,
 		},
-		...newsletter.map((issue) => ({
-			url: `${siteUrl}/newsletter/${getSlug(issue.info.path)}`,
-			lastModified: issue.publishedAt,
-			changeFrequency: "yearly" as const,
-			priority: 0.5,
-		})),
+		...newsletter
+			.filter((issue) => issue.publishedAt <= new Date())
+			.map((issue) => ({
+				url: `${siteUrl}/newsletter/${getSlug(issue.info.path)}`,
+				lastModified: issue.publishedAt,
+				changeFrequency: "yearly" as const,
+				priority: 0.5,
+			})),
 	];
 
 	// Role-based pages (for CTOs, founders, etc.)
@@ -211,13 +213,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		priority: 0.8,
 	}));
 
-	// Documentation pages (Fumadocs)
-	const docsPages: MetadataRoute.Sitemap = source.getPages().map((page) => ({
-		url: `${siteUrl}${page.url}`,
-		lastModified: siteLastUpdated,
-		changeFrequency: "monthly" as const,
-		priority: 0.6,
-	}));
+	// Documentation pages (Fumadocs) — filter /docs root to avoid duplicate with static pages
+	const docsPages: MetadataRoute.Sitemap = source
+		.getPages()
+		.filter((page) => page.url !== "/docs")
+		.map((page) => ({
+			url: `${siteUrl}${page.url}`,
+			lastModified: siteLastUpdated,
+			changeFrequency: "monthly" as const,
+			priority: 0.6,
+		}));
 
 	return [
 		...staticPages,

@@ -76,6 +76,10 @@ describe("isGDPRCountry", () => {
 		expect(isGDPRCountry("GB")).toBe(true);
 	});
 
+	it("should return true for Switzerland (CH)", () => {
+		expect(isGDPRCountry("CH")).toBe(true);
+	});
+
 	it("should return false for US", () => {
 		expect(isGDPRCountry("US")).toBe(false);
 	});

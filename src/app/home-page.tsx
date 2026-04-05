@@ -63,7 +63,7 @@ const featuredInsights = [
 	},
 	{
 		title: "Modern Frontend Architecture Guide",
-		slug: "modern-frontend-architecture-guide",
+		slug: "modern-frontend-architecture",
 		category: "frontend",
 	},
 	{
