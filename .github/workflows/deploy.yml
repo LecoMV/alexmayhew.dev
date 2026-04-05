@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   NODE_VERSION: "20"
 
@@ -106,7 +110,7 @@ jobs:
 
       - name: Deploy Preview to Cloudflare
         id: deploy
-        run: npx wrangler deploy --env preview 2>&1 || npx opennextjs-cloudflare deploy
+        run: npx wrangler deploy --env preview
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

@@ -20,6 +20,7 @@ function getGitSha() {
 
 const config = {
 	reactStrictMode: true,
+	poweredByHeader: false,
 
 	// Environment variables for footer
 	env: {
