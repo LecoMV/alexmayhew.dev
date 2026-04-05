@@ -16,7 +16,7 @@ import Link from "next/link";
 
 import { trackCTAClick } from "@/components/analytics";
 import { getPublishedPages } from "@/data/pseo";
-import { springTransition } from "@/lib/motion-constants";
+import { gentleSpring, springTransition } from "@/lib/motion-constants";
 
 import type { Technology } from "@/data/pseo/technologies";
 
@@ -53,7 +53,7 @@ export function TechnologyPageContent({ technology }: TechnologyPageContentProps
 					className="text-slate-text mb-8 flex items-center gap-2 font-mono text-xs"
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
-					transition={{ duration: 0.3 }}
+					transition={gentleSpring}
 				>
 					<Link href="/" className="hover:text-cyber-lime transition-colors">
 						Home
@@ -462,7 +462,7 @@ function CtaSection({ technology }: { technology: Technology }) {
 						className="bg-cyber-lime/5 absolute inset-0"
 						initial={{ opacity: 0 }}
 						whileHover={{ opacity: 1 }}
-						transition={{ duration: 0.3 }}
+						transition={gentleSpring}
 					/>
 				</Link>
 			</div>

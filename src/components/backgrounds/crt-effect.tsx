@@ -4,6 +4,7 @@ import { m } from "framer-motion";
 import { useEffect, useRef } from "react";
 
 import { useCanvasController } from "@/hooks/use-canvas-controller";
+import { springTransition } from "@/lib/motion-constants";
 
 interface CRTEffectProps {
 	className?: string;
@@ -142,7 +143,7 @@ export function CRTEffect({
 			className={`relative overflow-hidden ${className}`}
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
-			transition={{ duration: 0.5 }}
+			transition={springTransition}
 		>
 			{children}
 			<canvas

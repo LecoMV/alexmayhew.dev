@@ -16,7 +16,7 @@ import Link from "next/link";
 
 import { trackCTAClick } from "@/components/analytics";
 import { getTechnologyIds, technologies } from "@/data/pseo/technologies";
-import { springTransition } from "@/lib/motion-constants";
+import { gentleSpring, springTransition } from "@/lib/motion-constants";
 
 // Map technology IDs to icons
 const technologyIcons: Record<
@@ -61,7 +61,7 @@ export function TechnologiesPageContent() {
 					</h2>
 
 					<p className="text-slate-text max-w-3xl text-lg leading-relaxed">
-						Production experience across the full stack...from React and Next.js on the frontend to
+						Production experience across the full stack... from React and Next.js on the frontend to
 						PostgreSQL and Python on the backend. I don&apos;t just use these technologies; I
 						understand their internals, trade-offs, and when each one is the right choice.
 					</p>
@@ -208,7 +208,7 @@ export function TechnologiesPageContent() {
 									className="bg-cyber-lime/5 absolute inset-0"
 									initial={{ opacity: 0 }}
 									whileHover={{ opacity: 1 }}
-									transition={{ duration: 0.3 }}
+									transition={gentleSpring}
 								/>
 							</Link>
 

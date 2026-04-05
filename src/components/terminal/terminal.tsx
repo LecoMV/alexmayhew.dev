@@ -5,7 +5,7 @@ import { Minus, Square, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { snappySpringTransition as springTransition } from "@/lib/motion-constants";
+import { microSpring, snappySpringTransition as springTransition } from "@/lib/motion-constants";
 
 import { type CommandResult, executeCommand } from "./commands";
 import { handleTerminalKeyDown } from "./keyboard-handler";
@@ -209,7 +209,7 @@ export function Terminal({
 							key={entry.id}
 							initial={{ opacity: 0, y: 5 }}
 							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.15 }}
+							transition={microSpring}
 							className="mb-2"
 						>
 							{entry.command && (

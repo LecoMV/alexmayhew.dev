@@ -18,7 +18,7 @@ import { useState } from "react";
 
 import { trackCTAClick } from "@/components/analytics";
 import { ROLE_LABELS, SERVICE_TIER_DESCRIPTIONS, SERVICE_TIER_LABELS } from "@/data/roles";
-import { fadeInUp, springTransition, staggerContainer } from "@/lib/motion-constants";
+import { fadeInUp, gentleSpring, springTransition, staggerContainer } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 import type { RolePage } from "@/data/roles";
@@ -133,7 +133,7 @@ function HeroSection({ page, roleLabel }: { page: RolePage; roleLabel: string })
 						className="bg-cyber-lime/5 absolute inset-0"
 						initial={{ opacity: 0 }}
 						whileHover={{ opacity: 1 }}
-						transition={{ duration: 0.3 }}
+						transition={gentleSpring}
 					/>
 				</Link>
 				<Link
@@ -536,7 +536,7 @@ function CtaSection() {
 							className="bg-cyber-lime/5 absolute inset-0"
 							initial={{ opacity: 0 }}
 							whileHover={{ opacity: 1 }}
-							transition={{ duration: 0.3 }}
+							transition={gentleSpring}
 						/>
 					</Link>
 				</div>

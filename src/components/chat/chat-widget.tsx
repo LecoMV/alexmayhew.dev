@@ -4,7 +4,7 @@ import { AnimatePresence, m } from "framer-motion";
 import { Bot, Loader2, MessageSquare, Send, User, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { snappySpringTransition as springTransition } from "@/lib/motion-constants";
+import { microSpring, snappySpringTransition as springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 import { ChatMarkdown } from "./chat-markdown";
@@ -138,7 +138,7 @@ export function ChatWidget() {
 							initial={{ rotate: -90, opacity: 0 }}
 							animate={{ rotate: 0, opacity: 1 }}
 							exit={{ rotate: 90, opacity: 0 }}
-							transition={{ duration: 0.2 }}
+							transition={microSpring}
 						>
 							<X className="text-cyber-lime h-6 w-6" strokeWidth={1.5} />
 						</m.div>
@@ -148,7 +148,7 @@ export function ChatWidget() {
 							initial={{ rotate: 90, opacity: 0 }}
 							animate={{ rotate: 0, opacity: 1 }}
 							exit={{ rotate: -90, opacity: 0 }}
-							transition={{ duration: 0.2 }}
+							transition={microSpring}
 						>
 							<MessageSquare className="text-mist-white h-6 w-6" strokeWidth={1.5} />
 						</m.div>
@@ -196,7 +196,7 @@ export function ChatWidget() {
 									key={message.id}
 									initial={{ opacity: 0, y: 10 }}
 									animate={{ opacity: 1, y: 0 }}
-									transition={{ duration: 0.2 }}
+									transition={microSpring}
 									className={cn("flex gap-3", message.role === "user" && "flex-row-reverse")}
 								>
 									<div

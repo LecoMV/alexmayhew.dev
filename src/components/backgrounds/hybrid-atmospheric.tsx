@@ -4,6 +4,7 @@ import { m } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useCanvasController } from "@/hooks/use-canvas-controller";
+import { springTransition } from "@/lib/motion-constants";
 
 interface HybridAtmosphericProps {
 	className?: string;
@@ -329,7 +330,7 @@ export function HybridAtmospheric({
 			className={`pointer-events-none ${className}`}
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
-			transition={{ duration: 2 }}
+			transition={springTransition}
 			style={{ width: "100%", height: "100%" }}
 		/>
 	);

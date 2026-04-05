@@ -11,6 +11,18 @@ export const snappySpringTransition = {
 	damping: 25,
 } as const;
 
+export const microSpring = {
+	type: "spring" as const,
+	stiffness: 500,
+	damping: 30,
+} as const;
+
+export const gentleSpring = {
+	type: "spring" as const,
+	stiffness: 200,
+	damping: 25,
+} as const;
+
 export const staggerContainer = {
 	hidden: { opacity: 0 },
 	visible: {

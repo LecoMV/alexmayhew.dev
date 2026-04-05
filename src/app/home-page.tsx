@@ -6,7 +6,7 @@ import Link from "next/link";
 
 import { trackCTAClick } from "@/components/analytics";
 import { NewsletterSignup } from "@/components/newsletter";
-import { fadeInUp, springTransition, staggerContainer } from "@/lib/motion-constants";
+import { fadeInUp, gentleSpring, springTransition, staggerContainer } from "@/lib/motion-constants";
 
 const services = [
 	{
@@ -90,7 +90,7 @@ export default function Home() {
 							variants={fadeInUp}
 						>
 							I architect production systems that scale from MVP to millions. When your tech
-							decisions have business consequences, you need strategic guidance...not just code.
+							decisions have business consequences, you need strategic guidance... not just code.
 						</m.p>
 
 						<m.div className="mt-4 flex items-center gap-6" variants={fadeInUp}>
@@ -106,7 +106,7 @@ export default function Home() {
 									className="bg-cyber-lime/5 absolute inset-0"
 									initial={{ opacity: 0 }}
 									whileHover={{ opacity: 1 }}
-									transition={{ duration: 0.3 }}
+									transition={gentleSpring}
 								/>
 							</Link>
 							<Link
@@ -251,7 +251,7 @@ export default function Home() {
 							<p className="text-mist-white mb-4 text-lg leading-relaxed">
 								15+ years building production systems across fintech, healthcare, SaaS, and
 								e-commerce. I partner with founders and CTOs who need architectural decisions that
-								compound into competitive advantage...not just code that ships.
+								compound into competitive advantage... not just code that ships.
 							</p>
 							<p className="text-slate-text mb-6 text-sm leading-relaxed">
 								My clients typically face a specific inflection point: scaling past their first
@@ -419,7 +419,7 @@ export default function Home() {
 									className="bg-cyber-lime/5 absolute inset-0"
 									initial={{ opacity: 0 }}
 									whileHover={{ opacity: 1 }}
-									transition={{ duration: 0.3 }}
+									transition={gentleSpring}
 								/>
 							</Link>
 						</div>

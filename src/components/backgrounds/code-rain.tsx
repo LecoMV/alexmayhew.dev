@@ -4,6 +4,7 @@ import { m } from "framer-motion";
 import { useEffect, useRef } from "react";
 
 import { useCanvasController } from "@/hooks/use-canvas-controller";
+import { springTransition } from "@/lib/motion-constants";
 
 interface CodeRainProps {
 	className?: string;
@@ -217,7 +218,7 @@ export function CodeRain({
 			className={`pointer-events-none ${className}`}
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
-			transition={{ duration: 2 }}
+			transition={springTransition}
 			style={{ width: "100%", height: "100%" }}
 		/>
 	);

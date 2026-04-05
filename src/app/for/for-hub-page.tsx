@@ -6,7 +6,7 @@ import Link from "next/link";
 
 import { trackCTAClick } from "@/components/analytics";
 import { ROLE_LABELS } from "@/data/roles";
-import { fadeInUp, springTransition, staggerContainer } from "@/lib/motion-constants";
+import { fadeInUp, gentleSpring, springTransition, staggerContainer } from "@/lib/motion-constants";
 
 import type { Role, RolePage } from "@/data/roles";
 
@@ -187,7 +187,7 @@ export function ForHubPage({ pages }: ForHubPageProps) {
 									className="bg-cyber-lime/5 absolute inset-0"
 									initial={{ opacity: 0 }}
 									whileHover={{ opacity: 1 }}
-									transition={{ duration: 0.3 }}
+									transition={gentleSpring}
 								/>
 							</Link>
 						</div>

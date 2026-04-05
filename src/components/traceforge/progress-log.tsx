@@ -4,6 +4,7 @@ import { AnimatePresence, m } from "framer-motion";
 import { AlertCircle, CheckCircle, Loader2, Terminal } from "lucide-react";
 import { useEffect, useRef } from "react";
 
+import { microSpring } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 import type { VectorizerStatus } from "@/lib/hooks/use-vectorizer";
@@ -78,7 +79,7 @@ export function ProgressLog({ logs, status }: ProgressLogProps) {
 								key={`${log.slice(0, 20)}-${index}`}
 								initial={{ opacity: 0, x: -10 }}
 								animate={{ opacity: 1, x: 0 }}
-								transition={{ duration: 0.15 }}
+								transition={microSpring}
 								className={cn(
 									"flex items-start gap-2 py-0.5",
 									log.startsWith("Error:") ? "text-burnt-ember" : "text-slate-text"

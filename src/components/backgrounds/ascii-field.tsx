@@ -4,6 +4,7 @@ import { m } from "framer-motion";
 import { useCallback, useEffect, useRef } from "react";
 
 import { useCanvasController } from "@/hooks/use-canvas-controller";
+import { springTransition } from "@/lib/motion-constants";
 
 interface AsciiFieldProps {
 	className?: string;
@@ -124,7 +125,7 @@ export function AsciiField({
 			className={`pointer-events-none ${className}`}
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
-			transition={{ duration: 1.5 }}
+			transition={springTransition}
 			style={{ width: "100%", height: "100%" }}
 		/>
 	);

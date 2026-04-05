@@ -76,7 +76,7 @@ const differentiators = [
 		icon: Shield,
 		title: "Risk Mitigation",
 		description:
-			"I've seen the failure patterns. My advisory includes identifying architectural landmines before they detonate...saving months of rework and millions in opportunity cost.",
+			"I've seen the failure patterns. My advisory includes identifying architectural landmines before they detonate... saving months of rework and millions in opportunity cost.",
 	},
 	{
 		icon: Zap,
@@ -147,7 +147,7 @@ export function AboutPage() {
 						<div className="space-y-6 text-lg leading-relaxed">
 							<p className="text-xl leading-relaxed">
 								Every week, founders make technical decisions that will either compound into
-								competitive advantage...or accumulate as crushing technical debt.{" "}
+								competitive advantage... or accumulate as crushing technical debt.{" "}
 								<span className="text-cyber-lime">I help them choose wisely.</span>
 							</p>
 							<p className="text-slate-text">
@@ -157,8 +157,9 @@ export function AboutPage() {
 								you&apos;re married to forever.
 							</p>
 							<p className="text-slate-text">
-								I work with a select number of clients each quarter...founders and technical leaders
-								who understand that a week of strategic advisory can save a year of rebuilding.
+								I work with a select number of clients each quarter... founders and technical
+								leaders who understand that a week of strategic advisory can save a year of
+								rebuilding.
 							</p>
 						</div>
 
@@ -361,7 +362,7 @@ export function AboutPage() {
 						<p className="text-slate-text text-lg leading-relaxed">
 							When I&apos;m not architecting systems, you&apos;ll find me exploring the intersection
 							of technology and craft. I believe the best technical work comes from understanding
-							how things are made...whether that&apos;s coffee, furniture, or distributed systems.
+							how things are made... whether that&apos;s coffee, furniture, or distributed systems.
 							This philosophy shapes how I approach every engagement: with curiosity, precision, and
 							respect for the craft.
 						</p>
@@ -385,8 +386,8 @@ export function AboutPage() {
 							</h2>
 							<p className="text-slate-text mb-8 text-lg">
 								I take on a limited number of advisory engagements each quarter. If you&apos;re
-								facing an architectural crossroads...scaling challenges, performance bottlenecks, or
-								strategic technical decisions...let&apos;s talk.
+								facing an architectural crossroads... scaling challenges, performance bottlenecks,
+								or strategic technical decisions... let&apos;s talk.
 							</p>
 
 							<Link

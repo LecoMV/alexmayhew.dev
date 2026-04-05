@@ -122,7 +122,7 @@ export function ServicesPage({ pages }: ServicesPageProps) {
 					</h2>
 					<p className="text-slate-text max-w-2xl text-lg leading-relaxed">
 						Every technical choice has a 3-year trajectory. I help founders and CTOs make the
-						decisions that accelerate growth...and avoid the ones that silently accumulate into
+						decisions that accelerate growth... and avoid the ones that silently accumulate into
 						technical debt.
 					</p>
 				</m.div>

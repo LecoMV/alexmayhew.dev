@@ -10,6 +10,7 @@ import { trackCTAClick } from "@/components/analytics";
 import { NewsletterSignup } from "@/components/newsletter";
 import { useBlogTheme } from "@/lib/blog-themes";
 import { useContentAnalytics } from "@/lib/hooks/use-content-analytics";
+import { microSpring } from "@/lib/motion-constants";
 
 import { ReadingProgress } from "./reading-progress";
 import { ShareButtons } from "./share-buttons";
@@ -213,7 +214,7 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 								className="prose-void"
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
-								transition={{ duration: 0.2, delay: 0.05 }}
+								transition={{ ...microSpring, delay: 0.05 }}
 							>
 								{children}
 							</m.article>

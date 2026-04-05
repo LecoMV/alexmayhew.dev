@@ -5,6 +5,7 @@ import { ChevronDown } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useBlogTheme } from "@/lib/blog-themes";
+import { microSpring } from "@/lib/motion-constants";
 
 // --- Data Model ---
 
@@ -462,7 +463,7 @@ export function TableOfContents({ variant = "mobile" }: { variant?: "mobile" | "
 						initial={reducedMotion ? false : { height: 0, opacity: 0 }}
 						animate={{ height: "auto", opacity: 1 }}
 						exit={reducedMotion ? undefined : { height: 0, opacity: 0 }}
-						transition={reducedMotion ? { duration: 0 } : { duration: 0.2 }}
+						transition={reducedMotion ? { duration: 0 } : microSpring}
 					>
 						{sections.map((section) => {
 							const sectionColor = getSectionColor(section.sectionIndex);

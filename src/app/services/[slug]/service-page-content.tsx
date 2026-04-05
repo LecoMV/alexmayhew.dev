@@ -21,7 +21,7 @@ import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import { RelatedBlogPostsSection, TopicClusterNav } from "@/components/seo";
 import { INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
 import { useContentAnalytics } from "@/lib/hooks/use-content-analytics";
-import { fadeInUp, springTransition, staggerContainer } from "@/lib/motion-constants";
+import { fadeInUp, gentleSpring, springTransition, staggerContainer } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 import type { ExpertApproach, PseoPage } from "@/data/pseo";
@@ -190,7 +190,7 @@ function HeroSection({
 						className="bg-cyber-lime/5 absolute inset-0"
 						initial={{ opacity: 0 }}
 						whileHover={{ opacity: 1 }}
-						transition={{ duration: 0.3 }}
+						transition={gentleSpring}
 					/>
 				</Link>
 				<Link
@@ -827,7 +827,7 @@ function CtaSection() {
 							className="bg-cyber-lime/5 absolute inset-0"
 							initial={{ opacity: 0 }}
 							whileHover={{ opacity: 1 }}
-							transition={{ duration: 0.3 }}
+							transition={gentleSpring}
 						/>
 					</Link>
 				</div>

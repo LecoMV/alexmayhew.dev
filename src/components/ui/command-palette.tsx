@@ -6,6 +6,8 @@ import { Briefcase, Cpu, FileText, Globe, Layers } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
+import { microSpring } from "@/lib/motion-constants";
+
 import type { SearchItem } from "@/data/search-index";
 
 const categoryIcons: Record<SearchItem["category"], React.ReactNode> = {
@@ -71,7 +73,7 @@ export function CommandPalette({ items }: CommandPaletteProps) {
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					exit={{ opacity: 0 }}
-					transition={{ duration: 0.15 }}
+					transition={microSpring}
 				>
 					{/* Backdrop */}
 					<div
@@ -87,7 +89,7 @@ export function CommandPalette({ items }: CommandPaletteProps) {
 						initial={{ opacity: 0, scale: 0.96, y: -10 }}
 						animate={{ opacity: 1, scale: 1, y: 0 }}
 						exit={{ opacity: 0, scale: 0.96, y: -10 }}
-						transition={{ duration: 0.15 }}
+						transition={microSpring}
 					>
 						<Command label="Search" shouldFilter={true}>
 							<div className="flex items-center border-b border-white/10 px-4">

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import { springTransition } from "@/lib/motion-constants";
+import { microSpring, springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -201,7 +201,7 @@ export function Navigation() {
 													initial={{ opacity: 0, y: -10 }}
 													animate={{ opacity: 1, y: 0 }}
 													exit={{ opacity: 0, y: -10 }}
-													transition={{ duration: 0.15 }}
+													transition={microSpring}
 													className="bg-gunmetal-glass/95 absolute top-full left-0 mt-2 min-w-[280px] border border-white/10 p-2 backdrop-blur-md"
 												>
 													{toolsDropdown.map((tool) => (

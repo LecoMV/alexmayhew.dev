@@ -8,7 +8,7 @@ import { useFormStatus } from "react-dom";
 import { type ContactFormState, submitContactAction } from "@/app/actions/contact";
 import { trackEvent, trackLeadEvent } from "@/components/analytics";
 import { Turnstile, type TurnstileRef } from "@/components/ui/turnstile";
-import { springTransition } from "@/lib/motion-constants";
+import { gentleSpring, springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 const contactInfo = [
@@ -74,7 +74,7 @@ function ContactSubmitButton({ success }: { success: boolean }) {
 				className="bg-cyber-lime/5 absolute inset-0"
 				initial={{ opacity: 0 }}
 				whileHover={{ opacity: 1 }}
-				transition={{ duration: 0.3 }}
+				transition={gentleSpring}
 			/>
 		</button>
 	);
