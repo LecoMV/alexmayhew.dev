@@ -195,22 +195,30 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      - name: Wait for deployment propagation
-        run: sleep 15
-
-      - name: Health Check
+      - name: Health Check with SHA Verification
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
         run: |
-          echo "Checking health endpoint..."
-          response=$(curl -sf https://alexmayhew.dev/api/health || echo '{"status":"error"}')
-          echo "Response: $response"
+          expected_short="${EXPECTED_SHA:0:7}"
+          echo "Waiting for deployment of SHA $expected_short..."
 
-          status=$(echo "$response" | jq -r '.status // "error"')
-          if [ "$status" != "ok" ]; then
-            echo "Health check failed! Status: $status"
-            exit 1
-          fi
+          for i in $(seq 1 12); do
+            response=$(curl -sf https://alexmayhew.dev/api/health || echo '{"status":"error"}')
+            status=$(echo "$response" | jq -r '.status // "error"')
+            deployment_sha=$(echo "$response" | jq -r '.deployment.sha // "unknown"')
 
-          echo "Health check passed!"
+            echo "Attempt $i/12: status=$status sha=$deployment_sha (expected=$expected_short)"
+
+            if [ "$status" = "ok" ] && [ "$deployment_sha" = "$expected_short" ]; then
+              echo "Health check passed! Deployed SHA matches."
+              exit 0
+            fi
+
+            sleep 5
+          done
+
+          echo "::error::Health check failed after 60s. Last status=$status, sha=$deployment_sha, expected=$expected_short"
+          exit 1
 
       - name: Smoke Tests
         run: |
@@ -281,9 +289,7 @@ jobs:
         if: success()
         env:
           GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
-        run: |
-          npm install googleapis --no-save --silent
-          node scripts/submit-sitemap-gsc.mjs
+        run: node scripts/submit-sitemap-gsc.mjs
 
       - name: Notify on failure
         if: failure()

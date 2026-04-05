@@ -97,7 +97,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: KarpeSlop AI Quality Check
-        run: npx karpeslop@latest --quiet --strict
+        run: npx karpeslop@1.0.25 --quiet --strict
         continue-on-error: true
 
   build:
