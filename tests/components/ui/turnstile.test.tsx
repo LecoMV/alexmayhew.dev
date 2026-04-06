@@ -10,11 +10,11 @@ vi.mock("@marsidev/react-turnstile", () => ({
 }));
 
 describe("Turnstile", () => {
-	it("renders dev placeholder when no site key in development env", () => {
+	it("does not render widget when no site key", () => {
 		const original = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 		process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = "";
-		const { container } = render(<Turnstile onSuccess={vi.fn()} />);
-		expect(container.textContent).toContain("Turnstile");
+		render(<Turnstile onSuccess={vi.fn()} />);
+		expect(screen.queryByTestId("turnstile-widget")).toBeNull();
 		if (original) process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = original;
 	});
 
