@@ -23,7 +23,8 @@ vi.mock("@/components/analytics", () => ({
 	trackCTAClick: vi.fn(),
 }));
 
-const mockPages = [
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockPages: any[] = [
 	{
 		slug: "cto",
 		role: "cto" as const,
@@ -59,24 +60,24 @@ const mockPages = [
 
 describe("ForHubPage", () => {
 	it("renders the page heading", () => {
-		render(<ForHubPage pages={mockPages} />);
+		render(<ForHubPage pages={mockPages as never[]} />);
 		expect(screen.getByText("Technical Advisory")).toBeTruthy();
 	});
 
 	it("renders breadcrumb navigation", () => {
-		render(<ForHubPage pages={mockPages} />);
+		render(<ForHubPage pages={mockPages as never[]} />);
 		expect(screen.getByText("Home")).toBeTruthy();
 		expect(screen.getByText("For Leaders")).toBeTruthy();
 	});
 
 	it("renders role label for each page", () => {
-		render(<ForHubPage pages={mockPages} />);
+		render(<ForHubPage pages={mockPages as never[]} />);
 		// ROLE_LABELS["cto"] = "CTO", renders as "For CTO"
 		expect(screen.getByText("For CTO")).toBeTruthy();
 	});
 
 	it("renders headline from page data", () => {
-		render(<ForHubPage pages={mockPages} />);
+		render(<ForHubPage pages={mockPages as never[]} />);
 		expect(screen.getByText("Strategic Technology Leadership")).toBeTruthy();
 	});
 

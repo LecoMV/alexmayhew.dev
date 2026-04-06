@@ -27,6 +27,8 @@ vi.mock("@/components/newsletter/newsletter-signup", () => ({
 	NewsletterSignup: () => <div data-testid="newsletter-signup">Newsletter</div>,
 }));
 
+// Partial mock — only fields used by ServicesPage rendering
+
 const mockPages = [
 	{
 		slug: "nextjs-saas",
@@ -52,14 +54,14 @@ const mockPages = [
 
 describe("ServicesPage", () => {
 	it("renders the service tiers", () => {
-		render(<ServicesPage pages={mockPages} />);
+		render(<ServicesPage pages={mockPages as never[]} />);
 		expect(screen.getByText("Advisory Retainer")).toBeTruthy();
 		expect(screen.getByText("Strategic Implementation")).toBeTruthy();
 		expect(screen.getByText("Technical Due Diligence")).toBeTruthy();
 	});
 
 	it("renders trust metrics", () => {
-		render(<ServicesPage pages={mockPages} />);
+		render(<ServicesPage pages={mockPages as never[]} />);
 		expect(screen.getByText("400%")).toBeTruthy();
 		expect(screen.getByText("337x")).toBeTruthy();
 	});
@@ -70,7 +72,7 @@ describe("ServicesPage", () => {
 	});
 
 	it("renders newsletter signup", () => {
-		render(<ServicesPage pages={mockPages} />);
+		render(<ServicesPage pages={mockPages as never[]} />);
 		expect(screen.getByTestId("newsletter-signup")).toBeTruthy();
 	});
 });
