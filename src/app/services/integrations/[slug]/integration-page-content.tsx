@@ -27,17 +27,29 @@ import { useState } from "react";
 import { trackCTAClick } from "@/components/analytics";
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import { RelatedBlogPostsSection } from "@/components/seo";
-import { getPageBySlug, INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
 import { fadeInUp, springTransition, staggerContainer } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
-import type { IntegrationPage, PseoPage } from "@/data/pseo";
+import type { IntegrationPage } from "@/data/pseo";
+
+interface RelatedServiceLink {
+	slug: string;
+	techLabel: string;
+	industryLabel: string;
+	description: string;
+}
 
 interface IntegrationPageContentProps {
 	page: IntegrationPage;
+	industryLabelMap: Record<string, string>;
+	relatedServicePages: RelatedServiceLink[];
 }
 
-export function IntegrationPageContent({ page }: IntegrationPageContentProps) {
+export function IntegrationPageContent({
+	page,
+	industryLabelMap,
+	relatedServicePages,
+}: IntegrationPageContentProps) {
 	return (
 		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
 			<div className="max-w-content mx-auto">
@@ -45,7 +57,7 @@ export function IntegrationPageContent({ page }: IntegrationPageContentProps) {
 				<Breadcrumbs page={page} />
 
 				{/* Hero Section */}
-				<HeroSection page={page} />
+				<HeroSection page={page} industryLabelMap={industryLabelMap} />
 
 				{/* Platform Comparison */}
 				<PlatformComparisonSection page={page} />
@@ -86,8 +98,8 @@ export function IntegrationPageContent({ page }: IntegrationPageContentProps) {
 				<RelatedBlogPostsSection slugs={page.relatedBlogPosts} />
 
 				{/* Related Services */}
-				{page.relatedServices.length > 0 && (
-					<RelatedServicesSection relatedSlugs={page.relatedServices} />
+				{relatedServicePages.length > 0 && (
+					<RelatedServicesSection relatedServicePages={relatedServicePages} />
 				)}
 
 				{/* CTA Section */}
@@ -137,7 +149,13 @@ function Breadcrumbs({ page }: { page: IntegrationPage }) {
 	);
 }
 
-function HeroSection({ page }: { page: IntegrationPage }) {
+function HeroSection({
+	page,
+	industryLabelMap,
+}: {
+	page: IntegrationPage;
+	industryLabelMap: Record<string, string>;
+}) {
 	return (
 		<m.section className="mb-20" initial="hidden" animate="visible" variants={staggerContainer}>
 			<m.div variants={fadeInUp} className="mb-6">
@@ -171,7 +189,7 @@ function HeroSection({ page }: { page: IntegrationPage }) {
 						key={industry}
 						className="bg-gunmetal-glass/30 text-slate-text border border-white/10 px-3 py-1 font-mono text-xs"
 					>
-						{INDUSTRY_LABELS[industry]}
+						{industryLabelMap[industry]}
 					</span>
 				))}
 			</m.div>
@@ -902,14 +920,12 @@ function FaqSection({ faqs }: { faqs: IntegrationPage["faqs"] }) {
 	);
 }
 
-function RelatedServicesSection({ relatedSlugs }: { relatedSlugs: string[] }) {
-	// Resolve slugs to page data
-	const relatedPages = relatedSlugs
-		.map((slug) => getPageBySlug(slug))
-		.filter((page): page is PseoPage => page !== null && page !== undefined && page.published)
-		.slice(0, 4);
-
-	if (relatedPages.length === 0) return null;
+function RelatedServicesSection({
+	relatedServicePages,
+}: {
+	relatedServicePages: RelatedServiceLink[];
+}) {
+	if (relatedServicePages.length === 0) return null;
 
 	return (
 		<m.section
@@ -928,32 +944,27 @@ function RelatedServicesSection({ relatedSlugs }: { relatedSlugs: string[] }) {
 			</m.h2>
 
 			<m.div variants={fadeInUp} className="grid gap-4 sm:grid-cols-2">
-				{relatedPages.map((page) => {
-					const techLabel = TECHNOLOGY_LABELS[page.technology];
-					const industryLabel = INDUSTRY_LABELS[page.industry];
+				{relatedServicePages.map((related) => (
+					<Link
+						key={related.slug}
+						href={`/services/${related.slug}`}
+						className="group bg-gunmetal-glass/20 hover:border-cyber-lime/50 relative border border-white/10 p-6 transition-colors"
+					>
+						<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity group-hover:opacity-100" />
+						<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity group-hover:opacity-100" />
 
-					return (
-						<Link
-							key={page.slug}
-							href={`/services/${page.slug}`}
-							className="group bg-gunmetal-glass/20 hover:border-cyber-lime/50 relative border border-white/10 p-6 transition-colors"
-						>
-							<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity group-hover:opacity-100" />
-							<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity group-hover:opacity-100" />
-
-							<h3 className="text-mist-white group-hover:text-cyber-lime mb-2 font-mono text-sm tracking-tight transition-colors">
-								{techLabel} for {industryLabel}
-							</h3>
-							<p className="text-slate-text line-clamp-2 text-sm">{page.seo.description}</p>
-							<div className="mt-4 flex items-center gap-2">
-								<span className="group-hover:text-cyber-lime text-slate-text font-mono text-xs transition-colors">
-									Learn more
-								</span>
-								<ArrowRight className="group-hover:text-cyber-lime text-slate-text h-3 w-3 transition-colors" />
-							</div>
-						</Link>
-					);
-				})}
+						<h3 className="text-mist-white group-hover:text-cyber-lime mb-2 font-mono text-sm tracking-tight transition-colors">
+							{related.techLabel} for {related.industryLabel}
+						</h3>
+						<p className="text-slate-text line-clamp-2 text-sm">{related.description}</p>
+						<div className="mt-4 flex items-center gap-2">
+							<span className="group-hover:text-cyber-lime text-slate-text font-mono text-xs transition-colors">
+								Learn more
+							</span>
+							<ArrowRight className="group-hover:text-cyber-lime text-slate-text h-3 w-3 transition-colors" />
+						</div>
+					</Link>
+				))}
 			</m.div>
 		</m.section>
 	);

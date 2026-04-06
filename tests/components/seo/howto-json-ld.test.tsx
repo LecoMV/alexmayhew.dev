@@ -53,3 +53,42 @@ describe("HowToJsonLd", () => {
 		expect(data.supply[0]["@type"]).toBe("HowToSupply");
 	});
 });
+
+import {
+	generateIntegrationHowToSteps,
+	generateMigrationHowToSteps,
+} from "@/components/seo/howto-json-ld";
+
+describe("generateMigrationHowToSteps", () => {
+	it("returns 6 steps with correct structure", () => {
+		const steps = generateMigrationHowToSteps("AngularJS", "Next.js");
+		expect(steps).toHaveLength(6);
+		steps.forEach((step) => {
+			expect(step.name).toBeTruthy();
+			expect(step.text).toBeTruthy();
+		});
+	});
+
+	it("includes technology names in step text", () => {
+		const steps = generateMigrationHowToSteps("Rails", "FastAPI");
+		expect(steps[0].text).toContain("Rails");
+		expect(steps[1].text).toContain("FastAPI");
+	});
+});
+
+describe("generateIntegrationHowToSteps", () => {
+	it("returns 6 steps with correct structure", () => {
+		const steps = generateIntegrationHowToSteps("Stripe", "Salesforce");
+		expect(steps).toHaveLength(6);
+		steps.forEach((step) => {
+			expect(step.name).toBeTruthy();
+			expect(step.text).toBeTruthy();
+		});
+	});
+
+	it("includes SaaS names in step text", () => {
+		const steps = generateIntegrationHowToSteps("HubSpot", "Slack");
+		expect(steps[0].text).toContain("HubSpot");
+		expect(steps[0].text).toContain("Slack");
+	});
+});

@@ -18,17 +18,28 @@ import { useState } from "react";
 import { trackCTAClick } from "@/components/analytics";
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import { RelatedBlogPostsSection } from "@/components/seo";
-import { getPageBySlug, INDUSTRY_LABELS } from "@/data/pseo";
 import { fadeInUp, springTransition, staggerContainer } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
-import type { ComparisonPage, PseoPage } from "@/data/pseo";
+import type { ComparisonPage } from "@/data/pseo";
+
+interface RelatedServiceLink {
+	slug: string;
+	title: string;
+	description: string;
+}
 
 interface ComparisonPageContentProps {
 	page: ComparisonPage;
+	industryLabelMap: Record<string, string>;
+	relatedServicePages: RelatedServiceLink[];
 }
 
-export function ComparisonPageContent({ page }: ComparisonPageContentProps) {
+export function ComparisonPageContent({
+	page,
+	industryLabelMap,
+	relatedServicePages,
+}: ComparisonPageContentProps) {
 	return (
 		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
 			<div className="max-w-content mx-auto">
@@ -36,7 +47,7 @@ export function ComparisonPageContent({ page }: ComparisonPageContentProps) {
 				<Breadcrumbs page={page} />
 
 				{/* Hero Section */}
-				<HeroSection page={page} />
+				<HeroSection page={page} industryLabelMap={industryLabelMap} />
 
 				{/* Quick Verdict */}
 				<QuickVerdictSection page={page} />
@@ -80,8 +91,8 @@ export function ComparisonPageContent({ page }: ComparisonPageContentProps) {
 				<RelatedBlogPostsSection slugs={page.relatedBlogPosts} />
 
 				{/* Related Services */}
-				{page.relatedServices.length > 0 && (
-					<RelatedServicesSection relatedSlugs={page.relatedServices} />
+				{relatedServicePages.length > 0 && (
+					<RelatedServicesSection relatedServicePages={relatedServicePages} />
 				)}
 
 				{/* CTA Section */}
@@ -131,7 +142,13 @@ function Breadcrumbs({ page }: { page: ComparisonPage }) {
 	);
 }
 
-function HeroSection({ page }: { page: ComparisonPage }) {
+function HeroSection({
+	page,
+	industryLabelMap,
+}: {
+	page: ComparisonPage;
+	industryLabelMap: Record<string, string>;
+}) {
 	return (
 		<m.section className="mb-20" initial="hidden" animate="visible" variants={staggerContainer}>
 			<m.div variants={fadeInUp} className="mb-6">
@@ -163,7 +180,7 @@ function HeroSection({ page }: { page: ComparisonPage }) {
 						key={industry}
 						className="bg-gunmetal-glass/30 text-slate-text border border-white/10 px-3 py-1 font-mono text-xs"
 					>
-						{INDUSTRY_LABELS[industry]}
+						{industryLabelMap[industry]}
 					</span>
 				))}
 			</m.div>
@@ -838,12 +855,12 @@ function FaqSection({ faqs }: { faqs: ComparisonPage["faqs"] }) {
 	);
 }
 
-function RelatedServicesSection({ relatedSlugs }: { relatedSlugs: string[] }) {
-	const relatedPages = relatedSlugs
-		.map((slug) => getPageBySlug(slug))
-		.filter((page): page is PseoPage => page !== undefined);
-
-	if (relatedPages.length === 0) return null;
+function RelatedServicesSection({
+	relatedServicePages,
+}: {
+	relatedServicePages: RelatedServiceLink[];
+}) {
+	if (relatedServicePages.length === 0) return null;
 
 	return (
 		<m.section
@@ -862,16 +879,16 @@ function RelatedServicesSection({ relatedSlugs }: { relatedSlugs: string[] }) {
 			</m.h2>
 
 			<m.div variants={fadeInUp} className="grid gap-4 md:grid-cols-3">
-				{relatedPages.slice(0, 3).map((page) => (
+				{relatedServicePages.slice(0, 3).map((related) => (
 					<Link
-						key={page.slug}
-						href={`/services/${page.slug}`}
+						key={related.slug}
+						href={`/services/${related.slug}`}
 						className="group bg-gunmetal-glass/20 relative block border border-white/10 p-6 transition-colors hover:border-white/20"
 					>
 						<h3 className="text-mist-white group-hover:text-cyber-lime mb-2 font-mono transition-colors">
-							{page.seo.title.split("|")[0].trim()}
+							{related.title}
 						</h3>
-						<p className="text-slate-text line-clamp-2 text-sm">{page.seo.description}</p>
+						<p className="text-slate-text line-clamp-2 text-sm">{related.description}</p>
 						<ArrowRight className="text-slate-text group-hover:text-cyber-lime absolute right-4 bottom-4 h-4 w-4 transition-colors" />
 					</Link>
 				))}

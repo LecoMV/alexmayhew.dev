@@ -19,22 +19,33 @@ import { useState } from "react";
 import { trackCTAClick } from "@/components/analytics";
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import { RelatedBlogPostsSection, TopicClusterNav } from "@/components/seo";
-import { INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
 import { useContentAnalytics } from "@/lib/hooks/use-content-analytics";
 import { fadeInUp, gentleSpring, springTransition, staggerContainer } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 import type { ExpertApproach, PseoPage } from "@/data/pseo";
 
-interface ServicePageContentProps {
-	page: PseoPage;
-	relatedPages: PseoPage[];
+/** Pre-resolved related service for client rendering (avoids bundling pSEO data) */
+export interface RelatedServiceSummary {
+	slug: string;
+	techLabel: string;
+	industryLabel: string;
+	description: string;
 }
 
-export function ServicePageContent({ page, relatedPages }: ServicePageContentProps) {
-	const techLabel = TECHNOLOGY_LABELS[page.technology];
-	const industryLabel = INDUSTRY_LABELS[page.industry];
+interface ServicePageContentProps {
+	page: PseoPage;
+	techLabel: string;
+	industryLabel: string;
+	relatedPages: RelatedServiceSummary[];
+}
 
+export function ServicePageContent({
+	page,
+	techLabel,
+	industryLabel,
+	relatedPages,
+}: ServicePageContentProps) {
 	// Track service page analytics
 	useContentAnalytics({
 		contentId: page.slug,
@@ -733,7 +744,7 @@ function FaqSection({ faqs }: { faqs: PseoPage["faqs"] }) {
 	);
 }
 
-function RelatedServicesSection({ relatedPages }: { relatedPages: PseoPage[] }) {
+function RelatedServicesSection({ relatedPages }: { relatedPages: RelatedServiceSummary[] }) {
 	return (
 		<m.section
 			className="mb-20"
@@ -748,39 +759,34 @@ function RelatedServicesSection({ relatedPages }: { relatedPages: PseoPage[] }) 
 			</h2>
 
 			<div className="grid gap-4 sm:grid-cols-2">
-				{relatedPages.map((page, index) => {
-					const techLabel = TECHNOLOGY_LABELS[page.technology];
-					const industryLabel = INDUSTRY_LABELS[page.industry];
-
-					return (
-						<m.div
-							key={page.slug}
-							initial={{ opacity: 0, y: 20 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							viewport={{ once: true }}
-							transition={{ ...springTransition, delay: index * 0.1 }}
+				{relatedPages.map((related, index) => (
+					<m.div
+						key={related.slug}
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true }}
+						transition={{ ...springTransition, delay: index * 0.1 }}
+					>
+						<Link
+							href={`/services/${related.slug}`}
+							className="group bg-gunmetal-glass/10 hover:border-cyber-lime/50 relative flex items-center justify-between border border-white/10 p-5 transition-colors duration-300"
 						>
-							<Link
-								href={`/services/${page.slug}`}
-								className="group bg-gunmetal-glass/10 hover:border-cyber-lime/50 relative flex items-center justify-between border border-white/10 p-5 transition-colors duration-300"
-							>
-								<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-								<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+							<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+							<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-								<div>
-									<h3 className="group-hover:text-cyber-lime mb-1 font-mono text-sm tracking-tight transition-colors">
-										{techLabel} for {industryLabel}
-									</h3>
-									<p className="text-slate-text line-clamp-1 text-xs">{page.seo.description}</p>
-								</div>
-								<ExternalLink
-									className="text-slate-text group-hover:text-cyber-lime ml-4 h-4 w-4 shrink-0 transition-colors"
-									strokeWidth={1.5}
-								/>
-							</Link>
-						</m.div>
-					);
-				})}
+							<div>
+								<h3 className="group-hover:text-cyber-lime mb-1 font-mono text-sm tracking-tight transition-colors">
+									{related.techLabel} for {related.industryLabel}
+								</h3>
+								<p className="text-slate-text line-clamp-1 text-xs">{related.description}</p>
+							</div>
+							<ExternalLink
+								className="text-slate-text group-hover:text-cyber-lime ml-4 h-4 w-4 shrink-0 transition-colors"
+								strokeWidth={1.5}
+							/>
+						</Link>
+					</m.div>
+				))}
 			</div>
 		</m.section>
 	);

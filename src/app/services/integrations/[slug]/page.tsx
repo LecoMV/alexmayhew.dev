@@ -1,7 +1,13 @@
 import { notFound } from "next/navigation";
 
 import { IntegrationJsonLd } from "@/components/seo/integration-json-ld";
-import { getAllIntegrationSlugs, getIntegrationPageBySlug } from "@/data/pseo";
+import {
+	getAllIntegrationSlugs,
+	getIntegrationPageBySlug,
+	getPageBySlug,
+	INDUSTRY_LABELS,
+	TECHNOLOGY_LABELS,
+} from "@/data/pseo";
 
 import { IntegrationPageContent } from "./integration-page-content";
 
@@ -82,10 +88,30 @@ export default async function IntegrationPage({ params }: PageProps) {
 		notFound();
 	}
 
+	const industryLabelMap: Record<string, string> = {};
+	for (const industry of page.targetIndustries) {
+		industryLabelMap[industry] = INDUSTRY_LABELS[industry] ?? industry;
+	}
+
+	const relatedServicePages = page.relatedServices
+		.map((s) => getPageBySlug(s))
+		.filter((p) => p !== undefined && p.published)
+		.slice(0, 4)
+		.map((p) => ({
+			slug: p!.slug,
+			techLabel: TECHNOLOGY_LABELS[p!.technology],
+			industryLabel: INDUSTRY_LABELS[p!.industry],
+			description: p!.seo.description,
+		}));
+
 	return (
 		<>
 			<IntegrationJsonLd page={page} />
-			<IntegrationPageContent page={page} />
+			<IntegrationPageContent
+				page={page}
+				industryLabelMap={industryLabelMap}
+				relatedServicePages={relatedServicePages}
+			/>
 		</>
 	);
 }

@@ -1,7 +1,12 @@
 import { notFound } from "next/navigation";
 
 import { ComparisonJsonLd } from "@/components/seo/comparison-json-ld";
-import { getAllComparisonSlugs, getComparisonPageBySlug } from "@/data/pseo";
+import {
+	getAllComparisonSlugs,
+	getComparisonPageBySlug,
+	getPageBySlug,
+	INDUSTRY_LABELS,
+} from "@/data/pseo";
 
 import { ComparisonPageContent } from "./comparison-page-content";
 
@@ -82,10 +87,29 @@ export default async function ComparisonPage({ params }: PageProps) {
 		notFound();
 	}
 
+	const industryLabelMap: Record<string, string> = {};
+	for (const industry of page.targetIndustries) {
+		industryLabelMap[industry] = INDUSTRY_LABELS[industry] ?? industry;
+	}
+
+	const relatedServicePages = page.relatedServices
+		.map((s) => getPageBySlug(s))
+		.filter((p) => p !== undefined && p.published)
+		.slice(0, 3)
+		.map((p) => ({
+			slug: p!.slug,
+			title: p!.seo.title.split("|")[0].trim(),
+			description: p!.seo.description,
+		}));
+
 	return (
 		<>
 			<ComparisonJsonLd page={page} />
-			<ComparisonPageContent page={page} />
+			<ComparisonPageContent
+				page={page}
+				industryLabelMap={industryLabelMap}
+				relatedServicePages={relatedServicePages}
+			/>
 		</>
 	);
 }

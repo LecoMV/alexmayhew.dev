@@ -1,7 +1,13 @@
 import { notFound } from "next/navigation";
 
 import { MigrationJsonLd } from "@/components/seo/migration-json-ld";
-import { getAllMigrationSlugs, getMigrationPageBySlug } from "@/data/pseo";
+import {
+	getAllMigrationSlugs,
+	getMigrationPageBySlug,
+	getPageBySlug,
+	INDUSTRY_LABELS,
+	TECHNOLOGY_LABELS,
+} from "@/data/pseo";
 
 import { MigrationPageContent } from "./migration-page-content";
 
@@ -82,10 +88,30 @@ export default async function MigrationPage({ params }: PageProps) {
 		notFound();
 	}
 
+	const industryLabelMap: Record<string, string> = {};
+	for (const industry of page.targetIndustries) {
+		industryLabelMap[industry] = INDUSTRY_LABELS[industry] ?? industry;
+	}
+
+	const relatedServicePages = page.relatedServices
+		.map((s) => getPageBySlug(s))
+		.filter((p) => p !== undefined && p.published)
+		.slice(0, 4)
+		.map((p) => ({
+			slug: p!.slug,
+			techLabel: TECHNOLOGY_LABELS[p!.technology],
+			industryLabel: INDUSTRY_LABELS[p!.industry],
+			description: p!.seo.description,
+		}));
+
 	return (
 		<>
 			<MigrationJsonLd page={page} />
-			<MigrationPageContent page={page} />
+			<MigrationPageContent
+				page={page}
+				industryLabelMap={industryLabelMap}
+				relatedServicePages={relatedServicePages}
+			/>
 		</>
 	);
 }

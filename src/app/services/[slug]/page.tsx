@@ -91,12 +91,25 @@ export default async function ServicePage({ params }: PageProps) {
 		notFound();
 	}
 
-	const relatedPages = getRelatedPages(slug, 4);
+	const techLabel = TECHNOLOGY_LABELS[page.technology];
+	const industryLabel = INDUSTRY_LABELS[page.industry];
+
+	const relatedPages = getRelatedPages(slug, 4).map((rp) => ({
+		slug: rp.slug,
+		techLabel: TECHNOLOGY_LABELS[rp.technology],
+		industryLabel: INDUSTRY_LABELS[rp.industry],
+		description: rp.seo.description,
+	}));
 
 	return (
 		<>
 			<ServiceJsonLd page={page} />
-			<ServicePageContent page={page} relatedPages={relatedPages} />
+			<ServicePageContent
+				page={page}
+				techLabel={techLabel}
+				industryLabel={industryLabel}
+				relatedPages={relatedPages}
+			/>
 		</>
 	);
 }

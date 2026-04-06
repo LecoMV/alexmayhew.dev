@@ -1,11 +1,12 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+
 import {
-	projects,
 	categories,
-	getProjectsRecord,
-	getProjectsByCategory,
-	getFeaturedProjects,
 	type Category,
+	getFeaturedProjects,
+	getProjectsByCategory,
+	getProjectsRecord,
+	projects,
 } from "@/data/projects";
 
 describe("projects data", () => {
@@ -131,5 +132,29 @@ describe("projects data", () => {
 			const featured = getFeaturedProjects();
 			expect(featured.length).toBeGreaterThan(0);
 		});
+	});
+});
+
+import { getCaseStudyProjects, getProjectById } from "@/data/projects";
+
+describe("getCaseStudyProjects", () => {
+	it("returns only projects with published case studies", () => {
+		const caseStudyProjects = getCaseStudyProjects();
+		caseStudyProjects.forEach((project) => {
+			expect(project.caseStudy?.published).toBe(true);
+		});
+	});
+});
+
+describe("getProjectById", () => {
+	it("returns a project for a valid id", () => {
+		const first = projects[0];
+		const found = getProjectById(first.id);
+		expect(found).toBeDefined();
+		expect(found!.id).toBe(first.id);
+	});
+
+	it("returns undefined for an invalid id", () => {
+		expect(getProjectById("nonexistent-project-xyz")).toBeUndefined();
 	});
 });
