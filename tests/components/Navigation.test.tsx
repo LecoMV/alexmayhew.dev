@@ -92,4 +92,68 @@ describe("Navigation", () => {
 		expect(desktopNavContainer).toBeTruthy();
 		expect(desktopNavContainer.className).toContain("min-w-0");
 	});
+
+	it("renders tools dropdown button with aria attributes", () => {
+		render(<Navigation />);
+		const toolsButton = screen.getByRole("button", { name: /tools/i });
+		expect(toolsButton).toBeTruthy();
+		expect(toolsButton.getAttribute("aria-haspopup")).toBe("true");
+		expect(toolsButton.getAttribute("aria-expanded")).toBe("false");
+	});
+
+	it("closes mobile menu on Escape key", () => {
+		render(<Navigation />);
+		const menuButton = screen.getByLabelText(/open menu/i);
+		fireEvent.click(menuButton);
+		expect(screen.getByLabelText(/close menu/i)).toBeTruthy();
+
+		fireEvent.keyDown(document, { key: "Escape" });
+		expect(screen.getByLabelText(/open menu/i)).toBeTruthy();
+	});
+
+	it("renders search button with aria-label", () => {
+		render(<Navigation />);
+		const searchButton = screen.getByLabelText("Search (Cmd+K)");
+		expect(searchButton).toBeTruthy();
+	});
+
+	it("renders Book a Call CTA link", () => {
+		render(<Navigation />);
+		const cta = screen.getByText("Book a Call");
+		expect(cta).toBeTruthy();
+		expect(cta.closest("a")?.getAttribute("href")).toBe("/contact");
+	});
+
+	it("shows tools sub-items in mobile menu", () => {
+		render(<Navigation />);
+		const menuButton = screen.getByLabelText(/open menu/i);
+		fireEvent.click(menuButton);
+
+		expect(screen.getByText("Voice Cloner")).toBeTruthy();
+		expect(screen.getByText("TraceForge")).toBeTruthy();
+		expect(screen.getByText("Claude Pilot")).toBeTruthy();
+	});
+
+	it("renders tools dropdown items when tools button is clicked", () => {
+		render(<Navigation />);
+		const toolsButton = screen.getByRole("button", { name: /tools/i });
+		fireEvent.click(toolsButton);
+
+		expect(screen.getByText("Voice Cloner")).toBeTruthy();
+		expect(screen.getByText("TraceForge")).toBeTruthy();
+		expect(screen.getByText("Claude Pilot")).toBeTruthy();
+		expect(screen.getByText("View all tools")).toBeTruthy();
+	});
+
+	it("closes tools dropdown when clicking outside", () => {
+		render(<Navigation />);
+		const toolsButton = screen.getByRole("button", { name: /tools/i });
+		fireEvent.click(toolsButton);
+		expect(screen.getByText("Voice Cloner")).toBeTruthy();
+
+		fireEvent.mouseDown(document.body);
+		// After click outside the dropdown should close
+		// The AnimatePresence may need a tick
+		expect(screen.queryByRole("menu")).toBeNull();
+	});
 });

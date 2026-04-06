@@ -18,8 +18,15 @@ describe("page titles do not duplicate site name suffix", () => {
 
 			const content = readFileSync(file, "utf-8");
 
-			// Match title strings that contain "| Alex Mayhew" (but not the template definition)
-			const titleMatches = content.match(/title:\s*[`"'].*\|\s*Alex Mayhew[`"']/g) || [];
+			// Match top-level title strings that contain "| Alex Mayhew" (but not OG/Twitter titles or template)
+			// OG/Twitter titles don't use the root template, so they may legitimately include the suffix
+			const titleMatches =
+				content.match(/^\s+title:\s*[`"'].*\|\s*Alex Mayhew[`"']/gm)?.filter((match) => {
+					// Allow openGraph.title and twitter.title (they don't use root template)
+					const idx = content.indexOf(match);
+					const before = content.slice(Math.max(0, idx - 200), idx);
+					return !before.includes("openGraph") && !before.includes("twitter");
+				}) || [];
 			for (const match of titleMatches) {
 				violations.push(`${file}: ${match.trim()}`);
 			}

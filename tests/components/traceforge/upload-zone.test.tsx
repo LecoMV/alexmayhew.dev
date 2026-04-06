@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { UploadZone } from "@/components/traceforge/upload-zone";
@@ -34,5 +34,67 @@ describe("UploadZone", () => {
 	it("renders in disabled state without crashing", () => {
 		const { container } = render(<UploadZone {...defaultProps} disabled />);
 		expect(container).toBeTruthy();
+	});
+
+	it("calls onFileSelect when a valid file is dropped", () => {
+		const onFileSelect = vi.fn();
+		const { container } = render(<UploadZone {...defaultProps} onFileSelect={onFileSelect} />);
+
+		const dropZone = container.querySelector("[class*='cursor-pointer']")!;
+		const file = new File(["pixels"], "test.png", { type: "image/png" });
+
+		fireEvent.dragOver(dropZone, { dataTransfer: { files: [file] } });
+		fireEvent.drop(dropZone, { dataTransfer: { files: [file] } });
+
+		expect(onFileSelect).toHaveBeenCalledWith(file);
+	});
+
+	it("shows error for invalid file type", () => {
+		const { container } = render(<UploadZone {...defaultProps} />);
+
+		const dropZone = container.querySelector("[class*='cursor-pointer']")!;
+		const file = new File(["data"], "test.pdf", { type: "application/pdf" });
+
+		fireEvent.drop(dropZone, { dataTransfer: { files: [file] } });
+
+		expect(screen.getByText(/Invalid file type/)).toBeTruthy();
+	});
+
+	it("shows error for file exceeding 20MB", () => {
+		const { container } = render(<UploadZone {...defaultProps} />);
+
+		const dropZone = container.querySelector("[class*='cursor-pointer']")!;
+		const largeContent = new ArrayBuffer(21 * 1024 * 1024);
+		const file = new File([largeContent], "huge.png", { type: "image/png" });
+
+		fireEvent.drop(dropZone, { dataTransfer: { files: [file] } });
+
+		expect(screen.getByText(/File too large/)).toBeTruthy();
+	});
+
+	it("calls onFileSelect when file is selected via input", () => {
+		const onFileSelect = vi.fn();
+		const { container } = render(<UploadZone {...defaultProps} onFileSelect={onFileSelect} />);
+
+		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+		const file = new File(["pixels"], "test.jpg", { type: "image/jpeg" });
+
+		fireEvent.change(input, { target: { files: [file] } });
+
+		expect(onFileSelect).toHaveBeenCalledWith(file);
+	});
+
+	it("does not call onFileSelect when disabled and file is dropped", () => {
+		const onFileSelect = vi.fn();
+		const { container } = render(
+			<UploadZone {...defaultProps} onFileSelect={onFileSelect} disabled />
+		);
+
+		const dropZone = container.querySelector("[class*='cursor-']")!;
+		const file = new File(["pixels"], "test.png", { type: "image/png" });
+
+		fireEvent.drop(dropZone, { dataTransfer: { files: [file] } });
+
+		expect(onFileSelect).not.toHaveBeenCalled();
 	});
 });

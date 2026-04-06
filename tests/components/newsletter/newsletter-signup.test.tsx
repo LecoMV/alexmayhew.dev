@@ -163,4 +163,24 @@ describe("NewsletterSignup", () => {
 			expect(emailInput.getAttribute("aria-invalid")).toBe("true");
 		});
 	});
+
+	describe("inline variant error state", () => {
+		beforeEach(() => {
+			mockState = { success: false, error: "Server error" };
+			vi.mocked(useActionState).mockReturnValue([mockState, mockFormAction, false]);
+		});
+
+		it("shows inline error with role='alert'", () => {
+			render(<NewsletterSignup variant="inline" />);
+			expect(screen.getByRole("alert")).toBeDefined();
+			expect(screen.getByText("Server error")).toBeDefined();
+		});
+	});
+
+	describe("card variant without description", () => {
+		it("hides description when showDescription is false", () => {
+			render(<NewsletterSignup showDescription={false} />);
+			expect(screen.queryByText(/One actionable technical insight/)).toBeNull();
+		});
+	});
 });

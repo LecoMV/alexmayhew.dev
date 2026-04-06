@@ -1,5 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
 
+vi.mock("@/lib/geo", async () => {
+	const actual = await vi.importActual("@/lib/geo");
+	return {
+		...actual,
+		getGeoDataForClient: vi.fn((...args: unknown[]) =>
+			(actual as Record<string, (...args: unknown[]) => unknown>).getGeoDataForClient(...args)
+		),
+	};
+});
 vi.mock("next/server", () => {
 	return {
 		NextResponse: {
@@ -66,5 +75,18 @@ describe("GET /api/geo", () => {
 			isEU: false,
 			requiresCookieConsent: true,
 		});
+	});
+
+	it("returns 500 when geo lookup throws an error", async () => {
+		const request = new Request("https://alexmayhew.dev/api/geo");
+		const { getGeoDataForClient } = await import("@/lib/geo");
+		vi.mocked(getGeoDataForClient).mockImplementationOnce(() => {
+			throw new Error("Lookup failed");
+		});
+
+		const response = await GET(request);
+		expect(response.status).toBe(500);
+		const body = (await response.json()) as { error: string };
+		expect(body.error).toBe("Failed to determine location");
 	});
 });

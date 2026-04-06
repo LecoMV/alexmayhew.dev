@@ -1,7 +1,7 @@
 "use client";
 
 import { m } from "framer-motion";
-import { ArrowUpRight, Download, Layers, Mic, Sparkles, Terminal } from "lucide-react";
+import { ArrowUpRight, BarChart3, Download, Layers, Mic, Sparkles, Terminal } from "lucide-react";
 import Link from "next/link";
 
 import { springTransition } from "@/lib/motion-constants";
@@ -43,6 +43,19 @@ const tools: Tool[] = [
 		href: "/tools/voice-cloner",
 		icon: <Mic className="h-6 w-6" strokeWidth={1.5} />,
 		badge: "Live",
+		badgeColor: "lime",
+		status: "demo",
+		featured: true,
+	},
+	{
+		id: "saas-readiness",
+		name: "SaaS Readiness",
+		tagline: "Scaling Readiness Assessment",
+		description:
+			"Evaluate your SaaS architecture maturity across 8 dimensions. Get a readiness score and actionable recommendations in under 3 minutes. No email required.",
+		href: "/tools/saas-readiness",
+		icon: <BarChart3 className="h-6 w-6" strokeWidth={1.5} />,
+		badge: "Free",
 		badgeColor: "lime",
 		status: "demo",
 		featured: true,
