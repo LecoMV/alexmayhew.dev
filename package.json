@@ -96,7 +96,7 @@
 		"tailwindcss": "^4",
 		"tdd-guard-vitest": "^0.1.6",
 		"ts-morph": "^27.0.2",
-		"typescript": "^5",
+		"typescript": "^6",
 		"vitest": "^4.0.17",
 		"wrangler": "^4.60.0"
 	},
