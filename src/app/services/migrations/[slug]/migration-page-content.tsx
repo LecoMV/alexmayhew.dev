@@ -21,6 +21,7 @@ import { useState } from "react";
 import { trackCTAClick } from "@/components/analytics";
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import { RelatedBlogPostsSection } from "@/components/seo";
+import { CornerBrackets } from "@/components/ui/corner-brackets";
 import { fadeInUp, springTransition, staggerContainer } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
@@ -45,7 +46,7 @@ export function MigrationPageContent({
 	relatedServicePages,
 }: MigrationPageContentProps) {
 	return (
-		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
+		<section className="page-layout">
 			<div className="max-w-content mx-auto">
 				{/* Breadcrumbs */}
 				<Breadcrumbs page={page} />
@@ -273,8 +274,7 @@ function RiskDashboard({ page }: { page: MigrationPage }) {
 
 				{/* Modern Tech Card */}
 				<div className="bg-gunmetal-glass/20 relative border border-white/10 p-6 backdrop-blur-md">
-					<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r" />
-					<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l" />
+					<CornerBrackets />
 
 					<div className="mb-4 flex items-center gap-3">
 						<Zap className="text-cyber-lime h-5 w-5" />
@@ -538,8 +538,7 @@ function MigrationApproachSection({ content }: { content: string }) {
 				variants={fadeInUp}
 				className="bg-gunmetal-glass/20 relative border border-white/10 p-8"
 			>
-				<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r" />
-				<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l" />
+				<CornerBrackets />
 
 				<p className="text-mist-white text-base leading-relaxed whitespace-pre-line">{content}</p>
 			</m.div>
@@ -839,8 +838,7 @@ function RelatedServicesSection({
 						href={`/services/${related.slug}`}
 						className="group bg-gunmetal-glass/20 hover:border-cyber-lime/50 relative border border-white/10 p-6 transition-colors"
 					>
-						<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity group-hover:opacity-100" />
-						<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity group-hover:opacity-100" />
+						<CornerBrackets hover />
 
 						<h3 className="text-mist-white group-hover:text-cyber-lime mb-2 font-mono text-sm tracking-tight transition-colors">
 							{related.techLabel} for {related.industryLabel}

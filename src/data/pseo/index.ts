@@ -36,6 +36,8 @@ export type {
 export {
 	// Utility functions
 	generateSlug,
+	getClusterRelatedPages,
+	getPageClusters,
 	INDUSTRY_LABELS,
 	parseSlug,
 	TECHNOLOGY_CATEGORIES,

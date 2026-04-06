@@ -17,6 +17,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { trackCTAClick } from "@/components/analytics";
+import { CornerBrackets } from "@/components/ui/corner-brackets";
 import { ROLE_LABELS, SERVICE_TIER_DESCRIPTIONS, SERVICE_TIER_LABELS } from "@/data/roles";
 import { fadeInUp, gentleSpring, springTransition, staggerContainer } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
@@ -31,7 +32,7 @@ export function RolePageContent({ page }: RolePageContentProps) {
 	const roleLabel = ROLE_LABELS[page.role];
 
 	return (
-		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
+		<section className="page-layout">
 			<div className="max-w-content mx-auto">
 				{/* Breadcrumbs */}
 				<Breadcrumbs roleLabel={roleLabel} />
@@ -175,8 +176,7 @@ function ProofMetricsSection({ metrics }: { metrics: string[] }) {
 						viewport={{ once: true }}
 						transition={{ ...springTransition, delay: index * 0.05 }}
 					>
-						<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-						<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+						<CornerBrackets hover />
 
 						<div className="flex items-start gap-3">
 							<CheckCircle className="text-cyber-lime mt-0.5 h-5 w-5 shrink-0" strokeWidth={1.5} />
@@ -339,8 +339,7 @@ function ServiceTiersSection({
 						viewport={{ once: true }}
 						transition={{ ...springTransition, delay: index * 0.05 }}
 					>
-						<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-						<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+						<CornerBrackets hover />
 
 						<div className="mb-4 flex items-center gap-3">
 							<Users className="text-cyber-lime h-5 w-5" strokeWidth={1.5} />
@@ -418,8 +417,7 @@ function RelatedServicesSection({ services }: { services: string[] }) {
 							href={`/services/${serviceSlug}`}
 							className="group bg-gunmetal-glass/10 hover:border-cyber-lime/50 relative flex items-center justify-between border border-white/10 p-5 transition-colors duration-300"
 						>
-							<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-							<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+							<CornerBrackets hover />
 
 							<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">
 								{formatServiceSlug(serviceSlug)}

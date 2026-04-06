@@ -15,6 +15,7 @@ import {
 import Link from "next/link";
 
 import { trackCTAClick } from "@/components/analytics";
+import { CornerBrackets } from "@/components/ui/corner-brackets";
 import { getTechnologyIds, technologies } from "@/data/pseo/technologies";
 import { gentleSpring, springTransition } from "@/lib/motion-constants";
 
@@ -37,7 +38,7 @@ export function TechnologiesPageContent() {
 	const techIds = getTechnologyIds();
 
 	return (
-		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
+		<section className="page-layout">
 			<div className="max-w-content mx-auto">
 				{/* Hero Section */}
 				<m.section
@@ -95,8 +96,7 @@ export function TechnologiesPageContent() {
 										href={`/technologies/${techId}`}
 										className="bg-gunmetal-glass/20 group relative flex h-full flex-col border border-white/10 p-6 transition-colors hover:border-white/20"
 									>
-										<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity group-hover:opacity-100" />
-										<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity group-hover:opacity-100" />
+										<CornerBrackets hover />
 
 										<div className="mb-4 flex items-center gap-3">
 											<Icon className="text-cyber-lime h-6 w-6" strokeWidth={1.5} />

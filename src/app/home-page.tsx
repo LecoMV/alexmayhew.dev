@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import { trackCTAClick } from "@/components/analytics";
 import { NewsletterSignup } from "@/components/newsletter";
+import { CornerBrackets } from "@/components/ui/corner-brackets";
 import { fadeInUp, gentleSpring, springTransition, staggerContainer } from "@/lib/motion-constants";
 
 const services = [
@@ -130,8 +131,7 @@ export default function Home() {
 						transition={{ ...springTransition, delay: 0.4 }}
 					>
 						<div className="bg-gunmetal-glass/20 relative aspect-square w-full border-t border-b border-l border-white/10 p-6 backdrop-blur-sm">
-							<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r" />
-							<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l" />
+							<CornerBrackets />
 
 							<div className="space-y-2 font-mono text-xs leading-5 text-white/40 select-none">
 								<p>
@@ -202,8 +202,7 @@ export default function Home() {
 									transition={{ ...springTransition, delay: index * 0.1 }}
 								>
 									{/* Corner accents */}
-									<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-									<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+									<CornerBrackets hover />
 
 									<div className="mb-4 flex items-start justify-between">
 										<service.icon className="text-cyber-lime h-8 w-8" strokeWidth={1.5} />

@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
 	return (
-		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
+		<section className="page-layout">
 			<div className="mx-auto max-w-3xl">
 				<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
 					<span className="mr-2 animate-pulse">●</span>

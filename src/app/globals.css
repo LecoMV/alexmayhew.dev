@@ -37,6 +37,12 @@
 	--fd-ring: #ccf381;
 }
 
+@layer utilities {
+	.page-layout {
+		@apply flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24;
+	}
+}
+
 @layer base {
 	body {
 		@apply bg-void-navy text-mist-white selection:bg-cyber-lime selection:text-void-navy font-sans antialiased;

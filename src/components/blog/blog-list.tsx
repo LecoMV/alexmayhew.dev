@@ -72,10 +72,7 @@ export function BlogList({ posts, hubPosts = [] }: BlogListProps) {
 	}[theme.layout.variant];
 
 	return (
-		<section
-			className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24"
-			style={{ backgroundColor: theme.colors.background }}
-		>
+		<section className="page-layout" style={{ backgroundColor: theme.colors.background }}>
 			<div className="max-w-content mx-auto">
 				{/* Header */}
 				<m.div

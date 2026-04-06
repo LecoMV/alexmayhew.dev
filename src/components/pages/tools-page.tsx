@@ -64,7 +64,7 @@ const tools: Tool[] = [
 
 export function ToolsPage() {
 	return (
-		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
+		<section className="page-layout">
 			<div className="max-w-content mx-auto">
 				{/* Header */}
 				<m.div

@@ -31,7 +31,7 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 	const cs = project.caseStudy!;
 
 	return (
-		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
+		<section className="page-layout">
 			<div className="max-w-content mx-auto">
 				{/* Breadcrumbs */}
 				<m.nav

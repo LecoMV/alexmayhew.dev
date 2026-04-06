@@ -16,4 +16,5 @@ export {
 export { LocalBusinessJsonLd } from "./local-business-json-ld";
 export { CaseStudyJsonLd } from "./case-study-json-ld";
 export { TopicClusterNav } from "./topic-cluster-nav";
+export type { ClusterSummary } from "./topic-cluster-nav";
 export { RelatedBlogPostsSection } from "./related-blog-posts";

@@ -4,21 +4,34 @@ import { m } from "framer-motion";
 import { ArrowRight, Layers } from "lucide-react";
 import Link from "next/link";
 
-import { getClusterRelatedPages, getPageClusters } from "@/data/pseo/types";
 import { springTransition } from "@/lib/motion-constants";
+
+/** Minimal cluster shape needed for rendering (avoids bundling full pSEO data) */
+export interface ClusterSummary {
+	id: string;
+	name: string;
+	hubSlug: string;
+}
 
 interface TopicClusterNavProps {
 	currentSlug: string;
-	basePath?: string; // e.g., "/services" or "/services/migrations"
+	clusters: ClusterSummary[];
+	relatedPageSlugs: string[];
+	basePath?: string;
 }
 
 /**
  * Topic cluster navigation component for pSEO pages.
  * Displays related pages within the same topic clusters for internal linking.
+ * Cluster data must be resolved server-side and passed as props.
  */
-export function TopicClusterNav({ currentSlug, basePath = "/services" }: TopicClusterNavProps) {
-	const clusters = getPageClusters(currentSlug);
-	const relatedPages = getClusterRelatedPages(currentSlug);
+export function TopicClusterNav({
+	currentSlug,
+	clusters,
+	relatedPageSlugs,
+	basePath = "/services",
+}: TopicClusterNavProps) {
+	const relatedPages = relatedPageSlugs;
 
 	if (clusters.length === 0) {
 		return null;

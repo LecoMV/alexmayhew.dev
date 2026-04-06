@@ -49,10 +49,7 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 	return (
 		<>
 			<ReadingProgress />
-			<section
-				className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24"
-				style={{ backgroundColor: theme.colors.background }}
-			>
+			<section className="page-layout" style={{ backgroundColor: theme.colors.background }}>
 				<div className="max-w-article mx-auto">
 					{/* Back Link */}
 					<m.div

@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+import { CornerBrackets } from "@/components/ui/corner-brackets";
 import { springTransition } from "@/lib/motion-constants";
 
 const skills = [
@@ -116,7 +117,7 @@ const timeline = [
 
 export function AboutPage() {
 	return (
-		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
+		<section className="page-layout">
 			<div className="max-w-content mx-auto">
 				{/* Header - Opening Hook */}
 				<m.div
@@ -234,8 +235,7 @@ export function AboutPage() {
 								viewport={{ once: true }}
 								transition={{ ...springTransition, delay: index * 0.1 }}
 							>
-								<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-								<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+								<CornerBrackets hover />
 
 								<diff.icon className="text-cyber-lime mb-4 h-6 w-6" strokeWidth={1.5} />
 								<h3 className="mb-3 font-mono text-lg tracking-tight">{diff.title}</h3>
@@ -268,8 +268,7 @@ export function AboutPage() {
 								viewport={{ once: true }}
 								transition={{ ...springTransition, delay: index * 0.1 }}
 							>
-								<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-								<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+								<CornerBrackets hover />
 
 								<skill.icon className="text-cyber-lime mb-4 h-6 w-6" strokeWidth={1.5} />
 								<h3 className="mb-4 font-mono text-sm tracking-tight">{skill.category}</h3>

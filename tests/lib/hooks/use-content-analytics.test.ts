@@ -248,4 +248,474 @@ describe("useContentAnalytics content view tracking", () => {
 			content_group: "blog",
 		});
 	});
+
+	it("tracks view_item for service_page contentType", () => {
+		renderHook(() =>
+			useContentAnalytics({
+				contentId: "web-development",
+				contentType: "service_page",
+				contentCategory: "services",
+				serviceType: "consulting",
+				technology: "react",
+				industry: "saas",
+			})
+		);
+
+		expect(trackServiceEvent).toHaveBeenCalledWith("view_item", {
+			item_id: "web-development",
+			item_name: "web development",
+			item_category: "service",
+			service_type: "consulting",
+			technology: "react",
+			industry: "saas",
+		});
+	});
+
+	it("does not track view_item for non-service contentType", () => {
+		renderHook(() =>
+			useContentAnalytics({
+				contentId: "my-post",
+				contentType: "blog_post",
+			})
+		);
+
+		expect(trackServiceEvent).not.toHaveBeenCalled();
+	});
+
+	it("uses defaults when no options provided", () => {
+		renderHook(() => useContentAnalytics());
+
+		expect(trackContentEvent).toHaveBeenCalledWith("content_view", {
+			content_id: "test-post",
+			content_type: "page",
+			content_category: "general",
+			content_group: "blog",
+		});
+	});
+});
+
+describe("useContentAnalytics engagement time tracking", () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+		vi.useFakeTimers();
+		const article = document.createElement("article");
+		Object.defineProperty(article, "scrollHeight", { value: 2000, configurable: true });
+		document.body.appendChild(article);
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
+		document.querySelector("article")?.remove();
+		document.querySelectorAll("[data-scroll-depth]").forEach((el) => el.remove());
+	});
+
+	it("fires engagement milestone at 30s", () => {
+		renderHook(() =>
+			useContentAnalytics({
+				contentId: "timer-post",
+				contentType: "blog_post",
+				contentCategory: "engineering",
+			})
+		);
+
+		act(() => {
+			vi.advanceTimersByTime(30000);
+		});
+
+		expect(trackContentEvent).toHaveBeenCalledWith("user_engagement", {
+			content_id: "timer-post",
+			content_type: "blog_post",
+			engagement_time_msec: 30000,
+			content_category: "engineering",
+		});
+	});
+
+	it("fires engagement milestone at 60s", () => {
+		renderHook(() =>
+			useContentAnalytics({
+				contentId: "timer-post",
+				contentType: "blog_post",
+				contentCategory: "engineering",
+			})
+		);
+
+		act(() => {
+			vi.advanceTimersByTime(60000);
+		});
+
+		const calls = (trackContentEvent as Mock).mock.calls.filter(
+			(call: unknown[]) =>
+				call[0] === "user_engagement" &&
+				(call[1] as Record<string, unknown>).engagement_time_msec === 60000
+		);
+		expect(calls).toHaveLength(1);
+	});
+
+	it("clears engagement timers on unmount", () => {
+		const { unmount } = renderHook(() =>
+			useContentAnalytics({
+				contentId: "timer-post",
+				contentType: "blog_post",
+			})
+		);
+
+		unmount();
+
+		// Advance past all milestones — no engagement events should fire after unmount
+		const callsBefore = (trackContentEvent as Mock).mock.calls.filter(
+			(call: unknown[]) => call[0] === "user_engagement"
+		).length;
+
+		act(() => {
+			vi.advanceTimersByTime(300000);
+		});
+
+		const callsAfter = (trackContentEvent as Mock).mock.calls.filter(
+			(call: unknown[]) => call[0] === "user_engagement"
+		).length;
+
+		// The unmount cleanup fires one user_engagement event (exit tracking).
+		// After that, no additional engagement milestone events should fire.
+		expect(callsAfter).toBe(callsBefore);
+	});
+});
+
+describe("useContentAnalytics visibility and unmount tracking", () => {
+	let originalVisibilityState: PropertyDescriptor | undefined;
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+		const article = document.createElement("article");
+		Object.defineProperty(article, "scrollHeight", { value: 2000, configurable: true });
+		document.body.appendChild(article);
+		originalVisibilityState = Object.getOwnPropertyDescriptor(document, "visibilityState");
+	});
+
+	afterEach(() => {
+		document.querySelector("article")?.remove();
+		document.querySelectorAll("[data-scroll-depth]").forEach((el) => el.remove());
+		if (originalVisibilityState) {
+			Object.defineProperty(document, "visibilityState", originalVisibilityState);
+		} else {
+			// Reset to default
+			Object.defineProperty(document, "visibilityState", {
+				value: "visible",
+				writable: true,
+				configurable: true,
+			});
+		}
+		delete (window as unknown as Record<string, unknown>).gtag;
+	});
+
+	it("sends gtag engagement event when tab becomes hidden", () => {
+		const mockGtag = vi.fn();
+		(window as unknown as Record<string, unknown>).gtag = mockGtag;
+
+		renderHook(() =>
+			useContentAnalytics({
+				contentId: "vis-post",
+				contentType: "blog_post",
+			})
+		);
+
+		// Simulate tab going hidden
+		Object.defineProperty(document, "visibilityState", {
+			value: "hidden",
+			writable: true,
+			configurable: true,
+		});
+
+		act(() => {
+			document.dispatchEvent(new Event("visibilitychange"));
+		});
+
+		expect(mockGtag).toHaveBeenCalledWith(
+			"event",
+			"user_engagement",
+			expect.objectContaining({
+				engagement_time_msec: expect.any(Number),
+			})
+		);
+	});
+
+	it("does not send gtag event when tab becomes visible", () => {
+		const mockGtag = vi.fn();
+		(window as unknown as Record<string, unknown>).gtag = mockGtag;
+
+		renderHook(() =>
+			useContentAnalytics({
+				contentId: "vis-post",
+				contentType: "blog_post",
+			})
+		);
+
+		// Simulate tab going visible (not hidden)
+		Object.defineProperty(document, "visibilityState", {
+			value: "visible",
+			writable: true,
+			configurable: true,
+		});
+
+		act(() => {
+			document.dispatchEvent(new Event("visibilitychange"));
+		});
+
+		expect(mockGtag).not.toHaveBeenCalled();
+	});
+
+	it("does not crash when gtag is not defined", () => {
+		delete (window as unknown as Record<string, unknown>).gtag;
+
+		renderHook(() =>
+			useContentAnalytics({
+				contentId: "no-gtag",
+				contentType: "blog_post",
+			})
+		);
+
+		Object.defineProperty(document, "visibilityState", {
+			value: "hidden",
+			writable: true,
+			configurable: true,
+		});
+
+		// Should not throw
+		act(() => {
+			document.dispatchEvent(new Event("visibilitychange"));
+		});
+	});
+
+	it("tracks exit engagement on unmount when engaged >5s", () => {
+		// Use fake timers to control Date.now
+		const realDateNow = Date.now;
+		let currentTime = 1000000;
+		Date.now = vi.fn(() => currentTime);
+
+		const { unmount } = renderHook(() =>
+			useContentAnalytics({
+				contentId: "exit-post",
+				contentType: "blog_post",
+				contentCategory: "engineering",
+			})
+		);
+
+		// Advance time by 10 seconds
+		currentTime += 10000;
+
+		vi.clearAllMocks();
+		unmount();
+
+		expect(trackContentEvent).toHaveBeenCalledWith("user_engagement", {
+			content_id: "exit-post",
+			content_type: "blog_post",
+			engagement_time_msec: expect.any(Number),
+			content_category: "engineering",
+			scroll_depth: 0,
+		});
+
+		// Verify the time is > 5000
+		const call = (trackContentEvent as Mock).mock.calls.find(
+			(c: unknown[]) => c[0] === "user_engagement"
+		);
+		expect((call![1] as Record<string, number>).engagement_time_msec).toBeGreaterThan(5000);
+
+		Date.now = realDateNow;
+	});
+
+	it("does not track exit engagement on unmount when engaged <5s", () => {
+		const realDateNow = Date.now;
+		let currentTime = 1000000;
+		Date.now = vi.fn(() => currentTime);
+
+		const { unmount } = renderHook(() =>
+			useContentAnalytics({
+				contentId: "quick-exit",
+				contentType: "blog_post",
+			})
+		);
+
+		// Advance only 2 seconds (< 5000ms threshold)
+		currentTime += 2000;
+
+		vi.clearAllMocks();
+		unmount();
+
+		const engagementCalls = (trackContentEvent as Mock).mock.calls.filter(
+			(call: unknown[]) => call[0] === "user_engagement"
+		);
+		expect(engagementCalls).toHaveLength(0);
+
+		Date.now = realDateNow;
+	});
+
+	it("removes visibilitychange listener on unmount", () => {
+		const removeListenerSpy = vi.spyOn(document, "removeEventListener");
+
+		const { unmount } = renderHook(() =>
+			useContentAnalytics({
+				contentId: "listener-post",
+				contentType: "blog_post",
+			})
+		);
+
+		unmount();
+
+		expect(removeListenerSpy).toHaveBeenCalledWith("visibilitychange", expect.any(Function));
+
+		removeListenerSpy.mockRestore();
+	});
+});
+
+describe("useContentAnalytics trackInteraction", () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+		const article = document.createElement("article");
+		Object.defineProperty(article, "scrollHeight", { value: 2000, configurable: true });
+		document.body.appendChild(article);
+	});
+
+	afterEach(() => {
+		document.querySelector("article")?.remove();
+		document.querySelectorAll("[data-scroll-depth]").forEach((el) => el.remove());
+	});
+
+	it("tracks content_interaction event with provided interaction type", () => {
+		const { result } = renderHook(() =>
+			useContentAnalytics({
+				contentId: "interact-post",
+				contentType: "blog_post",
+				contentCategory: "engineering",
+			})
+		);
+
+		act(() => {
+			result.current.trackInteraction("code_copy");
+		});
+
+		expect(trackEvent).toHaveBeenCalledWith("content_interaction", {
+			content_id: "interact-post",
+			content_type: "blog_post",
+			content_category: "engineering",
+			interaction_type: "code_copy",
+			event_category: "content_engagement",
+		});
+	});
+
+	it("merges additional details into event", () => {
+		const { result } = renderHook(() =>
+			useContentAnalytics({
+				contentId: "detail-post",
+				contentType: "blog_post",
+				contentCategory: "engineering",
+			})
+		);
+
+		act(() => {
+			result.current.trackInteraction("link_click", {
+				link_url: "https://example.com",
+				link_position: 3,
+				is_external: true,
+			});
+		});
+
+		expect(trackEvent).toHaveBeenCalledWith("content_interaction", {
+			content_id: "detail-post",
+			content_type: "blog_post",
+			content_category: "engineering",
+			interaction_type: "link_click",
+			event_category: "content_engagement",
+			link_url: "https://example.com",
+			link_position: 3,
+			is_external: true,
+		});
+	});
+
+	it("trackInteraction with empty details does not add extra fields", () => {
+		const { result } = renderHook(() =>
+			useContentAnalytics({
+				contentId: "empty-detail",
+				contentType: "blog_post",
+			})
+		);
+
+		act(() => {
+			result.current.trackInteraction("share");
+		});
+
+		expect(trackEvent).toHaveBeenCalledWith("content_interaction", {
+			content_id: "empty-detail",
+			content_type: "blog_post",
+			content_category: "general",
+			interaction_type: "share",
+			event_category: "content_engagement",
+		});
+	});
+});
+
+describe("useContentAnalytics return values", () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+		const article = document.createElement("article");
+		Object.defineProperty(article, "scrollHeight", { value: 2000, configurable: true });
+		document.body.appendChild(article);
+	});
+
+	afterEach(() => {
+		document.querySelector("article")?.remove();
+		document.querySelectorAll("[data-scroll-depth]").forEach((el) => el.remove());
+	});
+
+	it("returns scrollDepth starting at 0", () => {
+		const { result } = renderHook(() => useContentAnalytics());
+		expect(result.current.scrollDepth).toBe(0);
+	});
+
+	it("returns engagementTime as a positive number", () => {
+		const { result } = renderHook(() => useContentAnalytics());
+		expect(result.current.engagementTime).toBeGreaterThanOrEqual(0);
+	});
+
+	it("returns a trackInteraction function", () => {
+		const { result } = renderHook(() => useContentAnalytics());
+		expect(typeof result.current.trackInteraction).toBe("function");
+	});
+});
+
+describe("useContentAnalytics article positioning", () => {
+	afterEach(() => {
+		document.querySelector("article")?.remove();
+		document.querySelector("main")?.remove();
+		document.querySelectorAll("[data-scroll-depth]").forEach((el) => el.remove());
+	});
+
+	it("does not override article position if already non-static", () => {
+		const article = document.createElement("article");
+		Object.defineProperty(article, "scrollHeight", { value: 2000, configurable: true });
+		article.style.position = "relative";
+		document.body.appendChild(article);
+
+		const originalGetComputedStyle = window.getComputedStyle;
+		window.getComputedStyle = vi.fn().mockReturnValue({
+			position: "relative",
+		}) as unknown as typeof window.getComputedStyle;
+
+		renderHook(() => useContentAnalytics({ contentType: "blog_post" }));
+
+		// Position should still be relative (not overridden)
+		expect(article.style.position).toBe("relative");
+
+		window.getComputedStyle = originalGetComputedStyle;
+	});
+
+	it("does nothing when no article or main element exists", () => {
+		// Remove any existing elements
+		document.querySelector("article")?.remove();
+		document.querySelector("main")?.remove();
+
+		// Should not throw
+		renderHook(() => useContentAnalytics({ contentType: "blog_post" }));
+
+		// No sentinels created
+		expect(document.querySelectorAll("[data-scroll-depth]")).toHaveLength(0);
+	});
 });

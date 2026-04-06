@@ -49,7 +49,7 @@ export default function NewsletterArchivePage() {
 		}));
 
 	return (
-		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
+		<section className="page-layout">
 			<div className="max-w-narrow mx-auto">
 				<header className="mb-16">
 					<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">

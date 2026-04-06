@@ -2,7 +2,9 @@ import { notFound } from "next/navigation";
 
 import { ServiceJsonLd } from "@/components/seo";
 import {
+	getClusterRelatedPages,
 	getPageBySlug,
+	getPageClusters,
 	getPublishedPages,
 	getRelatedPages,
 	INDUSTRY_LABELS,
@@ -101,6 +103,13 @@ export default async function ServicePage({ params }: PageProps) {
 		description: rp.seo.description,
 	}));
 
+	const clusters = getPageClusters(slug).map((c) => ({
+		id: c.id,
+		name: c.name,
+		hubSlug: c.hubSlug,
+	}));
+	const clusterRelatedSlugs = getClusterRelatedPages(slug);
+
 	return (
 		<>
 			<ServiceJsonLd page={page} />
@@ -109,6 +118,8 @@ export default async function ServicePage({ params }: PageProps) {
 				techLabel={techLabel}
 				industryLabel={industryLabel}
 				relatedPages={relatedPages}
+				clusters={clusters}
+				clusterRelatedSlugs={clusterRelatedSlugs}
 			/>
 		</>
 	);

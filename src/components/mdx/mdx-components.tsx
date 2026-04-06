@@ -1,6 +1,7 @@
 import Image, { type StaticImageData } from "next/image";
 import { ComponentProps } from "react";
 
+import { CornerBrackets } from "@/components/ui/corner-brackets";
 import { cn } from "@/lib/utils";
 
 // Neo-brutalist styled MDX components
@@ -89,8 +90,7 @@ export const mdxComponents = {
 			{...props}
 		>
 			{/* Corner accents */}
-			<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r" />
-			<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l" />
+			<CornerBrackets />
 			{children}
 		</pre>
 	),
@@ -141,8 +141,7 @@ export const mdxComponents = {
 	}: ComponentProps<"img"> & { src?: string | StaticImageData }) => (
 		<figure className="my-6">
 			<div className="bg-gunmetal-glass/20 relative border border-white/10 p-2">
-				<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r" />
-				<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l" />
+				<CornerBrackets />
 				<Image
 					src={src as string | StaticImageData}
 					alt={alt ?? ""}

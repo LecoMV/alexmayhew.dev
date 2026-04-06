@@ -19,10 +19,12 @@ import { useState } from "react";
 import { trackCTAClick } from "@/components/analytics";
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import { RelatedBlogPostsSection, TopicClusterNav } from "@/components/seo";
+import { CornerBrackets } from "@/components/ui/corner-brackets";
 import { useContentAnalytics } from "@/lib/hooks/use-content-analytics";
 import { fadeInUp, gentleSpring, springTransition, staggerContainer } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
+import type { ClusterSummary } from "@/components/seo";
 import type { ExpertApproach, PseoPage } from "@/data/pseo";
 
 /** Pre-resolved related service for client rendering (avoids bundling pSEO data) */
@@ -38,6 +40,8 @@ interface ServicePageContentProps {
 	techLabel: string;
 	industryLabel: string;
 	relatedPages: RelatedServiceSummary[];
+	clusters: ClusterSummary[];
+	clusterRelatedSlugs: string[];
 }
 
 export function ServicePageContent({
@@ -45,6 +49,8 @@ export function ServicePageContent({
 	techLabel,
 	industryLabel,
 	relatedPages,
+	clusters,
+	clusterRelatedSlugs,
 }: ServicePageContentProps) {
 	// Track service page analytics
 	useContentAnalytics({
@@ -57,7 +63,7 @@ export function ServicePageContent({
 	});
 
 	return (
-		<section className="flex-1 px-6 pt-44 pb-24 sm:px-12 md:px-24">
+		<section className="page-layout">
 			<div className="max-w-content mx-auto">
 				{/* Breadcrumbs */}
 				<Breadcrumbs techLabel={techLabel} industryLabel={industryLabel} />
@@ -112,7 +118,12 @@ export function ServicePageContent({
 				{relatedPages.length > 0 && <RelatedServicesSection relatedPages={relatedPages} />}
 
 				{/* Topic Cluster Navigation */}
-				<TopicClusterNav currentSlug={page.slug} basePath="/services" />
+				<TopicClusterNav
+					currentSlug={page.slug}
+					clusters={clusters}
+					relatedPageSlugs={clusterRelatedSlugs}
+					basePath="/services"
+				/>
 
 				{/* CTA Section */}
 				<CtaSection />
@@ -243,8 +254,7 @@ function UniqueInsightsSection({ insights }: { insights: string[] }) {
 						viewport={{ once: true }}
 						transition={{ ...springTransition, delay: index * 0.05 }}
 					>
-						<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-						<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+						<CornerBrackets hover />
 
 						<div className="mb-3 flex items-start gap-3">
 							<Lightbulb className="text-cyber-lime mt-0.5 h-5 w-5 shrink-0" strokeWidth={1.5} />
@@ -434,8 +444,7 @@ function TechStackSection({
 						viewport={{ once: true }}
 						transition={{ ...springTransition, delay: index * 0.05 }}
 					>
-						<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-						<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+						<CornerBrackets hover />
 
 						<div className="mb-3 flex items-center justify-between">
 							<Code2 className="text-cyber-lime h-5 w-5" strokeWidth={1.5} />
@@ -771,8 +780,7 @@ function RelatedServicesSection({ relatedPages }: { relatedPages: RelatedService
 							href={`/services/${related.slug}`}
 							className="group bg-gunmetal-glass/10 hover:border-cyber-lime/50 relative flex items-center justify-between border border-white/10 p-5 transition-colors duration-300"
 						>
-							<div className="border-cyber-lime absolute top-0 right-0 h-3 w-3 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-							<div className="border-cyber-lime absolute bottom-0 left-0 h-3 w-3 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+							<CornerBrackets hover />
 
 							<div>
 								<h3 className="group-hover:text-cyber-lime mb-1 font-mono text-sm tracking-tight transition-colors">
