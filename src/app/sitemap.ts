@@ -224,17 +224,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			priority: 0.6,
 		}));
 
+	// Pruned sitemap: only high-quality, authority-worthy pages.
+	// Migration, integration, comparison, docs, and newsletter archive pages
+	// excluded until domain authority is established (DR > 20).
+	// Template-heavy pages risk "scaled content abuse" on a zero-backlink domain.
 	return [
 		...staticPages,
 		...blogPosts,
 		...servicePages,
-		...migrationPages,
-		...integrationPages,
-		...comparisonPages,
 		...technologyPages,
 		...rolePages,
-		...newsletterPages,
 		...caseStudyPages,
-		...docsPages,
 	];
 }

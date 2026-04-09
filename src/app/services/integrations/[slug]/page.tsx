@@ -74,6 +74,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 		alternates: {
 			canonical: pageUrl,
 		},
+		robots: { index: false, follow: true },
 	};
 }
 
