@@ -1,225 +1,242 @@
-# Sentry SDK with OpenNext on Cloudflare Workers (2026-02-15)
+# Sentry SDK with OpenNext on Cloudflare Workers (Updated 2026-03-14)
 
 **Status:** CURRENT
-**Session:** Integration health check after implementing Sentry monitoring
+**Session:** Refresh to cover @sentry/nextjs v10.34+, @sentry/cloudflare v10.x, GitHub issue closure
+
+---
 
 ## Executive Summary
 
-`@sentry/nextjs` v10+ has **partial support** for OpenNext on Cloudflare Workers. While it works, there are known issues and recommended workarounds. The Sentry team has an open GitHub issue (#14931) for improving this integration, indicating active development.
+The situation has materially changed since the February 2026 research. Sentry has shipped a
+first-class `@sentry/cloudflare` package (now at **v10.43.0**, weekly releases) and officially
+closed GitHub issue #14931. The old workaround of disabling `sentry.server.config.ts` in
+`instrumentation.ts` is no longer necessary for new setups — the recommended approach is to
+keep `@sentry/nextjs` for the client and build/config layer, and use `@sentry/cloudflare`
+for the edge/server runtime.
 
-## Key Findings
+---
 
-### 1. Compatibility Status
+## Question-by-Question Answers
 
-**Works but with caveats:**
+### 1. Has the AsyncLocalStorage incompatibility been resolved in v10.x?
 
-- `@sentry/nextjs` can run on Cloudflare Workers via OpenNext
-- Requires specific compatibility settings (see Configuration Requirements)
-- Edge runtime errors may not flush properly (known issue)
-- **CONFIRMED (2026-02-16):** Server-side `Sentry.init()` crashes CF Workers with `AsyncLocalStorage` bound function error. Server/edge init in `instrumentation.ts` is DISABLED.
-- **Recommended workaround:** Use `@sentry/cloudflare` for server/edge, `@sentry/nextjs` for client only
+**Yes, via `nodejs_compat` flag — this is now the documented approach, not a workaround.**
 
-**Official stance:** As of January 2025, GitHub issue #14931 remains open with status "Waiting for: Product Owner", indicating official support is not yet complete.
+The `AsyncLocalStorage` crash on Cloudflare Workers is resolved by enabling the `nodejs_compat`
+compatibility flag in `wrangler.jsonc`. The Sentry SDK requires this flag, and Cloudflare now
+documents it as the standard configuration for running Node.js-API-dependent SDKs in Workers.
 
-### 2. Configuration Requirements
+The crash we experienced (server-side `Sentry.init()` from `@sentry/nextjs` crashing with
+"AsyncLocalStorage bound function" errors) was caused by `@sentry/nextjs` attempting to load
+internals that are incompatible with the workerd runtime — not with `AsyncLocalStorage` per se.
+The fix is to use `@sentry/cloudflare` for the edge runtime, which is designed for workerd.
 
-#### Cloudflare Compatibility Settings
+**GitHub issue #14931** — "Support Next.js on Cloudflare Workers (OpenNext)" — is now **Closed**.
+The resolution is the framework guide at:
+`https://docs.sentry.io/platforms/javascript/guides/cloudflare/frameworks/nextjs/`
 
-**Required in `wrangler.toml` or OpenNext config:**
+### 2. Current recommended approach for Sentry on Cloudflare Workers/Pages with Next.js via OpenNext
 
-```toml
-compatibility_flags = ["nodejs_compat"]
-compatibility_date = "2025-08-16"
-```
+**Official Sentry docs now state (as of the current page at `/cloudflare/frameworks/nextjs/`):**
 
-**Why:**
+> The Sentry Next.js SDK supports Next.js applications deployed on Cloudflare Workers, but
+> requires additional configuration to run in this environment.
 
-- `nodejs_compat`: Provides `AsyncLocalStorage` API required by Sentry SDK
-- `compatibility_date: 2025-08-16`: Introduces `https.request` needed for Sentry to send data
+The configuration is purely Wrangler-level — no special hybrid SDK setup is required:
 
-#### Next.js Config
-
-**Our current setup is correct:**
-
-```typescript
-withSentryConfig(nextConfig, {
-	sourcemaps: { disable: true },
-	autoInstrumentServerFunctions: false,
-	autoInstrumentMiddleware: false,
-	autoInstrumentAppDirectory: false,
-});
-```
-
-**Why we disabled auto-instrumentation:**
-
-- These flags are **Webpack-only features** (no-ops in Turbopack/Next.js 15)
-- With Turbopack, Sentry relies on Next.js's OpenTelemetry instrumentation instead
-- Disabling them has **no negative impact** on modern Next.js apps
-- Reduces build complexity and potential conflicts
-
-### 3. Instrumentation Pattern
-
-**Our `src/instrumentation.ts` approach is CORRECT:**
-
-```typescript
-export async function register() {
-	if (process.env.NEXT_RUNTIME === "nodejs") {
-		await import("./sentry.server.config");
-	}
-	if (process.env.NEXT_RUNTIME === "edge") {
-		await import("./sentry.edge.config");
-	}
-}
-
-export async function onRequestError(err: unknown, request: NextRequest) {
-	Sentry.captureException(err, { extra: { request } });
+```jsonc
+// wrangler.jsonc — REQUIRED settings
+{
+	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_date": "2025-08-16",
 }
 ```
 
-**Which config file runs on Cloudflare?**
+The `compatibility_date: "2025-08-16"` is required to introduce `https.request` into the
+Cloudflare Workers runtime. Without it, Sentry cannot send data to its ingest endpoints.
 
-- **`sentry.edge.config.ts`** runs in Cloudflare Workers (workerd runtime)
-- **`sentry.server.config.ts`** only runs if there are Node.js-based parts (unlikely with full OpenNext deployment)
-- Both are needed because Next.js conditionally imports based on `NEXT_RUNTIME` environment variable
+After adding these settings, the existing `@sentry/nextjs` setup (with `instrumentation.ts`,
+`sentry.edge.config.ts`, `sentry.client.config.ts`, and `withSentryConfig` in `next.config.ts`)
+should work correctly without further changes.
 
-### 4. Feature Support on Cloudflare Workers
+### 3. Is there a @sentry/cloudflare package? What's its status?
 
-| Feature             | Supported  | Notes                                                 |
-| ------------------- | ---------- | ----------------------------------------------------- |
-| Error Monitoring    | ✅ Yes     | Core functionality works                              |
-| Performance Tracing | ⚠️ Partial | Spans show 0ms duration (Cloudflare security measure) |
-| Logs                | ✅ Yes     | Via `enableLogs` option                               |
-| Session Replay      | ❌ No      | Client-side only, not available server-side           |
-| Profiling           | ❌ No      | Not documented for Workers runtime                    |
-| Source Maps         | ✅ Yes     | Upload via `authToken` in `withSentryConfig`          |
+**Yes — it is a fully shipping, production-ready first-party Sentry package.**
 
-**Known Limitation:** Server-side spans display `0ms` for durations because `performance.now()` and `Date.now()` only advance after I/O occurs in Cloudflare Workers. This is intentional security design to prevent timing attacks. **This affects ALL frameworks on Cloudflare.**
+| Property        | Value                                               |
+| --------------- | --------------------------------------------------- |
+| Package         | `@sentry/cloudflare`                                |
+| Latest version  | **10.43.0** (as of 2026-03-14, shipping weekly)     |
+| npm downloads   | ~33,992/week on latest tag                          |
+| Status          | Production — no alpha/beta tag                      |
+| npm page        | https://npmjs.com/package/@sentry/cloudflare        |
+| Cloudflare docs | Listed under Workers > Observability > Integrations |
 
-### 5. Recommended `tracesSampleRate` for Production
+**What it is:** A purpose-built Sentry SDK for the Cloudflare Workers/Pages runtime (workerd).
+It provides `withSentry()` for Workers and `sentryPagesPlugin` / `wrapRequestHandler()` for Pages.
+It is framework-agnostic — it wraps the fetch handler directly.
 
-**Portfolio/lead-gen site with moderate traffic:**
+**For Next.js via OpenNext**, `@sentry/nextjs` is still the correct package for:
 
-- **Start with:** `0.05` (5%)
-- **Testing:** `1.0` (100%)
-- **High-traffic apps:** `0.01` (1%) or use `tracesSampler` for dynamic sampling
+- Build-time config (`withSentryConfig` in `next.config.ts`)
+- Client-side error capture (`sentry.client.config.ts`)
+- Source map uploading
 
-**Rationale:**
+`@sentry/cloudflare` is an option for the server/edge runtime config if the `@sentry/nextjs`
+edge config continues to have issues after enabling the Wrangler compatibility settings.
 
-- Balance between data accuracy and volume/cost
-- Monitor usage stats via Sentry dashboard
-- Gradually increase if you need more data
-- Portfolio sites typically don't need 100% trace coverage
+**Compatibility flags:**
 
-**Our current config uses:** `tracesSampleRate: 1.0` — acceptable for initial launch, should reduce to 0.05-0.1 after stabilization.
+```jsonc
+// Either of these work (nodejs_compat is broader, nodejs_als is minimal):
+{ "compatibility_flags": ["nodejs_compat"] }
+// or
+{ "compatibility_flags": ["nodejs_als"] }
+```
 
-### 6. Hybrid SDK Approach (Recommended Workaround)
+**New in v10.35.0+:** Automatic release detection via `CF_VERSION_METADATA` binding. Before
+v10.35.0, `release` must be passed manually via `env.CF_VERSION_METADATA?.id`.
 
-**Problem:** Edge runtime error flushing doesn't work reliably with `@sentry/nextjs` v8+ on Cloudflare Pages/Workers.
+### 4. Best practice for server-side error tracking on Cloudflare Workers if Sentry doesn't work
 
-**Solution from Sentry team:**
+**Option A: Fix the root cause — enable `nodejs_compat` + `compatibility_date: 2025-08-16`.**
+
+This is the correct first step and will resolve the issue for most setups using `@sentry/nextjs`.
+
+**Option B: Hybrid SDK approach (belt-and-suspenders)**
+
+Use `@sentry/cloudflare` in `sentry.edge.config.ts` instead of `@sentry/nextjs`:
 
 ```typescript
-// sentry.edge.config.ts (server/edge runtime)
+// sentry.edge.config.ts
 import * as Sentry from "@sentry/cloudflare";
 
+// For standalone Workers/Pages, use withSentry() or sentryPagesPlugin().
+// For Next.js via OpenNext, the SDK is initialized differently —
+// see https://docs.sentry.io/platforms/javascript/guides/cloudflare/frameworks/nextjs/
 Sentry.init({
 	dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 	tracesSampleRate: 0.05,
 	sendDefaultPii: true,
 	enableLogs: true,
 });
-
-// sentry.client.config.ts (browser)
-import * as Sentry from "@sentry/nextjs";
-
-Sentry.init({
-	dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-	tracesSampleRate: 0.05,
-	replaysOnErrorSampleRate: 1.0,
-	replaysSessionSampleRate: 0.1,
-});
 ```
 
-**Trade-off:** Adds `@sentry/cloudflare` as additional dependency, but ensures reliable error capture in edge runtime.
+**Option C: Cloudflare Workers Observability (native, no third-party)**
 
-## Answers to Original Questions
+Cloudflare has a built-in observability layer that does not require any SDK:
 
-### 1. Does `@sentry/nextjs` v10+ work correctly in Cloudflare Workers via OpenNext?
+- **Workers Logs** (`/workers/observability/logs/workers-logs/`) — structured logs from
+  `console.log()` and `console.error()`, stored and queryable in the Cloudflare dashboard.
+- **Workers Logpush** — push logs to R2, S3, Datadog, Splunk, or Elastic.
+- **Traces (Beta)** — distributed tracing via OpenTelemetry spans.
+- **OpenTelemetry export** — documented export to Honeycomb, Grafana Cloud, Axiom, and Sentry.
 
-**Partially.** Client-side works fine. Server-side error capture may not flush properly (known issue). Recommended approach is hybrid: `@sentry/cloudflare` for edge, `@sentry/nextjs` for client.
+For a portfolio/lead-gen site, Workers Logs alone may be sufficient for observability without
+adding any SDK dependency. Access via: Cloudflare Dashboard > Workers & Pages > your worker > Logs.
 
-### 2. Is `instrumentation.ts` the correct approach for OpenNext/Cloudflare?
+### 5. Alternatives to Sentry for Cloudflare Workers error tracking
 
-**Yes.** This is the recommended pattern for Next.js 15+ (Turbopack + App Router). The `onRequestError` hook is especially important for capturing request-level errors in edge runtime.
+#### Toucan.js — DEAD (archived January 2026)
 
-### 3. Are the auto-instrumentation flags we disabled actually needed for Cloudflare compatibility?
+`toucan-js` (https://github.com/robertcepa/toucan-js) was a community Sentry client built
+specifically for Cloudflare Workers. It was archived by its owner on **January 12, 2026**.
+The README's implicit reason: `@sentry/cloudflare` now covers the same use case officially.
+Do not use Toucan.js for new projects.
 
-**No.** These flags are Webpack-only and become no-ops in Turbopack/Next.js 15. Disabling them has zero impact on functionality. Modern Next.js relies on OpenTelemetry instrumentation instead.
+#### Cloudflare Workers Logpush (native)
 
-### 4. Does `sentry.server.config.ts` even get loaded in an edge/Workers environment?
+- **What:** Push structured worker logs to any destination.
+- **Destinations:** R2, S3, Datadog, Splunk, Elastic, Supabase, Grafana.
+- **Cost:** Free on paid Workers plans; Logpush to third-party services may incur third-party costs.
+- **Setup:** Dashboard or Wrangler config.
+- **Limitation:** Logs only — no error grouping, stack trace parsing, or alerts out of the box.
+- **Docs:** https://developers.cloudflare.com/workers/observability/logs/logpush/
 
-**No.** Only `sentry.edge.config.ts` loads in Cloudflare Workers (`process.env.NEXT_RUNTIME === 'edge'`). The `sentry.server.config.ts` file only runs if there are Node.js runtime components, which is unlikely with full OpenNext deployment. However, keep both files for flexibility.
+#### Axiom (best Logpush target for developer workflows)
 
-### 5. Are there any Sentry features that don't work on Cloudflare Workers?
+- OpenTelemetry native.
+- Free tier: 500GB/month ingest.
+- Workers OTEL export guide: https://developers.cloudflare.com/workers/observability/exporting-opentelemetry-data/axiom/
+- Better search/query UI than raw Logpush targets.
 
-**Yes:**
+#### Grafana Cloud (OTEL-native, free tier available)
 
-- **Session Replay:** Client-side only, not available server-side
-- **Profiling:** Not documented for Workers runtime
-- **Accurate trace timing:** Spans show 0ms (Cloudflare security measure, not a bug)
+- OTEL export supported natively by Cloudflare.
+- Free tier includes logs + metrics + traces.
+- Setup guide: https://developers.cloudflare.com/workers/observability/exporting-opentelemetry-data/grafana-cloud/
 
-### 6. What's the recommended `tracesSampleRate` for a portfolio/lead-gen site?
+#### BetterStack / Baselime
 
-**0.05 to 0.1 (5-10%)** for production. Start at 5%, monitor usage, adjust as needed. Current config at 1.0 is fine for initial launch but should be reduced post-stabilization.
+- Baselime was acquired by Cloudflare in 2024 and has been integrated into the Workers observability
+  stack as the "Cloudflare Log Explorer" (query UI in the dashboard).
+- No separate installation needed — it's the backend for Workers Logs.
 
-## Recommended Next Steps
+---
 
-### Immediate (Optional but Recommended)
+## Current Project Configuration Analysis
 
-1. **Add `@sentry/cloudflare` package:**
+The existing setup in this project (`sentry.edge.config.ts` disabled in `instrumentation.ts`,
+`@sentry/nextjs` client-only) was a correct workaround as of early 2026. With the issue now
+closed and `@sentry/cloudflare` v10.43.0 shipping, the recommended next step is:
 
-   ```bash
-   npm install @sentry/cloudflare --save
+1. **Verify `wrangler.jsonc` has the required settings** (may already be set):
+
+   ```jsonc
+   {
+   	"compatibility_flags": ["nodejs_compat"],
+   	"compatibility_date": "2025-08-16",
+   }
    ```
 
-2. **Update `sentry.edge.config.ts` to use `@sentry/cloudflare`:**
+2. **Re-enable `sentry.edge.config.ts`** in `instrumentation.ts`:
 
    ```typescript
-   import * as Sentry from "@sentry/cloudflare";
-   // ... rest of config
+   // instrumentation.ts
+   export async function register() {
+   	if (process.env.NEXT_RUNTIME === "nodejs") {
+   		await import("./sentry.server.config");
+   	}
+   	if (process.env.NEXT_RUNTIME === "edge") {
+   		await import("./sentry.edge.config"); // Re-enable this
+   	}
+   }
    ```
 
-3. **Verify Cloudflare compatibility settings in OpenNext config** include:
-   ```toml
-   compatibility_flags = ["nodejs_compat"]
-   compatibility_date = "2025-08-16"
-   ```
+3. **Test server-side error capture** by triggering a test error via the route handler and
+   confirming it appears in the Sentry dashboard.
 
-### Post-Launch (Within 1-2 weeks)
+4. **Optionally upgrade to `@sentry/cloudflare`** for the edge config if step 2 still crashes.
 
-4. **Reduce `tracesSampleRate` to 0.05 in production** to manage costs/volume
+---
 
-5. **Monitor Sentry dashboard** for:
-   - Error capture rate (should be >0 once traffic arrives)
-   - Trace volume (should match expected sample rate)
-   - Alert for uncaught errors in edge runtime
+## Feature Support Matrix (Current — v10.43.0)
 
-6. **Track GitHub issue #14931** for official OpenNext support updates
+| Feature             | @sentry/nextjs (client) | @sentry/nextjs (edge)    | @sentry/cloudflare (edge)      |
+| ------------------- | ----------------------- | ------------------------ | ------------------------------ |
+| Error Monitoring    | Yes                     | Yes (with nodejs_compat) | Yes                            |
+| Performance Tracing | Yes                     | Partial (0ms spans)      | Partial (0ms spans)            |
+| Logs                | Yes                     | Yes                      | Yes (`enableLogs: true`)       |
+| Session Replay      | Yes                     | No                       | No                             |
+| Profiling           | Yes                     | No                       | No                             |
+| Source Maps         | Yes (build-time)        | Via @sentry/nextjs       | Via wizard                     |
+| D1 Instrumentation  | No                      | No                       | Yes (`instrumentD1WithSentry`) |
+| Cron Monitoring     | No                      | No                       | Yes (`withMonitor`)            |
+
+**Known limitation (permanent):** Span durations show 0ms on Cloudflare Workers.
+This is a Cloudflare security measure (`performance.now()` / `Date.now()` only advance after I/O).
+Affects all frameworks on Cloudflare. Not a Sentry bug.
+
+---
 
 ## Sources
 
-- [Sentry Next.js on Cloudflare Workers Guide](https://docs.sentry.io/platforms/javascript/guides/nextjs/best-practices/deploying-on-cloudflare/)
-- [Sentry Cloudflare Workers SDK](https://docs.sentry.io/platforms/javascript/guides/cloudflare/)
-- [GitHub Issue #14931: Support Next.js on Cloudflare Workers (OpenNext)](https://github.com/getsentry/sentry-javascript/issues/14931)
-- [Sentry Next.js Automatic Instrumentation](https://docs.sentry.io/platforms/javascript/guides/nextjs/tracing/instrumentation/automatic-instrumentation/)
-- [Sentry Sampling Configuration](https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/sampling/)
-- [Cloudflare Next.js Deployment Guide](https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/)
-- [OpenNext Cloudflare Documentation](https://opennext.js.org/cloudflare)
-- [Sentry withSentryConfig Source Code](https://github.com/getsentry/sentry-javascript/blob/develop/packages/nextjs/src/config/withSentryConfig.ts)
-- [Next.js Turbopack Support for Sentry](https://blog.sentry.io/turbopack-support-next-js-sdk/)
-
-## Related Documentation
-
-- `CLAUDE.md` — Project deployment rules (never manual deploy)
-- `.claude/rules/deployment.md` — CI/CD workflow via GitHub Actions
-- `docs/DEPLOYMENT.md` — Full deployment guide with health checks
+- [Sentry: Next.js on Cloudflare (official guide)](https://docs.sentry.io/platforms/javascript/guides/cloudflare/frameworks/nextjs/)
+- [Sentry: @sentry/cloudflare quick start](https://docs.sentry.io/platforms/javascript/guides/cloudflare/)
+- [Sentry: @sentry/nextjs deploying on Cloudflare (redirects to above)](https://docs.sentry.io/platforms/javascript/guides/nextjs/best-practices/deploying-on-cloudflare/)
+- [npm: @sentry/cloudflare v10.43.0](https://npmjs.com/package/@sentry/cloudflare)
+- [GitHub issue #14931: Support Next.js on Cloudflare Workers — CLOSED](https://github.com/getsentry/sentry-javascript/issues/14931)
+- [Cloudflare: Workers Observability > Integrations > Sentry](https://developers.cloudflare.com/workers/observability/)
+- [Cloudflare: Workers Logpush](https://developers.cloudflare.com/workers/observability/logs/logpush/)
+- [Cloudflare: Export OpenTelemetry to Axiom](https://developers.cloudflare.com/workers/observability/exporting-opentelemetry-data/axiom/)
+- [Toucan.js (ARCHIVED January 2026)](https://github.com/robertcepa/toucan-js)

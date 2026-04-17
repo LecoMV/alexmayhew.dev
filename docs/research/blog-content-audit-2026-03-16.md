@@ -27,7 +27,7 @@ All cross-links verified. All voice rules pass (after first-round fixes).
 | modern-frontend-architecture          | shadcn-ui CLI rename           | Updated to shadcn                              |
 | tailwind-vs-component-libraries       | Same shadcn-ui rename          | Updated                                        |
 
-### Round 2 (In Progress)
+### Round 2 (Fixed)
 
 | File                                 | Issue                                         | Fix                                     |
 | ------------------------------------ | --------------------------------------------- | --------------------------------------- |
