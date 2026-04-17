@@ -7,7 +7,8 @@ import {
 	INDUSTRY_LABELS,
 	TECHNOLOGY_LABELS,
 } from "@/data/pseo";
-import { getPageBySlug, getPublishedPages, getRelatedPages } from "@/data/pseo/pages";
+import { getPublishedPages, getRelatedPages } from "@/data/pseo/pages";
+import { getPseoPageBySlug } from "@/lib/cached-data";
 
 import { ServicePageContent } from "./service-page-content";
 
@@ -35,7 +36,7 @@ export function generateStaticParams() {
  */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const { slug } = await params;
-	const page = getPageBySlug(slug);
+	const page = getPseoPageBySlug(slug);
 
 	if (!page || !page.published) {
 		return {};
@@ -85,7 +86,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
  */
 export default async function ServicePage({ params }: PageProps) {
 	const { slug } = await params;
-	const page = getPageBySlug(slug);
+	const page = getPseoPageBySlug(slug);
 
 	if (!page || !page.published) {
 		notFound();

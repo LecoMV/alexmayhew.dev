@@ -2,8 +2,8 @@ import { notFound } from "next/navigation";
 
 import { IntegrationJsonLd } from "@/components/seo/integration-json-ld";
 import { INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
-import { getAllIntegrationSlugs, getIntegrationPageBySlug } from "@/data/pseo/integrations";
-import { getPageBySlug } from "@/data/pseo/pages";
+import { getAllIntegrationSlugs } from "@/data/pseo/integrations";
+import { getIntegrationBySlug, getPseoPageBySlug } from "@/lib/cached-data";
 
 import { IntegrationPageContent } from "./integration-page-content";
 
@@ -31,7 +31,7 @@ export function generateStaticParams() {
  */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const { slug } = await params;
-	const page = getIntegrationPageBySlug(slug);
+	const page = getIntegrationBySlug(slug);
 
 	if (!page || !page.published) {
 		return {};
@@ -79,7 +79,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
  */
 export default async function IntegrationPage({ params }: PageProps) {
 	const { slug } = await params;
-	const page = getIntegrationPageBySlug(slug);
+	const page = getIntegrationBySlug(slug);
 
 	if (!page || !page.published) {
 		notFound();
@@ -91,8 +91,8 @@ export default async function IntegrationPage({ params }: PageProps) {
 	}
 
 	const relatedServicePages = page.relatedServices
-		.map((s) => getPageBySlug(s))
-		.filter((p) => p !== undefined && p.published)
+		.map((s) => getPseoPageBySlug(s))
+		.filter((p) => p !== null && p.published)
 		.slice(0, 4)
 		.map((p) => ({
 			slug: p!.slug,

@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { TechnologyJsonLd } from "@/components/seo/technology-json-ld";
-import { getTechnology, getTechnologyIds } from "@/data/pseo/technologies";
+import { getTechnologyIds } from "@/data/pseo/technologies";
+import { getTechnologyBySlug } from "@/lib/cached-data";
 
 import { TechnologyPageContent } from "./technology-page-content";
 
@@ -19,7 +20,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const { slug } = await params;
-	const technology = getTechnology(slug);
+	const technology = getTechnologyBySlug(slug);
 
 	if (!technology) {
 		return {
@@ -67,7 +68,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function TechnologyPage({ params }: PageProps) {
 	const { slug } = await params;
-	const technology = getTechnology(slug);
+	const technology = getTechnologyBySlug(slug);
 
 	if (!technology) {
 		notFound();

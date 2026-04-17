@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { RoleJsonLd } from "@/components/seo/role-json-ld";
-import { getPublishedRoleSlugs, getRolePageBySlug, ROLE_LABELS } from "@/data/roles";
+import { getPublishedRoleSlugs, ROLE_LABELS } from "@/data/roles";
+import { getRoleBySlug } from "@/lib/cached-data";
 
 import { RolePageContent } from "./role-page-content";
 
@@ -29,7 +30,7 @@ export function generateStaticParams() {
  */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const { role } = await params;
-	const page = getRolePageBySlug(role);
+	const page = getRoleBySlug(role);
 
 	if (!page || !page.published) {
 		return {};
@@ -77,7 +78,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
  */
 export default async function RolePage({ params }: PageProps) {
 	const { role } = await params;
-	const page = getRolePageBySlug(role);
+	const page = getRoleBySlug(role);
 
 	if (!page || !page.published) {
 		notFound();

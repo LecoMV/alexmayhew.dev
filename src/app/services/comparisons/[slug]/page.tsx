@@ -2,8 +2,8 @@ import { notFound } from "next/navigation";
 
 import { ComparisonJsonLd } from "@/components/seo/comparison-json-ld";
 import { INDUSTRY_LABELS } from "@/data/pseo";
-import { getAllComparisonSlugs, getComparisonPageBySlug } from "@/data/pseo/comparisons";
-import { getPageBySlug } from "@/data/pseo/pages";
+import { getAllComparisonSlugs } from "@/data/pseo/comparisons";
+import { getComparisonBySlug, getPseoPageBySlug } from "@/lib/cached-data";
 
 import { ComparisonPageContent } from "./comparison-page-content";
 
@@ -31,7 +31,7 @@ export function generateStaticParams() {
  */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const { slug } = await params;
-	const page = getComparisonPageBySlug(slug);
+	const page = getComparisonBySlug(slug);
 
 	if (!page || !page.published) {
 		return {};
@@ -79,7 +79,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
  */
 export default async function ComparisonPage({ params }: PageProps) {
 	const { slug } = await params;
-	const page = getComparisonPageBySlug(slug);
+	const page = getComparisonBySlug(slug);
 
 	if (!page || !page.published) {
 		notFound();
@@ -91,8 +91,8 @@ export default async function ComparisonPage({ params }: PageProps) {
 	}
 
 	const relatedServicePages = page.relatedServices
-		.map((s) => getPageBySlug(s))
-		.filter((p) => p !== undefined && p.published)
+		.map((s) => getPseoPageBySlug(s))
+		.filter((p) => p !== null && p.published)
 		.slice(0, 3)
 		.map((p) => ({
 			slug: p!.slug,

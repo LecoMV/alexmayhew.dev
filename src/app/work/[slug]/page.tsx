@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 
 import { CaseStudyPage } from "@/components/pages/case-study-page";
 import { CaseStudyJsonLd } from "@/components/seo/case-study-json-ld";
-import { getCaseStudyProjects, getProjectById, projects } from "@/data/projects";
+import { getCaseStudyProjects, projects } from "@/data/projects";
+import { getWorkBySlug } from "@/lib/cached-data";
 
 import type { Metadata } from "next";
 
@@ -22,7 +23,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const { slug } = await params;
-	const project = getProjectById(slug);
+	const project = getWorkBySlug(slug);
 
 	if (!project?.caseStudy?.published) {
 		return {};
@@ -69,7 +70,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function WorkCaseStudyPage({ params }: PageProps) {
 	const { slug } = await params;
-	const project = getProjectById(slug);
+	const project = getWorkBySlug(slug);
 
 	if (!project?.caseStudy?.published) {
 		notFound();
