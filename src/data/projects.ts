@@ -442,9 +442,9 @@ export const projects: Project[] = [
 	},
 	{
 		id: "voice-cloner",
-		title: "Voice Cloner",
+		title: "VoiceKeep",
 		description:
-			"Built a production AI voice platform handling single-voice TTS, multi-speaker conversations, and full audiobook production from manuscript uploads ... all on a single RTX 3080. The platform runs Qwen3-TTS 1.7B with 12-second P50 latency, 41+ curated voices, and zero-shot cloning from short reference audio. The Audiobook Studio parses DOCX/PDF/TXT manuscripts into chapters with dialogue detection, assigns character voices, applies pronunciation dictionaries, and exports distribution-ready M4B with chapter markers. Multi-voice conversations support drag-and-drop line ordering, per-line effects (speed, volume, gap), stage directions, multiple takes, ambient audio, and a waveform timeline editor. 99.95% uptime, 0.03% error rate, Stripe subscription billing.",
+			"VoiceKeep (shipped as voicekeep.io) grew out of the Voice Cloner research prototype into a production AI voice platform handling single-voice TTS, multi-speaker conversations, and full audiobook production from manuscript uploads ... all on a single RTX 3080. The platform runs Qwen3-TTS 1.7B with 12-second P50 latency, 41+ curated voices, and zero-shot cloning from short reference audio. The Audiobook Studio parses DOCX/PDF/TXT manuscripts into chapters with dialogue detection, assigns character voices, applies pronunciation dictionaries, and exports distribution-ready M4B with chapter markers. Multi-voice conversations support drag-and-drop line ordering, per-line effects (speed, volume, gap), stage directions, multiple takes, ambient audio, and a waveform timeline editor. 99.95% uptime, 0.03% error rate, Stripe subscription billing.",
 		category: "AI/ML",
 		tech: [
 			"Python",
@@ -459,7 +459,7 @@ export const projects: Project[] = [
 		],
 		year: "2025",
 		status: "Production",
-		link: "https://voicecloner.alexmayhew.dev",
+		link: "https://voicekeep.io",
 		featured: true,
 		relatedServices: [
 			{
@@ -478,7 +478,7 @@ export const projects: Project[] = [
 		caseStudy: {
 			published: true,
 			subtitle:
-				"Production voice platform ... TTS, conversations, and audiobook production on a single RTX 3080",
+				"VoiceKeep (voicekeep.io): production voice platform from a Voice Cloner prototype ... TTS, conversations, and audiobook production on a single RTX 3080",
 			context: {
 				duration: "8 weeks",
 				industry: "AI/ML SaaS",
