@@ -43,8 +43,9 @@ const siteUrl = "https://alexmayhew.dev";
 export const viewport: Viewport = {
 	width: "device-width",
 	initialScale: 1,
-	maximumScale: 5,
-	userScalable: true,
+	// No maximumScale / userScalable caps ... WCAG 1.4.4 and Lighthouse 2026
+	// recommend allowing unlimited pinch-zoom. Browsers honor user zoom regardless,
+	// but emitting `maximum-scale=5` hurts accessibility scoring.
 	themeColor: [
 		{ media: "(prefers-color-scheme: dark)", color: "#0B0E14" },
 		{ media: "(prefers-color-scheme: light)", color: "#0B0E14" },
@@ -150,6 +151,19 @@ export default async function RootLayout({
 			suppressHydrationWarning
 		>
 			<head>
+				{/* Preconnect + dns-prefetch for origins hit during first paint.
+				    Saves 100-200ms on cold TLS handshake for GA4, CF beacon, Turnstile, Sentry.
+				    preconnect warms the socket; dns-prefetch is the fallback for older clients. */}
+				<link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+				<link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+				<link
+					rel="preconnect"
+					href="https://static.cloudflareinsights.com"
+					crossOrigin="anonymous"
+				/>
+				<link rel="dns-prefetch" href="https://static.cloudflareinsights.com" />
+				<link rel="preconnect" href="https://challenges.cloudflare.com" crossOrigin="anonymous" />
+				<link rel="dns-prefetch" href="https://challenges.cloudflare.com" />
 				<JsonLd />
 				{/* Consent Mode v2 ... region-specific defaults per Google docs
 				     EEA+UK+CH: denied (GDPR opt-in required)

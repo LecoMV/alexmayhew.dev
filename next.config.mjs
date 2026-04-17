@@ -36,6 +36,13 @@ const config = {
 		optimizePackageImports: ["lucide-react", "framer-motion"],
 	},
 
+	// Image optimization
+	// AVIF is served first (smaller than WebP at same quality for most photos);
+	// WebP is the universal fallback. next/image negotiates via Accept header.
+	images: {
+		formats: ["image/avif", "image/webp"],
+	},
+
 	// Remove console logs in production for smaller bundle
 	compiler: {
 		removeConsole: process.env.NODE_ENV === "production",
