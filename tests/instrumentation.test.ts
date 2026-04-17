@@ -5,24 +5,18 @@ import { describe, expect, it } from "vitest";
 import { register } from "@/instrumentation";
 
 describe("instrumentation", () => {
-	it("register is an async function that resolves", async () => {
-		await expect(register()).resolves.toBeUndefined();
+	it("register is a function that does not throw", () => {
+		expect(() => register()).not.toThrow();
 	});
 
-	it("loads the server config under the Node.js runtime", () => {
+	it("is a no-op on OpenNext-Cloudflare to avoid @sentry/nextjs Node-only imports", () => {
 		const source = readFileSync("src/instrumentation.ts", "utf-8");
-		expect(source).toMatch(/NEXT_RUNTIME === ['"]nodejs['"]/);
-		expect(source).toMatch(/import\(['"]\.\.\/sentry\.server\.config['"]\)/);
+		expect(source).not.toMatch(/from ['"]@sentry\/nextjs['"]/);
+		expect(source).not.toMatch(/import\(['"]\.\.\/sentry\.(server|edge)\.config['"]\)/);
 	});
 
-	it("loads the edge config under the Edge runtime", () => {
+	it("documents why it is a no-op (prevents future regressions)", () => {
 		const source = readFileSync("src/instrumentation.ts", "utf-8");
-		expect(source).toMatch(/NEXT_RUNTIME === ['"]edge['"]/);
-		expect(source).toMatch(/import\(['"]\.\.\/sentry\.edge\.config['"]\)/);
-	});
-
-	it("re-exports onRequestError from @sentry/nextjs", () => {
-		const source = readFileSync("src/instrumentation.ts", "utf-8");
-		expect(source).toMatch(/captureRequestError as onRequestError.*@sentry\/nextjs/s);
+		expect(source).toMatch(/custom-worker\.ts|@sentry\/cloudflare|Workers runtime/i);
 	});
 });
