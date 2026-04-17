@@ -25,9 +25,10 @@ import type { NextRequest } from "next/server";
  *       `'strict-dynamic'` on every route (watch for routes that are
  *       statically generated — they will ignore middleware nonces; see
  *       research doc section 13 gotcha).
- * When flipped: also remove `Content-Security-Policy` from
- * `custom-worker.ts` SECURITY_HEADERS so middleware owns CSP unambiguously,
- * and flip the `STRICT MODE` skipped test in tests/middleware-nonce.test.ts.
+ * When flipped: flip the `STRICT MODE` skipped test in
+ * tests/middleware-nonce.test.ts from `.skip` to active. (CSP ownership is
+ * already middleware-only as of 2026-04-16 — custom-worker.ts no longer
+ * sets a Content-Security-Policy header.)
  */
 function generateNonce(): string {
 	// crypto.getRandomValues is available in the Cloudflare Workers runtime
@@ -49,6 +50,7 @@ export function middleware(request: NextRequest) {
 		const cspHeader = `
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' https://static.cloudflareinsights.com https://challenges.cloudflare.com https://*.googletagmanager.com;
+    worker-src 'self' blob:;
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https://*.google-analytics.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com;
     font-src 'self';

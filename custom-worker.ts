@@ -2,45 +2,31 @@ import * as Sentry from "@sentry/cloudflare";
 
 // Custom Worker wrapper:
 // 1. Wraps OpenNext handler with Sentry for server-side error tracking
-// 2. Injects security headers on HTML responses (public/_headers only covers CDN static assets)
+// 2. Injects defense-in-depth security headers on HTML responses
+//    (public/_headers only covers CDN static assets).
 //
-// CSP ownership: middleware.ts generates the per-request nonce and sets
-// Content-Security-Policy on both request and response headers. This Worker
-// wrapper's SECURITY_HEADERS overwrites the CSP header with a static policy
-// ONLY as a fallback for HTML responses that never passed through middleware
-// (e.g. error pages emitted by the Worker itself before Next.js runs).
+// CSP ownership: middleware.ts is the SOLE source of truth for
+// Content-Security-Policy. It generates a per-request nonce, injects it
+// into script-src, and forwards both the CSP and x-nonce headers on the
+// request (for Server Components) and the response (for the browser).
 //
-// TODO(csp-strict-mode): When the nonce migration in middleware.ts flips to
-// strict mode (removes 'unsafe-inline' from script-src), this fallback CSP
-// MUST be kept in lockstep — or, preferably, the "Content-Security-Policy"
-// entry should be dropped from SECURITY_HEADERS so middleware owns CSP
-// unambiguously. Under no circumstances should this Worker generate its own
-// nonce (via crypto.randomUUID or HTMLRewriter rewriting script tags) — that
-// would desync from the nonce Next.js already baked into the SSR HTML and
+// This Worker used to overwrite CSP via SECURITY_HEADERS, which silently
+// clobbered the nonce and kept production on 'unsafe-inline'. That entry
+// has been removed. The remaining SECURITY_HEADERS are defense-in-depth
+// for HTML responses that bypass middleware entirely (Worker-level error
+// pages emitted before Next.js runs) — none of them depend on per-request
+// state, so a static set is safe.
+//
+// Under no circumstances should this Worker generate its own nonce (via
+// crypto.randomUUID or HTMLRewriter rewriting script tags) — that would
+// desync from the nonce Next.js already baked into the SSR HTML and
 // silently break every inline script. See docs/research/
 // csp-nextjs15-cloudflare-workers-2026.md section 13.
 // @ts-expect-error — .open-next/worker.js generated at build time
 import handler from "./.open-next/worker.js";
 
+// Content-Security-Policy intentionally NOT in this map. See middleware.ts.
 const SECURITY_HEADERS: Record<string, string> = {
-	"Content-Security-Policy": [
-		"default-src 'self'",
-		// 'unsafe-inline' retained as a transitional safety net until
-		// middleware's nonce migration is verified in production (CF Insights
-		// + GA4 + Next.js framework scripts). See TODO(csp-strict-mode) above.
-		"script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://challenges.cloudflare.com https://*.googletagmanager.com",
-		"worker-src 'self' blob:",
-		"style-src 'self' 'unsafe-inline'",
-		"img-src 'self' blob: data: https://*.google-analytics.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com",
-		"font-src 'self'",
-		"connect-src 'self' https://cloudflareinsights.com https://challenges.cloudflare.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com",
-		"frame-src 'self' https://challenges.cloudflare.com https://www.googletagmanager.com",
-		"object-src 'none'",
-		"base-uri 'self'",
-		"form-action 'self'",
-		"frame-ancestors 'none'",
-		"upgrade-insecure-requests",
-	].join("; "),
 	"X-Frame-Options": "DENY",
 	"X-Content-Type-Options": "nosniff",
 	"Referrer-Policy": "strict-origin-when-cross-origin",

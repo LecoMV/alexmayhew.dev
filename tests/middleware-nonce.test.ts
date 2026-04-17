@@ -14,6 +14,10 @@ import { middleware } from "../middleware";
  *   - Middleware MUST generate a per-request nonce.
  *   - CSP header MUST carry `'nonce-<value>'` in script-src.
  *   - The `x-nonce` request header MUST be set so Server Components can read it.
+ *   - Middleware is the SOLE source of truth for CSP. custom-worker.ts must
+ *     NOT set a Content-Security-Policy header — doing so overwrites the
+ *     per-request nonce and was the root cause of the live site still
+ *     carrying only 'unsafe-inline' despite G2 plumbing.
  *   - `'unsafe-inline'` is RETAINED in script-src as a transitional safety net —
  *     see the TODO in middleware.ts for what blocks removal.
  *   - When the site is fully on nonce + strict-dynamic, the
@@ -109,9 +113,9 @@ describe("custom-worker CSP nonce-readiness", () => {
 		expect(executable).not.toMatch(/new\s+HTMLRewriter/);
 	});
 
-	it("SECURITY_HEADERS CSP directive declares a TODO for strict-mode parity", () => {
-		// to avoid breaking fallback responses. We require a TODO marker so
-		const hasTodo = /TODO.*(nonce|unsafe-inline|strict)/i.test(workerSource);
-		expect(hasTodo).toBe(true);
+	it("SECURITY_HEADERS does NOT contain a Content-Security-Policy key (middleware owns CSP)", () => {
+		// Strip comments so documentation mentioning CSP doesn't false-positive.
+		const executable = workerSource.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+		expect(executable).not.toMatch(/"Content-Security-Policy"\s*:/);
 	});
 });
