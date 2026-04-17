@@ -4,6 +4,7 @@ import { AnimatePresence, m } from "framer-motion";
 import { Bot, Loader2, MessageSquare, Send, User, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { trackEvent } from "@/components/analytics/google-analytics";
 import { microSpring, snappySpringTransition as springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
@@ -22,8 +23,17 @@ interface ChatApiResponse {
 	error?: string;
 }
 
-export function ChatWidget() {
-	const [isOpen, setIsOpen] = useState(false);
+interface ChatWidgetProps {
+	/**
+	 * When true, the widget opens as soon as it mounts. Used by the lazy
+	 * wrapper so that the click that triggered the dynamic import also opens
+	 * the widget (rather than requiring a second click after load).
+	 */
+	autoOpen?: boolean;
+}
+
+export function ChatWidget({ autoOpen = false }: ChatWidgetProps = {}) {
+	const [isOpen, setIsOpen] = useState(autoOpen);
 	const [messages, setMessages] = useState<Message[]>([
 		{
 			id: "welcome",
@@ -51,6 +61,19 @@ export function ChatWidget() {
 	useEffect(() => {
 		if (isOpen && inputRef.current) {
 			inputRef.current.focus();
+		}
+	}, [isOpen]);
+
+	// Fire funnel events on open/close transitions rather than in the click
+	// handler, so the lazy-mount autoOpen case also gets tracked.
+	const hasTrackedOpenRef = useRef(false);
+	useEffect(() => {
+		if (isOpen && !hasTrackedOpenRef.current) {
+			hasTrackedOpenRef.current = true;
+			trackEvent("chat_widget_opened");
+		} else if (!isOpen && hasTrackedOpenRef.current) {
+			hasTrackedOpenRef.current = false;
+			trackEvent("chat_widget_closed");
 		}
 	}, [isOpen]);
 
@@ -91,12 +114,20 @@ export function ChatWidget() {
 	const sendMessage = async () => {
 		if (!input.trim() || isLoading) return;
 
+		const trimmed = input.trim();
 		const userMessage: Message = {
 			id: `user-${Date.now()}`,
 			role: "user",
-			content: input.trim(),
+			content: trimmed,
 			timestamp: new Date(),
 		};
+
+		// history_length reflects conversation turns before THIS message, so
+		// funnel analysis can correlate drop-off with depth.
+		trackEvent("chat_message_sent", {
+			char_count: trimmed.length,
+			history_length: messages.filter((m) => m.id !== "welcome").length,
+		});
 
 		setMessages((prev) => [...prev, userMessage]);
 		setInput("");
@@ -129,6 +160,11 @@ export function ChatWidget() {
 				content: data.message ?? "Sorry, I couldn't process that request.",
 				timestamp: new Date(),
 			};
+
+			trackEvent("chat_response_received", {
+				char_count: assistantMessage.content.length,
+				model: data.model ?? "unknown",
+			});
 
 			setMessages((prev) => [...prev, assistantMessage]);
 		} catch {

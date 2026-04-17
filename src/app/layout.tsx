@@ -27,8 +27,8 @@ const PageAnalytics = dynamic(() =>
 const WebVitalsReporter = dynamic(() =>
 	import("@/components/analytics/web-vitals").then((mod) => mod.WebVitalsReporter)
 );
-const ChatWidget = dynamic(() =>
-	import("@/components/chat/chat-widget").then((mod) => mod.ChatWidget)
+const LazyChatWidget = dynamic(() =>
+	import("@/components/chat/lazy-chat-widget").then((mod) => mod.LazyChatWidget)
 );
 const CookieConsent = dynamic(() =>
 	import("@/components/ui/cookie-consent").then((mod) => mod.CookieConsent)
@@ -165,7 +165,7 @@ export default function RootLayout({
 							</main>
 						</SmoothScroll>
 						<ErrorBoundary>
-							<ChatWidget />
+							<LazyChatWidget />
 						</ErrorBoundary>
 						<CookieConsent />
 						<LazyCommandPaletteServer />
