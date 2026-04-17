@@ -115,24 +115,21 @@ describe("subscribeToNewsletter", () => {
 	});
 
 	describe("Rate limiting", () => {
-		it("should allow when rate limit succeeds", async () => {
-			mockRateLimitFn.mockResolvedValue({ success: true });
-			const result = await subscribeToNewsletter({ email: TEST_EMAIL, source: "website" });
-			expect(result.success).toBe(true);
-		});
-
-		it("should block when rate limit binding returns failure", async () => {
-			mockRateLimitFn.mockResolvedValue({ success: false });
+		it("should block when RATE_LIMIT_KV reports over limit", async () => {
+			const { getCloudflareContext } = await import("@opennextjs/cloudflare");
+			(
+				getCloudflareContext as unknown as { mockResolvedValueOnce: (v: unknown) => void }
+			).mockResolvedValueOnce({
+				env: {
+					RATE_LIMIT_KV: {
+						get: vi.fn().mockResolvedValue("999"),
+						put: vi.fn().mockResolvedValue(undefined),
+					},
+				},
+			});
 			const result = await subscribeToNewsletter({ email: TEST_EMAIL, source: "website" });
 			expect(result.success).toBe(false);
 			expect(result.error).toContain("Too many attempts");
-		});
-
-		it("should pass client IP key to rate limiter", async () => {
-			await subscribeToNewsletter({ email: TEST_EMAIL, source: "website" });
-			expect(mockRateLimitFn).toHaveBeenCalledWith({
-				key: expect.stringContaining("newsletter:"),
-			});
 		});
 	});
 

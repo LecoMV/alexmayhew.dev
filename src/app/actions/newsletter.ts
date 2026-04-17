@@ -6,6 +6,10 @@ import { z } from "zod";
 
 import { dependencies } from "@/lib/_newsletter-deps";
 import { getEnv } from "@/lib/cloudflare-env";
+import { checkRateLimit } from "@/lib/rate-limit";
+
+// Newsletter signup: 3 attempts per minute per IP.
+const NEWSLETTER_LIMIT_PER_MIN = 3;
 
 // Validation schema
 const newsletterSchema = z.object({
@@ -57,16 +61,16 @@ export async function subscribeToNewsletter(
 
 	try {
 		const { env: cfEnv } = await getCloudflareContext();
-		if (cfEnv.RATE_LIMITER_NEWSLETTER) {
-			const { success } = await cfEnv.RATE_LIMITER_NEWSLETTER.limit({
-				key: `newsletter:${clientIP}`,
-			});
-			if (!success) {
-				return {
-					success: false,
-					error: "Too many attempts. Please try again later.",
-				};
-			}
+		const { success } = await checkRateLimit({
+			kv: cfEnv.RATE_LIMIT_KV ?? null,
+			key: `newsletter:${clientIP}`,
+			limit: NEWSLETTER_LIMIT_PER_MIN,
+		});
+		if (!success) {
+			return {
+				success: false,
+				error: "Too many attempts. Please try again later.",
+			};
 		}
 	} catch {
 		// Rate limiting unavailable in local dev ... allow request through

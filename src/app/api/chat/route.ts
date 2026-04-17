@@ -3,10 +3,13 @@ import { z } from "zod";
 
 import blogIndex from "@/data/blog-index.json";
 import { logger } from "@/lib/logger";
-import { getClientIP } from "@/lib/rate-limit";
+import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
 import { CloudflareAIResponseSchema } from "@/lib/schemas/external-responses";
 const MAX_MESSAGE_LENGTH = 1000;
 const MAX_MESSAGES_PER_REQUEST = 10;
+
+// Chat: 20 messages per minute per IP.
+const CHAT_LIMIT_PER_MIN = 20;
 
 const ChatMessageSchema = z.object({
 	role: z.enum(["user", "assistant", "system"]),
@@ -131,20 +134,21 @@ export async function POST(request: Request) {
 		const clientIP = getClientIP(request.headers);
 		const { env } = await getCloudflareContext();
 
-		// Rate limiting via Workers binding (globally coordinated)
-		if (env.RATE_LIMITER_CHAT) {
-			const { success } = await env.RATE_LIMITER_CHAT.limit({ key: clientIP });
-			if (!success) {
-				return Response.json(
-					{
-						error: "Too many requests. Please wait before sending more messages.",
-					},
-					{
-						status: 429,
-						headers: { "Retry-After": "60" },
-					}
-				);
-			}
+		const { success: rateOk } = await checkRateLimit({
+			kv: env.RATE_LIMIT_KV ?? null,
+			key: `chat:${clientIP}`,
+			limit: CHAT_LIMIT_PER_MIN,
+		});
+		if (!rateOk) {
+			return Response.json(
+				{
+					error: "Too many requests. Please wait before sending more messages.",
+				},
+				{
+					status: 429,
+					headers: { "Retry-After": "60" },
+				}
+			);
 		}
 
 		let body: unknown;

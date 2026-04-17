@@ -143,23 +143,52 @@ describe("submitContactForm", () => {
 	});
 
 	describe("Rate limiting", () => {
-		it("should allow request when rate limit succeeds", async () => {
-			const result = await submitContactForm(validData);
-			expect(result.success).toBe(true);
-		});
-
-		it("should block when rate limit binding returns failure", async () => {
-			mockRateLimitFn.mockResolvedValue({ success: false });
+		it("should block when RATE_LIMIT_KV reports over limit", async () => {
+			const { getCloudflareContext } = await import("@opennextjs/cloudflare");
+			(
+				getCloudflareContext as unknown as { mockResolvedValueOnce: (v: unknown) => void }
+			).mockResolvedValueOnce({
+				env: {
+					RATE_LIMIT_KV: {
+						get: vi.fn().mockResolvedValue("999"),
+						put: vi.fn().mockResolvedValue(undefined),
+					},
+				},
+			});
 			const result = await submitContactForm(validData);
 			expect(result.success).toBe(false);
 			expect(result.error).toContain("Too many submissions");
 		});
 
-		it("should pass client IP key to rate limiter", async () => {
-			await submitContactForm(validData);
-			expect(mockRateLimitFn).toHaveBeenCalledWith({
-				key: expect.stringContaining("contact:"),
+		it("should allow request when rate limit succeeds", async () => {
+			const result = await submitContactForm(validData);
+			expect(result.success).toBe(true);
+		});
+
+		it("should allow request when RATE_LIMIT_KV binding is absent (fails open)", async () => {
+			const { getCloudflareContext } = await import("@opennextjs/cloudflare");
+			(
+				getCloudflareContext as unknown as { mockResolvedValueOnce: (v: unknown) => void }
+			).mockResolvedValueOnce({ env: {} });
+			const result = await submitContactForm(validData);
+			expect(result.success).toBe(true);
+		});
+
+		it("should scope rate limit key by client IP", async () => {
+			const get = vi.fn().mockResolvedValue("0");
+			const put = vi.fn().mockResolvedValue(undefined);
+			const { getCloudflareContext } = await import("@opennextjs/cloudflare");
+			(
+				getCloudflareContext as unknown as { mockResolvedValueOnce: (v: unknown) => void }
+			).mockResolvedValueOnce({
+				env: { RATE_LIMIT_KV: { get, put } },
 			});
+			await submitContactForm(validData);
+			expect(put).toHaveBeenCalledWith(
+				expect.stringContaining("ratelimit:contact:"),
+				expect.any(String),
+				expect.objectContaining({ expirationTtl: expect.any(Number) })
+			);
 		});
 	});
 

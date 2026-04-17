@@ -7,10 +7,14 @@ import { headers } from "next/headers";
 import { ContactNotification } from "@/components/emails/contact-notification";
 import { dependencies } from "@/lib/_contact-deps";
 import { getEnv } from "@/lib/cloudflare-env";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { contactFormSchema, type ContactFormValues } from "@/lib/schemas/contact";
 
 // Retry delays in ms: 1s first retry, 3s second retry
 const RETRY_DELAYS = [1000, 3000];
+
+// Contact form: 5 submissions per minute per IP.
+const CONTACT_LIMIT_PER_MIN = 5;
 
 async function withRetry<T>(
 	fn: () => Promise<T>,
@@ -99,16 +103,16 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 
 	try {
 		const { env: cfEnv } = await getCloudflareContext();
-		if (cfEnv.RATE_LIMITER_CONTACT) {
-			const { success } = await cfEnv.RATE_LIMITER_CONTACT.limit({
-				key: `contact:${clientIP}`,
-			});
-			if (!success) {
-				return {
-					success: false,
-					error: "Too many submissions. Please try again later.",
-				};
-			}
+		const { success } = await checkRateLimit({
+			kv: cfEnv.RATE_LIMIT_KV ?? null,
+			key: `contact:${clientIP}`,
+			limit: CONTACT_LIMIT_PER_MIN,
+		});
+		if (!success) {
+			return {
+				success: false,
+				error: "Too many submissions. Please try again later.",
+			};
 		}
 	} catch {
 		// Rate limiting unavailable in local dev ... allow request through

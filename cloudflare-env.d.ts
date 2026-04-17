@@ -20,6 +20,7 @@ declare namespace Cloudflare {
 		RATE_LIMITER_CHAT: RateLimit;
 		RATE_LIMITER_CONTACT: RateLimit;
 		RATE_LIMITER_NEWSLETTER: RateLimit;
+		RATE_LIMIT_KV: KVNamespace;
 		NEXT_CACHE: R2Bucket;
 		WORKER_SELF_REFERENCE: Service<typeof import("./.open-next/worker").default>;
 		AI: Ai;
