@@ -16,6 +16,9 @@ vi.mock("@/components/analytics", () => ({
 import { trackContentEvent, trackEvent, trackServiceEvent } from "@/components/analytics";
 import { useContentAnalytics } from "@/lib/hooks/use-content-analytics";
 
+const SCROLL_DEPTH_SELECTOR = "[data-scroll-depth]";
+const TIMER_POST_ID = "timer-post";
+
 type IntersectionCallback = (entries: Partial<IntersectionObserverEntry>[]) => void;
 
 describe("useContentAnalytics scroll tracking", () => {
@@ -63,13 +66,13 @@ describe("useContentAnalytics scroll tracking", () => {
 		const article = document.querySelector("article");
 		if (article) article.remove();
 		// Remove any sentinels left over
-		document.querySelectorAll("[data-scroll-depth]").forEach((el) => el.remove());
+		document.querySelectorAll(SCROLL_DEPTH_SELECTOR).forEach((el) => el.remove());
 	});
 
 	it("creates sentinel elements at 25%, 50%, 75%, 90% of article height", () => {
 		renderHook(() => useContentAnalytics({ contentType: "blog_post" }));
 
-		const sentinels = document.querySelectorAll("[data-scroll-depth]");
+		const sentinels = document.querySelectorAll(SCROLL_DEPTH_SELECTOR);
 		expect(sentinels).toHaveLength(4);
 
 		const milestones = Array.from(sentinels).map((s) =>
@@ -81,7 +84,7 @@ describe("useContentAnalytics scroll tracking", () => {
 	it("positions sentinels at correct offsets based on article scrollHeight", () => {
 		renderHook(() => useContentAnalytics({ contentType: "blog_post" }));
 
-		const sentinels = document.querySelectorAll("[data-scroll-depth]") as NodeListOf<HTMLElement>;
+		const sentinels = document.querySelectorAll(SCROLL_DEPTH_SELECTOR) as NodeListOf<HTMLElement>;
 		expect(sentinels[0].style.top).toBe("1000px");
 		expect(sentinels[1].style.top).toBe("2000px");
 		expect(sentinels[2].style.top).toBe("3000px");
@@ -91,7 +94,7 @@ describe("useContentAnalytics scroll tracking", () => {
 	it("sentinels are invisible and non-interactive", () => {
 		renderHook(() => useContentAnalytics({ contentType: "blog_post" }));
 
-		const sentinels = document.querySelectorAll("[data-scroll-depth]") as NodeListOf<HTMLElement>;
+		const sentinels = document.querySelectorAll(SCROLL_DEPTH_SELECTOR) as NodeListOf<HTMLElement>;
 		for (const sentinel of sentinels) {
 			expect(sentinel.style.opacity).toBe("0");
 			expect(sentinel.style.pointerEvents).toBe("none");
@@ -173,12 +176,12 @@ describe("useContentAnalytics scroll tracking", () => {
 	it("cleans up sentinels and disconnects observer on unmount", () => {
 		const { unmount } = renderHook(() => useContentAnalytics({ contentType: "blog_post" }));
 
-		expect(document.querySelectorAll("[data-scroll-depth]")).toHaveLength(4);
+		expect(document.querySelectorAll(SCROLL_DEPTH_SELECTOR)).toHaveLength(4);
 
 		unmount();
 
 		expect(disconnectSpy).toHaveBeenCalled();
-		expect(document.querySelectorAll("[data-scroll-depth]")).toHaveLength(0);
+		expect(document.querySelectorAll(SCROLL_DEPTH_SELECTOR)).toHaveLength(0);
 	});
 
 	it("observes all sentinels with IntersectionObserver", () => {
@@ -209,7 +212,7 @@ describe("useContentAnalytics scroll tracking", () => {
 
 		renderHook(() => useContentAnalytics({ contentType: "blog_post" }));
 
-		const sentinels = main.querySelectorAll("[data-scroll-depth]");
+		const sentinels = main.querySelectorAll(SCROLL_DEPTH_SELECTOR);
 		expect(sentinels).toHaveLength(4);
 
 		// 25% of 2000 = 500
@@ -229,7 +232,7 @@ describe("useContentAnalytics content view tracking", () => {
 
 	afterEach(() => {
 		document.querySelector("article")?.remove();
-		document.querySelectorAll("[data-scroll-depth]").forEach((el) => el.remove());
+		document.querySelectorAll(SCROLL_DEPTH_SELECTOR).forEach((el) => el.remove());
 	});
 
 	it("tracks content_view on mount with correct parameters", () => {
@@ -306,13 +309,13 @@ describe("useContentAnalytics engagement time tracking", () => {
 	afterEach(() => {
 		vi.useRealTimers();
 		document.querySelector("article")?.remove();
-		document.querySelectorAll("[data-scroll-depth]").forEach((el) => el.remove());
+		document.querySelectorAll(SCROLL_DEPTH_SELECTOR).forEach((el) => el.remove());
 	});
 
 	it("fires engagement milestone at 30s", () => {
 		renderHook(() =>
 			useContentAnalytics({
-				contentId: "timer-post",
+				contentId: TIMER_POST_ID,
 				contentType: "blog_post",
 				contentCategory: "engineering",
 			})
@@ -323,7 +326,7 @@ describe("useContentAnalytics engagement time tracking", () => {
 		});
 
 		expect(trackContentEvent).toHaveBeenCalledWith("user_engagement", {
-			content_id: "timer-post",
+			content_id: TIMER_POST_ID,
 			content_type: "blog_post",
 			engagement_time_msec: 30000,
 			content_category: "engineering",
@@ -333,7 +336,7 @@ describe("useContentAnalytics engagement time tracking", () => {
 	it("fires engagement milestone at 60s", () => {
 		renderHook(() =>
 			useContentAnalytics({
-				contentId: "timer-post",
+				contentId: TIMER_POST_ID,
 				contentType: "blog_post",
 				contentCategory: "engineering",
 			})
@@ -354,7 +357,7 @@ describe("useContentAnalytics engagement time tracking", () => {
 	it("clears engagement timers on unmount", () => {
 		const { unmount } = renderHook(() =>
 			useContentAnalytics({
-				contentId: "timer-post",
+				contentId: TIMER_POST_ID,
 				contentType: "blog_post",
 			})
 		);
@@ -393,7 +396,7 @@ describe("useContentAnalytics visibility and unmount tracking", () => {
 
 	afterEach(() => {
 		document.querySelector("article")?.remove();
-		document.querySelectorAll("[data-scroll-depth]").forEach((el) => el.remove());
+		document.querySelectorAll(SCROLL_DEPTH_SELECTOR).forEach((el) => el.remove());
 		if (originalVisibilityState) {
 			Object.defineProperty(document, "visibilityState", originalVisibilityState);
 		} else {
@@ -576,7 +579,7 @@ describe("useContentAnalytics trackInteraction", () => {
 
 	afterEach(() => {
 		document.querySelector("article")?.remove();
-		document.querySelectorAll("[data-scroll-depth]").forEach((el) => el.remove());
+		document.querySelectorAll(SCROLL_DEPTH_SELECTOR).forEach((el) => el.remove());
 	});
 
 	it("tracks content_interaction event with provided interaction type", () => {
@@ -662,7 +665,7 @@ describe("useContentAnalytics return values", () => {
 
 	afterEach(() => {
 		document.querySelector("article")?.remove();
-		document.querySelectorAll("[data-scroll-depth]").forEach((el) => el.remove());
+		document.querySelectorAll(SCROLL_DEPTH_SELECTOR).forEach((el) => el.remove());
 	});
 
 	it("returns scrollDepth starting at 0", () => {
@@ -685,7 +688,7 @@ describe("useContentAnalytics article positioning", () => {
 	afterEach(() => {
 		document.querySelector("article")?.remove();
 		document.querySelector("main")?.remove();
-		document.querySelectorAll("[data-scroll-depth]").forEach((el) => el.remove());
+		document.querySelectorAll(SCROLL_DEPTH_SELECTOR).forEach((el) => el.remove());
 	});
 
 	it("does not override article position if already non-static", () => {
@@ -716,6 +719,6 @@ describe("useContentAnalytics article positioning", () => {
 		renderHook(() => useContentAnalytics({ contentType: "blog_post" }));
 
 		// No sentinels created
-		expect(document.querySelectorAll("[data-scroll-depth]")).toHaveLength(0);
+		expect(document.querySelectorAll(SCROLL_DEPTH_SELECTOR)).toHaveLength(0);
 	});
 });

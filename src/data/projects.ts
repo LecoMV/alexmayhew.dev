@@ -1,6 +1,11 @@
 // Unified project data - single source of truth
 // Used by: /work page, terminal commands, case studies
 
+/* eslint-disable sonarjs/no-duplicate-string --
+ * Data table: repeated literals are either `as const` union narrowing
+ * (Category tuple) or cross-references to service URLs.
+ */
+
 export const categories = ["All", "AI/ML", "SaaS", "Web Apps", "Developer Tools"] as const;
 export type Category = (typeof categories)[number];
 export type ProjectCategory = Exclude<Category, "All">;

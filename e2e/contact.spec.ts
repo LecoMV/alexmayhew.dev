@@ -1,5 +1,7 @@
 import { expect, type Page, test } from "@playwright/test";
 
+const NAME_INPUT = 'input[name="name"]';
+
 /**
  * Scope all field locators to the contact form to avoid collisions
  * with the footer newsletter signup (which also has name="email").
@@ -17,7 +19,7 @@ test.describe("Contact Page", () => {
 	test("should display all form fields", async ({ page }) => {
 		const form = contactForm(page);
 
-		await expect(form.locator('input[name="name"]')).toBeVisible();
+		await expect(form.locator(NAME_INPUT)).toBeVisible();
 		await expect(form.locator('input[name="email"]')).toBeVisible();
 		await expect(form.locator('select[name="projectType"]')).toBeVisible();
 		await expect(form.locator('select[name="budget"]')).toBeVisible();
@@ -58,7 +60,7 @@ test.describe("Contact Page", () => {
 		await page.setViewportSize({ width: 375, height: 667 });
 		await page.goto("/contact");
 
-		await expect(contactForm(page).locator('input[name="name"]')).toBeVisible();
+		await expect(contactForm(page).locator(NAME_INPUT)).toBeVisible();
 
 		const body = page.locator("body");
 		const bodyScrollWidth = await body.evaluate((el) => el.scrollWidth);
@@ -84,7 +86,7 @@ test.describe("Contact Form Validation", () => {
 
 		const form = contactForm(page);
 
-		await form.locator('input[name="name"]').fill("Test User");
+		await form.locator(NAME_INPUT).fill("Test User");
 		await form.locator('input[name="email"]').fill("test@example.com");
 		await form.locator('select[name="projectType"]').selectOption({ index: 1 });
 		await form.locator('select[name="budget"]').selectOption({ index: 1 });
@@ -92,7 +94,7 @@ test.describe("Contact Form Validation", () => {
 			.locator('textarea[name="message"]')
 			.fill("This is a test message that is long enough to pass validation requirements.");
 
-		const nameValue = await form.locator('input[name="name"]').inputValue();
+		const nameValue = await form.locator(NAME_INPUT).inputValue();
 		expect(nameValue).toBe("Test User");
 	});
 });

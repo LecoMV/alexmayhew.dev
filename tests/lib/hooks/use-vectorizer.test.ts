@@ -3,6 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useVectorizer } from "@/lib/hooks/use-vectorizer";
 
+const NETWORK_ERROR = "Network error";
+const UPSCALING_MSG = "Step 1: Upscaling";
+
 const mockCreateObjectURL = vi.fn().mockReturnValue("blob:test-url");
 const mockRevokeObjectURL = vi.fn();
 Object.defineProperty(global.URL, "createObjectURL", {
@@ -72,7 +75,7 @@ describe("useVectorizer", () => {
 
 	it("upload handles network error", async () => {
 		const mockFile = new File(["test"], "test.png", { type: "image/png" });
-		(global.fetch as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error("Network error"));
+		(global.fetch as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error(NETWORK_ERROR));
 
 		const { result } = renderHook(() => useVectorizer());
 
@@ -81,7 +84,7 @@ describe("useVectorizer", () => {
 		});
 
 		expect(result.current.status).toBe("error");
-		expect(result.current.error).toBe("Network error");
+		expect(result.current.error).toBe(NETWORK_ERROR);
 	});
 
 	it("upload handles server error response with error field", async () => {
@@ -305,7 +308,7 @@ describe("useVectorizer process", () => {
 				json: () =>
 					Promise.resolve({
 						status: "PROCESSING",
-						logs: ["Step 1: Upscaling"],
+						logs: [UPSCALING_MSG],
 					}),
 			})
 			.mockResolvedValueOnce({
@@ -344,7 +347,7 @@ describe("useVectorizer process", () => {
 			await Promise.resolve();
 		});
 
-		expect(result.current.progress).toContain("Step 1: Upscaling");
+		expect(result.current.progress).toContain(UPSCALING_MSG);
 
 		// Second poll — SUCCESS
 		await act(async () => {
@@ -556,7 +559,7 @@ describe("useVectorizer process", () => {
 				json: () =>
 					Promise.resolve({
 						status: "PROCESSING",
-						logs: ["Step 1: Upscaling"],
+						logs: [UPSCALING_MSG],
 					}),
 			})
 			.mockResolvedValueOnce({
@@ -564,7 +567,7 @@ describe("useVectorizer process", () => {
 				json: () =>
 					Promise.resolve({
 						status: "PROCESSING",
-						logs: ["Step 1: Upscaling", "Step 2: Generating"],
+						logs: [UPSCALING_MSG, "Step 2: Generating"],
 					}),
 			})
 			.mockResolvedValueOnce({
@@ -606,7 +609,7 @@ describe("useVectorizer process", () => {
 			await Promise.resolve();
 		});
 
-		const upscaleCount = result.current.progress.filter((p) => p === "Step 1: Upscaling").length;
+		const upscaleCount = result.current.progress.filter((p) => p === UPSCALING_MSG).length;
 		expect(upscaleCount).toBe(1);
 		expect(result.current.progress).toContain("Step 2: Generating");
 	});
@@ -904,7 +907,7 @@ describe("useVectorizer downloadSvg", () => {
 				ok: true,
 				json: () => Promise.resolve({ task_id: "task-dlnet" }),
 			})
-			.mockRejectedValueOnce(new Error("Network error"));
+			.mockRejectedValueOnce(new Error(NETWORK_ERROR));
 
 		const { result } = renderHook(() => useVectorizer());
 		const mockFile = new File(["test"], "test.png", { type: "image/png" });
@@ -1042,7 +1045,7 @@ describe("useVectorizer getSvgPreview", () => {
 				ok: true,
 				json: () => Promise.resolve({ task_id: "task-prevnet" }),
 			})
-			.mockRejectedValueOnce(new Error("Network error"));
+			.mockRejectedValueOnce(new Error(NETWORK_ERROR));
 
 		const { result } = renderHook(() => useVectorizer());
 		const mockFile = new File(["test"], "test.png", { type: "image/png" });

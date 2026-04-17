@@ -1,6 +1,8 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+const NO_MAIN_TEST_NAME = "does not render a <main> element (layout already provides one)";
+
 vi.mock("@sentry/nextjs", () => ({
 	captureException: vi.fn(),
 }));
@@ -22,7 +24,7 @@ vi.mock("next/link", () => ({
 }));
 
 describe("Nested main — error.tsx", () => {
-	it("does not render a <main> element (layout already provides one)", async () => {
+	it(NO_MAIN_TEST_NAME, async () => {
 		const { default: ErrorPage } = await import("@/app/error");
 		const { container } = render(<ErrorPage error={new Error("test")} reset={() => {}} />);
 
@@ -32,7 +34,7 @@ describe("Nested main — error.tsx", () => {
 });
 
 describe("Nested main — not-found.tsx", () => {
-	it("does not render a <main> element (layout already provides one)", async () => {
+	it(NO_MAIN_TEST_NAME, async () => {
 		const { default: NotFoundPage } = await import("@/app/not-found");
 		const { container } = render(<NotFoundPage />);
 
@@ -42,7 +44,7 @@ describe("Nested main — not-found.tsx", () => {
 });
 
 describe("Nested main — offline/page.tsx", () => {
-	it("does not render a <main> element (layout already provides one)", async () => {
+	it(NO_MAIN_TEST_NAME, async () => {
 		const { default: OfflinePage } = await import("@/app/offline/page");
 		const { container } = render(<OfflinePage />);
 
@@ -52,7 +54,7 @@ describe("Nested main — offline/page.tsx", () => {
 });
 
 describe("Nested main — demo/error.tsx", () => {
-	it("does not render a <main> element (layout already provides one)", async () => {
+	it(NO_MAIN_TEST_NAME, async () => {
 		const { default: DemoError } = await import("@/app/demo/error");
 		const { container } = render(<DemoError error={new Error("test")} reset={() => {}} />);
 
@@ -62,7 +64,7 @@ describe("Nested main — demo/error.tsx", () => {
 });
 
 describe("Nested main — tools/traceforge/error.tsx", () => {
-	it("does not render a <main> element (layout already provides one)", async () => {
+	it(NO_MAIN_TEST_NAME, async () => {
 		const { default: TraceForgeError } = await import("@/app/tools/traceforge/error");
 		const { container } = render(<TraceForgeError error={new Error("test")} reset={() => {}} />);
 

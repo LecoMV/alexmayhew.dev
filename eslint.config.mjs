@@ -25,6 +25,7 @@ const eslintConfig = [
 			".open-next/**",
 			".claude-flow/**",
 			".wrangler/**",
+			".refactor-backup/**",
 		],
 	},
 	...compat.extends("next/core-web-vitals", "next/typescript"),

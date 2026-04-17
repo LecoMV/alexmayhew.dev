@@ -14,6 +14,11 @@
  * - Budget range
  */
 
+/* eslint-disable sonarjs/no-duplicate-string --
+ * Data table: repeated literals are either narrow union types (Industry, Technology)
+ * or intentional cross-references (related service/blog slugs). Extracting widens
+ * the union types and provides no readability benefit over inline literals.
+ */
 import type { BudgetRange, FaqItem, Industry, Regulation } from "./types";
 
 // =============================================================================

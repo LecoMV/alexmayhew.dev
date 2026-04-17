@@ -3,6 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { config, middleware } from "../middleware";
 
+const CSP_HEADER = "Content-Security-Policy";
+
 describe("middleware", () => {
 	let mockRequest: NextRequest;
 
@@ -13,7 +15,7 @@ describe("middleware", () => {
 	describe("security headers", () => {
 		it("should set Content-Security-Policy header", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).toBeDefined();
 			expect(csp).toContain("default-src 'self'");
@@ -59,7 +61,7 @@ describe("middleware", () => {
 	describe("CSP directives", () => {
 		it("should allow scripts from self and Cloudflare", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).toContain("script-src 'self'");
 			expect(csp).toContain("https://static.cloudflareinsights.com");
@@ -68,35 +70,35 @@ describe("middleware", () => {
 
 		it("should not include unsafe-eval", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).not.toContain("'unsafe-eval'");
 		});
 
 		it("should allow styles from self with unsafe-inline", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).toContain("style-src 'self' 'unsafe-inline'");
 		});
 
 		it("should allow images from self, blob, and data URIs", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).toContain("img-src 'self' blob: data:");
 		});
 
 		it("should allow fonts only from self", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).toContain("font-src 'self'");
 		});
 
 		it("should allow connections to Sentry and Cloudflare", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).toContain("connect-src 'self'");
 			expect(csp).toContain("https://cloudflareinsights.com");
@@ -106,7 +108,7 @@ describe("middleware", () => {
 
 		it("should allow GA4 domains in connect-src", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).toContain("https://*.google-analytics.com");
 			expect(csp).toContain("https://*.analytics.google.com");
@@ -115,7 +117,7 @@ describe("middleware", () => {
 
 		it("should allow GA4 scripts in script-src", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).toContain("script-src");
 			expect(csp).toContain("https://*.googletagmanager.com");
@@ -123,7 +125,7 @@ describe("middleware", () => {
 
 		it("should allow GA4 image domains in img-src", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).toContain("https://*.google-analytics.com");
 			expect(csp).toContain("https://*.googletagmanager.com");
@@ -133,49 +135,49 @@ describe("middleware", () => {
 
 		it("should allow Google Tag Manager frames in frame-src", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).toContain("https://www.googletagmanager.com");
 		});
 
 		it("should allow frames from Cloudflare Turnstile", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).toContain("frame-src 'self' https://challenges.cloudflare.com");
 		});
 
 		it("should block object embeds", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).toContain("object-src 'none'");
 		});
 
 		it("should restrict base-uri to self", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).toContain("base-uri 'self'");
 		});
 
 		it("should restrict form-action to self", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).toContain("form-action 'self'");
 		});
 
 		it("should block framing via frame-ancestors", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).toContain("frame-ancestors 'none'");
 		});
 
 		it("should enable upgrade-insecure-requests", () => {
 			const response = middleware(mockRequest);
-			const csp = response.headers.get("Content-Security-Policy");
+			const csp = response.headers.get(CSP_HEADER);
 
 			expect(csp).toContain("upgrade-insecure-requests");
 		});

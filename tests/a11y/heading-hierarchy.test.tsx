@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+const H1_NOT_SECTION_LABEL = "uses h1 for the main heading, not for the section label";
+
 import { BlogList } from "@/components/blog/blog-list";
 import { AboutPage } from "@/components/pages/about-page";
 import { ContactPage } from "@/components/pages/contact-page";
@@ -97,7 +99,7 @@ vi.mock("react-dom", async () => {
 });
 
 describe("Heading hierarchy — AboutPage", () => {
-	it("uses h1 for the main heading, not for the section label", () => {
+	it(H1_NOT_SECTION_LABEL, () => {
 		render(<AboutPage />);
 
 		const h1Elements = screen.getAllByRole("heading", { level: 1 });
@@ -109,7 +111,7 @@ describe("Heading hierarchy — AboutPage", () => {
 });
 
 describe("Heading hierarchy — ContactPage", () => {
-	it("uses h1 for the main heading, not for the section label", () => {
+	it(H1_NOT_SECTION_LABEL, () => {
 		render(<ContactPage />);
 
 		const h1Elements = screen.getAllByRole("heading", { level: 1 });
@@ -135,7 +137,7 @@ vi.mock("@/data/projects", () => ({
 }));
 
 describe("Heading hierarchy — WorkPage", () => {
-	it("uses h1 for the main heading, not for the section label", () => {
+	it(H1_NOT_SECTION_LABEL, () => {
 		render(<WorkPage />);
 
 		const h1Elements = screen.getAllByRole("heading", { level: 1 });
@@ -146,7 +148,7 @@ describe("Heading hierarchy — WorkPage", () => {
 });
 
 describe("Heading hierarchy — ToolsPage", () => {
-	it("uses h1 for the main heading, not for the section label", () => {
+	it(H1_NOT_SECTION_LABEL, () => {
 		render(<ToolsPage />);
 
 		const h1Elements = screen.getAllByRole("heading", { level: 1 });
@@ -157,7 +159,7 @@ describe("Heading hierarchy — ToolsPage", () => {
 });
 
 describe("Heading hierarchy — PrivacyPage", () => {
-	it("uses h1 for the main heading, not for the section label", async () => {
+	it(H1_NOT_SECTION_LABEL, async () => {
 		const { default: PrivacyPage } = await import("@/app/privacy/page");
 		render(<PrivacyPage />);
 
@@ -169,7 +171,7 @@ describe("Heading hierarchy — PrivacyPage", () => {
 });
 
 describe("Heading hierarchy — TermsPage", () => {
-	it("uses h1 for the main heading, not for the section label", async () => {
+	it(H1_NOT_SECTION_LABEL, async () => {
 		const { default: TermsPage } = await import("@/app/terms/page");
 		render(<TermsPage />);
 
@@ -181,7 +183,7 @@ describe("Heading hierarchy — TermsPage", () => {
 });
 
 describe("Heading hierarchy — BlogList", () => {
-	it("uses h1 for the main heading, not for the section label", () => {
+	it(H1_NOT_SECTION_LABEL, () => {
 		const posts: Post[] = [
 			{
 				slug: "test-post",

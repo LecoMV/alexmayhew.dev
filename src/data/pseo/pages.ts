@@ -5,6 +5,11 @@
  * Each page has 5+ unique insights and 150+ words of long-form content per section.
  */
 
+/* eslint-disable sonarjs/no-duplicate-string --
+ * This is a data table: Technology/Industry literals (e.g. "nextjs", "saas") are
+ * narrow union types from ./types; extracting to constants widens them to `string`
+ * and breaks type inference. Related blog post slugs are intentional cross-references.
+ */
 import type { PseoPage } from "./types";
 
 /**

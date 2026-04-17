@@ -1,9 +1,11 @@
 import { expect, test } from "@playwright/test";
 
+const MAIN_NAV_LABEL = "Main navigation";
+
 test.describe("Navigation", () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto("/");
-		await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
+		await expect(page.getByRole("navigation", { name: MAIN_NAV_LABEL })).toBeVisible();
 	});
 
 	test("navigation links work correctly", async ({ page, viewport }) => {
@@ -36,7 +38,7 @@ test.describe("Navigation", () => {
 	test("mobile menu opens and closes", async ({ page }) => {
 		await page.setViewportSize({ width: 375, height: 667 });
 		await page.goto("/");
-		await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
+		await expect(page.getByRole("navigation", { name: MAIN_NAV_LABEL })).toBeVisible();
 
 		const menuButton = page.getByRole("button", { name: /open menu/i });
 		await expect(menuButton).toBeVisible();
@@ -54,7 +56,7 @@ test.describe("Navigation", () => {
 	test("mobile menu navigation works", async ({ page }) => {
 		await page.setViewportSize({ width: 375, height: 667 });
 		await page.goto("/");
-		await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
+		await expect(page.getByRole("navigation", { name: MAIN_NAV_LABEL })).toBeVisible();
 
 		const menuButton = page.getByRole("button", { name: /open menu/i });
 		await menuButton.click();
@@ -74,7 +76,7 @@ test.describe("Navigation", () => {
 		}
 
 		await page.goto("/work");
-		await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
+		await expect(page.getByRole("navigation", { name: MAIN_NAV_LABEL })).toBeVisible();
 
 		const desktopNav = page.locator("nav > div > div.hidden.lg\\:flex");
 		const workLink = desktopNav.locator('a[href="/work"]');
@@ -83,7 +85,7 @@ test.describe("Navigation", () => {
 
 	test("logo links to home", async ({ page }) => {
 		await page.goto("/work");
-		await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
+		await expect(page.getByRole("navigation", { name: MAIN_NAV_LABEL })).toBeVisible();
 
 		const logoLink = page.locator('header a[href="/"]').first();
 		await logoLink.click();

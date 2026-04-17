@@ -5,6 +5,8 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { middleware } from "../middleware";
 
+const CSP_HEADER = "Content-Security-Policy";
+
 /**
  * TDD gate for nonce-based CSP migration.
  *
@@ -33,7 +35,7 @@ describe("middleware nonce generation", () => {
 
 	it("generates a per-request nonce and injects it into script-src", () => {
 		const response = middleware(mockRequest);
-		const csp = response.headers.get("Content-Security-Policy");
+		const csp = response.headers.get(CSP_HEADER);
 
 		expect(csp).toBeDefined();
 		// Expect nonce-<base64> present in script-src directive
@@ -44,8 +46,8 @@ describe("middleware nonce generation", () => {
 		const r1 = middleware(new NextRequest(new URL("https://alexmayhew.dev/")));
 		const r2 = middleware(new NextRequest(new URL("https://alexmayhew.dev/")));
 
-		const csp1 = r1.headers.get("Content-Security-Policy") ?? "";
-		const csp2 = r2.headers.get("Content-Security-Policy") ?? "";
+		const csp1 = r1.headers.get(CSP_HEADER) ?? "";
+		const csp2 = r2.headers.get(CSP_HEADER) ?? "";
 
 		const nonce1 = csp1.match(/'nonce-([A-Za-z0-9+/=]+)'/)?.[1];
 		const nonce2 = csp2.match(/'nonce-([A-Za-z0-9+/=]+)'/)?.[1];
@@ -58,7 +60,7 @@ describe("middleware nonce generation", () => {
 	it("forwards the nonce to Server Components via x-nonce request header", () => {
 		const response = middleware(mockRequest);
 		// (NextResponse.next({ request: { headers } }) preserves request headers for SSR)
-		const csp = response.headers.get("Content-Security-Policy") ?? "";
+		const csp = response.headers.get(CSP_HEADER) ?? "";
 		const nonceFromCsp = csp.match(/'nonce-([A-Za-z0-9+/=]+)'/)?.[1];
 
 		// layers (layout.tsx via headers()) can read it. Next.js forwards
@@ -68,7 +70,7 @@ describe("middleware nonce generation", () => {
 
 	it("CSP uses strict-dynamic to allow nonced scripts to load chunks", () => {
 		const response = middleware(mockRequest);
-		const csp = response.headers.get("Content-Security-Policy") ?? "";
+		const csp = response.headers.get(CSP_HEADER) ?? "";
 
 		expect(csp).toMatch(/script-src[^;]*'strict-dynamic'/);
 	});
@@ -85,7 +87,7 @@ describe("middleware nonce generation", () => {
 	 */
 	it.skip("STRICT MODE: script-src MUST NOT contain 'unsafe-inline'", () => {
 		const response = middleware(mockRequest);
-		const csp = response.headers.get("Content-Security-Policy") ?? "";
+		const csp = response.headers.get(CSP_HEADER) ?? "";
 
 		// Isolate the script-src directive
 		const scriptSrc = csp.match(/script-src[^;]*/)?.[0] ?? "";
@@ -94,7 +96,7 @@ describe("middleware nonce generation", () => {
 
 	it("retains 'unsafe-inline' in script-src during partial migration (transitional)", () => {
 		const response = middleware(mockRequest);
-		const csp = response.headers.get("Content-Security-Policy") ?? "";
+		const csp = response.headers.get(CSP_HEADER) ?? "";
 		const scriptSrc = csp.match(/script-src[^;]*/)?.[0] ?? "";
 
 		// This assertion will be inverted when we complete the migration.

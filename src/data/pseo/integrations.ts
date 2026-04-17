@@ -13,6 +13,10 @@
  * - Error handling strategies
  */
 
+/* eslint-disable sonarjs/no-duplicate-string --
+ * Data table: repeated literals are narrow union types or cross-references
+ * (related service/blog slugs, vendor names). Extraction provides no benefit.
+ */
 import type { BudgetRange, FaqItem, Industry, Regulation } from "./types";
 
 // =============================================================================

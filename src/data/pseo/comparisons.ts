@@ -12,6 +12,9 @@
  * - When to choose each option
  */
 
+/* eslint-disable sonarjs/no-duplicate-string --
+ * Data table: repeated literals are narrow union types or cross-references.
+ */
 import type { BudgetRange, FaqItem, Industry } from "./types";
 
 // =============================================================================

@@ -4,6 +4,12 @@ import { submitContactForm } from "@/app/actions/contact";
 import { __resetDependencies, __setDependencies } from "@/lib/_contact-deps";
 import { getEnv } from "@/lib/cloudflare-env";
 
+const { RESEND_KEY, TEST_EMAIL, TURNSTILE_KEY } = vi.hoisted(() => ({
+	RESEND_KEY: "test-resend-key",
+	TEST_EMAIL: "test@example.com",
+	TURNSTILE_KEY: "test-turnstile-key",
+}));
+
 // Mock next/headers
 vi.mock("next/headers", () => ({
 	headers: vi.fn().mockResolvedValue(new Headers()),
@@ -12,9 +18,9 @@ vi.mock("next/headers", () => ({
 // Mock cloudflare-env to return test values
 vi.mock("@/lib/cloudflare-env", () => ({
 	getEnv: vi.fn().mockResolvedValue({
-		RESEND_API_KEY: "test-resend-key",
-		CONTACT_EMAIL: "test@example.com",
-		TURNSTILE_SECRET_KEY: "test-turnstile-key",
+		RESEND_API_KEY: RESEND_KEY,
+		CONTACT_EMAIL: TEST_EMAIL,
+		TURNSTILE_SECRET_KEY: TURNSTILE_KEY,
 		NODE_ENV: "test",
 	}),
 }));
@@ -42,7 +48,7 @@ const mockGetEnv = vi.mocked(getEnv);
 // Mock Data
 const validData = {
 	name: "Test User",
-	email: "test@example.com",
+	email: TEST_EMAIL,
 	projectType: "web-app" as const,
 	budget: "10k-25k" as const,
 	referralSource: "" as const,
@@ -160,7 +166,7 @@ describe("submitContactForm", () => {
 	describe("Turnstile verification", () => {
 		it("should pass with valid token", async () => {
 			const result = await submitContactForm(validData);
-			expect(mockVerify).toHaveBeenCalledWith("valid-token", "test-turnstile-key");
+			expect(mockVerify).toHaveBeenCalledWith("valid-token", TURNSTILE_KEY);
 			expect(result.success).toBe(true);
 		});
 
@@ -173,9 +179,9 @@ describe("submitContactForm", () => {
 
 		it("should require token in production", async () => {
 			mockGetEnv.mockResolvedValueOnce({
-				RESEND_API_KEY: "test-resend-key",
-				CONTACT_EMAIL: "test@example.com",
-				TURNSTILE_SECRET_KEY: "test-turnstile-key",
+				RESEND_API_KEY: RESEND_KEY,
+				CONTACT_EMAIL: TEST_EMAIL,
+				TURNSTILE_SECRET_KEY: TURNSTILE_KEY,
 				NODE_ENV: "production",
 			});
 
@@ -189,9 +195,9 @@ describe("submitContactForm", () => {
 
 		it("should skip verification when no token in development", async () => {
 			mockGetEnv.mockResolvedValueOnce({
-				RESEND_API_KEY: "test-resend-key",
-				CONTACT_EMAIL: "test@example.com",
-				TURNSTILE_SECRET_KEY: "test-turnstile-key",
+				RESEND_API_KEY: RESEND_KEY,
+				CONTACT_EMAIL: TEST_EMAIL,
+				TURNSTILE_SECRET_KEY: TURNSTILE_KEY,
 				NODE_ENV: "development",
 			});
 
@@ -210,9 +216,9 @@ describe("submitContactForm", () => {
 
 			expect(mockSendEmail).toHaveBeenCalledWith(
 				expect.objectContaining({
-					apiKey: "test-resend-key",
+					apiKey: RESEND_KEY,
 					from: "alexmayhew.dev <noreply@alexmayhew.dev>",
-					to: "test@example.com",
+					to: TEST_EMAIL,
 					replyTo: validData.email,
 					subject: expect.stringContaining(validData.name),
 					html: expect.any(String),
@@ -271,8 +277,8 @@ describe("submitContactForm", () => {
 		it("should fail when RESEND_API_KEY is not configured", async () => {
 			mockGetEnv.mockResolvedValueOnce({
 				RESEND_API_KEY: undefined,
-				CONTACT_EMAIL: "test@example.com",
-				TURNSTILE_SECRET_KEY: "test-turnstile-key",
+				CONTACT_EMAIL: TEST_EMAIL,
+				TURNSTILE_SECRET_KEY: TURNSTILE_KEY,
 				NODE_ENV: "test",
 			});
 

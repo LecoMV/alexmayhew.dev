@@ -7,6 +7,9 @@ import { describe, expect, it, vi } from "vitest";
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
 import { ContactPage } from "@/components/pages/contact-page";
 
+const FOCUS_RING_WIDTH = "focus-visible:ring-2";
+const FOCUS_RING_COLOR = "focus-visible:ring-cyber-lime";
+
 vi.mock("next/link", () => ({
 	default: ({
 		children,
@@ -77,12 +80,12 @@ describe("Focus ring — ContactPage form inputs", () => {
 		for (const field of allFormFields) {
 			const classes = field.className;
 			expect(classes, `Missing focus-visible:ring-2 on ${field.tagName}#${field.id}`).toContain(
-				"focus-visible:ring-2"
+				FOCUS_RING_WIDTH
 			);
 			expect(
 				classes,
 				`Missing focus-visible:ring-cyber-lime on ${field.tagName}#${field.id}`
-			).toContain("focus-visible:ring-cyber-lime");
+			).toContain(FOCUS_RING_COLOR);
 		}
 	});
 });
@@ -97,10 +100,10 @@ describe("Focus ring — NewsletterSignup form inputs", () => {
 		for (const input of inputs) {
 			const classes = input.className;
 			expect(classes, "Missing focus-visible:ring-2 on newsletter email input").toContain(
-				"focus-visible:ring-2"
+				FOCUS_RING_WIDTH
 			);
 			expect(classes, "Missing focus-visible:ring-cyber-lime on newsletter email input").toContain(
-				"focus-visible:ring-cyber-lime"
+				FOCUS_RING_COLOR
 			);
 		}
 	});
@@ -118,11 +121,9 @@ describe("Focus ring — ChatWidget input (source-level)", () => {
 		expect(inputMatch, "Could not find chat input className").toBeTruthy();
 
 		const className = inputMatch![1];
-		expect(className, "Missing focus-visible:ring-2 on chat input").toContain(
-			"focus-visible:ring-2"
-		);
+		expect(className, "Missing focus-visible:ring-2 on chat input").toContain(FOCUS_RING_WIDTH);
 		expect(className, "Missing focus-visible:ring-cyber-lime on chat input").toContain(
-			"focus-visible:ring-cyber-lime"
+			FOCUS_RING_COLOR
 		);
 	});
 });
@@ -140,10 +141,10 @@ describe("Focus ring — GpuControl password input (source-level)", () => {
 
 		const cnArgs = inputBlock![1];
 		expect(cnArgs, "Missing focus-visible:ring-2 on GPU password input").toContain(
-			"focus-visible:ring-2"
+			FOCUS_RING_WIDTH
 		);
 		expect(cnArgs, "Missing focus-visible:ring-cyber-lime on GPU password input").toContain(
-			"focus-visible:ring-cyber-lime"
+			FOCUS_RING_COLOR
 		);
 	});
 });

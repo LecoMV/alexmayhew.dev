@@ -30,14 +30,12 @@ describe("contactFormSchema", () => {
 		});
 
 		it("should fail when email is missing", () => {
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const { email: _email, ...noEmail } = minimalValid;
 			const result = contactFormSchema.safeParse(noEmail);
 			expect(result.success).toBe(false);
 		});
 
 		it("should fail when message is missing", () => {
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const { message: _message, ...noMessage } = minimalValid;
 			const result = contactFormSchema.safeParse(noMessage);
 			expect(result.success).toBe(false);
