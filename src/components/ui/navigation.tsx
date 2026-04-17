@@ -351,7 +351,10 @@ export function Navigation() {
 														</span>
 														{item.label}
 														{isActive && (
-															<span className="bg-cyber-lime ml-auto h-2 w-2 animate-pulse" />
+															<span
+																aria-hidden="true"
+																className="bg-cyber-lime ml-auto h-2 w-2 animate-pulse"
+															/>
 														)}
 													</Link>
 													{/* Mobile Tools Sub-menu */}
@@ -405,7 +408,10 @@ export function Navigation() {
 												</span>
 												{item.label}
 												{isActive && (
-													<span className="bg-cyber-lime ml-auto h-2 w-2 animate-pulse" />
+													<span
+														aria-hidden="true"
+														className="bg-cyber-lime ml-auto h-2 w-2 animate-pulse"
+													/>
 												)}
 											</Link>
 										</m.div>
@@ -433,7 +439,10 @@ export function Navigation() {
 											</span>
 											{item.label}
 											{pathname === item.href && (
-												<span className="bg-cyber-lime ml-auto h-2 w-2 animate-pulse" />
+												<span
+													aria-hidden="true"
+													className="bg-cyber-lime ml-auto h-2 w-2 animate-pulse"
+												/>
 											)}
 										</Link>
 									</m.div>

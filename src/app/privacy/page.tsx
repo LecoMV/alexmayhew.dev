@@ -36,7 +36,7 @@ export default function PrivacyPage() {
 
 				<div className="prose prose-invert max-w-none space-y-8">
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Overview</h3>
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Overview</h2>
 						<p className="text-slate-text leading-relaxed">
 							This Privacy Policy describes how alexmayhew.dev (&quot;we&quot;, &quot;us&quot;, or
 							&quot;our&quot;) collects, uses, and protects your information when you visit our
@@ -46,9 +46,9 @@ export default function PrivacyPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">
 							Information We Collect
-						</h3>
+						</h2>
 
 						<h4 className="mt-6 mb-2 font-semibold">Contact Form Submissions</h4>
 						<p className="text-slate-text mb-4 leading-relaxed">
@@ -83,9 +83,9 @@ export default function PrivacyPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">
 							How We Use Your Information
-						</h3>
+						</h2>
 						<ul className="text-slate-text list-inside list-disc space-y-2">
 							<li>To respond to your contact form submissions</li>
 							<li>
@@ -96,9 +96,9 @@ export default function PrivacyPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">
 							Third-Party Services
-						</h3>
+						</h2>
 						<p className="text-slate-text mb-4 leading-relaxed">
 							We use the following third-party services:
 						</p>
@@ -120,7 +120,7 @@ export default function PrivacyPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Your Rights (GDPR)</h3>
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Your Rights (GDPR)</h2>
 						<p className="text-slate-text mb-4 leading-relaxed">
 							If you are located in the European Economic Area (EEA), you have the right to:
 						</p>
@@ -140,7 +140,7 @@ export default function PrivacyPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Data Retention</h3>
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Data Retention</h2>
 						<p className="text-slate-text leading-relaxed">
 							Contact form submissions are retained in our email for as long as necessary to respond
 							to your inquiry and for our legitimate business purposes. We do not maintain a
@@ -149,7 +149,7 @@ export default function PrivacyPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Security</h3>
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Security</h2>
 						<p className="text-slate-text leading-relaxed">
 							We implement appropriate technical and organizational measures to protect your data,
 							including:
@@ -163,9 +163,9 @@ export default function PrivacyPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">
 							Changes to This Policy
-						</h3>
+						</h2>
 						<p className="text-slate-text leading-relaxed">
 							We may update this Privacy Policy from time to time. We will notify you of any changes
 							by posting the new policy on this page and updating the &quot;Last updated&quot; date.
@@ -173,7 +173,7 @@ export default function PrivacyPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Contact</h3>
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Contact</h2>
 						<p className="text-slate-text leading-relaxed">
 							If you have any questions about this Privacy Policy, please contact us at{" "}
 							<a href="mailto:alex@alexmayhew.dev" className="text-cyber-lime hover:underline">

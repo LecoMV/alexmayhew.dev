@@ -36,7 +36,7 @@ export default function TermsPage() {
 
 				<div className="prose prose-invert max-w-none space-y-8">
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Agreement to Terms</h3>
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Agreement to Terms</h2>
 						<p className="text-slate-text leading-relaxed">
 							By accessing or using alexmayhew.dev, you agree to be bound by these Terms of Service.
 							If you disagree with any part of these terms, you may not access the website.
@@ -44,9 +44,9 @@ export default function TermsPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">
 							Intellectual Property
-						</h3>
+						</h2>
 						<p className="text-slate-text leading-relaxed">
 							The content on this website, including text, graphics, logos, and code examples in
 							blog posts, is the property of Alex Mayhew unless otherwise stated. You may not
@@ -59,7 +59,7 @@ export default function TermsPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Use of Website</h3>
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Use of Website</h2>
 						<p className="text-slate-text mb-4 leading-relaxed">You agree not to:</p>
 						<ul className="text-slate-text list-inside list-disc space-y-2">
 							<li>Use the website for any unlawful purpose</li>
@@ -71,7 +71,7 @@ export default function TermsPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Advisory Services</h3>
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Advisory Services</h2>
 						<p className="text-slate-text leading-relaxed">
 							Any advisory or development services engaged through this website will be subject to a
 							separate agreement. The contact form is for inquiries only and does not constitute a
@@ -84,7 +84,7 @@ export default function TermsPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Disclaimer</h3>
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Disclaimer</h2>
 						<p className="text-slate-text leading-relaxed">
 							This website is provided &quot;as is&quot; without any warranties, expressed or
 							implied. We do not guarantee that the website will be available at all times or that
@@ -98,9 +98,9 @@ export default function TermsPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">
 							Limitation of Liability
-						</h3>
+						</h2>
 						<p className="text-slate-text leading-relaxed">
 							To the maximum extent permitted by law, Alex Mayhew shall not be liable for any
 							indirect, incidental, special, consequential, or punitive damages resulting from your
@@ -109,7 +109,7 @@ export default function TermsPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">External Links</h3>
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">External Links</h2>
 						<p className="text-slate-text leading-relaxed">
 							This website may contain links to external websites. We are not responsible for the
 							content or privacy practices of these external sites.
@@ -117,7 +117,7 @@ export default function TermsPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Changes to Terms</h3>
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Changes to Terms</h2>
 						<p className="text-slate-text leading-relaxed">
 							We reserve the right to modify these terms at any time. Changes will be effective
 							immediately upon posting to this page. Your continued use of the website after changes
@@ -126,7 +126,7 @@ export default function TermsPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Governing Law</h3>
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Governing Law</h2>
 						<p className="text-slate-text leading-relaxed">
 							These terms shall be governed by and construed in accordance with applicable laws,
 							without regard to conflict of law principles.
@@ -134,7 +134,7 @@ export default function TermsPage() {
 					</section>
 
 					<section>
-						<h3 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Contact</h3>
+						<h2 className="text-cyber-lime mb-4 font-mono text-sm uppercase">Contact</h2>
 						<p className="text-slate-text leading-relaxed">
 							If you have any questions about these Terms of Service, please contact us at{" "}
 							<a href="mailto:alex@alexmayhew.dev" className="text-cyber-lime hover:underline">

@@ -177,7 +177,13 @@ export default async function RootLayout({
 						<NoiseOverlay />
 						<SmoothScroll>
 							<Navigation />
-							<main id="main-content" className="relative z-10 flex min-h-dvh flex-col">
+							{/* tabIndex={-1} so the skip-link target is programmatically
+							     focusable but not keyboard-reachable via normal Tab traversal. */}
+							<main
+								id="main-content"
+								tabIndex={-1}
+								className="relative z-10 flex min-h-dvh flex-col outline-none"
+							>
 								{children}
 								<Footer />
 							</main>
