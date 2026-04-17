@@ -51,8 +51,9 @@ describe("Navigation", () => {
 		expect(screen.getByLabelText(/close menu/i)).toBeTruthy();
 
 		// Mobile menu should show pages not in desktop nav
+		// Contact appears twice (nav CTA + menu item) after Wave E3 — use getAllByText
 		expect(screen.getByText("Home")).toBeTruthy();
-		expect(screen.getByText("Contact")).toBeTruthy();
+		expect(screen.getAllByText("Contact").length).toBeGreaterThanOrEqual(1);
 		expect(screen.getByText("Newsletter")).toBeTruthy();
 		expect(screen.getByText("Technologies")).toBeTruthy();
 	});
