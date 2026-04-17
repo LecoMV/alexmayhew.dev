@@ -449,7 +449,7 @@ export const projects: Project[] = [
 		id: "voice-cloner",
 		title: "VoiceKeep",
 		description:
-			"VoiceKeep (shipped as voicekeep.io) grew out of the Voice Cloner research prototype into a production AI voice platform handling single-voice TTS, multi-speaker conversations, and full audiobook production from manuscript uploads ... all on a single RTX 3080. The platform runs Qwen3-TTS 1.7B with 12-second P50 latency, 41+ curated voices, and zero-shot cloning from short reference audio. The Audiobook Studio parses DOCX/PDF/TXT manuscripts into chapters with dialogue detection, assigns character voices, applies pronunciation dictionaries, and exports distribution-ready M4B with chapter markers. Multi-voice conversations support drag-and-drop line ordering, per-line effects (speed, volume, gap), stage directions, multiple takes, ambient audio, and a waveform timeline editor. 99.95% uptime, 0.03% error rate, Stripe subscription billing.",
+			"VoiceKeep (shipped as voicekeep.io) grew out of the Voice Cloner research prototype ... originally developed on an RTX 3080, now running on a dedicated GPU server with RTX PRO 6000 Blackwell ... into a production AI voice platform handling single-voice TTS, multi-speaker conversations, and full audiobook production from manuscript uploads. The platform runs Qwen3-TTS 1.7B with 12-second P50 latency, 41+ curated voices, and zero-shot cloning from short reference audio. The Audiobook Studio parses DOCX/PDF/TXT manuscripts into chapters with dialogue detection, assigns character voices, applies pronunciation dictionaries, and exports distribution-ready M4B with chapter markers. Multi-voice conversations support drag-and-drop line ordering, per-line effects (speed, volume, gap), stage directions, multiple takes, ambient audio, and a waveform timeline editor. 99.95% uptime, 0.03% error rate, Stripe subscription billing.",
 		category: "AI/ML",
 		tech: [
 			"Python",
@@ -483,20 +483,24 @@ export const projects: Project[] = [
 		caseStudy: {
 			published: true,
 			subtitle:
-				"VoiceKeep (voicekeep.io): production voice platform from a Voice Cloner prototype ... TTS, conversations, and audiobook production on a single RTX 3080",
+				"VoiceKeep (voicekeep.io): production voice platform from a Voice Cloner prototype ... TTS, conversations, and full audiobook production on a dedicated RTX PRO 6000 Blackwell GPU server",
 			context: {
 				duration: "8 weeks",
 				industry: "AI/ML SaaS",
 				type: "SaaS Product",
 			},
 			challenge:
-				"Professional voice talent costs $500+/hour, and 95% of books lack audio versions because producing a single audiobook costs $2K-$5K in human narration fees. Existing AI TTS solutions (ElevenLabs, Play.ht) handle single-voice generation but offer nothing for multi-character production workflows ... no conversation builder, no manuscript parsing, no chapter management, no pronunciation dictionaries. Content creators need a complete production pipeline: from raw manuscript to distribution-ready M4B with chapter markers and consistent multi-voice narration. The core engineering challenge: running a 1.7B parameter TTS model in bfloat16 on a single RTX 3080 (10GB VRAM) with consistent sub-15-second latency while supporting three distinct production modes (single TTS, multi-speaker conversations, full audiobook chapters) through a unified inference pipeline.",
+				"Professional voice talent costs $500+/hour, and 95% of books lack audio versions because producing a single audiobook costs $2K-$5K in human narration fees. Existing AI TTS solutions (ElevenLabs, Play.ht) handle single-voice generation but offer nothing for multi-character production workflows ... no conversation builder, no manuscript parsing, no chapter management, no pronunciation dictionaries. Content creators need a complete production pipeline: from raw manuscript to distribution-ready M4B with chapter markers and consistent multi-voice narration. The core engineering challenge: running a 1.7B parameter TTS model in bfloat16 with consistent sub-15-second latency while supporting three distinct production modes (single TTS, multi-speaker conversations, full audiobook chapters) through a unified inference pipeline. Initial prototype ran on an RTX 3080 (10GB VRAM) to force disciplined memory engineering; production moved to a dedicated GPU server with RTX PRO 6000 Blackwell to scale throughput while keeping the same memory-conscious pipeline.",
 			approach:
 				"Chose Qwen3-TTS 1.7B after benchmarking against XTTS, Bark, and Tortoise ... best quality-to-VRAM ratio for zero-shot cloning from 10-30 second reference samples. Built the inference pipeline on FastAPI with a 4-tier Redis priority queue (admin > enterprise > pro > free). The critical architectural decision was making each audiobook chapter a Conversation record internally, reusing the entire existing TTS pipeline, per-line effects engine, takes system, and timeline editor with zero code duplication. The Audiobook Studio layer adds manuscript parsing (DOCX via python-docx, PDF via PyMuPDF, TXT via regex), chapter management, character-to-voice casting that propagates across all chapters, and a pronunciation dictionary that applies regex substitutions before TTS generation. Implemented proactive worker recycling every 500 generations to combat PyTorch VRAM fragmentation.",
 			solution:
 				"Voice Cloner runs three production modes through a unified FastAPI backend: (1) Single-voice TTS for quick generation, (2) Multi-speaker Conversations with drag-and-drop line ordering, per-line effects (speed/volume/gap), stage directions, multiple takes per line, ambient audio layers, and a waveform timeline editor, (3) Audiobook Studio that parses manuscripts into chapters, detects dialogue and character names, assigns AI voices to each character, applies book-wide pronunciation dictionaries, and exports as M4B with chapter markers or MP3/WAV zip with LUFS mastering. The frontend is Next.js 15 on Cloudflare Workers with wavesurfer.js visualization. 41+ curated voices plus custom uploads with SNR quality gating. Stripe handles tiered billing, Clerk manages auth, Sentry + Amplitude provide observability. Running at 99.95% uptime with 0.03% error rate on a single server.",
 			metrics: [
-				{ label: "P50 Latency", value: "12s", context: "Short text generation on RTX 3080" },
+				{
+					label: "P50 Latency",
+					value: "12s",
+					context: "Short text generation on RTX PRO 6000 Blackwell",
+				},
 				{ label: "Uptime", value: "99.95%", context: "Single-server production deployment" },
 				{ label: "Error Rate", value: "0.03%", context: "Across all generation requests" },
 				{
@@ -510,7 +514,7 @@ export const projects: Project[] = [
 					component: "TTS Model",
 					technology: "Qwen3-TTS 1.7B (bfloat16)",
 					rationale:
-						"Best quality-to-VRAM ratio for zero-shot voice cloning on 10GB VRAM. XTTS requires more memory for comparable quality; Bark and Tortoise are slower with inferior zero-shot capabilities. bfloat16 precision halves memory usage with negligible quality impact.",
+						"Best quality-to-VRAM ratio for zero-shot voice cloning. XTTS requires more memory for comparable quality; Bark and Tortoise are slower with inferior zero-shot capabilities. bfloat16 precision halves memory usage with negligible quality impact. Model originally fit within 10GB VRAM on an RTX 3080 prototype; production now runs on RTX PRO 6000 Blackwell with abundant headroom for concurrent workers.",
 				},
 				{
 					component: "Audiobook Architecture",
