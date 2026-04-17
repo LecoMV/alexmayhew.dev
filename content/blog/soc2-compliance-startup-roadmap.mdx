@@ -173,6 +173,8 @@ Key requirements:
 - **Access reviews**: Quarterly review of who has access to what
 - **Offboarding procedure**: Revoke access within 24 hours of termination
 
+Access control at the database layer is where most startups get this wrong. The patterns in [multi-tenancy with Prisma and RLS](/blog/multi-tenancy-prisma-rls) satisfy the SOC 2 access-control criteria at the row level... which is what auditors actually test when they sample your data isolation.
+
 **Encryption**
 
 - At rest: Enable encryption on all databases, object storage, backups
@@ -200,6 +202,8 @@ aws rds create-db-instance \
 - Log retention: 1 year minimum
 - Alerting on security events
 - Audit trail immutability
+
+The monitoring stack that proves SOC 2 availability is the same stack you need for production operations. See [SaaS reliability monitoring](/blog/saas-reliability-monitoring) for the signals that matter beyond simple uptime pings.
 
 ```typescript
 // Example: Immutable audit log structure
@@ -315,6 +319,8 @@ Some evidence requires human action:
 - Risk assessment documentation
 - Vendor security reviews
 - Board/management security briefings
+
+Auditors will ask how you handle security events in production. A documented process... the kind covered in [incident response for SaaS](/blog/incident-response-saas)... is what satisfies the "demonstrable procedure" bar, not a policy PDF nobody's read.
 
 **Control testing**
 

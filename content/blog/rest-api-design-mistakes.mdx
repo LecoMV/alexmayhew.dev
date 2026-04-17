@@ -219,6 +219,8 @@ async function getOrders(cursor?: string, limit = 20) {
 }
 ```
 
+Cursor queries also play better with the indexes you've already built for [database query optimization](/blog/database-query-optimization)... the ordering column becomes a natural seek target instead of a LIMIT/OFFSET scan.
+
 **Why cursor pagination wins:**
 
 - Consistent results even when data changes
@@ -298,6 +300,8 @@ async function createOrder(data: CreateOrderInput, idempotencyKey: string): Prom
 3. Cache results for 24-48 hours
 4. Same key + same body = same result
 5. Same key + different body = error (clients shouldn't reuse keys)
+
+Idempotency is the synchronous cousin of [event-driven architecture](/blog/event-driven-architecture-saas)... once you're running async workflows, every consumer needs idempotent handlers for the same reason HTTP retries need them.
 
 ### The Cost of Not Fixing
 
