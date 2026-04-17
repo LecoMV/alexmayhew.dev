@@ -59,6 +59,8 @@ describe("JsonLd (main Person/Org/WebSite/ConsultingService)", () => {
 		expect(service.hasOfferCatalog["@type"]).toBe("OfferCatalog");
 		expect(service.hasOfferCatalog.itemListElement.length).toBeGreaterThan(0);
 		expect(service.areaServed).toBeInstanceOf(Array);
-		expect(service.priceRange).toBe("$$$$");
+		// priceRange intentionally omitted: Google ignores non-enum values like
+		// "$$$$" and a real priceSpecification lives inside hasOfferCatalog.
+		expect(service.priceRange).toBeUndefined();
 	});
 });

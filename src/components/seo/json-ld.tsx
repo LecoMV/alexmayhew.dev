@@ -123,7 +123,8 @@ export function JsonLd() {
 		founder: { "@id": PERSON_ID },
 		description:
 			"Strategic technical guidance for founders and CTOs. Architecture decisions that compound into competitive advantage. Specializing in SaaS, Fintech, Healthcare, and high-growth startups.",
-		priceRange: "$$$$",
+		// priceRange removed 2026-04-17: non-enum values like "$$$$" are ignored
+		// by Google. Actual pricing lives in hasOfferCatalog.priceSpecification below.
 		currenciesAccepted: "USD",
 		paymentAccepted: "Bank Transfer, Credit Card",
 		address: {

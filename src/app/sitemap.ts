@@ -50,7 +50,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		{
 			url: `${siteUrl}/blog`,
 			lastModified: siteLastUpdated,
-			changeFrequency: "weekly",
+			// Actual cadence is 2 posts/month; Google weights declared changeFreq
+			// against observed crawl data, so keep these aligned.
+			changeFrequency: "monthly",
 			priority: 0.9,
 		},
 		{
@@ -166,17 +168,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			priority: 0.7,
 		}));
 
-	// Technology hub pages
+	// Technology hub pages.
+	// lastModified omitted on routes without per-page update tracking: Google's
+	// 2026 sitemap guidance treats build-timestamp churn as noise and devalues
+	// the signal. Better to omit than to emit a lie.
 	const technologyPages: MetadataRoute.Sitemap = [
 		{
 			url: `${siteUrl}/technologies`,
-			lastModified: siteLastUpdated,
 			changeFrequency: "monthly" as const,
 			priority: 0.9,
 		},
 		...getTechnologyIds().map((techId) => ({
 			url: `${siteUrl}/technologies/${techId}`,
-			lastModified: siteLastUpdated,
 			changeFrequency: "monthly" as const,
 			priority: 0.7,
 		})),
@@ -217,10 +220,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		})),
 	];
 
-	// Work case study pages
+	// Work case study pages. lastModified omitted: no per-project update
+	// tracking, and build-timestamp churn devalues the lastmod signal
+	// (see technologyPages comment above).
 	const caseStudyPages: MetadataRoute.Sitemap = getCaseStudyProjects().map((project) => ({
 		url: `${siteUrl}/work/${project.id}`,
-		lastModified: siteLastUpdated,
 		changeFrequency: "monthly" as const,
 		priority: 0.7,
 	}));
