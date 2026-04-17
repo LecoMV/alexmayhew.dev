@@ -2,7 +2,7 @@ import { ViewTransitions } from "next-view-transitions";
 import dynamic from "next/dynamic";
 
 import { MotionProvider, SmoothScroll } from "@/components/providers";
-import { JsonLd, LocalBusinessJsonLd } from "@/components/seo";
+import { JsonLd } from "@/components/seo";
 import { LazyCommandPaletteServer } from "@/components/ui/command-palette-server";
 
 import "./globals.css";
@@ -120,6 +120,7 @@ export const metadata: Metadata = {
 		description: "Architecting production systems that scale from MVP to millions.",
 		images: ["/og-image.png"],
 		creator: "@alexmayhewdev",
+		site: "@alexmayhewdev",
 	},
 	alternates: {
 		types: {
@@ -142,7 +143,6 @@ export default function RootLayout({
 		>
 			<head>
 				<JsonLd />
-				<LocalBusinessJsonLd />
 				{/* Consent Mode v2 ... region-specific defaults per Google docs
 				     EEA+UK+CH: denied (GDPR opt-in required)
 				     Everyone else: analytics granted, ads denied
