@@ -40,4 +40,18 @@ describe("hub-faqs", () => {
 		expect(hubFaqs[slug], `missing FAQ entries for slug: ${slug}`).toBeDefined();
 		expect(hubFaqs[slug].length).toBeGreaterThanOrEqual(3);
 	});
+
+	it("every FAQ answer is at least 50 characters and at most 600", () => {
+		const violations: string[] = [];
+		for (const [slug, faqs] of Object.entries(hubFaqs)) {
+			for (const faq of faqs) {
+				if (faq.answer.length < 50 || faq.answer.length > 600) {
+					violations.push(
+						`${slug}: answer length ${faq.answer.length} for "${faq.question.slice(0, 60)}..."`
+					);
+				}
+			}
+		}
+		expect(violations, violations.join("\n")).toEqual([]);
+	});
 });

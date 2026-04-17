@@ -618,4 +618,796 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 				"Follow a three-phase model. Phase 1 (Controlled Pilot, 4-8 weeks): select 2-3 teams, define scope and success metrics, measure outcomes against baselines. Phase 2 (Governed Expansion, 8-16 weeks): establish quality gates, review standards, and training programs based on pilot learnings. Phase 3 (Mature Practice, ongoing): automated compliance checks, continuous monitoring, org-wide standards, and regular audit cycles. Less than 30% of AI initiative leaders report executive satisfaction with ROI ... the phased approach prevents the 'pilot works, production fails' pattern.",
 		},
 	],
+
+	"500k-architecture-mistake": [
+		{
+			question: "When should a SaaS actually migrate from monolith to microservices?",
+			answer:
+				"Only at 50+ engineers with genuinely different scaling requirements per service. Below that, feature flags and module boundaries solve the real problems at 1/10 the cost.",
+		},
+		{
+			question: "What does a premature microservices migration cost a Series A startup?",
+			answer:
+				"Roughly $460-520K: $300K in engineering time over 6 months, $60-120K in infrastructure overhead, plus $100K+ in opportunity cost from features not shipped.",
+		},
+		{
+			question: "What simpler alternatives solve problems teams blame on their monolith?",
+			answer:
+				"Feature flags replace deployment risk. Read replicas fix analytics contention. CODEOWNERS files and module boundaries eliminate team conflicts. Total implementation: 3 weeks.",
+		},
+	],
+
+	"accessibility-design-systems": [
+		{
+			question: "How much do web accessibility lawsuits cost companies?",
+			answer:
+				"ADA lawsuits rose 320% from 2018-2024. Over 4,600 digital accessibility lawsuits filed in federal court in 2023. Settlements typically run $10,000 to $100,000.",
+		},
+		{
+			question: "What percentage of accessibility issues does automated testing catch?",
+			answer:
+				"Automated tools like axe-core catch 30-50% of issues. The remaining 50-70% require manual screen reader testing and keyboard-only navigation to uncover.",
+		},
+		{
+			question: "What WCAG contrast ratio do I need for accessible text?",
+			answer:
+				"WCAG AA requires 4.5:1 for normal text and 3:1 for large text (18px+ or 14px+ bold). AAA requires 7:1 for normal text. UI components need 3:1 minimum.",
+		},
+	],
+
+	"ai-assisted-development-generative-debt": [
+		{
+			question: "Does AI-assisted coding actually increase bug rates?",
+			answer:
+				"Yes. GitClear analysis of 150M+ lines shows 23.7% higher bug-fix ratios on AI-heavy projects. Copy-paste code increased 8% year-over-year as churn rose.",
+		},
+		{
+			question: "Why do developers trust AI code they admit is untrustworthy?",
+			answer:
+				"96% of developers don't fully trust AI output, yet 50%+ merge it with cursory review. Time pressure wins: the speed advantage disappears if you review thoroughly.",
+		},
+		{
+			question: "What AI coding tasks carry the lowest risk?",
+			answer:
+				"Language translation (Airbnb: 79% faster Ruby to TypeScript), test migration between frameworks, and documentation generation. The logic is pre-verified; AI handles syntax.",
+		},
+	],
+
+	"ai-assisted-development-reality": [
+		{
+			question: "Can someone with no development background ship production software using AI?",
+			answer:
+				"No. AI amplifies existing competence, it doesn't create it. You need enough pattern recognition to catch the 5% of AI output that's subtly wrong while using the 95% that's correct.",
+		},
+		{
+			question: "What separates productive AI-assisted development from vibe coding?",
+			answer:
+				"The formula: Competence + Discipline + Research + AI = Results. Remove any of the first three and you get demo-quality code that breaks under real conditions.",
+		},
+		{
+			question: "Who does AI coding actually threaten?",
+			answer:
+				"Engineers whose primary value is implementation speed. AI commoditized fast implementation but not architectural judgment. Senior engineers with deep system knowledge are more valuable, not less.",
+		},
+	],
+
+	"ai-code-review": [
+		{
+			question: "What percentage of code review can AI reliably handle?",
+			answer:
+				"AI catches 60-80% of style violations and common bug patterns. It misses business logic errors, security edge cases, and architectural fit. Use AI as a filter, not a replacement.",
+		},
+		{
+			question: "What do senior developers spend their review time on?",
+			answer:
+				"Senior engineers spend 15-25% of their time reviewing PRs. Teams that automate formatting, linting, and type checks cut review time from 45 minutes to 15 minutes per PR.",
+		},
+		{
+			question: "What is the hybrid AI code review workflow?",
+			answer:
+				"AI pre-review filters style, formatting, and known anti-patterns. Humans focus on architecture, business logic, and security. This cuts reviewer fatigue and catches more real bugs.",
+		},
+	],
+
+	"ai-cost-optimization": [
+		{
+			question: "At what monthly spend does self-hosted AI beat API pricing?",
+			answer:
+				"Below $2K/month: stick with APIs. Above $5K/month: self-hosting pays off within 6 months. A100 GPUs deliver ~$0.50/1M tokens vs $3-15/1M for equivalent API quality.",
+		},
+		{
+			question: "Does semantic caching actually reduce LLM costs?",
+			answer:
+				"Yes. Semantic caching with 0.95+ similarity thresholds cuts costs 40-60% regardless of deployment model. It's the highest-ROI optimization before touching model choice or prompts.",
+		},
+		{
+			question: "When does fine-tuning an LLM make financial sense?",
+			answer:
+				"When you need domain-specific quality that base models can't match. Expect $25/1M training tokens plus ongoing inference savings of 40-60%. Otherwise, RAG with a base model wins.",
+		},
+	],
+
+	"anatomy-of-high-precision-saas": [
+		{
+			question: "When should a SaaS migrate off Vercel?",
+			answer:
+				"When bandwidth costs exceed $500/month or you hit enterprise requirements Vercel can't meet (static IPs for firewall allowlisting). Vercel Pro includes 1TB; overage is $0.15/GB.",
+		},
+		{
+			question: "What architecture stack scales B2B SaaS from 10K to 100K users?",
+			answer:
+				"Next.js 15 on Vercel, tRPC for internal APIs, PostgreSQL with RLS for multi-tenancy, PgBouncer for connection pooling. Graduate to AWS ECS only when bandwidth costs force it.",
+		},
+		{
+			question: "What breaks first as a SaaS scales past 10,000 users?",
+			answer:
+				"Usually Vercel bandwidth bills (one team jumped from $400 to $2,100 in a billing cycle), schema-per-tenant databases (caps at 300 customers), or P99 latency creeping past 4 seconds.",
+		},
+	],
+
+	"atmospheric-animations-framer-motion": [
+		{
+			question: "Why do spring animations feel more natural than linear easing?",
+			answer:
+				"Biological motion follows physics. Your arm accelerates, decelerates, and settles with slight overshoot. Linear animations violate this intuition because nothing in nature moves at constant velocity.",
+		},
+		{
+			question: "What damping ratio should I use for UI animations?",
+			answer:
+				"Damping ratio (ζ) of 0.7-0.9 works for most UI. Below 1 is bouncy, exactly 1 is smooth without overshoot, above 1 is sluggish. Never use linear easing for interactive feedback.",
+		},
+		{
+			question: "Should animations respect prefers-reduced-motion?",
+			answer:
+				"Yes. Always. It's an accessibility requirement for users with vestibular disorders. Framer Motion supports it via reducedMotion='user' on the LazyMotion provider.",
+		},
+	],
+
+	"boring-technology-wins": [
+		{
+			question: "Why did Amazon Prime Video move from serverless to a monolith?",
+			answer:
+				"Their Video Quality Analysis service hit Lambda and Step Functions scalability ceilings. The monolithic rewrite cut infrastructure costs by 90% for that specific service.",
+		},
+		{
+			question: "What is the Known Failure Modes principle?",
+			answer:
+				"When PostgreSQL fails, Stack Overflow has the answer. When your custom database fails, you pioneer the debugging. Boring technology has documented failure modes; novel tech doesn't.",
+		},
+		{
+			question: "How large did Instagram scale on PostgreSQL and Python?",
+			answer:
+				"Instagram reached 14 million users with 3 engineers on PostgreSQL and Python. Technical novelty wasn't the competitive advantage; disciplined use of boring technology was.",
+		},
+	],
+
+	"building-ai-features-users-want": [
+		{
+			question: "What percentage of AI features actually reach adoption thresholds?",
+			answer:
+				"Only 20% survive. Of 12 AI feature launches I've reviewed, 8 were rolled back within 6 months. The survivors started with a user problem, not with AI as the starting point.",
+		},
+		{
+			question: "What tasks should you never use AI for?",
+			answer:
+				"Precision-critical calculations (invoice totals), legal or compliance determinations, tasks requiring perfect accuracy, and simple deterministic operations. One error destroys user trust.",
+		},
+		{
+			question: "How should I interview users about AI features?",
+			answer:
+				"Never ask 'would you like AI to help with X?' Users always say yes out of politeness. Ask 'walk me through the last time you did this task. What was the hardest part?'",
+		},
+	],
+
+	"caching-strategies-production": [
+		{
+			question: "Should I reach for Redis as my first cache?",
+			answer:
+				"No. HTTP cache headers and in-process LRU caches eliminate 60-80% of database queries without cache cluster operational overhead. Use Redis for session state and rate limiting.",
+		},
+		{
+			question: "What is the right caching layer hierarchy?",
+			answer:
+				"Browser cache (0ms) for static assets, CDN edge cache (5-20ms) with stale-while-revalidate for API responses, in-process LRU (0.01ms), then distributed Redis (1-5ms) if still needed.",
+		},
+		{
+			question: "How do I avoid stale data after writes in a cached system?",
+			answer:
+				"Use write-through invalidation at each layer, not TTL-based expiration. Write-through handles 80% of cases cleanly. Avoid 5-30 minute staleness windows that generate support tickets.",
+		},
+	],
+
+	"cdn-caching-strategy": [
+		{
+			question: "What cache hit ratio should a properly configured CDN deliver?",
+			answer:
+				"90%+ cache hit ratios with sub-50ms TTFB globally. One optimization reduced bandwidth costs 73% while improving TTFB from 800ms to 50ms by fixing content hashing and TTLs.",
+		},
+		{
+			question: "How long should I cache static assets?",
+			answer:
+				"One year with content hashing (immutable flag). JS bundles, CSS, images, and fonts never change at a hashed URL, so cache forever. The hash changes when content changes.",
+		},
+		{
+			question: "When should I use stale-while-revalidate caching?",
+			answer:
+				"For dynamic content that changes occasionally but can tolerate brief staleness. Typical pattern: max-age=60, stale-while-revalidate=300 for dashboard data and API responses.",
+		},
+	],
+
+	"code-review-practices-scale": [
+		{
+			question: "How does code review cycle time scale with team size?",
+			answer:
+				"Median PR cycle time grows from 4 hours at team size 5 to 52 hours at team size 20. That 48-hour jump isn't review time, it's queue wait time compounding.",
+		},
+		{
+			question: "What review work should teams automate before humans touch a PR?",
+			answer:
+				"Formatting (Prettier), linting (ESLint), type checking, test runs, coverage thresholds (80% on changed lines), security scanning (Semgrep), and bundle size limits.",
+		},
+		{
+			question: "What is a reasonable PR size limit for code review?",
+			answer:
+				"PRs over 400 lines of non-test code should require explicit justification. Large PRs take disproportionately longer to review and hide more bugs behind reviewer fatigue.",
+		},
+	],
+
+	"component-api-design": [
+		{
+			question: "What are the signs of a hostile component API?",
+			answer:
+				"Too many required props, no TypeScript integration, unclear variant naming, and developers creating wrapper components to avoid dealing with the base component. API friction multiplies across usage.",
+		},
+		{
+			question: "When should I use compound components over configuration props?",
+			answer:
+				"Use compound components (Tabs.List, Tabs.Tab) when the structure needs flexibility. Use configuration props for simple cases. Composition scales better than configuration for complex UI.",
+		},
+		{
+			question: "How do I decide between controlled and uncontrolled component APIs?",
+			answer:
+				"Support both explicitly. Uncontrolled (defaultValue) for forms you don't need to react to. Controlled (value + onChange) when parent state drives behavior. Never make it implicit.",
+		},
+	],
+
+	"core-web-vitals-optimization": [
+		{
+			question: "What Core Web Vitals thresholds do I need to hit for green scores?",
+			answer:
+				"LCP under 2.5 seconds, INP under 200ms, CLS under 0.1. 75th percentile of real user data determines pass/fail. All three must be green for the page to pass.",
+		},
+		{
+			question: "What business impact does a 100ms LCP improvement produce?",
+			answer:
+				"Vodafone measured +1.11% conversion rate per 100ms faster LCP. Rakuten saw +0.7% cart additions per 100ms faster INP. Pinterest got +15% session duration per 0.1 CLS reduction.",
+		},
+		{
+			question: "What are the fastest Core Web Vitals wins?",
+			answer:
+				"Preload the LCP image, use next/font with display:swap, defer third-party scripts, and reserve space for dynamic content. These alone can cut LCP by 40%.",
+		},
+	],
+
+	"database-migration-patterns": [
+		{
+			question: "Why do database migrations fail in production but pass in staging?",
+			answer:
+				"Staging databases have 10,000 rows; production has 50 million. A migration that runs in 200ms locally can hold a table lock for 45 minutes in production. Test against production-scale data.",
+		},
+		{
+			question: "What are the three categories of database migration risk?",
+			answer:
+				"Low: schema-only changes (ADD COLUMN with static defaults). Medium: data backfills that compete for I/O. High: mixed schema and data changes. Never mix categories in one migration.",
+		},
+		{
+			question: "When should I use expand-contract for zero-downtime migrations?",
+			answer:
+				"Always, for any change touching data in use. Expand (add new column/table), dual-write, backfill in batches, contract (remove old). CONCURRENTLY on every index creation.",
+		},
+	],
+
+	"designer-developer-handoff": [
+		{
+			question: "Why is the designer-developer handoff metaphor broken?",
+			answer:
+				"Handoff implies a static baton: screenshot, Figma link, spec doc. The moment it passes, it's already diverging from reality. Continuous synchronization replaces the relay race.",
+		},
+		{
+			question: "What does Figma Code Connect solve?",
+			answer:
+				"It shows developers real production code in Dev Mode, not generic CSS. A button displays as <Button variant='primary'> instead of generic padding and color values.",
+		},
+		{
+			question: "How do I catch visual drift between design and implementation?",
+			answer:
+				"Use Percy or Chromatic for automated visual regression testing. Run on every PR. 'Pixel perfect' means design system intent matches, not that every pixel matches a static screenshot.",
+		},
+	],
+
+	"design-tokens-comprehensive": [
+		{
+			question: "Why do color-only design token systems fail?",
+			answer:
+				"The designer specifies '16px padding with 24px gap and medium shadow'; the developer guesses. Three rounds of review burns 2 hours on spacing that should take 2 minutes.",
+		},
+		{
+			question: "What are the three layers of a design token architecture?",
+			answer:
+				"Primitive tokens (raw values like #3B82F6), semantic tokens (color.action.primary), and component tokens (button.primary.background). Each layer references the one above it.",
+		},
+		{
+			question: "How much time does a complete token system save?",
+			answer:
+				"A complete token system (typography, spacing, elevation, animation) reduces design-to-code translation time by 70% and eliminates the 'that's not quite right' back-and-forth.",
+		},
+	],
+
+	"documentation-engineers-read": [
+		{
+			question: "What percentage of engineering documentation is actually accurate?",
+			answer:
+				"In audits across 12 companies, 40-60% of docs were outdated. 70%+ of engineers reported finding incorrect information monthly. 90%+ of 'comprehensive' architecture docs hadn't been updated in 6+ months.",
+		},
+		{
+			question: "What are the only four documentation types engineers actually use?",
+			answer:
+				"Architecture Decision Records (ADRs), runbooks, onboarding guides, and API contracts. Everything else has a half-life of roughly 6 weeks before it's outdated and actively misleading.",
+		},
+		{
+			question: "Why are wrong docs worse than missing docs?",
+			answer:
+				"When an engineer follows outdated instructions and breaks something, they lose trust in all documentation. They ask a colleague instead, defeating the purpose of writing docs at all.",
+		},
+	],
+
+	"event-driven-architecture-saas": [
+		{
+			question: "When should a SaaS actually adopt event-driven architecture?",
+			answer:
+				"When synchronous cascading failures take down production, database lock contention spikes P99 latency, or cross-team API coupling blocks weekly deploys. Not before real pain appears.",
+		},
+		{
+			question: "What does premature event-driven architecture cost?",
+			answer:
+				"Teams that adopted EDA too early spent 20-25% of engineering headcount managing Kafka infrastructure instead of shipping features. $50-100K/year in infrastructure they didn't need.",
+		},
+		{
+			question: "Kafka or NATS JetStream for SaaS events?",
+			answer:
+				"Kafka handles 500K-1M messages/sec but requires 8+ cores and 64-128GB RAM per broker. NATS JetStream delivers sub-millisecond latency at a fraction of operational cost for smaller teams.",
+		},
+	],
+
+	"first-engineering-team-playbook": [
+		{
+			question: "What order should I hire my first five engineers?",
+			answer:
+				"Generalist first (full-stack, 4-7 years experience), then specialist based on product needs, then two complementary hires, then a senior anchor. Sequence matters more than individuals.",
+		},
+		{
+			question: "How much does building a first engineering team cost?",
+			answer:
+				"$600-900K in salary over 12-18 months for 5 engineers, plus 3-5% equity. First hire typically $180-220K base in major US markets, or 60-70% of that remote.",
+		},
+		{
+			question: "What mistakes kill first engineering teams?",
+			answer:
+				"Hiring two backend engineers because that's what the founder knows, then scrambling to add frontend. Hiring junior without senior mentorship. Bringing in a senior who has to undo 8 months of work.",
+		},
+	],
+
+	"hidden-tax-supporting-both": [
+		{
+			question: "What is the actual engineering cost of supporting two databases?",
+			answer:
+				"Test matrix grows 2.3x, maintenance 2.5x. In audits across 8 SaaS codebases, 'we support both' accounted for 25-40% of total engineering overhead, mostly distributed across PRs and reviews.",
+		},
+		{
+			question: "Where does 'we support both' come from?",
+			answer:
+				"Customer-driven ('our biggest prospect uses MongoDB'), acquisition-driven (merged AWS and GCP), team-preference ('half prefer REST, half GraphQL'), or backward compatibility ('v1 still has 12% traffic').",
+		},
+		{
+			question: "When is supporting two options actually worth the cost?",
+			answer:
+				"When business value clearly exceeds ongoing engineering tax. Quantify the cost: extra 30 min per PR review, extra 2 hours per deploy, extra week per security audit. Make it conscious.",
+		},
+	],
+
+	"hiring-first-staff-engineer": [
+		{
+			question: "When does a startup actually need a staff engineer?",
+			answer:
+				"At 15-25 engineers with a specific organizational gap: CTO is the architecture bottleneck, teams solve the same problem three ways, or senior engineers have no growth path beyond management.",
+		},
+		{
+			question: "What is the salary for a first staff engineer hire?",
+			answer:
+				"Expect $250-350K total comp as of early 2026. Hire for influence and communication over raw technical skill. A brilliant engineer who can't persuade creates more problems than they solve.",
+		},
+		{
+			question: "What is the difference between a senior engineer and a staff engineer?",
+			answer:
+				"Senior engineers deliver excellent individual output. Staff engineers multiply the output of the entire engineering organization. The title isn't a promotion for seniors who don't want to manage.",
+		},
+	],
+
+	"ic-to-tech-lead": [
+		{
+			question: "What is the 30/30/30 rule for tech leads?",
+			answer:
+				"30% coding, 30% code review and mentoring, 30% architecture and planning, 10% meetings. Stop measuring yourself by personal commits; start measuring team output.",
+		},
+		{
+			question: "Why do senior ICs stop getting promoted?",
+			answer:
+				"They keep optimizing for code output. The feedback 'we need to see more leadership' means impact multiplication: enabling 5 engineers to ship 8 features beats shipping 10 yourself.",
+		},
+		{
+			question: "How long does the IC to tech lead transition take?",
+			answer:
+				"Engineers who lead without the title get promoted in 12-18 months. Engineers who wait for the promotion to start leading rarely get it. Start solving unassigned problems now.",
+		},
+	],
+
+	"incident-response-saas": [
+		{
+			question: "Why do SaaS incident response processes fail?",
+			answer:
+				"Teams conflate 'finding the fix' with 'restoring service.' Restore first (revert deploy, failover), root cause after. Three engineers investigating independently duplicates work without progress.",
+		},
+		{
+			question: "What is the SEV-1 response SLA for a SaaS outage?",
+			answer:
+				"5 minutes to start mitigation for total service outage or data loss risk. All hands on deck, CEO notified, customers communicated proactively. Silence is worse than bad news.",
+		},
+		{
+			question: "Who should be the Incident Commander during an outage?",
+			answer:
+				"Not the most technical engineer. The IC coordinates, communicates, and decides; they don't debug. Assign an IC before you need one. The best ICs run comms while engineers fix.",
+		},
+	],
+
+	"llm-cost-optimization-scale": [
+		{
+			question: "What is the 80/20 rule of LLM cost optimization?",
+			answer:
+				"80% of queries can be handled by cheap fast models (GPT-4o-mini at $0.15/1M input); 20% need expensive capable models (Claude Sonnet at $3/1M). Tiered routing cuts costs 60-70%.",
+		},
+		{
+			question: "How does an AI feature go from $4/month to $225K/month?",
+			answer:
+				"Scale. $0.03 per query is $9/month at 10 queries/day, $4,500/month at 1,000 DAU averaging 5 queries, and $225,000/month at 50,000 DAU. Optimize before you scale.",
+		},
+		{
+			question: "What is semantic caching and how much does it save?",
+			answer:
+				"Serving near-identical queries from cache using 0.95+ similarity thresholds. Eliminates 20-30% of LLM calls entirely on top of model routing savings. Compounds with prompt compression.",
+		},
+	],
+
+	"llm-integration-architecture": [
+		{
+			question: "Which vector database should I use for production RAG?",
+			answer:
+				"pgvector for under 1M vectors, Qdrant for 1-10M, Pinecone for 10M+ or managed preference. Adopting a dedicated vector DB before you need one adds infrastructure you'll regret.",
+		},
+		{
+			question: "Which OpenAI embedding model delivers the best cost-quality ratio?",
+			answer:
+				"text-embedding-3-small at $0.02/1M tokens beats ada-002 on quality at half the cost. Use it as the default for new RAG systems unless you need the larger model's specific capabilities.",
+		},
+		{
+			question: "How do I prevent a vector database from being a single point of failure?",
+			answer:
+				"Build fallback chains, not single points. Primary vector store, secondary cache layer, and a deterministic fallback path. Cache aggressively; semantic caching cuts LLM costs 40-60%.",
+		},
+	],
+
+	"multi-region-saas-architecture": [
+		{
+			question: "When should a SaaS go multi-region?",
+			answer:
+				"When half your users hit 200ms+ latency, or a GDPR Article 44 violation threatens you. Scale isn't the trigger; latency and compliance are. Fines run up to 4% of global revenue.",
+		},
+		{
+			question: "Active-active or active-passive database replication?",
+			answer:
+				"Start active-passive. Active-active sounds ideal but introduces conflict resolution complexity that breaks most teams. Move to active-active only when you can handle CRDTs or app-level conflict resolution.",
+		},
+		{
+			question: "How much latency does cross-region traffic actually add?",
+			answer:
+				"New York to London: ~28ms one way, ~55ms round trip in perfect conditions. Singapore to us-east-1: 250-300ms round trip. Every DB query, every API call, every WebSocket ping pays that tax.",
+		},
+	],
+
+	"neo-brutalism-developer-guide": [
+		{
+			question: "What defines neo-brutalist web design?",
+			answer:
+				"Hard shadows (4px 4px 0px #000), thick borders (3-4px), high contrast colors, monospace typography, and exposed box model geometry. No soft shadows, excessive rounding, or gradients.",
+		},
+		{
+			question: "When should a product use neo-brutalism?",
+			answer:
+				"Portfolios, creative tools, indie products, developer tools. Skip it for enterprise B2B, healthcare, or finance where trust signals favor conservative design conventions.",
+		},
+		{
+			question: "How does second-wave neo-brutalism differ from first-wave?",
+			answer:
+				"First-wave (Craigslist, Hacker News) was anti-design: deliberately ugly. Second-wave (Gumroad, Linear, Figma Config) is deliberate and polished, using brutalist elements with thoughtful typography.",
+		},
+	],
+
+	"nodejs-memory-leaks": [
+		{
+			question: "Where do memory leaks hide in Node.js applications?",
+			answer:
+				"In Old Space, V8's Mark-Sweep-Compact region for long-lived objects. Short-lived objects die in New Space within milliseconds. Leaks are objects that survive to Old Space and never get collected.",
+		},
+		{
+			question: "What is the Three-Snapshot Technique for finding memory leaks?",
+			answer:
+				"Take a baseline heap snapshot, perform the suspect action, take a second snapshot, repeat the action, take a third. Objects present in all three snapshots are likely leaks.",
+		},
+		{
+			question: "How should I set max-old-space-size in a container?",
+			answer:
+				"Container RAM multiplied by 0.75. V8 needs headroom for stack, code, and external memory. Setting it to 100% of container RAM triggers OOM kills before garbage collection can run.",
+		},
+	],
+
+	"optimistic-ui": [
+		{
+			question: "When should I use optimistic UI updates?",
+			answer:
+				"For high-confidence actions like likes, saves, and form submissions where success is expected. Never for financial transactions, scarce inventory, or operations with real-world side effects.",
+		},
+		{
+			question: "How do I implement optimistic UI in React 19?",
+			answer:
+				"Use the useOptimistic hook for server actions, React Query's onMutate + onError for mutations, or SWR's optimisticData parameter. All three handle rollback on failure automatically.",
+		},
+		{
+			question: "What latency threshold triggers user perception of slowness?",
+			answer:
+				"Under 100ms feels instant (direct manipulation). 100ms-1s is noticeable but flow continues. Over 1 second breaks flow. Over 10 seconds triggers abandonment. Optimistic UI eliminates the wait entirely.",
+		},
+	],
+
+	"prompt-engineering-developers": [
+		{
+			question: "What are the five components of an effective prompt?",
+			answer:
+				"Role (who the AI should be), Context (what it needs to know), Task (what to do), Format (output structure), Constraints (what to avoid). Omitting any forces the LLM to guess.",
+		},
+		{
+			question: "What temperature should I use for production LLM tasks?",
+			answer:
+				"Temperature 0 for deterministic tasks (classification, extraction, factual Q&A). Temperature 0.7 for creative generation. Never leave it at default 1.0 for production systems.",
+		},
+		{
+			question: "How do I prevent AI outputs from drifting between releases?",
+			answer:
+				"Version prompts in git, build eval suites that run on every change, use regression tests with fixed inputs and expected output shapes. Treat prompts as code, not configuration.",
+		},
+	],
+
+	"real-time-performance-monitoring": [
+		{
+			question: "Why do averages hide real SaaS performance problems?",
+			answer:
+				"A 200ms average can mask a P99 of 8 seconds affecting 100 requests per minute. Those 100 users often correlate with enterprise customers on complex dashboards, your highest-paying segment.",
+		},
+		{
+			question: "What are the four pillars of SaaS performance monitoring?",
+			answer:
+				"Percentile-based latency (P50/P95/P99 per endpoint), Real User Monitoring with device/network segmentation, error budget burn rate alerting (not static thresholds), and distributed tracing.",
+		},
+		{
+			question: "How much can error-budget alerting improve MTTR?",
+			answer:
+				"One team cut MTTR from 45 minutes to under 8 minutes by switching from average-based alerting to percentile-based alerts with error budgets. Static thresholds fire too late or too often.",
+		},
+	],
+
+	"rest-api-design-mistakes": [
+		{
+			question: "What are the most common REST API design mistakes?",
+			answer:
+				"Inconsistent naming, leaking database IDs, broken pagination, missing idempotency, poor error responses, no versioning strategy, and bolted-on authentication. All seven appeared in 90% of APIs I've audited.",
+		},
+		{
+			question: "Why should API IDs not expose database primary keys?",
+			answer:
+				"Sequential integer IDs leak user count, enable enumeration attacks, and lock you into your current database. Use opaque ULIDs or UUIDs that stay stable across datastore migrations.",
+		},
+		{
+			question: "When should I add idempotency keys to API mutations?",
+			answer:
+				"On every POST, PUT, PATCH, and DELETE that has side effects. Client-generated idempotency keys let retries be safe. Without them, network timeouts cause duplicate charges and double-created records.",
+		},
+	],
+
+	"rsc-edge-death-of-waterfall": [
+		{
+			question: "How do React Server Components eliminate data fetching waterfalls?",
+			answer:
+				"Server Components query databases directly and stream HTML, skipping the HTML to JS to Fetch to Re-render cycle. Result: sub-50ms TTFB globally with zero client-side fetch waterfall.",
+		},
+		{
+			question: "What JavaScript does a Server Component ship to the browser?",
+			answer:
+				"Zero. Server Components render on the server and send HTML plus a minimal RSC payload. Only Client Components (marked 'use client') ship JavaScript for hydration and interactivity.",
+		},
+		{
+			question: "Can Server Components replace my entire SPA?",
+			answer:
+				"Mostly. Keep Client Components for anything needing useState, useEffect, event handlers, or browser APIs. Default everything else to Server Components. The rule: Server for data, Client for interactivity.",
+		},
+	],
+
+	"saas-reliability-monitoring": [
+		{
+			question: "What does 99.9% uptime actually mean in real downtime?",
+			answer:
+				"8.76 hours per year. 43.8 minutes per month. 99.99% is 52.6 minutes per year. Most B2B SaaS contracts target 99.9%; the infrastructure to reach 99.99% is fundamentally different.",
+		},
+		{
+			question: "What are the four golden signals of SaaS observability?",
+			answer:
+				"Latency (P50/P95/P99), traffic (requests per second), errors (rate and types), and saturation (CPU, memory, connections). Alert on user-impact symptoms, not on causes like high CPU.",
+		},
+		{
+			question: "What observability stack does a seed-stage SaaS need?",
+			answer:
+				"Sentry for error tracking, Checkly for synthetic monitoring, PagerDuty for alerting. Add Grafana Cloud at Series A. Evaluate Datadog or self-hosted OpenTelemetry at Series B+.",
+		},
+	],
+
+	"senior-developer-paradox": [
+		{
+			question: "Why does a senior developer at $150/hr cost less than a junior at $30/hr?",
+			answer:
+				"Effective cost calculation: junior at 50% rework is $90-100/hr effective. Senior at 10% rework is $175/hr. Factor architectural mistakes the junior makes and the senior saves money.",
+		},
+		{
+			question: "What does poor software quality cost the US economy?",
+			answer:
+				"CISQ estimates $2.41 trillion annually. Accumulated technical debt alone accounts for $1.52 trillion. The cost is paid in operational failures and legacy system maintenance.",
+		},
+		{
+			question: "Is the 10x developer a myth?",
+			answer:
+				"Not output-wise, but effectiveness-wise yes. The top 1% aren't 10x more code; they're 10x better at preventing bad code from reaching production via architecture and early review.",
+		},
+	],
+
+	"soc2-compliance-startup-roadmap": [
+		{
+			question: "Can a seed-stage startup get SOC 2 in 90 days?",
+			answer:
+				"Yes for Type I. Total cost: $15-25K for compliance platform plus auditor. Engineering time: 2-4 weeks of focused effort. Skip the $200K consulting engagement; automate evidence collection instead.",
+		},
+		{
+			question: "Should I start with SOC 2 Type I or Type II?",
+			answer:
+				"Type I. It proves controls exist as of a point in time. Enterprise buyers accept Type I from startups. Pursue Type II afterward with a 3-month observation window.",
+		},
+		{
+			question: "How much time does SOC 2 save on enterprise sales?",
+			answer:
+				"Without SOC 2: 20-40 hours per 300-500 question security questionnaire. With SOC 2: 5 minutes ('here's our report'). One enterprise deal averages $50-200K ARR, often blocked by questionnaires.",
+		},
+	],
+
+	"state-management-2026": [
+		{
+			question: "What is the right React state management stack in 2026?",
+			answer:
+				"TanStack Query for server state plus Zustand for everything else. Two libraries under 10KB each cover 90% of SaaS application needs. Stop reaching for Redux.",
+		},
+		{
+			question: "Should I use signals instead of Zustand?",
+			answer:
+				"Not yet. Signals (Preact, SolidJS style) solve fine-grained reactivity without re-renders, but React's adoption story is incomplete and ecosystem support isn't there. Revisit in 12-18 months.",
+		},
+		{
+			question: "Why is putting API data in Redux or Zustand a mistake?",
+			answer:
+				"You end up reimplementing caching, invalidation, retry logic, and optimistic updates from scratch. Server state has different characteristics than client state and needs TanStack Query or SWR.",
+		},
+	],
+
+	"tailwind-vs-component-libraries": [
+		{
+			question: "What is the bundle size cost of Material UI vs Tailwind?",
+			answer:
+				"Material UI adds roughly 300ms to Time to Interactive through CSS-in-JS runtime overhead. Tailwind purged to just the classes you use ships around 10KB gzipped for a typical app.",
+		},
+		{
+			question: "When should I use a component library over Tailwind?",
+			answer:
+				"Internal tools and admin dashboards where shipping speed beats customization. Consumer-facing products need Tailwind plus custom components to escape the generic 'looks like every SaaS' trap.",
+		},
+		{
+			question: "What makes shadcn/ui different from component libraries?",
+			answer:
+				"Copy-paste components you own, built on Radix primitives. No runtime dependency, no version lock, full customization control. It's the middle ground between Tailwind and Material UI.",
+		},
+	],
+
+	"technical-hiring-framework": [
+		{
+			question: "What hiring method best predicts engineering performance?",
+			answer:
+				"Work sample tests (validity coefficient r=0.54), 3x better than years of experience (r=0.18). Schmidt and Hunter's 85 years of personnel selection research is unambiguous.",
+		},
+		{
+			question: "Do unstructured interviews work for hiring engineers?",
+			answer:
+				"Barely. Unstructured interviews score r=0.38. Structured interviews with consistent questions and rubric scoring hit r=0.51, a 34% improvement that compounds across every hire.",
+		},
+		{
+			question: "What does a bad engineering hire actually cost?",
+			answer:
+				"30% of first-year salary plus the damage they do. Architectural decisions that need reversal, bugs that ship to production, and team morale erosion compound beyond the direct cost.",
+		},
+	],
+
+	"tech-stack-capital-allocation": [
+		{
+			question: "Why treat a tech stack as a capital asset?",
+			answer:
+				"Labor costs are 50-70% of engineering opex, and your stack determines your hiring pool. Evaluate on TCO, liquidity (talent pool), and depreciation (tech debt rate) like any capital investment.",
+		},
+		{
+			question: "What is the hiring cost of adopting Rust or Elixir?",
+			answer:
+				"Roles stay open 45-60+ days versus 30-40 for JavaScript or Python. Replacement cost when a critical engineer leaves is fundamentally higher. Constrained ecosystems need business justification.",
+		},
+		{
+			question: "What stack should a seed-stage startup choose?",
+			answer:
+				"Optimize for speed: Rails, Django, or Next.js. Instagram scaled to 14 million users on PostgreSQL and Python with 3 engineers. Technical novelty is not a competitive advantage.",
+		},
+	],
+
+	"testing-react-server-components": [
+		{
+			question: "Why doesn't React Testing Library work for Server Components?",
+			answer:
+				"RSCs are async, access server-only APIs (headers, cookies, databases), and don't produce a DOM in jsdom. render() was built for Client Components in a browser simulation.",
+		},
+		{
+			question: "What testing strategy works for React Server Components?",
+			answer:
+				"Unit test data fetching and business logic as plain functions (no React). Integration test via HTTP to the Next.js server (test HTML output). E2E critical flows with Playwright.",
+		},
+		{
+			question: "How much faster is the RSC-native testing approach?",
+			answer:
+				"Teams that adopted HTTP-based integration tests cut suite runtime by 40% while catching more real bugs. Stop mocking fetch; test actual server behavior through the actual request path.",
+		},
+	],
+
+	"vector-database-selection": [
+		{
+			question: "Should I start with pgvector or a dedicated vector database?",
+			answer:
+				"Start with pgvector. It handles 80% of SaaS AI features up to 5-10M vectors. Dedicated vector DBs are liability overhead unless you need sub-10ms latency or 10M+ vectors.",
+		},
+		{
+			question: "Pinecone, Qdrant, or Weaviate?",
+			answer:
+				"Pinecone for zero operational overhead. Qdrant for control and self-hosted performance. Weaviate for built-in hybrid search combining vector and keyword matching in one query.",
+		},
+		{
+			question: "How many queries per day justify a dedicated vector database?",
+			answer:
+				"Thousands per day with strict latency requirements. If your AI feature gets 100 queries per day, pgvector on the database you already run is the right answer. Avoid premature infrastructure.",
+		},
+	],
 };
