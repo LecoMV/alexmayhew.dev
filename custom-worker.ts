@@ -25,7 +25,26 @@ import * as Sentry from "@sentry/cloudflare";
 // @ts-expect-error — .open-next/worker.js generated at build time
 import handler from "./.open-next/worker.js";
 
-// Content-Security-Policy intentionally NOT in this map. See middleware.ts.
+// Content-Security-Policy: middleware.ts is PREFERRED source (per-request nonce).
+// However, SSG routes bypass middleware on Cloudflare (served from ASSETS binding
+// as static HTML), so this Worker must provide a safe fallback CSP — applied
+// ONLY when the response lacks one. Dynamic routes retain middleware's nonce CSP.
+const FALLBACK_CSP = [
+	"default-src 'self'",
+	"script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://challenges.cloudflare.com https://*.googletagmanager.com",
+	"worker-src 'self' blob:",
+	"style-src 'self' 'unsafe-inline'",
+	"img-src 'self' blob: data: https://*.google-analytics.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com",
+	"font-src 'self'",
+	"connect-src 'self' https://cloudflareinsights.com https://challenges.cloudflare.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com",
+	"frame-src 'self' https://challenges.cloudflare.com https://www.googletagmanager.com",
+	"object-src 'none'",
+	"base-uri 'self'",
+	"form-action 'self'",
+	"frame-ancestors 'none'",
+	"upgrade-insecure-requests",
+].join("; ");
+
 const SECURITY_HEADERS: Record<string, string> = {
 	"X-Frame-Options": "DENY",
 	"X-Content-Type-Options": "nosniff",
@@ -60,6 +79,14 @@ export default Sentry.withSentry(
 
 			for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
 				newHeaders.set(name, value);
+			}
+
+			// Safe-fallback CSP for HTML responses that bypassed middleware
+			// (SSG / static HTML served from ASSETS binding). Do NOT overwrite
+			// an existing CSP — middleware's per-request nonce CSP wins for
+			// dynamic routes.
+			if (!newHeaders.has("Content-Security-Policy")) {
+				newHeaders.set("Content-Security-Policy", FALLBACK_CSP);
 			}
 
 			return new Response(response.body, {
