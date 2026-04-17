@@ -67,7 +67,7 @@ export function Footer() {
 								alt="Alex Mayhew"
 								width={24}
 								height={24}
-								className="h-6 w-auto"
+								className="h-10 w-auto"
 							/>
 							<span className="font-mono text-sm tracking-tight">
 								<span className="text-cyber-lime">alex</span>

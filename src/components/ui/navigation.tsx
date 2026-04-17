@@ -138,7 +138,7 @@ export function Navigation() {
 							alt="Alex Mayhew"
 							width={32}
 							height={32}
-							className="h-6 w-auto transition-opacity duration-300 group-hover:opacity-80 md:h-7 lg:h-8"
+							className="h-10 w-auto transition-opacity duration-300 group-hover:opacity-80 md:h-11 lg:h-12"
 							priority
 						/>
 						<span className="font-mono text-sm tracking-tight md:text-base lg:text-lg">
