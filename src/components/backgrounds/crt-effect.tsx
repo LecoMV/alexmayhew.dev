@@ -154,5 +154,3 @@ export function CRTEffect({
 		</m.div>
 	);
 }
-
-export default CRTEffect;

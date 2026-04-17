@@ -38,6 +38,32 @@ function tokenHandlers(hiddenInputId: string) {
 	};
 }
 
+interface SuccessPanelProps {
+	variant: NonNullable<NewsletterSignupProps["variant"]>;
+	className?: string;
+}
+
+function SuccessPanel({ variant, className }: SuccessPanelProps) {
+	return (
+		<m.div
+			className={cn(
+				"flex items-center gap-3 p-4",
+				variant === "card" && "bg-gunmetal-glass/20 border-cyber-lime/20 border",
+				className
+			)}
+			initial={{ opacity: 0, scale: 0.95 }}
+			animate={{ opacity: 1, scale: 1 }}
+			transition={springTransition}
+		>
+			<CheckCircle className="text-cyber-lime h-5 w-5 shrink-0" />
+			<div>
+				<p className="font-medium">You&apos;re in!</p>
+				<p className="text-slate-text text-sm">Check your inbox to confirm your subscription.</p>
+			</div>
+		</m.div>
+	);
+}
+
 export function NewsletterSignup({
 	variant = "card",
 	source = "website",
@@ -67,24 +93,7 @@ export function NewsletterSignup({
 	}, [state.success, source, variant]);
 
 	if (state.success) {
-		return (
-			<m.div
-				className={cn(
-					"flex items-center gap-3 p-4",
-					variant === "card" && "bg-gunmetal-glass/20 border-cyber-lime/20 border",
-					className
-				)}
-				initial={{ opacity: 0, scale: 0.95 }}
-				animate={{ opacity: 1, scale: 1 }}
-				transition={springTransition}
-			>
-				<CheckCircle className="text-cyber-lime h-5 w-5 shrink-0" />
-				<div>
-					<p className="font-medium">You&apos;re in!</p>
-					<p className="text-slate-text text-sm">Check your inbox to confirm your subscription.</p>
-				</div>
-			</m.div>
-		);
+		return <SuccessPanel variant={variant} className={className} />;
 	}
 
 	if (variant === "card") {

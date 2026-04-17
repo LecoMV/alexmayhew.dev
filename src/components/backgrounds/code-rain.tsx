@@ -223,5 +223,3 @@ export function CodeRain({
 		/>
 	);
 }
-
-export default CodeRain;

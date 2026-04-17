@@ -287,5 +287,3 @@ export function DataFlow({
 		/>
 	);
 }
-
-export default DataFlow;

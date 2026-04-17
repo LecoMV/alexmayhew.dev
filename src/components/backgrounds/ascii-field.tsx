@@ -130,5 +130,3 @@ export function AsciiField({
 		/>
 	);
 }
-
-export default AsciiField;
