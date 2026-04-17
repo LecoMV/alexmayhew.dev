@@ -140,6 +140,36 @@ export function trackNewsletterEvent(
 }
 
 /**
+ * GA4's native `sign_up` conversion event. Fire alongside any custom
+ * newsletter_subscribe so GA4's conversion catalog picks it up.
+ */
+export function trackSignUp(
+	method: string,
+	params: Record<string, string | number | boolean> = {}
+) {
+	if (typeof window !== "undefined" && window.gtag) {
+		window.gtag("event", "sign_up", { method, ...params });
+	}
+}
+
+/**
+ * Track outbound social link clicks. Use in footer/about social icons so
+ * we can attribute traffic from our own distribution (LinkedIn, X, etc).
+ */
+export function trackSocialClick(
+	network: string,
+	params: { location?: string; url?: string } = {}
+) {
+	if (typeof window !== "undefined" && window.gtag) {
+		window.gtag("event", "social_click", {
+			event_category: "social",
+			social_network: network,
+			...params,
+		});
+	}
+}
+
+/**
  * Track custom events in GA4 (general purpose)
  * Usage: trackEvent('contact_form_submit', { form_type: 'consultation' })
  */

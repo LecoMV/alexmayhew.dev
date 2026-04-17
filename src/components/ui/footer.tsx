@@ -6,6 +6,7 @@ import { NewsletterSignup } from "@/components/newsletter";
 import { publicEnv } from "@/lib/env";
 
 import { LocalTime } from "./local-time";
+import { SocialLink } from "./social-link";
 
 // Custom X (formerly Twitter) icon since Lucide deprecated brand icons
 function XIcon({ className }: { className?: string }) {
@@ -38,23 +39,27 @@ const socialLinks = [
 		href: withUtm("https://github.com/LecoMV", "social-github"),
 		icon: Github,
 		label: "GitHub",
+		network: "github",
 	},
 	{
 		href: withUtm("https://www.linkedin.com/in/alexmmayhew", "social-linkedin"),
 		icon: Linkedin,
 		label: "LinkedIn",
+		network: "linkedin",
 	},
 	{
 		href: withUtm("https://x.com/alexmayhewdev", "social-x"),
 		icon: XIcon,
 		label: "X",
+		network: "x",
 	},
 	{
 		href: withUtm("https://bsky.app/profile/alexmayhewdev.bsky.social", "social-bluesky"),
 		icon: BlueskyIcon,
 		label: "Bluesky",
+		network: "bluesky",
 	},
-	{ href: "mailto:alex@alexmayhew.dev", icon: Mail, label: "Email" },
+	{ href: "mailto:alex@alexmayhew.dev", icon: Mail, label: "Email", network: "email" },
 ];
 
 const footerLinks = [
@@ -140,21 +145,35 @@ export function Footer() {
 							Connect
 						</h4>
 						<div className="flex gap-3">
-							{socialLinks.map((social) => (
-								<a
-									key={social.label}
-									href={social.href}
-									target="_blank"
-									rel="noopener noreferrer"
-									aria-label={social.label}
-									className="group hover:border-cyber-lime focus-visible:border-cyber-lime focus-visible:ring-cyber-lime focus-visible:ring-offset-void-navy border border-white/10 p-3 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-								>
-									<social.icon
-										className="text-slate-text group-hover:text-cyber-lime h-4 w-4 transition-colors duration-300"
-										strokeWidth={1.5}
-									/>
-								</a>
-							))}
+							{socialLinks.map((social) =>
+								social.href.startsWith("mailto:") ? (
+									<a
+										key={social.label}
+										href={social.href}
+										aria-label={social.label}
+										className="group hover:border-cyber-lime focus-visible:border-cyber-lime focus-visible:ring-cyber-lime focus-visible:ring-offset-void-navy border border-white/10 p-3 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+									>
+										<social.icon
+											className="text-slate-text group-hover:text-cyber-lime h-4 w-4 transition-colors duration-300"
+											strokeWidth={1.5}
+										/>
+									</a>
+								) : (
+									<SocialLink
+										key={social.label}
+										href={social.href}
+										label={social.label}
+										network={social.network ?? social.label.toLowerCase()}
+										location="footer"
+										className="group hover:border-cyber-lime focus-visible:border-cyber-lime focus-visible:ring-cyber-lime focus-visible:ring-offset-void-navy border border-white/10 p-3 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+									>
+										<social.icon
+											className="text-slate-text group-hover:text-cyber-lime h-4 w-4 transition-colors duration-300"
+											strokeWidth={1.5}
+										/>
+									</SocialLink>
+								)
+							)}
 						</div>
 					</div>
 				</div>

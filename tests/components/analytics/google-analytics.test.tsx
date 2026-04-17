@@ -8,6 +8,8 @@ import {
 	trackLeadEvent,
 	trackNewsletterEvent,
 	trackServiceEvent,
+	trackSignUp,
+	trackSocialClick,
 } from "@/components/analytics/google-analytics";
 
 vi.mock("next/script", () => ({
@@ -112,6 +114,32 @@ describe("GA4 tracking functions", () => {
 			expect.objectContaining({
 				event_category: "newsletter",
 				method: "form",
+			})
+		);
+	});
+
+	it("trackSignUp fires the native GA4 sign_up conversion event", () => {
+		const mockGtag = vi.fn();
+		Object.defineProperty(window, "gtag", { value: mockGtag, writable: true, configurable: true });
+		trackSignUp("newsletter", { source: "footer" });
+		expect(mockGtag).toHaveBeenCalledWith(
+			"event",
+			"sign_up",
+			expect.objectContaining({ method: "newsletter", source: "footer" })
+		);
+	});
+
+	it("trackSocialClick fires with social network + location", () => {
+		const mockGtag = vi.fn();
+		Object.defineProperty(window, "gtag", { value: mockGtag, writable: true, configurable: true });
+		trackSocialClick("linkedin", { location: "footer" });
+		expect(mockGtag).toHaveBeenCalledWith(
+			"event",
+			"social_click",
+			expect.objectContaining({
+				event_category: "social",
+				social_network: "linkedin",
+				location: "footer",
 			})
 		);
 	});

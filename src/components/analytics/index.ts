@@ -7,4 +7,6 @@ export {
 	trackLeadEvent,
 	trackNewsletterEvent,
 	trackServiceEvent,
+	trackSignUp,
+	trackSocialClick,
 } from "./google-analytics";

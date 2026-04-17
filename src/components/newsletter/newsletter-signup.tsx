@@ -5,7 +5,7 @@ import { AlertCircle, ArrowRight, CheckCircle, Mail } from "lucide-react";
 import { useActionState, useEffect, useRef } from "react";
 
 import { type NewsletterFormState, subscribeNewsletterAction } from "@/app/actions/newsletter";
-import { trackNewsletterEvent } from "@/components/analytics";
+import { trackNewsletterEvent, trackSignUp } from "@/components/analytics";
 import { Turnstile, type TurnstileRef } from "@/components/ui/turnstile";
 import { springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
@@ -87,6 +87,11 @@ export function NewsletterSignup({
 			trackNewsletterEvent("newsletter_subscribe", {
 				method: "email",
 				source: source,
+				location: variant,
+			});
+			// Also fire GA4's native sign_up so the conversion catalog picks it up.
+			trackSignUp("newsletter", {
+				source: source ?? "website",
 				location: variant,
 			});
 		}
