@@ -8,11 +8,11 @@ import type { GlossaryEntry } from "@/data/glossary";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "Glossary | Alex Mayhew",
+	title: "Glossary",
 	description:
 		"Definitions for terms coined across the alexmayhew.dev blog: Cognitive Debt, Generative Debt, METR Paradox, Lambda Tax, the 50% Rule, and more.",
 	openGraph: {
-		title: "Glossary | Alex Mayhew",
+		title: "Glossary",
 		description:
 			"Definitions for original engineering-leadership and architecture terms from the alexmayhew.dev blog.",
 		type: "website",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Glossary | Alex Mayhew",
+		title: "Glossary",
 		description:
 			"Definitions for original engineering-leadership and architecture terms from the alexmayhew.dev blog.",
 		images: ["/og-image.png"],

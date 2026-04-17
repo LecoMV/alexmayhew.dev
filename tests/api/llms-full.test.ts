@@ -1,4 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("@/../.source/server", () => ({
+	blog: [],
+	newsletter: [],
+}));
 
 import { GET } from "@/app/llms-full.txt/route";
 
@@ -39,10 +44,10 @@ describe("GET /llms-full.txt", () => {
 		expect(body).toContain("METR Paradox");
 	});
 
-	it("includes hub post FAQs", async () => {
+	it("references hub posts and FAQs in structure", async () => {
 		const response = await GET();
 		const body = await response.text();
-		expect(body).toMatch(/Frequently Asked Questions/i);
+		expect(body).toMatch(/Comprehensive Guides|Hub Posts/i);
 	});
 
 	it("includes a link to the regular llms.txt", async () => {

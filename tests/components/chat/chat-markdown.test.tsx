@@ -3,9 +3,8 @@ import { describe, expect, it, vi } from "vitest";
 
 import { ChatMarkdown } from "@/components/chat/chat-markdown";
 
-vi.mock("isomorphic-dompurify", async () => {
-	const actual =
-		await vi.importActual<typeof import("isomorphic-dompurify")>("isomorphic-dompurify");
+vi.mock("dompurify", async () => {
+	const actual = await vi.importActual<typeof import("dompurify")>("dompurify");
 	return {
 		default: {
 			...actual.default,
@@ -16,7 +15,7 @@ vi.mock("isomorphic-dompurify", async () => {
 
 describe("ChatMarkdown sanitization", () => {
 	it("calls DOMPurify.sanitize on highlighted code HTML", async () => {
-		const DOMPurify = (await import("isomorphic-dompurify")).default;
+		const DOMPurify = (await import("dompurify")).default;
 		const snippet = "```js\nconst x = 1;\n```";
 		render(<ChatMarkdown content={snippet} />);
 		expect(DOMPurify.sanitize).toHaveBeenCalled();
