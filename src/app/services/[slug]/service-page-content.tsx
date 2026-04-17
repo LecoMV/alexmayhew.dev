@@ -8,7 +8,6 @@ import {
 	Code2,
 	DollarSign,
 	ExternalLink,
-	HelpCircle,
 	Lightbulb,
 	Shield,
 	Wrench,
@@ -17,7 +16,8 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { trackCTAClick } from "@/components/analytics";
-import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
+import { FaqAccordion } from "@/components/pseo/faq-accordion";
+import { ServiceCtaSplit } from "@/components/pseo/service-cta-split";
 import { RelatedBlogPostsSection, TopicClusterNav } from "@/components/seo";
 import { CornerBrackets } from "@/components/ui/corner-brackets";
 import { useContentAnalytics } from "@/lib/hooks/use-content-analytics";
@@ -109,7 +109,7 @@ export function ServicePageContent({
 				/>
 
 				{/* FAQs */}
-				<FaqSection faqs={page.faqs} />
+				<FaqAccordion faqs={page.faqs} heading="Frequently Asked Questions" variant="service" />
 
 				{/* Related Blog Posts */}
 				<RelatedBlogPostsSection slugs={page.relatedBlogPosts} />
@@ -126,7 +126,13 @@ export function ServicePageContent({
 				/>
 
 				{/* CTA Section */}
-				<CtaSection />
+				<ServiceCtaSplit
+					title="Ready to discuss your project?"
+					description="Let's talk about how I can help architect a solution tailored to your specific requirements and constraints."
+					ctaLabel="Talk through your project"
+					ctaEventName="start_conversation"
+					ctaLocation="service_bottom_cta"
+				/>
 			</div>
 		</section>
 	);
@@ -710,69 +716,6 @@ function BudgetSection({
 	);
 }
 
-function FaqSection({ faqs }: { faqs: PseoPage["faqs"] }) {
-	const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-
-	return (
-		<m.section
-			className="mb-20"
-			initial={{ opacity: 0, y: 20 }}
-			whileInView={{ opacity: 1, y: 0 }}
-			viewport={{ once: true, margin: "-100px" }}
-			transition={springTransition}
-		>
-			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse" aria-hidden="true">
-					●
-				</span>
-				Frequently Asked Questions
-			</h2>
-
-			<div className="space-y-3">
-				{faqs.map((faq, index) => (
-					<m.div
-						key={index}
-						className="bg-gunmetal-glass/10 border border-white/10"
-						initial={{ opacity: 0, y: 10 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true }}
-						transition={{ ...springTransition, delay: index * 0.05 }}
-					>
-						<button
-							onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
-							className="flex w-full items-center justify-between p-5 text-left"
-							aria-expanded={expandedIndex === index}
-						>
-							<div className="flex items-start gap-3">
-								<HelpCircle className="text-cyber-lime mt-0.5 h-5 w-5 shrink-0" strokeWidth={1.5} />
-								<h3 className="text-mist-white pr-4 text-sm font-medium">{faq.question}</h3>
-							</div>
-							<ChevronDown
-								className={cn(
-									"text-slate-text h-5 w-5 shrink-0 transition-transform duration-200",
-									expandedIndex === index && "rotate-180"
-								)}
-								strokeWidth={1.5}
-							/>
-						</button>
-
-						{expandedIndex === index && (
-							<m.div
-								initial={{ opacity: 0, height: 0 }}
-								animate={{ opacity: 1, height: "auto" }}
-								exit={{ opacity: 0, height: 0 }}
-								className="border-t border-white/10 px-5 pt-4 pb-5 pl-13"
-							>
-								<p className="text-slate-text text-sm leading-relaxed">{faq.answer}</p>
-							</m.div>
-						)}
-					</m.div>
-				))}
-			</div>
-		</m.section>
-	);
-}
-
 function RelatedServicesSection({ relatedPages }: { relatedPages: RelatedServiceSummary[] }) {
 	return (
 		<m.section
@@ -817,63 +760,6 @@ function RelatedServicesSection({ relatedPages }: { relatedPages: RelatedService
 						</Link>
 					</m.div>
 				))}
-			</div>
-		</m.section>
-	);
-}
-
-function CtaSection() {
-	return (
-		<m.section
-			initial={{ opacity: 0, y: 20 }}
-			whileInView={{ opacity: 1, y: 0 }}
-			viewport={{ once: true, margin: "-100px" }}
-			transition={springTransition}
-		>
-			<div className="bg-gunmetal-glass/20 relative border border-white/10 p-8 backdrop-blur-sm md:p-12">
-				<div className="border-cyber-lime absolute top-0 right-0 h-6 w-6 border-t border-r" />
-				<div className="border-cyber-lime absolute bottom-0 left-0 h-6 w-6 border-b border-l" />
-
-				<div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
-					<div>
-						<h2 className="mb-2 font-mono text-2xl tracking-tight md:text-3xl">
-							Ready to discuss your project?
-						</h2>
-						<p className="text-slate-text max-w-xl">
-							Let&apos;s talk about how I can help architect a solution tailored to your specific
-							requirements and constraints.
-						</p>
-					</div>
-
-					<Link
-						href="/contact"
-						onClick={() =>
-							trackCTAClick("start_conversation", { cta_location: "service_bottom_cta" })
-						}
-						className="group hover:border-cyber-lime relative flex shrink-0 items-center gap-3 border border-white/20 px-6 py-4 transition-colors duration-300"
-					>
-						<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">
-							Talk through your project
-						</span>
-						<ArrowRight
-							className="text-slate-text group-hover:text-cyber-lime h-4 w-4 transition-all duration-300 group-hover:translate-x-1"
-							strokeWidth={1.5}
-						/>
-						<m.div
-							className="bg-cyber-lime/5 absolute inset-0"
-							initial={{ opacity: 0 }}
-							whileHover={{ opacity: 1 }}
-							transition={gentleSpring}
-						/>
-					</Link>
-				</div>
-
-				<div className="mt-8 border-t border-white/10 pt-8">
-					<p className="text-slate-text mb-4 text-center font-mono text-xs tracking-wider uppercase">
-						Not ready to talk? Stay in the loop.
-					</p>
-					<NewsletterSignup variant="minimal" />
-				</div>
 			</div>
 		</m.section>
 	);
