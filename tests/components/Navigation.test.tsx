@@ -21,7 +21,7 @@ vi.mock("next/image", () => ({
 describe("Navigation", () => {
 	it("renders the logo", () => {
 		render(<Navigation />);
-		expect(screen.getByAltText("AM")).toBeTruthy();
+		expect(screen.getByAltText("Alex Mayhew")).toBeTruthy();
 	});
 
 	it("renders desktop navigation items", () => {

@@ -135,8 +135,8 @@ export function Navigation() {
 					>
 						<Image
 							src="/am-icon-optimized_sized.svg"
-							alt="AM"
-							width={52}
+							alt="Alex Mayhew"
+							width={32}
 							height={32}
 							className="h-6 w-auto transition-opacity duration-300 group-hover:opacity-80 md:h-7 lg:h-8"
 							priority

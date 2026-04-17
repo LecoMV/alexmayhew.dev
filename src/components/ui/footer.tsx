@@ -64,8 +64,8 @@ export function Footer() {
 						<Link href="/" className="group inline-flex items-center gap-3">
 							<Image
 								src="/am-icon-optimized_sized.svg"
-								alt="AM"
-								width={40}
+								alt="Alex Mayhew"
+								width={24}
 								height={24}
 								className="h-6 w-auto"
 							/>
