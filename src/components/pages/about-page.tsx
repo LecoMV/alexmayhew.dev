@@ -7,6 +7,7 @@ import {
 	Code2,
 	Cpu,
 	Database,
+	ExternalLink,
 	Globe,
 	MapPin,
 	Palette,
@@ -366,6 +367,104 @@ export function AboutPage() {
 							respect for the craft.
 						</p>
 					</div>
+				</m.section>
+
+				{/* Contrarian positions (E-E-A-T signal) */}
+				<m.section
+					className="mb-20"
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, margin: "-100px" }}
+					transition={springTransition}
+				>
+					<h2 className="text-cyber-lime mb-6 font-mono text-xs tracking-wider uppercase">
+						<span className="mr-2" aria-hidden="true">
+							●
+						</span>
+						What I refuse to do
+					</h2>
+					<div className="grid gap-6 md:grid-cols-2">
+						<div className="bg-gunmetal-glass/20 border border-white/10 p-6">
+							<h3 className="text-mist-white mb-2 font-mono text-sm">
+								Microservices before product-market fit
+							</h3>
+							<p className="text-slate-text text-sm leading-relaxed">
+								Most pre-Series-A teams asking for microservices actually need a well-partitioned
+								monolith with clean module boundaries. I will say no and explain why.
+							</p>
+						</div>
+						<div className="bg-gunmetal-glass/20 border border-white/10 p-6">
+							<h3 className="text-mist-white mb-2 font-mono text-sm">
+								AI-first architecture without measurement
+							</h3>
+							<p className="text-slate-text text-sm leading-relaxed">
+								Shipping LLM features without evals, cost ceilings, and latency budgets isn&apos;t
+								innovation... it&apos;s a production incident waiting for a post-mortem.
+							</p>
+						</div>
+						<div className="bg-gunmetal-glass/20 border border-white/10 p-6">
+							<h3 className="text-mist-white mb-2 font-mono text-sm">Rewrites as a shortcut</h3>
+							<p className="text-slate-text text-sm leading-relaxed">
+								Nine out of ten &quot;we need a rewrite&quot; conversations end with a strangler
+								migration or targeted refactor. The tenth gets an honest plan... not a blank page.
+							</p>
+						</div>
+						<div className="bg-gunmetal-glass/20 border border-white/10 p-6">
+							<h3 className="text-mist-white mb-2 font-mono text-sm">
+								Hiring to fix architecture problems
+							</h3>
+							<p className="text-slate-text text-sm leading-relaxed">
+								If your system needs five more engineers to be reliable, you don&apos;t have a
+								hiring problem. You have a design problem.
+							</p>
+						</div>
+					</div>
+				</m.section>
+
+				{/* Connect / sameAs links (E-E-A-T) */}
+				<m.section
+					className="mb-20"
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, margin: "-100px" }}
+					transition={springTransition}
+				>
+					<h2 className="text-cyber-lime mb-6 font-mono text-xs tracking-wider uppercase">
+						<span className="mr-2" aria-hidden="true">
+							●
+						</span>
+						Elsewhere
+					</h2>
+					<ul className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+						{[
+							{ label: "LinkedIn", href: "https://www.linkedin.com/in/alexmmayhew" },
+							{ label: "GitHub", href: "https://github.com/LecoMV" },
+							{ label: "X / Twitter", href: "https://x.com/alexmayhewdev" },
+							{
+								label: "Bluesky",
+								href: "https://bsky.app/profile/alexmayhewdev.bsky.social",
+							},
+							{ label: "Dev.to", href: "https://dev.to/alexmayhewdev" },
+							{ label: "Email", href: "mailto:alex@alexmayhew.dev" },
+						].map((link) => (
+							<li key={link.href}>
+								<a
+									href={link.href}
+									rel={link.href.startsWith("http") ? "me noopener noreferrer" : undefined}
+									target={link.href.startsWith("http") ? "_blank" : undefined}
+									className="group hover:border-cyber-lime focus-visible:border-cyber-lime focus-visible:ring-cyber-lime focus-visible:ring-offset-void-navy flex items-center justify-between border border-white/10 bg-white/[0.02] px-4 py-3 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+								>
+									<span className="text-mist-white group-hover:text-cyber-lime font-mono text-sm transition-colors">
+										{link.label}
+									</span>
+									<ExternalLink
+										className="text-slate-text group-hover:text-cyber-lime h-4 w-4 transition-colors"
+										strokeWidth={1.5}
+									/>
+								</a>
+							</li>
+						))}
+					</ul>
 				</m.section>
 
 				{/* CTA Section */}

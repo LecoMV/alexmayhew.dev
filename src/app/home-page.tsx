@@ -90,8 +90,10 @@ export default function Home() {
 							className="text-slate-text max-w-xl text-lg leading-relaxed font-normal sm:text-xl"
 							variants={fadeInUp}
 						>
-							I architect production systems that scale from MVP to millions. When your tech
-							decisions have business consequences, you need strategic guidance... not just code.
+							I architect production systems that scale from MVP to millions. When a single
+							architectural decision can become a $500K mistake, you need strategic guidance... not
+							just code that ships. 15+ years of pattern recognition across fintech, healthcare, and
+							SaaS, applied to the decisions you&apos;re married to forever.
 						</m.p>
 
 						<m.div className="mt-4 flex items-center gap-6" variants={fadeInUp}>
@@ -284,6 +286,102 @@ export default function Home() {
 									<p className="text-cyber-lime font-mono text-2xl font-bold">99.95%</p>
 									<p className="text-slate-text text-sm">Uptime Track Record</p>
 								</div>
+							</div>
+						</div>
+					</m.div>
+				</div>
+			</section>
+
+			{/* Why Work With Me Section */}
+			<section className="border-t border-white/10 px-6 py-24 sm:px-12 md:px-24">
+				<div className="max-w-content mx-auto">
+					<m.div
+						className="grid grid-cols-1 gap-12 md:grid-cols-12"
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, margin: "-100px" }}
+						transition={springTransition}
+					>
+						<div className="md:col-span-5">
+							<h2 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+								<span className="mr-2 animate-pulse">●</span>
+								Why Partner With Me
+							</h2>
+							<p className="font-mono text-2xl leading-tight tracking-tight md:text-3xl">
+								The decisions you can&apos;t reverse are the ones worth getting right.
+							</p>
+						</div>
+						<div className="md:col-span-7">
+							<div className="space-y-5 text-lg leading-relaxed">
+								<p className="text-mist-white">
+									Most founders don&apos;t hire an architect. They hire developers, ship something
+									that works, and discover 18 months later that the database schema they chose in
+									week two is now blocking a $2M enterprise deal.
+								</p>
+								<p className="text-slate-text">
+									I&apos;ve watched that exact scenario play out across fintech migrations,
+									healthcare compliance rewrites, and SaaS platforms outgrowing their initial stack.
+									The cost isn&apos;t measured in refactoring hours. It&apos;s measured in deals
+									lost, runway burned, and teams demoralized by rewrites they warned leadership
+									about years earlier.
+								</p>
+								<p className="text-slate-text">
+									I bring the pattern recognition that comes from seeing these transitions
+									firsthand... so you avoid the ones that don&apos;t unwind cleanly.
+								</p>
+							</div>
+						</div>
+					</m.div>
+				</div>
+			</section>
+
+			{/* Contrarian POV Section */}
+			<section className="border-t border-white/10 px-6 py-24 sm:px-12 md:px-24">
+				<div className="max-w-content mx-auto">
+					<m.div
+						className="bg-gunmetal-glass/10 relative border border-white/10 p-8 backdrop-blur-sm md:p-12"
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, margin: "-100px" }}
+						transition={springTransition}
+					>
+						<div className="border-cyber-lime absolute top-0 right-0 h-4 w-4 border-t border-r" />
+						<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b border-l" />
+
+						<h2 className="text-cyber-lime mb-6 font-mono text-xs tracking-wider uppercase">
+							<span className="mr-2 animate-pulse">●</span>
+							What I Refuse To Do
+						</h2>
+						<p className="font-mono text-2xl leading-tight tracking-tight md:text-3xl">
+							Most engagements I decline... and why that&apos;s the point.
+						</p>
+						<div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+							<div>
+								<p className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase">
+									01 / Staff Augmentation
+								</p>
+								<p className="text-slate-text text-sm leading-relaxed">
+									I don&apos;t fill a seat on your team. If the problem is capacity, you need a
+									recruiter. If it&apos;s judgment under uncertainty, we should talk.
+								</p>
+							</div>
+							<div>
+								<p className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase">
+									02 / Rewrite Rescues
+								</p>
+								<p className="text-slate-text text-sm leading-relaxed">
+									The third full rewrite in four years isn&apos;t a technology problem. It&apos;s a
+									decision-making problem... and no architect can fix that from the code layer.
+								</p>
+							</div>
+							<div>
+								<p className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase">
+									03 / Trend Chasing
+								</p>
+								<p className="text-slate-text text-sm leading-relaxed">
+									Microservices because a conference talk said so. Rust because your CTO reads
+									Hacker News. I optimize for your constraints, not industry fashion.
+								</p>
 							</div>
 						</div>
 					</m.div>
