@@ -89,6 +89,24 @@ describe("middleware", () => {
 			expect(csp).toContain("img-src 'self' blob: data:");
 		});
 
+		it("should declare a report-uri for CSP violation ingestion", () => {
+			const response = middleware(mockRequest);
+			const csp = response.headers.get(CSP_HEADER);
+			expect(csp).toContain("report-uri /api/csp-report");
+		});
+
+		it("should declare a report-to group for the Reporting API", () => {
+			const response = middleware(mockRequest);
+			const csp = response.headers.get(CSP_HEADER);
+			expect(csp).toContain("report-to csp-endpoint");
+		});
+
+		it("should set a Reporting-Endpoints response header matching the report-to group", () => {
+			const response = middleware(mockRequest);
+			const endpoints = response.headers.get("Reporting-Endpoints");
+			expect(endpoints).toContain(`csp-endpoint="/api/csp-report"`);
+		});
+
 		it("should allow fonts only from self", () => {
 			const response = middleware(mockRequest);
 			const csp = response.headers.get(CSP_HEADER);

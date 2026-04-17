@@ -43,6 +43,8 @@ const FALLBACK_CSP = [
 	"form-action 'self'",
 	"frame-ancestors 'none'",
 	"upgrade-insecure-requests",
+	"report-uri /api/csp-report",
+	"report-to csp-endpoint",
 ].join("; ");
 
 const SECURITY_HEADERS: Record<string, string> = {
@@ -51,6 +53,10 @@ const SECURITY_HEADERS: Record<string, string> = {
 	"Referrer-Policy": "strict-origin-when-cross-origin",
 	"Permissions-Policy": "camera=(), microphone=(), geolocation=(), browsing-topics=()",
 	"Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+	// Reporting API endpoint group referenced by `report-to csp-endpoint`
+	// in FALLBACK_CSP. Mirrors middleware so SSG routes report to the same
+	// ingestion surface.
+	"Reporting-Endpoints": `csp-endpoint="/api/csp-report"`,
 };
 
 export default Sentry.withSentry(

@@ -61,6 +61,8 @@ export function middleware(request: NextRequest) {
     form-action 'self';
     frame-ancestors 'none';
     upgrade-insecure-requests;
+    report-uri /api/csp-report;
+    report-to csp-endpoint;
   `
 			.replace(/\s{2,}/g, " ")
 			.trim();
@@ -76,6 +78,9 @@ export function middleware(request: NextRequest) {
 		});
 
 		response.headers.set("Content-Security-Policy", cspHeader);
+		// Reporting API endpoint group referenced by `report-to csp-endpoint`
+		// above. Browsers that only understand legacy `report-uri` ignore this.
+		response.headers.set("Reporting-Endpoints", `csp-endpoint="/api/csp-report"`);
 		// Expose x-nonce on response for observability + tests. Safe: a nonce
 		// leaked in response headers is only useful within the same request's
 		// page lifecycle, after which it is discarded.
