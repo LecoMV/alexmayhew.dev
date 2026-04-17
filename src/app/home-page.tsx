@@ -86,16 +86,29 @@ export default function Home() {
 							</h1>
 						</m.div>
 
-						<m.div className="my-4 h-px w-full bg-white/10" variants={fadeInUp} />
+						<m.aside
+							className="border-cyber-lime/40 bg-cyber-lime/5 relative border-l-2 py-3 pr-4 pl-4"
+							variants={fadeInUp}
+							aria-label="Signature positioning statement"
+						>
+							<p className="text-cyber-lime mb-1 font-mono text-xs tracking-wider uppercase">
+								The $500K architecture mistake
+							</p>
+							<p className="text-mist-white font-mono text-base leading-snug sm:text-lg">
+								Picking your database before your product... then spending 18 months refactoring
+								around a schema you chose in week two.
+							</p>
+						</m.aside>
+
+						<m.div className="my-2 h-px w-full bg-white/10" variants={fadeInUp} />
 
 						<m.p
 							className="text-slate-text max-w-xl text-lg leading-relaxed font-normal sm:text-xl"
 							variants={fadeInUp}
 						>
-							I architect production systems that scale from MVP to millions. When a single
-							architectural decision can become a $500K mistake, you need strategic guidance... not
-							just code that ships. 15+ years of pattern recognition across fintech, healthcare, and
-							SaaS, applied to the decisions you&apos;re married to forever.
+							I architect production systems that scale from MVP to millions. Strategic guidance for
+							the decisions you&apos;re married to forever... not just code that ships. 15+ years of
+							pattern recognition across fintech, healthcare, and SaaS.
 						</m.p>
 
 						<m.div className="mt-4 flex items-center gap-6" variants={fadeInUp}>

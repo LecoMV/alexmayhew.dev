@@ -12,7 +12,9 @@ import { cn } from "@/lib/utils";
 
 import type { PseoPage } from "@/data/pseo";
 
-// Service tiers for the framework section
+// Service tiers for the framework section.
+// priceRange values are mid-market Technical Advisor anchors for self-qualification.
+// Adjust to real quoted ranges when contract templates are finalized.
 const serviceTiers = [
 	{
 		tier: "Tier 1",
@@ -20,6 +22,7 @@ const serviceTiers = [
 		description:
 			"Ongoing strategic guidance for founders and CTOs. Architecture reviews, hiring support, and decision validation.",
 		commitment: "10-20 hours/month",
+		priceRange: "$3k-8k / month",
 		ideal: "Startups with technical decisions to make",
 		features: [
 			"Weekly architecture reviews",
@@ -35,6 +38,7 @@ const serviceTiers = [
 		description:
 			"Hands-on architectural work for critical projects. Building foundations that scale.",
 		commitment: "Project-based",
+		priceRange: "$15k-50k / project",
 		ideal: "Teams building MVPs or major features",
 		features: [
 			"Architecture design & documentation",
@@ -50,6 +54,7 @@ const serviceTiers = [
 		description:
 			"Comprehensive technical assessment for investors, acquirers, or pre-raise founders.",
 		commitment: "1-2 weeks",
+		priceRange: "$8k-20k / engagement",
 		ideal: "Fundraising or M&A preparation",
 		features: [
 			"Codebase audit & report",
@@ -196,6 +201,19 @@ export function ServicesPage({ pages }: ServicesPageProps) {
 								<div className="mb-4 border-t border-white/10 pt-4">
 									<div className="text-slate-text mb-1 text-xs uppercase">Commitment</div>
 									<div className="text-mist-white text-sm font-medium">{tier.commitment}</div>
+								</div>
+
+								<div className="mb-4">
+									<div className="text-slate-text mb-1 text-xs uppercase">Investment</div>
+									<div className="font-mono text-sm">
+										<span className="text-cyber-lime font-bold">
+											{tier.priceRange.split(" / ")[0]}
+										</span>
+										<span className="text-slate-text">
+											{" / "}
+											{tier.priceRange.split(" / ")[1]}
+										</span>
+									</div>
 								</div>
 
 								<div className="mb-4">
