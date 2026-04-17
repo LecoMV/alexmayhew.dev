@@ -45,7 +45,7 @@ const requirements: Record<string, PlatformRequirements> = {
 		os: "Windows 10/11 via WSL2",
 		arch: "x64",
 		disk: "200 MB",
-		status: "coming-soon",
+		status: STATUS_COMING_SOON,
 		note: "Native Windows + WSL2 integration in development",
 	},
 };

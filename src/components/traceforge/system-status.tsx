@@ -8,6 +8,10 @@ import { cn } from "@/lib/utils";
 import { GpuControl } from "./gpu-control";
 import { useSystemStatus } from "./use-system-status";
 
+function statusColorClass(isActive: boolean): string {
+	return isActive ? "text-cyber-lime" : "text-slate-text";
+}
+
 interface StatusItemProps {
 	label: string;
 	status: "online" | "offline" | "checking";
@@ -19,12 +23,7 @@ function StatusItem({ label, status, icon, detail }: StatusItemProps) {
 	return (
 		<div className="flex items-center justify-between py-2.5">
 			<div className="flex items-center gap-3">
-				<span
-					className={cn(
-						"transition-colors",
-						status === "online" ? "text-cyber-lime" : "text-slate-text"
-					)}
-				>
+				<span className={cn("transition-colors", statusColorClass(status === "online"))}>
 					{icon}
 				</span>
 				<span className="text-mist-white font-mono text-sm">{label}</span>

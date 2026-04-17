@@ -159,30 +159,37 @@ export function UploadZone({ onFileSelect, previewUrl, onClear, disabled }: Uplo
 						)}
 					>
 						{/* Corner accents */}
-						<div
-							className={cn(
-								"absolute top-0 left-0 h-6 w-6 border-t-2 border-l-2 transition-colors",
-								isDragging ? "border-cyber-lime" : "border-white/30"
-							)}
-						/>
-						<div
-							className={cn(
-								"absolute top-0 right-0 h-6 w-6 border-t-2 border-r-2 transition-colors",
-								isDragging ? "border-cyber-lime" : "border-white/30"
-							)}
-						/>
-						<div
-							className={cn(
-								"absolute bottom-0 left-0 h-6 w-6 border-b-2 border-l-2 transition-colors",
-								isDragging ? "border-cyber-lime" : "border-white/30"
-							)}
-						/>
-						<div
-							className={cn(
-								"absolute right-0 bottom-0 h-6 w-6 border-r-2 border-b-2 transition-colors",
-								isDragging ? "border-cyber-lime" : "border-white/30"
-							)}
-						/>
+						{(() => {
+							const cornerBorderClass = isDragging ? "border-cyber-lime" : "border-white/30";
+							return (
+								<>
+									<div
+										className={cn(
+											"absolute top-0 left-0 h-6 w-6 border-t-2 border-l-2 transition-colors",
+											cornerBorderClass
+										)}
+									/>
+									<div
+										className={cn(
+											"absolute top-0 right-0 h-6 w-6 border-t-2 border-r-2 transition-colors",
+											cornerBorderClass
+										)}
+									/>
+									<div
+										className={cn(
+											"absolute bottom-0 left-0 h-6 w-6 border-b-2 border-l-2 transition-colors",
+											cornerBorderClass
+										)}
+									/>
+									<div
+										className={cn(
+											"absolute right-0 bottom-0 h-6 w-6 border-r-2 border-b-2 transition-colors",
+											cornerBorderClass
+										)}
+									/>
+								</>
+							);
+						})()}
 
 						<m.div
 							animate={{ y: isDragging ? -5 : 0 }}

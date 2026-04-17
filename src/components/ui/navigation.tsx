@@ -10,6 +10,13 @@ import { useEffect, useRef, useState } from "react";
 import { microSpring, springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
+const NAV_LINK_ACTIVE_CLASS = "text-cyber-lime";
+const NAV_LINK_INACTIVE_CLASS = "text-slate-text hover:text-mist-white";
+
+function navLinkStateClass(isActive: boolean): string {
+	return isActive ? NAV_LINK_ACTIVE_CLASS : NAV_LINK_INACTIVE_CLASS;
+}
+
 interface NavItem {
 	href: string;
 	label: string;
@@ -166,7 +173,7 @@ export function Navigation() {
 											onClick={() => setToolsDropdownOpen(!toolsDropdownOpen)}
 											className={cn(
 												"group relative flex items-center gap-1 px-1.5 py-2 font-mono text-[10px] tracking-wider uppercase transition-colors duration-300 lg:px-2.5 lg:py-2.5 lg:text-[11px] xl:px-3.5 xl:py-3 xl:text-xs",
-												isActive ? "text-cyber-lime" : "text-slate-text hover:text-mist-white"
+												navLinkStateClass(isActive)
 											)}
 											aria-expanded={toolsDropdownOpen}
 											aria-haspopup="true"
@@ -257,7 +264,7 @@ export function Navigation() {
 									href={item.href}
 									className={cn(
 										"group relative px-1.5 py-2 font-mono text-[10px] tracking-wider uppercase transition-colors duration-300 lg:px-2.5 lg:py-2.5 lg:text-[11px] xl:px-3.5 xl:py-3 xl:text-xs",
-										isActive ? "text-cyber-lime" : "text-slate-text hover:text-mist-white"
+										navLinkStateClass(isActive)
 									)}
 								>
 									<span className="mr-1.5 hidden opacity-40 xl:inline" aria-hidden="true">
@@ -336,7 +343,7 @@ export function Navigation() {
 														onClick={() => setMobileMenuOpen(false)}
 														className={cn(
 															"flex items-center gap-4 py-2 font-mono text-sm tracking-wider uppercase transition-colors duration-300",
-															isActive ? "text-cyber-lime" : "text-slate-text hover:text-mist-white"
+															navLinkStateClass(isActive)
 														)}
 													>
 														<span className="text-xs opacity-40" aria-hidden="true">
@@ -390,7 +397,7 @@ export function Navigation() {
 												onClick={() => setMobileMenuOpen(false)}
 												className={cn(
 													"flex items-center gap-4 border-b border-white/5 py-4 font-mono text-sm tracking-wider uppercase transition-colors duration-300",
-													isActive ? "text-cyber-lime" : "text-slate-text hover:text-mist-white"
+													navLinkStateClass(isActive)
 												)}
 											>
 												<span className="text-xs opacity-40" aria-hidden="true">

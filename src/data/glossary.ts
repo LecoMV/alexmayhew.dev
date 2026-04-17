@@ -18,10 +18,14 @@ export interface GlossaryEntry {
 	relatedTerms: string[];
 }
 
+// Slug identifiers for cross-referenced glossary terms
+const SLUG_COGNITIVE_DEBT = "cognitive-debt";
+const SLUG_VIBE_CODING_HANGOVER = "vibe-coding-hangover";
+
 export const glossary: GlossaryEntry[] = [
 	{
 		term: "Cognitive Debt",
-		slug: "cognitive-debt",
+		slug: SLUG_COGNITIVE_DEBT,
 		oneLineDefinition:
 			"The compounding mental tax on an engineering team when AI-generated code ships faster than anyone on the team actually understands it.",
 		fullDefinition:
@@ -32,7 +36,7 @@ export const glossary: GlossaryEntry[] = [
 			"vibe-coding-hangover-recovery",
 		],
 		firstUsed: "2026-02-10",
-		relatedTerms: ["generative-debt", "vibe-coding-hangover", "metr-paradox"],
+		relatedTerms: ["generative-debt", SLUG_VIBE_CODING_HANGOVER, "metr-paradox"],
 	},
 	{
 		term: "Generative Debt",
@@ -47,11 +51,11 @@ export const glossary: GlossaryEntry[] = [
 			"ai-assisted-development-guide",
 		],
 		firstUsed: "2026-02-18",
-		relatedTerms: ["cognitive-debt", "vibe-coding-hangover"],
+		relatedTerms: [SLUG_COGNITIVE_DEBT, SLUG_VIBE_CODING_HANGOVER],
 	},
 	{
 		term: "Vibe Coding Hangover",
-		slug: "vibe-coding-hangover",
+		slug: SLUG_VIBE_CODING_HANGOVER,
 		oneLineDefinition:
 			"The predictable state a team enters three to six months after adopting AI-assisted coding with no discipline: velocity crashes, incidents spike, morale tanks.",
 		fullDefinition:
@@ -62,7 +66,7 @@ export const glossary: GlossaryEntry[] = [
 			"when-not-to-use-ai-coding",
 		],
 		firstUsed: "2026-03-05",
-		relatedTerms: ["cognitive-debt", "generative-debt", "metr-paradox"],
+		relatedTerms: [SLUG_COGNITIVE_DEBT, "generative-debt", "metr-paradox"],
 	},
 	{
 		term: "METR Paradox",
@@ -77,7 +81,7 @@ export const glossary: GlossaryEntry[] = [
 			"claude-code-vs-cursor-cost-analysis",
 		],
 		firstUsed: "2026-03-12",
-		relatedTerms: ["cognitive-debt", "vibe-coding-hangover"],
+		relatedTerms: [SLUG_COGNITIVE_DEBT, SLUG_VIBE_CODING_HANGOVER],
 	},
 	{
 		term: "The 50% Rule",
