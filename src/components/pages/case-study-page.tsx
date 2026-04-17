@@ -28,7 +28,12 @@ interface CaseStudyPageProps {
 
 export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) {
 	const [expandedChallenge, setExpandedChallenge] = useState<number | null>(null);
-	const cs = project.caseStudy!;
+
+	// The /work/[slug] route guards on project.caseStudy?.published before
+	// rendering, but narrowing here defends against direct consumers and keeps
+	// the TS contract strict without a non-null assertion.
+	if (!project.caseStudy) return null;
+	const cs = project.caseStudy;
 
 	return (
 		<section className="page-layout">

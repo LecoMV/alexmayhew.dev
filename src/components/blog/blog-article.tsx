@@ -4,7 +4,7 @@ import { m } from "framer-motion";
 import { ArrowLeft, ArrowRight, Calendar, Clock, RefreshCw, Tag, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode } from "react";
 
 import { trackCTAClick } from "@/components/analytics";
 import { NewsletterSignup } from "@/components/newsletter";
@@ -39,7 +39,6 @@ interface BlogArticleProps {
 
 export function BlogArticle({ post, children, relatedSection }: BlogArticleProps) {
 	const { theme, springTransition } = useBlogTheme();
-	const [articleUrl, setArticleUrl] = useState("");
 
 	// Track content analytics for blog posts
 	useContentAnalytics({
@@ -48,9 +47,9 @@ export function BlogArticle({ post, children, relatedSection }: BlogArticleProps
 		contentCategory: post.data.category || "technical",
 	});
 
-	useEffect(() => {
-		setArticleUrl(window.location.href);
-	}, []);
+	// Compute the canonical article URL from the known slug so ShareButtons
+	// no longer needs a render-then-effect flash to populate from window.location.
+	const articleUrl = `https://alexmayhew.dev/blog/${post.slug}`;
 
 	return (
 		<>
