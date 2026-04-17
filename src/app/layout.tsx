@@ -1,5 +1,6 @@
 import { ViewTransitions } from "next-view-transitions";
 import dynamic from "next/dynamic";
+import { headers } from "next/headers";
 
 import { MotionProvider, SmoothScroll } from "@/components/providers";
 import { JsonLd } from "@/components/seo";
@@ -130,11 +131,18 @@ export const metadata: Metadata = {
 	category: "technology",
 };
 
-export default function RootLayout({
+const CONSENT_MODE_SCRIPT = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',wait_for_update:500,'region':['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','CH','GB']});gtag('consent','default',{analytics_storage:'granted',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});try{var s=localStorage.getItem('cookie-consent');if(s){var c=JSON.parse(s);if(c.version==='1'&&c.analytics){gtag('consent','update',{analytics_storage:'granted'});}}}catch(e){}`;
+
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	// on routes that bypass middleware (static error pages); the transitional
+	// 'unsafe-inline' in script-src still permits the inline consent script
+	// in that case. See middleware.ts TODO(csp-strict-mode).
+	const nonce = (await headers()).get("x-nonce") ?? undefined;
+
 	return (
 		<html
 			lang="en"
@@ -147,11 +155,7 @@ export default function RootLayout({
 				     EEA+UK+CH: denied (GDPR opt-in required)
 				     Everyone else: analytics granted, ads denied
 				     All values are static string literals ... no user input, no XSS risk */}
-				<script
-					dangerouslySetInnerHTML={{
-						__html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',wait_for_update:500,'region':['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','CH','GB']});gtag('consent','default',{analytics_storage:'granted',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});try{var s=localStorage.getItem('cookie-consent');if(s){var c=JSON.parse(s);if(c.version==='1'&&c.analytics){gtag('consent','update',{analytics_storage:'granted'});}}}catch(e){}`,
-					}}
-				/>
+				<script nonce={nonce} dangerouslySetInnerHTML={{ __html: CONSENT_MODE_SCRIPT }} />
 			</head>
 			<body className="relative min-h-dvh overflow-x-clip">
 				<ViewTransitions>

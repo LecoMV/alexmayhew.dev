@@ -4,11 +4,51 @@ import { logger } from "@/lib/logger";
 
 import type { NextRequest } from "next/server";
 
-export function middleware(_request: NextRequest) {
+/**
+ * Per-request CSP nonce generation (Approach A, middleware-only).
+ *
+ * See docs/research/csp-nextjs15-cloudflare-workers-2026.md for full rationale.
+ *
+ * Current state: PARTIAL MIGRATION.
+ *   - Nonce is generated and injected into CSP `script-src` alongside
+ *     `'strict-dynamic'`.
+ *   - Inline scripts (consent-mode bootstrap in layout.tsx, GA4 loader)
+ *     consume the nonce via the `x-nonce` request header.
+ *   - `'unsafe-inline'` REMAINS in `script-src` as a transitional safety net.
+ *
+ * TODO(csp-strict-mode): Remove `'unsafe-inline'` from `script-src` after
+ * verifying in production that:
+ *   (a) Cloudflare Web Analytics beacon still loads (not flagged by CSP
+ *       violation reports).
+ *   (b) GA4 gtag.js + inline `<Script id="google-analytics">` still fire.
+ *   (c) Next.js framework scripts and dynamic chunks inherit trust via
+ *       `'strict-dynamic'` on every route (watch for routes that are
+ *       statically generated — they will ignore middleware nonces; see
+ *       research doc section 13 gotcha).
+ * When flipped: also remove `Content-Security-Policy` from
+ * `custom-worker.ts` SECURITY_HEADERS so middleware owns CSP unambiguously,
+ * and flip the `STRICT MODE` skipped test in tests/middleware-nonce.test.ts.
+ */
+function generateNonce(): string {
+	// crypto.getRandomValues is available in the Cloudflare Workers runtime
+	// (edge) and in Node.js 18+. Buffer is available via nodejs_compat.
+	const bytes = new Uint8Array(16);
+	crypto.getRandomValues(bytes);
+	return Buffer.from(bytes).toString("base64");
+}
+
+export function middleware(request: NextRequest) {
 	try {
+		const nonce = generateNonce();
+
+		// Note: 'unsafe-inline' retained transitionally (see TODO above).
+		// 'strict-dynamic' causes CSP3 browsers to ignore 'unsafe-inline'
+		// and host-allowlists, so the partial migration is forward-compatible.
+		// 'unsafe-eval' is intentionally NOT included, even in dev — project
+		// policy (see tests/middleware.test.ts "should not include unsafe-eval").
 		const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://challenges.cloudflare.com https://*.googletagmanager.com;
+    script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' https://static.cloudflareinsights.com https://challenges.cloudflare.com https://*.googletagmanager.com;
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https://*.google-analytics.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com;
     font-src 'self';
@@ -23,9 +63,21 @@ export function middleware(_request: NextRequest) {
 			.replace(/\s{2,}/g, " ")
 			.trim();
 
-		const response = NextResponse.next();
+		// Forward x-nonce + CSP on request headers so Server Components
+		// (layout.tsx, GoogleAnalytics) can read them via next/headers.
+		const requestHeaders = new Headers(request.headers);
+		requestHeaders.set("x-nonce", nonce);
+		requestHeaders.set("Content-Security-Policy", cspHeader);
+
+		const response = NextResponse.next({
+			request: { headers: requestHeaders },
+		});
 
 		response.headers.set("Content-Security-Policy", cspHeader);
+		// Expose x-nonce on response for observability + tests. Safe: a nonce
+		// leaked in response headers is only useful within the same request's
+		// page lifecycle, after which it is discarded.
+		response.headers.set("x-nonce", nonce);
 		response.headers.set("X-Frame-Options", "DENY");
 		response.headers.set("X-Content-Type-Options", "nosniff");
 		response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
