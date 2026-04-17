@@ -9,10 +9,6 @@ function read(rel: string): string {
 	return fs.readFileSync(path.resolve(ROOT, rel), "utf-8");
 }
 
-function escapeRegex(str: string): string {
-	return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
 describe("Sprint 1 a11y — services-page-content heading hierarchy", () => {
 	it("eyebrow 'Technical_Advisory' is not inside <h1>", () => {
 		const source = read("src/app/services/services-page-content.tsx");
