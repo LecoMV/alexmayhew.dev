@@ -111,15 +111,17 @@ export function ServicesPage({ pages }: ServicesPageProps) {
 					animate={{ opacity: 1, y: 0 }}
 					transition={springTransition}
 				>
-					<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-						<span className="mr-2 animate-pulse">●</span>
+					<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+						<span className="mr-2 animate-pulse" aria-hidden="true">
+							●
+						</span>
 						Technical_Advisory
-					</h1>
-					<h2 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+					</p>
+					<h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
 						Architecture decisions that
 						<br />
 						<span className="text-slate-text">compound into advantage.</span>
-					</h2>
+					</h1>
 					<p className="text-slate-text max-w-2xl text-lg leading-relaxed">
 						Every technical choice has a 3-year trajectory. I help founders and CTOs make the
 						decisions that accelerate growth... and avoid the ones that silently accumulate into

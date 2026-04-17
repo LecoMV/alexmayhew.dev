@@ -91,15 +91,17 @@ export default function DemoPage() {
 					animate={{ opacity: 1, y: 0 }}
 					transition={springTransition}
 				>
-					<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-						<span className="mr-2 animate-pulse">●</span>
+					<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+						<span className="mr-2 animate-pulse" aria-hidden="true">
+							●
+						</span>
 						Feature Demo
-					</h1>
-					<h2 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl">
+					</p>
+					<h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl">
 						Atmospheric
 						<br />
 						<span className="text-slate-text">Engineering Lab.</span>
-					</h2>
+					</h1>
 					<p className="text-slate-text max-w-2xl text-lg">
 						Preview the cutting-edge features planned for alexmayhew.dev. Each demo showcases the
 						latest web technologies with precision and excellence.

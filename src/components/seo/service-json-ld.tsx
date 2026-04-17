@@ -25,7 +25,7 @@ export function ServiceJsonLd({ page }: ServiceJsonLdProps) {
 	const serviceSchema = {
 		"@context": SCHEMA_CONTEXT,
 		"@type": "Service",
-		"@id": pageUrl,
+		"@id": `${pageUrl}#service`,
 		name: `${techLabel} Development for ${industryLabel}`,
 		description: page.seo.description,
 		provider: PERSON_REF,

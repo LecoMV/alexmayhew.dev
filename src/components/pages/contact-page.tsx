@@ -2,7 +2,7 @@
 
 import { m } from "framer-motion";
 import { AlertCircle, CheckCircle, Clock, Mail, MapPin, Send } from "lucide-react";
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 
 import { type ContactFormState, submitContactAction } from "@/app/actions/contact";
@@ -85,17 +85,25 @@ export function ContactPage() {
 	const turnstileRef = useRef<TurnstileRef>(null);
 	const formStartTracked = useRef(false);
 	const prevSuccess = useRef(false);
+	const formRef = useRef<HTMLFormElement>(null);
+	const [turnstileToken, setTurnstileToken] = useState<string>("");
 
-	// Track lead on success
+	// Track lead on success ... read actual submitted values from the form DOM
 	useEffect(() => {
 		if (state.success && !prevSuccess.current) {
 			prevSuccess.current = true;
+			const form = formRef.current;
+			const projectType =
+				(form?.elements.namedItem("projectType") as HTMLSelectElement | null)?.value ?? "";
+			const budget = (form?.elements.namedItem("budget") as HTMLSelectElement | null)?.value ?? "";
+			const referralSource =
+				(form?.elements.namedItem("referralSource") as HTMLSelectElement | null)?.value ?? "";
 			trackLeadEvent("generate_lead", {
 				lead_source: "contact_form",
-				project_type: "unknown",
-				budget_range: "unknown",
+				project_type: projectType,
+				budget_range: budget,
 				form_type: "consultation_request",
-				referral_source: "not_specified",
+				referral_source: referralSource,
 			});
 		}
 	}, [state.success]);
@@ -151,7 +159,7 @@ export function ContactPage() {
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ ...springTransition, delay: 0.1 }}
 					>
-						<form action={formAction} onFocus={handleFormStart} className="space-y-6">
+						<form ref={formRef} action={formAction} onFocus={handleFormStart} className="space-y-6">
 							{/* Name & Email Row */}
 							<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 								<div>
@@ -166,7 +174,7 @@ export function ContactPage() {
 										id="name"
 										name="name"
 										required
-										className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 placeholder:text-white/30 focus:outline-none focus-visible:ring-2"
+										className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white placeholder:text-slate-text w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
 										placeholder="Your name"
 									/>
 								</div>
@@ -182,7 +190,7 @@ export function ContactPage() {
 										id="email"
 										name="email"
 										required
-										className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 placeholder:text-white/30 focus:outline-none focus-visible:ring-2"
+										className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white placeholder:text-slate-text w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
 										placeholder="your@email.com"
 									/>
 								</div>
@@ -314,35 +322,26 @@ export function ContactPage() {
 									name="message"
 									required
 									rows={6}
-									className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white w-full resize-none border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 placeholder:text-white/30 focus:outline-none focus-visible:ring-2"
+									className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white placeholder:text-slate-text w-full resize-none border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
 									placeholder="Describe your project, goals, and timeline..."
 								/>
 							</div>
 
-							{/* Turnstile Bot Protection ... token piped via hidden input */}
+							{/* Turnstile Bot Protection ... token stored in React state */}
 							<div>
 								<Turnstile
 									ref={turnstileRef}
-									onSuccess={(token) => {
-										const hidden = document.getElementById(
-											"turnstileToken"
-										) as HTMLInputElement | null;
-										if (hidden) hidden.value = token;
-									}}
-									onError={() => {
-										const hidden = document.getElementById(
-											"turnstileToken"
-										) as HTMLInputElement | null;
-										if (hidden) hidden.value = "";
-									}}
-									onExpire={() => {
-										const hidden = document.getElementById(
-											"turnstileToken"
-										) as HTMLInputElement | null;
-										if (hidden) hidden.value = "";
-									}}
+									onSuccess={(token) => setTurnstileToken(token)}
+									onError={() => setTurnstileToken("")}
+									onExpire={() => setTurnstileToken("")}
 								/>
-								<input type="hidden" id="turnstileToken" name="turnstileToken" defaultValue="" />
+								<input
+									type="hidden"
+									id="turnstileToken"
+									name="turnstileToken"
+									value={turnstileToken}
+									readOnly
+								/>
 							</div>
 
 							{/* Submit Button */}

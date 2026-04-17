@@ -23,7 +23,7 @@ export function ComparisonJsonLd({ page }: ComparisonJsonLdProps) {
 	const serviceSchema = {
 		"@context": SCHEMA_CONTEXT,
 		"@type": "Service",
-		"@id": pageUrl,
+		"@id": `${pageUrl}#service`,
 		name: `${page.optionA.name} vs ${page.optionB.name} Technical Advisory`,
 		description: page.seo.description,
 		provider: PERSON_REF,

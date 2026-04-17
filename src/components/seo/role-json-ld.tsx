@@ -24,7 +24,7 @@ export function RoleJsonLd({ page }: RoleJsonLdProps) {
 	const serviceSchema = {
 		"@context": SCHEMA_CONTEXT,
 		"@type": "Service",
-		"@id": pageUrl,
+		"@id": `${pageUrl}#service`,
 		name: `Technical Advisory for ${roleLabel}`,
 		description: page.seo.description,
 		provider: PERSON_REF,

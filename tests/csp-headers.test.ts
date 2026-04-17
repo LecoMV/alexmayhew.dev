@@ -12,4 +12,11 @@ describe("CSP headers in custom-worker.ts", () => {
 	it("worker-src allows blob: URLs for Sentry session replay", () => {
 		expect(workerSource).toMatch(/worker-src.*blob:/);
 	});
+
+	it("includes Strict-Transport-Security with preload", () => {
+		expect(workerSource).toContain("Strict-Transport-Security");
+		expect(workerSource).toMatch(/max-age=31536000/);
+		expect(workerSource).toMatch(/includeSubDomains/);
+		expect(workerSource).toMatch(/preload/);
+	});
 });

@@ -1,11 +1,9 @@
 import { blog } from "@/../.source/server";
 import { projects } from "@/data/projects";
-import {
-	getAllComparisonPages,
-	getAllIntegrationPages,
-	getAllMigrationPages,
-	getPublishedPages,
-} from "@/data/pseo";
+import { getAllComparisonPages } from "@/data/pseo/comparisons";
+import { getAllIntegrationPages } from "@/data/pseo/integrations";
+import { getAllMigrationPages } from "@/data/pseo/migrations";
+import { getPublishedPages } from "@/data/pseo/pages";
 import { getTechnologyIds, technologies } from "@/data/pseo/technologies";
 
 export interface SearchItem {

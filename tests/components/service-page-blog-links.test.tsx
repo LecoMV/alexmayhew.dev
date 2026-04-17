@@ -2,10 +2,10 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { RelatedBlogPostsSection } from "@/components/seo/related-blog-posts";
-import { getPageBySlug } from "@/data/pseo";
 import { comparisonPages } from "@/data/pseo/comparisons";
 import { integrationPages } from "@/data/pseo/integrations";
 import { migrationPages } from "@/data/pseo/migrations";
+import { getPageBySlug } from "@/data/pseo/pages";
 
 describe("pSEO page relatedBlogPosts integration", () => {
 	it("renders blog links from a service page data source", () => {

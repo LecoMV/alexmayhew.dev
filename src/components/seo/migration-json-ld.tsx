@@ -22,7 +22,7 @@ export function MigrationJsonLd({ page }: MigrationJsonLdProps) {
 	const serviceSchema = {
 		"@context": SCHEMA_CONTEXT,
 		"@type": "Service",
-		"@id": pageUrl,
+		"@id": `${pageUrl}#service`,
 		name: serviceName,
 		description: page.seo.description,
 		provider: PERSON_REF,

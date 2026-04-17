@@ -27,6 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 		alternates: {
 			canonical: canonicalPath,
 		},
+		robots: { index: false, follow: true },
 	};
 }
 

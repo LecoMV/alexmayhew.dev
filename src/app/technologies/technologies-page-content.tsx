@@ -49,17 +49,19 @@ export function TechnologiesPageContent() {
 				>
 					<div className="mb-6 flex items-center gap-4">
 						<Code2 className="text-cyber-lime h-8 w-8" strokeWidth={1.5} />
-						<h1 className="text-cyber-lime font-mono text-xs tracking-wider uppercase">
-							<span className="mr-2 animate-pulse">●</span>
+						<p className="text-cyber-lime font-mono text-xs tracking-wider uppercase">
+							<span className="mr-2 animate-pulse" aria-hidden="true">
+								●
+							</span>
 							Technology Expertise
-						</h1>
+						</p>
 					</div>
 
-					<h2 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+					<h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
 						Deep expertise in
 						<br />
 						<span className="text-slate-text">modern technologies.</span>
-					</h2>
+					</h1>
 
 					<p className="text-slate-text max-w-3xl text-lg leading-relaxed">
 						Production experience across the full stack... from React and Next.js on the frontend to
@@ -75,10 +77,12 @@ export function TechnologiesPageContent() {
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ ...springTransition, delay: 0.1 }}
 				>
-					<h3 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-						<span className="mr-2">●</span>
+					<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
+						<span className="mr-2" aria-hidden="true">
+							●
+						</span>
 						Core Technologies
-					</h3>
+					</h2>
 
 					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 						{techIds.map((techId, index) => {
@@ -100,9 +104,9 @@ export function TechnologiesPageContent() {
 
 										<div className="mb-4 flex items-center gap-3">
 											<Icon className="text-cyber-lime h-6 w-6" strokeWidth={1.5} />
-											<h4 className="text-mist-white group-hover:text-cyber-lime font-mono text-sm transition-colors">
+											<h3 className="text-mist-white group-hover:text-cyber-lime font-mono text-sm transition-colors">
 												{tech.displayName}
-											</h4>
+											</h3>
 										</div>
 
 										<p className="text-slate-text mb-4 flex-grow text-xs leading-relaxed">
@@ -173,16 +177,18 @@ export function TechnologiesPageContent() {
 						<div className="border-cyber-lime absolute top-0 right-0 h-6 w-6 border-t border-r" />
 						<div className="border-cyber-lime absolute bottom-0 left-0 h-6 w-6 border-b border-l" />
 
-						<h3 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-							<span className="mr-2">●</span>
+						<h2 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+							<span className="mr-2" aria-hidden="true">
+								●
+							</span>
 							Have a Project in Mind?
-						</h3>
+						</h2>
 
-						<h4 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
+						<h3 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
 							Let&apos;s discuss your
 							<br />
 							<span className="text-cyber-lime">technology needs.</span>
-						</h4>
+						</h3>
 
 						<p className="text-slate-text mx-auto mb-8 max-w-2xl">
 							Whether you&apos;re choosing a tech stack, migrating systems, or need architectural

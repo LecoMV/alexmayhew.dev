@@ -84,6 +84,24 @@ describe("UploadZone", () => {
 		expect(onFileSelect).toHaveBeenCalledWith(file);
 	});
 
+	it("exposes the dropzone with a button role and aria-label", () => {
+		render(<UploadZone {...defaultProps} />);
+		const dropzone = screen.getByRole("button", { name: /upload file for trace analysis/i });
+		expect(dropzone).toBeTruthy();
+		expect(dropzone.getAttribute("tabindex")).toBe("0");
+	});
+
+	it("triggers file input click when Enter is pressed on the dropzone", () => {
+		const { container } = render(<UploadZone {...defaultProps} />);
+		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+		const clickSpy = vi.spyOn(input, "click");
+
+		const dropzone = screen.getByRole("button", { name: /upload file for trace analysis/i });
+		fireEvent.keyDown(dropzone, { key: "Enter" });
+
+		expect(clickSpy).toHaveBeenCalled();
+	});
+
 	it("does not call onFileSelect when disabled and file is dropped", () => {
 		const onFileSelect = vi.fn();
 		const { container } = render(

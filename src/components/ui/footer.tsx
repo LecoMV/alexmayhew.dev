@@ -91,7 +91,7 @@ export function Footer() {
 								<Link
 									key={link.href}
 									href={link.href}
-									className="text-slate-text hover:text-cyber-lime w-fit font-mono text-sm transition-colors duration-300"
+									className="text-slate-text hover:text-cyber-lime focus-visible:text-cyber-lime focus-visible:ring-cyber-lime focus-visible:ring-offset-void-navy w-fit font-mono text-sm transition-colors duration-300 focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
 								>
 									{link.label}
 								</Link>
@@ -120,7 +120,7 @@ export function Footer() {
 									target="_blank"
 									rel="noopener noreferrer"
 									aria-label={social.label}
-									className="group hover:border-cyber-lime border border-white/10 p-3 transition-colors duration-300"
+									className="group hover:border-cyber-lime focus-visible:border-cyber-lime focus-visible:ring-cyber-lime focus-visible:ring-offset-void-navy border border-white/10 p-3 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
 								>
 									<social.icon
 										className="text-slate-text group-hover:text-cyber-lime h-4 w-4 transition-colors duration-300"
@@ -139,7 +139,10 @@ export function Footer() {
 							<span className="opacity-50">©</span> {currentYear} Alex Mayhew
 						</p>
 						<span className="text-slate-text flex items-center gap-2 font-mono text-xs">
-							<span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-500" />
+							<span
+								className="bg-cyber-lime h-1.5 w-1.5 animate-pulse rounded-full"
+								aria-hidden="true"
+							/>
 							<span className="opacity-50">Systems operational</span>
 						</span>
 						<LocalTime />
@@ -151,13 +154,13 @@ export function Footer() {
 					<div className="flex items-center gap-4">
 						<Link
 							href="/privacy"
-							className="text-slate-text hover:text-cyber-lime font-mono text-xs transition-colors"
+							className="text-slate-text hover:text-cyber-lime focus-visible:text-cyber-lime focus-visible:ring-cyber-lime focus-visible:ring-offset-void-navy font-mono text-xs transition-colors focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
 						>
 							Privacy
 						</Link>
 						<Link
 							href="/terms"
-							className="text-slate-text hover:text-cyber-lime font-mono text-xs transition-colors"
+							className="text-slate-text hover:text-cyber-lime focus-visible:text-cyber-lime focus-visible:ring-cyber-lime focus-visible:ring-offset-void-navy font-mono text-xs transition-colors focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
 						>
 							Terms
 						</Link>

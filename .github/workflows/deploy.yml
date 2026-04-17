@@ -53,6 +53,8 @@ jobs:
       - name: Build OpenNext for Cloudflare
         run: npx opennextjs-cloudflare build
         env:
+          NEXT_PUBLIC_GIT_SHA: ${{ github.sha }}
+          NEXT_PUBLIC_BUILD_TIME: ${{ github.event.head_commit.timestamp || github.event.pull_request.updated_at }}
           NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
           NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
           NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
@@ -177,20 +179,42 @@ jobs:
           ls -la .open-next/
           ls -la .open-next/worker.js || echo "worker.js not found"
 
-      - name: Deploy to Cloudflare Workers
-        id: deploy
-        run: npx opennextjs-cloudflare deploy
+      - name: Validate required secrets are non-empty
+        env:
+          LISTMONK_API_URL: ${{ secrets.LISTMONK_API_URL }}
+          LISTMONK_API_USER: ${{ secrets.LISTMONK_API_USER }}
+          LISTMONK_API_KEY: ${{ secrets.LISTMONK_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
+        run: |
+          [[ -n "$LISTMONK_API_URL" ]]   || { echo "::error::LISTMONK_API_URL empty"; exit 1; }
+          [[ -n "$LISTMONK_API_USER" ]]  || { echo "::error::LISTMONK_API_USER empty"; exit 1; }
+          [[ -n "$LISTMONK_API_KEY" ]]   || { echo "::error::LISTMONK_API_KEY empty"; exit 1; }
+          [[ -n "$RESEND_API_KEY" ]]     || { echo "::error::RESEND_API_KEY empty"; exit 1; }
+          [[ -n "$CONTACT_EMAIL" ]]      || { echo "::error::CONTACT_EMAIL empty"; exit 1; }
+          echo "All required secrets are present."
+
+      # Push secrets BEFORE deploy so the new Worker version reads them on first request
+      # (prevents race where deploy finishes, traffic hits, secrets not yet updated).
+      - name: Set Worker secrets (pre-deploy)
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
-      - name: Set Worker secrets
+          LISTMONK_API_URL: ${{ secrets.LISTMONK_API_URL }}
+          LISTMONK_API_USER: ${{ secrets.LISTMONK_API_USER }}
+          LISTMONK_API_KEY: ${{ secrets.LISTMONK_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
         run: |
-          echo "${{ secrets.LISTMONK_API_URL }}" | npx wrangler secret put LISTMONK_API_URL
-          echo "${{ secrets.LISTMONK_API_USER }}" | npx wrangler secret put LISTMONK_API_USER
-          echo "${{ secrets.LISTMONK_API_KEY }}" | npx wrangler secret put LISTMONK_API_KEY
-          echo "${{ secrets.RESEND_API_KEY }}" | npx wrangler secret put RESEND_API_KEY
-          echo "${{ secrets.CONTACT_EMAIL }}" | npx wrangler secret put CONTACT_EMAIL
+          printf '%s' "$LISTMONK_API_URL"  | npx wrangler secret put LISTMONK_API_URL
+          printf '%s' "$LISTMONK_API_USER" | npx wrangler secret put LISTMONK_API_USER
+          printf '%s' "$LISTMONK_API_KEY"  | npx wrangler secret put LISTMONK_API_KEY
+          printf '%s' "$RESEND_API_KEY"    | npx wrangler secret put RESEND_API_KEY
+          printf '%s' "$CONTACT_EMAIL"     | npx wrangler secret put CONTACT_EMAIL
+
+      - name: Deploy to Cloudflare Workers
+        id: deploy
+        run: npx opennextjs-cloudflare deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

@@ -6,7 +6,7 @@
  * @see https://github.com/cure53/DOMPurify
  */
 
-import DOMPurify from "isomorphic-dompurify";
+import DOMPurify from "dompurify";
 
 /**
  * Strict DOMPurify configuration for SVG sanitization
@@ -183,7 +183,6 @@ const SVG_SANITIZE_CONFIG = {
 	],
 	// Don't allow data URIs except for safe image formats
 	ALLOW_DATA_ATTR: false,
-	// Return string (not DOM node)
 	RETURN_DOM: false,
 	RETURN_DOM_FRAGMENT: false,
 };

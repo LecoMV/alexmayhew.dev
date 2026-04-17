@@ -37,6 +37,8 @@ export function ChatWidget() {
 	const [isLoading, setIsLoading] = useState(false);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
+	const dialogRef = useRef<HTMLDivElement>(null);
+	const toggleButtonRef = useRef<HTMLButtonElement>(null);
 
 	const scrollToBottom = useCallback(() => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -50,6 +52,40 @@ export function ChatWidget() {
 		if (isOpen && inputRef.current) {
 			inputRef.current.focus();
 		}
+	}, [isOpen]);
+
+	// Escape key closes the widget, focus trap keeps Tab inside the dialog
+	useEffect(() => {
+		if (!isOpen) return;
+
+		const handleGlobalKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "Escape") {
+				e.preventDefault();
+				setIsOpen(false);
+				toggleButtonRef.current?.focus();
+				return;
+			}
+			if (e.key !== "Tab" || !dialogRef.current) return;
+
+			const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+				'button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])'
+			);
+			if (focusable.length === 0) return;
+			const first = focusable[0];
+			const last = focusable[focusable.length - 1];
+			const active = document.activeElement as HTMLElement | null;
+
+			if (e.shiftKey && active === first) {
+				e.preventDefault();
+				last.focus();
+			} else if (!e.shiftKey && active === last) {
+				e.preventDefault();
+				first.focus();
+			}
+		};
+
+		document.addEventListener("keydown", handleGlobalKeyDown);
+		return () => document.removeEventListener("keydown", handleGlobalKeyDown);
 	}, [isOpen]);
 
 	const sendMessage = async () => {
@@ -170,6 +206,8 @@ export function ChatWidget() {
 						exit={{ opacity: 0, y: 20, scale: 0.95 }}
 						transition={springTransition}
 						role="dialog"
+						aria-modal="true"
+						aria-labelledby="chat-widget-heading"
 						aria-label="Chat with AI assistant"
 						className="bg-void-navy/95 fixed right-6 bottom-24 z-50 flex h-[500px] w-[380px] flex-col border border-white/10 backdrop-blur-xl"
 					>
@@ -179,18 +217,32 @@ export function ChatWidget() {
 								<div className="bg-gunmetal-glass flex h-10 w-10 items-center justify-center border border-white/10">
 									<Bot className="text-cyber-lime h-5 w-5" strokeWidth={1.5} />
 								</div>
-								<div>
-									<h3 className="font-mono text-sm font-medium">AI_Assistant</h3>
+								<div className="flex-1">
+									<h3 id="chat-widget-heading" className="font-mono text-sm font-medium">
+										AI_Assistant
+									</h3>
 									<p className="text-slate-text flex items-center gap-2 text-xs">
 										<span className="bg-cyber-lime inline-block h-1.5 w-1.5 animate-pulse" />
 										Online • Powered by Qwen 32B
 									</p>
 								</div>
+								<button
+									type="button"
+									onClick={() => setIsOpen(false)}
+									aria-label="Close chat"
+									className="hover:border-cyber-lime focus-visible:ring-cyber-lime flex h-8 w-8 items-center justify-center border border-white/20 transition-colors focus:outline-none focus-visible:ring-2"
+								>
+									<X className="text-mist-white h-4 w-4" strokeWidth={1.5} />
+								</button>
 							</div>
 						</div>
 
 						{/* Messages */}
-						<div className="flex-1 space-y-4 overflow-y-auto p-4">
+						<div
+							className="flex-1 space-y-4 overflow-y-auto p-4"
+							aria-live="polite"
+							aria-atomic="false"
+						>
 							{messages.map((message) => (
 								<m.div
 									key={message.id}
@@ -255,7 +307,11 @@ export function ChatWidget() {
 						{/* Input */}
 						<div className="border-t border-white/10 p-4">
 							<div className="flex gap-2">
+								<label htmlFor="chat-widget-input" className="sr-only">
+									Your message
+								</label>
 								<input
+									id="chat-widget-input"
 									ref={inputRef}
 									type="text"
 									value={input}
@@ -263,7 +319,7 @@ export function ChatWidget() {
 									onKeyDown={handleKeyDown}
 									placeholder="Ask me anything..."
 									disabled={isLoading}
-									className="bg-gunmetal-glass/30 focus:border-cyber-lime text-mist-white focus-visible:ring-cyber-lime flex-1 border border-white/10 px-4 py-2.5 font-mono text-sm transition-colors placeholder:text-white/30 focus:outline-none focus-visible:ring-2 disabled:opacity-50"
+									className="bg-gunmetal-glass/30 focus:border-cyber-lime text-mist-white focus-visible:ring-cyber-lime placeholder:text-slate-text flex-1 border border-white/10 px-4 py-2.5 font-mono text-sm transition-colors focus:outline-none focus-visible:ring-2 disabled:opacity-50"
 								/>
 								<button
 									onClick={sendMessage}

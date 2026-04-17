@@ -1,5 +1,6 @@
 import { PERSON_REF } from "@/components/seo/schema-utils";
-import { getPublishedPages, INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
+import { INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
+import { getPublishedPages } from "@/data/pseo/pages";
 
 import { ServicesPage } from "./services-page-content";
 

@@ -177,15 +177,17 @@ export default function BackgroundsDemoPage() {
 						animate={{ opacity: 1, y: 0 }}
 						transition={springTransition}
 					>
-						<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-							<span className="mr-2 animate-pulse">●</span>
+						<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+							<span className="mr-2 animate-pulse" aria-hidden="true">
+								●
+							</span>
 							Background Effects Lab
-						</h1>
-						<h2 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl">
+						</p>
+						<h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl">
 							Atmospheric
 							<br />
 							<span className="text-slate-text">Rendering.</span>
-						</h2>
+						</h1>
 						<p className="text-slate-text max-w-2xl text-lg">
 							Each effect is crafted for the &quot;Atmospheric Engineering&quot; brand. No generic
 							particle clouds. Technical precision with visual impact.

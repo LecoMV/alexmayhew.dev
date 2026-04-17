@@ -178,20 +178,22 @@ function HeroSection({
 	return (
 		<m.section className="mb-20" variants={staggerContainer} initial="hidden" animate="visible">
 			<m.div variants={fadeInUp}>
-				<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-					<span className="mr-2 animate-pulse">●</span>
+				<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+					<span className="mr-2 animate-pulse" aria-hidden="true">
+						●
+					</span>
 					{techLabel} + {industryLabel}
-				</h1>
+				</p>
 			</m.div>
 
-			<m.h2
+			<m.h1
 				className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl"
 				variants={fadeInUp}
 			>
 				{techLabel} Developer
 				<br />
 				<span className="text-slate-text">for {industryLabel}</span>
-			</m.h2>
+			</m.h1>
 
 			<m.div className="my-6 h-px w-full max-w-xl bg-white/10" variants={fadeInUp} />
 
@@ -240,7 +242,9 @@ function UniqueInsightsSection({ insights }: { insights: string[] }) {
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Key Insights
 			</h2>
 
@@ -288,7 +292,9 @@ function RegulationsSection({
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				{industryLabel} Regulations
 			</h2>
 			<p className="text-slate-text mb-8 text-sm">
@@ -366,7 +372,9 @@ function PainPointsSection({ painPoints }: { painPoints: PseoPage["commonPainPoi
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Common Challenges
 			</h2>
 			<p className="text-slate-text mb-8 text-sm">Problems I solve for clients in this space</p>
@@ -427,7 +435,9 @@ function TechStackSection({
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Recommended Stack
 			</h2>
 			<p className="text-slate-text mb-8 text-sm">
@@ -471,7 +481,9 @@ function WhyThisStackSection({ content, techLabel }: { content: string; techLabe
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Why {techLabel}?
 			</h2>
 
@@ -501,7 +513,9 @@ function ProjectApproachSection({ content }: { content: string }) {
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				My Approach
 			</h2>
 
@@ -531,7 +545,9 @@ function ExpertApproachSection({ expertApproach }: { expertApproach: ExpertAppro
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Expert Insights
 			</h2>
 
@@ -630,7 +646,9 @@ function BudgetSection({
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Investment Guidance
 			</h2>
 			<p className="text-slate-text mb-8 text-sm">
@@ -704,7 +722,9 @@ function FaqSection({ faqs }: { faqs: PseoPage["faqs"] }) {
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Frequently Asked Questions
 			</h2>
 
@@ -763,7 +783,9 @@ function RelatedServicesSection({ relatedPages }: { relatedPages: RelatedService
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Related Services
 			</h2>
 

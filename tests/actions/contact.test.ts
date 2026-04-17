@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { __resetDependencies, __setDependencies, submitContactForm } from "@/app/actions/contact";
+import { submitContactForm } from "@/app/actions/contact";
+import { __resetDependencies, __setDependencies } from "@/lib/_contact-deps";
 import { getEnv } from "@/lib/cloudflare-env";
 
 // Mock next/headers

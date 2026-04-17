@@ -1,11 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-	__resetDependencies,
-	__setDependencies,
-	subscribeNewsletterAction,
-	subscribeToNewsletter,
-} from "@/app/actions/newsletter";
+import { subscribeNewsletterAction, subscribeToNewsletter } from "@/app/actions/newsletter";
+import { __resetDependencies, __setDependencies } from "@/lib/_newsletter-deps";
 import { getEnv } from "@/lib/cloudflare-env";
 
 vi.mock("next/headers", () => ({

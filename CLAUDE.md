@@ -8,6 +8,7 @@
 - **Stack:** Next.js 15 + React 19 + Tailwind 4 + Framer Motion
 - **Deploy:** OpenNext → Cloudflare Pages (GitHub Actions CI/CD)
 - **Aesthetic:** Neo-Brutalist, "Atmospheric Engineering"
+- **Pinned versions:** `next@^15.5.15`, `@opennextjs/cloudflare@^1.18.0` (update here whenever these change)
 
 ## Commands
 

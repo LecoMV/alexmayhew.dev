@@ -3,13 +3,11 @@ import { notFound } from "next/navigation";
 import { ServiceJsonLd } from "@/components/seo";
 import {
 	getClusterRelatedPages,
-	getPageBySlug,
 	getPageClusters,
-	getPublishedPages,
-	getRelatedPages,
 	INDUSTRY_LABELS,
 	TECHNOLOGY_LABELS,
 } from "@/data/pseo";
+import { getPageBySlug, getPublishedPages, getRelatedPages } from "@/data/pseo/pages";
 
 import { ServicePageContent } from "./service-page-content";
 

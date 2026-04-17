@@ -1,13 +1,9 @@
 import { notFound } from "next/navigation";
 
 import { IntegrationJsonLd } from "@/components/seo/integration-json-ld";
-import {
-	getAllIntegrationSlugs,
-	getIntegrationPageBySlug,
-	getPageBySlug,
-	INDUSTRY_LABELS,
-	TECHNOLOGY_LABELS,
-} from "@/data/pseo";
+import { INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
+import { getAllIntegrationSlugs, getIntegrationPageBySlug } from "@/data/pseo/integrations";
+import { getPageBySlug } from "@/data/pseo/pages";
 
 import { IntegrationPageContent } from "./integration-page-content";
 

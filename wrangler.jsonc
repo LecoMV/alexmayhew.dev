@@ -2,10 +2,6 @@
  * For more details on how to configure Wrangler, refer to:
  * https://developers.cloudflare.com/workers/wrangler/configuration/
  */
-/**
- * For more details on how to configure Wrangler, refer to:
- * https://developers.cloudflare.com/workers/wrangler/configuration/
- */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "alexmayhew-dev",
@@ -54,25 +50,28 @@
 		},
 	],
 	/**
-	 * Workers Rate Limiting (GA Sep 2025)
-	 * Globally coordinated rate limiting with near-zero latency.
-	 * Namespaces auto-created on first deploy. Limits configured in code.
+	 * Rate Limiting — KV-based fallback
+	 *
+	 * The original `rate_limits` top-level key was rejected by Wrangler as an
+	 * "Unexpected field". The 2026 `ratelimit` binding schema is also not yet
+	 * recognized by Wrangler 4.80 (it warns "Unexpected fields found in
+	 * top-level field: ratelimit" and suggests upgrading). Until we move to a
+	 * Wrangler version that ships the `ratelimit` binding schema, use the KV
+	 * namespace below as a fallback counter store.
+	 *
+	 * TODO: Once Wrangler supports the `ratelimit` binding (likely 4.90+),
+	 * replace this `kv_namespaces` block with native `ratelimit` entries for
+	 * RATE_LIMITER_CHAT, RATE_LIMITER_CONTACT, RATE_LIMITER_NEWSLETTER and
+	 * update src/lib/rate-limit.ts to use `env.RATE_LIMITER_*.limit(...)`.
+	 *
+	 * TODO: Create the KV namespace before the first deploy of this change:
+	 *   wrangler kv namespace create RATE_LIMIT_KV
+	 * then paste the returned id into the `id` field below.
 	 */
-	"rate_limits": [
+	"kv_namespaces": [
 		{
-			"binding": "RATE_LIMITER_CHAT",
-			"namespace_id": "chat_api",
-			"simple": { "limit": 10, "period": 60 },
-		},
-		{
-			"binding": "RATE_LIMITER_CONTACT",
-			"namespace_id": "contact_form",
-			"simple": { "limit": 5, "period": 3600 },
-		},
-		{
-			"binding": "RATE_LIMITER_NEWSLETTER",
-			"namespace_id": "newsletter",
-			"simple": { "limit": 3, "period": 3600 },
+			"binding": "RATE_LIMIT_KV",
+			"id": "TODO_REPLACE_WITH_REAL_KV_NAMESPACE_ID",
 		},
 	],
 	// Keep workers.dev subdomain active until custom domain is set up in dashboard
@@ -83,6 +82,54 @@
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/
 	 */
 	"placement": { "mode": "smart" },
+	/**
+	 * Environments
+	 * Preview environment mirrors production bindings so Dependabot PR preview
+	 * deploys don't fail with missing-binding errors. Uses a separate R2 bucket
+	 * to isolate preview cache from production.
+	 */
+	"env": {
+		"preview": {
+			"name": "alexmayhew-dev-preview",
+			"workers_dev": true,
+			"compatibility_date": "2025-12-01",
+			"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+			"assets": {
+				"binding": "ASSETS",
+				"directory": ".open-next/assets",
+			},
+			"images": {
+				"binding": "IMAGES",
+			},
+			"services": [
+				{
+					"binding": "WORKER_SELF_REFERENCE",
+					"service": "alexmayhew-dev-preview",
+				},
+			],
+			"observability": {
+				"enabled": true,
+			},
+			"ai": {
+				"binding": "AI",
+			},
+			"r2_buckets": [
+				{
+					"binding": "NEXT_INC_CACHE_R2_BUCKET",
+					"bucket_name": "alexmayhew-dev-cache-preview",
+				},
+			],
+			// TODO: migrate to `ratelimit` binding once Wrangler schema supports it.
+			// For now, share the production KV fallback namespace — preview traffic
+			// volume is too low to warrant a separate counter store.
+			"kv_namespaces": [
+				{
+					"binding": "RATE_LIMIT_KV",
+					"id": "TODO_REPLACE_WITH_REAL_KV_NAMESPACE_ID",
+				},
+			],
+		},
+	},
 	/**
 	 * Bindings
 	 * Bindings allow your Worker to interact with resources on the Cloudflare Developer Platform, including

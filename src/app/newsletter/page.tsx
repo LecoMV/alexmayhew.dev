@@ -52,17 +52,17 @@ export default function NewsletterArchivePage() {
 		<section className="page-layout">
 			<div className="max-w-narrow mx-auto">
 				<header className="mb-16">
-					<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+					<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
 						<span className="mr-2 animate-pulse" aria-hidden="true">
 							●
 						</span>
 						Newsletter Archive
-					</h1>
-					<h2 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl">
+					</p>
+					<h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl">
 						The Architect&apos;s
 						<br />
 						<span className="text-slate-text">Brief.</span>
-					</h2>
+					</h1>
 					<p className="text-slate-text max-w-2xl text-lg">
 						Weekly decisions on SaaS architecture, engineering leadership, and technical strategy.
 						Real patterns from advising startups at $0-$10M ARR.

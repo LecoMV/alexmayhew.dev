@@ -5,9 +5,9 @@ import { render } from "@react-email/render";
 import { headers } from "next/headers";
 
 import { ContactNotification } from "@/components/emails/contact-notification";
+import { dependencies } from "@/lib/_contact-deps";
 import { getEnv } from "@/lib/cloudflare-env";
 import { contactFormSchema, type ContactFormValues } from "@/lib/schemas/contact";
-import { verifyTurnstileToken } from "@/lib/turnstile";
 
 // Retry delays in ms: 1s first retry, 3s second retry
 const RETRY_DELAYS = [1000, 3000];
@@ -37,77 +37,16 @@ async function withRetry<T>(
 }
 
 function isRetryableError(error: unknown): boolean {
-	// 4xx errors from Resend come back as { success: false } not thrown errors,
-	return error instanceof Error;
-}
-
-// Email sending function type for dependency injection
-type SendEmailFn = (params: {
-	apiKey: string;
-	from: string;
-	to: string;
-	replyTo: string;
-	subject: string;
-	html: string;
-}) => Promise<{ success: boolean; error?: string }>;
-
-// Direct fetch to Resend API (avoids SDK bundling issues on Cloudflare Workers)
-async function sendEmailViaResend(params: {
-	apiKey: string;
-	from: string;
-	to: string;
-	replyTo: string;
-	subject: string;
-	html: string;
-}): Promise<{ success: boolean; error?: string }> {
-	const response = await fetch("https://api.resend.com/emails", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			Authorization: `Bearer ${params.apiKey}`,
-		},
-		body: JSON.stringify({
-			from: params.from,
-			to: params.to,
-			reply_to: params.replyTo,
-			subject: params.subject,
-			html: params.html,
-		}),
-		signal: AbortSignal.timeout(10_000),
-	});
-
-	if (!response.ok) {
-		const errorData = await response.json().catch(() => ({}));
-		const errorMessage = (errorData as { message?: string }).message || `HTTP ${response.status}`;
-		return { success: false, error: errorMessage };
+	// Retry only on Resend 5xx responses (converted to Error in withRetry wrapper)
+	// or explicit network/timeout errors. 4xx errors come back as { success: false }
+	// and should not be retried.
+	if (error instanceof Error) {
+		if (/^Resend (5\d\d|network)/i.test(error.message)) return true;
+		const status = (error as Error & { status?: number }).status;
+		if (typeof status === "number" && status >= 500) return true;
 	}
-
-	return { success: true };
+	return false;
 }
-
-// Dependency Injection container for testing
-let dependencies = {
-	sendEmail: sendEmailViaResend as SendEmailFn,
-	verifyTurnstile: verifyTurnstileToken,
-};
-
-// Internal method to swap dependencies during tests
-export const __setDependencies = async (
-	deps: Partial<{
-		sendEmail: SendEmailFn;
-		verifyTurnstile: typeof verifyTurnstileToken;
-	}>
-) => {
-	dependencies = { ...dependencies, ...deps };
-};
-
-// Reset dependencies (for testing cleanup)
-export const __resetDependencies = async () => {
-	dependencies = {
-		sendEmail: sendEmailViaResend,
-		verifyTurnstile: verifyTurnstileToken,
-	};
-};
 
 export interface ContactFormState {
 	success: boolean;
@@ -230,12 +169,26 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 
 		const result = await withRetry(
 			async () => {
-				const res = await dependencies.sendEmail(emailParams);
-				if (!res.success && res.error && /^HTTP 5\d{2}/.test(res.error)) {
-					// Convert 5xx to thrown error so retry logic catches it
-					throw new Error(`Resend 5xx: ${res.error}`);
+				try {
+					const res = await dependencies.sendEmail(emailParams);
+					if (!res.success && res.error) {
+						const statusMatch = res.error.match(/^HTTP (5\d{2})/);
+						if (statusMatch) {
+							const err = new Error(`Resend ${statusMatch[1]}: ${res.error}`) as Error & {
+								status?: number;
+							};
+							err.status = Number(statusMatch[1]);
+							throw err;
+						}
+					}
+					return res;
+				} catch (err) {
+					// Normalize low-level fetch/network failures into a retryable shape.
+					if (err instanceof Error && !/^Resend /i.test(err.message)) {
+						throw new Error(`Resend network: ${err.message}`);
+					}
+					throw err;
 				}
-				return res;
 			},
 			{ shouldRetry: isRetryableError, delays: RETRY_DELAYS }
 		);

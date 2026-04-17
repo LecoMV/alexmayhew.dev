@@ -1,13 +1,9 @@
 import { notFound } from "next/navigation";
 
 import { MigrationJsonLd } from "@/components/seo/migration-json-ld";
-import {
-	getAllMigrationSlugs,
-	getMigrationPageBySlug,
-	getPageBySlug,
-	INDUSTRY_LABELS,
-	TECHNOLOGY_LABELS,
-} from "@/data/pseo";
+import { INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
+import { getAllMigrationSlugs, getMigrationPageBySlug } from "@/data/pseo/migrations";
+import { getPageBySlug } from "@/data/pseo/pages";
 
 import { MigrationPageContent } from "./migration-page-content";
 

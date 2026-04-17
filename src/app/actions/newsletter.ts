@@ -4,12 +4,14 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { headers } from "next/headers";
 import { z } from "zod";
 
+import { dependencies } from "@/lib/_newsletter-deps";
 import { getEnv } from "@/lib/cloudflare-env";
 
 // Validation schema
 const newsletterSchema = z.object({
 	email: z.string().email("Please enter a valid email address"),
 	source: z.string().optional().default("website"),
+	turnstileToken: z.string().optional(),
 });
 
 export type NewsletterFormValues = z.infer<typeof newsletterSchema>;
@@ -27,28 +29,10 @@ export async function subscribeNewsletterAction(
 	const raw = {
 		email: formData.get("email") as string,
 		source: (formData.get("source") as string) || "website",
+		turnstileToken: (formData.get("turnstileToken") as string) || undefined,
 	};
 	return subscribeToNewsletter(raw);
 }
-
-// Dependency injection for testing
-let dependencies = {
-	fetch: globalThis.fetch,
-};
-
-export const __setDependencies = async (
-	deps: Partial<{
-		fetch: typeof globalThis.fetch;
-	}>
-) => {
-	dependencies = { ...dependencies, ...deps };
-};
-
-export const __resetDependencies = async () => {
-	dependencies = {
-		fetch: globalThis.fetch,
-	};
-};
 
 export async function subscribeToNewsletter(
 	data: NewsletterFormValues
@@ -62,7 +46,7 @@ export async function subscribeToNewsletter(
 		};
 	}
 
-	const { email } = validation.data;
+	const { email, turnstileToken } = validation.data;
 
 	// 2. Rate limiting (Workers RateLimit binding)
 	const headersList = await headers();
@@ -88,8 +72,22 @@ export async function subscribeToNewsletter(
 		// Rate limiting unavailable in local dev ... allow request through
 	}
 
-	// 3. Subscribe via Listmonk public subscription API
 	const env = await getEnv();
+
+	// 3. Security (Turnstile) ... mirrors the contact form pattern so the bot-check
+	// surface stays consistent. Enforced in production; optional in dev/tests
+	// unless a token is explicitly provided.
+	if (env.NODE_ENV === "production" || turnstileToken) {
+		if (!turnstileToken) {
+			return { success: false, error: "Bot check required. Please try again." };
+		}
+		const isValid = await dependencies.verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET_KEY);
+		if (!isValid) {
+			return { success: false, error: "Bot check failed. Please try again." };
+		}
+	}
+
+	// 4. Subscribe via Listmonk public subscription API
 	const apiUrl = env.LISTMONK_API_URL;
 
 	if (!apiUrl) {

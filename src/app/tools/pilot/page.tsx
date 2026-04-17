@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 		type: "website",
 		images: [
 			{
-				url: "/og-pilot.png",
+				url: "/og?title=Pilot",
 				width: 1200,
 				height: 630,
 				alt: "Claude Pilot - All-in-One Claude Code Manager",

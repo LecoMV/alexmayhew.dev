@@ -1,6 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
+import { SoftwareJsonLd } from "@/components/seo/software-json-ld";
 import { SaasReadinessQuiz } from "@/components/tools/saas-readiness-quiz";
 
 import type { Metadata } from "next";
@@ -47,22 +48,37 @@ export const metadata: Metadata = {
 
 export default function SaasReadinessPage() {
 	return (
-		<section className="flex-1 px-6 pt-32 pb-24 sm:px-12 md:px-24">
-			<div className="max-w-content mx-auto">
-				{/* Breadcrumb */}
-				<nav className="mb-8">
-					<Link
-						href="/tools"
-						className="text-slate-text hover:text-cyber-lime inline-flex items-center gap-2 font-mono text-xs transition-colors"
-					>
-						<ArrowLeft className="h-3 w-3" strokeWidth={1.5} />
-						<span>Back to Tools</span>
-					</Link>
-				</nav>
+		<>
+			<SoftwareJsonLd
+				name="SaaS Scaling Readiness Assessment"
+				description="Evaluate your SaaS architecture maturity across 8 dimensions: architecture, database, CI/CD, observability, security, team, performance, and data. Get actionable recommendations in under 3 minutes."
+				url="/tools/saas-readiness"
+				applicationCategory="BusinessApplication"
+				operatingSystem="Web Browser"
+				featureList={[
+					"8-dimension architecture maturity assessment",
+					"Actionable recommendations",
+					"Under 3-minute completion",
+					"CTO-focused technical due diligence",
+				]}
+			/>
+			<section className="flex-1 px-6 pt-32 pb-24 sm:px-12 md:px-24">
+				<div className="max-w-content mx-auto">
+					{/* Breadcrumb */}
+					<nav className="mb-8">
+						<Link
+							href="/tools"
+							className="text-slate-text hover:text-cyber-lime inline-flex items-center gap-2 font-mono text-xs transition-colors"
+						>
+							<ArrowLeft className="h-3 w-3" strokeWidth={1.5} />
+							<span>Back to Tools</span>
+						</Link>
+					</nav>
 
-				{/* Quiz */}
-				<SaasReadinessQuiz />
-			</div>
-		</section>
+					{/* Quiz */}
+					<SaasReadinessQuiz />
+				</div>
+			</section>
+		</>
 	);
 }

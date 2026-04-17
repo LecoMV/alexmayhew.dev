@@ -1,15 +1,22 @@
 /**
- * Server-side Turnstile token verification
+ * Server-side Turnstile token verification.
+ *
+ * The Cloudflare response is validated with Zod to defend against malformed
+ * or adversarial payloads (e.g. injected `success: "true"` string coerced via
+ * structural typing). Any schema violation is treated as a verification
+ * failure.
  */
+
+import { z } from "zod";
 
 import { logger } from "@/lib/logger";
 
-interface TurnstileVerifyResponse {
-	success: boolean;
-	"error-codes"?: string[];
-	challenge_ts?: string;
-	hostname?: string;
-}
+const TurnstileResponseSchema = z.object({
+	success: z.boolean(),
+	"error-codes": z.array(z.string()).optional(),
+	challenge_ts: z.string().optional(),
+	hostname: z.string().optional(),
+});
 
 export async function verifyTurnstileToken(token: string, secretKey?: string): Promise<boolean> {
 	if (!secretKey) {
@@ -30,7 +37,17 @@ export async function verifyTurnstileToken(token: string, secretKey?: string): P
 			signal: AbortSignal.timeout(5_000),
 		});
 
-		const data: TurnstileVerifyResponse = await response.json();
+		const raw = await response.json();
+		const parsed = TurnstileResponseSchema.safeParse(raw);
+
+		if (!parsed.success) {
+			logger.error("Turnstile response schema validation failed", {
+				errors: ["invalid_response"],
+			});
+			return false;
+		}
+
+		const data = parsed.data;
 
 		if (!data.success) {
 			logger.error("Turnstile verification failed", {

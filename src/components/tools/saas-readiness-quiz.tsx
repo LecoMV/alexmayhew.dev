@@ -1,10 +1,12 @@
 "use client";
 
 import { m } from "framer-motion";
-import { ArrowLeft, ArrowRight, BarChart3, CheckCircle2, Target } from "lucide-react";
+import { ArrowLeft, ArrowRight, BarChart3, CheckCircle2, Mail, Target } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
+import { subscribeToNewsletter } from "@/app/actions/newsletter";
+import { trackEvent } from "@/components/analytics/google-analytics";
 import {
 	calculateScore,
 	getCategoryResults,
@@ -14,6 +16,8 @@ import {
 } from "@/data/saas-readiness";
 import { snappySpringTransition, springTransition } from "@/lib/motion-constants";
 
+const QUIZ_ID = "saas-readiness";
+
 type QuizPhase = "intro" | "questions" | "results";
 
 export function SaasReadinessQuiz() {
@@ -21,28 +25,98 @@ export function SaasReadinessQuiz() {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [answers, setAnswers] = useState<Record<string, number>>({});
 
+	// Timing refs — stable across renders, no re-trigger of effects
+	const quizStartedAtRef = useRef<number | null>(null);
+	const questionStartedAtRef = useRef<number>(Date.now());
+	const completedRef = useRef<boolean>(false);
+
 	const currentQuestion = QUIZ_QUESTIONS[currentIndex];
 
-	function handleStart() {
-		setPhase("questions");
-	}
+	// Fire quiz_start once on mount. The "intro" is the landing so users who bounce
+	// before starting still count toward top-of-funnel. Firing on mount (not handleStart)
+	// matches GA4's event_category semantics for impression-style starts.
+	useEffect(() => {
+		if (quizStartedAtRef.current !== null) return;
+		quizStartedAtRef.current = Date.now();
+		trackEvent("quiz_start", {
+			quiz_id: QUIZ_ID,
+			timestamp: quizStartedAtRef.current,
+		});
+	}, []);
 
-	function handleAnswer(score: number) {
-		const newAnswers = { ...answers, [currentQuestion.id]: score };
-		setAnswers(newAnswers);
-
-		if (currentIndex < QUIZ_QUESTIONS.length - 1) {
-			setCurrentIndex(currentIndex + 1);
-		} else {
-			setPhase("results");
+	// Abandonment tracking — fires on unmount OR beforeunload if user did not complete.
+	// completion_pct is computed from the LAST touched question (currentIndex), not answers.length,
+	// because an abandon on question 3 still means they saw question 3.
+	useEffect(() => {
+		function fireAbandoned() {
+			if (completedRef.current) return;
+			// Only fire if they at least started answering (not just intro bounce)
+			if (phase === "intro") return;
+			const completionPct = Math.round((currentIndex / QUIZ_QUESTIONS.length) * 100);
+			trackEvent("quiz_abandoned", {
+				quiz_id: QUIZ_ID,
+				last_question_index: currentIndex,
+				completion_pct: completionPct,
+			});
 		}
-	}
 
-	function handleRestart() {
+		window.addEventListener("beforeunload", fireAbandoned);
+		return () => {
+			window.removeEventListener("beforeunload", fireAbandoned);
+			fireAbandoned();
+		};
+	}, [phase, currentIndex]);
+
+	const handleStart = useCallback(() => {
+		setPhase("questions");
+		questionStartedAtRef.current = Date.now();
+	}, []);
+
+	const handleAnswer = useCallback(
+		(score: number, label: string) => {
+			const now = Date.now();
+			const timeOnQuestionMs = now - questionStartedAtRef.current;
+
+			trackEvent("quiz_question_answered", {
+				quiz_id: QUIZ_ID,
+				question_index: currentIndex,
+				question_id: currentQuestion.id,
+				answer_value: score,
+				answer_label: label,
+				time_on_question_ms: timeOnQuestionMs,
+			});
+
+			const newAnswers = { ...answers, [currentQuestion.id]: score };
+			setAnswers(newAnswers);
+
+			if (currentIndex < QUIZ_QUESTIONS.length - 1) {
+				setCurrentIndex(currentIndex + 1);
+				questionStartedAtRef.current = now;
+			} else {
+				completedRef.current = true;
+				const { percent } = calculateScore(newAnswers);
+				const tier = getResultTier(percent);
+				const totalMs = quizStartedAtRef.current ? now - quizStartedAtRef.current : 0;
+				trackEvent("quiz_complete", {
+					quiz_id: QUIZ_ID,
+					score: percent,
+					tier: tier.id,
+					time_total_ms: totalMs,
+				});
+				setPhase("results");
+			}
+		},
+		[answers, currentIndex, currentQuestion]
+	);
+
+	const handleRestart = useCallback(() => {
 		setPhase("intro");
 		setCurrentIndex(0);
 		setAnswers({});
-	}
+		completedRef.current = false;
+		quizStartedAtRef.current = Date.now();
+		questionStartedAtRef.current = Date.now();
+	}, []);
 
 	if (phase === "intro") {
 		return <IntroScreen onStart={handleStart} />;
@@ -132,7 +206,7 @@ function QuestionScreen({
 	question: (typeof QUIZ_QUESTIONS)[number];
 	currentIndex: number;
 	totalQuestions: number;
-	onAnswer: (score: number) => void;
+	onAnswer: (score: number, label: string) => void;
 }) {
 	const progress = (currentIndex / totalQuestions) * 100;
 
@@ -175,7 +249,7 @@ function QuestionScreen({
 					<button
 						key={option.score}
 						type="button"
-						onClick={() => onAnswer(option.score)}
+						onClick={() => onAnswer(option.score, option.label)}
 						className="group hover:border-cyber-lime/50 hover:bg-cyber-lime/5 focus-visible:ring-cyber-lime w-full border border-white/10 p-4 text-left font-mono text-sm transition-all focus:outline-none focus-visible:ring-2"
 					>
 						<span className="text-slate-text group-hover:text-mist-white transition-colors">
@@ -289,10 +363,21 @@ function ResultsScreen({
 				</ul>
 			</div>
 
+			{/* Email capture — lead magnet */}
+			<EmailCapture tier={tier.id} />
+
 			{/* CTAs */}
 			<div className="grid gap-4 sm:grid-cols-2">
 				<Link
 					href="/contact"
+					onClick={() =>
+						trackEvent("quiz_cta_click", {
+							quiz_id: QUIZ_ID,
+							cta_label: "Book a Strategy Call",
+							cta_destination: "contact",
+							tier: tier.id,
+						})
+					}
 					className="group border-cyber-lime bg-cyber-lime/10 text-cyber-lime hover:bg-cyber-lime/20 focus-visible:ring-cyber-lime border px-6 py-3 text-center font-mono text-sm tracking-tight transition-colors focus:outline-none focus-visible:ring-2"
 				>
 					Book a Strategy Call
@@ -303,7 +388,15 @@ function ResultsScreen({
 				</Link>
 				<button
 					type="button"
-					onClick={onRestart}
+					onClick={() => {
+						trackEvent("quiz_cta_click", {
+							quiz_id: QUIZ_ID,
+							cta_label: "Retake Assessment",
+							cta_destination: "retake",
+							tier: tier.id,
+						});
+						onRestart();
+					}}
 					className="text-slate-text hover:text-mist-white focus-visible:ring-cyber-lime border border-white/10 px-6 py-3 font-mono text-sm tracking-tight transition-colors hover:border-white/30 focus:outline-none focus-visible:ring-2"
 				>
 					<ArrowLeft className="mr-2 inline-block h-4 w-4" strokeWidth={1.5} />
@@ -311,5 +404,110 @@ function ResultsScreen({
 				</button>
 			</div>
 		</m.section>
+	);
+}
+
+type EmailCaptureState = "idle" | "submitting" | "success" | "error";
+
+function EmailCapture({ tier }: { tier: string }) {
+	const [email, setEmail] = useState("");
+	const [state, setState] = useState<EmailCaptureState>("idle");
+	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		if (state === "submitting") return;
+
+		setState("submitting");
+		setErrorMessage(null);
+
+		// Track the capture intent before the network call — we care about lead quality,
+		// not just successful Listmonk inserts. A rate-limited submit is still a lead signal.
+		trackEvent("lead_magnet_email_capture", {
+			source: "saas-readiness-quiz",
+			tier,
+		});
+
+		try {
+			const result = await subscribeToNewsletter({
+				email,
+				source: "quiz-results",
+			});
+
+			if (result.success) {
+				setState("success");
+			} else {
+				setState("error");
+				setErrorMessage(result.error ?? "Unable to send results. Please try again.");
+			}
+		} catch {
+			setState("error");
+			setErrorMessage("An unexpected error occurred. Please try again.");
+		}
+	}
+
+	if (state === "success") {
+		return (
+			<div
+				role="status"
+				className="border-cyber-lime/40 bg-cyber-lime/5 mb-6 border p-6"
+				aria-live="polite"
+			>
+				<div className="mb-2 flex items-center gap-3">
+					<CheckCircle2 className="text-cyber-lime h-5 w-5" strokeWidth={1.5} />
+					<span className="text-cyber-lime font-mono text-xs tracking-wider uppercase">
+						Check Your Inbox
+					</span>
+				</div>
+				<p className="text-slate-text text-sm leading-relaxed">
+					We sent your results and a confirmation link to{" "}
+					<span className="text-mist-white">{email}</span>. Confirm to receive the Architects Brief
+					with scaling playbooks.
+				</p>
+			</div>
+		);
+	}
+
+	return (
+		<div className="mb-6 border border-white/10 p-6">
+			<div className="mb-3 flex items-center gap-3">
+				<Mail className="text-cyber-lime h-5 w-5" strokeWidth={1.5} />
+				<span className="text-cyber-lime font-mono text-xs tracking-wider uppercase">
+					Email My Results
+				</span>
+			</div>
+			<p className="text-slate-text mb-4 text-sm leading-relaxed">
+				Get a detailed PDF of your scores plus monthly scaling playbooks in the Architects Brief.
+			</p>
+			<form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
+				<label htmlFor="quiz-email" className="sr-only">
+					Email address
+				</label>
+				<input
+					id="quiz-email"
+					type="email"
+					required
+					value={email}
+					onChange={(e) => setEmail(e.target.value)}
+					placeholder="you@company.com"
+					disabled={state === "submitting"}
+					className="text-mist-white placeholder:text-slate-text/60 focus-visible:border-cyber-lime focus-visible:ring-cyber-lime flex-1 border border-white/10 bg-transparent px-4 py-3 font-mono text-sm focus:outline-none focus-visible:ring-2 disabled:opacity-50"
+					aria-invalid={state === "error"}
+					aria-describedby={errorMessage ? "quiz-email-error" : undefined}
+				/>
+				<button
+					type="submit"
+					disabled={state === "submitting"}
+					className="group border-cyber-lime bg-cyber-lime/10 text-cyber-lime hover:bg-cyber-lime/20 focus-visible:ring-cyber-lime border px-6 py-3 font-mono text-sm tracking-tight transition-colors focus:outline-none focus-visible:ring-2 disabled:opacity-50"
+				>
+					{state === "submitting" ? "Sending..." : "Send My Results"}
+				</button>
+			</form>
+			{errorMessage && (
+				<p id="quiz-email-error" role="alert" className="text-burnt-ember mt-3 font-mono text-xs">
+					{errorMessage}
+				</p>
+			)}
+		</div>
 	);
 }

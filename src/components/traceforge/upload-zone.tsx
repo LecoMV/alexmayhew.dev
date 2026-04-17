@@ -92,6 +92,17 @@ export function UploadZone({ onFileSelect, previewUrl, onClear, disabled }: Uplo
 		}
 	}, [disabled]);
 
+	const handleKeyDown = useCallback(
+		(e: React.KeyboardEvent) => {
+			if (disabled) return;
+			if (e.key === "Enter" || e.key === " ") {
+				e.preventDefault();
+				inputRef.current?.click();
+			}
+		},
+		[disabled]
+	);
+
 	return (
 		<div className="relative">
 			<input
@@ -131,11 +142,16 @@ export function UploadZone({ onFileSelect, previewUrl, onClear, disabled }: Uplo
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
 						onClick={handleClick}
+						onKeyDown={handleKeyDown}
 						onDragOver={handleDragOver}
 						onDragLeave={handleDragLeave}
 						onDrop={handleDrop}
+						role="button"
+						tabIndex={disabled ? -1 : 0}
+						aria-label="Upload file for trace analysis"
+						aria-disabled={disabled}
 						className={cn(
-							"relative flex aspect-video cursor-pointer flex-col items-center justify-center gap-4 border-2 border-dashed transition-all duration-300",
+							"focus-visible:ring-cyber-lime relative flex aspect-video cursor-pointer flex-col items-center justify-center gap-4 border-2 border-dashed transition-all duration-300 focus:outline-none focus-visible:ring-2",
 							isDragging
 								? "border-cyber-lime bg-cyber-lime/5"
 								: "hover:border-cyber-lime/50 border-white/20 hover:bg-white/5",

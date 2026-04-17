@@ -102,18 +102,20 @@ function HeroSection({ page, roleLabel }: { page: RolePage; roleLabel: string })
 	return (
 		<m.section className="mb-20" variants={staggerContainer} initial="hidden" animate="visible">
 			<m.div variants={fadeInUp}>
-				<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-					<span className="mr-2 animate-pulse">●</span>
+				<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+					<span className="mr-2 animate-pulse" aria-hidden="true">
+						●
+					</span>
 					For {roleLabel}
-				</h1>
+				</p>
 			</m.div>
 
-			<m.h2
+			<m.h1
 				className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl"
 				variants={fadeInUp}
 			>
 				{page.headline}
-			</m.h2>
+			</m.h1>
 
 			<m.div className="my-6 h-px w-full max-w-xl bg-white/10" variants={fadeInUp} />
 
@@ -162,7 +164,9 @@ function ProofMetricsSection({ metrics }: { metrics: string[] }) {
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Track Record
 			</h2>
 
@@ -201,7 +205,9 @@ function PainPointsSection({ painPoints }: { painPoints: RolePage["painPoints"] 
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Challenges I Solve
 			</h2>
 			<p className="text-slate-text mb-8 text-sm">
@@ -288,7 +294,9 @@ function PositioningSection({ content }: { content: string }) {
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				How I Work With You
 			</h2>
 
@@ -324,7 +332,9 @@ function ServiceTiersSection({
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Recommended Engagements
 			</h2>
 			<p className="text-slate-text mb-8 text-sm">Service tiers most relevant for {roleLabel}s</p>
@@ -367,7 +377,9 @@ function TimelineSection({ content }: { content: string }) {
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				What to Expect
 			</h2>
 
@@ -400,7 +412,9 @@ function RelatedServicesSection({ services }: { services: string[] }) {
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Related Services
 			</h2>
 
@@ -446,7 +460,9 @@ function FaqSection({ faqs }: { faqs: RolePage["faqs"] }) {
 			transition={springTransition}
 		>
 			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Frequently Asked Questions
 			</h2>
 

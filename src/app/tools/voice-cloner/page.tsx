@@ -54,7 +54,7 @@ export const metadata: Metadata = {
 		type: "website",
 		images: [
 			{
-				url: "/og-voice-cloner.png",
+				url: "/og?title=Voice+Cloner",
 				width: 1200,
 				height: 630,
 				alt: "Voice Cloner ... AI Text-to-Speech with Voice Cloning & Audiobook Studio",

@@ -59,9 +59,12 @@ describe("P0-3: Sitemap completeness", () => {
 		expect(sitemapSource).toContain("tools/voice-cloner");
 	});
 
-	it("sitemap should include docs pages", () => {
+	// /docs removed from sitemap (sprint 1): Fumadocs stub pages lack authority
+	// and risk "scaled content abuse" signals while domain authority is near zero.
+	// Stub docs pages are also marked noindex via generateMetadata robots.
+	it("sitemap should NOT include docs pages until docs content is authored", () => {
 		const sitemapSource = fs.readFileSync("src/app/sitemap.ts", "utf-8");
-		expect(sitemapSource).toContain("docsPages");
+		expect(sitemapSource).not.toContain("docsPages");
 	});
 });
 

@@ -13,12 +13,26 @@ export function JsonLd() {
 			"https://bsky.app/profile/alexmayhewdev.bsky.social",
 		],
 		jobTitle: "Technical Advisor & Systems Architect",
-		worksFor: {
-			"@type": "Organization",
-			name: "Alex Mayhew Consulting",
-		},
+		worksFor: { "@id": "https://alexmayhew.dev/#organization" },
 		description:
-			"Technical advisor helping founders and CTOs make architectural decisions that compound into competitive advantage. Specializing in system architecture, performance engineering, and strategic technology selection.",
+			"Technical advisor with 15+ years experience in software engineering leadership, helping founders and CTOs make architectural decisions that compound into competitive advantage. Specializing in system architecture, performance engineering, and strategic technology selection.",
+		knowsLanguage: ["en"],
+		hasCredential: [
+			{
+				"@type": "EducationalOccupationalCredential",
+				credentialCategory: "Professional Experience",
+				name: "15+ Years Software Engineering Leadership",
+				description:
+					"Principal-level engineering experience across fintech, healthcare, e-commerce, and B2B SaaS. 30+ startups advised.",
+			},
+			{
+				"@type": "EducationalOccupationalCredential",
+				credentialCategory: "Specialization",
+				name: "Systems Architecture & Performance Engineering",
+				description:
+					"Technical due diligence, multi-tenant SaaS architecture, edge computing, and AI/ML integration.",
+			},
+		],
 		knowsAbout: [
 			// Core Technologies
 			"Next.js",
@@ -77,6 +91,7 @@ export function JsonLd() {
 			"https://github.com/LecoMV",
 			"https://www.linkedin.com/in/alexmmayhew",
 			"https://x.com/alexmayhewdev",
+			"https://bsky.app/profile/alexmayhewdev.bsky.social",
 		],
 	};
 
@@ -198,6 +213,7 @@ export function JsonLd() {
 			"https://github.com/LecoMV",
 			"https://www.linkedin.com/in/alexmmayhew",
 			"https://x.com/alexmayhewdev",
+			"https://bsky.app/profile/alexmayhewdev.bsky.social",
 		],
 	};
 

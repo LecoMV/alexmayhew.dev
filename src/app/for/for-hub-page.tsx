@@ -50,18 +50,20 @@ export function ForHubPage({ pages }: ForHubPageProps) {
 				{/* Hero Section */}
 				<m.section className="mb-20" variants={staggerContainer} initial="hidden" animate="visible">
 					<m.div variants={fadeInUp}>
-						<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-							<span className="mr-2 animate-pulse">●</span>
+						<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+							<span className="mr-2 animate-pulse" aria-hidden="true">
+								●
+							</span>
 							Technical Advisory
-						</h1>
+						</p>
 					</m.div>
 
-					<m.h2
+					<m.h1
 						className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl"
 						variants={fadeInUp}
 					>
 						Built for Your Role
-					</m.h2>
+					</m.h1>
 
 					<m.div className="my-6 h-px w-full max-w-xl bg-white/10" variants={fadeInUp} />
 

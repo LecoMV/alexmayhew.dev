@@ -1,12 +1,9 @@
 import { notFound } from "next/navigation";
 
 import { ComparisonJsonLd } from "@/components/seo/comparison-json-ld";
-import {
-	getAllComparisonSlugs,
-	getComparisonPageBySlug,
-	getPageBySlug,
-	INDUSTRY_LABELS,
-} from "@/data/pseo";
+import { INDUSTRY_LABELS } from "@/data/pseo";
+import { getAllComparisonSlugs, getComparisonPageBySlug } from "@/data/pseo/comparisons";
+import { getPageBySlug } from "@/data/pseo/pages";
 
 import { ComparisonPageContent } from "./comparison-page-content";
 

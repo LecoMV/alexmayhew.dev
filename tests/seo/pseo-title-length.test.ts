@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getPublishedPages } from "@/data/pseo";
+import { getPublishedPages } from "@/data/pseo/pages";
 
 describe("pSEO title lengths", () => {
 	it("all seo.title values should be 45 chars or less to avoid truncation with suffix", () => {

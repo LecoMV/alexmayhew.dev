@@ -23,7 +23,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # DEPLOY_PAT is required so the auto-commit in the final step triggers
+          # the Deploy workflow (GITHUB_TOKEN pushes don't fire push events).
+          # TODO: If DEPLOY_PAT does not yet exist as a repo secret, create a
+          # fine-grained PAT with Contents:write scope and add it to repo secrets.
+          token: ${{ secrets.DEPLOY_PAT }}
 
       - name: Find and publish scheduled posts
         id: publish

@@ -1,7 +1,7 @@
 "use client";
 
 import { m } from "framer-motion";
-import { ArrowLeft, ArrowRight, Calendar, Clock, RefreshCw, Tag } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calendar, Clock, RefreshCw, Tag, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactNode, useEffect, useState } from "react";
@@ -29,9 +29,15 @@ const seriesTopics: Record<string, string> = {
 interface BlogArticleProps {
 	post: Post;
 	children: ReactNode;
+	/**
+	 * Hub-and-spoke related posts block. Server-rendered in the page so it can
+	 * access fumadocs' `blog` source. Rendered below the article body,
+	 * above the newsletter CTA.
+	 */
+	relatedSection?: ReactNode;
 }
 
-export function BlogArticle({ post, children }: BlogArticleProps) {
+export function BlogArticle({ post, children, relatedSection }: BlogArticleProps) {
 	const { theme, springTransition } = useBlogTheme();
 	const [articleUrl, setArticleUrl] = useState("");
 
@@ -141,6 +147,43 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 									{post.data.description}
 								</p>
 
+								{/* Author byline ... E-E-A-T signal for AI/search extraction.
+								    TODO: swap User icon for an optimized headshot at /images/alex-headshot.webp
+								    once the asset ships. Avatar path currently placeholder. */}
+								<div
+									className="mt-8 flex items-center gap-3 border-t border-b py-4"
+									style={{ borderColor: theme.colors.border }}
+								>
+									<div
+										className="flex h-10 w-10 shrink-0 items-center justify-center border"
+										style={{
+											borderColor: theme.colors.borderHover,
+											backgroundColor: theme.colors.accentFaint,
+										}}
+										aria-hidden="true"
+									>
+										<User
+											className="h-5 w-5"
+											strokeWidth={1.5}
+											style={{ color: theme.colors.accent }}
+										/>
+									</div>
+									<div className="flex flex-col">
+										<span className="text-sm font-medium" style={{ color: theme.colors.text }}>
+											By Alex Mayhew
+										</span>
+										<span className="font-mono text-xs" style={{ color: theme.colors.textMuted }}>
+											{post.data.publishedAt.toLocaleDateString("en-US", {
+												year: "numeric",
+												month: "long",
+												day: "numeric",
+												timeZone: "UTC",
+											})}
+											{post.data.readingTime ? ` · ${post.data.readingTime}` : ""}
+										</span>
+									</div>
+								</div>
+
 								{/* Tags */}
 								{theme.layout.showTags && (
 									<div className="mt-6 flex flex-wrap gap-2">
@@ -215,6 +258,9 @@ export function BlogArticle({ post, children }: BlogArticleProps) {
 							>
 								{children}
 							</m.article>
+
+							{/* Hub-and-spoke related posts ... rendered before newsletter + share */}
+							{relatedSection && <div className="mt-16">{relatedSection}</div>}
 
 							{/* Newsletter Signup */}
 							<m.div

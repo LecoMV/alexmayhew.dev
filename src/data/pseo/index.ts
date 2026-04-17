@@ -1,7 +1,25 @@
 /**
- * Programmatic SEO Data Schema
+ * Programmatic SEO Data Schema — Type-only barrel
  *
- * Export all types, schemas, and utilities for pSEO page management.
+ * IMPORTANT (2026-04-16 performance fix):
+ * This barrel previously re-exported ALL runtime data (pseoPages, migrationPages,
+ * integrationPages, comparisonPages, industries, helper functions). That caused
+ * chunk 9925 (~62 KB gzip) to ship on EVERY /services and /technologies route,
+ * even routes that only needed a single helper or a label map.
+ *
+ * To restore chunk-splitting, runtime data/functions are no longer re-exported
+ * from this index. Import them from their source module directly:
+ *
+ *   import { pseoPages, getPageBySlug }       from "@/data/pseo/pages";
+ *   import { migrationPages }                 from "@/data/pseo/migrations";
+ *   import { integrationPages }               from "@/data/pseo/integrations";
+ *   import { comparisonPages }                from "@/data/pseo/comparisons";
+ *   import { industries, getIndustryData }    from "@/data/pseo/industries";
+ *
+ * Lightweight constants (label maps, slug utilities) and Zod schemas remain
+ * exported here because they are small and shared across most pSEO consumers.
+ *
+ * Types are always safe to re-export — TypeScript erases them at build time.
  */
 
 // =============================================================================
@@ -29,12 +47,8 @@ export type {
 	TechnologyCategory,
 } from "./types";
 
-// =============================================================================
-// Constants
-// =============================================================================
-
+// Lightweight constants + pure utilities (no page/industry data) — safe to re-export.
 export {
-	// Utility functions
 	generateSlug,
 	getClusterRelatedPages,
 	getPageClusters,
@@ -45,14 +59,13 @@ export {
 } from "./types";
 
 // =============================================================================
-// Validation
+// Validation — schemas are tree-shakeable and shared widely; keep in barrel.
 // =============================================================================
 
 export {
 	budgetRangeSchema,
 	caseStudySchema,
 	checkQualityGates,
-	// Utilities
 	countWords,
 	faqItemSchema,
 	formatZodErrors,
@@ -62,7 +75,6 @@ export {
 	MIN_LONG_FORM_WORDS,
 	MIN_PAIN_POINTS,
 	MIN_TECH_RECOMMENDATIONS,
-	// Quality gate constants
 	MIN_UNIQUE_INSIGHTS,
 	painPointSchema,
 	pseoPageSchema,
@@ -73,10 +85,8 @@ export {
 	SEO_TITLE_MAX,
 	SEO_TITLE_MIN,
 	seoMetaSchema,
-	// Schemas
 	technologySchema,
 	validatePartialPage,
-	// Validation functions
 	validatePseoPage,
 	validateSlugFormat,
 } from "./validation";
@@ -89,85 +99,15 @@ export type {
 } from "./validation";
 
 // =============================================================================
-// Industry Data
+// Type-only re-exports for page data modules.
+// Runtime values (pseoPages, industries, migrationPages, integrationPages,
+// comparisonPages, and all their helper functions) MUST be imported from
+// the specific file — see header comment above.
 // =============================================================================
-
-export {
-	// Helper functions
-	getAllIndustryIds,
-	getIndustryData,
-	getIndustryKeywords,
-	getIndustryPainPoints,
-	getIndustryRegulations,
-	// Main industry database
-	industries,
-	searchIndustries,
-} from "./industries";
 
 export type { IndustryData, TechStackRecommendation, TimelineExpectation } from "./industries";
-
-// =============================================================================
-// Page Data
-// =============================================================================
-
-export {
-	getAllPageSlugs,
-	// Helper functions
-	getPageBySlug,
-	getPagesByIndustry,
-	getPagesByTechnology,
-	getPublishedPages,
-	getRelatedPages,
-	// Page data
-	pseoPages,
-} from "./pages";
-
-// =============================================================================
-// Migration Data (Legacy Tech → Modern Tech)
-// =============================================================================
-
-export {
-	getAllMigrationPages,
-	// Helper functions
-	getAllMigrationSlugs,
-	getMigrationPageBySlug,
-	getMigrationPagesByIndustry,
-	// Migration page data
-	migrationPages,
-} from "./migrations";
-
 export type { LegacyTech, MigrationPage, MigrationPattern, ModernTech } from "./migrations";
-
-// =============================================================================
-// Integration Data (SaaS A ↔ SaaS B)
-// =============================================================================
-
-export {
-	getAllIntegrationPages,
-	// Helper functions
-	getAllIntegrationSlugs,
-	getIntegrationPageBySlug,
-	getIntegrationPagesByIndustry,
-	// Integration page data
-	integrationPages,
-} from "./integrations";
-
 export type { IntegrationPage, IntegrationPattern, SaasProduct } from "./integrations";
-
-// =============================================================================
-// Comparison Data (Tech A vs Tech B)
-// =============================================================================
-
-export {
-	// Comparison page data
-	comparisonPages,
-	getAllComparisonPages,
-	// Helper functions
-	getAllComparisonSlugs,
-	getComparisonPageBySlug,
-	getComparisonPagesByIndustry,
-} from "./comparisons";
-
 export type {
 	ComparisonCriterion,
 	ComparisonPage,

@@ -15,7 +15,7 @@ import {
 import Link from "next/link";
 
 import { trackCTAClick } from "@/components/analytics";
-import { getPublishedPages } from "@/data/pseo";
+import { getPublishedPages } from "@/data/pseo/pages";
 import { gentleSpring, springTransition } from "@/lib/motion-constants";
 
 import type { Technology } from "@/data/pseo/technologies";
@@ -110,17 +110,19 @@ function HeroSection({ technology }: { technology: Technology }) {
 		>
 			<div className="mb-6 flex items-center gap-4">
 				<Code2 className="text-cyber-lime h-8 w-8" strokeWidth={1.5} />
-				<h1 className="text-cyber-lime font-mono text-xs tracking-wider uppercase">
-					<span className="mr-2 animate-pulse">●</span>
+				<p className="text-cyber-lime font-mono text-xs tracking-wider uppercase">
+					<span className="mr-2 animate-pulse" aria-hidden="true">
+						●
+					</span>
 					Technology Expertise
-				</h1>
+				</p>
 			</div>
 
-			<h2 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+			<h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
 				{technology.displayName}
 				<br />
 				<span className="text-slate-text">Development.</span>
-			</h2>
+			</h1>
 
 			<p className="text-slate-text max-w-3xl text-lg leading-relaxed">
 				Expert {technology.displayName} development with deep production experience. From
@@ -154,10 +156,12 @@ function ExpertiseSection({ technology }: { technology: Technology }) {
 				<div className="border-cyber-lime absolute top-0 right-0 h-4 w-4 border-t border-r" />
 				<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b border-l" />
 
-				<h3 className="text-cyber-lime mb-6 font-mono text-xs tracking-wider uppercase">
-					<span className="mr-2">●</span>
+				<h2 className="text-cyber-lime mb-6 font-mono text-xs tracking-wider uppercase">
+					<span className="mr-2" aria-hidden="true">
+						●
+					</span>
 					Expertise Level
-				</h3>
+				</h2>
 
 				<p className="text-mist-white leading-relaxed">{technology.expertiseLevel}</p>
 			</div>
@@ -173,10 +177,12 @@ function WhenToUseSection({ technology }: { technology: Technology }) {
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ ...springTransition, delay: 0.15 }}
 		>
-			<h3 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2">●</span>
+			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
+				<span className="mr-2" aria-hidden="true">
+					●
+				</span>
 				When to Use {technology.displayName}
-			</h3>
+			</h2>
 
 			<div className="grid gap-4 md:grid-cols-2">
 				{technology.whenToUse.map((useCase, index) => (
@@ -206,10 +212,12 @@ function BestPracticesSection({ technology }: { technology: Technology }) {
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ ...springTransition, delay: 0.2 }}
 		>
-			<h3 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2">●</span>
+			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
+				<span className="mr-2" aria-hidden="true">
+					●
+				</span>
 				Best Practices
-			</h3>
+			</h2>
 
 			<div className="space-y-4">
 				{technology.bestPractices.map((practice, index) => (
@@ -242,10 +250,12 @@ function PitfallsSection({ technology }: { technology: Technology }) {
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ ...springTransition, delay: 0.25 }}
 		>
-			<h3 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2">●</span>
+			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
+				<span className="mr-2" aria-hidden="true">
+					●
+				</span>
 				Common Pitfalls to Avoid
-			</h3>
+			</h2>
 
 			<div className="space-y-4">
 				{technology.commonPitfalls.map((pitfall, index) => (
@@ -278,10 +288,12 @@ function ProjectTypesSection({ technology }: { technology: Technology }) {
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ ...springTransition, delay: 0.3 }}
 		>
-			<h3 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2">●</span>
+			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
+				<span className="mr-2" aria-hidden="true">
+					●
+				</span>
 				Ideal Project Types
-			</h3>
+			</h2>
 
 			<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 				{technology.projectTypes.map((projectType, index) => (
@@ -311,10 +323,12 @@ function ComplementaryTechSection({ technology }: { technology: Technology }) {
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ ...springTransition, delay: 0.35 }}
 		>
-			<h3 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2">●</span>
+			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
+				<span className="mr-2" aria-hidden="true">
+					●
+				</span>
 				Complementary Technologies
-			</h3>
+			</h2>
 
 			<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 				{technology.complementaryTech.map((tech, index) => (
@@ -344,10 +358,12 @@ function RealWorldExampleSection({ technology }: { technology: Technology }) {
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ ...springTransition, delay: 0.4 }}
 		>
-			<h3 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2">●</span>
+			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
+				<span className="mr-2" aria-hidden="true">
+					●
+				</span>
 				Real-World Example
-			</h3>
+			</h2>
 
 			<div className="bg-gunmetal-glass/20 relative border border-white/10 p-8 backdrop-blur-sm">
 				<div className="border-cyber-lime absolute top-0 right-0 h-4 w-4 border-t border-r" />
@@ -382,10 +398,12 @@ function RelatedServicesSection({ pages }: { pages: RelatedServicePage[] }) {
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ ...springTransition, delay: 0.45 }}
 		>
-			<h3 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2">●</span>
+			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
+				<span className="mr-2" aria-hidden="true">
+					●
+				</span>
 				Related Services
-			</h3>
+			</h2>
 
 			<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 				{pages.map((page, index) => (
@@ -399,9 +417,9 @@ function RelatedServicesSection({ pages }: { pages: RelatedServicePage[] }) {
 							href={`/services/${page.slug}`}
 							className="bg-gunmetal-glass/10 group flex h-full flex-col border border-white/10 p-6 transition-colors hover:border-white/20"
 						>
-							<h4 className="text-mist-white group-hover:text-cyber-lime mb-2 font-mono text-sm transition-colors">
+							<h3 className="text-mist-white group-hover:text-cyber-lime mb-2 font-mono text-sm transition-colors">
 								{page.seo.title.replace(" | Technical Advisor", "")}
-							</h4>
+							</h3>
 							<p className="text-slate-text mb-4 flex-grow text-xs leading-relaxed">
 								{page.seo.description.slice(0, 120)}...
 							</p>
@@ -428,16 +446,18 @@ function CtaSection({ technology }: { technology: Technology }) {
 				<div className="border-cyber-lime absolute top-0 right-0 h-6 w-6 border-t border-r" />
 				<div className="border-cyber-lime absolute bottom-0 left-0 h-6 w-6 border-b border-l" />
 
-				<h3 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-					<span className="mr-2">●</span>
+				<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
+					<span className="mr-2" aria-hidden="true">
+						●
+					</span>
 					Ready to Build?
-				</h3>
+				</p>
 
-				<h4 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
+				<h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
 					Let&apos;s discuss your
 					<br />
 					<span className="text-cyber-lime">{technology.displayName}</span> project.
-				</h4>
+				</h2>
 
 				<p className="text-slate-text mx-auto mb-8 max-w-2xl">
 					Whether you&apos;re starting fresh, migrating an existing system, or need architectural

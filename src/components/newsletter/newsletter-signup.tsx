@@ -6,6 +6,7 @@ import { useActionState, useEffect, useRef } from "react";
 
 import { type NewsletterFormState, subscribeNewsletterAction } from "@/app/actions/newsletter";
 import { trackNewsletterEvent } from "@/components/analytics";
+import { Turnstile, type TurnstileRef } from "@/components/ui/turnstile";
 import { springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +21,23 @@ interface NewsletterSignupProps {
 
 const initialState: NewsletterFormState = { success: false };
 
+// Stable token handler factory. Each form variant gets its own hidden input
+// id so multiple instances on one page (footer + card) don't collide.
+function tokenHandlers(hiddenInputId: string) {
+	const set = (value: string) => {
+		const hidden =
+			typeof document !== "undefined"
+				? (document.getElementById(hiddenInputId) as HTMLInputElement | null)
+				: null;
+		if (hidden) hidden.value = value;
+	};
+	return {
+		onSuccess: (token: string) => set(token),
+		onError: () => set(""),
+		onExpire: () => set(""),
+	};
+}
+
 export function NewsletterSignup({
 	variant = "card",
 	source = "website",
@@ -28,13 +46,18 @@ export function NewsletterSignup({
 }: NewsletterSignupProps) {
 	const [state, formAction] = useActionState(subscribeNewsletterAction, initialState);
 	const formRef = useRef<HTMLFormElement>(null);
+	const turnstileRef = useRef<TurnstileRef>(null);
 	const prevSuccess = useRef(false);
+
+	const hiddenTokenId = `newsletter-turnstile-${variant}`;
+	const handlers = tokenHandlers(hiddenTokenId);
 
 	// Track analytics on success
 	useEffect(() => {
 		if (state.success && !prevSuccess.current) {
 			prevSuccess.current = true;
 			formRef.current?.reset();
+			turnstileRef.current?.reset();
 			trackNewsletterEvent("newsletter_subscribe", {
 				method: "email",
 				source: source,
@@ -85,6 +108,7 @@ export function NewsletterSignup({
 
 				<form ref={formRef} action={formAction} className="space-y-3">
 					<input type="hidden" name="source" value={source} />
+					<input type="hidden" id={hiddenTokenId} name="turnstileToken" defaultValue="" />
 					<div className="relative">
 						<label htmlFor="newsletter-email-card" className="sr-only">
 							Email address
@@ -105,6 +129,13 @@ export function NewsletterSignup({
 							)}
 						/>
 					</div>
+
+					<Turnstile
+						ref={turnstileRef}
+						onSuccess={handlers.onSuccess}
+						onError={handlers.onError}
+						onExpire={handlers.onExpire}
+					/>
 
 					{state.error && (
 						<div
@@ -153,36 +184,45 @@ export function NewsletterSignup({
 						)}
 					</div>
 
-					<form ref={formRef} action={formAction} className="flex gap-2">
+					<form ref={formRef} action={formAction} className="flex flex-col gap-2">
 						<input type="hidden" name="source" value={source} />
-						<label htmlFor="newsletter-email-inline" className="sr-only">
-							Email address
-						</label>
-						<input
-							id="newsletter-email-inline"
-							type="email"
-							name="email"
-							required
-							placeholder="you@company.com"
-							aria-invalid={state.error ? true : undefined}
-							aria-describedby={state.error ? "newsletter-error-inline" : undefined}
-							className={cn(
-								"w-full border bg-transparent px-4 py-2 font-mono text-sm md:w-64",
-								"placeholder:text-slate-text/50",
-								"focus:border-cyber-lime focus-visible:ring-cyber-lime focus:outline-none focus-visible:ring-2",
-								state.error ? "border-burnt-ember" : "border-white/20"
-							)}
+						<input type="hidden" id={hiddenTokenId} name="turnstileToken" defaultValue="" />
+						<div className="flex gap-2">
+							<label htmlFor="newsletter-email-inline" className="sr-only">
+								Email address
+							</label>
+							<input
+								id="newsletter-email-inline"
+								type="email"
+								name="email"
+								required
+								placeholder="you@company.com"
+								aria-invalid={state.error ? true : undefined}
+								aria-describedby={state.error ? "newsletter-error-inline" : undefined}
+								className={cn(
+									"w-full border bg-transparent px-4 py-2 font-mono text-sm md:w-64",
+									"placeholder:text-slate-text/50",
+									"focus:border-cyber-lime focus-visible:ring-cyber-lime focus:outline-none focus-visible:ring-2",
+									state.error ? "border-burnt-ember" : "border-white/20"
+								)}
+							/>
+							<SubmitButton
+								className={cn(
+									"shrink-0 border px-4 py-2 font-mono text-sm transition-colors",
+									"hover:border-cyber-lime hover:text-cyber-lime border-white/20",
+									"disabled:cursor-not-allowed disabled:opacity-50"
+								)}
+								pendingText="..."
+							>
+								Subscribe
+							</SubmitButton>
+						</div>
+						<Turnstile
+							ref={turnstileRef}
+							onSuccess={handlers.onSuccess}
+							onError={handlers.onError}
+							onExpire={handlers.onExpire}
 						/>
-						<SubmitButton
-							className={cn(
-								"shrink-0 border px-4 py-2 font-mono text-sm transition-colors",
-								"hover:border-cyber-lime hover:text-cyber-lime border-white/20",
-								"disabled:cursor-not-allowed disabled:opacity-50"
-							)}
-							pendingText="..."
-						>
-							Subscribe
-						</SubmitButton>
 					</form>
 				</div>
 
@@ -202,35 +242,44 @@ export function NewsletterSignup({
 
 	// Minimal variant (for footer)
 	return (
-		<form ref={formRef} action={formAction} className={cn("flex gap-2", className)}>
+		<form ref={formRef} action={formAction} className={cn("flex flex-col gap-2", className)}>
 			<input type="hidden" name="source" value={source} />
-			<label htmlFor="newsletter-email-minimal" className="sr-only">
-				Email address
-			</label>
-			<input
-				id="newsletter-email-minimal"
-				type="email"
-				name="email"
-				required
-				placeholder="you@company.com"
-				aria-invalid={state.error ? true : undefined}
-				className={cn(
-					"w-full border bg-transparent px-3 py-2 font-mono text-sm",
-					"placeholder:text-slate-text/50",
-					"focus:border-cyber-lime focus-visible:ring-cyber-lime focus:outline-none focus-visible:ring-2",
-					state.error ? "border-burnt-ember" : "border-white/20"
-				)}
+			<input type="hidden" id={hiddenTokenId} name="turnstileToken" defaultValue="" />
+			<div className="flex gap-2">
+				<label htmlFor="newsletter-email-minimal" className="sr-only">
+					Email address
+				</label>
+				<input
+					id="newsletter-email-minimal"
+					type="email"
+					name="email"
+					required
+					placeholder="you@company.com"
+					aria-invalid={state.error ? true : undefined}
+					className={cn(
+						"w-full border bg-transparent px-3 py-2 font-mono text-sm",
+						"placeholder:text-slate-text/50",
+						"focus:border-cyber-lime focus-visible:ring-cyber-lime focus:outline-none focus-visible:ring-2",
+						state.error ? "border-burnt-ember" : "border-white/20"
+					)}
+				/>
+				<SubmitButton
+					className={cn(
+						"shrink-0 border px-3 py-2 font-mono text-xs transition-colors",
+						"hover:border-cyber-lime hover:text-cyber-lime border-white/20",
+						"disabled:cursor-not-allowed disabled:opacity-50"
+					)}
+					pendingText="..."
+				>
+					Join
+				</SubmitButton>
+			</div>
+			<Turnstile
+				ref={turnstileRef}
+				onSuccess={handlers.onSuccess}
+				onError={handlers.onError}
+				onExpire={handlers.onExpire}
 			/>
-			<SubmitButton
-				className={cn(
-					"shrink-0 border px-3 py-2 font-mono text-xs transition-colors",
-					"hover:border-cyber-lime hover:text-cyber-lime border-white/20",
-					"disabled:cursor-not-allowed disabled:opacity-50"
-				)}
-				pendingText="..."
-			>
-				Join
-			</SubmitButton>
 		</form>
 	);
 }

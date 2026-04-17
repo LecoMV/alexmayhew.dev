@@ -1,6 +1,16 @@
 import { ToolsPage } from "@/components/pages";
+import { WEBSITE_REF } from "@/components/seo/schema-utils";
 
 import type { Metadata } from "next";
+
+const siteUrl = "https://alexmayhew.dev";
+
+const tools = [
+	{ name: "TraceForge", slug: "traceforge" },
+	{ name: "Claude Pilot", slug: "pilot" },
+	{ name: "Voice Cloner", slug: "voice-cloner" },
+	{ name: "SaaS Scaling Readiness Assessment", slug: "saas-readiness" },
+];
 
 export const metadata: Metadata = {
 	title: "Tools",
@@ -30,6 +40,36 @@ export const metadata: Metadata = {
 	},
 };
 
+function ToolsCollectionJsonLd() {
+	const schema = {
+		"@context": "https://schema.org",
+		"@type": "CollectionPage",
+		"@id": `${siteUrl}/tools`,
+		url: `${siteUrl}/tools`,
+		name: "Tools",
+		description: "Developer tools built with precision.",
+		isPartOf: WEBSITE_REF,
+		mainEntity: {
+			"@type": "ItemList",
+			itemListElement: tools.map((tool, index) => ({
+				"@type": "ListItem",
+				position: index + 1,
+				name: tool.name,
+				url: `${siteUrl}/tools/${tool.slug}`,
+			})),
+		},
+	};
+	// JSON.stringify emits a server-controlled object; no user input flows in.
+	const html = JSON.stringify(schema);
+
+	return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: html }} />;
+}
+
 export default function Page() {
-	return <ToolsPage />;
+	return (
+		<>
+			<ToolsCollectionJsonLd />
+			<ToolsPage />
+		</>
+	);
 }

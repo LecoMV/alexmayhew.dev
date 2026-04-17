@@ -3,7 +3,12 @@ import { notFound } from "next/navigation";
 import { blog } from "@/../.source/server";
 import { BlogArticle } from "@/components/blog/blog-article";
 import { mdxComponents } from "@/components/mdx/mdx-components";
-import { ArticleJsonLd, BreadcrumbJsonLd, FaqJsonLd } from "@/components/seo";
+import {
+	ArticleJsonLd,
+	BreadcrumbJsonLd,
+	FaqJsonLd,
+	RelatedBlogPostsSection,
+} from "@/components/seo";
 
 import { hubFaqs } from "./hub-faqs";
 
@@ -94,6 +99,25 @@ export default async function BlogArticlePage({ params }: PageProps) {
 		},
 	};
 
+	// Build hub-and-spoke related posts.
+	// Hub posts: surface ALL spokes in the series.
+	// Spoke posts: surface the hub first, then up to 5 sibling spokes (total <= 6).
+	const relatedSlugs: string[] = (() => {
+		if (!post.series) return [];
+		const seriesPeers = blog
+			.filter((p) => !p.draft && p.series === post.series && getSlug(p.info.path) !== slug)
+			.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
+
+		if (post.isHub) {
+			return seriesPeers.map((p) => getSlug(p.info.path));
+		}
+
+		const hub = seriesPeers.find((p) => p.isHub);
+		const spokes = seriesPeers.filter((p) => !p.isHub).slice(0, 5);
+		const ordered = hub ? [hub, ...spokes] : spokes;
+		return ordered.map((p) => getSlug(p.info.path));
+	})();
+
 	const faqs = hubFaqs[slug];
 
 	return (
@@ -117,7 +141,12 @@ export default async function BlogArticlePage({ params }: PageProps) {
 				]}
 			/>
 			{faqs && <FaqJsonLd faqs={faqs} />}
-			<BlogArticle post={postData}>
+			<BlogArticle
+				post={postData}
+				relatedSection={
+					relatedSlugs.length > 0 ? <RelatedBlogPostsSection slugs={relatedSlugs} /> : null
+				}
+			>
 				<MDX components={mdxComponents} />
 			</BlogArticle>
 		</>

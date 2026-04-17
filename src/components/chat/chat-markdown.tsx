@@ -1,5 +1,6 @@
 "use client";
 
+import DOMPurify from "dompurify";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { highlight } from "sugar-high";
@@ -17,9 +18,13 @@ const components: Components = {
 		const isBlock = className?.includes("language-");
 		if (isBlock) {
 			const html = highlight(String(children).replace(/\n$/, ""));
+			const safeHtml = DOMPurify.sanitize(html, {
+				ALLOWED_TAGS: ["span", "code", "pre"],
+				ALLOWED_ATTR: ["class", "style"],
+			});
 			return (
 				<pre className="bg-gunmetal-glass overflow-x-auto rounded-md border border-white/10 p-3 font-mono text-xs">
-					<code dangerouslySetInnerHTML={{ __html: html }} />
+					<code dangerouslySetInnerHTML={{ __html: safeHtml }} />
 				</pre>
 			);
 		}

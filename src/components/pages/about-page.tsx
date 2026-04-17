@@ -152,7 +152,7 @@ export function AboutPage() {
 								<span className="text-cyber-lime">I help them choose wisely.</span>
 							</p>
 							<p className="text-slate-text">
-								Six years of building systems that scale has taught me something counterintuitive:
+								15+ years of building systems that scale has taught me something counterintuitive:
 								the best architecture isn&apos;t about choosing the right technology. It&apos;s
 								about understanding which decisions can be reversed later, and which ones
 								you&apos;re married to forever.

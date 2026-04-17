@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
 			{
 				userAgent: "*",
 				allow: "/",
-				disallow: ["/api/", "/keystatic/", "/demo/"],
+				disallow: ["/api/", "/keystatic/", "/demo/", "/offline"],
 			},
 			// OpenAI crawlers
 			{

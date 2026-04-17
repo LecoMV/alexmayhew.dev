@@ -1,3 +1,5 @@
+import { WEBSITE_REF } from "@/components/seo/schema-utils";
+
 import { TechnologiesPageContent } from "./technologies-page-content";
 
 import type { Metadata } from "next";
@@ -59,12 +61,7 @@ function TechnologiesHubJsonLd() {
 		name: "Technology Expertise",
 		description:
 			"Deep expertise in React, Next.js, TypeScript, Node.js, PostgreSQL, Python, FastAPI, and AI/ML.",
-		isPartOf: {
-			"@type": "WebSite",
-			"@id": `${siteUrl}#website`,
-			url: siteUrl,
-			name: "Alex Mayhew",
-		},
+		isPartOf: WEBSITE_REF,
 		mainEntity: {
 			"@type": "ItemList",
 			itemListElement: [

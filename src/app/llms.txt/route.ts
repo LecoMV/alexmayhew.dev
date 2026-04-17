@@ -20,7 +20,6 @@ export function GET() {
 		.join("\n");
 
 	const spokeLines = spokes
-		.slice(0, 20)
 		.map(
 			(post) =>
 				`- [${post.title}](https://alexmayhew.dev/blog/${getSlug(post.info.path)}): ${post.description}`

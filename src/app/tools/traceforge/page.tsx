@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 		type: "website",
 		images: [
 			{
-				url: "/og-traceforge.png",
+				url: "/og?title=Traceforge",
 				width: 1200,
 				height: 630,
 				alt: "TraceForge - GPU-Accelerated Vectorization Engine",

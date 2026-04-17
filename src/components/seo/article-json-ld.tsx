@@ -8,6 +8,7 @@ interface ArticleJsonLdProps {
 	category: string;
 	tags?: string[];
 	isHub?: boolean;
+	series?: string;
 }
 
 const siteUrl = "https://alexmayhew.dev";
@@ -22,6 +23,7 @@ export function ArticleJsonLd({
 	category,
 	tags = [],
 	isHub = false,
+	series,
 }: ArticleJsonLdProps) {
 	const articleSchema = {
 		"@context": "https://schema.org",
@@ -46,6 +48,12 @@ export function ArticleJsonLd({
 		keywords: tags.join(", "),
 		inLanguage: "en-US",
 		isAccessibleForFree: true,
+		...(series && {
+			isPartOf: {
+				"@type": "CreativeWorkSeries",
+				name: series,
+			},
+		}),
 	};
 
 	return (

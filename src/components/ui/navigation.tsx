@@ -278,7 +278,7 @@ export function Navigation() {
 					{/* Desktop CTA */}
 					<Link
 						href="/contact"
-						className="bg-cyber-lime text-void-navy hidden shrink-0 px-4 py-2 font-mono text-xs font-bold tracking-wider uppercase transition-opacity hover:opacity-90 lg:block"
+						className="bg-cyber-lime text-void-navy focus-visible:ring-cyber-lime focus-visible:ring-offset-void-navy hidden shrink-0 px-4 py-2 font-mono text-xs font-bold tracking-wider uppercase transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:block"
 					>
 						Book a Call
 					</Link>
@@ -286,7 +286,7 @@ export function Navigation() {
 					{/* Search Trigger */}
 					<button
 						onClick={() => window.dispatchEvent(new CustomEvent("toggle-command-palette"))}
-						className="text-slate-text hover:text-cyber-lime p-2 transition-colors"
+						className="text-slate-text hover:text-cyber-lime focus-visible:text-cyber-lime focus-visible:ring-cyber-lime focus-visible:ring-offset-void-navy p-2 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
 						aria-label="Search (Cmd+K)"
 					>
 						<Search className="h-4 w-4" strokeWidth={1.5} />
@@ -295,7 +295,7 @@ export function Navigation() {
 					{/* Mobile Menu Button */}
 					<button
 						onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-						className="hover:border-cyber-lime border border-white/20 p-3 transition-colors duration-300 lg:hidden"
+						className="hover:border-cyber-lime focus-visible:border-cyber-lime focus-visible:ring-cyber-lime focus-visible:ring-offset-void-navy border border-white/20 p-3 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:hidden"
 						aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
 						aria-expanded={mobileMenuOpen}
 					>

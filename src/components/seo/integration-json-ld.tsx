@@ -22,7 +22,7 @@ export function IntegrationJsonLd({ page }: IntegrationJsonLdProps) {
 	const serviceSchema = {
 		"@context": SCHEMA_CONTEXT,
 		"@type": "Service",
-		"@id": pageUrl,
+		"@id": `${pageUrl}#service`,
 		name: serviceName,
 		description: page.seo.description,
 		provider: PERSON_REF,
