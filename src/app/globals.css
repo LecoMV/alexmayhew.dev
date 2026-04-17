@@ -221,6 +221,10 @@ body {
 html {
 	scrollbar-gutter: stable;
 	overscroll-behavior-y: contain;
+	/* WCAG 2.2 Focus Not Obscured (2.4.11 AA): when anchor links or skip
+	   links land near the top, account for the fixed header (nav height
+	   is ~72px) so focused elements aren't obscured under it. */
+	scroll-padding-top: 6rem;
 }
 
 /* Improve text rendering */

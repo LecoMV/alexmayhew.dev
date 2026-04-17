@@ -25,12 +25,32 @@ function BlueskyIcon({ className }: { className?: string }) {
 	);
 }
 
+// UTM tags on outbound links so GA4 can attribute reverse traffic from
+// our own distribution. mailto: and same-domain links stay untagged.
+function withUtm(href: string, medium: string): string {
+	if (href.startsWith("mailto:") || href.startsWith("/") || !href.includes("://")) return href;
+	const utm = `utm_source=alexmayhew.dev&utm_medium=${encodeURIComponent(medium)}&utm_campaign=footer`;
+	return href.includes("?") ? `${href}&${utm}` : `${href}?${utm}`;
+}
+
 const socialLinks = [
-	{ href: "https://github.com/LecoMV", icon: Github, label: "GitHub" },
-	{ href: "https://www.linkedin.com/in/alexmmayhew", icon: Linkedin, label: "LinkedIn" },
-	{ href: "https://x.com/alexmayhewdev", icon: XIcon, label: "X" },
 	{
-		href: "https://bsky.app/profile/alexmayhewdev.bsky.social",
+		href: withUtm("https://github.com/LecoMV", "social-github"),
+		icon: Github,
+		label: "GitHub",
+	},
+	{
+		href: withUtm("https://www.linkedin.com/in/alexmmayhew", "social-linkedin"),
+		icon: Linkedin,
+		label: "LinkedIn",
+	},
+	{
+		href: withUtm("https://x.com/alexmayhewdev", "social-x"),
+		icon: XIcon,
+		label: "X",
+	},
+	{
+		href: withUtm("https://bsky.app/profile/alexmayhewdev.bsky.social", "social-bluesky"),
 		icon: BlueskyIcon,
 		label: "Bluesky",
 	},

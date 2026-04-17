@@ -113,15 +113,25 @@ const timeline = [
 	},
 ];
 
+// Tagged with utm_* so GA4 attributes clicks back to the about page.
+function aboutUtm(href: string, medium: string): string {
+	if (href.startsWith("mailto:") || !href.includes("://")) return href;
+	const utm = `utm_source=alexmayhew.dev&utm_medium=${encodeURIComponent(medium)}&utm_campaign=about`;
+	return href.includes("?") ? `${href}&${utm}` : `${href}?${utm}`;
+}
+
 const socialLinks = [
-	{ label: "LinkedIn", href: "https://www.linkedin.com/in/alexmmayhew" },
-	{ label: "GitHub", href: "https://github.com/LecoMV" },
-	{ label: "X / Twitter", href: "https://x.com/alexmayhewdev" },
+	{
+		label: "LinkedIn",
+		href: aboutUtm("https://www.linkedin.com/in/alexmmayhew", "social-linkedin"),
+	},
+	{ label: "GitHub", href: aboutUtm("https://github.com/LecoMV", "social-github") },
+	{ label: "X / Twitter", href: aboutUtm("https://x.com/alexmayhewdev", "social-x") },
 	{
 		label: "Bluesky",
-		href: "https://bsky.app/profile/alexmayhewdev.bsky.social",
+		href: aboutUtm("https://bsky.app/profile/alexmayhewdev.bsky.social", "social-bluesky"),
 	},
-	{ label: "Dev.to", href: "https://dev.to/alexmayhewdev" },
+	{ label: "Dev.to", href: aboutUtm("https://dev.to/alexmayhewdev", "social-devto") },
 	{ label: "Email", href: "mailto:alex@alexmayhew.dev" },
 ];
 
