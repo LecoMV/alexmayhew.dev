@@ -418,8 +418,8 @@ function IntegrationPatternsSection({ patterns }: { patterns: IntegrationPage["p
 	const [expandedPattern, setExpandedPattern] = useState<number | null>(0);
 
 	const complexityColors = {
-		low: "text-green-400 border-green-400 bg-green-400/10",
-		medium: "text-yellow-400 border-yellow-400 bg-yellow-400/10",
+		low: "text-cyber-lime border-cyber-lime bg-cyber-lime/10",
+		medium: "text-signal-caution border-signal-caution bg-signal-caution/10",
 		high: "text-orange-400 border-orange-400 bg-orange-400/10",
 	};
 

@@ -29,8 +29,8 @@ export function TerminalLayout({ posts }: TerminalLayoutProps) {
 			>
 				<div className="flex gap-1.5">
 					<div className="h-3 w-3 rounded-full bg-red-500/60" />
-					<div className="h-3 w-3 rounded-full bg-yellow-500/60" />
-					<div className="h-3 w-3 rounded-full bg-green-500/60" />
+					<div className="bg-signal-caution/60 h-3 w-3 rounded-full" />
+					<div className="bg-cyber-lime/60 h-3 w-3 rounded-full" />
 				</div>
 				<span className="ml-2 text-xs" style={{ color: theme.colors.textMuted }}>
 					{theme.typography.headingPrefix} blog --list

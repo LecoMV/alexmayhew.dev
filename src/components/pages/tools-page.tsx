@@ -135,7 +135,7 @@ export function ToolsPage() {
 											"border px-2 py-1 font-mono text-[10px] tracking-wider uppercase",
 											tool.badgeColor === "lime"
 												? "border-cyber-lime text-cyber-lime"
-												: "border-blue-400 text-blue-400"
+												: "border-signal-info text-signal-info"
 										)}
 									>
 										{tool.badge}
@@ -156,8 +156,8 @@ export function ToolsPage() {
 										</>
 									) : tool.status === "download" ? (
 										<>
-											<Download className="h-4 w-4 text-blue-400" strokeWidth={1.5} />
-											<span className="text-blue-400">Download</span>
+											<Download className="text-signal-info h-4 w-4" strokeWidth={1.5} />
+											<span className="text-signal-info">Download</span>
 										</>
 									) : (
 										<span className="text-slate-text">Coming Soon</span>

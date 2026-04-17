@@ -295,7 +295,7 @@ function SideBySideSection({ page }: { page: ComparisonPage }) {
 						<ul className="space-y-2">
 							{page.optionA.limitations.slice(0, 3).map((limitation, i) => (
 								<li key={i} className="text-slate-text flex items-start gap-2 text-sm">
-									<XCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+									<XCircle className="text-signal-warn mt-0.5 h-4 w-4 shrink-0" />
 									<span>{limitation}</span>
 								</li>
 							))}
@@ -308,7 +308,7 @@ function SideBySideSection({ page }: { page: ComparisonPage }) {
 					variants={fadeInUp}
 					className="bg-gunmetal-glass/20 relative border border-white/10 p-6"
 				>
-					<div className="absolute top-0 left-0 h-full w-1 bg-amber-400" />
+					<div className="bg-signal-warn absolute top-0 left-0 h-full w-1" />
 
 					<div className="mb-4 flex items-center justify-between">
 						<h3 className="text-mist-white font-mono text-xl">{page.optionB.name}</h3>
@@ -329,7 +329,7 @@ function SideBySideSection({ page }: { page: ComparisonPage }) {
 						<ul className="space-y-2">
 							{page.optionB.strengths.slice(0, 4).map((strength, i) => (
 								<li key={i} className="text-slate-text flex items-start gap-2 text-sm">
-									<CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+									<CheckCircle2 className="text-signal-warn mt-0.5 h-4 w-4 shrink-0" />
 									<span>{strength}</span>
 								</li>
 							))}
@@ -341,7 +341,7 @@ function SideBySideSection({ page }: { page: ComparisonPage }) {
 						<ul className="space-y-2">
 							{page.optionB.limitations.slice(0, 3).map((limitation, i) => (
 								<li key={i} className="text-slate-text flex items-start gap-2 text-sm">
-									<XCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+									<XCircle className="text-signal-warn mt-0.5 h-4 w-4 shrink-0" />
 									<span>{limitation}</span>
 								</li>
 							))}
@@ -439,7 +439,7 @@ function CriterionCard({
 							<div
 								className={cn(
 									"font-mono text-lg font-bold",
-									winner === "B" ? "text-amber-400" : "text-slate-text"
+									winner === "B" ? "text-signal-warn" : "text-slate-text"
 								)}
 							>
 								{criterion.optionBScore}
@@ -517,7 +517,7 @@ function DecisionMatrixSection({
 									scenario.recommendation === "A"
 										? "border-cyber-lime/30 bg-cyber-lime/10 text-cyber-lime"
 										: scenario.recommendation === "B"
-											? "border-amber-400/30 bg-amber-400/10 text-amber-400"
+											? "border-signal-warn/30 bg-signal-warn/10 text-signal-warn"
 											: "text-slate-text border-white/20 bg-white/5"
 								)}
 							>
@@ -587,7 +587,7 @@ function WhenToChooseSection({
 				variants={fadeInUp}
 				className={cn(
 					"mb-8 font-mono text-xs tracking-wider uppercase",
-					variant === "A" ? "text-cyber-lime" : "text-amber-400"
+					variant === "A" ? "text-cyber-lime" : "text-signal-warn"
 				)}
 			>
 				<span className="mr-2 animate-pulse" aria-hidden="true">
@@ -600,13 +600,13 @@ function WhenToChooseSection({
 				variants={fadeInUp}
 				className={cn(
 					"bg-gunmetal-glass/20 relative border p-8",
-					variant === "A" ? "border-cyber-lime/20" : "border-amber-400/20"
+					variant === "A" ? "border-cyber-lime/20" : "border-signal-warn/20"
 				)}
 			>
 				<div
 					className={cn(
 						"absolute top-0 left-0 h-full w-1",
-						variant === "A" ? "bg-cyber-lime" : "bg-amber-400"
+						variant === "A" ? "bg-cyber-lime" : "bg-signal-warn"
 					)}
 				/>
 
@@ -766,7 +766,7 @@ function BudgetComparisonSection({ page }: { page: ComparisonPage }) {
 					variants={fadeInUp}
 					className="bg-gunmetal-glass/20 relative border border-white/10 p-6"
 				>
-					<div className="absolute top-0 left-0 h-full w-1 bg-amber-400" />
+					<div className="bg-signal-warn absolute top-0 left-0 h-full w-1" />
 
 					<h3 className="text-mist-white mb-4 font-mono text-lg">
 						{page.optionB.name} Development
@@ -807,7 +807,7 @@ function BudgetComparisonSection({ page }: { page: ComparisonPage }) {
 					<ul className="space-y-2">
 						{page.budgetGuidance.optionB.factors.map((factor, i) => (
 							<li key={i} className="text-slate-text flex items-start gap-2 text-sm">
-								<DollarSign className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+								<DollarSign className="text-signal-warn mt-0.5 h-4 w-4 shrink-0" />
 								<span>{factor}</span>
 							</li>
 						))}
