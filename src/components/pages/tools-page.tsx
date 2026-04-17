@@ -1,10 +1,7 @@
-"use client";
-
-import { m } from "framer-motion";
 import { ArrowUpRight, BarChart3, Download, Layers, Mic, Sparkles, Terminal } from "lucide-react";
 import Link from "next/link";
 
-import { springTransition } from "@/lib/motion-constants";
+import { FadeInUp } from "@/components/pages/tools-page-client";
 import { cn } from "@/lib/utils";
 
 interface Tool {
@@ -80,12 +77,7 @@ export function ToolsPage() {
 		<section className="page-layout">
 			<div className="max-w-content mx-auto">
 				{/* Header */}
-				<m.div
-					className="mb-16"
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={springTransition}
-				>
+				<FadeInUp className="mb-16">
 					<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
 						<span className="mr-2 animate-pulse" aria-hidden="true">
 							●
@@ -101,91 +93,85 @@ export function ToolsPage() {
 						Tools I built to solve real problems. Try them instantly in your browser or download for
 						your desktop.
 					</p>
-				</m.div>
+				</FadeInUp>
 
 				{/* Tools Grid */}
 				<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
 					{tools.map((tool, index) => (
-						<m.article
+						<article
 							key={tool.id}
-							initial={{ opacity: 0, y: 30 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ ...springTransition, delay: index * 0.1 }}
 							className={cn("group relative", tool.featured && "lg:col-span-1")}
 						>
-							<Link
-								href={tool.href}
-								className="bg-gunmetal-glass/10 hover:border-cyber-lime/50 relative flex h-full flex-col border border-white/10 p-6 backdrop-blur-sm transition-all duration-300"
-							>
-								{/* Corner accents */}
-								<div className="border-cyber-lime absolute top-0 right-0 h-4 w-4 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-								<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+							<FadeInUp delay={index * 0.1}>
+								<Link
+									href={tool.href}
+									className="bg-gunmetal-glass/10 hover:border-cyber-lime/50 relative flex h-full flex-col border border-white/10 p-6 backdrop-blur-sm transition-all duration-300"
+								>
+									{/* Corner accents */}
+									<div className="border-cyber-lime absolute top-0 right-0 h-4 w-4 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+									<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-								{/* Header */}
-								<div className="mb-4 flex items-start justify-between">
-									<div className="flex items-center gap-3">
-										<div className="text-cyber-lime">{tool.icon}</div>
-										<div>
-											<h3 className="font-mono text-xl tracking-tight">{tool.name}</h3>
-											<p className="text-slate-text font-mono text-xs">{tool.tagline}</p>
+									{/* Header */}
+									<div className="mb-4 flex items-start justify-between">
+										<div className="flex items-center gap-3">
+											<div className="text-cyber-lime">{tool.icon}</div>
+											<div>
+												<h3 className="font-mono text-xl tracking-tight">{tool.name}</h3>
+												<p className="text-slate-text font-mono text-xs">{tool.tagline}</p>
+											</div>
 										</div>
+										<span
+											className={cn(
+												"border px-2 py-1 font-mono text-[10px] tracking-wider uppercase",
+												tool.badgeColor === "lime"
+													? "border-cyber-lime text-cyber-lime"
+													: "border-signal-info text-signal-info"
+											)}
+										>
+											{tool.badge}
+										</span>
 									</div>
-									<span
-										className={cn(
-											"border px-2 py-1 font-mono text-[10px] tracking-wider uppercase",
-											tool.badgeColor === "lime"
-												? "border-cyber-lime text-cyber-lime"
-												: "border-signal-info text-signal-info"
+
+									{/* Description */}
+									<p className="text-slate-text mb-6 flex-grow text-sm leading-relaxed">
+										{tool.description}
+									</p>
+
+									{/* CTA */}
+									<div className="flex items-center gap-2 font-mono text-xs">
+										{tool.status === "demo" ? (
+											<>
+												<Sparkles className="text-cyber-lime h-4 w-4" strokeWidth={1.5} />
+												<span className="text-cyber-lime">View Demo</span>
+											</>
+										) : tool.status === "download" ? (
+											<>
+												<Download className="text-signal-info h-4 w-4" strokeWidth={1.5} />
+												<span className="text-signal-info">Download</span>
+											</>
+										) : (
+											<span className="text-slate-text">Coming Soon</span>
 										)}
-									>
-										{tool.badge}
-									</span>
-								</div>
-
-								{/* Description */}
-								<p className="text-slate-text mb-6 flex-grow text-sm leading-relaxed">
-									{tool.description}
-								</p>
-
-								{/* CTA */}
-								<div className="flex items-center gap-2 font-mono text-xs">
-									{tool.status === "demo" ? (
-										<>
-											<Sparkles className="text-cyber-lime h-4 w-4" strokeWidth={1.5} />
-											<span className="text-cyber-lime">View Demo</span>
-										</>
-									) : tool.status === "download" ? (
-										<>
-											<Download className="text-signal-info h-4 w-4" strokeWidth={1.5} />
-											<span className="text-signal-info">Download</span>
-										</>
-									) : (
-										<span className="text-slate-text">Coming Soon</span>
-									)}
-									<ArrowUpRight
-										className="text-slate-text h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-										strokeWidth={1.5}
-									/>
-								</div>
-							</Link>
-						</m.article>
+										<ArrowUpRight
+											className="text-slate-text h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+											strokeWidth={1.5}
+										/>
+									</div>
+								</Link>
+							</FadeInUp>
+						</article>
 					))}
 				</div>
 
 				{/* Coming Soon Teaser */}
-				<m.div
-					className="mt-12 border-t border-white/10 pt-12"
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					transition={{ ...springTransition, delay: 0.3 }}
-				>
+				<FadeInUp className="mt-12 border-t border-white/10 pt-12" delay={0.3}>
 					<p className="text-slate-text font-mono text-xs tracking-wider uppercase">
 						More tools in development...
 					</p>
 					<p className="text-slate-text/60 mt-2 text-sm">
 						AEVP (AI-powered Electron testing platform) coming soon.
 					</p>
-				</m.div>
+				</FadeInUp>
 			</div>
 		</section>
 	);
