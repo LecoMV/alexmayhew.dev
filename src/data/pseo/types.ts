@@ -396,9 +396,9 @@ export const TOPIC_CLUSTERS: TopicClusterDefinition[] = [
 		spokeSlugs: [
 			"nextjs-developer-for-saas",
 			"react-developer-for-saas",
-			"postgresql-fintech-database",
-			"fractional-cto-startups",
-			"ai-integration-developer",
+			"postgresql-developer-for-fintech",
+			"fractional-cto-for-startups",
+			"ai-integration-developer-for-saas",
 		],
 	},
 	{
@@ -412,27 +412,26 @@ export const TOPIC_CLUSTERS: TopicClusterDefinition[] = [
 			"nextjs-developer-for-fintech",
 			"nextjs-developer-for-healthcare",
 			"react-developer-for-healthcare",
-			"ai-integration-healthcare",
+			"ai-integration-developer-for-healthcare",
 		],
 	},
 	{
 		id: "startup-stack",
 		name: "Startup Tech Stacks",
 		description: "From MVP to Series A and beyond",
-		hubSlug: "technical-advisor-startups",
+		hubSlug: "technical-advisor-for-startups",
 		spokeSlugs: [
-			"technical-advisor-startups",
-			"fractional-cto-startups",
-			"fractional-cto-investor-ready",
-			"technical-due-diligence",
+			"technical-advisor-for-startups",
+			"fractional-cto-for-startups",
+			"technical-due-diligence-consultant",
 		],
 	},
 	{
 		id: "ai-integration",
 		name: "AI/ML Integration",
 		description: "LLMs, RAG systems, and intelligent features",
-		hubSlug: "ai-integration-developer",
-		spokeSlugs: ["ai-integration-developer", "ai-integration-healthcare"],
+		hubSlug: "ai-integration-developer-for-saas",
+		spokeSlugs: ["ai-integration-developer-for-saas", "ai-integration-developer-for-healthcare"],
 	},
 	{
 		id: "performance-engineering",
@@ -447,16 +446,10 @@ export const TOPIC_CLUSTERS: TopicClusterDefinition[] = [
 	},
 ];
 
-/**
- * Get clusters a page belongs to
- */
 export function getPageClusters(pageSlug: string): TopicClusterDefinition[] {
 	return TOPIC_CLUSTERS.filter((cluster) => cluster.spokeSlugs.includes(pageSlug));
 }
 
-/**
- * Get related pages from clusters (excluding self)
- */
 export function getClusterRelatedPages(pageSlug: string): string[] {
 	const clusters = getPageClusters(pageSlug);
 	const related = new Set<string>();

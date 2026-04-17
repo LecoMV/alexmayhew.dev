@@ -209,12 +209,7 @@ export const pseoPages: PseoPage[] = [
 			relatedProjectId: "claude-pilot",
 		},
 
-		relatedServices: [
-			"react-developer-for-saas",
-			"typescript-developer-for-saas",
-			"nextjs-developer-for-fintech",
-			"postgresql-developer-for-saas",
-		],
+		relatedServices: ["react-developer-for-saas", "nextjs-developer-for-fintech"],
 		relatedBlogPosts: [
 			"saas-architecture-decision-framework",
 			"modern-frontend-architecture",
@@ -398,12 +393,7 @@ export const pseoPages: PseoPage[] = [
 			},
 		],
 
-		relatedServices: [
-			"nextjs-developer-for-fintech",
-			"typescript-developer-for-fintech",
-			"react-developer-for-saas",
-			"nodejs-developer-for-fintech",
-		],
+		relatedServices: ["nextjs-developer-for-fintech", "react-developer-for-saas"],
 		relatedBlogPosts: [
 			"modern-frontend-architecture",
 			"performance-engineering-playbook",
@@ -623,12 +613,7 @@ export const pseoPages: PseoPage[] = [
 			relatedProjectId: "photokeep-pro",
 		},
 
-		relatedServices: [
-			"python-developer-for-ai-integration",
-			"postgresql-developer-for-healthcare",
-			"nodejs-developer-for-healthcare",
-			"typescript-developer-for-healthcare",
-		],
+		relatedServices: ["python-developer-for-healthcare", "react-developer-for-healthcare"],
 		relatedBlogPosts: [
 			"ai-assisted-development-guide",
 			"saas-architecture-decision-framework",
@@ -815,7 +800,6 @@ export const pseoPages: PseoPage[] = [
 		relatedServices: [
 			"nextjs-developer-for-saas",
 			"react-developer-for-saas",
-			"typescript-developer-for-saas",
 			"technical-advisor-for-startups",
 		],
 		relatedBlogPosts: [
