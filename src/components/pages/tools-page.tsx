@@ -87,7 +87,9 @@ export function ToolsPage() {
 					transition={springTransition}
 				>
 					<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-						<span className="mr-2 animate-pulse">●</span>
+						<span className="mr-2 animate-pulse" aria-hidden="true">
+							●
+						</span>
 						Developer Tools
 					</p>
 					<h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">

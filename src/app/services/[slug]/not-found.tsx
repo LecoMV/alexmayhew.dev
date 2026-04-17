@@ -6,7 +6,9 @@ export default function ServiceNotFound() {
 		<section className="flex flex-1 flex-col items-center justify-center px-6 py-24">
 			<div className="text-center">
 				<h1 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-					<span className="mr-2 animate-pulse">●</span>
+					<span className="mr-2 animate-pulse" aria-hidden="true">
+						●
+					</span>
 					404 / Service Not Found
 				</h1>
 

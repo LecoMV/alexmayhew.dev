@@ -19,7 +19,9 @@ export default function Layout({ children }: { children: ReactNode }) {
 					sidebar={{
 						banner: (
 							<div className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-								<span className="mr-2 animate-pulse">●</span>
+								<span className="mr-2 animate-pulse" aria-hidden="true">
+									●
+								</span>
 								Documentation
 							</div>
 						),

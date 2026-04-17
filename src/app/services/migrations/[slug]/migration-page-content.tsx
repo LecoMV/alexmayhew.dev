@@ -155,7 +155,9 @@ function HeroSection({
 		<m.section className="mb-20" initial="hidden" animate="visible" variants={staggerContainer}>
 			<m.div variants={fadeInUp} className="mb-6">
 				<span className="text-cyber-lime font-mono text-xs tracking-wider uppercase">
-					<span className="mr-2 animate-pulse">●</span>
+					<span className="mr-2 animate-pulse" aria-hidden="true">
+						●
+					</span>
 					Legacy_Migration
 				</span>
 			</m.div>
@@ -214,7 +216,9 @@ function RiskDashboard({ page }: { page: MigrationPage }) {
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Risk_Assessment
 			</m.h2>
 
@@ -334,7 +338,9 @@ function UniqueInsightsSection({ insights }: { insights: string[] }) {
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Migration_Intelligence
 			</m.h2>
 
@@ -362,7 +368,9 @@ function UrgencyDriversSection({ drivers }: { drivers: string[] }) {
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Why_Migrate_Now
 			</m.h2>
 
@@ -396,7 +404,9 @@ function MigrationPatternsSection({ patterns }: { patterns: MigrationPage["patte
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Migration_Patterns
 			</m.h2>
 
@@ -489,7 +499,9 @@ function ChallengesSection({ challenges }: { challenges: MigrationPage["challeng
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Challenges_And_Solutions
 			</m.h2>
 
@@ -530,7 +542,9 @@ function MigrationApproachSection({ content }: { content: string }) {
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Migration_Approach
 			</m.h2>
 
@@ -559,7 +573,9 @@ function RoiSection({ content, modernTech }: { content: string; modernTech: stri
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				ROI_Projection
 			</m.h2>
 
@@ -596,7 +612,9 @@ function TimelineSection({
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Timeline_Expectations
 			</m.h2>
 
@@ -663,7 +681,9 @@ function BudgetSection({ budget }: { budget: MigrationPage["budgetGuidance"] }) 
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Investment_Range
 			</m.h2>
 
@@ -725,7 +745,9 @@ function ComplianceSection({
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Compliance_Considerations
 			</m.h2>
 
@@ -766,7 +788,9 @@ function FaqSection({ faqs }: { faqs: MigrationPage["faqs"] }) {
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Migration_FAQs
 			</m.h2>
 
@@ -827,7 +851,9 @@ function RelatedServicesSection({
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Related_Services
 			</m.h2>
 

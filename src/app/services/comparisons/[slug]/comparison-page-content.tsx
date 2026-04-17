@@ -153,7 +153,9 @@ function HeroSection({
 		<m.section className="mb-20" initial="hidden" animate="visible" variants={staggerContainer}>
 			<m.div variants={fadeInUp} className="mb-6">
 				<span className="text-cyber-lime font-mono text-xs tracking-wider uppercase">
-					<span className="mr-2 animate-pulse">●</span>
+					<span className="mr-2 animate-pulse" aria-hidden="true">
+						●
+					</span>
 					Technology Comparison
 				</span>
 			</m.div>
@@ -248,7 +250,9 @@ function SideBySideSection({ page }: { page: ComparisonPage }) {
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				At a Glance
 			</m.h2>
 
@@ -368,7 +372,9 @@ function CriteriaSection({
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Detailed Comparison
 			</m.h2>
 
@@ -486,7 +492,9 @@ function DecisionMatrixSection({
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Decision Matrix
 			</m.h2>
 
@@ -540,7 +548,9 @@ function UniqueInsightsSection({ insights }: { insights: string[] }) {
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Expert Insights
 			</m.h2>
 
@@ -580,7 +590,9 @@ function WhenToChooseSection({
 					variant === "A" ? "text-cyber-lime" : "text-amber-400"
 				)}
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				{title}
 			</m.h2>
 
@@ -629,7 +641,9 @@ function ExpertVerdictSection({
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Expert Verdict
 			</m.h2>
 
@@ -687,7 +701,9 @@ function BudgetComparisonSection({ page }: { page: ComparisonPage }) {
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Budget Comparison
 			</m.h2>
 
@@ -817,7 +833,9 @@ function FaqSection({ faqs }: { faqs: ComparisonPage["faqs"] }) {
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Frequently Asked Questions
 			</m.h2>
 
@@ -874,7 +892,9 @@ function RelatedServicesSection({
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Related Services
 			</m.h2>
 

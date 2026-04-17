@@ -161,7 +161,9 @@ function HeroSection({
 		<m.section className="mb-20" initial="hidden" animate="visible" variants={staggerContainer}>
 			<m.div variants={fadeInUp} className="mb-6">
 				<span className="text-cyber-lime font-mono text-xs tracking-wider uppercase">
-					<span className="mr-2 animate-pulse">●</span>
+					<span className="mr-2 animate-pulse" aria-hidden="true">
+						●
+					</span>
 					SaaS_Integration
 				</span>
 			</m.div>
@@ -219,7 +221,9 @@ function PlatformComparisonSection({ page }: { page: IntegrationPage }) {
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Platform_Specifications
 			</m.h2>
 
@@ -393,7 +397,9 @@ function UniqueInsightsSection({ insights }: { insights: string[] }) {
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Integration_Intelligence
 			</m.h2>
 
@@ -429,7 +435,9 @@ function IntegrationPatternsSection({ patterns }: { patterns: IntegrationPage["p
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Integration_Patterns
 			</m.h2>
 
@@ -522,7 +530,9 @@ function DataSyncStrategiesSection({
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Data_Sync_Strategies
 			</m.h2>
 
@@ -607,7 +617,9 @@ function ChallengesSection({ challenges }: { challenges: IntegrationPage["challe
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Challenges_And_Solutions
 			</m.h2>
 
@@ -648,7 +660,9 @@ function IntegrationApproachSection({ content }: { content: string }) {
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Integration_Approach
 			</m.h2>
 
@@ -677,7 +691,9 @@ function BenefitsSection({ content, page }: { content: string; page: Integration
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Business_Impact
 			</m.h2>
 
@@ -708,7 +724,9 @@ function TimelineSection({ timeline }: { timeline: IntegrationPage["timeline"] }
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Timeline_Expectations
 			</m.h2>
 
@@ -775,7 +793,9 @@ function BudgetSection({ budget }: { budget: IntegrationPage["budgetGuidance"] }
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Investment_Range
 			</m.h2>
 
@@ -835,7 +855,9 @@ function ComplianceSection({
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Compliance_Considerations
 			</m.h2>
 
@@ -876,7 +898,9 @@ function FaqSection({ faqs }: { faqs: IntegrationPage["faqs"] }) {
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Integration_FAQs
 			</m.h2>
 
@@ -937,7 +961,9 @@ function RelatedServicesSection({
 				variants={fadeInUp}
 				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
 			>
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Related_Services
 			</m.h2>
 

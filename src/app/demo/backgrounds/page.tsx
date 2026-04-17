@@ -365,7 +365,9 @@ export default function BackgroundsDemoPage() {
 						transition={{ ...springTransition, delay: 0.5 }}
 					>
 						<h3 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-							<span className="mr-2">●</span>
+							<span className="mr-2" aria-hidden="true">
+								●
+							</span>
 							Performance & Accessibility
 						</h3>
 						<div className="text-slate-text grid gap-4 text-sm md:grid-cols-3">

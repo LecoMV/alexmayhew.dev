@@ -25,7 +25,9 @@ export function RelatedBlogPostsSection({ slugs }: RelatedBlogPostsSectionProps)
 	return (
 		<section className="mb-20">
 			<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				Related Insights
 			</h2>
 			<div className="grid gap-3 sm:grid-cols-2">

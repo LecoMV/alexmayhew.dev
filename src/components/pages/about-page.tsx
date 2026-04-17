@@ -128,7 +128,9 @@ export function AboutPage() {
 					transition={springTransition}
 				>
 					<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-						<span className="mr-2 animate-pulse">●</span>
+						<span className="mr-2 animate-pulse" aria-hidden="true">
+							●
+						</span>
 						About
 					</p>
 					<h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
@@ -194,7 +196,9 @@ export function AboutPage() {
 							<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b border-l" />
 
 							<h3 className="text-cyber-lime mb-6 font-mono text-xs tracking-wider uppercase">
-								<span className="mr-2">●</span>
+								<span className="mr-2" aria-hidden="true">
+									●
+								</span>
 								Outcomes Delivered
 							</h3>
 
@@ -222,7 +226,9 @@ export function AboutPage() {
 					transition={springTransition}
 				>
 					<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-						<span className="mr-2 animate-pulse">●</span>
+						<span className="mr-2 animate-pulse" aria-hidden="true">
+							●
+						</span>
 						My Approach
 					</h2>
 
@@ -255,7 +261,9 @@ export function AboutPage() {
 					transition={springTransition}
 				>
 					<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-						<span className="mr-2 animate-pulse">●</span>
+						<span className="mr-2 animate-pulse" aria-hidden="true">
+							●
+						</span>
 						Technical Toolkit
 					</h2>
 
@@ -296,7 +304,9 @@ export function AboutPage() {
 					transition={springTransition}
 				>
 					<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-						<span className="mr-2 animate-pulse">●</span>
+						<span className="mr-2 animate-pulse" aria-hidden="true">
+							●
+						</span>
 						Journey
 					</h2>
 
@@ -351,7 +361,9 @@ export function AboutPage() {
 					transition={springTransition}
 				>
 					<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-						<span className="mr-2 animate-pulse">●</span>
+						<span className="mr-2 animate-pulse" aria-hidden="true">
+							●
+						</span>
 						Beyond the Terminal
 					</h2>
 

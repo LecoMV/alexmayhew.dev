@@ -259,7 +259,9 @@ export default function DemoPage() {
 						<div className="bg-void-navy border border-white/10">
 							{/* Title bar */}
 							<div className="bg-gunmetal-glass/50 flex items-center gap-2 border-b border-white/10 px-4 py-2">
-								<span className="text-cyber-lime animate-pulse text-xs">●</span>
+								<span className="text-cyber-lime animate-pulse text-xs" aria-hidden="true">
+									●
+								</span>
 								<span className="font-mono text-xs">ALEX_AI // Technical Assistant</span>
 							</div>
 
@@ -362,7 +364,9 @@ export default function DemoPage() {
 					transition={{ ...springTransition, delay: 0.5 }}
 				>
 					<h3 className="text-cyber-lime mb-6 font-mono text-xs tracking-wider uppercase">
-						<span className="mr-2">●</span>
+						<span className="mr-2" aria-hidden="true">
+							●
+						</span>
 						Implementation Summary
 					</h3>
 

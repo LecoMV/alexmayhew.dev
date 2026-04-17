@@ -26,7 +26,9 @@ export default function TermsPage() {
 		<section className="page-layout">
 			<div className="mx-auto max-w-3xl">
 				<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-					<span className="mr-2 animate-pulse">●</span>
+					<span className="mr-2 animate-pulse" aria-hidden="true">
+						●
+					</span>
 					Legal
 				</p>
 				<h1 className="mb-8 text-4xl font-bold tracking-tight md:text-5xl">Terms of Service</h1>

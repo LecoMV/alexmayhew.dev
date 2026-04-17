@@ -111,7 +111,9 @@ function BlogPostNav({ posts }: { posts: Array<{ slug: string; data: { title: st
 			className="max-w-content mx-auto border-t border-white/10 px-6 py-12 sm:px-12 md:px-24"
 		>
 			<h2 className="text-cyber-lime mb-6 font-mono text-xs tracking-wider uppercase">
-				<span className="mr-2 animate-pulse">●</span>
+				<span className="mr-2 animate-pulse" aria-hidden="true">
+					●
+				</span>
 				All Articles
 			</h2>
 			<ul className="grid gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
