@@ -85,7 +85,7 @@
 		"eslint-config-next": "15.4.6",
 		"eslint-plugin-deslop": "^0.3.3",
 		"eslint-plugin-perfectionist": "^5.5.0",
-		"eslint-plugin-sonarjs": "^3.0.7",
+		"eslint-plugin-sonarjs": "^4.0.2",
 		"fast-check": "^4.5.3",
 		"googleapis": "^171.4.0",
 		"husky": "^9.1.7",
