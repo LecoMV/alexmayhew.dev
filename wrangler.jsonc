@@ -71,7 +71,7 @@
 	"kv_namespaces": [
 		{
 			"binding": "RATE_LIMIT_KV",
-			"id": "TODO_REPLACE_WITH_REAL_KV_NAMESPACE_ID",
+			"id": "10d29082bf1741fa9a23ccf331cfb3ef",
 		},
 	],
 	// Keep workers.dev subdomain active until custom domain is set up in dashboard
@@ -125,7 +125,7 @@
 			"kv_namespaces": [
 				{
 					"binding": "RATE_LIMIT_KV",
-					"id": "TODO_REPLACE_WITH_REAL_KV_NAMESPACE_ID",
+					"id": "10d29082bf1741fa9a23ccf331cfb3ef",
 				},
 			],
 		},
