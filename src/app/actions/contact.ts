@@ -7,6 +7,7 @@ import { headers } from "next/headers";
 import { ContactNotification } from "@/components/emails/contact-notification";
 import { dependencies } from "@/lib/_contact-deps";
 import { getEnv } from "@/lib/cloudflare-env";
+import { logger } from "@/lib/logger";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { contactFormSchema, type ContactFormValues } from "@/lib/schemas/contact";
 
@@ -30,7 +31,11 @@ async function withRetry<T>(
 		} catch (error) {
 			lastError = error;
 			if (attempt < opts.delays.length && opts.shouldRetry(error)) {
-				console.warn(`Retry attempt ${attempt + 1}/${opts.delays.length} after error:`, error);
+				logger.warn("contact.sendEmail retry", {
+					attempt: attempt + 1,
+					totalAttempts: opts.delays.length,
+					error: String(error),
+				});
 				await new Promise((resolve) => setTimeout(resolve, opts.delays[attempt]));
 				continue;
 			}
@@ -58,24 +63,24 @@ export interface ContactFormState {
 	fieldErrors?: Record<string, string[]>;
 }
 
-// useActionState-compatible wrapper: accepts (prevState, FormData)
+// useActionState-compatible wrapper: accepts (prevState, FormData).
+//
+// FormData values are `string | File`; casting each to `string` throws away
+// that guarantee. Prefer Object.fromEntries + let the Zod schema inside
+// submitContactForm own validation -- we drop an empty string for optional
+// fields so the schema can apply its own `.optional()` semantics.
 export async function submitContactAction(
 	_prevState: ContactFormState,
 	formData: FormData
 ): Promise<ContactFormState> {
-	const raw = {
-		name: formData.get("name") as string,
-		email: formData.get("email") as string,
-		projectType: formData.get("projectType") as string,
-		budget: formData.get("budget") as string,
-		message: formData.get("message") as string,
-		referralSource: (formData.get("referralSource") as string) || undefined,
-		turnstileToken: (formData.get("turnstileToken") as string) || undefined,
-	};
-	return submitContactForm(raw as ContactFormValues);
+	const entries = Object.fromEntries(formData);
+	const raw: Record<string, unknown> = { ...entries };
+	if (raw.referralSource === "") raw.referralSource = undefined;
+	if (raw.turnstileToken === "") raw.turnstileToken = undefined;
+	return submitContactForm(raw as unknown as ContactFormValues);
 }
 
-export async function submitContactForm(data: ContactFormValues): Promise<ContactFormState> {
+export async function submitContactForm(data: unknown): Promise<ContactFormState> {
 	const validation = contactFormSchema.safeParse(data);
 	if (!validation.success) {
 		const fieldErrors = validation.error.flatten().fieldErrors as Record<string, string[]>;
@@ -144,7 +149,7 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 
 	try {
 		if (!env.RESEND_API_KEY) {
-			console.error("RESEND_API_KEY not configured");
+			logger.error("RESEND_API_KEY not configured", { route: "contact" });
 			return { success: false, error: "Email service not configured." };
 		}
 
@@ -198,7 +203,7 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 		);
 
 		if (!result.success) {
-			console.error("Resend API error:", result.error);
+			logger.error("Resend API error", { route: "contact", error: String(result.error) });
 			return {
 				success: false,
 				error: "Failed to send message. Please try again or email alex@alexmayhew.dev directly.",
@@ -207,7 +212,7 @@ export async function submitContactForm(data: ContactFormValues): Promise<Contac
 
 		return { success: true };
 	} catch (err) {
-		console.error("Contact form error:", err);
+		logger.error("Contact form error", { route: "contact", error: String(err) });
 		return {
 			success: false,
 			error: "Failed to send message. Please try again or email alex@alexmayhew.dev directly.",

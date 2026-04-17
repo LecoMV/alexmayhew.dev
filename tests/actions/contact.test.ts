@@ -109,7 +109,6 @@ describe("submitContactForm", () => {
 		it("should fail validation with invalid project type", async () => {
 			const result = await submitContactForm({
 				...validData,
-				// @ts-expect-error - testing invalid type
 				projectType: "invalid",
 			});
 			expect(result.success).toBe(false);
@@ -119,7 +118,6 @@ describe("submitContactForm", () => {
 		it("should fail validation with invalid budget", async () => {
 			const result = await submitContactForm({
 				...validData,
-				// @ts-expect-error - testing invalid budget
 				budget: "1k",
 			});
 			expect(result.success).toBe(false);

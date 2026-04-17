@@ -6,6 +6,7 @@ import { z } from "zod";
 
 import { dependencies } from "@/lib/_newsletter-deps";
 import { getEnv } from "@/lib/cloudflare-env";
+import { logger } from "@/lib/logger";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 // Newsletter signup: 3 attempts per minute per IP.
@@ -25,22 +26,19 @@ export interface NewsletterFormState {
 	error?: string;
 }
 
-// useActionState-compatible wrapper: accepts (prevState, FormData)
+// useActionState-compatible wrapper: accepts (prevState, FormData).
+// Lets the Zod schema inside subscribeToNewsletter own validation rather
+// than eagerly coercing FormDataEntryValue (string | File) to string.
 export async function subscribeNewsletterAction(
 	_prevState: NewsletterFormState,
 	formData: FormData
 ): Promise<NewsletterFormState> {
-	const raw = {
-		email: formData.get("email") as string,
-		source: (formData.get("source") as string) || "website",
-		turnstileToken: (formData.get("turnstileToken") as string) || undefined,
-	};
-	return subscribeToNewsletter(raw);
+	const raw = Object.fromEntries(formData) as Record<string, unknown>;
+	if (raw.turnstileToken === "") raw.turnstileToken = undefined;
+	return subscribeToNewsletter(raw as unknown as NewsletterFormValues);
 }
 
-export async function subscribeToNewsletter(
-	data: NewsletterFormValues
-): Promise<NewsletterFormState> {
+export async function subscribeToNewsletter(data: unknown): Promise<NewsletterFormState> {
 	// 1. Validate input
 	const validation = newsletterSchema.safeParse(data);
 	if (!validation.success) {
@@ -95,7 +93,7 @@ export async function subscribeToNewsletter(
 	const apiUrl = env.LISTMONK_API_URL;
 
 	if (!apiUrl) {
-		console.error("[Newsletter] LISTMONK_API_URL not configured");
+		logger.error("LISTMONK_API_URL not configured", { route: "newsletter" });
 		return { success: false, error: "Newsletter signup is temporarily unavailable." };
 	}
 
@@ -122,7 +120,11 @@ export async function subscribeToNewsletter(
 
 		const errorData = (await response.json().catch(() => ({}))) as Record<string, unknown>;
 		const errorMessage = String(errorData?.message ?? "");
-		console.error("Listmonk API error:", response.status, JSON.stringify(errorData));
+		logger.error("Listmonk API error", {
+			route: "newsletter",
+			status: response.status,
+			error: JSON.stringify(errorData),
+		});
 
 		if (response.status === 400) {
 			if (
@@ -136,7 +138,7 @@ export async function subscribeToNewsletter(
 
 		return { success: false, error: "Failed to subscribe. Please try again." };
 	} catch (err) {
-		console.error("Newsletter subscription error:", err);
+		logger.error("Newsletter subscription error", { route: "newsletter", error: String(err) });
 		return { success: false, error: "An unexpected error occurred." };
 	}
 }
