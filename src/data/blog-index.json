@@ -9,15 +9,15 @@
 	},
 	{
 		"title": "Accessibility in Design Systems: Testing and Enforcement",
-		"description": "Build accessibility into your design system from day one. Covers automated testing, ARIA patterns, focus management, and creating components that are accessible by default.",
+		"description": "Build accessibility into your design system from day one. Automated testing, ARIA patterns, focus management, components accessible by default.",
 		"slug": "accessibility-design-systems",
 		"category": "frontend",
 		"tags": ["accessibility", "a11y", "design-systems", "testing", "wcag"],
 		"series": "frontend-architecture"
 	},
 	{
-		"title": "Agentic Engineering: What Changes When Developers Become Orchestrators",
-		"description": "Staff+ engineers lead AI agent adoption at 63.5%. Claude Code went from 4% to 63% adoption in 8 months. The shift from writing code to directing agents changes everything... sprints, ownership, reviews, and hiring.",
+		"title": "Agentic Engineering: When Developers Become Orchestrators",
+		"description": "Staff+ engineers lead AI agent adoption at 63.5%. Claude Code went from 4% to 63% in 8 months. The shift reshapes sprints, ownership, reviews, hiring.",
 		"slug": "agentic-engineering",
 		"category": "business",
 		"tags": [
@@ -30,8 +30,8 @@
 		"series": "ai-development"
 	},
 	{
-		"title": "AI Code Review: Catching What LLMs Miss and Validating What They Generate",
-		"description": "Use AI for code review without the blind spots. Covers what LLMs excel at, where they fail, hybrid review workflows, and building trust in AI-generated code through systematic validation.",
+		"title": "AI Code Review: Catching What LLMs Miss",
+		"description": "Use AI for code review without the blind spots. What LLMs excel at, where they fail, hybrid review workflows, and validating AI-generated code.",
 		"slug": "ai-code-review",
 		"category": "architecture",
 		"tags": ["ai", "code-review", "llm", "quality", "development"],
@@ -39,35 +39,51 @@
 	},
 	{
 		"title": "AI Cost Optimization: APIs vs Self-Hosting vs Fine-Tuning",
-		"description": "A practical framework for CTOs deciding between LLM APIs, self-hosted models, and fine-tuning. Includes break-even analysis, cost calculations, and implementation patterns.",
+		"description": "A practical framework for CTOs deciding between LLM APIs, self-hosted models, and fine-tuning. Includes break-even analysis and cost calculations.",
 		"slug": "ai-cost-optimization",
 		"category": "infrastructure",
 		"tags": ["ai", "llm", "cost-optimization", "infrastructure", "self-hosting"],
 		"series": "ai-development"
 	},
 	{
-		"title": "AI TDD: Writing Tests First When Your Code Is Non-Deterministic",
-		"description": "AI-generated tests tend to test implementation, not intent. 50% of QA leaders cite flaky scripts as the primary AI testing challenge. Here's the TDD pattern that produces measurably better AI-assisted code.",
+		"title": "AI Security Red Team Playbook: Test Before You Ship",
+		"description": "45% of AI-generated code has vulnerabilities. 7 production attack vectors from prompt injection to tool poisoning. The CTO's pre-ship checklist.",
+		"slug": "ai-security-red-team-playbook",
+		"category": "architecture",
+		"tags": ["ai", "security", "red-team", "mcp-security", "owasp", "llm-security"],
+		"series": "ai-development"
+	},
+	{
+		"title": "AI TDD: Tests First When Code Is Non-Deterministic",
+		"description": "AI tests tend to test implementation, not intent. 50% of QA leaders cite flaky scripts as the top AI testing challenge. The TDD pattern that works.",
 		"slug": "ai-tdd-non-deterministic-code",
 		"category": "engineering",
 		"tags": ["ai", "tdd", "testing", "code-quality", "developer-workflow"],
 		"series": "ai-development"
 	},
 	{
-		"title": "AI-Assisted Development Guide: From Code Generation to Production LLMs",
-		"description": "A comprehensive framework for integrating AI into software development. Covers code generation, LLM architecture, prompt engineering, cost optimization, and team workflow changes.",
+		"title": "AI-Assisted Development Guide: Code Generation to Production",
+		"description": "A framework for integrating AI into software development. Covers code generation, LLM architecture, prompt engineering, cost optimization, and workflows.",
 		"slug": "ai-assisted-development-guide",
 		"category": "architecture",
 		"tags": ["ai", "llm", "code-generation", "prompt-engineering", "software-development"],
 		"series": "ai-development"
 	},
 	{
-		"title": "AI-Assisted Development: Navigating the Generative Debt Crisis",
+		"title": "AI-Assisted Development: The Generative Debt Crisis",
 		"description": "AI accelerates creation (55% faster) but increases defects (23.7% higher). Code churn is spiking. The verification-first workflow is essential.",
 		"slug": "ai-assisted-development-generative-debt",
 		"category": "business",
 		"tags": ["ai", "copilot", "technical-debt", "engineering"],
 		"series": "ai-development"
+	},
+	{
+		"title": "Anatomy of a High-Precision SaaS: 0 to 100k Users",
+		"description": "A technical deep-dive into architecting B2B SaaS that scales. Infrastructure economics, multi-tenant PostgreSQL, type-safe APIs, and the decisions that matter.",
+		"slug": "anatomy-of-high-precision-saas",
+		"category": "architecture",
+		"tags": ["architecture", "saas", "postgresql", "nextjs", "infrastructure"],
+		"series": "saas-architecture"
 	},
 	{
 		"title": "Atmospheric Animations: The Physics of Framer Motion",
@@ -86,8 +102,8 @@
 		"series": "engineering-leadership"
 	},
 	{
-		"title": "Building AI Features Users Actually Want: Product Strategy for AI Integration",
-		"description": "Ship AI features that solve real problems, not AI for AI's sake. Covers user research for AI features, the build vs buy decision for AI, measuring AI feature success, and avoiding the AI feature graveyard.",
+		"title": "Building AI Features Users Actually Want",
+		"description": "Ship AI features that solve real problems, not AI for AI's sake. User research, build vs buy, measuring success, avoiding the AI feature graveyard.",
 		"slug": "building-ai-features-users-want",
 		"category": "business",
 		"tags": ["ai", "product", "strategy", "features", "ux"],
@@ -110,7 +126,7 @@
 	},
 	{
 		"title": "Building Your First Engineering Team: The 5-Person Playbook",
-		"description": "The order you hire your first 5 engineers determines your startup's velocity for the next 2 years. Here's the sequence that works... based on helping 15+ startups make these decisions.",
+		"description": "The order you hire your first 5 engineers determines startup velocity for 2 years. The sequence that works, based on 15+ startup advisory engagements.",
 		"slug": "first-engineering-team-playbook",
 		"category": "business",
 		"tags": ["hiring", "startups", "engineering-management", "team-building", "leadership"],
@@ -118,15 +134,15 @@
 	},
 	{
 		"title": "Caching Strategies That Actually Work",
-		"description": "Everyone knows caching improves performance. Few teams implement it correctly. Here's the multi-layer caching architecture I recommend to SaaS teams... with the invalidation strategies that prevent stale data from becoming a support ticket.",
+		"description": "Everyone knows caching improves performance. Few implement it correctly. The multi-layer architecture and invalidation strategies that avoid stale data.",
 		"slug": "caching-strategies-production",
 		"category": "infrastructure",
 		"tags": ["caching", "redis", "cdn", "performance", "saas"],
 		"series": "performance-engineering"
 	},
 	{
-		"title": "CDN Strategy: When to Cache, What to Cache, How to Invalidate",
-		"description": "A properly configured CDN reduces origin load by 90%+ and cuts TTFB from 800ms to 50ms. Here's the caching strategy that actually works... without serving stale data to your users.",
+		"title": "CDN Strategy: When, What, and How to Invalidate",
+		"description": "A configured CDN cuts origin load 90%+ and TTFB from 800ms to 50ms. The caching strategy that works without serving stale data to users.",
 		"slug": "cdn-caching-strategy",
 		"category": "infrastructure",
 		"tags": ["cdn", "caching", "performance", "infrastructure", "cloudflare"],
@@ -142,7 +158,7 @@
 	},
 	{
 		"title": "Claude Code vs Cursor: A CTO's 90-Day Cost Analysis",
-		"description": "Not a feature matrix. A total cost analysis across licensing, tokens, workflow adoption, training time, and productivity delta. Real numbers from running both tools on a 10-person team.",
+		"description": "Not a feature matrix. Total cost across licensing, tokens, adoption, training, and productivity delta from running both on a 10-person team.",
 		"slug": "claude-code-vs-cursor-cost-analysis",
 		"category": "business",
 		"tags": ["ai", "claude-code", "cursor", "developer-tools", "cost-analysis", "cto"],
@@ -150,7 +166,7 @@
 	},
 	{
 		"title": "Code Review Practices That Scale",
-		"description": "Code review at 5 engineers is a conversation. At 50, it's a bottleneck. Here's how to scale review practices without sacrificing quality... from async review protocols to automated gates that catch 80% of issues before a human looks at the PR.",
+		"description": "Code review at 5 engineers is a conversation. At 50, it's a bottleneck. Scale review without sacrificing quality: async protocols and automated gates.",
 		"slug": "code-review-practices-scale",
 		"category": "business",
 		"tags": [
@@ -163,16 +179,16 @@
 		"series": "engineering-leadership"
 	},
 	{
-		"title": "Cognitive Debt: The Hidden Cost Your AI-Assisted Team Isn't Measuring",
-		"description": "Cognitive debt compounds faster than technical debt ... when engineers don't understand AI-generated code, the team loses its ability to reason about the system. Here's how to measure and manage it.",
+		"title": "Cognitive Debt: The Hidden Cost of AI-Assisted Teams",
+		"description": "Cognitive debt compounds faster than technical debt. When engineers don't understand AI-generated code, teams lose the ability to reason about the system.",
 		"slug": "cognitive-debt-ai-teams",
 		"category": "business",
 		"tags": ["ai", "cognitive-debt", "technical-debt", "engineering-leadership", "code-quality"],
 		"series": "ai-development"
 	},
 	{
-		"title": "Component API Design: Props, Variants, and Composition Patterns",
-		"description": "Design component APIs that developers love to use. Covers prop design, variant patterns, compound components, and building APIs that scale from simple use cases to complex customization.",
+		"title": "Component API Design: Props, Variants, Composition",
+		"description": "Design component APIs developers love. Prop design, variant patterns, compound components, and APIs that scale from simple to complex customization.",
 		"slug": "component-api-design",
 		"category": "frontend",
 		"tags": ["react", "design-systems", "components", "api-design", "typescript"],
@@ -180,7 +196,7 @@
 	},
 	{
 		"title": "Core Web Vitals Audit Checklist (2026 Update)",
-		"description": "Google's CWV thresholds haven't changed but the measurement methodology has. Here's the updated audit checklist with INP replacing FID, real-world field data strategies, and the optimizations that actually move the needle.",
+		"description": "CWV thresholds haven't changed but measurement has. The 2026 audit checklist with INP replacing FID, field data strategies, and real optimizations.",
 		"slug": "core-web-vitals-2026-audit",
 		"category": "frontend",
 		"tags": ["performance", "core-web-vitals", "seo", "inp", "lighthouse"],
@@ -188,7 +204,7 @@
 	},
 	{
 		"title": "Core Web Vitals Deep Dive: LCP, INP, CLS Optimization",
-		"description": "Google's Core Web Vitals are a ranking factor... but more importantly, they correlate with conversion rates. Here's how to hit green scores without sacrificing functionality.",
+		"description": "Core Web Vitals are a ranking factor, but more importantly they correlate with conversion. How to hit green scores without sacrificing functionality.",
 		"slug": "core-web-vitals-optimization",
 		"category": "frontend",
 		"tags": ["performance", "core-web-vitals", "nextjs", "frontend", "seo"],
@@ -196,7 +212,7 @@
 	},
 	{
 		"title": "Database Migrations That Won't Wake You at 3 AM",
-		"description": "Most SaaS teams treat database migrations as a deployment step. They're an architecture decision. Here's the pattern comparison, rollback strategy, and zero-downtime playbook I use with advisory clients.",
+		"description": "Most SaaS teams treat DB migrations as a deploy step. They're an architecture decision. Pattern comparison, rollback, and zero-downtime playbook.",
 		"slug": "database-migration-patterns",
 		"category": "infrastructure",
 		"tags": ["database", "migrations", "saas", "postgresql", "zero-downtime"],
@@ -211,8 +227,8 @@
 		"series": "saas-architecture"
 	},
 	{
-		"title": "Design Tokens Beyond Color: Typography, Spacing, and Elevation",
-		"description": "Most design token implementations stop at colors. A complete token system covers typography, spacing, elevation, animation, and breakpoints... creating true design-to-code synchronization.",
+		"title": "Design Tokens Beyond Color: Typography and Spacing",
+		"description": "Most design token systems stop at colors. A complete system covers typography, spacing, elevation, animation, and breakpoints for design-to-code sync.",
 		"slug": "design-tokens-comprehensive",
 		"category": "frontend",
 		"tags": ["design-systems", "design-tokens", "tailwind", "figma", "frontend"],
@@ -220,7 +236,7 @@
 	},
 	{
 		"title": "Documentation That Engineers Actually Read",
-		"description": "Your team has documentation. Nobody reads it. Here's why... and the 4 documentation types that engineers actually use, with the templates and maintenance strategies that keep docs accurate past the first week.",
+		"description": "Your team has docs. Nobody reads them. The 4 documentation types engineers actually use, with templates and maintenance that keeps docs accurate.",
 		"slug": "documentation-engineers-read",
 		"category": "business",
 		"tags": ["documentation", "engineering-culture", "developer-experience", "leadership"],
@@ -228,7 +244,7 @@
 	},
 	{
 		"title": "Edge Computing: When Worth the Complexity",
-		"description": "Edge computing promises sub-50ms latency worldwide. It also promises configuration nightmares, data consistency puzzles, and debugging sessions you'll regret. Here's the decision framework for when edge actually delivers ROI.",
+		"description": "Edge computing promises sub-50ms latency worldwide. It also delivers config nightmares and consistency puzzles. The decision framework for real ROI.",
 		"slug": "edge-computing-saas",
 		"category": "infrastructure",
 		"tags": ["edge-computing", "performance", "cloudflare", "latency", "saas"],
@@ -236,7 +252,7 @@
 	},
 	{
 		"title": "Engineering Leadership: The Founder to CTO Journey",
-		"description": "A comprehensive guide to engineering leadership... from solo founder writing code to CTO leading 50+ engineers. Covers hiring, team structure, technical debt, and the transition from IC to executive.",
+		"description": "A guide to engineering leadership from solo founder to CTO leading 50+ engineers. Hiring, team structure, technical debt, and the IC-to-exec transition.",
 		"slug": "engineering-leadership-founder-to-cto",
 		"category": "business",
 		"tags": ["leadership", "cto", "hiring", "engineering-management", "startups"],
@@ -244,7 +260,7 @@
 	},
 	{
 		"title": "Event-Driven Architecture for SaaS at Scale",
-		"description": "Most SaaS teams adopt event-driven architecture too early or too late. Here's the decision framework, pattern comparison, and cost analysis for getting the timing right.",
+		"description": "Most SaaS teams adopt event-driven architecture too early or too late. Decision framework, pattern comparison, and cost analysis for the right timing.",
 		"slug": "event-driven-architecture-saas",
 		"category": "architecture",
 		"tags": ["architecture", "saas", "event-driven", "kafka", "microservices"],
@@ -252,7 +268,7 @@
 	},
 	{
 		"title": "Fractional CTO vs Full-Time CTO: When Each Makes Sense",
-		"description": "A full-time CTO costs $300-500K+ annually. A fractional CTO costs $5-15K/month. The decision isn't about money... it's about what your startup actually needs right now.",
+		"description": "A full-time CTO costs $300-500K+ annually. A fractional CTO costs $5-15K/month. The decision isn't about money, it's about what your startup needs now.",
 		"slug": "fractional-cto-vs-full-time",
 		"category": "business",
 		"tags": ["startups", "leadership", "cto", "hiring", "strategy"],
@@ -275,8 +291,8 @@
 		"series": "saas-architecture"
 	},
 	{
-		"title": "Hiring for AI Engineering: Separating Real Competence from Resume Fluff",
-		"description": "AI engineer salaries hit $206K average in 2025, up $50K YoY. Nearly 90% of companies created new AI roles. Most job descriptions are wrong. Here's what to actually look for... and what sounds impressive but indicates nothing.",
+		"title": "Hiring AI Engineers: Competence vs Resume Fluff",
+		"description": "AI engineer salaries hit $206K average in 2025, up $50K YoY. 90% of companies created AI roles. What to look for, and what sounds impressive but isn't.",
 		"slug": "hiring-ai-engineers",
 		"category": "business",
 		"tags": ["ai", "hiring", "ai-engineer", "engineering-leadership", "talent"],
@@ -284,7 +300,7 @@
 	},
 	{
 		"title": "Hiring Your First Staff Engineer",
-		"description": "Staff engineer is the most misunderstood role in SaaS companies. Most teams hire too early, hire for the wrong skills, or create a title without a mandate. Here's when to hire, what to look for, and how to set them up for success.",
+		"description": "Staff engineer is the most misunderstood role in SaaS. Teams hire too early, wrong skills, or a title without a mandate. When, what, and how to succeed.",
 		"slug": "hiring-first-staff-engineer",
 		"category": "business",
 		"tags": ["hiring", "staff-engineer", "leadership", "engineering-culture", "saas"],
@@ -443,8 +459,8 @@
 		"series": "frontend-architecture"
 	},
 	{
-		"title": "Stop Calling It Vibe Coding: What AI-Assisted Development Actually Requires",
-		"description": "The discourse around AI coding is dominated by two wrong camps. One says AI can't build anything real. The other says anyone can ship enterprise software overnight. Both are wrong. Here's what it actually takes.",
+		"title": "Stop Calling It Vibe Coding: What AI Development Requires",
+		"description": "The AI coding discourse is split between two wrong camps. One says AI builds nothing real. The other says anyone ships overnight. Here's what it takes.",
 		"slug": "ai-assisted-development-reality",
 		"category": "engineering",
 		"tags": ["ai", "claude-code", "software-development", "vibe-coding", "engineering"],
@@ -483,28 +499,12 @@
 		"series": "saas-architecture"
 	},
 	{
-		"title": "The AI Security Red Team Playbook: What to Test Before You Ship",
-		"description": "45% of AI-generated code contains security vulnerabilities. 7 confirmed production attack vectors from prompt injection to tool poisoning. Here's the CTO's checklist before shipping any AI-augmented system.",
-		"slug": "ai-security-red-team-playbook",
-		"category": "architecture",
-		"tags": ["ai", "security", "red-team", "mcp-security", "owasp", "llm-security"],
-		"series": "ai-development"
-	},
-	{
 		"title": "The AI Technical Debt Bomb: A CTO's Accounting Framework",
-		"description": "$1.5T projected AI-generated technical debt by 2027. GitClear shows 60% decline in refactoring, 8x increase in copy-paste code. Here's the audit checklist and remediation playbook.",
+		"description": "$1.5T projected AI technical debt by 2027. GitClear: 60% decline in refactoring, 8x copy-paste code. The audit checklist and remediation playbook.",
 		"slug": "ai-technical-debt-bomb",
 		"category": "business",
 		"tags": ["ai", "technical-debt", "code-quality", "engineering-leadership", "cto"],
 		"series": "ai-development"
-	},
-	{
-		"title": "The Anatomy of a High-Precision SaaS: From Zero to 100k Users",
-		"description": "A technical deep-dive into architecting B2B SaaS that scales. Infrastructure economics, multi-tenant PostgreSQL, type-safe APIs, and the decisions that matter.",
-		"slug": "anatomy-of-high-precision-saas",
-		"category": "architecture",
-		"tags": ["architecture", "saas", "postgresql", "nextjs", "infrastructure"],
-		"series": "saas-architecture"
 	},
 	{
 		"title": "The Build vs. Buy Decision: When Free Actually Costs More",
@@ -524,7 +524,7 @@
 	},
 	{
 		"title": "The Enterprise AI-SDLC Integration Blueprint",
-		"description": "30%+ of enterprise AI projects die after POC. Only 3.1% of developers highly trust AI output. Going from 'we let people use Copilot' to a coherent AI development practice requires 5 evaluation gates.",
+		"description": "30%+ of enterprise AI projects die after POC. Only 3.1% of devs trust AI output. Going from 'people use Copilot' to a real AI practice needs 5 gates.",
 		"slug": "enterprise-ai-sdlc-blueprint",
 		"category": "business",
 		"tags": ["ai", "enterprise", "sdlc", "governance", "compliance", "engineering-leadership"],
@@ -532,7 +532,7 @@
 	},
 	{
 		"title": "The Hidden Tax of \"We Support Both\"",
-		"description": "Every SaaS team eventually says \"we''ll support both\" ... both databases, both auth providers, both deployment targets. The hidden cost isn''t the initial implementation. It''s the 2x testing matrix, 2x documentation, and the subtle bugs that only appear in one configuration.",
+		"description": "Every SaaS team says \"we''ll support both\" databases, auth, or deploy targets. The hidden cost: 2x testing, 2x docs, and bugs in one configuration.",
 		"slug": "hidden-tax-supporting-both",
 		"category": "business",
 		"tags": ["architecture", "saas", "technical-debt", "decision-making", "strategy"],
