@@ -6,9 +6,14 @@ on:
   pull_request:
     branches: [main]
 
+# CI is safe to cancel on superseding pushes — it's read-only validation.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+# CI reads code and uploads artifacts/coverage only — no write scopes needed.
+permissions:
+  contents: read
 
 env:
   NODE_VERSION: "20"
@@ -17,6 +22,7 @@ jobs:
   lint:
     name: Lint & Format
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
 
@@ -41,6 +47,7 @@ jobs:
   typecheck:
     name: Type Check
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
 
@@ -59,6 +66,7 @@ jobs:
   test:
     name: Unit Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
 
@@ -93,9 +101,12 @@ jobs:
   code-quality:
     name: AI Code Quality
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
 
+      # karpeslop is pinned to an exact version (1.0.25) — do NOT change to a
+      # floating tag. Advisory-only: failures do not block the run.
       - name: KarpeSlop AI Quality Check
         run: npx karpeslop@1.0.25 --quiet --strict
         continue-on-error: true
@@ -103,6 +114,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [lint, typecheck, test]
     steps:
       - uses: actions/checkout@v6

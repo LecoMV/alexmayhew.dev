@@ -1,3 +1,16 @@
+# Dependabot config.
+#
+# Design notes:
+# - Weekly (Monday 09:00 UTC) cadence matches a weekly review ritual; daily
+#   creates noise. Security updates bypass the schedule automatically.
+# - Groups isolate blast radius: @types/* and eslint tooling get their own
+#   batch so a bad type update doesn't drag in a runtime regression.
+# - `next` and `react*` are pinned in package.json (next@15.5.9) per the
+#   deploy rules — they're still grouped here for minor/patch, but major
+#   bumps stay out (only minor/patch are requested).
+# - Security updates are NOT grouped — each should get its own PR for fast
+#   review and merge. GitHub auto-creates security PRs independent of
+#   these groups.
 version: 2
 updates:
   - package-ecosystem: "npm"
@@ -8,8 +21,28 @@ updates:
       time: "09:00"
       timezone: "UTC"
     open-pull-requests-limit: 10
+    # Higher priority for security updates — Dependabot applies this
+    # automatically when a vuln is found; declaring it keeps intent explicit.
+    versioning-strategy: "increase"
     groups:
+      # Types-only updates are low risk — batch aggressively.
+      types:
+        applies-to: "version-updates"
+        patterns:
+          - "@types/*"
+      # ESLint + TypeScript toolchain moves together to avoid peer-dep drift.
+      typescript-eslint:
+        applies-to: "version-updates"
+        update-types:
+          - "minor"
+          - "patch"
+        patterns:
+          - "eslint*"
+          - "typescript"
+          - "@typescript-eslint/*"
+      # Dev dependencies batch — patterns exclude the other groups.
       dev-dependencies:
+        applies-to: "version-updates"
         dependency-type: "development"
         update-types:
           - "minor"
@@ -19,8 +52,12 @@ updates:
         exclude-patterns:
           - "eslint*"
           - "typescript"
+          - "@typescript-eslint/*"
           - "@types/*"
+      # Production deps are risk-ranked: next/react get their own group
+      # because framework bumps need manual review regardless of size.
       production-dependencies:
+        applies-to: "version-updates"
         dependency-type: "production"
         update-types:
           - "minor"
@@ -29,22 +66,18 @@ updates:
           - "*"
         exclude-patterns:
           - "next"
-          - "react*"
-      typescript-eslint:
-        update-types:
-          - "minor"
-          - "patch"
-        patterns:
-          - "eslint*"
-          - "typescript"
-          - "@types/*"
+          - "react"
+          - "react-*"
+          - "@next/*"
       react-next:
+        applies-to: "version-updates"
         update-types:
           - "minor"
           - "patch"
         patterns:
           - "next"
-          - "react*"
+          - "react"
+          - "react-*"
           - "@next/*"
     commit-message:
       prefix: "deps"
@@ -58,6 +91,12 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
+    # Batch all Actions updates — they're all low-risk version pin bumps.
+    groups:
+      actions:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
     commit-message:
       prefix: "ci"
     labels:

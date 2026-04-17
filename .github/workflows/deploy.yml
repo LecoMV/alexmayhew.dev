@@ -6,9 +6,16 @@ on:
   pull_request:
     branches: [main]
 
+# Deploy must never be interrupted. cancel-in-progress=false prevents a newer
+# push from killing an in-flight prod deploy mid-step (which could leave
+# wrangler in a half-deployed state where secrets are out-of-sync with code).
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: false
+
+# Restrictive default. Jobs that need more declare their own permissions block.
+permissions:
+  contents: read
 
 env:
   NODE_VERSION: "20"
@@ -20,6 +27,7 @@ jobs:
   validate:
     name: Validate Build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -87,6 +95,7 @@ jobs:
     needs: validate
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       deployments: write
@@ -147,6 +156,7 @@ jobs:
     needs: validate
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: read
       deployments: write
@@ -181,17 +191,28 @@ jobs:
 
       - name: Validate required secrets are non-empty
         env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           LISTMONK_API_URL: ${{ secrets.LISTMONK_API_URL }}
           LISTMONK_API_USER: ${{ secrets.LISTMONK_API_USER }}
           LISTMONK_API_KEY: ${{ secrets.LISTMONK_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
         run: |
+          # Hard-required — deploy itself fails without these
+          [[ -n "$CLOUDFLARE_API_TOKEN" ]]  || { echo "::error::CLOUDFLARE_API_TOKEN empty"; exit 1; }
+          [[ -n "$CLOUDFLARE_ACCOUNT_ID" ]] || { echo "::error::CLOUDFLARE_ACCOUNT_ID empty"; exit 1; }
+          # Hard-required — runtime features will silently fail without these
           [[ -n "$LISTMONK_API_URL" ]]   || { echo "::error::LISTMONK_API_URL empty"; exit 1; }
           [[ -n "$LISTMONK_API_USER" ]]  || { echo "::error::LISTMONK_API_USER empty"; exit 1; }
           [[ -n "$LISTMONK_API_KEY" ]]   || { echo "::error::LISTMONK_API_KEY empty"; exit 1; }
           [[ -n "$RESEND_API_KEY" ]]     || { echo "::error::RESEND_API_KEY empty"; exit 1; }
           [[ -n "$CONTACT_EMAIL" ]]      || { echo "::error::CONTACT_EMAIL empty"; exit 1; }
+          # Soft-required — post-deploy steps that degrade gracefully; warn only
+          [[ -n "$INDEXNOW_KEY" ]]              || echo "::warning::INDEXNOW_KEY empty — IndexNow submission will be skipped"
+          [[ -n "$GSC_SERVICE_ACCOUNT_JSON" ]]  || echo "::warning::GSC_SERVICE_ACCOUNT_JSON empty — sitemap submission will be skipped"
           echo "All required secrets are present."
 
       - name: Deploy to Cloudflare Workers

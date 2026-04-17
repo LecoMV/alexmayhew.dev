@@ -1,9 +1,14 @@
+# CODEOWNERS — used for automatic review assignment on PRs.
+# GitHub matches these paths to actual GitHub user/team handles. The
+# previous file referenced @alexmayhew (a non-existent handle on this
+# repo) and silently matched nothing — fixed to the real owner.
+
 # Default owners for everything in the repo
-* @alexmayhew
+* @LecoMV
 
 # Frontend components
-/src/components/ @alexmayhew
+/src/components/ @LecoMV
 
 # Configuration files
-*.config.* @alexmayhew
-.github/ @alexmayhew
+*.config.* @LecoMV
+.github/ @LecoMV

@@ -12,6 +12,9 @@ on:
         default: "false"
         type: boolean
 
+# Needs contents:write for the auto-commit at the end. DEPLOY_PAT is used
+# on checkout specifically so the push triggers Deploy (GITHUB_TOKEN pushes
+# do not emit push events — the deploy would never fire otherwise).
 permissions:
   contents: write
 
@@ -19,6 +22,7 @@ jobs:
   publish:
     name: Publish Due Posts
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v6

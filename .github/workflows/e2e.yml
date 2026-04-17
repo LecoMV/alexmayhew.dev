@@ -1,5 +1,9 @@
 name: E2E Tests
 
+# E2E is ADVISORY, not a deploy gate. It is not listed in Deploy workflow's
+# `needs:`, which is intentional: Playwright flakes (browser downloads, network)
+# historically caused false failures that blocked urgent deploys. A red E2E
+# should still be investigated; it is just not required branch-protection.
 on:
   push:
     branches: [main]
@@ -10,6 +14,10 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+# E2E only reads code and uploads failure artifacts; no write scopes needed.
+permissions:
+  contents: read
 
 env:
   NODE_VERSION: "20"

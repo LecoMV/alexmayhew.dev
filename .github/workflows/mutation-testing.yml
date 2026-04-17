@@ -9,6 +9,10 @@ concurrency:
   group: mutation-testing
   cancel-in-progress: true
 
+# Mutation testing reads code and uploads an artifact — read-only scope.
+permissions:
+  contents: read
+
 env:
   NODE_VERSION: "20"
 
@@ -16,6 +20,9 @@ jobs:
   mutation:
     name: Stryker Mutation Testing
     runs-on: ubuntu-latest
+    # Mutation testing is slow by design (every mutant is a test run). 60m
+    # is a ceiling, not a target — if a run approaches this, investigate.
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v6
 
