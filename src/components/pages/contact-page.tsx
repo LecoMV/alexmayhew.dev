@@ -174,6 +174,8 @@ export function ContactPage() {
 									id="email"
 									name="email"
 									required
+									aria-invalid={Boolean(state.error)}
+									aria-describedby={state.error ? "contact-error" : undefined}
 									className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white placeholder:text-slate-text w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
 									placeholder="your@email.com"
 								/>
@@ -191,6 +193,8 @@ export function ContactPage() {
 									name="message"
 									required
 									rows={6}
+									aria-invalid={Boolean(state.error)}
+									aria-describedby={state.error ? "contact-error" : undefined}
 									className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white placeholder:text-slate-text w-full resize-none border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
 									placeholder="A quick question, a project brief, or anything in between..."
 								/>
@@ -376,9 +380,11 @@ export function ContactPage() {
 							{/* Submit Button */}
 							<ContactSubmitButton success={state.success} />
 
-							{/* Success Message */}
+							{/* Success Message: role="status" announces to screen readers
+							    without interrupting like role="alert" would. */}
 							{state.success && (
 								<m.p
+									role="status"
 									initial={{ opacity: 0, y: 10 }}
 									animate={{ opacity: 1, y: 0 }}
 									className="text-cyber-lime font-mono text-sm"
@@ -390,6 +396,7 @@ export function ContactPage() {
 							{/* Error Message */}
 							{state.error && (
 								<m.div
+									id="contact-error"
 									initial={{ opacity: 0, y: 10 }}
 									animate={{ opacity: 1, y: 0 }}
 									className="flex items-center gap-4"

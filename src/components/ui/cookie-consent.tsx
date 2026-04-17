@@ -134,10 +134,13 @@ export function CookieConsent() {
 									</button>
 								</div>
 							</div>
+							{/* X button decides (declines) consent — the label has to say so.
+							    "Close" would imply a neutral dismiss, but there is no neutral
+							    state: the handler calls handleDecline. */}
 							<button
 								onClick={handleDecline}
 								className="text-slate-text hover:text-mist-white transition-colors"
-								aria-label="Close"
+								aria-label="Decline and close"
 							>
 								<X className="h-5 w-5" strokeWidth={1.5} />
 							</button>
