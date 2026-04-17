@@ -6,18 +6,21 @@ import { ServicesPage } from "./services-page-content";
 
 import type { Metadata } from "next";
 
+const PAGE_TITLE = "Technical Advisory Services";
+const OG_IMAGE_PATH = "/og-image.png";
+
 export const metadata: Metadata = {
-	title: "Technical Advisory Services",
+	title: PAGE_TITLE,
 	description:
 		"Strategic technical guidance for founders and CTOs. Architecture decisions that compound into competitive advantage. Next.js, React, TypeScript, and enterprise systems.",
 	openGraph: {
-		title: "Technical Advisory Services",
+		title: PAGE_TITLE,
 		description:
 			"Strategic technical guidance for founders and CTOs. Architecture decisions that compound into competitive advantage.",
 		type: "website",
 		images: [
 			{
-				url: "/og-image.png",
+				url: OG_IMAGE_PATH,
 				width: 1200,
 				height: 630,
 				alt: "Alex Mayhew - Technical Advisory Services",
@@ -26,10 +29,10 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Technical Advisory Services",
+		title: PAGE_TITLE,
 		description:
 			"Strategic technical guidance for founders and CTOs. Architecture decisions that compound into competitive advantage.",
-		images: ["/og-image.png"],
+		images: [OG_IMAGE_PATH],
 	},
 	alternates: {
 		canonical: "/services",
@@ -45,7 +48,7 @@ function ServicesHubJsonLd() {
 	const itemListSchema = {
 		"@context": "https://schema.org",
 		"@type": "ItemList",
-		name: "Technical Advisory Services",
+		name: PAGE_TITLE,
 		description:
 			"Strategic technical guidance for founders and CTOs building with modern web technologies.",
 		numberOfItems: pages.length,

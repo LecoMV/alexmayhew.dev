@@ -18,6 +18,8 @@ const specs: Spec[] = [
 	{ label: "Architecture", value: "Type-safe, sandboxed" },
 ];
 
+const STATUS_COMING_SOON = "coming-soon";
+
 interface PlatformRequirements {
 	os: string;
 	arch: string;
@@ -83,18 +85,20 @@ export function TechSpecs() {
 						<div
 							key={platform}
 							className={`border p-4 ${
-								reqs.status === "coming-soon" ? "border-white/5 bg-white/[0.02]" : "border-white/10"
+								reqs.status === STATUS_COMING_SOON
+									? "border-white/5 bg-white/[0.02]"
+									: "border-white/10"
 							}`}
 						>
 							<div className="mb-3 flex items-center justify-between">
 								<h4
 									className={`font-mono text-sm capitalize ${
-										reqs.status === "coming-soon" ? "text-slate-text" : "text-cyber-lime"
+										reqs.status === STATUS_COMING_SOON ? "text-slate-text" : "text-cyber-lime"
 									}`}
 								>
 									{platform}
 								</h4>
-								{reqs.status === "coming-soon" && (
+								{reqs.status === STATUS_COMING_SOON && (
 									<span className="border-signal-warn/30 bg-signal-warn/10 text-signal-warn border px-2 py-0.5 font-mono text-[10px]">
 										Coming Soon
 									</span>
@@ -105,7 +109,7 @@ export function TechSpecs() {
 									<span className="text-slate-text">OS</span>
 									<span
 										className={
-											reqs.status === "coming-soon"
+											reqs.status === STATUS_COMING_SOON
 												? "text-slate-text/70 text-right"
 												: "text-mist-white text-right"
 										}
@@ -117,7 +121,7 @@ export function TechSpecs() {
 									<span className="text-slate-text">Architecture</span>
 									<span
 										className={
-											reqs.status === "coming-soon" ? "text-slate-text/70" : "text-mist-white"
+											reqs.status === STATUS_COMING_SOON ? "text-slate-text/70" : "text-mist-white"
 										}
 									>
 										{reqs.arch}
@@ -127,7 +131,7 @@ export function TechSpecs() {
 									<span className="text-slate-text">Disk Space</span>
 									<span
 										className={
-											reqs.status === "coming-soon" ? "text-slate-text/70" : "text-mist-white"
+											reqs.status === STATUS_COMING_SOON ? "text-slate-text/70" : "text-mist-white"
 										}
 									>
 										{reqs.disk}
