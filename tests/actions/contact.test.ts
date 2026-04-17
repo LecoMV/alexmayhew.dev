@@ -45,6 +45,7 @@ const validData = {
 	email: "test@example.com",
 	projectType: "web-app" as const,
 	budget: "10k-25k" as const,
+	referralSource: "" as const,
 	message: "This is a valid message for testing purposes.",
 	turnstileToken: "valid-token",
 };
