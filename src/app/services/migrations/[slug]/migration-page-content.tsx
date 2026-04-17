@@ -8,7 +8,6 @@ import {
 	ChevronDown,
 	Clock,
 	DollarSign,
-	HelpCircle,
 	Shield,
 	Target,
 	TrendingUp,
@@ -18,8 +17,8 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 
-import { trackCTAClick } from "@/components/analytics";
-import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
+import { CtaSection } from "@/components/pseo/cta-section";
+import { FaqAccordion } from "@/components/pseo/faq-accordion";
 import { RelatedBlogPostsSection } from "@/components/seo";
 import { CornerBrackets } from "@/components/ui/corner-brackets";
 import { fadeInUp, springTransition, staggerContainer } from "@/lib/motion-constants";
@@ -87,7 +86,7 @@ export function MigrationPageContent({
 				)}
 
 				{/* FAQs */}
-				<FaqSection faqs={page.faqs} />
+				<FaqAccordion faqs={page.faqs} heading="Migration_FAQs" initialOpenIndex={0} />
 
 				{/* Related Blog Posts */}
 				<RelatedBlogPostsSection slugs={page.relatedBlogPosts} />
@@ -98,7 +97,14 @@ export function MigrationPageContent({
 				)}
 
 				{/* CTA Section */}
-				<CtaSection page={page} />
+				<CtaSection
+					title={`Ready to escape ${page.legacyTech.name}?`}
+					description={`Every week of delay means accumulating technical debt, security exposure, and missed opportunities. Let's architect your path to ${page.modernTech.name}.`}
+					ctaLabel="AUDIT_SYSTEM()"
+					ctaEventName="audit_system"
+					ctaLocation="migration_bottom_cta"
+					footnote="Free 30-minute migration assessment"
+				/>
 			</div>
 		</section>
 	);
@@ -773,65 +779,6 @@ function ComplianceSection({
 	);
 }
 
-function FaqSection({ faqs }: { faqs: MigrationPage["faqs"] }) {
-	const [openIndex, setOpenIndex] = useState<number | null>(0);
-
-	return (
-		<m.section
-			className="mb-20"
-			initial="hidden"
-			whileInView="visible"
-			viewport={{ once: true, margin: "-100px" }}
-			variants={staggerContainer}
-		>
-			<m.h2
-				variants={fadeInUp}
-				className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase"
-			>
-				<span className="mr-2 animate-pulse" aria-hidden="true">
-					●
-				</span>
-				Migration_FAQs
-			</m.h2>
-
-			<m.div variants={fadeInUp} className="space-y-4">
-				{faqs.map((faq, index) => (
-					<div key={index} className="bg-gunmetal-glass/20 overflow-hidden border border-white/10">
-						<button
-							onClick={() => setOpenIndex(openIndex === index ? null : index)}
-							className="flex w-full items-center justify-between p-6 text-left"
-							aria-expanded={openIndex === index}
-						>
-							<div className="flex items-center gap-4">
-								<HelpCircle className="text-cyber-lime h-5 w-5 flex-shrink-0" />
-								<span className="text-mist-white font-mono text-sm">{faq.question}</span>
-							</div>
-							<ChevronDown
-								className={cn(
-									"text-slate-text h-5 w-5 flex-shrink-0 transition-transform duration-300",
-									openIndex === index && "rotate-180"
-								)}
-							/>
-						</button>
-
-						{openIndex === index && (
-							<m.div
-								initial={{ height: 0, opacity: 0 }}
-								animate={{ height: "auto", opacity: 1 }}
-								exit={{ height: 0, opacity: 0 }}
-								transition={springTransition}
-								className="border-t border-white/10 px-6 py-4"
-							>
-								<p className="text-slate-text pl-9 text-sm leading-relaxed">{faq.answer}</p>
-							</m.div>
-						)}
-					</div>
-				))}
-			</m.div>
-		</m.section>
-	);
-}
-
 function RelatedServicesSection({
 	relatedServicePages,
 }: {
@@ -878,57 +825,6 @@ function RelatedServicesSection({
 						</div>
 					</Link>
 				))}
-			</m.div>
-		</m.section>
-	);
-}
-
-function CtaSection({ page }: { page: MigrationPage }) {
-	return (
-		<m.section
-			className="mb-10"
-			initial="hidden"
-			whileInView="visible"
-			viewport={{ once: true, margin: "-100px" }}
-			variants={staggerContainer}
-		>
-			<m.div
-				variants={fadeInUp}
-				className="bg-gunmetal-glass/30 relative border border-white/10 p-8 text-center sm:p-12"
-			>
-				<div className="border-cyber-lime absolute top-0 right-0 h-4 w-4 border-t border-r" />
-				<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b border-l" />
-
-				<h2 className="text-mist-white mb-4 font-mono text-2xl tracking-tight sm:text-3xl">
-					Ready to escape {page.legacyTech.name}?
-				</h2>
-				<p className="text-slate-text mx-auto mb-8 max-w-2xl">
-					Every week of delay means accumulating technical debt, security exposure, and missed
-					opportunities. Let&apos;s architect your path to {page.modernTech.name}.
-				</p>
-
-				<Link
-					href="/contact"
-					onClick={() => trackCTAClick("audit_system", { cta_location: "migration_bottom_cta" })}
-					className="group hover:border-cyber-lime relative inline-flex items-center gap-2 border border-white/20 px-8 py-4 transition-colors duration-300"
-				>
-					<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">
-						AUDIT_SYSTEM()
-					</span>
-					<ArrowRight className="group-hover:text-cyber-lime h-4 w-4 transition-colors" />
-					<div className="bg-cyber-lime/5 absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-				</Link>
-
-				<p className="text-slate-text mt-6 font-mono text-xs">
-					Free 30-minute migration assessment
-				</p>
-
-				<div className="mt-8 border-t border-white/10 pt-8">
-					<p className="text-slate-text mb-4 text-center font-mono text-xs tracking-wider uppercase">
-						Not ready to talk? Stay in the loop.
-					</p>
-					<NewsletterSignup variant="minimal" />
-				</div>
 			</m.div>
 		</m.section>
 	);

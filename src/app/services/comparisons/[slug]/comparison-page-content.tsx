@@ -15,8 +15,7 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 
-import { trackCTAClick } from "@/components/analytics";
-import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
+import { CtaSection } from "@/components/pseo/cta-section";
 import { RelatedBlogPostsSection } from "@/components/seo";
 import { fadeInUp, springTransition, staggerContainer } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
@@ -96,7 +95,13 @@ export function ComparisonPageContent({
 				)}
 
 				{/* CTA Section */}
-				<CtaSection page={page} />
+				<CtaSection
+					title="Need help deciding?"
+					description={`I help technical leaders evaluate technology choices for their specific context. Let's discuss whether ${page.optionA.name} or ${page.optionB.name} is right for your project.`}
+					ctaLabel="SCHEDULE_CONSULTATION()"
+					ctaEventName="schedule_consultation"
+					ctaLocation="comparison_bottom_cta"
+				/>
 			</div>
 		</section>
 	);
@@ -912,55 +917,6 @@ function RelatedServicesSection({
 						<ArrowRight className="text-slate-text group-hover:text-cyber-lime absolute right-4 bottom-4 h-4 w-4 transition-colors" />
 					</Link>
 				))}
-			</m.div>
-		</m.section>
-	);
-}
-
-function CtaSection({ page }: { page: ComparisonPage }) {
-	return (
-		<m.section
-			initial="hidden"
-			whileInView="visible"
-			viewport={{ once: true, margin: "-100px" }}
-			variants={staggerContainer}
-		>
-			<m.div
-				variants={fadeInUp}
-				className="bg-gunmetal-glass/30 relative border border-white/10 p-8 md:p-12"
-			>
-				<div className="border-cyber-lime absolute top-0 right-0 h-8 w-8 border-t-2 border-r-2" />
-				<div className="border-cyber-lime absolute bottom-0 left-0 h-8 w-8 border-b-2 border-l-2" />
-
-				<div className="mx-auto max-w-2xl text-center">
-					<h2 className="text-mist-white mb-4 font-mono text-2xl md:text-3xl">
-						Need help deciding?
-					</h2>
-					<p className="text-slate-text mb-8">
-						I help technical leaders evaluate technology choices for their specific context.
-						Let&apos;s discuss whether {page.optionA.name} or {page.optionB.name} is right for your
-						project.
-					</p>
-					<Link
-						href="/contact"
-						onClick={() =>
-							trackCTAClick("schedule_consultation", { cta_location: "comparison_bottom_cta" })
-						}
-						className="group hover:border-cyber-lime inline-flex items-center gap-2 border border-white/20 px-8 py-4 transition-colors"
-					>
-						<span className="group-hover:text-cyber-lime font-mono tracking-tight transition-colors">
-							SCHEDULE_CONSULTATION()
-						</span>
-						<ArrowRight className="group-hover:text-cyber-lime h-4 w-4 transition-colors" />
-					</Link>
-
-					<div className="mt-8 border-t border-white/10 pt-8">
-						<p className="text-slate-text mb-4 text-center font-mono text-xs tracking-wider uppercase">
-							Not ready to talk? Stay in the loop.
-						</p>
-						<NewsletterSignup variant="minimal" />
-					</div>
-				</div>
 			</m.div>
 		</m.section>
 	);
