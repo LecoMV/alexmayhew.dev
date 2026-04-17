@@ -95,6 +95,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			changeFrequency: "monthly",
 			priority: 0.7,
 		},
+		{
+			url: `${siteUrl}/glossary`,
+			lastModified: siteLastUpdated,
+			changeFrequency: "monthly",
+			priority: 0.5,
+		},
 		// Low-priority technical pages
 		{
 			url: `${siteUrl}/privacy`,
