@@ -37,56 +37,54 @@ function hasCyberLimeBg(className: string): boolean {
 /** Forbidden text classes on cyber-lime backgrounds */
 const FORBIDDEN_TEXT_ON_LIME = ["text-slate-text", "text-mist-white"];
 
+type ContrastViolation = { line: number; className: string; violation: string };
+
+/**
+ * Given a class string, return every forbidden-text violation on a
+ * high-opacity cyber-lime background. Empty array when safe.
+ */
+function collectForbiddenTextViolations(
+	classValue: string,
+	lineNumber: number
+): ContrastViolation[] {
+	if (!hasCyberLimeBg(classValue)) return [];
+	const found: ContrastViolation[] = [];
+	for (const forbidden of FORBIDDEN_TEXT_ON_LIME) {
+		if (classValue.includes(forbidden)) {
+			found.push({
+				line: lineNumber,
+				className: classValue,
+				violation: `${forbidden} on cyber-lime background`,
+			});
+		}
+	}
+	return found;
+}
+
 /**
  * Scan a source file for className strings containing bg-cyber-lime
  * at high opacity with forbidden text colors in the same className.
  */
-function findContrastViolationsInFile(
-	filePath: string
-): Array<{ line: number; className: string; violation: string }> {
+function findContrastViolationsInFile(filePath: string): ContrastViolation[] {
 	const content = fs.readFileSync(filePath, "utf-8");
 	const lines = content.split("\n");
-	const violations: Array<{ line: number; className: string; violation: string }> = [];
+	const violations: ContrastViolation[] = [];
 
 	for (let i = 0; i < lines.length; i++) {
 		const line = lines[i];
+		const lineNumber = i + 1;
 
-		// Find className strings (both static and cn() calls)
-		// Match className="..." patterns
-		const classNameMatches = line.matchAll(/className="([^"]+)"/g);
-		for (const match of classNameMatches) {
-			const classValue = match[1];
-			if (hasCyberLimeBg(classValue)) {
-				for (const forbidden of FORBIDDEN_TEXT_ON_LIME) {
-					if (classValue.includes(forbidden)) {
-						violations.push({
-							line: i + 1,
-							className: classValue,
-							violation: `${forbidden} on cyber-lime background`,
-						});
-					}
-				}
-			}
+		// className="..." attributes
+		for (const match of line.matchAll(/className="([^"]+)"/g)) {
+			violations.push(...collectForbiddenTextViolations(match[1], lineNumber));
 		}
 
-		// Match string literals inside cn(), template literals, or ternaries
-		const stringLiteralMatches = line.matchAll(/"([^"]*bg-cyber-lime[^"]*)"/g);
-		for (const match of stringLiteralMatches) {
+		// String literals inside cn(), template literals, or ternaries that
+		// reference bg-cyber-lime; skip ones already captured as className=.
+		for (const match of line.matchAll(/"([^"]*bg-cyber-lime[^"]*)"/g)) {
 			const classValue = match[1];
-			// Skip if already caught by className= pattern
 			if (line.includes(`className="${classValue}"`)) continue;
-
-			if (hasCyberLimeBg(classValue)) {
-				for (const forbidden of FORBIDDEN_TEXT_ON_LIME) {
-					if (classValue.includes(forbidden)) {
-						violations.push({
-							line: i + 1,
-							className: classValue,
-							violation: `${forbidden} on cyber-lime background`,
-						});
-					}
-				}
-			}
+			violations.push(...collectForbiddenTextViolations(classValue, lineNumber));
 		}
 	}
 

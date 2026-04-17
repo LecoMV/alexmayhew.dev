@@ -23,6 +23,39 @@ const CONTENT_FILES_WITH_ELLIPSIS = [
 	"src/app/services/services-page-content.tsx",
 ];
 
+type StringState = { inTemplate: boolean; inDouble: boolean; inSingle: boolean };
+
+function updateStringState(state: StringState, ch: string): void {
+	if (ch === "`" && !state.inDouble && !state.inSingle) {
+		state.inTemplate = !state.inTemplate;
+	} else if (ch === '"' && !state.inTemplate && !state.inSingle) {
+		state.inDouble = !state.inDouble;
+	} else if (ch === "'" && !state.inTemplate && !state.inDouble) {
+		state.inSingle = !state.inSingle;
+	}
+}
+
+function isEllipsisFollowedByLetter(line: string, i: number): boolean {
+	return (
+		line[i] === "." &&
+		i + 3 < line.length &&
+		line[i + 1] === "." &&
+		line[i + 2] === "." &&
+		/[a-zA-Z]/.test(line[i + 3])
+	);
+}
+
+function isInJsxText(line: string, i: number): boolean {
+	const before = line.slice(0, i);
+	const lastGt = before.lastIndexOf(">");
+	const lastLt = before.lastIndexOf("<");
+	const lastOpenBrace = before.lastIndexOf("{");
+	const lastCloseBrace = before.lastIndexOf("}");
+	return (
+		lastGt > lastLt && lastGt !== -1 && (lastCloseBrace > lastOpenBrace || lastOpenBrace === -1)
+	);
+}
+
 /**
  * Find instances of ...[letter] inside string literals or JSX text
  * (content ellipsis without spacing). Uses multi-line state tracking
@@ -34,10 +67,7 @@ function findUnspacedContentEllipsis(filePath: string): string[] {
 	const content = readFileSync(filePath, "utf-8");
 	const lines = content.split("\n");
 	const violations: string[] = [];
-
-	let inTemplate = false;
-	let inDouble = false;
-	let inSingle = false;
+	const state: StringState = { inTemplate: false, inDouble: false, inSingle: false };
 
 	for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
 		const line = lines[lineIdx];
@@ -51,40 +81,15 @@ function findUnspacedContentEllipsis(filePath: string): string[] {
 				continue;
 			}
 
-			if (ch === "`" && !inDouble && !inSingle) {
-				inTemplate = !inTemplate;
-			} else if (ch === '"' && !inTemplate && !inSingle) {
-				inDouble = !inDouble;
-			} else if (ch === "'" && !inTemplate && !inDouble) {
-				inSingle = !inSingle;
-			}
+			updateStringState(state, ch);
 
-			if (
-				ch === "." &&
-				i + 3 < line.length &&
-				line[i + 1] === "." &&
-				line[i + 2] === "." &&
-				/[a-zA-Z]/.test(line[i + 3])
-			) {
-				const inString = inTemplate || inDouble || inSingle;
-
-				// JSX text context: content between > and < but not inside { }
-				const before = line.slice(0, i);
-				const lastGt = before.lastIndexOf(">");
-				const lastLt = before.lastIndexOf("<");
-				const lastOpenBrace = before.lastIndexOf("{");
-				const lastCloseBrace = before.lastIndexOf("}");
-				const inJsxText =
-					lastGt > lastLt &&
-					lastGt !== -1 &&
-					(lastCloseBrace > lastOpenBrace || lastOpenBrace === -1);
-
-				if (inString || inJsxText) {
+			if (isEllipsisFollowedByLetter(line, i)) {
+				const inString = state.inTemplate || state.inDouble || state.inSingle;
+				if (inString || isInJsxText(line, i)) {
 					violations.push(
 						`Line ${lineIdx + 1}: ...${line[i + 3]} in "${line.trim().slice(0, 120)}"`
 					);
 				}
-
 				i += 4;
 				continue;
 			}

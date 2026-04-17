@@ -39,6 +39,39 @@ type Violation = {
 
 const IMAGE_TAG_RE = /<(Image|img)\b([^>]*?)\/>/gs;
 
+function checkLiteralAlt(
+	literal: string,
+	decorative: boolean
+): Omit<Violation, "line" | "snippet"> | null {
+	if (literal === "") {
+		if (decorative) return null;
+		return { reason: 'alt="" without aria-hidden or role="presentation"' };
+	}
+	const trimmed = literal.trim();
+	if (GENERIC_ALT_RE.test(trimmed)) {
+		return { reason: `generic alt text: "${literal}"` };
+	}
+	if (trimmed.length < 3) {
+		return { reason: `alt too short (<3 chars): "${literal}"` };
+	}
+	return null;
+}
+
+function checkExpressionAlt(
+	expr: string,
+	decorative: boolean
+): Omit<Violation, "line" | "snippet"> | null {
+	const trimmed = expr.trim();
+	if ((trimmed === '""' || trimmed === "''") && !decorative) {
+		return { reason: 'alt={""} without aria-hidden or role="presentation"' };
+	}
+	const literalExprMatch = trimmed.match(/^["']([^"']*)["']$/);
+	if (literalExprMatch && GENERIC_ALT_RE.test(literalExprMatch[1].trim())) {
+		return { reason: `generic alt text in expression: ${trimmed}` };
+	}
+	return null;
+}
+
 function findImageViolations(source: string): Violation[] {
 	const violations: Violation[] = [];
 	let match: RegExpExecArray | null;
@@ -55,50 +88,24 @@ function findImageViolations(source: string): Violation[] {
 		const altMatch = attrs.match(/\balt\s*=\s*(?:"([^"]*)"|'([^']*)'|\{([^}]+)\})/);
 
 		if (!altMatch) {
-			if (decorative) continue;
-			violations.push({ line, reason: "missing alt attribute", snippet });
+			if (!decorative) {
+				violations.push({ line, reason: "missing alt attribute", snippet });
+			}
 			continue;
 		}
 
 		const literal = altMatch[1] ?? altMatch[2];
 		const expr = altMatch[3];
 
-		if (typeof literal === "string") {
-			if (literal === "") {
-				if (!decorative) {
-					violations.push({
-						line,
-						reason: 'alt="" without aria-hidden or role="presentation"',
-						snippet,
-					});
-				}
-				continue;
-			}
-			if (GENERIC_ALT_RE.test(literal.trim())) {
-				violations.push({ line, reason: `generic alt text: "${literal}"`, snippet });
-				continue;
-			}
-			if (literal.trim().length < 3) {
-				violations.push({ line, reason: `alt too short (<3 chars): "${literal}"`, snippet });
-				continue;
-			}
-		} else if (typeof expr === "string") {
-			const trimmed = expr.trim();
-			if ((trimmed === '""' || trimmed === "''") && !decorative) {
-				violations.push({
-					line,
-					reason: 'alt={""} without aria-hidden or role="presentation"',
-					snippet,
-				});
-			}
-			const literalExprMatch = trimmed.match(/^["']([^"']*)["']$/);
-			if (literalExprMatch && GENERIC_ALT_RE.test(literalExprMatch[1].trim())) {
-				violations.push({
-					line,
-					reason: `generic alt text in expression: ${trimmed}`,
-					snippet,
-				});
-			}
+		const problem =
+			typeof literal === "string"
+				? checkLiteralAlt(literal, decorative)
+				: typeof expr === "string"
+					? checkExpressionAlt(expr, decorative)
+					: null;
+
+		if (problem) {
+			violations.push({ line, snippet, ...problem });
 		}
 	}
 	return violations;
