@@ -110,21 +110,6 @@
 		"series": "ai-development"
 	},
 	{
-		"title": "Building High-Precision Digital Instruments",
-		"description": "An exploration of the principles behind atmospheric engineering and the philosophy of crafting exceptional web experiences.",
-		"slug": "hello-world",
-		"category": "architecture",
-		"tags": ["engineering", "philosophy", "web-development"]
-	},
-	{
-		"title": "Building Production MCP Servers: What the 8,600 Community Servers Got Wrong",
-		"description": "97M monthly SDK downloads, 8,600 community servers, and most will fail in production. Here's the production engineering they skipped... auth, rate limiting, observability, and the security checklist.",
-		"slug": "production-mcp-servers",
-		"category": "architecture",
-		"tags": ["ai", "mcp", "model-context-protocol", "security", "production-engineering"],
-		"series": "ai-development"
-	},
-	{
 		"title": "Building Your First Engineering Team: The 5-Person Playbook",
 		"description": "The order you hire your first 5 engineers determines startup velocity for 2 years. The sequence that works, based on 15+ startup advisory engagements.",
 		"slug": "first-engineering-team-playbook",
@@ -147,14 +132,6 @@
 		"category": "infrastructure",
 		"tags": ["cdn", "caching", "performance", "infrastructure", "cloudflare"],
 		"series": "performance-engineering"
-	},
-	{
-		"title": "Choosing Your Startup's Tech Stack: A Capital Allocation Framework",
-		"description": "Your tech stack is a capital asset with TCO, liquidity profile, and depreciation schedule. Treat it like an investment, not a preference.",
-		"slug": "tech-stack-capital-allocation",
-		"category": "business",
-		"tags": ["architecture", "startup", "technical-leadership", "strategy"],
-		"series": "saas-architecture"
 	},
 	{
 		"title": "Claude Code vs Cursor: A CTO's 90-Day Cost Analysis",
@@ -276,19 +253,11 @@
 	},
 	{
 		"title": "From IC to Tech Lead: Leadership Without the Title",
-		"description": "The best tech leads don't wait for the promotion. They're already leading through architecture decisions, code review, and unblocking their team. Here's how to make the transition.",
+		"description": "The best tech leads don't wait for the promotion. They lead through architecture decisions, code review, and unblocking the team. How to transition.",
 		"slug": "ic-to-tech-lead",
 		"category": "business",
 		"tags": ["leadership", "career", "engineering-management", "tech-lead", "growth"],
 		"series": "engineering-leadership"
-	},
-	{
-		"title": "From Zero to $10k MRR: The SaaS Bootstrapper's Technical Playbook",
-		"description": "Stop over-engineering your MVP. Here's the minimum viable architecture to reach $10k MRR before you need to worry about scale.",
-		"slug": "zero-to-10k-mrr-saas-playbook",
-		"category": "business",
-		"tags": ["saas", "architecture", "bootstrapping", "startup"],
-		"series": "saas-architecture"
 	},
 	{
 		"title": "Hiring AI Engineers: Competence vs Resume Fluff",
@@ -316,7 +285,7 @@
 	},
 	{
 		"title": "Incident Response Playbook for SaaS Teams",
-		"description": "Most SaaS teams don't have an incident response process until they need one... at 3 AM during a production outage. Here's the playbook I've helped 10+ teams implement before the crisis hits.",
+		"description": "Most SaaS teams don't have an incident response process until they need one at 3 AM during an outage. The playbook to implement before the crisis hits.",
 		"slug": "incident-response-saas",
 		"category": "business",
 		"tags": ["incident-response", "saas", "operations", "on-call", "leadership"],
@@ -324,22 +293,22 @@
 	},
 	{
 		"title": "LLM Cost Optimization at Scale",
-		"description": "Your AI feature costs $0.03 per query. At 100K queries/day, that's $90K/year in LLM costs alone. Here's the tiered model strategy, caching architecture, and prompt optimization that reduces costs by 60-80% without degrading output quality.",
+		"description": "Your AI feature costs $0.03/query. At 100K queries/day, that's $90K/year. Tiered model strategy, caching, and prompts that cut costs 60-80%.",
 		"slug": "llm-cost-optimization-scale",
 		"category": "infrastructure",
 		"tags": ["llm", "ai", "cost-optimization", "saas", "caching"],
 		"series": "ai-development"
 	},
 	{
-		"title": "LLM Integration Architecture: From Vector Databases to Production",
-		"description": "Build production-ready AI features without the hype. Covers vector database selection, RAG architecture, embedding strategies, and the infrastructure that makes LLM integrations reliable and cost-effective.",
+		"title": "LLM Integration: Vector Databases to Production",
+		"description": "Build production AI features without hype. Vector database selection, RAG architecture, embedding strategies, and infrastructure for reliable LLMs.",
 		"slug": "llm-integration-architecture",
 		"category": "architecture",
 		"tags": ["ai", "llm", "vector-database", "rag", "architecture"],
 		"series": "ai-development"
 	},
 	{
-		"title": "Modern Frontend Architecture: Design Systems to Server Components",
+		"title": "Modern Frontend Architecture: From Tokens to RSC",
 		"description": "A comprehensive guide to frontend architecture covering design systems, component patterns, CSS strategy, state management, and React Server Components.",
 		"slug": "modern-frontend-architecture",
 		"category": "frontend",
@@ -347,8 +316,8 @@
 		"series": "frontend-architecture"
 	},
 	{
-		"title": "Multi-Region SaaS Architecture: Global Replication and Data Residency",
-		"description": "Scale your SaaS globally without compliance nightmares. Covers data residency requirements, replication strategies, latency optimization, and the architecture patterns that make global distribution work.",
+		"title": "Multi-Region SaaS: Replication and Data Residency",
+		"description": "Scale SaaS globally without compliance nightmares. Data residency requirements, replication strategies, latency optimization, and architecture patterns.",
 		"slug": "multi-region-saas-architecture",
 		"category": "architecture",
 		"tags": ["architecture", "saas", "multi-region", "compliance", "scaling"],
@@ -380,15 +349,23 @@
 	},
 	{
 		"title": "Performance Engineering Playbook: From TTFB to TTI",
-		"description": "A comprehensive framework for web performance optimization... from server response to user interaction. Covers Core Web Vitals, database optimization, edge computing, and cost-effective scaling strategies.",
+		"description": "A framework for web performance from server response to user interaction. Core Web Vitals, database optimization, edge computing, and scaling strategies.",
 		"slug": "performance-engineering-playbook",
 		"category": "architecture",
 		"tags": ["performance", "core-web-vitals", "optimization", "scaling", "infrastructure"],
 		"series": "performance-engineering"
 	},
 	{
-		"title": "Prompt Engineering for Developers: Systematic Approaches to Better Results",
-		"description": "Move beyond trial-and-error prompting. Covers structured prompt design, few-shot patterns, chain-of-thought reasoning, and building prompts that produce consistent, production-quality results.",
+		"title": "Production MCP Servers: What 8,600 Got Wrong",
+		"description": "97M monthly SDK downloads, 8,600 community servers, most fail in production. The engineering they skipped: auth, rate limiting, observability, security.",
+		"slug": "production-mcp-servers",
+		"category": "architecture",
+		"tags": ["ai", "mcp", "model-context-protocol", "security", "production-engineering"],
+		"series": "ai-development"
+	},
+	{
+		"title": "Prompt Engineering for Developers: Systematic Methods",
+		"description": "Move beyond trial-and-error prompting. Structured prompt design, few-shot patterns, chain-of-thought reasoning, and prompts that produce consistent results.",
 		"slug": "prompt-engineering-developers",
 		"category": "architecture",
 		"tags": ["ai", "prompt-engineering", "llm", "development", "productivity"],
@@ -396,7 +373,7 @@
 	},
 	{
 		"title": "RAG Architecture for SaaS Products",
-		"description": "Retrieval-Augmented Generation turns your product's data into an AI feature. Most implementations fail on retrieval quality, not generation quality. Here's the architecture that works in production... chunking strategies, embedding models, and the hybrid search approach that outperforms pure vector similarity by 15-30%.",
+		"description": "RAG turns product data into an AI feature. Most fail on retrieval quality, not generation. Chunking, embeddings, and hybrid search that beats pure vectors.",
 		"slug": "rag-architecture-saas",
 		"category": "architecture",
 		"tags": ["rag", "ai", "vector-database", "saas", "llm"],
@@ -404,7 +381,7 @@
 	},
 	{
 		"title": "Real-Time Performance Monitoring at Scale",
-		"description": "Your monitoring dashboard says everything is fine. Your customers say the app is slow. Here's why the gap exists and how to build monitoring that catches performance degradation before users notice.",
+		"description": "Your monitoring dashboard says everything is fine. Customers say the app is slow. Why the gap exists and how to catch degradation before users notice.",
 		"slug": "real-time-performance-monitoring",
 		"category": "infrastructure",
 		"tags": ["monitoring", "observability", "performance", "saas", "metrics"],
@@ -420,7 +397,7 @@
 	},
 	{
 		"title": "SaaS Architecture Decision Framework: From MVP to Scale",
-		"description": "A comprehensive guide to SaaS architecture decisions at each stage of growth. Covers multi-tenancy, deployment models, cost optimization, and migration strategies.",
+		"description": "A guide to SaaS architecture decisions at each stage of growth. Multi-tenancy, deployment models, cost optimization, and migration strategies from MVP to scale.",
 		"slug": "saas-architecture-decision-framework",
 		"category": "architecture",
 		"tags": ["saas", "architecture", "multi-tenancy", "scaling", "infrastructure"],
@@ -428,23 +405,31 @@
 	},
 	{
 		"title": "SaaS Billing Architecture with Stripe",
-		"description": "Billing is where SaaS architecture decisions have the most direct revenue impact. Here's the Stripe integration architecture I recommend... webhook-driven state machines, idempotent payment processing, and the subscription lifecycle patterns that prevent revenue leakage.",
+		"description": "Billing is where SaaS architecture has direct revenue impact. Stripe integration with webhook state machines, idempotent payments, and lifecycle patterns.",
 		"slug": "saas-billing-stripe-architecture",
 		"category": "architecture",
 		"tags": ["billing", "stripe", "saas", "architecture", "subscriptions"],
 		"series": "saas-architecture"
 	},
 	{
-		"title": "SaaS Reliability at Scale: Monitoring, Alerting, and Incident Response",
-		"description": "99.9% uptime means 8.7 hours of downtime per year. 99.99% means 52 minutes. Here's the observability infrastructure that gets you there... without alert fatigue burning out your team.",
+		"title": "SaaS Reliability at Scale: Monitoring and Alerting",
+		"description": "99.9% uptime means 8.7 hours downtime per year. 99.99% means 52 minutes. The observability infrastructure to get there without burning out the team.",
 		"slug": "saas-reliability-monitoring",
 		"category": "infrastructure",
 		"tags": ["observability", "monitoring", "sre", "devops", "infrastructure"],
 		"series": "saas-architecture"
 	},
 	{
+		"title": "Senior Developer Paradox: Expensive Talent Saves Money",
+		"description": "A $200/hr senior often costs less than a $30/hr junior when you factor in code quality, bug rates, and the exponential cost of fixing production defects.",
+		"slug": "senior-developer-paradox",
+		"category": "business",
+		"tags": ["hiring", "engineering-management", "technical-leadership", "economics"],
+		"series": "engineering-leadership"
+	},
+	{
 		"title": "SOC 2 Compliance for Seed-Stage Startups: The 90-Day Roadmap",
-		"description": "Most startups think SOC 2 is a 6-month enterprise project. It's not. Here's the engineering-focused roadmap that gets you compliant in 90 days without hiring a compliance team.",
+		"description": "Most startups think SOC 2 is a 6-month project. It's not. The engineering-focused roadmap that gets you compliant in 90 days without a compliance team.",
 		"slug": "soc2-compliance-startup-roadmap",
 		"category": "infrastructure",
 		"tags": ["security", "compliance", "soc2", "startups", "architecture"],
@@ -452,7 +437,7 @@
 	},
 	{
 		"title": "State Management in 2026: Zustand vs Signals vs Server State",
-		"description": "The state management landscape has fragmented again. Zustand dominates, signals are the new hotness, and server state (TanStack Query, SWR) handles most of what Redux used to do. Here's what to use when... with the decision framework I give to advisory clients.",
+		"description": "State management fragmented again. Zustand dominates, signals are rising, server state handles what Redux did. What to use when, with the decision framework.",
 		"slug": "state-management-2026",
 		"category": "frontend",
 		"tags": ["state-management", "react", "zustand", "signals", "frontend"],
@@ -475,8 +460,16 @@
 		"series": "frontend-architecture"
 	},
 	{
-		"title": "Technical Debt Strategy: When to Accumulate, When to Pay Down",
-		"description": "Technical debt isn't inherently bad... it's strategic leverage. The problem is most teams accumulate it accidentally and pay it down randomly. Here's the framework that works.",
+		"title": "Tech Stack Selection: A Capital Allocation Framework",
+		"description": "Your tech stack is a capital asset with TCO, liquidity profile, and depreciation schedule. Treat it like an investment, not a preference.",
+		"slug": "tech-stack-capital-allocation",
+		"category": "business",
+		"tags": ["architecture", "startup", "technical-leadership", "strategy"],
+		"series": "saas-architecture"
+	},
+	{
+		"title": "Technical Debt: When to Accumulate, When to Pay",
+		"description": "Technical debt isn't bad, it's strategic leverage. The problem: most teams accumulate accidentally and pay down randomly. The framework that works.",
 		"slug": "technical-debt-strategy",
 		"category": "business",
 		"tags": ["technical-debt", "engineering-management", "architecture", "strategy", "startups"],
@@ -484,7 +477,7 @@
 	},
 	{
 		"title": "Testing Strategies for React Server Components",
-		"description": "React Server Components break every testing pattern you've built over the past 5 years. No jsdom, no render(), no user events. Here's the testing architecture that works for async server components, streaming boundaries, and the hybrid client-server model.",
+		"description": "RSC breaks every testing pattern from the past 5 years. No jsdom, render(), or user events. The testing architecture for async, streaming, and hybrid models.",
 		"slug": "testing-react-server-components",
 		"category": "frontend",
 		"tags": ["react", "testing", "server-components", "next-js", "frontend"],
@@ -547,24 +540,16 @@
 		"series": "performance-engineering"
 	},
 	{
-		"title": "The METR Paradox: Why AI Makes Your Best Engineers Think They're Faster (While Slowing Them Down)",
-		"description": "A rigorous randomized controlled trial showed experienced devs were 19% slower with AI while believing they were 24% faster. The perception gap is the real danger.",
+		"title": "The METR Paradox: AI Makes Top Engineers Slower",
+		"description": "A randomized controlled trial showed experienced devs were 19% slower with AI while believing they were 24% faster. The perception gap is the danger.",
 		"slug": "metr-paradox-ai-productivity",
 		"category": "business",
 		"tags": ["ai", "developer-productivity", "metr-study", "engineering-leadership", "ai-tools"],
 		"series": "ai-development"
 	},
 	{
-		"title": "The Senior Developer Paradox: Why Expensive Talent Saves Money",
-		"description": "A $200/hr senior developer often costs less than a $30/hr junior when you factor in code quality, bug rates, and the exponential cost of fixing defects in production.",
-		"slug": "senior-developer-paradox",
-		"category": "business",
-		"tags": ["hiring", "engineering-management", "technical-leadership", "economics"],
-		"series": "engineering-leadership"
-	},
-	{
 		"title": "The Vibe Coding Hangover: A Recovery Playbook for CTOs",
-		"description": "89% of CTOs reported production disasters from AI code. Year 2 maintenance costs 4x traditional. You shipped it fast... now nobody understands it. Here's the triage, audit, and remediation process.",
+		"description": "89% of CTOs report production disasters from AI code. Year 2 maintenance costs 4x traditional. Shipped fast, nobody understands it. Triage and remediation.",
 		"slug": "vibe-coding-hangover-recovery",
 		"category": "business",
 		"tags": ["ai", "vibe-coding", "technical-debt", "code-quality", "cto", "remediation"],
@@ -580,7 +565,7 @@
 	},
 	{
 		"title": "Vector Databases: When to Build vs Buy",
-		"description": "Every SaaS adding AI features faces the vector database decision. pgvector on your existing PostgreSQL, a managed service like Pinecone, or a dedicated engine like Qdrant? Here's the decision framework based on your data scale, query patterns, and team capacity.",
+		"description": "Every SaaS adding AI faces the vector DB decision. pgvector, Pinecone, or Qdrant? The framework based on data scale, query patterns, and team capacity.",
 		"slug": "vector-database-selection",
 		"category": "architecture",
 		"tags": ["vector-database", "ai", "postgresql", "pgvector", "saas"],
@@ -588,7 +573,7 @@
 	},
 	{
 		"title": "When NOT to Use AI for Coding: The Decision Framework",
-		"description": "Most developers spend more time fixing AI code than expected. Seven task categories where AI assistance produces net-negative outcomes... and the decision tree to know before you start.",
+		"description": "Most developers spend more time fixing AI code than expected. Seven task categories where AI produces net-negative outcomes, plus the decision tree.",
 		"slug": "when-not-to-use-ai-coding",
 		"category": "business",
 		"tags": [],
@@ -600,6 +585,14 @@
 		"slug": "boring-technology-wins",
 		"category": "business",
 		"tags": ["architecture", "technical-leadership", "strategy", "startup"],
+		"series": "saas-architecture"
+	},
+	{
+		"title": "Zero to $10k MRR: Bootstrapper's Technical Playbook",
+		"description": "Stop over-engineering your MVP. Here's the minimum viable architecture to reach $10k MRR before you need to worry about scale.",
+		"slug": "zero-to-10k-mrr-saas-playbook",
+		"category": "business",
+		"tags": ["saas", "architecture", "bootstrapping", "startup"],
 		"series": "saas-architecture"
 	}
 ]
