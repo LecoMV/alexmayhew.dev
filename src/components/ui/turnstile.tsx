@@ -3,6 +3,8 @@
 import { type TurnstileInstance, Turnstile as TurnstileWidget } from "@marsidev/react-turnstile";
 import { forwardRef, useImperativeHandle, useRef } from "react";
 
+import { isDevelopment, publicEnv } from "@/lib/env";
+
 export interface TurnstileRef {
 	reset: () => void;
 	getResponse: () => string | undefined;
@@ -23,11 +25,11 @@ export const Turnstile = forwardRef<TurnstileRef, TurnstileProps>(
 			getResponse: () => widgetRef.current?.getResponse(),
 		}));
 
-		const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+		const siteKey = publicEnv.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 		if (!siteKey) {
 			// In development without key, render placeholder
-			if (process.env.NODE_ENV === "development") {
+			if (isDevelopment) {
 				return (
 					<div className="bg-gunmetal-glass/20 text-slate-text border border-white/10 px-4 py-3 font-mono text-xs">
 						[Turnstile: Set NEXT_PUBLIC_TURNSTILE_SITE_KEY]

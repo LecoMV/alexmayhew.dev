@@ -1,8 +1,7 @@
 import { render } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
-	GoogleAnalytics,
 	trackContentEvent,
 	trackCTAClick,
 	trackEvent,
@@ -15,16 +14,41 @@ vi.mock("next/script", () => ({
 	default: (props: Record<string, unknown>) => <script data-testid="mock-script" {...props} />,
 }));
 
+/**
+ * GoogleAnalytics component reads NEXT_PUBLIC_GA_MEASUREMENT_ID via the typed
+ * `publicEnv` module, which parses `process.env` once at import time. Use
+ * vi.resetModules() + dynamic import so each test controls the env state.
+ */
+async function loadGA(envValue: string | undefined) {
+	vi.resetModules();
+	if (envValue === undefined) {
+		(process.env as Record<string, string | undefined>).NEXT_PUBLIC_GA_MEASUREMENT_ID = undefined;
+	} else {
+		process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = envValue;
+	}
+	const mod = await import("@/components/analytics/google-analytics");
+	return mod.GoogleAnalytics;
+}
+
 describe("GoogleAnalytics", () => {
-	it("renders null when no measurement ID", () => {
-		const original = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
-		process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = "";
-		const { container } = render(<GoogleAnalytics />);
-		expect(container.innerHTML).toBe("");
-		if (original) process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID = original;
+	const originalEnv = { ...process.env };
+
+	beforeEach(() => {
+		process.env = { ...originalEnv };
 	});
 
-	it("renders null in test environment (NODE_ENV !== production)", () => {
+	afterEach(() => {
+		process.env = { ...originalEnv };
+	});
+
+	it("renders null when no measurement ID", async () => {
+		const GoogleAnalytics = await loadGA(undefined);
+		const { container } = render(<GoogleAnalytics />);
+		expect(container.innerHTML).toBe("");
+	});
+
+	it("renders null in test environment (NODE_ENV !== production)", async () => {
+		const GoogleAnalytics = await loadGA("G-TEST");
 		const { container } = render(<GoogleAnalytics />);
 		expect(container.innerHTML).toBe("");
 	});

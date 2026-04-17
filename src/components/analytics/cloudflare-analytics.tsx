@@ -1,5 +1,7 @@
 import Script from "next/script";
 
+import { publicEnv } from "@/lib/env";
+
 /**
  * Cloudflare Web Analytics
  *
@@ -12,7 +14,7 @@ import Script from "next/script";
  * @see https://developers.cloudflare.com/analytics/web-analytics/
  */
 export function CloudflareAnalytics() {
-	const beaconToken = process.env.NEXT_PUBLIC_CF_BEACON_TOKEN;
+	const beaconToken = publicEnv.NEXT_PUBLIC_CF_BEACON_TOKEN;
 
 	// Don't render if no token is configured
 	if (!beaconToken) {

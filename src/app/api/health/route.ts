@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { publicEnv } from "@/lib/env";
+
 async function checkResend(): Promise<"reachable" | "unreachable"> {
 	try {
 		const res = await fetch("https://api.resend.com", {
@@ -19,9 +21,9 @@ async function checkResend(): Promise<"reachable" | "unreachable"> {
  */
 export async function GET() {
 	const buildInfo = {
-		sha: process.env.NEXT_PUBLIC_GIT_SHA || "development",
-		buildTime: process.env.NEXT_PUBLIC_BUILD_TIME || new Date().toISOString(),
-		version: process.env.NEXT_PUBLIC_SITE_VERSION || "0.0.0",
+		sha: publicEnv.NEXT_PUBLIC_GIT_SHA,
+		buildTime: publicEnv.NEXT_PUBLIC_BUILD_TIME ?? new Date().toISOString(),
+		version: publicEnv.NEXT_PUBLIC_SITE_VERSION,
 	};
 
 	const resendStatus = await checkResend();

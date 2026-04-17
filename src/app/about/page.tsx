@@ -1,5 +1,6 @@
 import { AboutPage } from "@/components/pages";
 import { JsonLdScript, PERSON_REF, SCHEMA_CONTEXT, SITE_URL } from "@/components/seo/schema-utils";
+import { publicEnv } from "@/lib/env";
 
 import type { Metadata } from "next";
 
@@ -44,7 +45,7 @@ function AboutProfileJsonLd() {
 			"Technical advisor helping founders make architectural decisions that compound into competitive advantage.",
 		mainEntity: PERSON_REF,
 		dateModified:
-			process.env.NEXT_PUBLIC_BUILD_TIME?.split("T")[0] || new Date().toISOString().split("T")[0],
+			publicEnv.NEXT_PUBLIC_BUILD_TIME?.split("T")[0] || new Date().toISOString().split("T")[0],
 	};
 	return <JsonLdScript data={schema} />;
 }

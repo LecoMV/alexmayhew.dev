@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 vi.mock("next/server", () => {
 	return {
@@ -14,15 +14,18 @@ vi.mock("next/server", () => {
 	};
 });
 
+vi.mock("@/lib/env", () => ({
+	publicEnv: {
+		NODE_ENV: "test",
+		NEXT_PUBLIC_GIT_SHA: "abc123",
+		NEXT_PUBLIC_BUILD_TIME: "2026-01-01T00:00:00.000Z",
+		NEXT_PUBLIC_SITE_VERSION: "1.0.0",
+	},
+}));
+
 import { GET } from "@/app/api/health/route";
 
 describe("GET /api/health", () => {
-	beforeEach(() => {
-		vi.stubEnv("NEXT_PUBLIC_GIT_SHA", "abc123");
-		vi.stubEnv("NEXT_PUBLIC_BUILD_TIME", "2026-01-01T00:00:00.000Z");
-		vi.stubEnv("NEXT_PUBLIC_SITE_VERSION", "1.0.0");
-	});
-
 	it("returns 200 status", async () => {
 		const response = await GET();
 		expect(response.status).toBe(200);

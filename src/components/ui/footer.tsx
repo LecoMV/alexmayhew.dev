@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { NewsletterSignup } from "@/components/newsletter";
+import { publicEnv } from "@/lib/env";
 
 import { LocalTime } from "./local-time";
 
@@ -153,8 +154,8 @@ export function Footer() {
 						</span>
 						<LocalTime />
 						<span className="text-slate-text font-mono text-xs opacity-30">
-							v{process.env.NEXT_PUBLIC_SITE_VERSION}
-							<span className="ml-1">({process.env.NEXT_PUBLIC_GIT_SHA})</span>
+							v{publicEnv.NEXT_PUBLIC_SITE_VERSION}
+							<span className="ml-1">({publicEnv.NEXT_PUBLIC_GIT_SHA})</span>
 						</span>
 					</div>
 					<div className="flex items-center gap-4">

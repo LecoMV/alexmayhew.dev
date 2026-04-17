@@ -6,6 +6,7 @@ import { getAllMigrationPages } from "@/data/pseo/migrations";
 import { getPublishedPages } from "@/data/pseo/pages";
 import { getTechnologyIds } from "@/data/pseo/technologies";
 import { getPublishedRolePages } from "@/data/roles";
+import { publicEnv } from "@/lib/env";
 
 import type { MetadataRoute } from "next";
 
@@ -18,7 +19,7 @@ function getSlug(path: string): string {
 
 export default function sitemap(): MetadataRoute.Sitemap {
 	// Static pages ... use fixed dates to avoid Google distrust of constantly-changing lastmod
-	const siteLastUpdated = new Date(process.env.NEXT_PUBLIC_BUILD_TIME || new Date().toISOString());
+	const siteLastUpdated = new Date(publicEnv.NEXT_PUBLIC_BUILD_TIME ?? new Date().toISOString());
 
 	// Priority tiers (retier to avoid priority inflation):
 	// 1.0   => root only

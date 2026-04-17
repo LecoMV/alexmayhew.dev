@@ -1,5 +1,7 @@
 import Script from "next/script";
 
+import { isDevelopment, publicEnv } from "@/lib/env";
+
 /**
  * Google Analytics 4 (GA4) via gtag.js
  *
@@ -10,9 +12,9 @@ import Script from "next/script";
  * @see https://developers.google.com/tag-platform/security/guides/consent
  */
 export function GoogleAnalytics() {
-	const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+	const measurementId = publicEnv.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
-	if (!measurementId || process.env.NODE_ENV === "development") {
+	if (!measurementId || isDevelopment) {
 		return null;
 	}
 

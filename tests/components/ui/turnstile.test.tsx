@@ -1,7 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
-
-import { Turnstile } from "@/components/ui/turnstile";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@marsidev/react-turnstile", () => ({
 	Turnstile: vi.fn((props: Record<string, unknown>) => (
@@ -9,37 +7,50 @@ vi.mock("@marsidev/react-turnstile", () => ({
 	)),
 }));
 
+/**
+ * Turnstile now reads its site key from the typed `publicEnv` module
+ * (src/lib/env.ts), which resolves `process.env` ONCE at module import time.
+ * Tests mutate the env var then use vi.resetModules() + dynamic import so the
+ * env module re-parses with the new value.
+ */
+async function renderWithEnv(envValue: string | undefined) {
+	vi.resetModules();
+	if (envValue === undefined) {
+		(process.env as Record<string, string | undefined>).NEXT_PUBLIC_TURNSTILE_SITE_KEY = undefined;
+	} else {
+		process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = envValue;
+	}
+	const { Turnstile } = await import("@/components/ui/turnstile");
+	return Turnstile;
+}
+
 describe("Turnstile", () => {
-	it("does not render widget when no site key", () => {
-		const original = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-		process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = "";
+	const originalEnv = { ...process.env };
+
+	beforeEach(() => {
+		process.env = { ...originalEnv };
+	});
+
+	afterEach(() => {
+		process.env = { ...originalEnv };
+	});
+
+	it("does not render widget when no site key", async () => {
+		const Turnstile = await renderWithEnv(undefined);
 		render(<Turnstile onSuccess={vi.fn()} />);
 		expect(screen.queryByTestId("turnstile-widget")).toBeNull();
-		if (original) process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = original;
 	});
 
-	it("renders the widget when site key is present", () => {
-		const original = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-		process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = "test-site-key";
+	it("renders the widget when site key is present", async () => {
+		const Turnstile = await renderWithEnv("test-site-key");
 		render(<Turnstile onSuccess={vi.fn()} />);
 		expect(screen.getByTestId("turnstile-widget")).toBeTruthy();
-		if (original) {
-			process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = original;
-		} else {
-			process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = "";
-		}
 	});
 
-	it("passes onSuccess callback to the widget", () => {
-		const original = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-		process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = "test-key";
+	it("passes onSuccess callback to the widget", async () => {
+		const Turnstile = await renderWithEnv("test-key");
 		const onSuccess = vi.fn();
 		render(<Turnstile onSuccess={onSuccess} />);
 		expect(screen.getByTestId("turnstile-widget")).toBeTruthy();
-		if (original) {
-			process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = original;
-		} else {
-			process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY = "";
-		}
 	});
 });
