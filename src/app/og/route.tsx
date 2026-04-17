@@ -1,5 +1,7 @@
 import { ImageResponse } from "next/og";
 
+import { logger } from "@/lib/logger";
+
 import type { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -19,8 +21,11 @@ export async function GET(request: NextRequest) {
 		]);
 		interFont = interData;
 		monoFont = monoData;
-	} catch {
-		// Fallback to system fonts if loading fails
+	} catch (err) {
+		logger.warn("og route font fetch failed; falling back to system fonts", {
+			err: String(err),
+			route: "/og",
+		});
 	}
 
 	const fonts: { name: string; data: ArrayBuffer; style: "normal"; weight: 400 | 700 }[] = [];

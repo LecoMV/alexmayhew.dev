@@ -27,7 +27,6 @@ export function CookieConsent() {
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
-		// Check existing consent
 		const stored = localStorage.getItem(CONSENT_KEY);
 		if (stored) {
 			try {
@@ -37,12 +36,13 @@ export function CookieConsent() {
 					setIsLoading(false);
 					return;
 				}
-			} catch {
-				// Invalid stored consent, continue to check
+			} catch (err) {
+				console.warn("cookie-consent: failed to parse stored consent; re-prompting", {
+					err: String(err),
+				});
 			}
 		}
 
-		// Check if user is from EU/GDPR region
 		fetch("/api/geo")
 			.then((res) => res.json() as Promise<GeoResponse>)
 			.then((data) => {
@@ -69,7 +69,6 @@ export function CookieConsent() {
 		localStorage.setItem(CONSENT_KEY, JSON.stringify(consent));
 		setShowBanner(false);
 
-		// Update GA4 Consent Mode v2
 		if (typeof window !== "undefined" && window.gtag) {
 			window.gtag("consent", "update", {
 				analytics_storage: "granted",

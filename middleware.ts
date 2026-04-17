@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { logger } from "@/lib/logger";
+
 import type { NextRequest } from "next/server";
 
 export function middleware(_request: NextRequest) {
@@ -37,7 +39,8 @@ export function middleware(_request: NextRequest) {
 		);
 
 		return response;
-	} catch {
+	} catch (err) {
+		logger.error("middleware failed to set security headers", { err: String(err) });
 		return NextResponse.next();
 	}
 }
