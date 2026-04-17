@@ -7,6 +7,13 @@
 
 import type { RolePage } from "./types";
 
+// Engagement tier slug identifiers, referenced in idealTiers arrays
+const TIER_ADVISORY_RETAINER = "advisory-retainer";
+const TIER_TECHNICAL_AUDIT = "technical-audit";
+
+// Related service slug identifiers, referenced across relatedServices arrays
+const SERVICE_TECHNICAL_ADVISOR_STARTUPS = "technical-advisor-for-startups";
+
 /**
  * All role-based pages.
  * Each page represents a unique target audience.
@@ -73,7 +80,7 @@ export const rolePages: RolePage[] = [
 			},
 		],
 
-		idealTiers: ["advisory-retainer", "strategic-implementation", "technical-audit"],
+		idealTiers: [TIER_ADVISORY_RETAINER, "strategic-implementation", TIER_TECHNICAL_AUDIT],
 
 		proofMetrics: [
 			"0 critical incidents in 18 months at a fintech processing $50M/month",
@@ -102,7 +109,7 @@ Communication happens through your preferred channels... Slack, email, or a dedi
 		relatedServices: [
 			"nextjs-developer-for-saas",
 			"technical-due-diligence-consultant",
-			"technical-advisor-for-startups",
+			SERVICE_TECHNICAL_ADVISOR_STARTUPS,
 		],
 
 		faqs: [
@@ -205,7 +212,7 @@ Communication happens through your preferred channels... Slack, email, or a dedi
 			},
 		],
 
-		idealTiers: ["advisory-retainer", "project-based", "fractional-cto"],
+		idealTiers: [TIER_ADVISORY_RETAINER, "project-based", "fractional-cto"],
 
 		proofMetrics: [
 			"MVP shipped in 8 weeks that secured $1.2M seed round",
@@ -332,7 +339,7 @@ I'm responsive to urgent questions (within hours during business hours) because 
 			},
 		],
 
-		idealTiers: ["fractional-cto", "advisory-retainer", "technical-audit"],
+		idealTiers: ["fractional-cto", TIER_ADVISORY_RETAINER, TIER_TECHNICAL_AUDIT],
 
 		proofMetrics: [
 			"73% infrastructure cost savings through architecture optimization",
@@ -361,7 +368,7 @@ The goal is always to build your technical capability, not create dependency. As
 		relatedServices: [
 			"fractional-cto-for-startups",
 			"fullstack-developer-for-startups",
-			"technical-advisor-for-startups",
+			SERVICE_TECHNICAL_ADVISOR_STARTUPS,
 		],
 
 		faqs: [
@@ -463,7 +470,7 @@ The goal is always to build your technical capability, not create dependency. As
 			},
 		],
 
-		idealTiers: ["advisory-retainer", "strategic-implementation", "technical-audit"],
+		idealTiers: [TIER_ADVISORY_RETAINER, "strategic-implementation", TIER_TECHNICAL_AUDIT],
 
 		proofMetrics: [
 			"400% faster deployments through CI/CD modernization",
@@ -490,7 +497,7 @@ From there, we establish a regular cadence. For most VPs, that's bi-weekly strat
 I can also embed with your team for specific projects... leading a modernization initiative, conducting a team health assessment, or facilitating a difficult technical decision. The format adapts to what you actually need.`,
 
 		relatedServices: [
-			"technical-advisor-for-startups",
+			SERVICE_TECHNICAL_ADVISOR_STARTUPS,
 			"technical-due-diligence-consultant",
 			"nextjs-developer-for-saas",
 		],

@@ -1,19 +1,27 @@
+const SCHEMA_CONTEXT = "https://schema.org";
+const SITE_URL = "https://alexmayhew.dev";
+const PERSON_ID = "https://alexmayhew.dev/#person";
+const ORGANIZATION_ID = "https://alexmayhew.dev/#organization";
+const OG_IMAGE_URL = "https://alexmayhew.dev/og-image.png";
+const TECHNICAL_DUE_DILIGENCE_LABEL = "Technical Due Diligence";
+const SOCIAL_PROFILES = [
+	"https://github.com/LecoMV",
+	"https://www.linkedin.com/in/alexmmayhew",
+	"https://x.com/alexmayhewdev",
+	"https://bsky.app/profile/alexmayhewdev.bsky.social",
+];
+
 export function JsonLd() {
 	const personSchema = {
-		"@context": "https://schema.org",
+		"@context": SCHEMA_CONTEXT,
 		"@type": "Person",
-		"@id": "https://alexmayhew.dev/#person",
+		"@id": PERSON_ID,
 		name: "Alex Mayhew",
-		url: "https://alexmayhew.dev",
-		image: "https://alexmayhew.dev/og-image.png",
-		sameAs: [
-			"https://github.com/LecoMV",
-			"https://www.linkedin.com/in/alexmmayhew",
-			"https://x.com/alexmayhewdev",
-			"https://bsky.app/profile/alexmayhewdev.bsky.social",
-		],
+		url: SITE_URL,
+		image: OG_IMAGE_URL,
+		sameAs: SOCIAL_PROFILES,
 		jobTitle: "Technical Advisor & Systems Architect",
-		worksFor: { "@id": "https://alexmayhew.dev/#organization" },
+		worksFor: { "@id": ORGANIZATION_ID },
 		description:
 			"Technical advisor with 15+ years experience in software engineering leadership, helping founders and CTOs make architectural decisions that compound into competitive advantage. Specializing in system architecture, performance engineering, and strategic technology selection.",
 		knowsLanguage: ["en"],
@@ -64,7 +72,7 @@ export function JsonLd() {
 			"Healthcare Technology",
 			"E-commerce Platforms",
 			"B2B SaaS",
-			"Technical Due Diligence",
+			TECHNICAL_DUE_DILIGENCE_LABEL,
 		],
 		award: [
 			"337x performance improvement - TraceForge vectorization engine",
@@ -75,49 +83,44 @@ export function JsonLd() {
 	};
 
 	const organizationSchema = {
-		"@context": "https://schema.org",
+		"@context": SCHEMA_CONTEXT,
 		"@type": "Organization",
-		"@id": "https://alexmayhew.dev/#organization",
+		"@id": ORGANIZATION_ID,
 		name: "Alex Mayhew",
-		url: "https://alexmayhew.dev",
+		url: SITE_URL,
 		logo: {
 			"@type": "ImageObject",
-			url: "https://alexmayhew.dev/og-image.png",
+			url: OG_IMAGE_URL,
 			width: 1200,
 			height: 630,
 		},
-		founder: { "@id": "https://alexmayhew.dev/#person" },
-		sameAs: [
-			"https://github.com/LecoMV",
-			"https://www.linkedin.com/in/alexmmayhew",
-			"https://x.com/alexmayhewdev",
-			"https://bsky.app/profile/alexmayhewdev.bsky.social",
-		],
+		founder: { "@id": PERSON_ID },
+		sameAs: SOCIAL_PROFILES,
 	};
 
 	const websiteSchema = {
-		"@context": "https://schema.org",
+		"@context": SCHEMA_CONTEXT,
 		"@type": "WebSite",
 		"@id": "https://alexmayhew.dev/#website",
 		name: "Alex Mayhew",
 		alternateName: "alexmayhew.dev",
-		url: "https://alexmayhew.dev",
+		url: SITE_URL,
 		description: "Portfolio and blog of Alex Mayhew - Technical Advisor & Systems Architect",
-		author: { "@id": "https://alexmayhew.dev/#person" },
-		publisher: { "@id": "https://alexmayhew.dev/#organization" },
+		author: { "@id": PERSON_ID },
+		publisher: { "@id": ORGANIZATION_ID },
 	};
 
 	// Single unified business entity ... combines consulting service + local business signals
 	const professionalServiceSchema = {
-		"@context": "https://schema.org",
+		"@context": SCHEMA_CONTEXT,
 		"@type": "ConsultingService",
 		"@id": "https://alexmayhew.dev/#business",
 		name: "Alex Mayhew - Technical Advisory Services",
 		alternateName: "Alex Mayhew Consulting",
-		url: "https://alexmayhew.dev",
+		url: SITE_URL,
 		logo: "https://alexmayhew.dev/favicon.svg",
-		image: "https://alexmayhew.dev/og-image.png",
-		founder: { "@id": "https://alexmayhew.dev/#person" },
+		image: OG_IMAGE_URL,
+		founder: { "@id": PERSON_ID },
 		description:
 			"Strategic technical guidance for founders and CTOs. Architecture decisions that compound into competitive advantage. Specializing in SaaS, Fintech, Healthcare, and high-growth startups.",
 		priceRange: "$$$$",
@@ -149,7 +152,7 @@ export function JsonLd() {
 			"AI/ML Integration",
 			"Performance Engineering",
 			"Cloud Architecture",
-			"Technical Due Diligence",
+			TECHNICAL_DUE_DILIGENCE_LABEL,
 		],
 		areaServed: [
 			{ "@type": "City", name: "Boston" },
@@ -199,22 +202,17 @@ export function JsonLd() {
 				},
 				{
 					"@type": "Offer",
-					name: "Technical Due Diligence",
+					name: TECHNICAL_DUE_DILIGENCE_LABEL,
 					itemOffered: {
 						"@type": "Service",
-						name: "Technical Due Diligence",
+						name: TECHNICAL_DUE_DILIGENCE_LABEL,
 						description:
 							"Comprehensive technical assessment for investors and acquirers. Codebase audit, architecture review, team evaluation, risk identification.",
 					},
 				},
 			],
 		},
-		sameAs: [
-			"https://github.com/LecoMV",
-			"https://www.linkedin.com/in/alexmmayhew",
-			"https://x.com/alexmayhewdev",
-			"https://bsky.app/profile/alexmayhewdev.bsky.social",
-		],
+		sameAs: SOCIAL_PROFILES,
 	};
 
 	return (
