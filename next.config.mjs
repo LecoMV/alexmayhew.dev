@@ -34,6 +34,10 @@ const config = {
 		optimizeCss: true,
 		// Tree-shake specific packages for smaller bundles
 		optimizePackageImports: ["lucide-react", "framer-motion"],
+		// React Compiler (stable in Next 15.5+). Auto-memoizes components so
+		// most manual useMemo/useCallback/React.memo become unnecessary.
+		// Enabled 2026-04-17 after all components passed strict-rule review.
+		reactCompiler: true,
 	},
 
 	// Image optimization
