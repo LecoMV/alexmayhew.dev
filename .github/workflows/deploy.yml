@@ -194,9 +194,21 @@ jobs:
           [[ -n "$CONTACT_EMAIL" ]]      || { echo "::error::CONTACT_EMAIL empty"; exit 1; }
           echo "All required secrets are present."
 
-      # Push secrets BEFORE deploy so the new Worker version reads them on first request
-      # (prevents race where deploy finishes, traffic hits, secrets not yet updated).
-      - name: Set Worker secrets (pre-deploy)
+      - name: Deploy to Cloudflare Workers
+        id: deploy
+        run: npx opennextjs-cloudflare deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      # Push secrets AFTER deploy. `wrangler secret put` requires that the
+      # latest uploaded version equals the currently-deployed version; doing
+      # this pre-deploy breaks rollback recovery, because `wrangler rollback`
+      # makes an older version the deployed one while a newer (bad) version
+      # remains as "latest" — any subsequent secret push fails until a fresh
+      # deploy re-aligns the two. The small race window on first request is
+      # acceptable — secrets propagate within ~1s.
+      - name: Set Worker secrets (post-deploy)
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -211,13 +223,6 @@ jobs:
           printf '%s' "$LISTMONK_API_KEY"  | npx wrangler secret put LISTMONK_API_KEY
           printf '%s' "$RESEND_API_KEY"    | npx wrangler secret put RESEND_API_KEY
           printf '%s' "$CONTACT_EMAIL"     | npx wrangler secret put CONTACT_EMAIL
-
-      - name: Deploy to Cloudflare Workers
-        id: deploy
-        run: npx opennextjs-cloudflare deploy
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Health Check with SHA Verification
         env:
