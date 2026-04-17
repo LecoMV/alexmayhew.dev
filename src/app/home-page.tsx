@@ -74,7 +74,9 @@ export default function Home() {
 					>
 						<m.div className="flex flex-col gap-2" variants={fadeInUp}>
 							<p className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase sm:text-sm">
-								<span className="mr-2 animate-pulse">●</span>
+								<span className="mr-2 animate-pulse" aria-hidden="true">
+									●
+								</span>
 								Technical Advisor
 							</p>
 							<h1 className="text-4xl leading-[1.1] font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
@@ -145,7 +147,7 @@ export default function Home() {
 									core: <span className="text-green-300">&quot;Atmosphere&quot;</span>,
 								</p>
 								<p className="pl-4">
-									precision: <span className="text-purple-400">0.9999</span>,
+									precision: <span className="text-signal-info">0.9999</span>,
 								</p>
 								<p className="pl-4">
 									style: <span className="text-blue-300">&quot;Void&quot;</span>,
@@ -184,7 +186,9 @@ export default function Home() {
 						transition={springTransition}
 					>
 						<h2 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-							<span className="mr-2 animate-pulse">●</span>
+							<span className="mr-2 animate-pulse" aria-hidden="true">
+								●
+							</span>
 							Services
 						</h2>
 						<p className="text-slate-text max-w-2xl text-lg">
@@ -246,7 +250,9 @@ export default function Home() {
 					>
 						<div>
 							<h2 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-								<span className="mr-2 animate-pulse">●</span>
+								<span className="mr-2 animate-pulse" aria-hidden="true">
+									●
+								</span>
 								About
 							</h2>
 							<p className="text-mist-white mb-4 text-lg leading-relaxed">
@@ -304,7 +310,9 @@ export default function Home() {
 					>
 						<div className="md:col-span-5">
 							<h2 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-								<span className="mr-2 animate-pulse">●</span>
+								<span className="mr-2 animate-pulse" aria-hidden="true">
+									●
+								</span>
 								Why Partner With Me
 							</h2>
 							<p className="font-mono text-2xl leading-tight tracking-tight md:text-3xl">
@@ -349,7 +357,9 @@ export default function Home() {
 						<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b border-l" />
 
 						<h2 className="text-cyber-lime mb-6 font-mono text-xs tracking-wider uppercase">
-							<span className="mr-2 animate-pulse">●</span>
+							<span className="mr-2 animate-pulse" aria-hidden="true">
+								●
+							</span>
 							What I Refuse To Do
 						</h2>
 						<p className="font-mono text-2xl leading-tight tracking-tight md:text-3xl">
@@ -399,7 +409,9 @@ export default function Home() {
 						transition={springTransition}
 					>
 						<h2 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-							<span className="mr-2 animate-pulse">●</span>
+							<span className="mr-2 animate-pulse" aria-hidden="true">
+								●
+							</span>
 							Featured Insights
 						</h2>
 						<p className="text-slate-text max-w-2xl text-lg">
@@ -457,7 +469,9 @@ export default function Home() {
 					<div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
 						<div>
 							<h2 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-								<span className="mr-2 animate-pulse">●</span>
+								<span className="mr-2 animate-pulse" aria-hidden="true">
+									●
+								</span>
 								The Architect&apos;s Brief
 							</h2>
 							<p className="mb-2 font-mono text-2xl tracking-tight md:text-3xl">

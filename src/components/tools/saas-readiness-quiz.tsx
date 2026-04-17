@@ -328,7 +328,7 @@ function ResultsScreen({
 										cat.percent >= 75
 											? "bg-cyber-lime h-full"
 											: cat.percent >= 50
-												? "h-full bg-amber-400"
+												? "bg-signal-warn h-full"
 												: "bg-burnt-ember h-full"
 									}
 									initial={{ width: 0 }}

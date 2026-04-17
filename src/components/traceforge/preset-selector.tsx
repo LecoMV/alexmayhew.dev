@@ -228,12 +228,14 @@ export function PresetSelector({
 						exit={{ opacity: 0, height: 0 }}
 						className="overflow-hidden"
 					>
-						<div className="flex items-start gap-2 border border-amber-400/30 bg-amber-400/5 p-3">
+						<div className="border-signal-warn/30 bg-signal-warn/5 flex items-start gap-2 border p-3">
 							<AlertTriangle
-								className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-400"
+								className="text-signal-warn mt-0.5 h-4 w-4 flex-shrink-0"
 								strokeWidth={1.5}
 							/>
-							<p className="text-xs leading-relaxed text-amber-400">{selectedPresetData.warning}</p>
+							<p className="text-signal-warn text-xs leading-relaxed">
+								{selectedPresetData.warning}
+							</p>
 						</div>
 					</m.div>
 				)}
@@ -291,14 +293,14 @@ export function PresetSelector({
 								</ul>
 							</div>
 							<div className="border-t border-white/10 pt-3">
-								<h4 className="mb-2 font-mono text-xs text-amber-400">Important Notes</h4>
+								<h4 className="text-signal-warn mb-2 font-mono text-xs">Important Notes</h4>
 								<ul className="text-slate-text space-y-1 text-[10px]">
 									<li>
-										• <span className="text-amber-400/80">Circles:</span> Use VTracer Icon preset
+										• <span className="text-signal-warn/80">Circles:</span> Use VTracer Icon preset
 										for perfect bezier curves without flat edges
 									</li>
 									<li>
-										• <span className="text-amber-400/80">VTracer Photo</span> creates a stylized
+										• <span className="text-signal-warn/80">VTracer Photo</span> creates a stylized
 										poster-art effect, not photorealistic vectors
 									</li>
 									<li>• For best results, use high-contrast images with clean edges</li>

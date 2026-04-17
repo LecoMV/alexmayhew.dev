@@ -137,7 +137,9 @@ export function Terminal({
 				exit={{ y: 100, opacity: 0 }}
 				transition={springTransition}
 			>
-				<span className="text-cyber-lime animate-pulse">●</span>
+				<span className="text-cyber-lime animate-pulse" aria-hidden="true">
+					●
+				</span>
 				ALEX_OS Terminal
 			</m.button>
 		);
@@ -156,7 +158,9 @@ export function Terminal({
 			{/* Window Title Bar */}
 			<div className="bg-gunmetal-glass/50 flex items-center justify-between border-b border-white/10 px-4 py-2">
 				<div className="flex items-center gap-3">
-					<span className="text-cyber-lime animate-pulse text-xs">●</span>
+					<span className="text-cyber-lime animate-pulse text-xs" aria-hidden="true">
+						●
+					</span>
 					<span className="text-mist-white font-mono text-xs tracking-wider">
 						ALEX_OS v1.0.0 ... bash
 					</span>
@@ -216,7 +220,7 @@ export function Terminal({
 								<div className="flex items-start gap-2">
 									<span className="text-cyber-lime">visitor@alexmayhew.dev</span>
 									<span className="text-slate-text">:</span>
-									<span className="text-blue-400">{currentPath}</span>
+									<span className="text-signal-info">{currentPath}</span>
 									<span className="text-slate-text">$</span>
 									<span className="text-mist-white">{entry.command}</span>
 								</div>
@@ -238,7 +242,7 @@ export function Terminal({
 				<div className="flex items-start gap-2">
 					<span className="text-cyber-lime">visitor@alexmayhew.dev</span>
 					<span className="text-slate-text">:</span>
-					<span className="text-blue-400">{currentPath}</span>
+					<span className="text-signal-info">{currentPath}</span>
 					<span className="text-slate-text">$</span>
 					<div className="relative flex-1">
 						<input
@@ -274,7 +278,9 @@ export function Terminal({
 				<span className="text-slate-text font-mono text-xs">
 					↑↓ History | Tab Complete | Ctrl+L Clear
 				</span>
-				<span className="text-cyber-lime font-mono text-xs">● Ready</span>
+				<span className="text-cyber-lime font-mono text-xs">
+					<span aria-hidden="true">●</span> Ready
+				</span>
 			</div>
 		</m.div>
 	);

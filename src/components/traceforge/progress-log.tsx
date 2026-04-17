@@ -40,13 +40,13 @@ export function ProgressLog({ logs, status }: ProgressLogProps) {
 					{isProcessing && (
 						<Loader2 className="text-cyber-lime h-3 w-3 animate-spin" strokeWidth={1.5} />
 					)}
-					{isCompleted && <CheckCircle className="h-3 w-3 text-green-400" strokeWidth={1.5} />}
+					{isCompleted && <CheckCircle className="text-cyber-lime h-3 w-3" strokeWidth={1.5} />}
 					{isError && <AlertCircle className="text-burnt-ember h-3 w-3" strokeWidth={1.5} />}
 					<span
 						className={cn(
 							"font-mono text-[10px] uppercase",
 							isProcessing && "text-cyber-lime",
-							isCompleted && "text-green-400",
+							isCompleted && "text-cyber-lime",
 							isError && "text-burnt-ember"
 						)}
 					>

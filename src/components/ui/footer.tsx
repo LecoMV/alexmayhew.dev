@@ -83,7 +83,9 @@ export function Footer() {
 					{/* Navigation Links */}
 					<div className="md:col-span-3">
 						<h4 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-							<span className="mr-2 animate-pulse">●</span>
+							<span className="mr-2 animate-pulse" aria-hidden="true">
+								●
+							</span>
 							Navigation
 						</h4>
 						<nav className="flex flex-col gap-2">
@@ -102,14 +104,18 @@ export function Footer() {
 					{/* Newsletter & Social */}
 					<div className="md:col-span-4">
 						<h4 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-							<span className="mr-2 animate-pulse">●</span>
+							<span className="mr-2 animate-pulse" aria-hidden="true">
+								●
+							</span>
 							Newsletter
 						</h4>
 						<p className="text-slate-text mb-3 text-sm">Weekly technical insights. No spam.</p>
 						<NewsletterSignup variant="minimal" source="footer" className="mb-6" />
 
 						<h4 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
-							<span className="mr-2 animate-pulse">●</span>
+							<span className="mr-2 animate-pulse" aria-hidden="true">
+								●
+							</span>
 							Connect
 						</h4>
 						<div className="flex gap-3">

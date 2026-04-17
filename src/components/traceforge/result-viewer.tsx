@@ -70,9 +70,9 @@ export function ResultViewer({
 						<span
 							className={cn(
 								"font-mono text-sm font-bold",
-								result.quality.tier === "excellent" && "text-green-400",
+								result.quality.tier === "excellent" && "text-cyber-lime",
 								result.quality.tier === "good" && "text-cyber-lime",
-								result.quality.tier === "fair" && "text-yellow-400",
+								result.quality.tier === "fair" && "text-signal-caution",
 								result.quality.tier === "poor" && "text-burnt-ember"
 							)}
 						>
@@ -81,9 +81,9 @@ export function ResultViewer({
 						<span
 							className={cn(
 								"border px-1.5 py-0.5 font-mono text-[9px] tracking-wider uppercase",
-								result.quality.tier === "excellent" && "border-green-400/50 text-green-400",
+								result.quality.tier === "excellent" && "border-cyber-lime/50 text-cyber-lime",
 								result.quality.tier === "good" && "border-cyber-lime/50 text-cyber-lime",
-								result.quality.tier === "fair" && "border-yellow-400/50 text-yellow-400",
+								result.quality.tier === "fair" && "border-signal-caution/50 text-signal-caution",
 								result.quality.tier === "poor" && "border-burnt-ember/50 text-burnt-ember"
 							)}
 						>
@@ -179,7 +179,7 @@ export function ResultViewer({
 					>
 						{copied ? (
 							<>
-								<Check className="h-3 w-3 text-green-400" strokeWidth={1.5} />
+								<Check className="text-cyber-lime h-3 w-3" strokeWidth={1.5} />
 								<span>Copied</span>
 							</>
 						) : (
