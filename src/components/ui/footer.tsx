@@ -65,9 +65,9 @@ export function Footer() {
 							<Image
 								src="/am-icon-optimized_sized.svg"
 								alt="Alex Mayhew"
-								width={24}
+								width={40}
 								height={24}
-								className="h-10 w-auto"
+								className="h-6 w-auto"
 							/>
 							<span className="font-mono text-sm tracking-tight">
 								<span className="text-cyber-lime">alex</span>
