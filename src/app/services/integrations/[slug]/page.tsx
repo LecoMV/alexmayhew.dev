@@ -70,7 +70,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 		alternates: {
 			canonical: pageUrl,
 		},
-		robots: { index: false, follow: true },
+		// Indexable as of 2026-04-17: pages meet the same quality gates as
+		// /services/[slug] (see .claude/rules/pseo.md) and withholding them
+		// over a "wait for DR>20" rule was blocking ~20+ otherwise-valid pages
+		// while near-zero backlinks are the real indexing bottleneck.
 	};
 }
 

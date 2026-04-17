@@ -138,34 +138,32 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		priority: 0.7,
 	}));
 
-	// Migration pages (Legacy Tech → Modern Tech)
-	const _migrationPages: MetadataRoute.Sitemap = getAllMigrationPages()
+	// Migration pages (Legacy Tech → Modern Tech).
+	// lastModified omitted: no per-page update tracking (see technologyPages note).
+	const migrationPages: MetadataRoute.Sitemap = getAllMigrationPages()
 		.filter((page) => page.published)
 		.map((page) => ({
 			url: `${siteUrl}/services/migrations/${page.slug}`,
-			lastModified: siteLastUpdated,
 			changeFrequency: "monthly" as const,
-			priority: 0.7,
+			priority: 0.6,
 		}));
 
-	// Integration pages (SaaS A ↔ SaaS B)
-	const _integrationPages: MetadataRoute.Sitemap = getAllIntegrationPages()
+	// Integration pages (SaaS A ↔ SaaS B).
+	const integrationPages: MetadataRoute.Sitemap = getAllIntegrationPages()
 		.filter((page) => page.published)
 		.map((page) => ({
 			url: `${siteUrl}/services/integrations/${page.slug}`,
-			lastModified: siteLastUpdated,
 			changeFrequency: "monthly" as const,
-			priority: 0.7,
+			priority: 0.6,
 		}));
 
-	// Comparison pages (Tech A vs Tech B)
-	const _comparisonPages: MetadataRoute.Sitemap = getAllComparisonPages()
+	// Comparison pages (Tech A vs Tech B).
+	const comparisonPages: MetadataRoute.Sitemap = getAllComparisonPages()
 		.filter((page) => page.published)
 		.map((page) => ({
 			url: `${siteUrl}/services/comparisons/${page.slug}`,
-			lastModified: siteLastUpdated,
 			changeFrequency: "monthly" as const,
-			priority: 0.7,
+			priority: 0.6,
 		}));
 
 	// Technology hub pages.
@@ -229,14 +227,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		priority: 0.7,
 	}));
 
-	// Pruned sitemap: only high-quality, authority-worthy pages.
-	// /docs removed ... Fumadocs stub pages lack authority and risk "scaled content abuse" signals.
-	// Migration, integration, comparison, and newsletter archive pages
-	// excluded until domain authority is established (DR > 20).
+	// Sitemap composition (2026-04-17):
+	// - /docs excluded: Fumadocs stub pages lack authority and risk
+	//   "scaled content abuse" signals.
+	// - Migration / integration / comparison pSEO now included: the original
+	//   "DR>20 first" gate was blocking quality-gated content while near-zero
+	//   backlinks are the real indexing bottleneck.
+	// - Newsletter archive still excluded until open-rate + send volume
+	//   justify discoverability.
 	return [
 		...staticPages,
 		...blogPosts,
 		...servicePages,
+		...migrationPages,
+		...integrationPages,
+		...comparisonPages,
 		...technologyPages,
 		...rolePages,
 		...caseStudyPages,
