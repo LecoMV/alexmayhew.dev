@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { logger } from "@/lib/logger";
+import { VectorizerUploadResponseSchema } from "@/lib/schemas/external-responses";
 import { validateFile, VECTORIZER_CONFIG } from "@/lib/vectorizer";
 
 /**
@@ -48,8 +49,22 @@ export async function POST(request: NextRequest) {
 			return NextResponse.json({ error: detail }, { status: response.status });
 		}
 
-		const data = await response.json();
-		return NextResponse.json(data);
+		const parsed = VectorizerUploadResponseSchema.safeParse(await response.json());
+		if (!parsed.success) {
+			logger.error("Vectorizer upload response failed validation", {
+				requestId,
+				route: "/api/vectorize",
+				method: "POST",
+				status: 502,
+				durationMs: Date.now() - start,
+				error: parsed.error.message,
+			});
+			return NextResponse.json(
+				{ error: "Upstream validation failed", upstream: "vectorizer" },
+				{ status: 502, headers: { "x-request-id": requestId } }
+			);
+		}
+		return NextResponse.json(parsed.data);
 	} catch (error) {
 		logger.error("Upload error", {
 			requestId,

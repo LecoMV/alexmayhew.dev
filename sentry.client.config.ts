@@ -82,8 +82,8 @@ Sentry.init({
 	// Environment tag
 	environment: process.env.NODE_ENV,
 
-	// Release tracking (set during build)
-	release: process.env.NEXT_PUBLIC_SENTRY_RELEASE,
+	// Release tracking — prefer commit SHA so events correlate with deploy logs.
+	release: process.env.NEXT_PUBLIC_GIT_SHA || process.env.NEXT_PUBLIC_SENTRY_RELEASE || "unknown",
 
 	// Browser tracing stays static (tiny, needed for Core Web Vitals).
 	// Replay is lazy-loaded below to keep it out of the initial bundle (~38 KB gzip saved).
@@ -148,4 +148,46 @@ if (typeof window !== "undefined" && process.env.NODE_ENV === "production") {
 			);
 		})
 		.catch(() => {});
+}
+
+// Attach an anonymous per-visitor id ONLY if analytics consent has been granted.
+// Deferred via setTimeout so it runs after React hydration and after the consent
+// banner has had a chance to persist the user's choice — avoids setting a user
+// on first visit before the visitor has consented.
+const CONSENT_KEY = "cookie-consent";
+const ANON_ID_KEY = "sentry-anon-id";
+
+interface StoredConsent {
+	analytics?: boolean;
+}
+
+function readAnalyticsConsent(): boolean {
+	try {
+		const raw = window.localStorage.getItem(CONSENT_KEY);
+		if (!raw) return false;
+		const parsed = JSON.parse(raw) as StoredConsent;
+		return parsed.analytics === true;
+	} catch {
+		return false;
+	}
+}
+
+function getOrCreateAnonId(): string | null {
+	try {
+		const existing = window.localStorage.getItem(ANON_ID_KEY);
+		if (existing) return existing;
+		const fresh = crypto.randomUUID();
+		window.localStorage.setItem(ANON_ID_KEY, fresh);
+		return fresh;
+	} catch {
+		return null;
+	}
+}
+
+if (typeof window !== "undefined") {
+	setTimeout(() => {
+		if (!readAnalyticsConsent()) return;
+		const anonId = getOrCreateAnonId();
+		if (anonId) Sentry.setUser({ id: anonId });
+	}, 0);
 }

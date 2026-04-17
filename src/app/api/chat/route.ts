@@ -4,6 +4,7 @@ import { z } from "zod";
 import blogIndex from "@/data/blog-index.json";
 import { logger } from "@/lib/logger";
 import { getClientIP } from "@/lib/rate-limit";
+import { CloudflareAIResponseSchema } from "@/lib/schemas/external-responses";
 const MAX_MESSAGE_LENGTH = 1000;
 const MAX_MESSAGES_PER_REQUEST = 10;
 
@@ -171,14 +172,30 @@ export async function POST(request: Request) {
 
 		const chatMessages = [{ role: "system", content: FULL_PROMPT }, ...messages];
 
-		const response = await env.AI.run("@cf/qwen/qwen2.5-coder-32b-instruct", {
+		const rawResponse = await env.AI.run("@cf/qwen/qwen2.5-coder-32b-instruct", {
 			messages: chatMessages,
 			max_tokens: 500,
 			temperature: 0.7,
 		});
 
+		const parsed = CloudflareAIResponseSchema.safeParse(rawResponse);
+		if (!parsed.success) {
+			logger.error("Cloudflare AI response failed validation", {
+				requestId,
+				route: "/api/chat",
+				method: "POST",
+				status: 502,
+				durationMs: Date.now() - start,
+				error: parsed.error.message,
+			});
+			return Response.json(
+				{ error: "Upstream validation failed", upstream: "cloudflare-ai" },
+				{ status: 502, headers: { "x-request-id": requestId } }
+			);
+		}
+
 		return Response.json({
-			message: response.response,
+			message: parsed.data.response,
 			model: "qwen2.5-coder-32b-instruct",
 		});
 	} catch (error) {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { logger } from "@/lib/logger";
+import { VectorizerStatusResponseSchema } from "@/lib/schemas/external-responses";
 import { taskIdSchema, VECTORIZER_CONFIG } from "@/lib/vectorizer";
 
 /**
@@ -43,8 +44,22 @@ export async function GET(
 			return NextResponse.json({ error: detail }, { status: response.status });
 		}
 
-		const data = await response.json();
-		return NextResponse.json(data);
+		const parsed = VectorizerStatusResponseSchema.safeParse(await response.json());
+		if (!parsed.success) {
+			logger.error("Vectorizer status response failed validation", {
+				requestId,
+				route: "/api/vectorize/status",
+				method: "GET",
+				status: 502,
+				durationMs: Date.now() - start,
+				error: parsed.error.message,
+			});
+			return NextResponse.json(
+				{ error: "Upstream validation failed", upstream: "vectorizer" },
+				{ status: 502, headers: { "x-request-id": requestId } }
+			);
+		}
+		return NextResponse.json(parsed.data);
 	} catch (error) {
 		logger.error("Status check error", {
 			requestId,

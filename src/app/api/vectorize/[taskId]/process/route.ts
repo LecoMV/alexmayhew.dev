@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { logger } from "@/lib/logger";
+import { VectorizerProcessResponseSchema } from "@/lib/schemas/external-responses";
 import {
 	formatZodError,
 	processOptionsSchema,
@@ -63,8 +64,22 @@ export async function POST(
 			return NextResponse.json({ error: detail }, { status: response.status });
 		}
 
-		const data = await response.json();
-		return NextResponse.json(data);
+		const parsed = VectorizerProcessResponseSchema.safeParse(await response.json());
+		if (!parsed.success) {
+			logger.error("Vectorizer process response failed validation", {
+				requestId,
+				route: "/api/vectorize/process",
+				method: "POST",
+				status: 502,
+				durationMs: Date.now() - start,
+				error: parsed.error.message,
+			});
+			return NextResponse.json(
+				{ error: "Upstream validation failed", upstream: "vectorizer" },
+				{ status: 502, headers: { "x-request-id": requestId } }
+			);
+		}
+		return NextResponse.json(parsed.data);
 	} catch (error) {
 		logger.error("Process error", {
 			requestId,

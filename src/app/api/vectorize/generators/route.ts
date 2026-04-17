@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { logger } from "@/lib/logger";
+import { VectorizerGeneratorsResponseSchema } from "@/lib/schemas/external-responses";
 import { POTRACE_PRESETS, VECTORIZER_CONFIG, VTRACER_PRESETS } from "@/lib/vectorizer";
 
 /**
@@ -28,8 +29,19 @@ export async function GET() {
 			return NextResponse.json(getFallbackData());
 		}
 
-		const data = await response.json();
-		return NextResponse.json(data);
+		const parsed = VectorizerGeneratorsResponseSchema.safeParse(await response.json());
+		if (!parsed.success) {
+			logger.error("Vectorizer generators response failed validation", {
+				requestId,
+				route: "/api/vectorize/generators",
+				method: "GET",
+				status: 502,
+				durationMs: Date.now() - start,
+				error: parsed.error.message,
+			});
+			return NextResponse.json(getFallbackData());
+		}
+		return NextResponse.json(parsed.data);
 	} catch (error) {
 		logger.error("Generators error", {
 			requestId,
