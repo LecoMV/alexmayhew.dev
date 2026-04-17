@@ -136,7 +136,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 	}));
 
 	// Migration pages (Legacy Tech → Modern Tech)
-	const migrationPages: MetadataRoute.Sitemap = getAllMigrationPages()
+	const _migrationPages: MetadataRoute.Sitemap = getAllMigrationPages()
 		.filter((page) => page.published)
 		.map((page) => ({
 			url: `${siteUrl}/services/migrations/${page.slug}`,
@@ -146,7 +146,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		}));
 
 	// Integration pages (SaaS A ↔ SaaS B)
-	const integrationPages: MetadataRoute.Sitemap = getAllIntegrationPages()
+	const _integrationPages: MetadataRoute.Sitemap = getAllIntegrationPages()
 		.filter((page) => page.published)
 		.map((page) => ({
 			url: `${siteUrl}/services/integrations/${page.slug}`,
@@ -156,7 +156,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		}));
 
 	// Comparison pages (Tech A vs Tech B)
-	const comparisonPages: MetadataRoute.Sitemap = getAllComparisonPages()
+	const _comparisonPages: MetadataRoute.Sitemap = getAllComparisonPages()
 		.filter((page) => page.published)
 		.map((page) => ({
 			url: `${siteUrl}/services/comparisons/${page.slug}`,
@@ -183,7 +183,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
 	// Newsletter archive pages ... only include issues that have actually been SENT.
 	// Date filter alone is insufficient: 36 drafts have past sendDate values but are unpublished.
-	const newsletterPages: MetadataRoute.Sitemap = [
+	const _newsletterPages: MetadataRoute.Sitemap = [
 		{
 			url: `${siteUrl}/newsletter`,
 			lastModified: siteLastUpdated,
