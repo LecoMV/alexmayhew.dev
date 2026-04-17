@@ -30,7 +30,7 @@ Not theoretical bugs. Bugs that shipped, affected users, required hotfixes, and 
 
 This study examined their JavaScript codebase and classified bugs by whether static typing would have caught them: null/undefined access, incorrect function arguments, property access on wrong types.
 
-38% is high because Airbnb moves fast. Their JavaScript codebase evolves rapidly, which increases the odds of type-related errors slipping through.
+38% is high because Airbnb moves fast. Their JavaScript codebase evolves rapidly, which increases the odds of type-related errors slipping through. This compounds with every architectural choice... the patterns documented in [modern frontend architecture](/blog/modern-frontend-architecture) all assume type-safe contracts between layers.
 
 ### The GitHub Study
 
@@ -184,7 +184,7 @@ TypeScript's real superpower is IDE intelligence:
 
 **Rename Symbol**: Rename a function and update all call sites automatically.
 
-These features transform code navigation. New developers understand the codebase faster because the tools tell them what exists and how to use it.
+These features transform code navigation. New developers understand the codebase faster because the tools tell them what exists and how to use it. The effect extends to [component API design](/blog/component-api-design)... typed props force you to think about what your component actually needs before you write it.
 
 ### Onboarding Velocity
 
@@ -364,7 +364,7 @@ processUser("string"); // Runtime error
 
 Tests are samples. Types are proofs.
 
-Use both. Tests verify logic. Types verify contracts.
+Use both. Tests verify logic. Types verify contracts. For components that straddle client and server... like those covered in [testing React Server Components](/blog/testing-react-server-components)... types are the only reliable way to enforce the serialization boundary.
 
 ### "The Svelte Case"
 

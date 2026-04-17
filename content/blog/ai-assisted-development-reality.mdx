@@ -13,7 +13,7 @@ image: "/images/blog/ai-assisted-development-reality-featured.webp"
 
 ## TL;DR
 
-"Vibe coding" is a reductive term that misrepresents how AI-assisted development actually works. The anti-AI camp claims you need a CS degree and 10 years of production experience to ship anything real. The AI evangelists claim their 10,000-agent swarm builds enterprise software overnight. Both are wrong. AI-assisted development is a discipline that amplifies existing competence ... it does not replace it. The differentiator is not the tool. It is the person directing it.
+"Vibe coding" is a reductive term that misrepresents how AI-assisted development actually works. The anti-AI camp claims you need a CS degree and 10 years of production experience to ship anything real. The AI evangelists claim their 10,000-agent swarm builds enterprise software overnight. Both are wrong. AI-assisted development is a discipline that amplifies existing competence ... it does not replace it. The differentiator is not the tool. It is the person directing it. The full framework is in the [AI-assisted development guide](/blog/ai-assisted-development-guide).
 
 ---
 
@@ -35,13 +35,13 @@ There is a vocal contingent of experienced developers who insist that AI-assiste
 
 They are half right. AI does generate plausible-looking code that can fall apart. Context windows degrade over long sessions. Hallucinations happen. Generated code can introduce subtle security vulnerabilities, miss edge cases, or implement patterns that work in isolation but create maintenance nightmares at scale.
 
-Where they are wrong is the conclusion. The implication that AI-assisted development is fundamentally incapable of producing professional-grade systems is contradicted by the evidence. Not theoretical evidence. Actual shipped systems.
+Where they are wrong is the conclusion. The implication that AI-assisted development is fundamentally incapable of producing professional-grade systems is contradicted by the evidence. Not theoretical evidence. Actual shipped systems. The productivity delta is real but asymmetric... see [the METR paradox](/blog/the-metr-paradox) for why senior engineers often slow down while juniors speed up.
 
 I built and operate a production content platform that includes a Next.js 15 application on Cloudflare's edge network, a self-hosted social media scheduling system with triple-layer safety nets against data loss, enterprise-grade monitoring with four independent health check systems running on staggered intervals, automated content pipelines processing 158 queued posts across three platforms, a newsletter system with 36 pre-written issues, and infrastructure hardened against the specific failure modes I discovered through operating it. Every line of code, every systemd timer, every database query pattern was built with AI assistance.
 
 The monitoring system alone has a postiz-safe-start script that runs as a pre-start check before the scheduling engine boots, preventing a Temporal workflow replay from firing past-due posts. A watchdog runs every 5 minutes checking HTTP health, container states, Redis connectivity, database integrity, and LinkedIn token expiry. A comprehensive monitor runs every 30 minutes with log rotation, disk space alerts, and duplicate schedule detection. These are not demo features. They exist because I encountered the failure modes they prevent and built the defenses against them.
 
-None of that happened because I typed a single prompt and let the AI run. It happened because I brought 24 years of context to the conversation.
+None of that happened because I typed a single prompt and let the AI run. It happened because I brought 24 years of context to the conversation. The pattern matches what I covered in [cognitive debt from AI teams](/blog/cognitive-debt-ai-teams)... AI amplifies whatever judgment you already have, good or bad.
 
 ---
 
@@ -117,7 +117,7 @@ If there is a formula for making AI-assisted development work, it is this:
 
 **Competence + Discipline + Research + AI = Results**
 
-Remove competence and you get demo-quality code that breaks in production. Remove discipline and you get technical debt that compounds faster because AI helps you write more of it. Remove research and you get confident implementations of the wrong solution. Remove AI and you get the same results, slower.
+Remove competence and you get demo-quality code that breaks in production. Remove discipline and you get technical debt that compounds faster because AI helps you write more of it... the compounding pattern I documented in [the AI technical debt bomb](/blog/ai-technical-debt-bomb). Remove research and you get confident implementations of the wrong solution. Remove AI and you get the same results, slower.
 
 The order matters. AI is the multiplier at the end, not the foundation. Every attempt I have seen to put AI first ... to use it as a replacement for understanding rather than an amplifier of it ... produces the same result: something that looks impressive until it has to work.
 
