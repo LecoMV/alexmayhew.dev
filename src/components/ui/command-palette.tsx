@@ -75,9 +75,13 @@ export function CommandPalette({ items }: CommandPaletteProps) {
 					exit={{ opacity: 0 }}
 					transition={microSpring}
 				>
-					{/* Backdrop */}
-					<div
-						className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+					{/* Backdrop. Button (not div) so keyboard users can dismiss with
+					    Enter/Space; Escape remains the primary dismiss path via cmdk. */}
+					<button
+						type="button"
+						aria-label="Close search"
+						tabIndex={-1}
+						className="bg-void-navy/60 absolute inset-0 backdrop-blur-sm"
 						onClick={() => setOpen(false)}
 					/>
 

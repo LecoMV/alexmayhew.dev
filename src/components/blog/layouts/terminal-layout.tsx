@@ -27,8 +27,8 @@ export function TerminalLayout({ posts }: TerminalLayoutProps) {
 				className="flex items-center gap-2 border-b px-4 py-3"
 				style={{ borderColor: theme.colors.border }}
 			>
-				<div className="flex gap-1.5">
-					<div className="h-3 w-3 rounded-full bg-red-500/60" />
+				<div className="flex gap-1.5" aria-hidden="true">
+					<div className="bg-burnt-ember/60 h-3 w-3 rounded-full" />
 					<div className="bg-signal-caution/60 h-3 w-3 rounded-full" />
 					<div className="bg-cyber-lime/60 h-3 w-3 rounded-full" />
 				</div>
