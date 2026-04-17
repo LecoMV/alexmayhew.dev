@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
+import { springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
 import type { Generator } from "@/lib/hooks/use-vectorizer";
@@ -177,7 +178,7 @@ export function PresetSelector({
 						key={preset.id}
 						initial={{ opacity: 0, y: 10 }}
 						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: index * 0.05 }}
+						transition={{ ...springTransition, delay: index * 0.05 }}
 						onClick={() => onPresetChange(preset.id)}
 						disabled={disabled}
 						className={cn(

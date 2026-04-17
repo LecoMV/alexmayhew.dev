@@ -362,7 +362,7 @@ export default function BackgroundsDemoPage() {
 						className="mt-12 border-t border-white/10 pt-8"
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
-						transition={{ delay: 0.5 }}
+						transition={{ ...springTransition, delay: 0.5 }}
 					>
 						<h3 className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
 							<span className="mr-2">●</span>

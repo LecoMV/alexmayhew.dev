@@ -113,7 +113,7 @@ export default function DemoPage() {
 					className="mb-12 flex flex-wrap gap-4"
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
-					transition={{ delay: 0.2 }}
+					transition={{ ...springTransition, delay: 0.2 }}
 				>
 					<div className="flex items-center gap-2 font-mono text-xs">
 						<Check className="text-cyber-lime h-4 w-4" strokeWidth={1.5} />
@@ -359,7 +359,7 @@ export default function DemoPage() {
 					className="mt-16 border-t border-white/10 pt-12"
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
-					transition={{ delay: 0.5 }}
+					transition={{ ...springTransition, delay: 0.5 }}
 				>
 					<h3 className="text-cyber-lime mb-6 font-mono text-xs tracking-wider uppercase">
 						<span className="mr-2">●</span>

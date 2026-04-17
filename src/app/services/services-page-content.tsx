@@ -95,7 +95,7 @@ export function ServicesPage({ pages }: ServicesPageProps) {
 					className="text-slate-text mb-8 font-mono text-xs"
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
-					transition={{ delay: 0.05 }}
+					transition={{ ...springTransition, delay: 0.05 }}
 				>
 					<Link href="/" className="hover:text-cyber-lime transition-colors">
 						Home
