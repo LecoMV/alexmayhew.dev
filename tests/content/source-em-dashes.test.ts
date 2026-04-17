@@ -22,7 +22,6 @@ const SOURCE_FILES_NO_EM_DASHES = [
 	"src/data/roles/pages.ts",
 	"src/app/blog/[slug]/hub-faqs.ts",
 	"src/components/blog/table-of-contents.tsx",
-	"src/app/tools/voice-cloner/page.tsx",
 	"src/app/api/chat/route.ts",
 	"src/app/sitemap.ts",
 	"src/lib/blog-themes/themes/classified.ts",

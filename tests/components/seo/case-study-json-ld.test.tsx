@@ -40,6 +40,22 @@ describe("CaseStudyJsonLd", () => {
 		expect(article.image).toBeDefined();
 	});
 
+	it("when project.link is external, references canonical product entity via @id + sameAs (not duplicate SoftwareApplication)", () => {
+		const voicekeep: Project = {
+			...mockProject,
+			id: "voice-cloner",
+			title: "VoiceKeep",
+			link: "https://voicekeep.io",
+		};
+		const { container } = render(<CaseStudyJsonLd project={voicekeep} />);
+		const schemas = parseAllJsonLd(container);
+		const article = schemas.find((s) => s["@type"] === "TechArticle");
+		// about should reference the canonical entity via @id, not redeclare it
+		expect(article.about).toEqual({ "@id": "https://voicekeep.io/#software" });
+		// sameAs links the portfolio case study to the external product
+		expect(article.sameAs).toEqual(["https://voicekeep.io"]);
+	});
+
 	it("renders a BreadcrumbList with 3 levels", () => {
 		const { container } = render(<CaseStudyJsonLd project={mockProject} />);
 		const schemas = parseAllJsonLd(container);

@@ -33,13 +33,13 @@ const tools: Tool[] = [
 	},
 	{
 		id: "voice-cloner",
-		name: "Voice Cloner",
-		tagline: "TTS, Conversations & Audiobook Studio",
+		name: "VoiceKeep",
+		tagline: "AI Voice Platform (voicekeep.io)",
 		description:
-			"Neural text-to-speech powered by Qwen3-TTS with zero-shot voice cloning. Single voice TTS, multi-speaker conversations with per-line effects, and a full audiobook studio ... upload manuscripts, assign character voices, and export distribution-ready M4B or MP3. 41 curated voices, free during beta.",
-		href: "/tools/voice-cloner",
+			"Production AI voice platform: zero-shot voice cloning, multi-speaker conversation builder, and a full audiobook studio that ingests DOCX/PDF/TXT manuscripts and exports M4B with chapter markers. Qwen3-TTS 1.7B on dedicated GPU. Ships at voicekeep.io; case study covers the architecture.",
+		href: "/work/voice-cloner",
 		icon: <Mic className="h-6 w-6" strokeWidth={1.5} />,
-		badge: "Live",
+		badge: "Case Study",
 		badgeColor: "lime",
 		status: "demo",
 		featured: true,

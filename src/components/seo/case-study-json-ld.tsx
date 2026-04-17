@@ -12,10 +12,18 @@ interface CaseStudyJsonLdProps {
 export function CaseStudyJsonLd({ project }: CaseStudyJsonLdProps) {
 	const pageUrl = `${siteUrl}/work/${project.id}`;
 
+	// When the project has an external production URL (e.g. voicekeep.io),
+	// don't redeclare a SoftwareApplication on alexmayhew.dev -- that
+	// fragments the entity graph. Instead reference the canonical product
+	// entity via @id and link with sameAs. The marketing domain owns the
+	// canonical SoftwareApplication; the portfolio just describes the work.
+	const isExternalProduct = Boolean(project.link && /^https?:\/\//i.test(project.link));
+	const externalProductUrl = isExternalProduct ? project.link!.replace(/\/$/, "") : undefined;
+
 	// TechArticle gives Google rich-result eligibility that bare CreativeWork
 	// lacks. publisher + mainEntityOfPage + image are the three gates that
 	// Search Central flags as required for Article-family schemas.
-	const articleSchema = {
+	const articleSchema: Record<string, unknown> = {
 		"@context": "https://schema.org",
 		"@type": "TechArticle",
 		headline: `${project.title} ... Case Study`,
@@ -37,13 +45,18 @@ export function CaseStudyJsonLd({ project }: CaseStudyJsonLdProps) {
 			"@id": pageUrl,
 		},
 		inLanguage: "en-US",
-		about: {
-			"@type": "SoftwareApplication",
-			name: project.title,
-			applicationCategory: project.category,
-			operatingSystem: "Web",
-		},
+		about: externalProductUrl
+			? { "@id": `${externalProductUrl}/#software` }
+			: {
+					"@type": "SoftwareApplication",
+					name: project.title,
+					applicationCategory: project.category,
+					operatingSystem: "Web",
+				},
 	};
+	if (externalProductUrl) {
+		articleSchema.sameAs = [externalProductUrl];
+	}
 
 	const breadcrumbSchema = {
 		"@context": "https://schema.org",

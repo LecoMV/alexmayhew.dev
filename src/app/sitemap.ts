@@ -86,12 +86,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			changeFrequency: "monthly",
 			priority: 0.7,
 		},
-		{
-			url: `${siteUrl}/tools/voice-cloner`,
-			lastModified: siteLastUpdated,
-			changeFrequency: "monthly",
-			priority: 0.7,
-		},
+		// (Retired route 2026-04-17: the old VoiceKeep tools shell 301s
+		// to voicekeep.io now; 3xx URLs in the sitemap would trigger GSC
+		// warnings.)
 		{
 			url: `${siteUrl}/tools/saas-readiness`,
 			lastModified: siteLastUpdated,

@@ -51,11 +51,14 @@ const mobileOnlyItems: NavItem[] = [
 
 const toolsDropdown: ToolItem[] = [
 	{
-		href: "/tools/voice-cloner",
-		label: "Voice Cloner",
-		description: "AI text-to-speech with voice cloning",
+		// VoiceKeep is a separate product domain (voicekeep.io). Route the
+		// dropdown at the case study on alexmayhew.dev instead of an internal
+		// duplicate marketing page; the case study itself links outbound.
+		href: "/work/voice-cloner",
+		label: "VoiceKeep",
+		description: "AI voice platform — case study",
 		icon: <Mic className="h-4 w-4" strokeWidth={1.5} />,
-		badge: "Live",
+		badge: "Case Study",
 		badgeColor: "lime",
 	},
 	{

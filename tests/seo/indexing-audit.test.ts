@@ -35,12 +35,8 @@ describe("P0-2: Missing canonical URLs", () => {
 		expect(alternates.canonical).toBe("/tools/pilot");
 	});
 
-	it("/tools/voice-cloner should have canonical", async () => {
-		const { metadata } = (await import("@/app/tools/voice-cloner/page")) as { metadata: Metadata };
-		expect(metadata.alternates).toBeDefined();
-		const alternates = metadata.alternates as { canonical?: string };
-		expect(alternates.canonical).toBe("/tools/voice-cloner");
-	});
+	// /tools/voice-cloner retired 2026-04-17: 301s to voicekeep.io, no
+	// canonical on the redirect source. See tests/seo/voice-cloner-retirement.test.ts.
 
 	it("/docs pages should have canonical in generateMetadata", () => {
 		const source = fs.readFileSync("src/app/docs/[[...slug]]/page.tsx", "utf-8");
@@ -54,9 +50,11 @@ describe("P0-2: Missing canonical URLs", () => {
 });
 
 describe("P0-3: Sitemap completeness", () => {
-	it("sitemap should include /tools/voice-cloner", () => {
+	// sitemap should NOT include the retired /tools/voice-cloner route
+	// (3xx URLs in sitemaps trigger GSC warnings).
+	it("sitemap should NOT include the retired tools/voice-cloner", () => {
 		const sitemapSource = fs.readFileSync("src/app/sitemap.ts", "utf-8");
-		expect(sitemapSource).toContain("tools/voice-cloner");
+		expect(sitemapSource).not.toContain("tools/voice-cloner");
 	});
 
 	// /docs removed from sitemap (sprint 1): Fumadocs stub pages lack authority
@@ -181,10 +179,9 @@ describe("P2-21: SoftwareApplication schema for tools", () => {
 		expect(source).toContain("SoftwareJsonLd");
 	});
 
-	it("voice-cloner should have SoftwareApplication structured data", () => {
-		const source = fs.readFileSync("src/app/tools/voice-cloner/page.tsx", "utf-8");
-		expect(source).toContain("SoftwareJsonLd");
-	});
+	// /tools/voice-cloner retired 2026-04-17. The canonical SoftwareApplication
+	// entity for VoiceKeep lives on voicekeep.io; the alexmayhew.dev case
+	// study references it via @id (see tests/components/seo/case-study-json-ld.test.tsx).
 
 	it("pilot should have SoftwareApplication structured data", () => {
 		const source = fs.readFileSync("src/app/tools/pilot/page.tsx", "utf-8");

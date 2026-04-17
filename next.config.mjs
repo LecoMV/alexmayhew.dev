@@ -28,6 +28,22 @@ const config = {
 		NEXT_PUBLIC_GIT_SHA: getGitSha(),
 	},
 
+	// Permanent redirects.
+	// `/tools/voice-cloner` was a duplicate marketing page for the VoiceKeep
+	// product, which lives at voicekeep.io. 301 carries any residual link
+	// equity to the canonical product URL; the UTM tag distinguishes this
+	// placement from the hub-card / case-study outbound paths in GA4.
+	async redirects() {
+		return [
+			{
+				source: "/tools/voice-cloner",
+				destination:
+					"https://voicekeep.io/?utm_source=alexmayhew.dev&utm_medium=referral&utm_campaign=voicekeep_crosspromo&utm_content=tools-redirect",
+				permanent: true,
+			},
+		];
+	},
+
 	// Performance optimizations
 	experimental: {
 		// Enable CSS optimization for reduced CSS bundle size

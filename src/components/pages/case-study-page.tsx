@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
+import { VoicekeepLink } from "@/components/ui/voicekeep-link";
 import { springTransition } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
@@ -71,7 +72,17 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 					</h1>
 					<p className="text-slate-text mb-8 max-w-3xl text-lg">{cs.subtitle}</p>
 					<div className="flex flex-wrap gap-4">
-						{project.link && (
+						{project.link && project.id === "voice-cloner" ? (
+							<VoicekeepLink
+								placement="work-case-study"
+								className="group hover:border-cyber-lime relative border border-white/20 px-6 py-3 transition-colors duration-300"
+							>
+								<span className="group-hover:text-cyber-lime flex items-center gap-2 font-mono text-sm tracking-tight transition-colors">
+									<ExternalLink className="h-4 w-4" strokeWidth={1.5} />
+									Try VoiceKeep at voicekeep.io
+								</span>
+							</VoicekeepLink>
+						) : project.link ? (
 							<a
 								href={project.link}
 								target={project.link.startsWith("http") ? "_blank" : undefined}
@@ -83,7 +94,7 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 									See it running
 								</span>
 							</a>
-						)}
+						) : null}
 						{project.github && (
 							<a
 								href={project.github}

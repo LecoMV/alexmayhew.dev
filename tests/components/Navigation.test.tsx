@@ -130,7 +130,7 @@ describe("Navigation", () => {
 		const menuButton = screen.getByLabelText(/open menu/i);
 		fireEvent.click(menuButton);
 
-		expect(screen.getByText("Voice Cloner")).toBeTruthy();
+		expect(screen.getByText("VoiceKeep")).toBeTruthy();
 		expect(screen.getByText("TraceForge")).toBeTruthy();
 		expect(screen.getByText("Claude Pilot")).toBeTruthy();
 	});
@@ -140,7 +140,7 @@ describe("Navigation", () => {
 		const toolsButton = screen.getByRole("button", { name: /tools/i });
 		fireEvent.click(toolsButton);
 
-		expect(screen.getByText("Voice Cloner")).toBeTruthy();
+		expect(screen.getByText("VoiceKeep")).toBeTruthy();
 		expect(screen.getByText("TraceForge")).toBeTruthy();
 		expect(screen.getByText("Claude Pilot")).toBeTruthy();
 		expect(screen.getByText("View all tools")).toBeTruthy();
@@ -150,7 +150,7 @@ describe("Navigation", () => {
 		render(<Navigation />);
 		const toolsButton = screen.getByRole("button", { name: /tools/i });
 		fireEvent.click(toolsButton);
-		expect(screen.getByText("Voice Cloner")).toBeTruthy();
+		expect(screen.getByText("VoiceKeep")).toBeTruthy();
 
 		fireEvent.mouseDown(document.body);
 		// After click outside the dropdown should close

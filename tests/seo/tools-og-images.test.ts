@@ -16,12 +16,6 @@ describe("tools OG images use dynamic /og route", () => {
 		expect(content).toMatch(/\/og\?title=/);
 	});
 
-	it("voice-cloner page does not reference the broken /og-voice-cloner.png", () => {
-		const content = readFileSync(
-			join(process.cwd(), "src/app/tools/voice-cloner/page.tsx"),
-			"utf-8"
-		);
-		expect(content).not.toContain("/og-voice-cloner.png");
-		expect(content).toMatch(/\/og\?title=/);
-	});
+	// /tools/voice-cloner retired 2026-04-17 and 301s to voicekeep.io.
+	// OG image assertions moved to tests/seo/voice-cloner-retirement.test.ts.
 });

@@ -139,10 +139,10 @@ export function buildSearchIndex(): SearchItem[] {
 			category: "Page",
 		},
 		{
-			title: "Voice Cloner",
-			description: "AI text-to-speech with voice cloning",
-			href: "/tools/voice-cloner",
-			category: "Tool",
+			title: "VoiceKeep",
+			description: "AI voice platform — case study (ships at voicekeep.io)",
+			href: "/work/voice-cloner",
+			category: "Work",
 		},
 		{
 			title: "TraceForge",
