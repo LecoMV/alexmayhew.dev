@@ -470,7 +470,7 @@ function CriterionCard({
 				>
 					<p className="text-slate-text mt-4 leading-relaxed">{criterion.analysis}</p>
 					{criterion.source && (
-						<p className="text-slate-text/60 mt-3 font-mono text-xs">Source: {criterion.source}</p>
+						<p className="text-slate-text/80 mt-3 font-mono text-xs">Source: {criterion.source}</p>
 					)}
 				</m.div>
 			)}

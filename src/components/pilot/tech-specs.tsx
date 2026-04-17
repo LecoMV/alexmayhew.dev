@@ -139,7 +139,7 @@ export function TechSpecs() {
 								</li>
 							</ul>
 							{reqs.note && (
-								<p className="text-slate-text/60 mt-3 border-t border-white/5 pt-3 text-[11px] italic">
+								<p className="text-slate-text/80 mt-3 border-t border-white/5 pt-3 text-[11px] italic">
 									{reqs.note}
 								</p>
 							)}

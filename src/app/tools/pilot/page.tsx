@@ -115,7 +115,7 @@ export default function ClaudePilotPage() {
 								<div className="text-center">
 									<Terminal className="text-slate-text mx-auto mb-4 h-16 w-16" strokeWidth={1} />
 									<p className="text-slate-text font-mono text-sm">App preview coming soon</p>
-									<p className="text-slate-text/60 mt-2 text-xs">
+									<p className="text-slate-text/80 mt-2 text-xs">
 										Screenshots will be added after next release
 									</p>
 								</div>
@@ -181,7 +181,7 @@ export default function ClaudePilotPage() {
 
 					{/* Attribution */}
 					<footer className="mt-16 border-t border-white/5 pt-8">
-						<p className="text-slate-text/60 font-mono text-xs">
+						<p className="text-slate-text/80 font-mono text-xs">
 							Built by a Claude Code power user, for Claude Code power users.
 						</p>
 					</footer>

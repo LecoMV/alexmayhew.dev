@@ -168,7 +168,7 @@ export function ToolsPage() {
 					<p className="text-slate-text font-mono text-xs tracking-wider uppercase">
 						More tools in development...
 					</p>
-					<p className="text-slate-text/60 mt-2 text-sm">
+					<p className="text-slate-text/80 mt-2 text-sm">
 						AEVP (AI-powered Electron testing platform) coming soon.
 					</p>
 				</FadeInUp>

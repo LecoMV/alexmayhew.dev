@@ -285,7 +285,7 @@ export default function VoiceClonerPage() {
 								<span>Try Voice Cloner Free</span>
 								<ExternalLink className="h-4 w-4" strokeWidth={2} />
 							</a>
-							<span className="text-slate-text/60 text-sm">No credit card required</span>
+							<span className="text-slate-text/80 text-sm">No credit card required</span>
 						</div>
 					</header>
 

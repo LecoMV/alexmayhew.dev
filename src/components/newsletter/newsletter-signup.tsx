@@ -170,7 +170,7 @@ export function NewsletterSignup({
 					</SubmitButton>
 				</form>
 
-				<p className="text-slate-text/60 mt-3 text-xs">
+				<p className="text-slate-text/80 mt-3 text-xs">
 					One actionable architecture decision every week. No fluff.
 				</p>
 			</div>
