@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
-import { Footer } from "@/components/ui/footer";
 import { vi } from "vitest";
+
+import { Footer } from "@/components/ui/footer";
 
 // Mock LocalTime
 vi.mock("@/components/ui/local-time", () => ({

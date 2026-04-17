@@ -1936,37 +1936,22 @@ export const industries: Record<Industry, IndustryData> = {
 // Helper Functions
 // =============================================================================
 
-/**
- * Get all industry IDs
- */
 export function getAllIndustryIds(): Industry[] {
 	return Object.keys(industries) as Industry[];
 }
 
-/**
- * Get industry data by ID
- */
 export function getIndustryData(id: Industry): IndustryData | undefined {
 	return industries[id];
 }
 
-/**
- * Get all regulations for an industry
- */
 export function getIndustryRegulations(id: Industry): Regulation[] {
 	return industries[id]?.regulations ?? [];
 }
 
-/**
- * Get all pain points for an industry
- */
 export function getIndustryPainPoints(id: Industry): PainPoint[] {
 	return industries[id]?.painPoints ?? [];
 }
 
-/**
- * Get target keywords for an industry
- */
 export function getIndustryKeywords(id: Industry): string[] {
 	return industries[id]?.targetKeywords ?? [];
 }

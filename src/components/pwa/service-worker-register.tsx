@@ -12,7 +12,6 @@ export function ServiceWorkerRegister() {
 					.then((registration) => {
 						console.log("[SW] Registration successful:", registration.scope);
 
-						// Check for updates
 						registration.addEventListener("updatefound", () => {
 							const newWorker = registration.installing;
 							if (newWorker) {

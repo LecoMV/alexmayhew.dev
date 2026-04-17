@@ -53,9 +53,6 @@ export const SEO_DESCRIPTION_MAX = 170;
 // Helper Schemas
 // =============================================================================
 
-/**
- * Validate word count meets minimum
- */
 function minWords(min: number) {
 	return z.string().refine(
 		(text) => {
@@ -248,9 +245,6 @@ export interface ValidationError {
 	code?: string;
 }
 
-/**
- * Validate a complete pSEO page
- */
 export function validatePseoPage(data: unknown): ValidationResult<PseoPage> {
 	const result = pseoPageSchema.safeParse(data);
 
@@ -305,13 +299,9 @@ export function validatePartialPage(data: unknown): ValidationResult<Partial<Pse
 	};
 }
 
-/**
- * Check if a page meets all quality gates
- */
 export function checkQualityGates(page: PseoPage): QualityGateResult {
 	const issues: QualityIssue[] = [];
 
-	// Check unique insights count
 	if (page.uniqueInsights.length < MIN_UNIQUE_INSIGHTS) {
 		issues.push({
 			gate: "uniqueInsights",
@@ -321,7 +311,6 @@ export function checkQualityGates(page: PseoPage): QualityGateResult {
 		});
 	}
 
-	// Check long-form content word counts
 	const whyThisStackWords = countWords(page.whyThisStack);
 	if (whyThisStackWords < MIN_LONG_FORM_WORDS) {
 		issues.push({
@@ -342,7 +331,6 @@ export function checkQualityGates(page: PseoPage): QualityGateResult {
 		});
 	}
 
-	// Check FAQs
 	if (page.faqs.length < MIN_FAQS) {
 		issues.push({
 			gate: "faqs",
@@ -352,7 +340,6 @@ export function checkQualityGates(page: PseoPage): QualityGateResult {
 		});
 	}
 
-	// Check pain points
 	if (page.commonPainPoints.length < MIN_PAIN_POINTS) {
 		issues.push({
 			gate: "commonPainPoints",
@@ -362,7 +349,6 @@ export function checkQualityGates(page: PseoPage): QualityGateResult {
 		});
 	}
 
-	// Check tech recommendations
 	if (page.techStackRecommendations.length < MIN_TECH_RECOMMENDATIONS) {
 		issues.push({
 			gate: "techStackRecommendations",

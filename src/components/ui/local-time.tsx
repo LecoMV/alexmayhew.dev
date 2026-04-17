@@ -6,7 +6,6 @@ export function LocalTime() {
 	const [time, setTime] = useState<string | null>(null);
 
 	useEffect(() => {
-		// Set initial time
 		const updateTime = () => {
 			setTime(
 				new Date().toLocaleTimeString("en-US", {
@@ -19,7 +18,6 @@ export function LocalTime() {
 
 		updateTime();
 
-		// Update every minute
 		const interval = setInterval(updateTime, 60000);
 
 		return () => clearInterval(interval);

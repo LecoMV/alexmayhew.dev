@@ -28,7 +28,6 @@ export function usePlatform(): PlatformInfo {
 		// Detect platform
 		if (userAgent.includes("mac") || platform.includes("mac")) {
 			detectedPlatform = "macos";
-			// Check for Apple Silicon
 			if (userAgent.includes("arm") || platform.includes("arm")) {
 				arch = "arm64";
 				label = "Download for macOS (Apple Silicon)";

@@ -102,9 +102,6 @@ export function useVectorizer() {
 		}
 	}, []);
 
-	/**
-	 * Full cleanup - called on reset and unmount
-	 */
 	const cleanup = useCallback(() => {
 		stopPolling();
 		cancelRequests();
@@ -115,23 +112,16 @@ export function useVectorizer() {
 		return cleanup;
 	}, [cleanup]);
 
-	/**
-	 * Reset to initial state with full cleanup
-	 */
 	const reset = useCallback(() => {
 		cleanup();
 		setState(initialState);
 	}, [cleanup]);
 
-	/**
-	 * Upload a file for vectorization
-	 */
 	const upload = useCallback(
 		async (file: File) => {
 			// Clean up previous preview URL before creating new one
 			revokePreviewUrl();
 
-			// Create new preview URL and track it
 			const newPreviewUrl = URL.createObjectURL(file);
 			currentPreviewUrlRef.current = newPreviewUrl;
 
@@ -145,7 +135,6 @@ export function useVectorizer() {
 				result: null,
 			}));
 
-			// Create abort controller for this request
 			cancelRequests();
 			abortControllerRef.current = new AbortController();
 
@@ -208,7 +197,6 @@ export function useVectorizer() {
 				result?: ProcessingResult;
 			};
 
-			// Update progress logs (deduplicated)
 			const logs = data.logs;
 			if (logs && logs.length > 0) {
 				setState((prev) => {
@@ -327,11 +315,9 @@ export function useVectorizer() {
 			const svgContent = await response.text();
 			setState((prev) => ({ ...prev, svgContent }));
 
-			// Create download blob
 			const blob = new Blob([svgContent], { type: "image/svg+xml" });
 			const url = URL.createObjectURL(blob);
 
-			// Trigger download
 			const a = document.createElement("a");
 			a.href = url;
 			a.download = "vectorized.svg";
@@ -351,9 +337,6 @@ export function useVectorizer() {
 		}
 	}, [state.taskId]);
 
-	/**
-	 * Get SVG preview without downloading
-	 */
 	const getSvgPreview = useCallback(async () => {
 		if (!state.taskId || state.svgContent) return state.svgContent;
 

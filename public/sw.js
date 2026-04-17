@@ -78,7 +78,6 @@ self.addEventListener("fetch", (event) => {
 						return caches.match(OFFLINE_URL);
 					}
 
-					// Return a basic offline response for other requests
 					return new Response("Offline", {
 						status: 503,
 						statusText: "Service Unavailable",

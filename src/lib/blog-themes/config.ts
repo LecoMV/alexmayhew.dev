@@ -34,7 +34,6 @@ export function resolveTheme(id: ThemeId): BlogTheme {
 		return theme as BlogTheme;
 	}
 
-	// Child themes extend default - merge override into default
 	const override = theme as ThemeOverride;
 	if (override.extends === "default") {
 		const merged: BlogTheme = {
@@ -66,9 +65,6 @@ export function resolveTheme(id: ThemeId): BlogTheme {
 	return defaultTheme;
 }
 
-/**
- * Get the currently active theme (resolved).
- */
 export function getActiveTheme(): BlogTheme {
 	return resolveTheme(ACTIVE_THEME_ID);
 }

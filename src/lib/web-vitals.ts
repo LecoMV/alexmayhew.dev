@@ -1,7 +1,6 @@
 import { addBreadcrumb, captureMessage, setMeasurement } from "@sentry/nextjs";
 import { type Metric, onCLS, onFCP, onINP, onLCP, onTTFB } from "web-vitals";
 
-// Core Web Vitals thresholds per Google/Atmospheric standards
 const thresholds = {
 	// LCP: Largest Contentful Paint
 	LCP: { good: 2500, needsImprovement: 4000 }, // ms

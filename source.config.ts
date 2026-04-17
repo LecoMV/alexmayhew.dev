@@ -1,4 +1,4 @@
-import { defineDocs, defineCollections, defineConfig } from "fumadocs-mdx/config";
+import { defineCollections, defineConfig, defineDocs } from "fumadocs-mdx/config";
 import { z } from "zod";
 
 // Documentation collection (Fumadocs native)
