@@ -80,6 +80,13 @@ describe("SoftwareJsonLd", () => {
 		expect(data.softwareVersion).toBe("2.1.0");
 	});
 
+	it("emits offers.availability=InStock and publisher so the rich result is eligible", () => {
+		const { container } = render(<SoftwareJsonLd {...baseProps} />);
+		const data = parseJsonLd(container);
+		expect(data.offers.availability).toBe("https://schema.org/InStock");
+		expect(data.publisher).toEqual({ "@id": "https://alexmayhew.dev/#organization" });
+	});
+
 	it("includes downloadUrl when provided", () => {
 		const { container } = render(
 			<SoftwareJsonLd {...baseProps} downloadUrl="https://github.com/repo/releases" />

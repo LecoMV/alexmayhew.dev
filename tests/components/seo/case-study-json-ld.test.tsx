@@ -21,20 +21,28 @@ const mockProject: Project = {
 };
 
 describe("CaseStudyJsonLd", () => {
-	it("renders CreativeWork and BreadcrumbList schemas with PERSON_REF author", () => {
+	it("emits TechArticle with publisher, headline, mainEntityOfPage, image", () => {
 		const { container } = render(<CaseStudyJsonLd project={mockProject} />);
 		const schemas = parseAllJsonLd(container);
-		expect(schemas).toHaveLength(2);
+		const article = schemas.find((s) => s["@type"] === "TechArticle");
+		expect(article).toBeDefined();
+		expect(article["@context"]).toBe("https://schema.org");
+		expect(article.headline).toContain("TraceForge");
+		expect(article.author).toEqual({ "@id": "https://alexmayhew.dev/#person" });
+		expect(article.publisher).toEqual({ "@id": "https://alexmayhew.dev/#organization" });
+		expect(article.url).toBe("https://alexmayhew.dev/work/traceforge");
+		expect(article.keywords).toBe("Rust, TypeScript, PostgreSQL");
+		expect(article.datePublished).toBe("2025-01-01");
+		expect(article.mainEntityOfPage).toEqual({
+			"@type": "WebPage",
+			"@id": "https://alexmayhew.dev/work/traceforge",
+		});
+		expect(article.image).toBeDefined();
+	});
 
-		const creative = schemas.find((s) => s["@type"] === "CreativeWork");
-		expect(creative).toBeDefined();
-		expect(creative["@context"]).toBe("https://schema.org");
-		expect(creative.name).toContain("TraceForge");
-		expect(creative.author).toEqual({ "@id": "https://alexmayhew.dev/#person" });
-		expect(creative.url).toBe("https://alexmayhew.dev/work/traceforge");
-		expect(creative.keywords).toBe("Rust, TypeScript, PostgreSQL");
-		expect(creative.datePublished).toBe("2025-01-01");
-
+	it("renders a BreadcrumbList with 3 levels", () => {
+		const { container } = render(<CaseStudyJsonLd project={mockProject} />);
+		const schemas = parseAllJsonLd(container);
 		const breadcrumb = schemas.find((s) => s["@type"] === "BreadcrumbList");
 		expect(breadcrumb).toBeDefined();
 		expect(breadcrumb.itemListElement).toHaveLength(3);
