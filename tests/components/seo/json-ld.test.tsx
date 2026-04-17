@@ -50,6 +50,27 @@ describe("JsonLd (main Person/Org/WebSite/ConsultingService)", () => {
 		expect(site.publisher).toEqual({ "@id": "https://alexmayhew.dev/#organization" });
 	});
 
+	it("WebSite declares a SearchAction potentialAction for sitelinks searchbox", () => {
+		const { container } = render(<JsonLd />);
+		const schemas = parseAllJsonLd(container);
+		const site = schemas.find((s) => s["@type"] === "WebSite");
+		expect(site.potentialAction).toBeDefined();
+		expect(site.potentialAction["@type"]).toBe("SearchAction");
+		expect(site.potentialAction.target).toBeDefined();
+		expect(site.potentialAction["query-input"]).toBe("required name=search_term_string");
+	});
+
+	it("Organization declares knowsAbout, description, areaServed, foundingDate", () => {
+		const { container } = render(<JsonLd />);
+		const schemas = parseAllJsonLd(container);
+		const org = schemas.find((s) => s["@type"] === "Organization");
+		expect(org.knowsAbout).toBeInstanceOf(Array);
+		expect(org.knowsAbout.length).toBeGreaterThan(0);
+		expect(org.description).toEqual(expect.any(String));
+		expect(org.areaServed).toBeDefined();
+		expect(org.foundingDate).toEqual(expect.any(String));
+	});
+
 	it("ConsultingService has @id, offer catalog, and area served", () => {
 		const { container } = render(<JsonLd />);
 		const schemas = parseAllJsonLd(container);

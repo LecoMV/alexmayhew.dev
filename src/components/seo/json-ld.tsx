@@ -96,6 +96,24 @@ export function JsonLd() {
 		},
 		founder: { "@id": PERSON_ID },
 		sameAs: SOCIAL_PROFILES,
+		description:
+			"Boutique technical advisory practice run by Alex Mayhew, serving founders and CTOs in SaaS, fintech, healthcare, and high-growth B2B. Architecture reviews, strategic implementation, and technical due diligence.",
+		foundingDate: "2011",
+		areaServed: [
+			{ "@type": "Country", name: "United States" },
+			{ "@type": "Country", name: "United Kingdom" },
+			{ "@type": "Country", name: "Canada" },
+			{ "@type": "Country", name: "Australia" },
+			{ "@type": "Place", name: "Remote / Worldwide" },
+		],
+		knowsAbout: [
+			"Software Architecture",
+			"SaaS Development",
+			"Performance Engineering",
+			"Cloud Architecture",
+			"AI/ML Integration",
+			TECHNICAL_DUE_DILIGENCE_LABEL,
+		],
 	};
 
 	const websiteSchema = {
@@ -108,6 +126,17 @@ export function JsonLd() {
 		description: "Portfolio and blog of Alex Mayhew - Technical Advisor & Systems Architect",
 		author: { "@id": PERSON_ID },
 		publisher: { "@id": ORGANIZATION_ID },
+		// SearchAction unlocks the sitelinks searchbox in Google SERP. Target
+		// points at the blog listing (closest thing we have to a sitewide
+		// search surface); Google substitutes {search_term_string} at crawl time.
+		potentialAction: {
+			"@type": "SearchAction",
+			target: {
+				"@type": "EntryPoint",
+				urlTemplate: `${SITE_URL}/blog?q={search_term_string}`,
+			},
+			"query-input": "required name=search_term_string",
+		},
 	};
 
 	// Single unified business entity ... combines consulting service + local business signals

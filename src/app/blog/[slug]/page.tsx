@@ -25,6 +25,16 @@ function getSlug(path: string): string {
 	return path.replace(/^\//, "").replace(/\.mdx$/, "");
 }
 
+// Content frontmatter stores readingTime as e.g. "13 min read". Article
+// schema needs an integer count of minutes, so pull the leading digits.
+function parseReadingMinutes(raw: string | undefined): number | undefined {
+	if (!raw) return undefined;
+	const digits = /\d+/.exec(raw);
+	if (!digits) return undefined;
+	const minutes = Number.parseInt(digits[0], 10);
+	return Number.isFinite(minutes) && minutes > 0 ? minutes : undefined;
+}
+
 export const dynamicParams = false;
 
 export function generateStaticParams() {
@@ -132,6 +142,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
 				category={post.category}
 				tags={post.tags}
 				isHub={post.isHub}
+				readingTime={parseReadingMinutes(post.readingTime)}
 			/>
 			<BreadcrumbJsonLd
 				items={[

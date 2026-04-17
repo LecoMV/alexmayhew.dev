@@ -9,6 +9,10 @@ interface ArticleJsonLdProps {
 	tags?: string[];
 	isHub?: boolean;
 	series?: string;
+	/** Minutes; emitted as ISO 8601 duration `PT{n}M` via Article.timeRequired. */
+	readingTime?: number;
+	/** Word count for Article.wordCount. Helps AI crawlers rank content depth. */
+	wordCount?: number;
 }
 
 const siteUrl = "https://alexmayhew.dev";
@@ -24,6 +28,8 @@ export function ArticleJsonLd({
 	tags = [],
 	isHub = false,
 	series,
+	readingTime,
+	wordCount,
 }: ArticleJsonLdProps) {
 	const articleSchema = {
 		"@context": "https://schema.org",
@@ -48,6 +54,9 @@ export function ArticleJsonLd({
 		keywords: tags.join(", "),
 		inLanguage: "en-US",
 		isAccessibleForFree: true,
+		...(typeof readingTime === "number" &&
+			readingTime > 0 && { timeRequired: `PT${readingTime}M` }),
+		...(typeof wordCount === "number" && wordCount > 0 && { wordCount }),
 		...(series && {
 			isPartOf: {
 				"@type": "CreativeWorkSeries",

@@ -105,6 +105,18 @@ describe("ArticleJsonLd", () => {
 		expect(data.articleSection).toBe("architecture");
 	});
 
+	it("emits timeRequired in ISO 8601 duration format when readingTime provided", () => {
+		const { container } = render(<ArticleJsonLd {...baseProps} readingTime={8} />);
+		const data = parseJsonLd(container);
+		expect(data.timeRequired).toBe("PT8M");
+	});
+
+	it("emits wordCount when wordCount prop provided", () => {
+		const { container } = render(<ArticleJsonLd {...baseProps} wordCount={1800} />);
+		const data = parseJsonLd(container);
+		expect(data.wordCount).toBe(1800);
+	});
+
 	it("marks content as accessible for free", () => {
 		const { container } = render(<ArticleJsonLd {...baseProps} />);
 		const data = parseJsonLd(container);
