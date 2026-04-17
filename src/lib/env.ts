@@ -53,10 +53,24 @@ export function parsePublicEnv(input: Record<string, string | undefined>): Publi
  * Fail-fast validation of the NEXT_PUBLIC_* surface at module import time.
  * If any schema check fails, the app will crash with a clear error — which
  * is preferable to silent undefined propagation.
+ *
+ * CRITICAL: Next.js inlines `process.env.NEXT_PUBLIC_*` via literal string
+ * replacement at build time. We MUST reference each key as a direct static
+ * property read — `process.env as Record<...>` defeats the inlining and
+ * produces an empty object at Cloudflare Workers runtime (no process.env).
  */
-export const publicEnv: PublicEnv = parsePublicEnv(
-	process.env as Record<string, string | undefined>
-);
+const rawEnv = {
+	NODE_ENV: process.env.NODE_ENV,
+	NEXT_PUBLIC_GIT_SHA: process.env.NEXT_PUBLIC_GIT_SHA,
+	NEXT_PUBLIC_SITE_VERSION: process.env.NEXT_PUBLIC_SITE_VERSION,
+	NEXT_PUBLIC_BUILD_TIME: process.env.NEXT_PUBLIC_BUILD_TIME,
+	NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
+	NEXT_PUBLIC_CF_BEACON_TOKEN: process.env.NEXT_PUBLIC_CF_BEACON_TOKEN,
+	NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
+	NEXT_PUBLIC_TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
+};
+
+export const publicEnv: PublicEnv = parsePublicEnv(rawEnv);
 
 // Environment-flag helpers derived from the validated NODE_ENV.
 // Consumers should prefer these over `process.env.NODE_ENV === "..."`.
