@@ -181,7 +181,7 @@ export default function Home() {
 							</div>
 						</div>
 
-						<div className="absolute right-0 -bottom-12 origin-right translate-x-full rotate-90 transform font-mono text-[10px] tracking-[0.2em] text-white/10 uppercase">
+						<div className="text-micro absolute right-0 -bottom-12 origin-right translate-x-full rotate-90 transform font-mono tracking-[0.2em] text-white/10 uppercase">
 							Sector 09 / Visual
 						</div>
 					</m.div>

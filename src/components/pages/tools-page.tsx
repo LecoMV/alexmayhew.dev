@@ -122,7 +122,7 @@ export function ToolsPage() {
 										</div>
 										<span
 											className={cn(
-												"border px-2 py-1 font-mono text-[10px] tracking-wider uppercase",
+												"text-micro border px-2 py-1 font-mono tracking-wider uppercase",
 												tool.badgeColor === "lime"
 													? "border-cyber-lime text-cyber-lime"
 													: "border-signal-info text-signal-info"

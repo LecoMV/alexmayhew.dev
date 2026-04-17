@@ -153,7 +153,7 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
 
 				<div className="mb-6 flex items-center gap-3">
 					<Target className="text-cyber-lime h-6 w-6" strokeWidth={1.5} />
-					<span className="border-cyber-lime/50 text-cyber-lime border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
+					<span className="border-cyber-lime/50 text-cyber-lime text-micro border px-2 py-0.5 font-mono tracking-wider uppercase">
 						Diagnostic Tool
 					</span>
 				</div>

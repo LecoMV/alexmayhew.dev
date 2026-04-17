@@ -153,7 +153,7 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 								<div className="flex items-center gap-3">
 									<Clock className="text-cyber-lime h-4 w-4 shrink-0" strokeWidth={1.5} />
 									<div>
-										<div className="text-slate-text font-mono text-[10px] tracking-wider uppercase">
+										<div className="text-slate-text text-micro font-mono tracking-wider uppercase">
 											Duration
 										</div>
 										<div className="text-sm">{cs.context.duration}</div>
@@ -162,7 +162,7 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 								<div className="flex items-center gap-3">
 									<Building2 className="text-cyber-lime h-4 w-4 shrink-0" strokeWidth={1.5} />
 									<div>
-										<div className="text-slate-text font-mono text-[10px] tracking-wider uppercase">
+										<div className="text-slate-text text-micro font-mono tracking-wider uppercase">
 											Industry
 										</div>
 										<div className="text-sm">{cs.context.industry}</div>
@@ -171,7 +171,7 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 								<div className="flex items-center gap-3">
 									<Briefcase className="text-cyber-lime h-4 w-4 shrink-0" strokeWidth={1.5} />
 									<div>
-										<div className="text-slate-text font-mono text-[10px] tracking-wider uppercase">
+										<div className="text-slate-text text-micro font-mono tracking-wider uppercase">
 											Type
 										</div>
 										<div className="text-sm">{cs.context.type}</div>
@@ -181,7 +181,7 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 
 							{/* Tech Stack */}
 							<div className="mt-6 border-t border-white/10 pt-6">
-								<div className="text-slate-text mb-3 font-mono text-[10px] tracking-wider uppercase">
+								<div className="text-slate-text text-micro mb-3 font-mono tracking-wider uppercase">
 									Tech Stack
 								</div>
 								<div className="flex flex-wrap gap-2">
@@ -256,7 +256,7 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 							>
 								<div className="border-cyber-lime absolute top-0 right-0 h-4 w-4 border-t border-r opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 								<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b border-l opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-								<div className="text-slate-text mb-1 font-mono text-[10px] tracking-wider uppercase">
+								<div className="text-slate-text text-micro mb-1 font-mono tracking-wider uppercase">
 									{decision.component}
 								</div>
 								<div className="text-cyber-lime mb-3 font-mono text-sm">{decision.technology}</div>
@@ -307,7 +307,7 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 									<div className="border-t border-white/10 p-6">
 										<div className="grid gap-6 md:grid-cols-2">
 											<div>
-												<div className="text-burnt-ember mb-2 font-mono text-[10px] tracking-wider uppercase">
+												<div className="text-burnt-ember text-micro mb-2 font-mono tracking-wider uppercase">
 													Problem
 												</div>
 												<p className="text-slate-text text-sm leading-relaxed">
@@ -315,7 +315,7 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 												</p>
 											</div>
 											<div>
-												<div className="text-cyber-lime mb-2 font-mono text-[10px] tracking-wider uppercase">
+												<div className="text-cyber-lime text-micro mb-2 font-mono tracking-wider uppercase">
 													Solution
 												</div>
 												<p className="text-slate-text text-sm leading-relaxed">

@@ -94,7 +94,7 @@ export function WorkPage() {
 
 								{/* Featured badge */}
 								{project.featured && (
-									<div className="border-cyber-lime text-cyber-lime absolute top-4 right-4 border px-2 py-1 font-mono text-[10px] tracking-wider uppercase">
+									<div className="border-cyber-lime text-cyber-lime text-micro absolute top-4 right-4 border px-2 py-1 font-mono tracking-wider uppercase">
 										Featured
 									</div>
 								)}
@@ -179,7 +179,7 @@ export function WorkPage() {
 									{/* Related Services - Internal Links for SEO */}
 									{project.relatedServices && project.relatedServices.length > 0 && (
 										<div className="mt-4 border-t border-white/5 pt-4">
-											<span className="text-slate-text mb-2 flex items-center gap-1.5 font-mono text-[10px] tracking-wider uppercase">
+											<span className="text-slate-text text-micro mb-2 flex items-center gap-1.5 font-mono tracking-wider uppercase">
 												<Layers className="h-3 w-3" strokeWidth={1.5} />
 												Related Services
 											</span>

@@ -117,7 +117,7 @@ export function TechnologiesPageContent() {
 											{tech.targetKeywords.slice(0, 3).map((keyword) => (
 												<span
 													key={keyword}
-													className="bg-gunmetal-glass/50 text-slate-text px-2 py-0.5 font-mono text-[10px]"
+													className="bg-gunmetal-glass/50 text-slate-text text-micro px-2 py-0.5 font-mono"
 												>
 													{keyword}
 												</span>

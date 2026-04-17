@@ -172,7 +172,7 @@ export function Navigation() {
 										<button
 											onClick={() => setToolsDropdownOpen(!toolsDropdownOpen)}
 											className={cn(
-												"group relative flex items-center gap-1 px-1.5 py-2 font-mono text-[10px] tracking-wider uppercase transition-colors duration-300 lg:px-2.5 lg:py-2.5 lg:text-[11px] xl:px-3.5 xl:py-3 xl:text-xs",
+												"group text-micro relative flex items-center gap-1 px-1.5 py-2 font-mono tracking-wider uppercase transition-colors duration-300 lg:px-2.5 lg:py-2.5 lg:text-[11px] xl:px-3.5 xl:py-3 xl:text-xs",
 												navLinkStateClass(isActive)
 											)}
 											aria-expanded={toolsDropdownOpen}
@@ -248,7 +248,7 @@ export function Navigation() {
 															className="text-slate-text hover:text-cyber-lime flex items-center gap-2 p-2 font-mono text-xs transition-colors"
 														>
 															View all tools
-															<span className="text-[10px] opacity-50">→</span>
+															<span className="text-micro opacity-50">→</span>
 														</Link>
 													</div>
 												</m.div>
@@ -263,7 +263,7 @@ export function Navigation() {
 									key={item.href}
 									href={item.href}
 									className={cn(
-										"group relative px-1.5 py-2 font-mono text-[10px] tracking-wider uppercase transition-colors duration-300 lg:px-2.5 lg:py-2.5 lg:text-[11px] xl:px-3.5 xl:py-3 xl:text-xs",
+										"group text-micro relative px-1.5 py-2 font-mono tracking-wider uppercase transition-colors duration-300 lg:px-2.5 lg:py-2.5 lg:text-[11px] xl:px-3.5 xl:py-3 xl:text-xs",
 										navLinkStateClass(isActive)
 									)}
 								>
@@ -285,7 +285,7 @@ export function Navigation() {
 					{/* CTA — visible on all breakpoints. Shorter label on mobile to protect horizontal space. */}
 					<Link
 						href="/contact"
-						className="bg-cyber-lime text-void-navy focus-visible:ring-cyber-lime focus-visible:ring-offset-void-navy inline-flex shrink-0 items-center px-3 py-2 font-mono text-[10px] font-bold tracking-wider uppercase transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none md:text-xs lg:px-4"
+						className="bg-cyber-lime text-void-navy focus-visible:ring-cyber-lime focus-visible:ring-offset-void-navy text-micro inline-flex shrink-0 items-center px-3 py-2 font-mono font-bold tracking-wider uppercase transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none md:text-xs lg:px-4"
 					>
 						<span className="lg:hidden">Contact</span>
 						<span className="hidden lg:inline">Book a Call</span>

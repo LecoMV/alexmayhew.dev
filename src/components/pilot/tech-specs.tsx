@@ -66,7 +66,7 @@ export function TechSpecs() {
 				<div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
 					{specs.map((spec) => (
 						<div key={spec.label} className="border border-white/10 bg-white/5 px-3 py-2">
-							<span className="text-slate-text block font-mono text-[10px] uppercase">
+							<span className="text-slate-text text-micro block font-mono uppercase">
 								{spec.label}
 							</span>
 							<span className="text-mist-white font-mono text-sm">{spec.value}</span>
@@ -99,7 +99,7 @@ export function TechSpecs() {
 									{platform}
 								</h4>
 								{reqs.status === STATUS_COMING_SOON && (
-									<span className="border-signal-warn/30 bg-signal-warn/10 text-signal-warn border px-2 py-0.5 font-mono text-[10px]">
+									<span className="border-signal-warn/30 bg-signal-warn/10 text-signal-warn text-micro border px-2 py-0.5 font-mono">
 										Coming Soon
 									</span>
 								)}

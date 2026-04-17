@@ -26,6 +26,18 @@
 	--max-width-narrow: 900px;
 	--max-width-newsletter: 700px;
 
+	/* Extended type scale for terminal/meta labels that slot between Tailwind
+	   defaults. `text-micro` (10px) replaces the pervasive text-[10px]; `text-nano`
+	   (8px) handles extreme sub-label usage in traceforge/pilot chrome. */
+	--text-micro: 0.625rem;
+	--text-micro--line-height: 1rem;
+	--text-nano: 0.5rem;
+	--text-nano--line-height: 0.75rem;
+
+	/* Minimum-height token for empty/error/404/offline states so the hero
+	   block is 60vh without arbitrary-value noise in markup. */
+	--spacing-hero-min: 60vh;
+
 	/* Fumadocs variable overrides for void aesthetic */
 	--fd-background: #0b0e14;
 	--fd-foreground: #e2e8f0;

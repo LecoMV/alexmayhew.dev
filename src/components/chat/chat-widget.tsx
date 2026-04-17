@@ -366,7 +366,7 @@ export function ChatWidget({ autoOpen = false }: ChatWidgetProps = {}) {
 									<Send className="text-mist-white h-4 w-4" strokeWidth={1.5} />
 								</button>
 							</div>
-							<p className="text-slate-text mt-2 text-center text-[10px]">
+							<p className="text-slate-text text-micro mt-2 text-center">
 								Press Enter to send • Powered by Workers AI
 							</p>
 						</div>

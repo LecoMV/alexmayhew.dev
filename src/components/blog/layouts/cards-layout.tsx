@@ -118,7 +118,7 @@ function HeroCard({ post, index }: { post: Post; index: number }) {
 					<div className="flex flex-1 flex-col justify-center gap-4 p-8 lg:p-10">
 						{/* Featured badge */}
 						<span
-							className="w-fit border px-3 py-1 font-mono text-[10px] tracking-wider uppercase"
+							className="text-micro w-fit border px-3 py-1 font-mono tracking-wider uppercase"
 							style={{
 								borderColor: theme.colors.accent,
 								color: theme.colors.accent,
@@ -366,7 +366,7 @@ function CompactCard({ post, index }: { post: Post; index: number }) {
 					{/* Meta - minimal */}
 					<div>
 						<div
-							className="mb-2 flex items-center gap-2 font-mono text-[10px]"
+							className="text-micro mb-2 flex items-center gap-2 font-mono"
 							style={{ color: theme.colors.textMuted }}
 						>
 							<span>

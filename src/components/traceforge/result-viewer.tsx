@@ -151,7 +151,7 @@ export function ResultViewer({
 						</button>
 						<button
 							onClick={handleResetZoom}
-							className="text-slate-text hover:text-mist-white border-x border-white/10 px-2 py-1.5 font-mono text-[10px] transition-colors hover:bg-white/5"
+							className="text-slate-text hover:text-mist-white text-micro border-x border-white/10 px-2 py-1.5 font-mono transition-colors hover:bg-white/5"
 						>
 							{Math.round(zoom * 100)}%
 						</button>

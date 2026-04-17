@@ -131,9 +131,9 @@ export function SystemStatus({ apiUrl, onStatusChange }: SystemStatusProps) {
 				</h3>
 				<div className="flex items-center gap-3">
 					{isChecking ? (
-						<span className="text-slate-text font-mono text-[10px]">checking...</span>
+						<span className="text-slate-text text-micro font-mono">checking...</span>
 					) : lastChecked ? (
-						<span className="text-slate-text font-mono text-[10px]">
+						<span className="text-slate-text text-micro font-mono">
 							{lastChecked.toLocaleTimeString()}
 						</span>
 					) : null}
@@ -197,7 +197,7 @@ export function SystemStatus({ apiUrl, onStatusChange }: SystemStatusProps) {
 							: "Backend Offline"}
 				</div>
 				{!isChecking && (
-					<p className="text-slate-text mt-2 text-center font-mono text-[10px] tracking-wide">
+					<p className="text-slate-text text-micro mt-2 text-center font-mono tracking-wide">
 						GPU not required for vectorization
 					</p>
 				)}

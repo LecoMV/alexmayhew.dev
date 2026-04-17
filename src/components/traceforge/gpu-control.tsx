@@ -100,7 +100,7 @@ export function GpuControl({ apiUrl, isOnline, gpuEnabled, onToggleComplete }: G
 						/>
 						<span className="relative flex items-center justify-center gap-2">
 							<Lock className="h-3 w-3 opacity-60" strokeWidth={1.5} />
-							<span className="text-[10px] opacity-60">Admin</span>
+							<span className="text-micro opacity-60">Admin</span>
 							<span className="mx-1 opacity-30">|</span>
 							<Power className="h-3.5 w-3.5" strokeWidth={1.5} />
 							{gpuEnabled ? "Disable GPU" : "Enable GPU"}
@@ -117,7 +117,7 @@ export function GpuControl({ apiUrl, isOnline, gpuEnabled, onToggleComplete }: G
 						onSubmit={handleSubmit}
 						className="space-y-3"
 					>
-						<p className="text-slate-text font-mono text-[10px] tracking-wider uppercase">
+						<p className="text-slate-text text-micro font-mono tracking-wider uppercase">
 							Admin authentication required
 						</p>
 						<div className="flex gap-2">
@@ -171,7 +171,7 @@ export function GpuControl({ apiUrl, isOnline, gpuEnabled, onToggleComplete }: G
 							type="button"
 							onClick={handleCancel}
 							disabled={isToggling}
-							className="text-slate-text hover:text-mist-white w-full py-1 font-mono text-[10px] tracking-wider uppercase transition-colors"
+							className="text-slate-text hover:text-mist-white text-micro w-full py-1 font-mono tracking-wider uppercase transition-colors"
 						>
 							Cancel
 						</button>

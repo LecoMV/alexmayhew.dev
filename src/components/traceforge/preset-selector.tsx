@@ -212,7 +212,7 @@ export function PresetSelector({
 								{preset.label}
 							</span>
 						</div>
-						<span className="text-slate-text line-clamp-2 text-[10px] leading-tight">
+						<span className="text-slate-text text-micro line-clamp-2 leading-tight">
 							{preset.description}
 						</span>
 					</m.button>
@@ -268,10 +268,10 @@ export function PresetSelector({
 						<div className="space-y-4 border border-white/10 bg-white/5 p-4">
 							<div>
 								<h4 className="text-cyber-lime mb-2 font-mono text-xs">When to use Potrace</h4>
-								<p className="text-slate-text/70 mb-1 text-[10px] italic">
+								<p className="text-slate-text/70 text-micro mb-1 italic">
 									Single-color output only
 								</p>
-								<ul className="text-slate-text space-y-1 text-[10px]">
+								<ul className="text-slate-text text-micro space-y-1">
 									<li>• Single-color logos with sharp edges</li>
 									<li>• Line art and sketches</li>
 									<li>• Black & white images</li>
@@ -280,10 +280,10 @@ export function PresetSelector({
 							</div>
 							<div>
 								<h4 className="text-cyber-lime mb-2 font-mono text-xs">When to use VTracer</h4>
-								<p className="text-slate-text/70 mb-1 text-[10px] italic">
+								<p className="text-slate-text/70 text-micro mb-1 italic">
 									Multi-color output supported
 								</p>
-								<ul className="text-slate-text space-y-1 text-[10px]">
+								<ul className="text-slate-text text-micro space-y-1">
 									<li>
 										• <span className="text-mist-white">Icons with circles or smooth curves</span>{" "}
 										(recommended)
@@ -294,7 +294,7 @@ export function PresetSelector({
 							</div>
 							<div className="border-t border-white/10 pt-3">
 								<h4 className="text-signal-warn mb-2 font-mono text-xs">Important Notes</h4>
-								<ul className="text-slate-text space-y-1 text-[10px]">
+								<ul className="text-slate-text text-micro space-y-1">
 									<li>
 										• <span className="text-signal-warn/80">Circles:</span> Use VTracer Icon preset
 										for perfect bezier curves without flat edges

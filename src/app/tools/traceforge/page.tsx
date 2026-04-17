@@ -92,10 +92,10 @@ function TraceForgePageContent() {
 							<Layers className="h-8 w-8" strokeWidth={1.5} />
 						</div>
 						<div className="flex items-center gap-2">
-							<span className="border-cyber-lime/50 text-cyber-lime border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
+							<span className="border-cyber-lime/50 text-cyber-lime text-micro border px-2 py-0.5 font-mono tracking-wider uppercase">
 								Demo
 							</span>
-							<span className="text-slate-text border border-white/20 px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
+							<span className="text-slate-text text-micro border border-white/20 px-2 py-0.5 font-mono tracking-wider uppercase">
 								Portfolio Project
 							</span>
 						</div>
@@ -143,7 +143,7 @@ function TraceForgePageContent() {
 							</div>
 
 							<div className="border-signal-warn/10 mt-4 border-t pt-3">
-								<p className="text-slate-text font-mono text-[10px] tracking-wide uppercase">
+								<p className="text-slate-text text-micro font-mono tracking-wide uppercase">
 									<span className="text-signal-warn/60">●</span> GPU not required for vectorizer
 								</p>
 							</div>
@@ -195,7 +195,7 @@ function TraceForgePageContent() {
 							className="text-slate-text hover:text-cyber-lime flex items-center gap-2 border border-white/10 px-4 py-2 font-mono text-xs transition-colors hover:border-white/30"
 						>
 							<span>View Source on GitHub</span>
-							<span className="text-[10px] opacity-50">→</span>
+							<span className="text-micro opacity-50">→</span>
 						</a>
 					</div>
 				</section>

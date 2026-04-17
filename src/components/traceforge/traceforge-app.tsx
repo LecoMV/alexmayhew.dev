@@ -199,7 +199,7 @@ export function TraceForgeApp() {
 								<span className="text-mist-white font-mono text-sm">Remove Background</span>
 							</div>
 						</label>
-						<p className="text-slate-text mt-2 text-[10px] leading-relaxed">
+						<p className="text-slate-text text-micro mt-2 leading-relaxed">
 							Uses AI (rembg) to remove backgrounds before vectorization. Recommended for images
 							with white or colored backgrounds.
 						</p>

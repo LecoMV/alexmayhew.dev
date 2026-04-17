@@ -105,7 +105,7 @@ export function DownloadButtons() {
 						>
 							{option.icon}
 							<span>{option.label}</span>
-							<span className="text-signal-warn/70 text-[10px]">Soon</span>
+							<span className="text-signal-warn/70 text-micro">Soon</span>
 						</span>
 					)
 				)}

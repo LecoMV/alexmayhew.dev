@@ -12,7 +12,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 			default: "bg-white/5 text-white/60",
 			outline: "border border-white/20 text-white/70",
 			cyber: "border border-cyber-lime text-cyber-lime",
-			featured: "border border-cyber-lime text-cyber-lime uppercase tracking-wider text-[10px]",
+			featured: "border border-cyber-lime text-cyber-lime uppercase tracking-wider text-micro",
 		};
 
 		return (

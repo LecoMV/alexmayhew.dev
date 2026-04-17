@@ -44,7 +44,7 @@ export function ProgressLog({ logs, status }: ProgressLogProps) {
 					{isError && <AlertCircle className="text-burnt-ember h-3 w-3" strokeWidth={1.5} />}
 					<span
 						className={cn(
-							"font-mono text-[10px] uppercase",
+							"text-micro font-mono uppercase",
 							isProcessing && "text-cyber-lime",
 							isCompleted && "text-cyber-lime",
 							isError && "text-burnt-ember"

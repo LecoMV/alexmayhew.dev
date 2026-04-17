@@ -83,10 +83,10 @@ export default function ClaudePilotPage() {
 								<Terminal className="h-8 w-8" strokeWidth={1.5} />
 							</div>
 							<div className="flex items-center gap-2">
-								<span className="border-signal-info/50 text-signal-info border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
+								<span className="border-signal-info/50 text-signal-info text-micro border px-2 py-0.5 font-mono tracking-wider uppercase">
 									Download
 								</span>
-								<span className="text-slate-text border border-white/20 px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
+								<span className="text-slate-text text-micro border border-white/20 px-2 py-0.5 font-mono tracking-wider uppercase">
 									Open Source
 								</span>
 							</div>

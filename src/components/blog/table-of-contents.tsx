@@ -209,20 +209,20 @@ function ProgressMarker({
 }) {
 	if (state === "active") {
 		return (
-			<span className="font-mono text-[10px]" style={{ color: accentColor }}>
+			<span className="text-micro font-mono" style={{ color: accentColor }}>
 				&#9654;
 			</span>
 		);
 	}
 	if (state === "read") {
 		return (
-			<span className="font-mono text-[10px]" style={{ color }}>
+			<span className="text-micro font-mono" style={{ color }}>
 				&#10003;
 			</span>
 		);
 	}
 	return (
-		<span className="font-mono text-[10px]" style={{ color, opacity: 0.4 }}>
+		<span className="text-micro font-mono" style={{ color, opacity: 0.4 }}>
 			&#9675;
 		</span>
 	);
@@ -366,7 +366,7 @@ export function TableOfContents({ variant = "mobile" }: { variant?: "mobile" | "
 											accentColor={theme.colors.accent}
 										/>
 									</span>
-									<span className="w-5 shrink-0 text-[10px]" style={{ opacity: 0.5 }}>
+									<span className="text-micro w-5 shrink-0" style={{ opacity: 0.5 }}>
 										{formatSectionNum(section.sectionIndex)}
 									</span>
 									<span className="truncate">{section.text}</span>
@@ -413,7 +413,7 @@ export function TableOfContents({ variant = "mobile" }: { variant?: "mobile" | "
 																		accentColor={theme.colors.accent}
 																	/>
 																</span>
-																<span className="w-5 shrink-0 text-[10px]" style={{ opacity: 0.5 }}>
+																<span className="text-micro w-5 shrink-0" style={{ opacity: 0.5 }}>
 																	{formatSubNum(section.sectionIndex, child.subIndex)}
 																</span>
 																<span className="truncate">{child.text}</span>
@@ -490,7 +490,7 @@ export function TableOfContents({ variant = "mobile" }: { variant?: "mobile" | "
 												accentColor={theme.colors.accent}
 											/>
 										</span>
-										<span className="w-5 shrink-0 text-[10px]" style={{ opacity: 0.5 }}>
+										<span className="text-micro w-5 shrink-0" style={{ opacity: 0.5 }}>
 											{formatSectionNum(section.sectionIndex)}
 										</span>
 										<span className="truncate">{section.text}</span>
@@ -520,7 +520,7 @@ export function TableOfContents({ variant = "mobile" }: { variant?: "mobile" | "
 														accentColor={theme.colors.accent}
 													/>
 												</span>
-												<span className="w-5 shrink-0 text-[10px]" style={{ opacity: 0.5 }}>
+												<span className="text-micro w-5 shrink-0" style={{ opacity: 0.5 }}>
 													{formatSubNum(section.sectionIndex, child.subIndex)}
 												</span>
 												<span className="truncate">{child.text}</span>

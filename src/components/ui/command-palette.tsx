@@ -103,7 +103,7 @@ export function CommandPalette({ items }: CommandPaletteProps) {
 									className="text-mist-white placeholder:text-slate-text w-full bg-transparent py-4 font-mono text-sm outline-none"
 									autoFocus
 								/>
-								<kbd className="text-slate-text border border-white/10 px-1.5 py-0.5 font-mono text-[10px]">
+								<kbd className="text-slate-text text-micro border border-white/10 px-1.5 py-0.5 font-mono">
 									ESC
 								</kbd>
 							</div>
@@ -117,7 +117,7 @@ export function CommandPalette({ items }: CommandPaletteProps) {
 									<Command.Group
 										key={group.category}
 										heading={group.category}
-										className="[&_[cmdk-group-heading]]:text-slate-text [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:tracking-wider [&_[cmdk-group-heading]]:uppercase"
+										className="[&_[cmdk-group-heading]]:text-slate-text [&_[cmdk-group-heading]]:text-micro [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:tracking-wider [&_[cmdk-group-heading]]:uppercase"
 									>
 										{group.items.map((item) => (
 											<Command.Item
@@ -151,7 +151,7 @@ export function CommandPalette({ items }: CommandPaletteProps) {
 							</Command.List>
 
 							<div className="border-t border-white/10 px-4 py-2">
-								<div className="text-slate-text flex items-center justify-between font-mono text-[10px]">
+								<div className="text-slate-text text-micro flex items-center justify-between font-mono">
 									<span>{items.length} items</span>
 									<span>
 										<kbd className="mr-1 border border-white/10 px-1 py-0.5">↑↓</kbd>

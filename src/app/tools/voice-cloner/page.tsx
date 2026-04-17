@@ -254,10 +254,10 @@ export default function VoiceClonerPage() {
 								<Mic className="h-8 w-8" strokeWidth={1.5} />
 							</div>
 							<div className="flex items-center gap-2">
-								<span className="border-cyber-lime/50 text-cyber-lime border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
+								<span className="border-cyber-lime/50 text-cyber-lime text-micro border px-2 py-0.5 font-mono tracking-wider uppercase">
 									Live
 								</span>
-								<span className="text-slate-text border border-white/20 px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
+								<span className="text-slate-text text-micro border border-white/20 px-2 py-0.5 font-mono tracking-wider uppercase">
 									Public Beta
 								</span>
 							</div>
