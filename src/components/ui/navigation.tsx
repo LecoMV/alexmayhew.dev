@@ -223,7 +223,7 @@ export function Navigation() {
 																			"border px-1.5 py-0.5 font-mono text-[9px] tracking-wider uppercase",
 																			tool.badgeColor === "lime"
 																				? "border-cyber-lime/50 text-cyber-lime"
-																				: "border-blue-400/50 text-blue-400"
+																				: "border-signal-info/50 text-signal-info"
 																		)}
 																	>
 																		{tool.badge}
@@ -275,12 +275,13 @@ export function Navigation() {
 						})}
 					</div>
 
-					{/* Desktop CTA */}
+					{/* CTA — visible on all breakpoints. Shorter label on mobile to protect horizontal space. */}
 					<Link
 						href="/contact"
-						className="bg-cyber-lime text-void-navy focus-visible:ring-cyber-lime focus-visible:ring-offset-void-navy hidden shrink-0 px-4 py-2 font-mono text-xs font-bold tracking-wider uppercase transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:block"
+						className="bg-cyber-lime text-void-navy focus-visible:ring-cyber-lime focus-visible:ring-offset-void-navy inline-flex shrink-0 items-center px-3 py-2 font-mono text-[10px] font-bold tracking-wider uppercase transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none md:text-xs lg:px-4"
 					>
-						Book a Call
+						<span className="lg:hidden">Contact</span>
+						<span className="hidden lg:inline">Book a Call</span>
 					</Link>
 
 					{/* Search Trigger */}
@@ -364,7 +365,7 @@ export function Navigation() {
 																		"border px-1 py-0.5 font-mono text-[8px] tracking-wider uppercase",
 																		tool.badgeColor === "lime"
 																			? "border-cyber-lime/50 text-cyber-lime"
-																			: "border-blue-400/50 text-blue-400"
+																			: "border-signal-info/50 text-signal-info"
 																	)}
 																>
 																	{tool.badge}

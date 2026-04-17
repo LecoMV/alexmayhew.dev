@@ -1,7 +1,7 @@
 "use client";
 
-import { m } from "framer-motion";
-import { AlertCircle, CheckCircle, Clock, Mail, MapPin, Send } from "lucide-react";
+import { AnimatePresence, m } from "framer-motion";
+import { AlertCircle, CheckCircle, ChevronDown, Clock, Mail, MapPin, Send } from "lucide-react";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 
@@ -87,6 +87,7 @@ export function ContactPage() {
 	const prevSuccess = useRef(false);
 	const formRef = useRef<HTMLFormElement>(null);
 	const [turnstileToken, setTurnstileToken] = useState<string>("");
+	const [optionalOpen, setOptionalOpen] = useState<boolean>(false);
 
 	// Track lead on success ... read actual submitted values from the form DOM
 	useEffect(() => {
@@ -160,162 +161,30 @@ export function ContactPage() {
 						transition={{ ...springTransition, delay: 0.1 }}
 					>
 						<form ref={formRef} action={formAction} onFocus={handleFormStart} className="space-y-6">
-							{/* Name & Email Row */}
-							<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-								<div>
-									<label
-										htmlFor="name"
-										className="text-slate-text mb-2 block font-mono text-xs tracking-wider uppercase"
-									>
-										Name
-									</label>
-									<input
-										type="text"
-										id="name"
-										name="name"
-										required
-										className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white placeholder:text-slate-text w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
-										placeholder="Your name"
-									/>
-								</div>
-								<div>
-									<label
-										htmlFor="email"
-										className="text-slate-text mb-2 block font-mono text-xs tracking-wider uppercase"
-									>
-										Email
-									</label>
-									<input
-										type="email"
-										id="email"
-										name="email"
-										required
-										className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white placeholder:text-slate-text w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
-										placeholder="your@email.com"
-									/>
-								</div>
-							</div>
-
-							{/* Project Type & Budget Row */}
-							<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-								<div>
-									<label
-										htmlFor="projectType"
-										className="text-slate-text mb-2 block font-mono text-xs tracking-wider uppercase"
-									>
-										Project Type
-									</label>
-									<select
-										id="projectType"
-										name="projectType"
-										required
-										defaultValue=""
-										className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
-									>
-										<option value="" className="bg-void-navy">
-											Select type...
-										</option>
-										<option value="web-app" className="bg-void-navy">
-											Web Application
-										</option>
-										<option value="saas" className="bg-void-navy">
-											SaaS Platform
-										</option>
-										<option value="ecommerce" className="bg-void-navy">
-											E-Commerce
-										</option>
-										<option value="consulting" className="bg-void-navy">
-											Technical Consulting
-										</option>
-										<option value="other" className="bg-void-navy">
-											Other
-										</option>
-									</select>
-								</div>
-								<div>
-									<label
-										htmlFor="budget"
-										className="text-slate-text mb-2 block font-mono text-xs tracking-wider uppercase"
-									>
-										Budget Range
-									</label>
-									<select
-										id="budget"
-										name="budget"
-										required
-										defaultValue=""
-										className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
-									>
-										<option value="" className="bg-void-navy">
-											Select range...
-										</option>
-										<option value="5k-10k" className="bg-void-navy">
-											$5,000 - $10,000
-										</option>
-										<option value="10k-25k" className="bg-void-navy">
-											$10,000 - $25,000
-										</option>
-										<option value="25k-50k" className="bg-void-navy">
-											$25,000 - $50,000
-										</option>
-										<option value="50k+" className="bg-void-navy">
-											$50,000+
-										</option>
-										<option value="not-sure" className="bg-void-navy">
-											Not sure yet
-										</option>
-									</select>
-								</div>
-							</div>
-
-							{/* Referral Source */}
+							{/* Required block: email + message. Everything else is progressive disclosure. */}
 							<div>
 								<label
-									htmlFor="referralSource"
+									htmlFor="email"
 									className="text-slate-text mb-2 block font-mono text-xs tracking-wider uppercase"
 								>
-									How did you find me?
+									Email <span className="text-cyber-lime">*</span>
 								</label>
-								<select
-									id="referralSource"
-									name="referralSource"
-									defaultValue=""
-									className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
-								>
-									<option value="" className="bg-void-navy">
-										Select source...
-									</option>
-									<option value="google" className="bg-void-navy">
-										Google Search
-									</option>
-									<option value="blog" className="bg-void-navy">
-										Blog Post
-									</option>
-									<option value="linkedin" className="bg-void-navy">
-										LinkedIn
-									</option>
-									<option value="x-twitter" className="bg-void-navy">
-										X/Twitter
-									</option>
-									<option value="referral" className="bg-void-navy">
-										Referral
-									</option>
-									<option value="devto" className="bg-void-navy">
-										Dev.to
-									</option>
-									<option value="other" className="bg-void-navy">
-										Other
-									</option>
-								</select>
+								<input
+									type="email"
+									id="email"
+									name="email"
+									required
+									className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white placeholder:text-slate-text w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
+									placeholder="your@email.com"
+								/>
 							</div>
 
-							{/* Message */}
 							<div>
 								<label
 									htmlFor="message"
 									className="text-slate-text mb-2 block font-mono text-xs tracking-wider uppercase"
 								>
-									Message
+									Message <span className="text-cyber-lime">*</span>
 								</label>
 								<textarea
 									id="message"
@@ -323,8 +192,168 @@ export function ContactPage() {
 									required
 									rows={6}
 									className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white placeholder:text-slate-text w-full resize-none border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
-									placeholder="Describe your project, goals, and timeline..."
+									placeholder="A quick question, a project brief, or anything in between..."
 								/>
+							</div>
+
+							{/* Progressive disclosure: Tell me more (optional) */}
+							<div className="border-t border-white/5 pt-6">
+								<button
+									type="button"
+									onClick={() => setOptionalOpen((v) => !v)}
+									aria-expanded={optionalOpen}
+									aria-controls="optional-fields"
+									className="text-slate-text hover:text-cyber-lime focus-visible:text-cyber-lime focus-visible:ring-cyber-lime focus-visible:ring-offset-void-navy flex w-full items-center justify-between font-mono text-xs tracking-wider uppercase transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+								>
+									<span>Tell me more (optional)</span>
+									<ChevronDown
+										className={cn(
+											"h-4 w-4 transition-transform duration-200",
+											optionalOpen && "rotate-180"
+										)}
+										strokeWidth={1.5}
+									/>
+								</button>
+
+								<AnimatePresence initial={false}>
+									{optionalOpen && (
+										<m.div
+											id="optional-fields"
+											initial={{ opacity: 0, height: 0 }}
+											animate={{ opacity: 1, height: "auto" }}
+											exit={{ opacity: 0, height: 0 }}
+											transition={springTransition}
+											className="overflow-hidden"
+										>
+											<div className="space-y-6 pt-6">
+												<div>
+													<label
+														htmlFor="name"
+														className="text-slate-text mb-2 block font-mono text-xs tracking-wider uppercase"
+													>
+														Name
+													</label>
+													<input
+														type="text"
+														id="name"
+														name="name"
+														className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white placeholder:text-slate-text w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
+														placeholder="Your name"
+													/>
+												</div>
+
+												<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+													<div>
+														<label
+															htmlFor="projectType"
+															className="text-slate-text mb-2 block font-mono text-xs tracking-wider uppercase"
+														>
+															Project Type
+														</label>
+														<select
+															id="projectType"
+															name="projectType"
+															defaultValue=""
+															className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
+														>
+															<option value="" className="bg-void-navy">
+																Select type...
+															</option>
+															<option value="web-app" className="bg-void-navy">
+																Web Application
+															</option>
+															<option value="saas" className="bg-void-navy">
+																SaaS Platform
+															</option>
+															<option value="ecommerce" className="bg-void-navy">
+																E-Commerce
+															</option>
+															<option value="consulting" className="bg-void-navy">
+																Technical Consulting
+															</option>
+															<option value="other" className="bg-void-navy">
+																Other
+															</option>
+														</select>
+													</div>
+													<div>
+														<label
+															htmlFor="budget"
+															className="text-slate-text mb-2 block font-mono text-xs tracking-wider uppercase"
+														>
+															Budget Range
+														</label>
+														<select
+															id="budget"
+															name="budget"
+															defaultValue=""
+															className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
+														>
+															<option value="" className="bg-void-navy">
+																Select range...
+															</option>
+															<option value="5k-10k" className="bg-void-navy">
+																$5,000 - $10,000
+															</option>
+															<option value="10k-25k" className="bg-void-navy">
+																$10,000 - $25,000
+															</option>
+															<option value="25k-50k" className="bg-void-navy">
+																$25,000 - $50,000
+															</option>
+															<option value="50k+" className="bg-void-navy">
+																$50,000+
+															</option>
+															<option value="not-sure" className="bg-void-navy">
+																Not sure yet
+															</option>
+														</select>
+													</div>
+												</div>
+
+												<div>
+													<label
+														htmlFor="referralSource"
+														className="text-slate-text mb-2 block font-mono text-xs tracking-wider uppercase"
+													>
+														How did you find me?
+													</label>
+													<select
+														id="referralSource"
+														name="referralSource"
+														defaultValue=""
+														className="bg-gunmetal-glass/20 focus:border-cyber-lime focus-visible:ring-cyber-lime text-mist-white w-full border border-white/10 px-4 py-3 font-mono text-sm backdrop-blur-sm transition-colors duration-300 focus:outline-none focus-visible:ring-2"
+													>
+														<option value="" className="bg-void-navy">
+															Select source...
+														</option>
+														<option value="google" className="bg-void-navy">
+															Google Search
+														</option>
+														<option value="blog" className="bg-void-navy">
+															Blog Post
+														</option>
+														<option value="linkedin" className="bg-void-navy">
+															LinkedIn
+														</option>
+														<option value="x-twitter" className="bg-void-navy">
+															X/Twitter
+														</option>
+														<option value="referral" className="bg-void-navy">
+															Referral
+														</option>
+														<option value="devto" className="bg-void-navy">
+															Dev.to
+														</option>
+														<option value="other" className="bg-void-navy">
+															Other
+														</option>
+													</select>
+												</div>
+											</div>
+										</m.div>
+									)}
+								</AnimatePresence>
 							</div>
 
 							{/* Turnstile Bot Protection ... token stored in React state */}

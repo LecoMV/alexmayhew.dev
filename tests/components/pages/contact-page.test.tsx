@@ -1,4 +1,4 @@
-import { act, render } from "@testing-library/react";
+import { act, fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { ContactPage } from "@/components/pages/contact-page";
@@ -67,10 +67,41 @@ describe("ContactPage a11y", () => {
 	});
 
 	it("uses slate-text placeholder color on the name input (AA contrast)", () => {
-		const { container } = render(<ContactPage />);
+		const { container, getByRole } = render(<ContactPage />);
+		// Name now lives inside the progressive-disclosure block; open it first.
+		const toggle = getByRole("button", { name: /tell me more/i });
+		act(() => {
+			fireEvent.click(toggle);
+		});
 		const name = container.querySelector('input[name="name"]') as HTMLInputElement | null;
 		expect(name).toBeTruthy();
 		expect(name!.className).toContain("placeholder:text-slate-text");
 		expect(name!.className).not.toContain("placeholder:text-white/30");
+	});
+});
+
+describe("ContactPage CRO — progressive disclosure", () => {
+	it("only email and message inputs are required", () => {
+		const { container } = render(<ContactPage />);
+		const email = container.querySelector('input[name="email"]') as HTMLInputElement;
+		const message = container.querySelector('textarea[name="message"]') as HTMLTextAreaElement;
+		expect(email).toBeTruthy();
+		expect(message).toBeTruthy();
+		expect(email.required).toBe(true);
+		expect(message.required).toBe(true);
+
+		// Optional fields: if they exist in the DOM they must NOT be required.
+		const name = container.querySelector('input[name="name"]') as HTMLInputElement | null;
+		const projectType = container.querySelector(
+			'select[name="projectType"]'
+		) as HTMLSelectElement | null;
+		const budget = container.querySelector('select[name="budget"]') as HTMLSelectElement | null;
+		const referral = container.querySelector(
+			'select[name="referralSource"]'
+		) as HTMLSelectElement | null;
+		expect(name?.required ?? false).toBe(false);
+		expect(projectType?.required ?? false).toBe(false);
+		expect(budget?.required ?? false).toBe(false);
+		expect(referral?.required ?? false).toBe(false);
 	});
 });
