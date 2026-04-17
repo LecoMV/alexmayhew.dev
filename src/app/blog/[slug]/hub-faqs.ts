@@ -439,6 +439,168 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		},
 	],
 
+	"saas-billing-stripe-architecture": [
+		{
+			question: "Should I use Stripe Checkout or Stripe Elements for a SaaS product?",
+			answer:
+				"Use Stripe Checkout for MVPs and simple subscriptions ... it handles PCI compliance and saves 2-3 weeks of integration work. Use Stripe Elements when you need custom UI or embedded payment flows.",
+		},
+		{
+			question: "How do I handle failed SaaS payments without losing customers?",
+			answer:
+				"Implement dunning management with smart retries (day 3, 5, 7, 14) plus Stripe Smart Retries. This recovers 30-40% of failed payments automatically before cancellation.",
+		},
+		{
+			question: "What is the right way to model SaaS subscriptions in a database?",
+			answer:
+				"Store the authoritative subscription state in Stripe, not your database. Mirror only the fields you need (status, plan, period_end) and sync via webhooks with idempotency keys to prevent duplicate events.",
+		},
+	],
+
+	"multi-tenancy-prisma-rls": [
+		{
+			question: "Is PostgreSQL Row-Level Security (RLS) safe for multi-tenant SaaS?",
+			answer:
+				"Yes. RLS provides defense in depth at the database layer. A missing WHERE clause in application code cannot leak tenant data because the database enforces isolation independently. Performance overhead is typically under 5%.",
+		},
+		{
+			question: "Should I use schema-per-tenant or row-level multi-tenancy?",
+			answer:
+				"Row-level with RLS scales to thousands of tenants on shared infrastructure. Schema-per-tenant is appropriate only for enterprise contracts requiring physical isolation ... it caps out at roughly 100-500 tenants before Postgres metadata overhead degrades performance.",
+		},
+		{
+			question: "How do I prevent tenant data leaks when using Prisma?",
+			answer:
+				"Set the tenant context via `SET app.current_tenant` in a Prisma middleware on every transaction. Combine this with Postgres RLS policies on every tenant-scoped table. Never rely on application-layer WHERE clauses alone.",
+		},
+	],
+
+	"core-web-vitals-2026-audit": [
+		{
+			question: "What are the 2026 Core Web Vitals thresholds?",
+			answer:
+				"LCP under 2.5s, INP under 200ms, CLS under 0.1. INP replaced FID in March 2024 and measures responsiveness across the full page lifecycle, not just first input. 75th percentile on real user data determines pass/fail.",
+		},
+		{
+			question: "Why did my INP score drop after replacing FID?",
+			answer:
+				"INP measures every interaction, not just the first one. Heavy JavaScript handlers on scroll, hover, or repeated clicks now count. A single 500ms handler that fires after initial load can fail INP even when FID passed.",
+		},
+		{
+			question: "How do I improve INP on a React application?",
+			answer:
+				"Break long tasks with scheduler.yield() or setTimeout, move non-critical work off the main thread, debounce expensive handlers, and use React 19 transitions for state updates triggered by user input. Target handler work under 50ms.",
+		},
+	],
+
+	"rag-architecture-saas": [
+		{
+			question: "When should I use RAG instead of fine-tuning an LLM?",
+			answer:
+				"Use RAG when your data changes frequently, when citations matter for compliance, or when you have under 10,000 high-quality training examples. Fine-tuning is only worth the cost when RAG hits ceiling on task-specific reasoning.",
+		},
+		{
+			question: "Which vector database should I use for a production RAG system?",
+			answer:
+				"Start with pgvector if you already run PostgreSQL ... it handles up to 10M vectors comfortably. Move to Pinecone, Weaviate, or Qdrant only when you exceed 10M vectors or need sub-10ms query latency at scale.",
+		},
+		{
+			question: "How do I prevent RAG from hallucinating on questions outside my corpus?",
+			answer:
+				"Add a confidence threshold on retrieval scores, require the LLM to cite source passages, and implement a fallback response when top-k results fall below the threshold. This cuts hallucination rates from 15-25% to under 3%.",
+		},
+	],
+
+	"build-vs-buy": [
+		{
+			question: "When does build-vs-buy favor building?",
+			answer:
+				"Build only when the capability is core to your differentiation and buying forces compromises that damage the product experience. Everything else ... auth, payments, email, monitoring, analytics ... should be bought.",
+		},
+		{
+			question: "How much does it cost to build vs buy authentication?",
+			answer:
+				"Buying (Clerk, Auth0, Supabase Auth) costs $0-500/month under 10K MAU. Building costs 3-6 engineer-months upfront plus ongoing maintenance for MFA, SSO, password policies, and compliance. Buy wins until you hit $2-3M ARR.",
+		},
+		{
+			question: "What is the hidden cost of buying third-party tools?",
+			answer:
+				"Integration surface area. Each vendor adds webhook handling, retry logic, rate limits, and outage dependencies. Budget 20-30% of a vendor's license cost as ongoing integration maintenance.",
+		},
+	],
+
+	"zero-to-10k-mrr-saas-playbook": [
+		{
+			question: "How long does it take to reach $10K MRR for a SaaS?",
+			answer:
+				"The median is 12-18 months from launch to $10K MRR for B2B SaaS with a technical founder. Faster paths (3-6 months) require an existing audience or strong network. Slower paths (24+ months) typically lack distribution, not product.",
+		},
+		{
+			question: "What infrastructure do I need from $0 to $10K MRR?",
+			answer:
+				"Cloudflare Pages or Vercel for hosting ($0-20/month), PostgreSQL via Neon or Supabase free tier, Stripe for payments, and Resend for transactional email. Total infrastructure cost under $100/month through $10K MRR.",
+		},
+		{
+			question: "When should I hire my first engineer for a SaaS startup?",
+			answer:
+				"Hire your first engineer at $15-25K MRR when the founder spends over 50% of time on support and bug fixes. Hiring earlier burns runway on salary; hiring later caps growth as technical debt accumulates faster than it can be paid down.",
+		},
+	],
+
+	"lambda-tax-cold-starts": [
+		{
+			question: "What is the Lambda Tax in serverless computing?",
+			answer:
+				"The Lambda Tax is the 2-5x cost premium serverless incurs over containers for steady-traffic workloads. At over 1M requests/month with predictable load, container hosting on Fly.io or Railway typically costs 40-60% less than AWS Lambda.",
+		},
+		{
+			question: "How long do AWS Lambda cold starts last?",
+			answer:
+				"Go and Rust functions cold start in 100-200ms. Node.js and Python take 300-800ms. Java and .NET take 1-3 seconds. Provisioned concurrency eliminates cold starts but removes most of the serverless cost advantage.",
+		},
+		{
+			question: "When is serverless worth the cold start penalty?",
+			answer:
+				"Serverless wins for event-driven workloads, low-traffic APIs under 100K requests/month, and bursty traffic with 10x+ peak-to-average ratios. Containers win for steady traffic, latency-critical paths, and workloads over 1M requests/month.",
+		},
+	],
+
+	"edge-computing-saas": [
+		{
+			question: "When is edge computing worth the complexity for a SaaS?",
+			answer:
+				"Edge is worth it when users are geographically distributed and 100ms of latency affects revenue. E-commerce sees 1-2% conversion lift per 100ms reduction. Edge is not worth it for admin panels, internal tools, or single-region products.",
+		},
+		{
+			question: "What are the main limitations of Cloudflare Workers?",
+			answer:
+				"50ms CPU limit per request on free tier (30s on paid), no native Node.js filesystem or TCP sockets, 1MB compressed script size, and limited database options (D1, KV, R2, or HTTP-based external DBs). No persistent memory between requests.",
+		},
+		{
+			question: "Can I run a full Next.js app on Cloudflare Workers?",
+			answer:
+				"Yes, via OpenNext or @cloudflare/next-on-pages. Static and server-rendered pages both work. Limitations: no Next.js Image Optimization without R2, no ISR without workarounds, and some npm packages that require Node.js APIs need polyfills.",
+		},
+	],
+
+	"fractional-cto-vs-full-time": [
+		{
+			question: "What does a fractional CTO cost per month?",
+			answer:
+				"Fractional CTOs typically charge $2,000-$8,000/month for 8-20 hours. Senior tier with strategic focus runs $5,000-$10,000/month. Full-time CTO total compensation averages $315K-595K annually including equity ... 4-6x the fractional cost.",
+		},
+		{
+			question: "When should a startup transition from fractional to full-time CTO?",
+			answer:
+				"Transition when engineering team exceeds 15 people, when architectural decisions require daily leadership presence, or after Series A with clear product-market fit. Before these signals, a fractional model provides equivalent value at fraction of cost.",
+		},
+		{
+			question: "What does a fractional CTO actually do day-to-day?",
+			answer:
+				"Strategic architecture review, technical due diligence for fundraising, hiring loop participation, vendor selection (cloud, tools, auth), mentoring lead engineers, and acting as technical counterparty in board and investor meetings.",
+		},
+	],
+
 	"enterprise-ai-sdlc-blueprint": [
 		{
 			question: "Why do enterprise AI development projects fail?",

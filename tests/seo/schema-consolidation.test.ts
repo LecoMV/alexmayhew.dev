@@ -78,6 +78,13 @@ describe("PROVIDER_PERSON is removed", () => {
 	});
 });
 
+describe("Deprecated schema components are removed from layout", () => {
+	it("layout.tsx should not import LocalBusinessJsonLd (deprecated Sprint 1)", () => {
+		const content = readFileSync(join(process.cwd(), "src/app/layout.tsx"), "utf-8");
+		expect(content).not.toMatch(/LocalBusinessJsonLd/);
+	});
+});
+
 describe("Missing schema types", () => {
 	it("about/page.tsx should contain ProfilePage JSON-LD", () => {
 		const content = readFileSync(join(process.cwd(), "src/app/about/page.tsx"), "utf-8");
