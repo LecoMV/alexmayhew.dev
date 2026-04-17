@@ -3,14 +3,15 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-describe("CTA casing consistency", () => {
-	it("services-page-content.tsx should use UPPERCASE CTA, not mixed case", () => {
+describe("CTA copy on services hub", () => {
+	it("services-page-content.tsx uses outcome-specific CTA text (no code-syntax)", () => {
 		const content = readFileSync(
 			join(process.cwd(), "src/app/services/services-page-content.tsx"),
 			"utf-8"
 		);
+		expect(content).not.toContain("SCHEDULE_CONSULTATION()");
 		expect(content).not.toContain("Schedule_Consultation()");
-		expect(content).toContain("SCHEDULE_CONSULTATION()");
+		expect(content).toContain("Book a working session");
 	});
 });
 

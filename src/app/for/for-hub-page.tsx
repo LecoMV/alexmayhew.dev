@@ -179,7 +179,7 @@ export function ForHubPage({ pages }: ForHubPageProps) {
 								className="group hover:border-cyber-lime relative flex shrink-0 items-center gap-3 border border-white/20 px-6 py-4 transition-colors duration-300"
 							>
 								<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">
-									START_CONVERSATION()
+									Start the conversation
 								</span>
 								<ArrowRight
 									className="text-slate-text group-hover:text-cyber-lime h-4 w-4 transition-all duration-300 group-hover:translate-x-1"

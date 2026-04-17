@@ -424,7 +424,7 @@ function RelatedServicesSection({ pages }: { pages: RelatedServicePage[] }) {
 								{page.seo.description.slice(0, 120)}...
 							</p>
 							<div className="text-cyber-lime flex items-center gap-2 font-mono text-xs opacity-0 transition-opacity group-hover:opacity-100">
-								VIEW_SERVICE()
+								See the service
 								<ArrowRight className="h-3 w-3" />
 							</div>
 						</Link>
@@ -472,7 +472,7 @@ function CtaSection({ technology }: { technology: Technology }) {
 					className="group hover:border-cyber-lime relative inline-flex items-center gap-3 border border-white/20 px-8 py-4 transition-colors duration-300"
 				>
 					<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">
-						START_CONVERSATION()
+						Talk through your stack
 					</span>
 					<ArrowRight
 						className="text-slate-text group-hover:text-cyber-lime h-4 w-4 transition-colors duration-300"

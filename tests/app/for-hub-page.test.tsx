@@ -55,6 +55,6 @@ describe("ForHubPage", () => {
 		expect(screen.getByText("CTO Advisory")).toBeTruthy();
 		expect(screen.getByText("Technical Debt")).toBeTruthy();
 		expect(screen.getByText("Team Scaling")).toBeTruthy();
-		expect(screen.getByText(/START_CONVERSATION/)).toBeTruthy();
+		expect(screen.getByText(/Start the conversation/)).toBeTruthy();
 	});
 });

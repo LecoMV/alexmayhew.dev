@@ -340,7 +340,7 @@ export function ServicesPage({ pages }: ServicesPageProps) {
 						}
 						className="group border-cyber-lime bg-cyber-lime/10 hover:bg-cyber-lime/20 inline-flex items-center gap-2 border px-8 py-4 font-mono text-sm transition-colors"
 					>
-						<span className="text-cyber-lime">SCHEDULE_CONSULTATION()</span>
+						<span className="text-cyber-lime">Book a working session</span>
 						<ArrowRight className="text-cyber-lime h-4 w-4 transition-transform group-hover:translate-x-1" />
 					</Link>
 

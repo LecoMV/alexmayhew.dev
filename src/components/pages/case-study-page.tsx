@@ -75,7 +75,7 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 							>
 								<span className="group-hover:text-cyber-lime flex items-center gap-2 font-mono text-sm tracking-tight transition-colors">
 									<ExternalLink className="h-4 w-4" strokeWidth={1.5} />
-									VIEW_LIVE()
+									See it running
 								</span>
 							</a>
 						)}
@@ -88,7 +88,7 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 							>
 								<span className="group-hover:text-cyber-lime flex items-center gap-2 font-mono text-sm tracking-tight transition-colors">
 									<Github className="h-4 w-4" strokeWidth={1.5} />
-									SOURCE_CODE()
+									Read the code
 								</span>
 							</a>
 						)}
@@ -131,7 +131,9 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 						transition={springTransition}
 					>
 						<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-							<span className="mr-2 animate-pulse">●</span>
+							<span className="mr-2 animate-pulse" aria-hidden="true">
+								●
+							</span>
 							The Challenge
 						</h2>
 						<p className="text-slate-text text-base leading-relaxed">{cs.challenge}</p>
@@ -201,7 +203,7 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 									className="group hover:border-cyber-lime block border border-white/20 px-4 py-3 text-center transition-colors duration-300"
 								>
 									<span className="group-hover:text-cyber-lime font-mono text-xs tracking-tight transition-colors">
-										DISCUSS_PROJECT()
+										Talk about a similar build
 									</span>
 								</Link>
 							</div>
@@ -218,7 +220,9 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 					transition={springTransition}
 				>
 					<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-						<span className="mr-2 animate-pulse">●</span>
+						<span className="mr-2 animate-pulse" aria-hidden="true">
+							●
+						</span>
 						The Approach
 					</h2>
 					<div className="max-w-3xl">
@@ -235,7 +239,9 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 					transition={springTransition}
 				>
 					<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-						<span className="mr-2 animate-pulse">●</span>
+						<span className="mr-2 animate-pulse" aria-hidden="true">
+							●
+						</span>
 						Tech Decisions
 					</h2>
 					<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -269,7 +275,9 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 					transition={springTransition}
 				>
 					<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-						<span className="mr-2 animate-pulse">●</span>
+						<span className="mr-2 animate-pulse" aria-hidden="true">
+							●
+						</span>
 						Technical Challenges
 					</h2>
 					<div className="space-y-4">
@@ -331,7 +339,9 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 					transition={springTransition}
 				>
 					<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-						<span className="mr-2 animate-pulse">●</span>
+						<span className="mr-2 animate-pulse" aria-hidden="true">
+							●
+						</span>
 						The Solution
 					</h2>
 					<div className="max-w-3xl">
@@ -348,7 +358,9 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 					transition={springTransition}
 				>
 					<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-						<span className="mr-2 animate-pulse">●</span>
+						<span className="mr-2 animate-pulse" aria-hidden="true">
+							●
+						</span>
 						Key Takeaways
 					</h2>
 					<div className="bg-gunmetal-glass/10 border border-white/10 p-8">
@@ -380,7 +392,9 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 						transition={springTransition}
 					>
 						<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
-							<span className="mr-2 animate-pulse">●</span>
+							<span className="mr-2 animate-pulse" aria-hidden="true">
+								●
+							</span>
 							Related Projects
 						</h2>
 						<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -449,7 +463,7 @@ export function CaseStudyPage({ project, relatedProjects }: CaseStudyPageProps) 
 								className="group hover:border-cyber-lime relative border border-white/20 px-8 py-4 transition-colors duration-300"
 							>
 								<span className="group-hover:text-cyber-lime font-mono text-sm tracking-tight transition-colors">
-									START_CONVERSATION()
+									Talk through your challenge
 								</span>
 							</Link>
 							<div className="w-full max-w-md">
