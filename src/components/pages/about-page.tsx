@@ -1,6 +1,3 @@
-"use client";
-
-import { m } from "framer-motion";
 import {
 	ArrowRight,
 	Calendar,
@@ -18,8 +15,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+import { MotionCard, MotionDiv, MotionSection } from "@/components/pages/about-page-client";
 import { CornerBrackets } from "@/components/ui/corner-brackets";
-import { springTransition } from "@/lib/motion-constants";
 
 const skills = [
 	{
@@ -116,17 +113,24 @@ const timeline = [
 	},
 ];
 
+const socialLinks = [
+	{ label: "LinkedIn", href: "https://www.linkedin.com/in/alexmmayhew" },
+	{ label: "GitHub", href: "https://github.com/LecoMV" },
+	{ label: "X / Twitter", href: "https://x.com/alexmayhewdev" },
+	{
+		label: "Bluesky",
+		href: "https://bsky.app/profile/alexmayhewdev.bsky.social",
+	},
+	{ label: "Dev.to", href: "https://dev.to/alexmayhewdev" },
+	{ label: "Email", href: "mailto:alex@alexmayhew.dev" },
+];
+
 export function AboutPage() {
 	return (
 		<section className="page-layout">
 			<div className="max-w-content mx-auto">
 				{/* Header - Opening Hook */}
-				<m.div
-					className="mb-16"
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={springTransition}
-				>
+				<MotionDiv className="mb-16">
 					<p className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase">
 						<span className="mr-2 animate-pulse" aria-hidden="true">
 							●
@@ -138,16 +142,11 @@ export function AboutPage() {
 						<br />
 						<span className="text-slate-text">architecture and accidents.</span>
 					</h1>
-				</m.div>
+				</MotionDiv>
 
 				{/* Opening Hook - Problem Statement */}
 				<div className="mb-24 grid grid-cols-1 gap-12 lg:grid-cols-12">
-					<m.div
-						className="lg:col-span-7"
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ ...springTransition, delay: 0.1 }}
-					>
+					<MotionDiv className="lg:col-span-7" delay={0.1}>
 						<div className="space-y-6 text-lg leading-relaxed">
 							<p className="text-xl leading-relaxed">
 								Every week, founders make technical decisions that will either compound into
@@ -182,15 +181,10 @@ export function AboutPage() {
 								English / Spanish
 							</div>
 						</div>
-					</m.div>
+					</MotionDiv>
 
 					{/* Outcomes - Proof Points */}
-					<m.div
-						className="lg:col-span-5"
-						initial={{ opacity: 0, x: 30 }}
-						animate={{ opacity: 1, x: 0 }}
-						transition={{ ...springTransition, delay: 0.2 }}
-					>
+					<MotionDiv className="lg:col-span-5" delay={0.2} fromX={30}>
 						<div className="bg-gunmetal-glass/20 relative border border-white/10 p-6 backdrop-blur-sm">
 							<div className="border-cyber-lime absolute top-0 right-0 h-4 w-4 border-t border-r" />
 							<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b border-l" />
@@ -214,17 +208,11 @@ export function AboutPage() {
 								))}
 							</div>
 						</div>
-					</m.div>
+					</MotionDiv>
 				</div>
 
 				{/* Philosophy / Differentiators Section */}
-				<m.section
-					className="mb-24"
-					initial={{ opacity: 0, y: 20 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true, margin: "-100px" }}
-					transition={springTransition}
-				>
+				<MotionSection className="mb-24">
 					<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
 						<span className="mr-2 animate-pulse" aria-hidden="true">
 							●
@@ -234,32 +222,23 @@ export function AboutPage() {
 
 					<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
 						{differentiators.map((diff, index) => (
-							<m.div
+							<MotionCard
 								key={diff.title}
 								className="group bg-gunmetal-glass/10 hover:border-cyber-lime/50 relative border border-white/10 p-6 backdrop-blur-sm transition-colors duration-300"
-								initial={{ opacity: 0, y: 20 }}
-								whileInView={{ opacity: 1, y: 0 }}
-								viewport={{ once: true }}
-								transition={{ ...springTransition, delay: index * 0.1 }}
+								delay={index * 0.1}
 							>
 								<CornerBrackets hover />
 
 								<diff.icon className="text-cyber-lime mb-4 h-6 w-6" strokeWidth={1.5} />
 								<h3 className="mb-3 font-mono text-lg tracking-tight">{diff.title}</h3>
 								<p className="text-slate-text text-sm leading-relaxed">{diff.description}</p>
-							</m.div>
+							</MotionCard>
 						))}
 					</div>
-				</m.section>
+				</MotionSection>
 
 				{/* Skills Section */}
-				<m.section
-					className="mb-24"
-					initial={{ opacity: 0, y: 20 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true, margin: "-100px" }}
-					transition={springTransition}
-				>
+				<MotionSection className="mb-24">
 					<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
 						<span className="mr-2 animate-pulse" aria-hidden="true">
 							●
@@ -269,13 +248,10 @@ export function AboutPage() {
 
 					<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
 						{skills.map((skill, index) => (
-							<m.div
+							<MotionCard
 								key={skill.category}
 								className="group bg-gunmetal-glass/10 hover:border-cyber-lime/50 relative border border-white/10 p-6 backdrop-blur-sm transition-colors duration-300"
-								initial={{ opacity: 0, y: 20 }}
-								whileInView={{ opacity: 1, y: 0 }}
-								viewport={{ once: true }}
-								transition={{ ...springTransition, delay: index * 0.1 }}
+								delay={index * 0.1}
 							>
 								<CornerBrackets hover />
 
@@ -290,19 +266,13 @@ export function AboutPage() {
 										</li>
 									))}
 								</ul>
-							</m.div>
+							</MotionCard>
 						))}
 					</div>
-				</m.section>
+				</MotionSection>
 
 				{/* Timeline Section - Emphasizing Outcomes */}
-				<m.section
-					className="mb-24"
-					initial={{ opacity: 0, y: 20 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true, margin: "-100px" }}
-					transition={springTransition}
-				>
+				<MotionSection className="mb-24">
 					<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
 						<span className="mr-2 animate-pulse" aria-hidden="true">
 							●
@@ -316,13 +286,10 @@ export function AboutPage() {
 
 						<div className="space-y-8">
 							{timeline.map((item, index) => (
-								<m.div
+								<MotionCard
 									key={item.year}
 									className="relative grid grid-cols-1 gap-4 pl-8 md:grid-cols-2 md:gap-8 md:pl-0"
-									initial={{ opacity: 0, y: 20 }}
-									whileInView={{ opacity: 1, y: 0 }}
-									viewport={{ once: true }}
-									transition={{ ...springTransition, delay: index * 0.1 }}
+									delay={index * 0.1}
 								>
 									{/* Timeline dot */}
 									<div className="bg-void-navy absolute top-2 left-0 flex h-4 w-4 items-center justify-center md:left-1/2 md:-translate-x-1/2">
@@ -346,20 +313,14 @@ export function AboutPage() {
 										</h3>
 										<p className="text-slate-text text-sm leading-relaxed">{item.description}</p>
 									</div>
-								</m.div>
+								</MotionCard>
 							))}
 						</div>
 					</div>
-				</m.section>
+				</MotionSection>
 
 				{/* Human Element */}
-				<m.section
-					className="mb-24"
-					initial={{ opacity: 0, y: 20 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true, margin: "-100px" }}
-					transition={springTransition}
-				>
+				<MotionSection className="mb-24">
 					<h2 className="text-cyber-lime mb-8 font-mono text-xs tracking-wider uppercase">
 						<span className="mr-2 animate-pulse" aria-hidden="true">
 							●
@@ -379,16 +340,10 @@ export function AboutPage() {
 							respect for the craft.
 						</p>
 					</div>
-				</m.section>
+				</MotionSection>
 
 				{/* Contrarian positions (E-E-A-T signal) */}
-				<m.section
-					className="mb-20"
-					initial={{ opacity: 0, y: 20 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true, margin: "-100px" }}
-					transition={springTransition}
-				>
+				<MotionSection className="mb-20">
 					<h2 className="text-cyber-lime mb-6 font-mono text-xs tracking-wider uppercase">
 						<span className="mr-2" aria-hidden="true">
 							●
@@ -431,16 +386,10 @@ export function AboutPage() {
 							</p>
 						</div>
 					</div>
-				</m.section>
+				</MotionSection>
 
 				{/* Connect / sameAs links (E-E-A-T) */}
-				<m.section
-					className="mb-20"
-					initial={{ opacity: 0, y: 20 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true, margin: "-100px" }}
-					transition={springTransition}
-				>
+				<MotionSection className="mb-20">
 					<h2 className="text-cyber-lime mb-6 font-mono text-xs tracking-wider uppercase">
 						<span className="mr-2" aria-hidden="true">
 							●
@@ -448,17 +397,7 @@ export function AboutPage() {
 						Elsewhere
 					</h2>
 					<ul className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-						{[
-							{ label: "LinkedIn", href: "https://www.linkedin.com/in/alexmmayhew" },
-							{ label: "GitHub", href: "https://github.com/LecoMV" },
-							{ label: "X / Twitter", href: "https://x.com/alexmayhewdev" },
-							{
-								label: "Bluesky",
-								href: "https://bsky.app/profile/alexmayhewdev.bsky.social",
-							},
-							{ label: "Dev.to", href: "https://dev.to/alexmayhewdev" },
-							{ label: "Email", href: "mailto:alex@alexmayhew.dev" },
-						].map((link) => (
+						{socialLinks.map((link) => (
 							<li key={link.href}>
 								<a
 									href={link.href}
@@ -477,15 +416,10 @@ export function AboutPage() {
 							</li>
 						))}
 					</ul>
-				</m.section>
+				</MotionSection>
 
 				{/* CTA Section */}
-				<m.section
-					initial={{ opacity: 0, y: 20 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true, margin: "-100px" }}
-					transition={springTransition}
-				>
+				<MotionSection>
 					<div className="bg-gunmetal-glass/20 relative border border-white/10 p-8 backdrop-blur-sm md:p-12">
 						<div className="border-cyber-lime absolute top-0 right-0 h-6 w-6 border-t border-r" />
 						<div className="border-cyber-lime absolute bottom-0 left-0 h-6 w-6 border-b border-l" />
@@ -514,7 +448,7 @@ export function AboutPage() {
 							</Link>
 						</div>
 					</div>
-				</m.section>
+				</MotionSection>
 			</div>
 		</section>
 	);
