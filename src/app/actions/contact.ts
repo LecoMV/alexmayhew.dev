@@ -80,6 +80,87 @@ export async function submitContactAction(
 	return submitContactForm(raw as unknown as ContactFormValues);
 }
 
+async function extractClientIP(): Promise<string> {
+	const h = await headers();
+	return h.get("cf-connecting-ip") || h.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
+}
+
+async function enforceContactRateLimit(clientIP: string): Promise<ContactFormState | null> {
+	try {
+		const { env: cfEnv } = await getCloudflareContext();
+		const { success } = await checkRateLimit({
+			kv: cfEnv.RATE_LIMIT_KV ?? null,
+			key: `contact:${clientIP}`,
+			limit: CONTACT_LIMIT_PER_MIN,
+		});
+		if (!success) {
+			return { success: false, error: "Too many submissions. Please try again later." };
+		}
+	} catch {
+		// Rate limiting unavailable in local dev ... allow request through.
+	}
+	return null;
+}
+
+async function verifyBotCheck(
+	turnstileToken: string | undefined,
+	env: { NODE_ENV?: string; TURNSTILE_SECRET_KEY?: string }
+): Promise<ContactFormState | null> {
+	const required = env.NODE_ENV === "production" || !!turnstileToken;
+	if (!required) return null;
+	if (!turnstileToken) return { success: false, error: "Security check required." };
+	const isValid = await dependencies.verifyTurnstile(
+		turnstileToken,
+		env.TURNSTILE_SECRET_KEY as string
+	);
+	if (!isValid) return { success: false, error: "Security check failed." };
+	return null;
+}
+
+interface EmailParams {
+	apiKey: string;
+	from: string;
+	to: string;
+	replyTo: string;
+	subject: string;
+	html: string;
+}
+
+async function sendResendEmail(params: EmailParams): Promise<ContactFormState> {
+	const result = await withRetry(
+		async () => {
+			try {
+				const res = await dependencies.sendEmail(params);
+				if (!res.success && res.error) {
+					const statusMatch = res.error.match(/^HTTP (5\d{2})/);
+					if (statusMatch) {
+						const err = new Error(`Resend ${statusMatch[1]}: ${res.error}`) as Error & {
+							status?: number;
+						};
+						err.status = Number(statusMatch[1]);
+						throw err;
+					}
+				}
+				return res;
+			} catch (err) {
+				if (err instanceof Error && !/^Resend /i.test(err.message)) {
+					throw new Error(`Resend network: ${err.message}`);
+				}
+				throw err;
+			}
+		},
+		{ shouldRetry: isRetryableError, delays: RETRY_DELAYS }
+	);
+	if (!result.success) {
+		logger.error("Resend API error", { route: "contact", error: String(result.error) });
+		return {
+			success: false,
+			error: "Failed to send message. Please try again or email alex@alexmayhew.dev directly.",
+		};
+	}
+	return { success: true };
+}
+
 export async function submitContactForm(data: unknown): Promise<ContactFormState> {
 	const validation = contactFormSchema.safeParse(data);
 	if (!validation.success) {
@@ -89,71 +170,35 @@ export async function submitContactForm(data: unknown): Promise<ContactFormState
 			.filter(Boolean);
 		const errorMessage =
 			errorMessages.length > 0 ? errorMessages[0] : "Please fill in all required fields";
-		return {
-			success: false,
-			error: errorMessage,
-			fieldErrors,
-		};
+		return { success: false, error: errorMessage, fieldErrors };
 	}
 
 	const { name, email, projectType, budget, message, referralSource, turnstileToken } =
 		validation.data;
 
-	// 2. Rate Limiting (Workers RateLimit binding)
-	const headersList = await headers();
-	const clientIP =
-		headersList.get("cf-connecting-ip") ||
-		headersList.get("x-forwarded-for")?.split(",")[0].trim() ||
-		"unknown";
-
-	try {
-		const { env: cfEnv } = await getCloudflareContext();
-		const { success } = await checkRateLimit({
-			kv: cfEnv.RATE_LIMIT_KV ?? null,
-			key: `contact:${clientIP}`,
-			limit: CONTACT_LIMIT_PER_MIN,
-		});
-		if (!success) {
-			return {
-				success: false,
-				error: "Too many submissions. Please try again later.",
-			};
-		}
-	} catch {
-		// Rate limiting unavailable in local dev ... allow request through
-	}
+	const clientIP = await extractClientIP();
+	const rateLimited = await enforceContactRateLimit(clientIP);
+	if (rateLimited) return rateLimited;
 
 	const env = await getEnv();
+	const botCheck = await verifyBotCheck(turnstileToken, env);
+	if (botCheck) return botCheck;
 
-	// 3. Security (Turnstile)
-	if (env.NODE_ENV === "production" || turnstileToken) {
-		if (!turnstileToken) {
-			return { success: false, error: "Security check required." };
-		}
-		const isValid = await dependencies.verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET_KEY);
-		if (!isValid) {
-			return { success: false, error: "Security check failed." };
-		}
+	if (!env.RESEND_API_KEY) {
+		logger.error("RESEND_API_KEY not configured", { route: "contact" });
+		return { success: false, error: "Email service not configured." };
 	}
 
-	// 4. Send Email
-	const timestamp = new Date().toLocaleString("en-US", {
-		weekday: "short",
-		year: "numeric",
-		month: "short",
-		day: "numeric",
-		hour: "2-digit",
-		minute: "2-digit",
-		timeZoneName: "short",
-	});
-
 	try {
-		if (!env.RESEND_API_KEY) {
-			logger.error("RESEND_API_KEY not configured", { route: "contact" });
-			return { success: false, error: "Email service not configured." };
-		}
-
-		// Render React email to HTML string
+		const timestamp = new Date().toLocaleString("en-US", {
+			weekday: "short",
+			year: "numeric",
+			month: "short",
+			day: "numeric",
+			hour: "2-digit",
+			minute: "2-digit",
+			timeZoneName: "short",
+		});
 		const emailHtml = await render(
 			ContactNotification({
 				name,
@@ -165,52 +210,14 @@ export async function submitContactForm(data: unknown): Promise<ContactFormState
 				timestamp,
 			})
 		);
-
-		// Send via direct API call with retry (avoids SDK bundling issues on Cloudflare Workers)
-		const emailParams = {
+		return await sendResendEmail({
 			apiKey: env.RESEND_API_KEY,
 			from: "alexmayhew.dev <noreply@alexmayhew.dev>",
 			to: env.CONTACT_EMAIL || "alex@alexmayhew.dev",
 			replyTo: email,
 			subject: `[INCOMING_TRANSMISSION] ${name} - ${formatProjectType(projectType)}`,
 			html: emailHtml,
-		};
-
-		const result = await withRetry(
-			async () => {
-				try {
-					const res = await dependencies.sendEmail(emailParams);
-					if (!res.success && res.error) {
-						const statusMatch = res.error.match(/^HTTP (5\d{2})/);
-						if (statusMatch) {
-							const err = new Error(`Resend ${statusMatch[1]}: ${res.error}`) as Error & {
-								status?: number;
-							};
-							err.status = Number(statusMatch[1]);
-							throw err;
-						}
-					}
-					return res;
-				} catch (err) {
-					// Normalize low-level fetch/network failures into a retryable shape.
-					if (err instanceof Error && !/^Resend /i.test(err.message)) {
-						throw new Error(`Resend network: ${err.message}`);
-					}
-					throw err;
-				}
-			},
-			{ shouldRetry: isRetryableError, delays: RETRY_DELAYS }
-		);
-
-		if (!result.success) {
-			logger.error("Resend API error", { route: "contact", error: String(result.error) });
-			return {
-				success: false,
-				error: "Failed to send message. Please try again or email alex@alexmayhew.dev directly.",
-			};
-		}
-
-		return { success: true };
+		});
 	} catch (err) {
 		logger.error("Contact form error", { route: "contact", error: String(err) });
 		return {
