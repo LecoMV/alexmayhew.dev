@@ -9,6 +9,7 @@ const SOCIAL_PROFILES = [
 	"https://www.linkedin.com/in/alexmmayhew",
 	"https://x.com/alexmayhewdev",
 	"https://bsky.app/profile/alexmayhewdev.bsky.social",
+	"https://dev.to/alexmayhewdev",
 ];
 
 export function JsonLd() {
