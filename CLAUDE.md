@@ -9,6 +9,9 @@
 - **Deploy:** OpenNext → Cloudflare Pages (GitHub Actions CI/CD)
 - **Aesthetic:** Neo-Brutalist, "Atmospheric Engineering"
 - **Pinned versions:** `next@^15.5.15`, `@opennextjs/cloudflare@^1.18.0` (update here whenever these change)
+- **Codex Pro x20 (locked 2026-05-03):** `gpt-5.5` + `xhigh` + `service_tier=fast` everywhere. Pattern A default (single-thread + Codex review at every gate, no subagents). See `AGENTS.md` for full Codex protocol.
+- **Multi-LLM content pipeline:** Gemini Deep Research → human evidence brief → Claude draft → Codex voice audit → Codex fact-check → human POV rewrite → schema. See `docs/research/multi-llm-content-workflow-2026-05-01.md`.
+- **Codebase indexed in Milvus** (claude-context, 649 files / 6,330 chunks): use `mcp__claude-context__search_code` for semantic queries instead of grep.
 
 ## Commands
 
@@ -63,24 +66,28 @@ src/app/                    # Pages (App Router)
 src/components/ui/          # Atomic components
 src/components/pages/       # Page-level components
 src/data/pseo/              # pSEO data layer (pages, tech, industries)
-content/blog/               # Blog posts (MDX) - 44 posts total
+content/blog/               # Blog posts (MDX) - 73 posts (5 hubs + 68 spokes)
 docs/                       # Implementation docs
+docs/research/              # Cross-session research (committed)
 .claude/rules/              # Modular Claude rules
+AGENTS.md                   # Codex auto-discovers — authoritative LLM rules
 ```
 
 ## Content Architecture (Hub-and-Spoke)
 
-5 hub guides + 39 spoke posts. Hub posts: `isHub: true`. Spoke posts: `series: "[cluster-name]"`.
+5 hub guides + 68 spoke posts. Hub posts: `isHub: true`. Spoke posts: `series: "[cluster-name]"`.
 
 | Hub                                    | Series Key                | Spokes |
 | -------------------------------------- | ------------------------- | ------ |
-| SaaS Architecture Decision Framework   | `saas-architecture`       | 11     |
-| Engineering Leadership: Founder to CTO | `engineering-leadership`  | 6      |
-| Modern Frontend Architecture           | `frontend-architecture`   | 8      |
-| Performance Engineering Playbook       | `performance-engineering` | 8      |
-| AI-Assisted Development Guide          | `ai-development`          | 6      |
+| SaaS Architecture Decision Framework   | `saas-architecture`       | 16     |
+| Engineering Leadership: Founder to CTO | `engineering-leadership`  | 11     |
+| Modern Frontend Architecture           | `frontend-architecture`   | 12     |
+| Performance Engineering Playbook       | `performance-engineering` | 11     |
+| AI-Assisted Development Guide          | `ai-development`          | 23     |
 
 See `docs/CONTENT_STATUS.md` for full inventory.
+
+**Distribution-First Sprint v2 active** (epic `vk-5ufs`) — content cadence is currently **paused** (D8) pending v2 framework codification (D11) and per-asset distribution checklist (D13). The `Content Operations` cadence below is deprecated until further notice.
 
 ## Credentials
 
@@ -89,24 +96,21 @@ See `docs/CONTENT_STATUS.md` for full inventory.
 pass show claude/groq/api-key           # Groq (Llama 3.3 70B, 14,400 req/day free)
 pass show claude/cloudflare/api-token   # Cloudflare Workers AI (already in wrangler)
 pass show claude/n8n/api-key            # n8n workflow automation
-
-# Newsletter (Listmonk — self-hosted at localhost:9000)
-pass show claude/listmonk/admin-password  # Listmonk admin + API password
-pass show claude/resend/api-key           # Resend SMTP (used by Listmonk)
+pass show claude/resend/api-key         # Resend SMTP (still used for transactional)
+# Newsletter migrated to Beehiiv 2026-04-30 — credentials in Beehiiv dashboard, not pass.
+# Postiz / Listmonk REMOVED — do not reference.
 ```
 
 ## Content Pipeline
 
 - **n8n Webhook:** `http://localhost:5678/webhook/content-repurpose` — see `docs/N8N_SETUP_GUIDE.md`
-- **LLM Stack:** Ollama + Gemma 2 9B (local), Groq API (cloud), n8n (automation) — see `docs/SELF_HOSTED_LLM_GUIDE.md`
+- **LLM Stack:** Ollama (qwen3:8b, qwen3-embedding:8b for claude-context) + Groq (cloud) + n8n + multi-LLM Claude/Codex/Gemini for high-value assets (Tier 1/4)
 
-## Content Operations
+## Content Operations (DEPRECATED — see Distribution-First Sprint above)
 
-**Cadence:** 2 blog posts/month + weekly newsletter + 4 LinkedIn/week (Mon-Thu) + 3 X tweets/week (Tue-Thu) + bi-weekly Dev.to.
+> The previous "2 blog posts/month + weekly newsletter + cross-platform" cadence is paused per Codex+research-validated v2 framework. New cadence is **evidence-limited, not LLM-limited**: hubs 2/mo if evidence ready, service pages 1-2/mo, monthly data notes, quarterly research flagship. Each asset ships only when its distribution checklist is filled. See `docs/CONTENT_FRAMEWORK.md` (in-progress, D11) and `docs/research/multi-llm-content-workflow-2026-05-01.md`.
 
-**Start here:** `docs/CONTENT_PLATFORM_REFERENCE.md` (master reference for all content work)
-
-**Quality gates:** Blog: `docs/BLOG_QUALITY_CHECKLIST.md` | Newsletter: `content/newsletter/QUALITY_CHECKLIST.md` | Voice: `docs/VOICE_GUIDE.md`
+**Quality gates:** Blog: `docs/BLOG_QUALITY_CHECKLIST.md` | Newsletter: `content/newsletter/QUALITY_CHECKLIST.md` | Voice: `docs/VOICE_GUIDE.md` (being split into drafting + adversarial-review checklist per D12)
 
 ## References
 
@@ -130,4 +134,4 @@ pass show claude/resend/api-key           # Resend SMTP (used by Listmonk)
 
 **Cross-Platform:** Same source, different voice. Never verbatim cross-post. See `docs/CROSS_PLATFORM_CONTENT_STRATEGY.md`.
 
-**Automation:** Postiz (`localhost:4007`), n8n (`localhost:5678`)
+**Automation:** n8n (`localhost:5678`). Postiz removed 2026-04-30 — social posting is currently manual or via another tool. Probe whatever is current before assuming.

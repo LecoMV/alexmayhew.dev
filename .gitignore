@@ -68,3 +68,8 @@ next-env.d.ts
 
 # Refactoring backups
 .refactor-backup/
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
