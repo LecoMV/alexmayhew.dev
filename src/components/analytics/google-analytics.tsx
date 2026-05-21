@@ -1,6 +1,6 @@
 import Script from "next/script";
 
-import { isDevelopment, publicEnv } from "@/lib/env";
+import { isProduction, publicEnv } from "@/lib/env";
 
 /**
  * Google Analytics 4 (GA4) via gtag.js
@@ -14,7 +14,7 @@ import { isDevelopment, publicEnv } from "@/lib/env";
 export function GoogleAnalytics() {
 	const measurementId = publicEnv.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
-	if (!measurementId || isDevelopment) {
+	if (!measurementId || !isProduction) {
 		return null;
 	}
 
