@@ -4,7 +4,13 @@
 		"description": "I've audited 40+ production APIs. These seven mistakes appear in 90% of them. Fix them now, or pay the price when you have 1000 integrators instead of 10.",
 		"slug": "rest-api-design-mistakes",
 		"category": "architecture",
-		"tags": ["api", "rest", "architecture", "backend", "best-practices"],
+		"tags": [
+			"api",
+			"rest",
+			"architecture",
+			"backend",
+			"best-practices"
+		],
 		"series": "saas-architecture"
 	},
 	{
@@ -12,7 +18,13 @@
 		"description": "Build accessibility into your design system from day one. Automated testing, ARIA patterns, focus management, components accessible by default.",
 		"slug": "accessibility-design-systems",
 		"category": "frontend",
-		"tags": ["accessibility", "a11y", "design-systems", "testing", "wcag"],
+		"tags": [
+			"accessibility",
+			"a11y",
+			"design-systems",
+			"testing",
+			"wcag"
+		],
 		"series": "frontend-architecture"
 	},
 	{
@@ -34,7 +46,13 @@
 		"description": "Use AI for code review without the blind spots. What LLMs excel at, where they fail, hybrid review workflows, and validating AI-generated code.",
 		"slug": "ai-code-review",
 		"category": "architecture",
-		"tags": ["ai", "code-review", "llm", "quality", "development"],
+		"tags": [
+			"ai",
+			"code-review",
+			"llm",
+			"quality",
+			"development"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -42,7 +60,13 @@
 		"description": "A practical framework for CTOs deciding between LLM APIs, self-hosted models, and fine-tuning. Includes break-even analysis and cost calculations.",
 		"slug": "ai-cost-optimization",
 		"category": "infrastructure",
-		"tags": ["ai", "llm", "cost-optimization", "infrastructure", "self-hosting"],
+		"tags": [
+			"ai",
+			"llm",
+			"cost-optimization",
+			"infrastructure",
+			"self-hosting"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -50,7 +74,14 @@
 		"description": "45% of AI-generated code has vulnerabilities. 7 production attack vectors from prompt injection to tool poisoning. The CTO's pre-ship checklist.",
 		"slug": "ai-security-red-team-playbook",
 		"category": "architecture",
-		"tags": ["ai", "security", "red-team", "mcp-security", "owasp", "llm-security"],
+		"tags": [
+			"ai",
+			"security",
+			"red-team",
+			"mcp-security",
+			"owasp",
+			"llm-security"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -58,7 +89,13 @@
 		"description": "AI tests tend to test implementation, not intent. 50% of QA leaders cite flaky scripts as the top AI testing challenge. The TDD pattern that works.",
 		"slug": "ai-tdd-non-deterministic-code",
 		"category": "engineering",
-		"tags": ["ai", "tdd", "testing", "code-quality", "developer-workflow"],
+		"tags": [
+			"ai",
+			"tdd",
+			"testing",
+			"code-quality",
+			"developer-workflow"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -66,7 +103,13 @@
 		"description": "A framework for integrating AI into software development. Covers code generation, LLM architecture, prompt engineering, cost optimization, and workflows.",
 		"slug": "ai-assisted-development-guide",
 		"category": "architecture",
-		"tags": ["ai", "llm", "code-generation", "prompt-engineering", "software-development"],
+		"tags": [
+			"ai",
+			"llm",
+			"code-generation",
+			"prompt-engineering",
+			"software-development"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -74,7 +117,12 @@
 		"description": "AI accelerates creation (55% faster) but increases defects (23.7% higher). Code churn is spiking. The verification-first workflow is essential.",
 		"slug": "ai-assisted-development-generative-debt",
 		"category": "business",
-		"tags": ["ai", "copilot", "technical-debt", "engineering"],
+		"tags": [
+			"ai",
+			"copilot",
+			"technical-debt",
+			"engineering"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -82,7 +130,13 @@
 		"description": "A technical deep-dive into architecting B2B SaaS that scales. Infrastructure economics, multi-tenant PostgreSQL, type-safe APIs, and the decisions that matter.",
 		"slug": "anatomy-of-high-precision-saas",
 		"category": "architecture",
-		"tags": ["architecture", "saas", "postgresql", "nextjs", "infrastructure"],
+		"tags": [
+			"architecture",
+			"saas",
+			"postgresql",
+			"nextjs",
+			"infrastructure"
+		],
 		"series": "saas-architecture"
 	},
 	{
@@ -90,7 +144,12 @@
 		"description": "Spring dynamics, damping ratios, and velocity preservation. Understanding the physics that makes animations feel natural.",
 		"slug": "atmospheric-animations-framer-motion",
 		"category": "frontend",
-		"tags": ["framer-motion", "animation", "react", "ux"],
+		"tags": [
+			"framer-motion",
+			"animation",
+			"react",
+			"ux"
+		],
 		"series": "frontend-architecture"
 	},
 	{
@@ -98,7 +157,12 @@
 		"description": "Work samples predict performance 3x better than years of experience. Here's how to hire developers when you can't afford bad hires.",
 		"slug": "technical-hiring-framework",
 		"category": "business",
-		"tags": ["hiring", "engineering-management", "startup", "technical-leadership"],
+		"tags": [
+			"hiring",
+			"engineering-management",
+			"startup",
+			"technical-leadership"
+		],
 		"series": "engineering-leadership"
 	},
 	{
@@ -106,7 +170,13 @@
 		"description": "Ship AI features that solve real problems, not AI for AI's sake. User research, build vs buy, measuring success, avoiding the AI feature graveyard.",
 		"slug": "building-ai-features-users-want",
 		"category": "business",
-		"tags": ["ai", "product", "strategy", "features", "ux"],
+		"tags": [
+			"ai",
+			"product",
+			"strategy",
+			"features",
+			"ux"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -114,7 +184,13 @@
 		"description": "The order you hire your first 5 engineers determines startup velocity for 2 years. The sequence that works, based on 15+ startup advisory engagements.",
 		"slug": "first-engineering-team-playbook",
 		"category": "business",
-		"tags": ["hiring", "startups", "engineering-management", "team-building", "leadership"],
+		"tags": [
+			"hiring",
+			"startups",
+			"engineering-management",
+			"team-building",
+			"leadership"
+		],
 		"series": "engineering-leadership"
 	},
 	{
@@ -122,7 +198,13 @@
 		"description": "Everyone knows caching improves performance. Few implement it correctly. The multi-layer architecture and invalidation strategies that avoid stale data.",
 		"slug": "caching-strategies-production",
 		"category": "infrastructure",
-		"tags": ["caching", "redis", "cdn", "performance", "saas"],
+		"tags": [
+			"caching",
+			"redis",
+			"cdn",
+			"performance",
+			"saas"
+		],
 		"series": "performance-engineering"
 	},
 	{
@@ -130,7 +212,13 @@
 		"description": "A configured CDN cuts origin load 90%+ and TTFB from 800ms to 50ms. The caching strategy that works without serving stale data to users.",
 		"slug": "cdn-caching-strategy",
 		"category": "infrastructure",
-		"tags": ["cdn", "caching", "performance", "infrastructure", "cloudflare"],
+		"tags": [
+			"cdn",
+			"caching",
+			"performance",
+			"infrastructure",
+			"cloudflare"
+		],
 		"series": "performance-engineering"
 	},
 	{
@@ -138,7 +226,14 @@
 		"description": "Not a feature matrix. Total cost across licensing, tokens, adoption, training, and productivity delta from running both on a 10-person team.",
 		"slug": "claude-code-vs-cursor-cost-analysis",
 		"category": "business",
-		"tags": ["ai", "claude-code", "cursor", "developer-tools", "cost-analysis", "cto"],
+		"tags": [
+			"ai",
+			"claude-code",
+			"cursor",
+			"developer-tools",
+			"cost-analysis",
+			"cto"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -160,7 +255,13 @@
 		"description": "Cognitive debt compounds faster than technical debt. When engineers don't understand AI-generated code, teams lose the ability to reason about the system.",
 		"slug": "cognitive-debt-ai-teams",
 		"category": "business",
-		"tags": ["ai", "cognitive-debt", "technical-debt", "engineering-leadership", "code-quality"],
+		"tags": [
+			"ai",
+			"cognitive-debt",
+			"technical-debt",
+			"engineering-leadership",
+			"code-quality"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -168,7 +269,13 @@
 		"description": "Design component APIs developers love. Prop design, variant patterns, compound components, and APIs that scale from simple to complex customization.",
 		"slug": "component-api-design",
 		"category": "frontend",
-		"tags": ["react", "design-systems", "components", "api-design", "typescript"],
+		"tags": [
+			"react",
+			"design-systems",
+			"components",
+			"api-design",
+			"typescript"
+		],
 		"series": "frontend-architecture"
 	},
 	{
@@ -176,7 +283,13 @@
 		"description": "CWV thresholds haven't changed but measurement has. The 2026 audit checklist with INP replacing FID, field data strategies, and real optimizations.",
 		"slug": "core-web-vitals-2026-audit",
 		"category": "frontend",
-		"tags": ["performance", "core-web-vitals", "seo", "inp", "lighthouse"],
+		"tags": [
+			"performance",
+			"core-web-vitals",
+			"seo",
+			"inp",
+			"lighthouse"
+		],
 		"series": "performance-engineering"
 	},
 	{
@@ -184,7 +297,13 @@
 		"description": "Core Web Vitals are a ranking factor, but more importantly they correlate with conversion. How to hit green scores without sacrificing functionality.",
 		"slug": "core-web-vitals-optimization",
 		"category": "frontend",
-		"tags": ["performance", "core-web-vitals", "nextjs", "frontend", "seo"],
+		"tags": [
+			"performance",
+			"core-web-vitals",
+			"nextjs",
+			"frontend",
+			"seo"
+		],
 		"series": "performance-engineering"
 	},
 	{
@@ -192,7 +311,13 @@
 		"description": "Most SaaS teams treat DB migrations as a deploy step. They're an architecture decision. Pattern comparison, rollback, and zero-downtime playbook.",
 		"slug": "database-migration-patterns",
 		"category": "infrastructure",
-		"tags": ["database", "migrations", "saas", "postgresql", "zero-downtime"],
+		"tags": [
+			"database",
+			"migrations",
+			"saas",
+			"postgresql",
+			"zero-downtime"
+		],
 		"series": "performance-engineering"
 	},
 	{
@@ -200,7 +325,13 @@
 		"description": "I've seen N+1 queries turn a 50ms page load into 5 seconds. Here's the systematic approach to finding and fixing the queries that will kill your SaaS at scale.",
 		"slug": "database-query-optimization",
 		"category": "architecture",
-		"tags": ["postgresql", "prisma", "performance", "database", "optimization"],
+		"tags": [
+			"postgresql",
+			"prisma",
+			"performance",
+			"database",
+			"optimization"
+		],
 		"series": "saas-architecture"
 	},
 	{
@@ -208,7 +339,13 @@
 		"description": "Most design token systems stop at colors. A complete system covers typography, spacing, elevation, animation, and breakpoints for design-to-code sync.",
 		"slug": "design-tokens-comprehensive",
 		"category": "frontend",
-		"tags": ["design-systems", "design-tokens", "tailwind", "figma", "frontend"],
+		"tags": [
+			"design-systems",
+			"design-tokens",
+			"tailwind",
+			"figma",
+			"frontend"
+		],
 		"series": "frontend-architecture"
 	},
 	{
@@ -216,7 +353,12 @@
 		"description": "Your team has docs. Nobody reads them. The 4 documentation types engineers actually use, with templates and maintenance that keeps docs accurate.",
 		"slug": "documentation-engineers-read",
 		"category": "business",
-		"tags": ["documentation", "engineering-culture", "developer-experience", "leadership"],
+		"tags": [
+			"documentation",
+			"engineering-culture",
+			"developer-experience",
+			"leadership"
+		],
 		"series": "engineering-leadership"
 	},
 	{
@@ -224,7 +366,13 @@
 		"description": "Edge computing promises sub-50ms latency worldwide. It also delivers config nightmares and consistency puzzles. The decision framework for real ROI.",
 		"slug": "edge-computing-saas",
 		"category": "infrastructure",
-		"tags": ["edge-computing", "performance", "cloudflare", "latency", "saas"],
+		"tags": [
+			"edge-computing",
+			"performance",
+			"cloudflare",
+			"latency",
+			"saas"
+		],
 		"series": "performance-engineering"
 	},
 	{
@@ -232,7 +380,13 @@
 		"description": "A guide to engineering leadership from solo founder to CTO leading 50+ engineers. Hiring, team structure, technical debt, and the IC-to-exec transition.",
 		"slug": "engineering-leadership-founder-to-cto",
 		"category": "business",
-		"tags": ["leadership", "cto", "hiring", "engineering-management", "startups"],
+		"tags": [
+			"leadership",
+			"cto",
+			"hiring",
+			"engineering-management",
+			"startups"
+		],
 		"series": "engineering-leadership"
 	},
 	{
@@ -240,7 +394,13 @@
 		"description": "Most SaaS teams adopt event-driven architecture too early or too late. Decision framework, pattern comparison, and cost analysis for the right timing.",
 		"slug": "event-driven-architecture-saas",
 		"category": "architecture",
-		"tags": ["architecture", "saas", "event-driven", "kafka", "microservices"],
+		"tags": [
+			"architecture",
+			"saas",
+			"event-driven",
+			"kafka",
+			"microservices"
+		],
 		"series": "saas-architecture"
 	},
 	{
@@ -248,7 +408,13 @@
 		"description": "A full-time CTO costs $300-500K+ annually. A fractional CTO costs $5-15K/month. The decision isn't about money, it's about what your startup needs now.",
 		"slug": "fractional-cto-vs-full-time",
 		"category": "business",
-		"tags": ["startups", "leadership", "cto", "hiring", "strategy"],
+		"tags": [
+			"startups",
+			"leadership",
+			"cto",
+			"hiring",
+			"strategy"
+		],
 		"series": "engineering-leadership"
 	},
 	{
@@ -256,7 +422,13 @@
 		"description": "The best tech leads don't wait for the promotion. They lead through architecture decisions, code review, and unblocking the team. How to transition.",
 		"slug": "ic-to-tech-lead",
 		"category": "business",
-		"tags": ["leadership", "career", "engineering-management", "tech-lead", "growth"],
+		"tags": [
+			"leadership",
+			"career",
+			"engineering-management",
+			"tech-lead",
+			"growth"
+		],
 		"series": "engineering-leadership"
 	},
 	{
@@ -264,7 +436,13 @@
 		"description": "AI engineer salaries hit $206K average in 2025, up $50K YoY. 90% of companies created AI roles. What to look for, and what sounds impressive but isn't.",
 		"slug": "hiring-ai-engineers",
 		"category": "business",
-		"tags": ["ai", "hiring", "ai-engineer", "engineering-leadership", "talent"],
+		"tags": [
+			"ai",
+			"hiring",
+			"ai-engineer",
+			"engineering-leadership",
+			"talent"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -272,7 +450,13 @@
 		"description": "Staff engineer is the most misunderstood role in SaaS. Teams hire too early, wrong skills, or a title without a mandate. When, what, and how to succeed.",
 		"slug": "hiring-first-staff-engineer",
 		"category": "business",
-		"tags": ["hiring", "staff-engineer", "leadership", "engineering-culture", "saas"],
+		"tags": [
+			"hiring",
+			"staff-engineer",
+			"leadership",
+			"engineering-culture",
+			"saas"
+		],
 		"series": "engineering-leadership"
 	},
 	{
@@ -280,7 +464,12 @@
 		"description": "Memory leaks are systematic, not mystical. This guide provides the methodology and tools to find and fix them.",
 		"slug": "nodejs-memory-leaks",
 		"category": "infrastructure",
-		"tags": ["nodejs", "debugging", "performance", "devops"],
+		"tags": [
+			"nodejs",
+			"debugging",
+			"performance",
+			"devops"
+		],
 		"series": "performance-engineering"
 	},
 	{
@@ -288,7 +477,13 @@
 		"description": "Most SaaS teams don't have an incident response process until they need one at 3 AM during an outage. The playbook to implement before the crisis hits.",
 		"slug": "incident-response-saas",
 		"category": "business",
-		"tags": ["incident-response", "saas", "operations", "on-call", "leadership"],
+		"tags": [
+			"incident-response",
+			"saas",
+			"operations",
+			"on-call",
+			"leadership"
+		],
 		"series": "engineering-leadership"
 	},
 	{
@@ -296,7 +491,13 @@
 		"description": "Your AI feature costs $0.03/query. At 100K queries/day, that's $90K/year. Tiered model strategy, caching, and prompts that cut costs 60-80%.",
 		"slug": "llm-cost-optimization-scale",
 		"category": "infrastructure",
-		"tags": ["llm", "ai", "cost-optimization", "saas", "caching"],
+		"tags": [
+			"llm",
+			"ai",
+			"cost-optimization",
+			"saas",
+			"caching"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -304,7 +505,13 @@
 		"description": "Build production AI features without hype. Vector database selection, RAG architecture, embedding strategies, and infrastructure for reliable LLMs.",
 		"slug": "llm-integration-architecture",
 		"category": "architecture",
-		"tags": ["ai", "llm", "vector-database", "rag", "architecture"],
+		"tags": [
+			"ai",
+			"llm",
+			"vector-database",
+			"rag",
+			"architecture"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -312,7 +519,13 @@
 		"description": "A comprehensive guide to frontend architecture covering design systems, component patterns, CSS strategy, state management, and React Server Components.",
 		"slug": "modern-frontend-architecture",
 		"category": "frontend",
-		"tags": ["react", "design-systems", "server-components", "css", "frontend-architecture"],
+		"tags": [
+			"react",
+			"design-systems",
+			"server-components",
+			"css",
+			"frontend-architecture"
+		],
 		"series": "frontend-architecture"
 	},
 	{
@@ -320,7 +533,13 @@
 		"description": "Scale SaaS globally without compliance nightmares. Data residency requirements, replication strategies, latency optimization, and architecture patterns.",
 		"slug": "multi-region-saas-architecture",
 		"category": "architecture",
-		"tags": ["architecture", "saas", "multi-region", "compliance", "scaling"],
+		"tags": [
+			"architecture",
+			"saas",
+			"multi-region",
+			"compliance",
+			"scaling"
+		],
 		"series": "saas-architecture"
 	},
 	{
@@ -328,7 +547,13 @@
 		"description": "Row-Level Security isn't just for security... it's an architectural pattern that simplifies code and makes tenant isolation bulletproof.",
 		"slug": "multi-tenancy-prisma-rls",
 		"category": "architecture",
-		"tags": ["postgresql", "prisma", "multi-tenancy", "security", "saas"],
+		"tags": [
+			"postgresql",
+			"prisma",
+			"multi-tenancy",
+			"security",
+			"saas"
+		],
 		"series": "saas-architecture"
 	},
 	{
@@ -336,7 +561,12 @@
 		"description": "Hard shadows, thick borders, bold colors. A technical guide to implementing neo-brutalist aesthetics with Tailwind CSS.",
 		"slug": "neo-brutalism-developer-guide",
 		"category": "frontend",
-		"tags": ["design", "tailwind", "css", "aesthetics"],
+		"tags": [
+			"design",
+			"tailwind",
+			"css",
+			"aesthetics"
+		],
 		"series": "frontend-architecture"
 	},
 	{
@@ -344,7 +574,12 @@
 		"description": "Update the UI immediately, sync in the background, rollback on failure. The 'lie' that creates the best user experience.",
 		"slug": "optimistic-ui",
 		"category": "frontend",
-		"tags": ["react", "ux", "performance", "frontend"],
+		"tags": [
+			"react",
+			"ux",
+			"performance",
+			"frontend"
+		],
 		"series": "frontend-architecture"
 	},
 	{
@@ -352,7 +587,13 @@
 		"description": "A framework for web performance from server response to user interaction. Core Web Vitals, database optimization, edge computing, and scaling strategies.",
 		"slug": "performance-engineering-playbook",
 		"category": "architecture",
-		"tags": ["performance", "core-web-vitals", "optimization", "scaling", "infrastructure"],
+		"tags": [
+			"performance",
+			"core-web-vitals",
+			"optimization",
+			"scaling",
+			"infrastructure"
+		],
 		"series": "performance-engineering"
 	},
 	{
@@ -360,7 +601,13 @@
 		"description": "97M monthly SDK downloads, 8,600 community servers, most fail in production. The engineering they skipped: auth, rate limiting, observability, security.",
 		"slug": "production-mcp-servers",
 		"category": "architecture",
-		"tags": ["ai", "mcp", "model-context-protocol", "security", "production-engineering"],
+		"tags": [
+			"ai",
+			"mcp",
+			"model-context-protocol",
+			"security",
+			"production-engineering"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -368,7 +615,13 @@
 		"description": "Move beyond trial-and-error prompting. Structured prompt design, few-shot patterns, chain-of-thought reasoning, and prompts that produce consistent results.",
 		"slug": "prompt-engineering-developers",
 		"category": "architecture",
-		"tags": ["ai", "prompt-engineering", "llm", "development", "productivity"],
+		"tags": [
+			"ai",
+			"prompt-engineering",
+			"llm",
+			"development",
+			"productivity"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -376,7 +629,13 @@
 		"description": "RAG turns product data into an AI feature. Most fail on retrieval quality, not generation. Chunking, embeddings, and hybrid search that beats pure vectors.",
 		"slug": "rag-architecture-saas",
 		"category": "architecture",
-		"tags": ["rag", "ai", "vector-database", "saas", "llm"],
+		"tags": [
+			"rag",
+			"ai",
+			"vector-database",
+			"saas",
+			"llm"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -384,7 +643,13 @@
 		"description": "Your monitoring dashboard says everything is fine. Customers say the app is slow. Why the gap exists and how to catch degradation before users notice.",
 		"slug": "real-time-performance-monitoring",
 		"category": "infrastructure",
-		"tags": ["monitoring", "observability", "performance", "saas", "metrics"],
+		"tags": [
+			"monitoring",
+			"observability",
+			"performance",
+			"saas",
+			"metrics"
+		],
 		"series": "performance-engineering"
 	},
 	{
@@ -392,7 +657,12 @@
 		"description": "React Server Components + Edge computing collapse traditional data fetching waterfalls into parallel streams. The SPA era is ending.",
 		"slug": "rsc-edge-death-of-waterfall",
 		"category": "architecture",
-		"tags": ["react", "next.js", "performance", "edge-computing"],
+		"tags": [
+			"react",
+			"next.js",
+			"performance",
+			"edge-computing"
+		],
 		"series": "performance-engineering"
 	},
 	{
@@ -400,7 +670,13 @@
 		"description": "A guide to SaaS architecture decisions at each stage of growth. Multi-tenancy, deployment models, cost optimization, and migration strategies from MVP to scale.",
 		"slug": "saas-architecture-decision-framework",
 		"category": "architecture",
-		"tags": ["saas", "architecture", "multi-tenancy", "scaling", "infrastructure"],
+		"tags": [
+			"saas",
+			"architecture",
+			"multi-tenancy",
+			"scaling",
+			"infrastructure"
+		],
 		"series": "saas-architecture"
 	},
 	{
@@ -408,7 +684,13 @@
 		"description": "Billing is where SaaS architecture has direct revenue impact. Stripe integration with webhook state machines, idempotent payments, and lifecycle patterns.",
 		"slug": "saas-billing-stripe-architecture",
 		"category": "architecture",
-		"tags": ["billing", "stripe", "saas", "architecture", "subscriptions"],
+		"tags": [
+			"billing",
+			"stripe",
+			"saas",
+			"architecture",
+			"subscriptions"
+		],
 		"series": "saas-architecture"
 	},
 	{
@@ -416,7 +698,13 @@
 		"description": "99.9% uptime means 8.7 hours downtime per year. 99.99% means 52 minutes. The observability infrastructure to get there without burning out the team.",
 		"slug": "saas-reliability-monitoring",
 		"category": "infrastructure",
-		"tags": ["observability", "monitoring", "sre", "devops", "infrastructure"],
+		"tags": [
+			"observability",
+			"monitoring",
+			"sre",
+			"devops",
+			"infrastructure"
+		],
 		"series": "saas-architecture"
 	},
 	{
@@ -424,7 +712,12 @@
 		"description": "A $200/hr senior often costs less than a $30/hr junior when you factor in code quality, bug rates, and the exponential cost of fixing production defects.",
 		"slug": "senior-developer-paradox",
 		"category": "business",
-		"tags": ["hiring", "engineering-management", "technical-leadership", "economics"],
+		"tags": [
+			"hiring",
+			"engineering-management",
+			"technical-leadership",
+			"economics"
+		],
 		"series": "engineering-leadership"
 	},
 	{
@@ -432,7 +725,13 @@
 		"description": "Most startups think SOC 2 is a 6-month project. It's not. The engineering-focused roadmap that gets you compliant in 90 days without a compliance team.",
 		"slug": "soc2-compliance-startup-roadmap",
 		"category": "infrastructure",
-		"tags": ["security", "compliance", "soc2", "startups", "architecture"],
+		"tags": [
+			"security",
+			"compliance",
+			"soc2",
+			"startups",
+			"architecture"
+		],
 		"series": "saas-architecture"
 	},
 	{
@@ -440,7 +739,13 @@
 		"description": "State management fragmented again. Zustand dominates, signals are rising, server state handles what Redux did. What to use when, with the decision framework.",
 		"slug": "state-management-2026",
 		"category": "frontend",
-		"tags": ["state-management", "react", "zustand", "signals", "frontend"],
+		"tags": [
+			"state-management",
+			"react",
+			"zustand",
+			"signals",
+			"frontend"
+		],
 		"series": "frontend-architecture"
 	},
 	{
@@ -448,7 +753,13 @@
 		"description": "The AI coding discourse is split between two wrong camps. One says AI builds nothing real. The other says anyone ships overnight. Here's what it takes.",
 		"slug": "ai-assisted-development-reality",
 		"category": "engineering",
-		"tags": ["ai", "claude-code", "software-development", "vibe-coding", "engineering"],
+		"tags": [
+			"ai",
+			"claude-code",
+			"software-development",
+			"vibe-coding",
+			"engineering"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -456,7 +767,12 @@
 		"description": "Bundle size, runtime overhead, and the customization cliff. When to use Tailwind, when to use component libraries, and why shadcn/ui changed the game.",
 		"slug": "tailwind-vs-component-libraries",
 		"category": "frontend",
-		"tags": ["tailwind", "css", "react", "performance"],
+		"tags": [
+			"tailwind",
+			"css",
+			"react",
+			"performance"
+		],
 		"series": "frontend-architecture"
 	},
 	{
@@ -464,7 +780,12 @@
 		"description": "Your tech stack is a capital asset with TCO, liquidity profile, and depreciation schedule. Treat it like an investment, not a preference.",
 		"slug": "tech-stack-capital-allocation",
 		"category": "business",
-		"tags": ["architecture", "startup", "technical-leadership", "strategy"],
+		"tags": [
+			"architecture",
+			"startup",
+			"technical-leadership",
+			"strategy"
+		],
 		"series": "saas-architecture"
 	},
 	{
@@ -472,7 +793,13 @@
 		"description": "Technical debt isn't bad, it's strategic leverage. The problem: most teams accumulate accidentally and pay down randomly. The framework that works.",
 		"slug": "technical-debt-strategy",
 		"category": "business",
-		"tags": ["technical-debt", "engineering-management", "architecture", "strategy", "startups"],
+		"tags": [
+			"technical-debt",
+			"engineering-management",
+			"architecture",
+			"strategy",
+			"startups"
+		],
 		"series": "engineering-leadership"
 	},
 	{
@@ -480,7 +807,13 @@
 		"description": "RSC breaks every testing pattern from the past 5 years. No jsdom, render(), or user events. The testing architecture for async, streaming, and hybrid models.",
 		"slug": "testing-react-server-components",
 		"category": "frontend",
-		"tags": ["react", "testing", "server-components", "next-js", "frontend"],
+		"tags": [
+			"react",
+			"testing",
+			"server-components",
+			"next-js",
+			"frontend"
+		],
 		"series": "frontend-architecture"
 	},
 	{
@@ -488,7 +821,13 @@
 		"description": "A Series A startup was about to migrate to microservices. Here's why I told them to stop, what we did instead, and the six months of engineering time we saved.",
 		"slug": "500k-architecture-mistake",
 		"category": "architecture",
-		"tags": ["architecture", "microservices", "startups", "monolith", "war-stories"],
+		"tags": [
+			"architecture",
+			"microservices",
+			"startups",
+			"monolith",
+			"war-stories"
+		],
 		"series": "saas-architecture"
 	},
 	{
@@ -496,7 +835,13 @@
 		"description": "$1.5T projected AI technical debt by 2027. GitClear: 60% decline in refactoring, 8x copy-paste code. The audit checklist and remediation playbook.",
 		"slug": "ai-technical-debt-bomb",
 		"category": "business",
-		"tags": ["ai", "technical-debt", "code-quality", "engineering-leadership", "cto"],
+		"tags": [
+			"ai",
+			"technical-debt",
+			"code-quality",
+			"engineering-leadership",
+			"cto"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -504,7 +849,12 @@
 		"description": "Open source is free software, not free solutions. Engineering time is your most expensive resource.",
 		"slug": "build-vs-buy",
 		"category": "business",
-		"tags": ["architecture", "startup", "technical-leadership", "strategy"],
+		"tags": [
+			"architecture",
+			"startup",
+			"technical-leadership",
+			"strategy"
+		],
 		"series": "saas-architecture"
 	},
 	{
@@ -512,7 +862,12 @@
 		"description": "Design tokens, Code Connect, and visual regression testing transform the 'handoff' from a relay race into continuous synchronization.",
 		"slug": "designer-developer-handoff",
 		"category": "frontend",
-		"tags": ["design-systems", "figma", "frontend", "workflow"],
+		"tags": [
+			"design-systems",
+			"figma",
+			"frontend",
+			"workflow"
+		],
 		"series": "frontend-architecture"
 	},
 	{
@@ -520,7 +875,14 @@
 		"description": "30%+ of enterprise AI projects die after POC. Only 3.1% of devs trust AI output. Going from 'people use Copilot' to a real AI practice needs 5 gates.",
 		"slug": "enterprise-ai-sdlc-blueprint",
 		"category": "business",
-		"tags": ["ai", "enterprise", "sdlc", "governance", "compliance", "engineering-leadership"],
+		"tags": [
+			"ai",
+			"enterprise",
+			"sdlc",
+			"governance",
+			"compliance",
+			"engineering-leadership"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -528,7 +890,13 @@
 		"description": "Every SaaS team says \"we''ll support both\" databases, auth, or deploy targets. The hidden cost: 2x testing, 2x docs, and bugs in one configuration.",
 		"slug": "hidden-tax-supporting-both",
 		"category": "business",
-		"tags": ["architecture", "saas", "technical-debt", "decision-making", "strategy"],
+		"tags": [
+			"architecture",
+			"saas",
+			"technical-debt",
+			"decision-making",
+			"strategy"
+		],
 		"series": "saas-architecture"
 	},
 	{
@@ -536,7 +904,12 @@
 		"description": "Cold starts add 100-500ms+ to user requests. Know when serverless helps and when it hurts... the math might surprise you.",
 		"slug": "lambda-tax-cold-starts",
 		"category": "infrastructure",
-		"tags": ["serverless", "aws", "performance", "devops"],
+		"tags": [
+			"serverless",
+			"aws",
+			"performance",
+			"devops"
+		],
 		"series": "performance-engineering"
 	},
 	{
@@ -544,7 +917,13 @@
 		"description": "A randomized controlled trial showed experienced devs were 19% slower with AI while believing they were 24% faster. The perception gap is the danger.",
 		"slug": "metr-paradox-ai-productivity",
 		"category": "business",
-		"tags": ["ai", "developer-productivity", "metr-study", "engineering-leadership", "ai-tools"],
+		"tags": [
+			"ai",
+			"developer-productivity",
+			"metr-study",
+			"engineering-leadership",
+			"ai-tools"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -552,7 +931,14 @@
 		"description": "89% of CTOs report production disasters from AI code. Year 2 maintenance costs 4x traditional. Shipped fast, nobody understands it. Triage and remediation.",
 		"slug": "vibe-coding-hangover-recovery",
 		"category": "business",
-		"tags": ["ai", "vibe-coding", "technical-debt", "code-quality", "cto", "remediation"],
+		"tags": [
+			"ai",
+			"vibe-coding",
+			"technical-debt",
+			"code-quality",
+			"cto",
+			"remediation"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -560,7 +946,12 @@
 		"description": "15-38% of bugs preventable with types. Faster refactoring, better onboarding, fearless code changes. The ROI of TypeScript is measurable.",
 		"slug": "typescript-business-case",
 		"category": "architecture",
-		"tags": ["typescript", "javascript", "productivity", "engineering"],
+		"tags": [
+			"typescript",
+			"javascript",
+			"productivity",
+			"engineering"
+		],
 		"series": "frontend-architecture"
 	},
 	{
@@ -568,7 +959,13 @@
 		"description": "Every SaaS adding AI faces the vector DB decision. pgvector, Pinecone, or Qdrant? The framework based on data scale, query patterns, and team capacity.",
 		"slug": "vector-database-selection",
 		"category": "architecture",
-		"tags": ["vector-database", "ai", "postgresql", "pgvector", "saas"],
+		"tags": [
+			"vector-database",
+			"ai",
+			"postgresql",
+			"pgvector",
+			"saas"
+		],
 		"series": "ai-development"
 	},
 	{
@@ -584,7 +981,12 @@
 		"description": "The highest-performing tech companies built on 'boring' technology and only migrated when they had data proving they needed to.",
 		"slug": "boring-technology-wins",
 		"category": "business",
-		"tags": ["architecture", "technical-leadership", "strategy", "startup"],
+		"tags": [
+			"architecture",
+			"technical-leadership",
+			"strategy",
+			"startup"
+		],
 		"series": "saas-architecture"
 	},
 	{
@@ -592,7 +994,12 @@
 		"description": "Stop over-engineering your MVP. Here's the minimum viable architecture to reach $10k MRR before you need to worry about scale.",
 		"slug": "zero-to-10k-mrr-saas-playbook",
 		"category": "business",
-		"tags": ["saas", "architecture", "bootstrapping", "startup"],
+		"tags": [
+			"saas",
+			"architecture",
+			"bootstrapping",
+			"startup"
+		],
 		"series": "saas-architecture"
 	}
 ]

@@ -15,6 +15,7 @@ dist/
 # Generated
 cloudflare-env.d.ts
 next-env.d.ts
+src/data/blog-index.json
 
 # Package manager
 package-lock.json
