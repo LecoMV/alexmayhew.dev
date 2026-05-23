@@ -73,3 +73,17 @@ next-env.d.ts
 .dolt/
 *.db
 .beads-credential-key
+
+# Local Claude Code dev artifacts (per-machine, not committed)
+/.claude/agents/
+/.claude/agent-memory/
+/.claude/tdd-guard/
+
+# Deployment health-check log (runtime artifact)
+/.health-check.json
+
+# Personal analytics scratch scripts (credentials live off-repo at /tmp/aeo-audit/sa.json)
+# Move to /scripts/ and remove these lines if you want them versioned.
+/ga4-query.mjs
+/gsc-query.mjs
+/gsc-extra.mjs
