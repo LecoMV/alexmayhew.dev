@@ -21,7 +21,7 @@ Act as a Principal Software Engineer. Your goal is **Operational Resiliency**, *
 - **Server Actions for Mutations:** Use React 19 Server Actions for form submissions and data mutations. Avoid `useEffect` for data fetching — use async Server Components instead.
 - **Edge Compatibility:** All runtime code must be compatible with Cloudflare Workers (`nodejs_compat`). Do not use `fs` or `path` in runtime code.
 - **Component Hygiene:** Separate logic (hooks) from view (JSX). Keep components pure where possible.
-- **External API Types:** All external API responses (Postiz, n8n, Listmonk) must be typed via Zod schemas. No untyped `fetch` responses.
+- **External API Types:** All external API responses (n8n, Beehiiv, Resend, Cloudflare KV REST) must be typed via Zod schemas. No untyped `fetch` responses. (Postiz / Listmonk REMOVED 2026-04-30 — do not reference.)
 - **Semantic HTML:** Use `<main>`, `<section>`, `<article>`, `<nav>` — not div soup.
 - **No Fluff Comments:** Comment only the _WHY_, not the _WHAT_. No `// loop through items` noise.
 - **Function Length:** If a function exceeds 50 lines, refactor it.
@@ -34,9 +34,8 @@ Act as a Principal Software Engineer. Your goal is **Operational Resiliency**, *
 
 ## **Infrastructure (Bash / Systemd)**
 
-- **DB Queries:** Use `db()` function pattern — never `eval "$DB_CMD"`. Table names are capitalized and quoted: `"Post"`, `"Integration"`. States are UPPERCASE: `QUEUE`, `PUBLISHED`, `DRAFT`, `ERROR`.
-- **SQL in Bash:** Single-line queries with `\"Post\"` escaping. Multi-line SQL inside `db "..."` breaks quoting.
 - **Error Handling:** No bare `set -euo pipefail` in scripts that call external commands with expected failures. Handle exit codes explicitly.
+- **Postiz infrastructure rules REMOVED** — quadlets purged 2026-04-30 to `~/disabled-services/postiz-2026-04-30/`. No Postiz DB, no `db()` pattern, no Temporal dependencies. The `Post`/`Integration` tables and `QUEUE`/`PUBLISHED`/`DRAFT` states no longer exist on this host.
 
 ## **Design System**
 
@@ -50,13 +49,16 @@ Act as a Principal Software Engineer. Your goal is **Operational Resiliency**, *
 
 - **Database:**
   - NEVER execute destructive SQL (DROP, TRUNCATE, DELETE without WHERE) without prompting for a backup check first.
-  - ALWAYS verify table names and column casing against actual Postiz schema before running queries.
 - **Deployment:**
-  - NEVER deploy manually. Push to GitHub — Actions handles typecheck → lint → build → deploy.
+  - NEVER deploy manually. Push to GitHub — Actions handles typecheck → lint → build → deploy → health → smoke.
   - ALWAYS run `npm run build` before pushing to verify the build passes locally.
-- **Temporal:**
-  - Changing `publishDate` in the Post table does NOT prevent Temporal from firing. To stop a post: change state to `DRAFT`.
-  - NEVER restart Postiz without running `postiz-safe-start` first (handled automatically by systemd ExecStartPre).
+  - Branches >20 commits ahead of main warrant a Codex `audit-review` pass on the full diff before merge (DORA discipline locked 2026-05-01 after the 86-commit `audit-sprint-1-p0-fixes` near-miss).
+- **Risk-path edits — Codex review MANDATORY before "done":**
+  - `src/auth/**`, `src/billing/**`, `**/migrations/**`, `**/.env*`, `**/secrets/**`, `infra/**`, `**/deploy/**`, `**/policy/**`
+  - Schema changes (`src/data/pseo/types.ts`, `JsonLd*` components, sitemap generators)
+  - CSP/security headers (`src/middleware.ts`, `custom-worker.js`)
+  - `.github/workflows/*` deploy/secret/CI-gate changes
+  - Run: `git diff origin/main..HEAD | codex exec --profile audit-review`
 - **Security:**
   - No hardcoded secrets. Use `pass show claude/<service>/key` for all credentials.
   - Never commit `.env` files, credentials, or API keys.
@@ -72,7 +74,17 @@ npx vitest run         # All tests pass
 
 NEVER commit if either fails. NEVER claim work is "done" until both pass.
 
-## Before Every Push
+## Before Every Push (Codex review gate — Pro x20 era)
+
+For non-trivial changes (anything beyond typo / doc-only):
+
+```bash
+codex review --uncommitted --profile code-review
+# OR for full branch vs main:
+git diff origin/main..HEAD | codex exec --profile audit-review
+```
+
+Codex (GPT-5.5 xhigh) reads the actual diff and flags issues Claude misses. Address findings before push. This is the cross-model audit — Pattern A locked 2026-05-03.
 
 - Verify the build passes locally — CI has stricter rules than local dev
 - Run full lint — CI catches `no-require-imports`, `exhaustive-deps`, `no-unused-expressions` that tests don't

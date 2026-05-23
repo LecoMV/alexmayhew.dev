@@ -6,7 +6,8 @@
 
 - **Domain:** alexmayhew.dev
 - **Stack:** Next.js 15 + React 19 + Tailwind 4 + Framer Motion
-- **Deploy:** OpenNext → Cloudflare Pages (GitHub Actions CI/CD)
+- **Deploy:** OpenNext → Cloudflare Workers (with Static Assets), GitHub Actions CI/CD. **Cloudflare Pages is in maintenance** — new docs recommend Workers Static Assets as of 2026. Migration guide: `docs/research/cloudflare-workers-opennext-stack-2026-05-21.md`.
+- **Known deploy issue (2026-05-21):** `npx opennextjs-cloudflare deploy` calls `getPlatformProxy()` with `remoteBindings: true` (wrangler default since 2025-06-25), which hits `/workers/subdomain/edge-preview` — an endpoint that rejects all standard CI-compatible auth. Fix in flight: replace OpenNext deploy wrapper with official `cloudflare/wrangler-action@v3` in `.github/workflows/deploy.yml`. Production was last successfully deployed on 2026-04-17 (SHA `257c1fc`). Full diagnosis: `docs/research/cloudflare-workers-opennext-stack-2026-05-21.md`.
 - **Aesthetic:** Neo-Brutalist, "Atmospheric Engineering"
 - **Pinned versions:** `next@^15.5.15`, `@opennextjs/cloudflare@^1.18.0` (update here whenever these change)
 - **Codex Pro x20 (locked 2026-05-03):** `gpt-5.5` + `xhigh` + `service_tier=fast` everywhere. Pattern A default (single-thread + Codex review at every gate, no subagents). See `AGENTS.md` for full Codex protocol.

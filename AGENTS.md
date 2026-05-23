@@ -11,7 +11,8 @@ alexmayhew.dev — solo Technical Advisor / fractional-CTO portfolio + lead-gene
 - **Framework:** Next.js 15.5.x (App Router) + React 19 + TypeScript strict
 - **Styling:** Tailwind 4 (`@theme` design tokens in `globals.css`) + Framer Motion (spring physics only)
 - **Content:** MDX via Fumadocs, frontmatter-validated, hub-and-spoke architecture
-- **Deploy:** OpenNext → Cloudflare Pages, GitHub Actions CI/CD (typecheck → lint → build → deploy → health → smoke)
+- **Deploy:** OpenNext → Cloudflare Workers (with Static Assets), GitHub Actions CI/CD (typecheck → lint → build → deploy → health → smoke). **Not Pages** — CF Pages is in maintenance mode as of 2026; Workers Static Assets is the official path. See `docs/research/cloudflare-workers-opennext-stack-2026-05-21.md`.
+- **Deploy command (2026-05-21 update):** `npx opennextjs-cloudflare deploy` is broken in CI because wrangler's `getPlatformProxy({remoteBindings:true})` default (changed 2025-06-25) calls `/workers/subdomain/edge-preview` which refuses standard CI auth schemes. Use the official `cloudflare/wrangler-action@v3` instead — build with `npx opennextjs-cloudflare build`, deploy with the action. Skips OpenNext's broken deploy wrapper, calls `wrangler deploy` directly.
 - **Tests:** Vitest (unit, currently 1847 tests passing as of last green CI), Playwright (E2E)
 - **Edge runtime:** Cloudflare Workers (`nodejs_compat`) — no `fs`/`path` in runtime code
 
@@ -97,6 +98,7 @@ Every Codex invocation must include:
 ## Issue tracking
 
 Beads (`bd` CLI + `mcp__beads__*` MCP). Project DB at `.beads/beads.db`. Workflow:
+
 - `bd ready` — top of queue at session start
 - `bd show <id>` / `bd update <id>` to claim → `in_progress`
 - `bd close <id> --reason "<file:line or commit SHA + verification evidence>"` per `~/.claude/rules/beads-closure-discipline.md`. No "done" reasons.
