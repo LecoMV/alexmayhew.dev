@@ -61,6 +61,27 @@ export interface Project {
 
 export const projects: Project[] = [
 	{
+		id: "unsexy-stack",
+		title: "The Unsexy Stack",
+		description:
+			"FastAPI + Next.js 15 SaaS boilerplate with 200 tests at 98% coverage and a 22-item OWASP ASVS Level 1 security checklist. Built because shipping the same boring SaaS infrastructure (auth, billing, deploy configs, security hardening) shouldn't cost a weekend per project. Handles the unglamorous 80%... Clerk JWT, Stripe webhooks, async SQLAlchemy, Docker deploys... so you can build the actual product. Sold on Gumroad. Pro $149, Agency $499.",
+		category: "Developer Tools",
+		tech: [
+			"FastAPI",
+			"Next.js 15",
+			"PostgreSQL",
+			"Clerk",
+			"Stripe",
+			"TypeScript",
+			"Docker",
+			"Alembic",
+		],
+		year: "2026",
+		status: "Production",
+		link: "https://theunsexystack.com?utm_source=alexmayhew_dev&utm_medium=portfolio&utm_campaign=trust_chain",
+		featured: true,
+	},
+	{
 		id: "traceforge",
 		title: "TraceForge",
 		description:
