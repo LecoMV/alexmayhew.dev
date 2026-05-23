@@ -48,7 +48,7 @@ export async function subscribeToNewsletter(data: unknown): Promise<NewsletterFo
 		};
 	}
 
-	const { email, turnstileToken } = validation.data;
+	const { email, source, turnstileToken } = validation.data;
 
 	// 2. Rate limiting (Workers RateLimit binding)
 	const headersList = await headers();
@@ -89,44 +89,57 @@ export async function subscribeToNewsletter(data: unknown): Promise<NewsletterFo
 		}
 	}
 
-	// 4. Subscribe via Listmonk public subscription API
-	const apiUrl = env.LISTMONK_API_URL;
+	// 4. Subscribe via Beehiiv Publications API (migrated from Listmonk 2026-04-19).
+	// Docs: https://developers.beehiiv.com/docs/v2/subscriptions
+	const apiKey = env.BEEHIIV_API_KEY;
+	const publicationId = env.BEEHIIV_PUBLICATION_ID;
 
-	if (!apiUrl) {
-		logger.error("LISTMONK_API_URL not configured", { route: "newsletter" });
+	if (!apiKey || !publicationId) {
+		logger.error("Beehiiv credentials not configured", {
+			route: "newsletter",
+			hasKey: Boolean(apiKey),
+			hasPubId: Boolean(publicationId),
+		});
 		return { success: false, error: "Newsletter signup is temporarily unavailable." };
 	}
 
-	// "The Architects Brief" mailing list UUID (public, double opt-in)
-	const listUuid = "41e24d1e-f13b-45b5-8a73-483ffe85def2";
-
 	try {
-		const response = await dependencies.fetch(`${apiUrl}/api/public/subscription`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				email,
-				name: "",
-				list_uuids: [listUuid],
-			}),
-			signal: AbortSignal.timeout(8_000),
-		});
+		const response = await dependencies.fetch(
+			`https://api.beehiiv.com/v2/publications/${publicationId}/subscriptions`,
+			{
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${apiKey}`,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					email,
+					reactivate_existing: true,
+					send_welcome_email: true,
+					utm_source: source,
+					utm_medium: "website",
+				}),
+				signal: AbortSignal.timeout(8_000),
+			}
+		);
 
 		if (response.ok) {
 			return { success: true };
 		}
 
 		const errorData = (await response.json().catch(() => ({}))) as Record<string, unknown>;
-		const errorMessage = String(errorData?.message ?? "");
-		logger.error("Listmonk API error", {
+		const errorMessage = String(
+			(errorData?.errors as Array<Record<string, unknown>> | undefined)?.[0]?.message ??
+				errorData?.message ??
+				""
+		);
+		logger.error("Beehiiv API error", {
 			route: "newsletter",
 			status: response.status,
 			error: JSON.stringify(errorData),
 		});
 
-		if (response.status === 400) {
+		if (response.status === 400 || response.status === 422) {
 			if (
 				errorMessage.toLowerCase().includes("email") ||
 				errorMessage.toLowerCase().includes("valid")

@@ -37,7 +37,10 @@ function getSlug(path: string): string {
 }
 
 export default function NewsletterArchivePage() {
+	// are held back — showing them on the public archive erodes trust when
+	// the issue number and publish date don't match reality.
 	const issues = newsletter
+		.filter((issue) => issue.status === "sent")
 		.sort((a, b) => b.issue - a.issue)
 		.map((issue) => ({
 			slug: getSlug(issue.info.path),

@@ -13,7 +13,8 @@ vi.mock("next/headers", () => ({
 
 vi.mock("@/lib/cloudflare-env", () => ({
 	getEnv: vi.fn().mockResolvedValue({
-		LISTMONK_API_URL: "http://localhost:9000",
+		BEEHIIV_API_KEY: "beehiiv-test-key",
+		BEEHIIV_PUBLICATION_ID: "pub_test",
 	}),
 }));
 
@@ -133,10 +134,22 @@ describe("subscribeToNewsletter", () => {
 		});
 	});
 
-	describe("Missing LISTMONK_API_URL", () => {
-		it("should return unavailable message when API URL is not configured", async () => {
+	describe("Missing Beehiiv credentials", () => {
+		it("should return unavailable message when API key is not configured", async () => {
 			mockGetEnv.mockResolvedValueOnce({
-				LISTMONK_API_URL: undefined,
+				BEEHIIV_API_KEY: undefined,
+				BEEHIIV_PUBLICATION_ID: "pub_test",
+			});
+
+			const result = await subscribeToNewsletter({ email: TEST_EMAIL, source: "website" });
+			expect(result.success).toBe(false);
+			expect(result.error).toBe("Newsletter signup is temporarily unavailable.");
+		});
+
+		it("should return unavailable message when publication ID is not configured", async () => {
+			mockGetEnv.mockResolvedValueOnce({
+				BEEHIIV_API_KEY: "beehiiv-test-key",
+				BEEHIIV_PUBLICATION_ID: undefined,
 			});
 
 			const result = await subscribeToNewsletter({ email: TEST_EMAIL, source: "website" });
@@ -145,7 +158,7 @@ describe("subscribeToNewsletter", () => {
 		});
 	});
 
-	describe("Listmonk API responses", () => {
+	describe("Beehiiv API responses", () => {
 		it("should return success on 200 response", async () => {
 			mockFetch.mockResolvedValue({
 				ok: true,
@@ -235,18 +248,23 @@ describe("subscribeToNewsletter", () => {
 	});
 
 	describe("Request payload structure", () => {
-		it("should send correct list UUID and email to Listmonk", async () => {
+		it("should send correct Beehiiv payload", async () => {
 			await subscribeToNewsletter({ email: "payload@example.com", source: "website" });
 
 			expect(mockFetch).toHaveBeenCalledTimes(1);
 			const [url, options] = mockFetch.mock.calls[0] as [string, RequestInit];
-			expect(url).toBe("http://localhost:9000/api/public/subscription");
+			expect(url).toBe("https://api.beehiiv.com/v2/publications/pub_test/subscriptions");
 			expect(options.method).toBe("POST");
+			expect((options.headers as Record<string, string>).Authorization).toBe(
+				"Bearer beehiiv-test-key"
+			);
 
 			const body = JSON.parse(options.body as string) as Record<string, unknown>;
 			expect(body.email).toBe("payload@example.com");
-			expect(body.name).toBe("");
-			expect(body.list_uuids).toEqual(["41e24d1e-f13b-45b5-8a73-483ffe85def2"]);
+			expect(body.reactivate_existing).toBe(true);
+			expect(body.send_welcome_email).toBe(true);
+			expect(body.utm_source).toBe("website");
+			expect(body.utm_medium).toBe("website");
 		});
 
 		it("should include AbortSignal with 8-second timeout", async () => {
@@ -290,10 +308,13 @@ describe("subscribeToNewsletter", () => {
 			const result = await subscribeToNewsletter({ email: TEST_EMAIL, source: "website" });
 			expect(result.success).toBe(true);
 			expect(mockGlobalFetch).toHaveBeenCalledWith(
-				"http://localhost:9000/api/public/subscription",
+				"https://api.beehiiv.com/v2/publications/pub_test/subscriptions",
 				expect.objectContaining({
 					method: "POST",
-					headers: { "Content-Type": "application/json" },
+					headers: expect.objectContaining({
+						Authorization: "Bearer beehiiv-test-key",
+						"Content-Type": "application/json",
+					}),
 				})
 			);
 

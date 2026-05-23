@@ -25,11 +25,11 @@ describe("JsonLd E-E-A-T enrichments", () => {
 		expect(person.hasCredential[0]["@type"]).toBe("EducationalOccupationalCredential");
 	});
 
-	it("Organization and ConsultingService sameAs include Bluesky (matches Person)", () => {
+	it("Organization and ProfessionalService sameAs include Bluesky (matches Person)", () => {
 		const { container } = render(<JsonLd />);
 		const schemas = parseAllJsonLd(container);
 		const org = schemas.find((s) => s["@type"] === "Organization");
-		const service = schemas.find((s) => s["@type"] === "ConsultingService");
+		const service = schemas.find((s) => s["@type"] === "ProfessionalService");
 		const bsky = "https://bsky.app/profile/alexmayhewdev.bsky.social";
 		expect(org.sameAs).toContain(bsky);
 		expect(service.sameAs).toContain(bsky);

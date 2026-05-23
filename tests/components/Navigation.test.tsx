@@ -132,7 +132,7 @@ describe("Navigation", () => {
 
 		expect(screen.getByText("VoiceKeep")).toBeTruthy();
 		expect(screen.getByText("TraceForge")).toBeTruthy();
-		expect(screen.getByText("Claude Pilot")).toBeTruthy();
+		expect(screen.getByText("SaaS Readiness")).toBeTruthy();
 	});
 
 	it("renders tools dropdown items when tools button is clicked", () => {
@@ -142,7 +142,7 @@ describe("Navigation", () => {
 
 		expect(screen.getByText("VoiceKeep")).toBeTruthy();
 		expect(screen.getByText("TraceForge")).toBeTruthy();
-		expect(screen.getByText("Claude Pilot")).toBeTruthy();
+		expect(screen.getByText("SaaS Readiness")).toBeTruthy();
 		expect(screen.getByText("View all tools")).toBeTruthy();
 	});
 

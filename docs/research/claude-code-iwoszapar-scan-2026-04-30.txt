@@ -1,0 +1,60 @@
+
+Health check runs entirely locally. Zero telemetry.
+Paid features connect to the MemoryOS server for onboarding and optimization.
+Reads file structure and config metadata — never logs, stores, or transmits secret values.
+Secret detection reports "found/not found" only — your actual keys are never shown in output.
+
+================================================================
+  MEMORYOS
+================================================================
+
+SETUP QUALITY:    43/100 (D - Minimal)
+USAGE ACTIVITY:   18/100 (Empty - No usage activity detected)
+AI FLUENCY:       40/100 (Beginner - Basic AI interaction)
+
+----------------------------------------------------------------
+WHAT YOU HAVE (good start!)
+----------------------------------------------------------------
+
+  [pass] CLAUDE.md exists
+  [pass] .claude/ directory configured
+  [pass] Custom agents configured
+
+----------------------------------------------------------------
+YOUR NEXT 20-MINUTE SESSION (top 3 fixes)
+----------------------------------------------------------------
+
+1. SKILL ORCHESTRATION DETECTION (+17% fluency, ~15 min)
+   No .claude/skills/ directory found
+
+2. KNOWLEDGE-AWARE SKILLS (+17% fluency, ~15 min)
+   No .claude/skills/ directory found
+
+3. INTERACTIVE REQUIREMENT GATHERING (+8% fluency, ~10 min)
+   No skills gather requirements before executing — skills run blind without user context
+
+Total estimated time: ~40 min
+
+----------------------------------------------------------------
+PATTERNS TO UNLOCK
+----------------------------------------------------------------
+
+  Self-Correction Protocol  |......... 9%
+  Compound Learning         ||........ 18%
+  Knowledge Files as RAM    ||........ 21%
+
+================================================================
+  UPGRADE AVAILABLE
+  1 personalized files ready for your brain
+  Score: 36% ──→ 36%  (+0 pts)
+
+  ○ SKILL ORCHESTRATION DETECTION  [+17% FLUENCY]
+  ○ KNOWLEDGE-AWARE SKILLS  [+17% FLUENCY]
+  ○ INTERACTIVE REQUIREMENT GATHERING  [+8% FLUENCY]
+  + 2 more fixes
+
+  Unlock: https://www.iwoszapar.com/memory-os
+  Then run: upgrade_brain
+================================================================
+
+Dashboard: /home/deploy/projects/amdev/alexmayhew-dev/health-check-report.html

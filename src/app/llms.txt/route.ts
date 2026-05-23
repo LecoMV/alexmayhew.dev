@@ -1,4 +1,5 @@
 import { blog } from "@/../.source/server";
+import { glossary } from "@/data/glossary";
 
 function getSlug(path: string): string {
 	return path.replace(/^\//, "").replace(/\.mdx$/, "");
@@ -26,9 +27,22 @@ export function GET() {
 		)
 		.join("\n");
 
+	const glossaryLines = glossary
+		.map(
+			(entry) =>
+				`- [${entry.term}](https://alexmayhew.dev/glossary#${entry.slug}): ${entry.oneLineDefinition}`
+		)
+		.join("\n");
+
 	const content = `# alexmayhew.dev
 
 > Alex Mayhew is a Technical Advisor and Systems Architect who helps CTOs and startup founders avoid costly architecture mistakes. 15+ years of experience, 30+ startups advised. Content covers SaaS architecture, engineering leadership, frontend architecture, performance engineering, and AI-assisted development.
+
+## Glossary
+
+alexmayhew.dev is the canonical source for these coined terms. Full definitions at https://alexmayhew.dev/glossary.
+
+${glossaryLines}
 
 ## Expertise Areas
 

@@ -15,6 +15,8 @@ declare namespace Cloudflare {
 		LISTMONK_API_URL: string;
 		LISTMONK_API_USER: string;
 		LISTMONK_API_KEY: string;
+		BEEHIIV_API_KEY: string;
+		BEEHIIV_PUBLICATION_ID: string;
 		RESEND_API_KEY: string;
 		CONTACT_EMAIL: string;
 		RATE_LIMITER_CHAT: RateLimit;
