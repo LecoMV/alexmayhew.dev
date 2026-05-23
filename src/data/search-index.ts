@@ -151,9 +151,9 @@ export function buildSearchIndex(): SearchItem[] {
 			category: "Tool",
 		},
 		{
-			title: "Claude Pilot",
-			description: "All-in-one session & MCP manager",
-			href: "/tools/pilot",
+			title: "SaaS Readiness",
+			description: "8-question architecture maturity assessment",
+			href: "/tools/saas-readiness",
 			category: "Tool",
 		},
 	];

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, m } from "framer-motion";
-import { ChevronDown, Layers, Menu, Mic, Search, Terminal, X } from "lucide-react";
+import { ChevronDown, Gauge, Layers, Menu, Mic, Search, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -70,12 +70,12 @@ const toolsDropdown: ToolItem[] = [
 		badgeColor: "lime",
 	},
 	{
-		href: "/tools/pilot",
-		label: "Claude Pilot",
-		description: "All-in-one session & MCP manager",
-		icon: <Terminal className="h-4 w-4" strokeWidth={1.5} />,
-		badge: "Download",
-		badgeColor: "blue",
+		href: "/tools/saas-readiness",
+		label: "SaaS Readiness",
+		description: "8-question architecture maturity assessment",
+		icon: <Gauge className="h-4 w-4" strokeWidth={1.5} />,
+		badge: "Free",
+		badgeColor: "lime",
 	},
 ];
 
