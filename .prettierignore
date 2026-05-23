@@ -17,6 +17,18 @@ cloudflare-env.d.ts
 next-env.d.ts
 src/data/blog-index.json
 
+# Beads CLI tool files (auto-generated, not hand-formatted)
+.beads/
+
+# Per-machine Claude Code config (untracked but in tree)
+.claude/settings.local.json
+.claude/agents/
+.claude/agent-memory/
+.claude/tdd-guard/
+
+# Research artifacts — raw scrapes + research notes (content, not code)
+docs/research/
+
 # Package manager
 package-lock.json
 pnpm-lock.yaml
