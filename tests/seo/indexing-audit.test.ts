@@ -108,15 +108,15 @@ describe("P1-9: Footer internal links", () => {
 });
 
 describe("P1-11: Schema consolidation", () => {
-	it("should not have both ConsultingService and ProfessionalService schemas", () => {
+	it("ProfessionalService schema must not be defined in both json-ld and local-business stub", () => {
 		const jsonLdSource = fs.readFileSync("src/components/seo/json-ld.tsx", "utf-8");
 		const localBizSource = fs.readFileSync(
 			"src/components/seo/local-business-json-ld.tsx",
 			"utf-8"
 		);
-		const jsonLdHasBusiness = jsonLdSource.includes("ConsultingService");
-		const localBizHasBusiness = localBizSource.includes("ProfessionalService");
-		expect(jsonLdHasBusiness && localBizHasBusiness).toBe(false);
+		const jsonLdDefinesIt = jsonLdSource.includes('"@type": "ProfessionalService"');
+		const localBizDefinesIt = localBizSource.includes('"@type": "ProfessionalService"');
+		expect(jsonLdDefinesIt && localBizDefinesIt).toBe(false);
 	});
 });
 

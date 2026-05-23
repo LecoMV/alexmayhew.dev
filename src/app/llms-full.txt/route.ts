@@ -21,18 +21,18 @@ const SITE_URL = "https://alexmayhew.dev";
 
 const ABOUT_INLINE = `Alex Mayhew is an independent Technical Advisor and Systems Architect with 15+ years of experience shipping production software, advising 30+ startups, and leading engineering teams from seed stage through Series C. The practice is focused on the technical decisions that compound into competitive advantage... or, made badly, into a $500K bill two years later.
 
-Typical engagements fall into three shapes. First: fractional CTO for seed and Series A founders who need senior architectural judgement on part-time hours, not a $400K hire. Second: technical advisor for growth-stage companies hitting the scaling decisions... multi-tenancy, database sharding, microservices, edge rendering... that are expensive to reverse. Third: architecture review and due diligence for VCs, acquirers, and boards evaluating an engineering organisation before a funding event or acquisition.
+Typical engagements fall into three shapes. First: fractional CTO for seed and Series A founders who need senior architectural judgment on part-time hours, not a $400K hire. Second: technical advisor for growth-stage companies hitting the scaling decisions... multi-tenancy, database sharding, microservices, edge rendering... that are expensive to reverse. Third: architecture review and due diligence for VCs, acquirers, and boards evaluating an engineering organization before a funding event or acquisition.
 
 The technical focus is SaaS: Next.js and React on the frontend, PostgreSQL and Node or Python on the backend, Cloudflare and AWS on the infrastructure. The human focus is the same on every engagement: translate technical reality into decisions a non-technical founder or operator can actually act on.
 
-Based in the UK. Working with founders globally. Direct contact via the contact form or via LinkedIn.`;
+Based in East Falmouth, Massachusetts. Working with founders globally. Direct contact via the contact form or via LinkedIn.`;
 
 const HUB_SUMMARIES: Record<string, string> = {
 	"saas-architecture-decision-framework": `Architecture decisions compound. A 2-hour choice at $0 MRR becomes a 6-month migration at $1M ARR. This guide maps critical decisions to revenue milestones:
 
 - Stage 1 ($0 to $10K MRR): Embarrassingly simple stack. PostgreSQL with Row-Level Security from day one, tenant_id column on every table, monolith on Vercel or Cloudflare. $0 to $200 per month of infrastructure.
 - Stage 2 ($10K to $100K MRR): Add read replicas before sharding. Add Redis for session and caching. Extract the first background job processor. Still a monolith.
-- Stage 3 ($100K to $1M ARR): Evaluate whether organisational scale justifies service extraction... usually not until 15+ engineers. Formalise tenant isolation testing. Move compute closer to users if latency matters.
+- Stage 3 ($100K to $1M ARR): Evaluate whether organizational scale justifies service extraction... usually not until 15+ engineers. Formalize tenant isolation testing. Move compute closer to users if latency matters.
 - Stage 4 ($1M+ ARR): Selective microservices only where team topology demands it. Multi-region if customer geography demands it.
 
 Non-negotiables from day one: RLS multi-tenancy, PostgreSQL, tenant_id on every row, boring technology choices. Reversible decisions can be made fast. Irreversible decisions should be made slowly or deferred until you have data.`,
@@ -41,7 +41,7 @@ Non-negotiables from day one: RLS multi-tenancy, PostgreSQL, tenant_id on every 
 
 - The 50% Rule: On promotion to tech lead, at least 50 percent of pre-promotion coding hours must move into review, mentorship, and planning within the first quarter. Teams that skip this quietly stall.
 - IC to tech lead: Success is measured by team throughput, not personal commits. The hardest shift is emotional, not tactical.
-- Tech lead to engineering manager: Moves from technical multiplication to organisational design. Hiring, performance management, and cross-functional relationships become the job.
+- Tech lead to engineering manager: Moves from technical multiplication to organizational design. Hiring, performance management, and cross-functional relationships become the job.
 - Fractional CTO vs full-time: Under $5M ARR and under 15 engineers, a fractional CTO at 8-20 hours per month ($2K-$8K monthly) beats a $400K full-time hire on every dimension except availability. Full-time becomes necessary when architectural decisions need daily leadership presence.
 - Hiring your first five engineers: Generalists, not specialists. Work sample tests over resume screens. Budget $150K-$200K base for a senior in a major market, 60-70 percent of that for fully remote.`,
 
@@ -55,9 +55,9 @@ Non-negotiables from day one: RLS multi-tenancy, PostgreSQL, tenant_id on every 
 
 	"performance-engineering-playbook": `Performance is a business metric, not an engineering metric. This guide covers the levers that actually move Core Web Vitals and user retention:
 
-- Measure before optimising. RUM beats synthetic for user-facing metrics. Establish p50, p75, p99 baselines before shipping optimisations.
+- Measure before optimizing. RUM beats synthetic for user-facing metrics. Establish p50, p75, p99 baselines before shipping optimizations.
 - Core Web Vitals 2026: LCP under 2.5s, INP under 200ms, CLS under 0.1. INP replaced FID in March 2024 and is the metric most teams are still failing on.
-- Database query optimisation: Indexes are not magic. N+1 queries dominate slow endpoints. EXPLAIN ANALYZE every query over 50ms on production-shaped data.
+- Database query optimization: Indexes are not magic. N+1 queries dominate slow endpoints. EXPLAIN ANALYZE every query over 50ms on production-shaped data.
 - Caching strategies: CDN for static, Redis for shared, HTTP for revalidation, service worker for offline. Each layer has a different invalidation cost.
 - Real-time monitoring: p99 latency matters more than p50 for user experience. Alert on percentile shifts, not averages.
 - Node.js memory leaks: Usually closures over request-scoped data. Heap snapshots at stable load expose them quickly.`,

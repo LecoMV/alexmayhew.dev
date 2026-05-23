@@ -37,6 +37,22 @@ describe("GET /llms-full.txt", () => {
 		expect(body).toMatch(/About Alex Mayhew/i);
 	});
 
+	it("states the location as East Falmouth, MA (regression lock)", async () => {
+		const response = await GET();
+		const body = await response.text();
+		expect(body).toContain("East Falmouth, Massachusetts");
+		expect(body).not.toMatch(/Based in the UK/i);
+	});
+
+	it("uses US spelling throughout (regression lock)", async () => {
+		const response = await GET();
+		const body = await response.text();
+		expect(body).not.toMatch(/\borganisation(al)?\b/i);
+		expect(body).not.toMatch(/\boptimis(e|ed|ing|ation|ations)\b/i);
+		expect(body).not.toMatch(/\bformalise\b/i);
+		expect(body).not.toMatch(/\bjudgement\b/i);
+	});
+
 	it("includes glossary terms", async () => {
 		const response = await GET();
 		const body = await response.text();

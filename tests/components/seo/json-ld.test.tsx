@@ -8,8 +8,8 @@ function parseAllJsonLd(container: HTMLElement) {
 	return Array.from(scripts).map((s) => JSON.parse(s.innerHTML));
 }
 
-describe("JsonLd (main Person/Org/WebSite/ConsultingService)", () => {
-	it("renders four JSON-LD scripts: Person, Organization, WebSite, ConsultingService", () => {
+describe("JsonLd (main Person/Org/WebSite/ProfessionalService)", () => {
+	it("renders four JSON-LD scripts: Person, Organization, WebSite, ProfessionalService", () => {
 		const { container } = render(<JsonLd />);
 		const schemas = parseAllJsonLd(container);
 		expect(schemas).toHaveLength(4);
@@ -18,7 +18,7 @@ describe("JsonLd (main Person/Org/WebSite/ConsultingService)", () => {
 		expect(types).toContain("Person");
 		expect(types).toContain("Organization");
 		expect(types).toContain("WebSite");
-		expect(types).toContain("ConsultingService");
+		expect(types).toContain("ProfessionalService");
 	});
 
 	it("Person schema has correct @id and uses sameAs for social links", () => {
@@ -71,10 +71,10 @@ describe("JsonLd (main Person/Org/WebSite/ConsultingService)", () => {
 		expect(org.foundingDate).toEqual(expect.any(String));
 	});
 
-	it("ConsultingService has @id, offer catalog, and area served", () => {
+	it("ProfessionalService has @id, offer catalog, and area served", () => {
 		const { container } = render(<JsonLd />);
 		const schemas = parseAllJsonLd(container);
-		const service = schemas.find((s) => s["@type"] === "ConsultingService");
+		const service = schemas.find((s) => s["@type"] === "ProfessionalService");
 		expect(service["@id"]).toBe("https://alexmayhew.dev/#business");
 		expect(service.founder).toEqual({ "@id": "https://alexmayhew.dev/#person" });
 		expect(service.hasOfferCatalog["@type"]).toBe("OfferCatalog");
@@ -83,5 +83,17 @@ describe("JsonLd (main Person/Org/WebSite/ConsultingService)", () => {
 		// priceRange intentionally omitted: Google ignores non-enum values like
 		// "$$$$" and a real priceSpecification lives inside hasOfferCatalog.
 		expect(service.priceRange).toBeUndefined();
+	});
+
+	it("ProfessionalService address locks to East Falmouth, MA (regression lock)", () => {
+		const { container } = render(<JsonLd />);
+		const schemas = parseAllJsonLd(container);
+		const service = schemas.find((s) => s["@type"] === "ProfessionalService");
+		expect(service.address["@type"]).toBe("PostalAddress");
+		expect(service.address.addressLocality).toBe("East Falmouth");
+		expect(service.address.addressRegion).toBe("MA");
+		expect(service.address.addressCountry).toBe("US");
+		const areaServedNames = service.areaServed.map((a: { name: string }) => a.name);
+		expect(areaServedNames).not.toContain("Boston");
 	});
 });

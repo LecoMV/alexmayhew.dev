@@ -143,7 +143,7 @@ export function JsonLd() {
 	// Single unified business entity ... combines consulting service + local business signals
 	const professionalServiceSchema = {
 		"@context": SCHEMA_CONTEXT,
-		"@type": "ConsultingService",
+		"@type": "ProfessionalService",
 		"@id": "https://alexmayhew.dev/#business",
 		name: "Alex Mayhew - Technical Advisory Services",
 		alternateName: "Alex Mayhew Consulting",
@@ -159,7 +159,7 @@ export function JsonLd() {
 		paymentAccepted: "Bank Transfer, Credit Card",
 		address: {
 			"@type": "PostalAddress",
-			addressLocality: "Boston",
+			addressLocality: "East Falmouth",
 			addressRegion: "MA",
 			addressCountry: "US",
 		},
@@ -186,7 +186,6 @@ export function JsonLd() {
 			TECHNICAL_DUE_DILIGENCE_LABEL,
 		],
 		areaServed: [
-			{ "@type": "City", name: "Boston" },
 			{ "@type": "State", name: "Massachusetts" },
 			{ "@type": "Country", name: "United States" },
 			{ "@type": "Country", name: "United Kingdom" },
