@@ -230,20 +230,37 @@ describe("subscribeToNewsletter", () => {
 		});
 	});
 
+	describe("customFields pass-through", () => {
+		it("passes customFields to Beehiiv as array of {name, value}", async () => {
+			const result = await subscribeToNewsletter({
+				email: TEST_EMAIL,
+				source: "quiz-results-v2",
+				customFields: { stagefit_zone: "over-built", stagefit_severity: "acute" },
+			});
+			expect(result.success).toBe(true);
+			const [, options] = mockFetch.mock.calls[0] as [string, RequestInit];
+			const body = JSON.parse(options.body as string) as Record<string, unknown>;
+			expect(body.custom_fields).toEqual([
+				{ name: "stagefit_zone", value: "over-built" },
+				{ name: "stagefit_severity", value: "acute" },
+			]);
+		});
+	});
+
 	describe("Duplicate email handling", () => {
-		it("should return generic failure on 409 Conflict (duplicate subscriber)", async () => {
+		it("handles 409 existing subscriber by returning existingSubscriber flag", async () => {
 			mockFetch.mockResolvedValue({
 				ok: false,
 				status: 409,
-				json: () => Promise.resolve({ message: "Subscriber already exists" }),
+				json: () => Promise.resolve({ errors: [{ message: "Subscriber already exists" }] }),
 			});
 
 			const result = await subscribeToNewsletter({
 				email: "existing@example.com",
 				source: "website",
 			});
-			expect(result.success).toBe(false);
-			expect(result.error).toBe("Failed to subscribe. Please try again.");
+			expect(result.success).toBe(true);
+			expect(result.existingSubscriber).toBe(true);
 		});
 	});
 
