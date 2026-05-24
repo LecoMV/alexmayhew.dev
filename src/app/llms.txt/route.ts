@@ -89,10 +89,15 @@ ${spokeLines}
 - [For Seed Founders](https://alexmayhew.dev/for/seed-founder): First technical hires and stack decisions
 - [For VPs of Engineering](https://alexmayhew.dev/for/vp-engineering): Team scaling and process optimization
 
+## Frameworks
+
+- [SaaS Stage-Fit Matrix](https://alexmayhew.dev/frameworks/saas-stage-fit-matrix): Architecture diagnostic framework for evaluating whether SaaS tech complexity matches business stage
+
 ## Tools
 
 - [TraceForge](https://alexmayhew.dev/tools/traceforge): SVG trace visualization tool
 - [Pilot](https://alexmayhew.dev/tools/pilot): AI-powered code assistant
+- [SaaS Readiness Assessment](https://alexmayhew.dev/tools/saas-readiness): Interactive SaaS Stage-Fit diagnostic
 
 ## Contact
 
