@@ -42,4 +42,18 @@ describe("SaasReadinessQuiz", () => {
 		expect(screen.getByText("Foundation Building")).toBeTruthy();
 		expect(screen.getByRole("link", { name: /book a strategy call/i })).toBeTruthy();
 	});
+
+	it("shows disabled email capture with rebuild message instead of form", () => {
+		render(<SaasReadinessQuiz />);
+		fireEvent.click(screen.getByRole("button", { name: /start assessment/i }));
+
+		for (let i = 0; i < QUIZ_QUESTIONS.length; i++) {
+			const buttons = screen.getAllByRole("button");
+			fireEvent.click(buttons[0]);
+		}
+
+		expect(screen.getByText(/email capture is being rebuilt/i)).toBeTruthy();
+		expect(screen.queryByLabelText(/email/i)).toBeNull();
+		expect(screen.queryByText(/send my results/i)).toBeNull();
+	});
 });

@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { SoftwareJsonLd } from "@/components/seo/software-json-ld";
 import { SaasReadinessQuiz } from "@/components/tools/saas-readiness-quiz";
+import { StageFitDiagnostic } from "@/components/tools/stagefit/StageFitDiagnostic";
 
 import type { Metadata } from "next";
 
@@ -75,8 +76,11 @@ export default function SaasReadinessPage() {
 						</Link>
 					</nav>
 
-					{/* Quiz */}
-					<SaasReadinessQuiz />
+					{process.env.STAGEFIT_V2_ENABLED === "true" ? (
+						<StageFitDiagnostic />
+					) : (
+						<SaasReadinessQuiz />
+					)}
 				</div>
 			</section>
 		</>

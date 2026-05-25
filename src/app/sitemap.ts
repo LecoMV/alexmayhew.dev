@@ -96,6 +96,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			priority: 0.7,
 		},
 		{
+			url: `${siteUrl}/frameworks/saas-stage-fit-matrix`,
+			lastModified: siteLastUpdated,
+			changeFrequency: "monthly",
+			priority: 0.8,
+		},
+		{
 			url: `${siteUrl}/glossary`,
 			lastModified: siteLastUpdated,
 			changeFrequency: "monthly",

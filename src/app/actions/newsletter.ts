@@ -12,11 +12,32 @@ import { checkRateLimit } from "@/lib/rate-limit";
 // Newsletter signup: 3 attempts per minute per IP.
 const NEWSLETTER_LIMIT_PER_MIN = 3;
 
+const ALLOWED_CUSTOM_FIELDS = new Set([
+	"stagefit_zone",
+	"stagefit_severity",
+	"stagefit_delta",
+	"velocity_drag_band",
+	"reversibility_risk_count",
+	"top_misaligned_1",
+	"top_misaligned_2",
+	"top_misaligned_3",
+	"persona",
+	"customer_type",
+	"revenue_stage",
+	"trigger_event",
+]);
+
 // Validation schema
 const newsletterSchema = z.object({
 	email: z.string().email("Please enter a valid email address"),
 	source: z.string().optional().default("website"),
 	turnstileToken: z.string().optional(),
+	customFields: z
+		.record(z.string(), z.string().max(200))
+		.refine((obj) => Object.keys(obj).every((k) => ALLOWED_CUSTOM_FIELDS.has(k)), {
+			message: "Unknown custom field key",
+		})
+		.optional(),
 });
 
 export type NewsletterFormValues = z.infer<typeof newsletterSchema>;
@@ -24,6 +45,7 @@ export type NewsletterFormValues = z.infer<typeof newsletterSchema>;
 export interface NewsletterFormState {
 	success: boolean;
 	error?: string;
+	existingSubscriber?: boolean;
 }
 
 // useActionState-compatible wrapper: accepts (prevState, FormData).
@@ -48,7 +70,7 @@ export async function subscribeToNewsletter(data: unknown): Promise<NewsletterFo
 		};
 	}
 
-	const { email, source, turnstileToken } = validation.data;
+	const { email, source, turnstileToken, customFields } = validation.data;
 
 	// 2. Rate limiting (Workers RateLimit binding)
 	const headersList = await headers();
@@ -118,6 +140,12 @@ export async function subscribeToNewsletter(data: unknown): Promise<NewsletterFo
 					send_welcome_email: true,
 					utm_source: source,
 					utm_medium: "website",
+					...(customFields && {
+						custom_fields: Object.entries(customFields).map(([name, value]) => ({
+							name,
+							value,
+						})),
+					}),
 				}),
 				signal: AbortSignal.timeout(8_000),
 			}
@@ -125,6 +153,10 @@ export async function subscribeToNewsletter(data: unknown): Promise<NewsletterFo
 
 		if (response.ok) {
 			return { success: true };
+		}
+
+		if (response.status === 409) {
+			return { success: true, existingSubscriber: true };
 		}
 
 		const errorData = (await response.json().catch(() => ({}))) as Record<string, unknown>;

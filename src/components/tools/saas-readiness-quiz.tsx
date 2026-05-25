@@ -1,11 +1,10 @@
 "use client";
 
 import { m } from "framer-motion";
-import { ArrowLeft, ArrowRight, BarChart3, CheckCircle2, Mail, Target } from "lucide-react";
+import { ArrowLeft, ArrowRight, BarChart3, CheckCircle2, Target } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { subscribeToNewsletter } from "@/app/actions/newsletter";
 import { trackEvent } from "@/components/analytics/google-analytics";
 import {
 	calculateScore,
@@ -407,107 +406,13 @@ function ResultsScreen({
 	);
 }
 
-type EmailCaptureState = "idle" | "submitting" | "success" | "error";
-
 function EmailCapture({ tier }: { tier: string }) {
-	const [email, setEmail] = useState("");
-	const [state, setState] = useState<EmailCaptureState>("idle");
-	const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-		e.preventDefault();
-		if (state === "submitting") return;
-
-		setState("submitting");
-		setErrorMessage(null);
-
-		// Track the capture intent before the network call — we care about lead quality,
-		// not just successful Listmonk inserts. A rate-limited submit is still a lead signal.
-		trackEvent("lead_magnet_email_capture", {
-			source: "saas-readiness-quiz",
-			tier,
-		});
-
-		try {
-			const result = await subscribeToNewsletter({
-				email,
-				source: "quiz-results",
-			});
-
-			if (result.success) {
-				setState("success");
-			} else {
-				setState("error");
-				setErrorMessage(result.error ?? "Unable to send results. Please try again.");
-			}
-		} catch {
-			setState("error");
-			setErrorMessage("An unexpected error occurred. Please try again.");
-		}
-	}
-
-	if (state === "success") {
-		return (
-			<div
-				role="status"
-				className="border-cyber-lime/40 bg-cyber-lime/5 mb-6 border p-6"
-				aria-live="polite"
-			>
-				<div className="mb-2 flex items-center gap-3">
-					<CheckCircle2 className="text-cyber-lime h-5 w-5" strokeWidth={1.5} />
-					<span className="text-cyber-lime font-mono text-xs tracking-wider uppercase">
-						Check Your Inbox
-					</span>
-				</div>
-				<p className="text-slate-text text-sm leading-relaxed">
-					We sent your results and a confirmation link to{" "}
-					<span className="text-mist-white">{email}</span>. Confirm to receive the Architects Brief
-					with scaling playbooks.
-				</p>
-			</div>
-		);
-	}
-
+	void tier;
 	return (
 		<div className="mb-6 border border-white/10 p-6">
-			<div className="mb-3 flex items-center gap-3">
-				<Mail className="text-cyber-lime h-5 w-5" strokeWidth={1.5} />
-				<span className="text-cyber-lime font-mono text-xs tracking-wider uppercase">
-					Email My Results
-				</span>
-			</div>
-			<p className="text-slate-text mb-4 text-sm leading-relaxed">
-				Get a detailed PDF of your scores plus monthly scaling playbooks in the Architects Brief.
+			<p className="text-slate-text text-sm leading-relaxed">
+				Results shown above. Email capture is being rebuilt with improved personalization.
 			</p>
-			<form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
-				<label htmlFor="quiz-email" className="sr-only">
-					Email address
-				</label>
-				<input
-					id="quiz-email"
-					type="email"
-					required
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
-					placeholder="you@company.com"
-					disabled={state === "submitting"}
-					className="text-mist-white placeholder:text-slate-text/60 focus-visible:border-cyber-lime focus-visible:ring-cyber-lime flex-1 border border-white/10 bg-transparent px-4 py-3 font-mono text-sm focus:outline-none focus-visible:ring-2 disabled:opacity-50"
-					aria-invalid={state === "error"}
-					aria-describedby={errorMessage ? "quiz-email-error" : undefined}
-				/>
-				<button
-					type="submit"
-					disabled={state === "submitting"}
-					className="group border-cyber-lime bg-cyber-lime/10 text-cyber-lime hover:bg-cyber-lime/20 focus-visible:ring-cyber-lime border px-6 py-3 font-mono text-sm tracking-tight transition-colors focus:outline-none focus-visible:ring-2 disabled:opacity-50"
-				>
-					{state === "submitting" ? "Sending..." : "Send My Results"}
-				</button>
-			</form>
-			{errorMessage && (
-				<p id="quiz-email-error" role="alert" className="text-burnt-ember mt-3 font-mono text-xs">
-					{errorMessage}
-				</p>
-			)}
 		</div>
 	);
 }
