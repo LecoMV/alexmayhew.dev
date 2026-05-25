@@ -231,6 +231,15 @@ describe("subscribeToNewsletter", () => {
 	});
 
 	describe("customFields pass-through", () => {
+		it("rejects unknown customField keys", async () => {
+			const result = await subscribeToNewsletter({
+				email: TEST_EMAIL,
+				source: "website",
+				customFields: { malicious_field: "attack" },
+			});
+			expect(result.success).toBe(false);
+		});
+
 		it("passes customFields to Beehiiv as array of {name, value}", async () => {
 			const result = await subscribeToNewsletter({
 				email: TEST_EMAIL,

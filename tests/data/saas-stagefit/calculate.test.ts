@@ -154,6 +154,26 @@ describe("calculateStageFit", () => {
 		expect(delta3.delta).toBe(3);
 	});
 
+	it("tie-breaker: irreversible direction overrides near-boundary zone", () => {
+		const result = calculateStageFit(
+			makeInput({
+				revenueStage: 3,
+				techAnswers: {
+					architecture: 1,
+					database: 1,
+					cicd: 4,
+					observability: 4,
+					security: 4,
+					team: 2,
+					performance: 2,
+					data: 2,
+				},
+			})
+		);
+		expect(result.delta).toBe(4);
+		expect(result.zone).toBe("under-built");
+	});
+
 	it("produces valid zone/severity pairs across all stage/score combinations", () => {
 		const stages = [0, 1, 2, 3, 4, 5] as const;
 		const scores = [1, 2, 3, 4] as const;

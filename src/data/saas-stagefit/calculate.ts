@@ -36,6 +36,21 @@ export function calculateStageFit(input: StageFitInput): StageFitResult {
 		severity = null;
 	}
 
+	const irreversibleSum = dimDeltas.filter((d) => d.irreversible).reduce((s, d) => s + d.delta, 0);
+	if (
+		Math.abs(totalDelta) >= 4 &&
+		Math.abs(totalDelta) < 6 &&
+		Math.sign(irreversibleSum) !== Math.sign(totalDelta) &&
+		irreversibleSum !== 0
+	) {
+		zone = irreversibleSum > 0 ? "over-built" : "under-built";
+		if (zone === "over-built") {
+			severity = Math.abs(irreversibleSum) >= 4 ? "acute" : "mild";
+		} else {
+			severity = input.triggerEvent !== "none" ? "today" : "tomorrow";
+		}
+	}
+
 	const reversibilityRiskCount = dimDeltas.filter(
 		(d) => d.irreversible && Math.abs(d.delta) >= 1
 	).length;
