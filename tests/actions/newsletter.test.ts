@@ -213,7 +213,7 @@ describe("subscribeToNewsletter", () => {
 		it("should send correct Kit payload", async () => {
 			await subscribeToNewsletter({ email: "payload@example.com", source: "footer" });
 
-			expect(mockFetch).toHaveBeenCalledTimes(1);
+			expect(mockFetch).toHaveBeenCalledTimes(2);
 			const [url, options] = mockFetch.mock.calls[0] as [string, RequestInit];
 			expect(url).toBe("https://api.kit.com/v4/subscribers");
 			expect(options.method).toBe("POST");
@@ -221,8 +221,10 @@ describe("subscribeToNewsletter", () => {
 
 			const body = JSON.parse(options.body as string) as Record<string, unknown>;
 			expect(body.email_address).toBe("payload@example.com");
-			expect(body.tag_names).toContain("architect-brief");
-			expect(body.tag_names).toContain("source-footer");
+
+			const tagCall = mockFetch.mock.calls[1] as [string, RequestInit];
+			expect(tagCall[0]).toContain("/tags/");
+			expect(tagCall[0]).toContain("/subscribers");
 		});
 
 		it("should include AbortSignal with 8-second timeout", async () => {
@@ -271,5 +273,30 @@ describe("subscribeToNewsletter", () => {
 
 			globalThis.fetch = originalFetch;
 		});
+	});
+});
+
+describe("Tag application", () => {
+	it("should apply architect-brief tag via separate API call after subscribe", async () => {
+		const mockFetchLocal = vi.fn();
+		mockFetchLocal.mockResolvedValueOnce({
+			ok: true,
+			json: () =>
+				Promise.resolve({
+					subscriber: { id: 123, created_at: "2026-01-01", updated_at: "2026-01-01" },
+				}),
+		});
+		mockFetchLocal.mockResolvedValue({ ok: true, json: () => Promise.resolve({}) });
+
+		await __setDependencies({ fetch: mockFetchLocal });
+
+		await subscribeToNewsletter({ email: "tag-test@example.com", source: "footer" });
+
+		const tagCalls = mockFetchLocal.mock.calls.filter(
+			(c) => typeof c[0] === "string" && (c[0] as string).includes("/tags/")
+		);
+		expect(tagCalls.length).toBeGreaterThan(0);
+		expect(tagCalls[0][0]).toContain("/tags/");
+		expect(tagCalls[0][0]).toContain("/subscribers");
 	});
 });

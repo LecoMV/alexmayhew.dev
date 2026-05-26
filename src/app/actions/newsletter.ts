@@ -26,6 +26,8 @@ const ALLOWED_CUSTOM_FIELDS = new Set([
 	"trigger_event",
 ]);
 
+const ARCHITECT_BRIEF_TAG_ID = 19804765;
+
 const SOURCE_TAG_MAP: Record<string, string> = {
 	footer: "source-footer",
 	"blog-sidebar": "source-blog",
@@ -130,7 +132,6 @@ export async function subscribeToNewsletter(data: unknown): Promise<NewsletterFo
 			body: JSON.stringify({
 				email_address: email,
 				...(customFields && { fields: customFields }),
-				tag_names: tagNames,
 			}),
 			signal: AbortSignal.timeout(8_000),
 		});
@@ -139,6 +140,15 @@ export async function subscribeToNewsletter(data: unknown): Promise<NewsletterFo
 			const resData = (await response.json().catch(() => ({}))) as Record<string, unknown>;
 			const subscriber = resData.subscriber as Record<string, unknown> | undefined;
 			const isExisting = subscriber?.created_at !== subscriber?.updated_at;
+
+			await dependencies
+				.fetch(`https://api.kit.com/v4/tags/${ARCHITECT_BRIEF_TAG_ID}/subscribers`, {
+					method: "POST",
+					headers: { "X-Kit-Api-Key": apiKey, "Content-Type": "application/json" },
+					body: JSON.stringify({ email_address: email }),
+				})
+				.catch(() => {});
+
 			return { success: true, existingSubscriber: isExisting };
 		}
 
