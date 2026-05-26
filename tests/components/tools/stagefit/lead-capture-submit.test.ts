@@ -14,9 +14,7 @@ vi.mock("@opennextjs/cloudflare", () => ({
 
 vi.mock("@/lib/cloudflare-env", () => ({
 	getEnv: vi.fn().mockResolvedValue({
-		BEEHIIV_API_KEY: "test-key",
-		BEEHIIV_PUBLICATION_ID: "pub_test",
-		STAGEFIT_RESULT_SIGNING_KEY: "test-signing-key",
+		KIT_API_KEY: "kit-test-key",
 	}),
 }));
 
@@ -61,8 +59,7 @@ describe("submitStageFitLead", () => {
 		expect(mockFetch).toHaveBeenCalled();
 		const [, options] = mockFetch.mock.calls[0] as [string, RequestInit];
 		const body = JSON.parse(options.body as string) as Record<string, unknown>;
-		const fields = body.custom_fields as Array<{ name: string; value: string }>;
-		const zoneField = fields.find((f) => f.name === "stagefit_zone");
-		expect(zoneField?.value).toBe("over-built");
+		const fields = body.fields as Record<string, string>;
+		expect(fields.stagefit_zone).toBe("over-built");
 	});
 });

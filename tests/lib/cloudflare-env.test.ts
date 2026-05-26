@@ -23,12 +23,10 @@ describe("cloudflare-env", () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
+		process.env.KIT_API_KEY = "env-kit-key";
 		process.env.RESEND_API_KEY = "env-resend-key";
 		process.env.CONTACT_EMAIL = "env@example.com";
 		process.env.TURNSTILE_SECRET_KEY = "env-turnstile-key";
-		process.env.LISTMONK_API_URL = "http://localhost:9000";
-		process.env.LISTMONK_API_USER = "admin";
-		process.env.LISTMONK_API_KEY = "env-listmonk-key";
 		(process.env as Record<string, string | undefined>).NODE_ENV = "test";
 	});
 
@@ -39,18 +37,17 @@ describe("cloudflare-env", () => {
 	it("should return CF env values when getCloudflareContext succeeds", async () => {
 		mockGetCloudflareContext.mockResolvedValue({
 			env: {
+				KIT_API_KEY: "cf-kit-key",
 				RESEND_API_KEY: "cf-resend-key",
 				CONTACT_EMAIL: "cf@example.com",
 				TURNSTILE_SECRET_KEY: "cf-turnstile-key",
-				LISTMONK_API_URL: "https://listmonk.example.com",
-				LISTMONK_API_USER: "cf-admin",
-				LISTMONK_API_KEY: "cf-listmonk-key",
 			},
 		});
 
 		const getEnv = await loadGetEnv();
 		const env = await getEnv();
 
+		expect(env.KIT_API_KEY).toBe("cf-kit-key");
 		expect(env.RESEND_API_KEY).toBe("cf-resend-key");
 		expect(env.CONTACT_EMAIL).toBe("cf@example.com");
 		expect(env.TURNSTILE_SECRET_KEY).toBe("cf-turnstile-key");
@@ -62,6 +59,7 @@ describe("cloudflare-env", () => {
 		const getEnv = await loadGetEnv();
 		const env = await getEnv();
 
+		expect(env.KIT_API_KEY).toBe("env-kit-key");
 		expect(env.RESEND_API_KEY).toBe("env-resend-key");
 		expect(env.CONTACT_EMAIL).toBe("env@example.com");
 		expect(env.TURNSTILE_SECRET_KEY).toBe("env-turnstile-key");
@@ -70,16 +68,15 @@ describe("cloudflare-env", () => {
 	it("should return undefined values without crashing when both sources are empty", async () => {
 		mockGetCloudflareContext.mockRejectedValue(new Error("Not in CF context"));
 		const processEnv = process.env as Record<string, string | undefined>;
+		delete processEnv.KIT_API_KEY;
 		delete processEnv.RESEND_API_KEY;
 		delete processEnv.CONTACT_EMAIL;
 		delete processEnv.TURNSTILE_SECRET_KEY;
-		delete processEnv.LISTMONK_API_URL;
-		delete processEnv.LISTMONK_API_USER;
-		delete processEnv.LISTMONK_API_KEY;
 
 		const getEnv = await loadGetEnv();
 		const env = await getEnv();
 
+		expect(env.KIT_API_KEY).toBeUndefined();
 		expect(env.RESEND_API_KEY).toBeUndefined();
 		expect(env.CONTACT_EMAIL).toBeUndefined();
 		expect(env).toBeDefined();
@@ -88,16 +85,15 @@ describe("cloudflare-env", () => {
 	it("should fill gaps from process.env when CF context provides partial env", async () => {
 		mockGetCloudflareContext.mockResolvedValue({
 			env: {
-				RESEND_API_KEY: "cf-resend-key",
-				// Other keys missing from CF
+				KIT_API_KEY: "cf-kit-key",
 			},
 		});
 
 		const getEnv = await loadGetEnv();
 		const env = await getEnv();
 
-		expect(env.RESEND_API_KEY).toBe("cf-resend-key");
-		expect(env.CONTACT_EMAIL).toBe("env@example.com"); // Fell back to process.env
+		expect(env.KIT_API_KEY).toBe("cf-kit-key");
+		expect(env.CONTACT_EMAIL).toBe("env@example.com");
 	});
 
 	it("should always return NODE_ENV from process.env", async () => {
@@ -108,7 +104,7 @@ describe("cloudflare-env", () => {
 		const getEnv = await loadGetEnv();
 		const env = await getEnv();
 
-		expect(env.NODE_ENV).toBe("test"); // process.env.NODE_ENV, not CF
+		expect(env.NODE_ENV).toBe("test");
 	});
 
 	it("should handle multiple calls without re-throwing", async () => {
@@ -118,7 +114,7 @@ describe("cloudflare-env", () => {
 		const env1 = await getEnv();
 		const env2 = await getEnv();
 
-		expect(env1.RESEND_API_KEY).toBe("env-resend-key");
-		expect(env2.RESEND_API_KEY).toBe("env-resend-key");
+		expect(env1.KIT_API_KEY).toBe("env-kit-key");
+		expect(env2.KIT_API_KEY).toBe("env-kit-key");
 	});
 });
