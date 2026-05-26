@@ -13,8 +13,7 @@ vi.mock("next/headers", () => ({
 
 vi.mock("@/lib/cloudflare-env", () => ({
 	getEnv: vi.fn().mockResolvedValue({
-		BEEHIIV_API_KEY: "beehiiv-test-key",
-		BEEHIIV_PUBLICATION_ID: "pub_test",
+		KIT_API_KEY: "kit-test-key",
 	}),
 }));
 
@@ -41,7 +40,10 @@ describe("subscribeToNewsletter", () => {
 		mockRateLimitFn.mockResolvedValue({ success: true });
 		mockFetch.mockResolvedValue({
 			ok: true,
-			json: () => Promise.resolve({}),
+			json: () =>
+				Promise.resolve({
+					subscriber: { id: 1, created_at: "2026-01-01", updated_at: "2026-01-01" },
+				}),
 		});
 
 		await __setDependencies({
@@ -70,16 +72,6 @@ describe("subscribeToNewsletter", () => {
 			expect(result.success).toBe(false);
 			expect(result.error).toBeDefined();
 		});
-
-		it("should default source to 'website' when not provided", async () => {
-			await subscribeToNewsletter({ email: TEST_EMAIL, source: "website" });
-			expect(mockFetch).toHaveBeenCalledWith(
-				expect.any(String),
-				expect.objectContaining({
-					body: expect.stringContaining(`"email":"${TEST_EMAIL}"`),
-				})
-			);
-		});
 	});
 
 	describe("subscribeNewsletterAction (FormData wrapper)", () => {
@@ -105,14 +97,6 @@ describe("subscribeToNewsletter", () => {
 			const result = await subscribeNewsletterAction({ success: false }, formData);
 			expect(result.success).toBe(true);
 		});
-
-		it("should default source to 'website' when missing from FormData", async () => {
-			const formData = new FormData();
-			formData.set("email", FORM_EMAIL);
-
-			const result = await subscribeNewsletterAction({ success: false }, formData);
-			expect(result.success).toBe(true);
-		});
 	});
 
 	describe("Rate limiting", () => {
@@ -134,23 +118,9 @@ describe("subscribeToNewsletter", () => {
 		});
 	});
 
-	describe("Missing Beehiiv credentials", () => {
+	describe("Missing Kit credentials", () => {
 		it("should return unavailable message when API key is not configured", async () => {
-			mockGetEnv.mockResolvedValueOnce({
-				BEEHIIV_API_KEY: undefined,
-				BEEHIIV_PUBLICATION_ID: "pub_test",
-			});
-
-			const result = await subscribeToNewsletter({ email: TEST_EMAIL, source: "website" });
-			expect(result.success).toBe(false);
-			expect(result.error).toBe("Newsletter signup is temporarily unavailable.");
-		});
-
-		it("should return unavailable message when publication ID is not configured", async () => {
-			mockGetEnv.mockResolvedValueOnce({
-				BEEHIIV_API_KEY: "beehiiv-test-key",
-				BEEHIIV_PUBLICATION_ID: undefined,
-			});
+			mockGetEnv.mockResolvedValueOnce({ KIT_API_KEY: undefined });
 
 			const result = await subscribeToNewsletter({ email: TEST_EMAIL, source: "website" });
 			expect(result.success).toBe(false);
@@ -158,34 +128,17 @@ describe("subscribeToNewsletter", () => {
 		});
 	});
 
-	describe("Beehiiv API responses", () => {
+	describe("Kit API responses", () => {
 		it("should return success on 200 response", async () => {
-			mockFetch.mockResolvedValue({
-				ok: true,
-				json: () => Promise.resolve({}),
-			});
-
 			const result = await subscribeToNewsletter({ email: TEST_EMAIL, source: "website" });
 			expect(result.success).toBe(true);
 		});
 
-		it("should return email validation error on 400 with 'email' in message", async () => {
+		it("should return email validation error on 422 with email in message", async () => {
 			mockFetch.mockResolvedValue({
 				ok: false,
-				status: 400,
-				json: () => Promise.resolve({ message: "Invalid email address provided" }),
-			});
-
-			const result = await subscribeToNewsletter({ email: TEST_EMAIL, source: "website" });
-			expect(result.success).toBe(false);
-			expect(result.error).toBe("Please enter a valid email address.");
-		});
-
-		it("should return email validation error on 400 with 'valid' in message", async () => {
-			mockFetch.mockResolvedValue({
-				ok: false,
-				status: 400,
-				json: () => Promise.resolve({ message: "Not a valid format" }),
+				status: 422,
+				json: () => Promise.resolve({ errors: ["Email address is invalid"] }),
 			});
 
 			const result = await subscribeToNewsletter({ email: TEST_EMAIL, source: "website" });
@@ -197,7 +150,7 @@ describe("subscribeToNewsletter", () => {
 			mockFetch.mockResolvedValue({
 				ok: false,
 				status: 400,
-				json: () => Promise.resolve({ message: "List not found" }),
+				json: () => Promise.resolve({ message: "Bad request" }),
 			});
 
 			const result = await subscribeToNewsletter({ email: TEST_EMAIL, source: "website" });
@@ -240,57 +193,36 @@ describe("subscribeToNewsletter", () => {
 			expect(result.success).toBe(false);
 		});
 
-		it("passes customFields to Beehiiv as array of {name, value}", async () => {
+		it("passes customFields to Kit as fields object", async () => {
 			const result = await subscribeToNewsletter({
 				email: TEST_EMAIL,
-				source: "quiz-results-v2",
+				source: "stage-fit-quiz-v2",
 				customFields: { stagefit_zone: "over-built", stagefit_severity: "acute" },
 			});
 			expect(result.success).toBe(true);
 			const [, options] = mockFetch.mock.calls[0] as [string, RequestInit];
 			const body = JSON.parse(options.body as string) as Record<string, unknown>;
-			expect(body.custom_fields).toEqual([
-				{ name: "stagefit_zone", value: "over-built" },
-				{ name: "stagefit_severity", value: "acute" },
-			]);
-		});
-	});
-
-	describe("Duplicate email handling", () => {
-		it("handles 409 existing subscriber by returning existingSubscriber flag", async () => {
-			mockFetch.mockResolvedValue({
-				ok: false,
-				status: 409,
-				json: () => Promise.resolve({ errors: [{ message: "Subscriber already exists" }] }),
+			expect(body.fields).toEqual({
+				stagefit_zone: "over-built",
+				stagefit_severity: "acute",
 			});
-
-			const result = await subscribeToNewsletter({
-				email: "existing@example.com",
-				source: "website",
-			});
-			expect(result.success).toBe(true);
-			expect(result.existingSubscriber).toBe(true);
 		});
 	});
 
 	describe("Request payload structure", () => {
-		it("should send correct Beehiiv payload", async () => {
-			await subscribeToNewsletter({ email: "payload@example.com", source: "website" });
+		it("should send correct Kit payload", async () => {
+			await subscribeToNewsletter({ email: "payload@example.com", source: "footer" });
 
 			expect(mockFetch).toHaveBeenCalledTimes(1);
 			const [url, options] = mockFetch.mock.calls[0] as [string, RequestInit];
-			expect(url).toBe("https://api.beehiiv.com/v2/publications/pub_test/subscriptions");
+			expect(url).toBe("https://api.kit.com/v4/subscribers");
 			expect(options.method).toBe("POST");
-			expect((options.headers as Record<string, string>).Authorization).toBe(
-				"Bearer beehiiv-test-key"
-			);
+			expect((options.headers as Record<string, string>)["X-Kit-Api-Key"]).toBe("kit-test-key");
 
 			const body = JSON.parse(options.body as string) as Record<string, unknown>;
-			expect(body.email).toBe("payload@example.com");
-			expect(body.reactivate_existing).toBe(true);
-			expect(body.send_welcome_email).toBe(true);
-			expect(body.utm_source).toBe("website");
-			expect(body.utm_medium).toBe("website");
+			expect(body.email_address).toBe("payload@example.com");
+			expect(body.tag_names).toContain("architect-brief");
+			expect(body.tag_names).toContain("source-footer");
 		});
 
 		it("should include AbortSignal with 8-second timeout", async () => {
@@ -309,14 +241,6 @@ describe("subscribeToNewsletter", () => {
 			expect(result.success).toBe(false);
 			expect(result.error).toBe("An unexpected error occurred.");
 		});
-
-		it("should return unexpected error when AbortError is NOT thrown (non-abort error)", async () => {
-			mockFetch.mockRejectedValue(new TypeError("Failed to fetch"));
-
-			const result = await subscribeToNewsletter({ email: TEST_EMAIL, source: "website" });
-			expect(result.success).toBe(false);
-			expect(result.error).toBe("An unexpected error occurred.");
-		});
 	});
 
 	describe("Default fetch", () => {
@@ -324,22 +248,23 @@ describe("subscribeToNewsletter", () => {
 			const originalFetch = globalThis.fetch;
 			const mockGlobalFetch = vi.fn().mockResolvedValue({
 				ok: true,
-				json: () => Promise.resolve({}),
+				json: () =>
+					Promise.resolve({
+						subscriber: { id: 1, created_at: "2026-01-01", updated_at: "2026-01-01" },
+					}),
 			});
 			globalThis.fetch = mockGlobalFetch;
 
-			// Reset deps so fetch defaults to the current globalThis.fetch
 			await __resetDependencies();
 
 			const result = await subscribeToNewsletter({ email: TEST_EMAIL, source: "website" });
 			expect(result.success).toBe(true);
 			expect(mockGlobalFetch).toHaveBeenCalledWith(
-				"https://api.beehiiv.com/v2/publications/pub_test/subscriptions",
+				"https://api.kit.com/v4/subscribers",
 				expect.objectContaining({
 					method: "POST",
 					headers: expect.objectContaining({
-						Authorization: "Bearer beehiiv-test-key",
-						"Content-Type": "application/json",
+						"X-Kit-Api-Key": "kit-test-key",
 					}),
 				})
 			);

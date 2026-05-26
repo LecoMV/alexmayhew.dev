@@ -12,11 +12,7 @@ declare namespace Cloudflare {
 		NEXT_PUBLIC_SENTRY_DSN: string;
 		NEXT_PUBLIC_GA_MEASUREMENT_ID: string;
 		NEXT_PUBLIC_CF_BEACON_TOKEN: string;
-		LISTMONK_API_URL: string;
-		LISTMONK_API_USER: string;
-		LISTMONK_API_KEY: string;
-		BEEHIIV_API_KEY: string;
-		BEEHIIV_PUBLICATION_ID: string;
+		KIT_API_KEY: string;
 		RESEND_API_KEY: string;
 		CONTACT_EMAIL: string;
 		RATE_LIMITER_CHAT: RateLimit;
