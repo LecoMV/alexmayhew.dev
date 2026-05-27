@@ -26,13 +26,21 @@ const ALLOWED_CUSTOM_FIELDS = new Set([
 	"trigger_event",
 ]);
 
-const ARCHITECT_BRIEF_TAG_ID = 19804765;
+const TAG_IDS: Record<string, number> = {
+	"architect-brief": 19804765,
+	"stagefit-lead": 19804766,
+	"source-footer": 19804767,
+	"source-blog": 19804768,
+	"source-stagefit-quiz": 19804769,
+};
 
 const SOURCE_TAG_MAP: Record<string, string> = {
 	footer: "source-footer",
 	"blog-sidebar": "source-blog",
 	"stage-fit-quiz-v2": "source-stagefit-quiz",
 };
+
+const TURNSTILE_EXEMPT_SOURCES = new Set(["stage-fit-quiz-v2"]);
 
 const newsletterSchema = z.object({
 	email: z.string().email("Please enter a valid email address"),
@@ -99,7 +107,8 @@ export async function subscribeToNewsletter(data: unknown): Promise<NewsletterFo
 
 	const env = await getEnv();
 
-	if (env.NODE_ENV === "production" || turnstileToken) {
+	const turnstileExempt = TURNSTILE_EXEMPT_SOURCES.has(source);
+	if (!turnstileExempt && (env.NODE_ENV === "production" || turnstileToken)) {
 		if (!turnstileToken) {
 			return { success: false, error: "Bot check required. Please try again." };
 		}
@@ -141,13 +150,21 @@ export async function subscribeToNewsletter(data: unknown): Promise<NewsletterFo
 			const subscriber = resData.subscriber as Record<string, unknown> | undefined;
 			const isExisting = subscriber?.created_at !== subscriber?.updated_at;
 
-			await dependencies
-				.fetch(`https://api.kit.com/v4/tags/${ARCHITECT_BRIEF_TAG_ID}/subscribers`, {
-					method: "POST",
-					headers: { "X-Kit-Api-Key": apiKey, "Content-Type": "application/json" },
-					body: JSON.stringify({ email_address: email }),
-				})
-				.catch(() => {});
+			const tagIdsToApply = [TAG_IDS["architect-brief"]];
+			if (sourceTag && TAG_IDS[sourceTag]) tagIdsToApply.push(TAG_IDS[sourceTag]);
+			if (customFields?.stagefit_zone) tagIdsToApply.push(TAG_IDS["stagefit-lead"]);
+
+			await Promise.all(
+				tagIdsToApply.map((tagId) =>
+					dependencies
+						.fetch(`https://api.kit.com/v4/tags/${tagId}/subscribers`, {
+							method: "POST",
+							headers: { "X-Kit-Api-Key": apiKey, "Content-Type": "application/json" },
+							body: JSON.stringify({ email_address: email }),
+						})
+						.catch(() => {})
+				)
+			);
 
 			return { success: true, existingSubscriber: isExisting };
 		}

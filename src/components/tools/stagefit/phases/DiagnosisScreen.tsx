@@ -14,11 +14,17 @@ export function DiagnosisScreen({ input, result }: DiagnosisScreenProps) {
 	const ctaHref = `/contact?${ctaParams.toString()}`;
 
 	return (
-		<section>
-			<h2>{copy.diagnosis}</h2>
-			<p>{copy.symptoms}</p>
-			<p>{copy.prognosisVelocity}</p>
-			<a href={ctaHref}>{copy.prescriptionCta}</a>
+		<section className="mx-auto max-w-2xl">
+			<p className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase">Diagnosis</p>
+			<h2 className="text-mist-white mb-4 font-mono text-2xl tracking-tight">{copy.diagnosis}</h2>
+			<p className="text-slate-text mb-4 text-base leading-relaxed">{copy.symptoms}</p>
+			<p className="text-slate-text mb-6 text-base leading-relaxed">{copy.prognosisVelocity}</p>
+			<a
+				href={ctaHref}
+				className="border-cyber-lime bg-cyber-lime/10 text-cyber-lime hover:bg-cyber-lime/20 focus-visible:ring-cyber-lime inline-block border px-6 py-3 font-mono text-sm tracking-tight transition-colors focus:outline-none focus-visible:ring-2"
+			>
+				{copy.prescriptionCta}
+			</a>
 		</section>
 	);
 }

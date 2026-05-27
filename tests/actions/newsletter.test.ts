@@ -213,7 +213,7 @@ describe("subscribeToNewsletter", () => {
 		it("should send correct Kit payload", async () => {
 			await subscribeToNewsletter({ email: "payload@example.com", source: "footer" });
 
-			expect(mockFetch).toHaveBeenCalledTimes(2);
+			expect(mockFetch.mock.calls.length).toBeGreaterThanOrEqual(2);
 			const [url, options] = mockFetch.mock.calls[0] as [string, RequestInit];
 			expect(url).toBe("https://api.kit.com/v4/subscribers");
 			expect(options.method).toBe("POST");
@@ -222,9 +222,12 @@ describe("subscribeToNewsletter", () => {
 			const body = JSON.parse(options.body as string) as Record<string, unknown>;
 			expect(body.email_address).toBe("payload@example.com");
 
-			const tagCall = mockFetch.mock.calls[1] as [string, RequestInit];
-			expect(tagCall[0]).toContain("/tags/");
-			expect(tagCall[0]).toContain("/subscribers");
+			const tagCalls = mockFetch.mock.calls.filter(
+				(c) => typeof c[0] === "string" && (c[0] as string).includes("/tags/")
+			);
+			expect(tagCalls.length).toBeGreaterThan(0);
+			expect(tagCalls[0][0]).toContain("/tags/");
+			expect(tagCalls[0][0]).toContain("/subscribers");
 		});
 
 		it("should include AbortSignal with 8-second timeout", async () => {
@@ -277,8 +280,10 @@ describe("subscribeToNewsletter", () => {
 });
 
 describe("Tag application", () => {
-	it("should apply architect-brief tag via separate API call after subscribe", async () => {
-		const mockFetchLocal = vi.fn();
+	let mockFetchLocal: ReturnType<typeof vi.fn> & typeof globalThis.fetch;
+
+	beforeEach(async () => {
+		mockFetchLocal = vi.fn() as typeof mockFetchLocal;
 		mockFetchLocal.mockResolvedValueOnce({
 			ok: true,
 			json: () =>
@@ -287,9 +292,14 @@ describe("Tag application", () => {
 				}),
 		});
 		mockFetchLocal.mockResolvedValue({ ok: true, json: () => Promise.resolve({}) });
-
 		await __setDependencies({ fetch: mockFetchLocal });
+	});
 
+	afterEach(async () => {
+		await __resetDependencies();
+	});
+
+	it("should apply architect-brief tag via separate API call after subscribe", async () => {
 		await subscribeToNewsletter({ email: "tag-test@example.com", source: "footer" });
 
 		const tagCalls = mockFetchLocal.mock.calls.filter(
@@ -298,5 +308,104 @@ describe("Tag application", () => {
 		expect(tagCalls.length).toBeGreaterThan(0);
 		expect(tagCalls[0][0]).toContain("/tags/");
 		expect(tagCalls[0][0]).toContain("/subscribers");
+	});
+
+	it("should apply source-blog tag for blog-sidebar source", async () => {
+		await subscribeToNewsletter({ email: "tag-test@example.com", source: "blog-sidebar" });
+
+		const tagCalls = mockFetchLocal.mock.calls.filter(
+			(c) => typeof c[0] === "string" && (c[0] as string).includes("/tags/")
+		);
+		const tagUrls = tagCalls.map((c) => c[0] as string);
+		expect(tagUrls).toContainEqual(expect.stringContaining("/tags/19804768/subscribers"));
+	});
+
+	it("should apply stagefit-lead tag when stagefit_zone is present", async () => {
+		await subscribeToNewsletter({
+			email: "tag-test@example.com",
+			source: "stage-fit-quiz-v2",
+			customFields: { stagefit_zone: "under-built" },
+		});
+
+		const tagCalls = mockFetchLocal.mock.calls.filter(
+			(c) => typeof c[0] === "string" && (c[0] as string).includes("/tags/")
+		);
+		const tagUrls = tagCalls.map((c) => c[0] as string);
+		expect(tagUrls).toContainEqual(expect.stringContaining("/tags/19804766/subscribers"));
+	});
+
+	it("should apply source-stagefit-quiz tag for quiz source", async () => {
+		await subscribeToNewsletter({
+			email: "tag-test@example.com",
+			source: "stage-fit-quiz-v2",
+			customFields: { stagefit_zone: "over-built" },
+		});
+
+		const tagCalls = mockFetchLocal.mock.calls.filter(
+			(c) => typeof c[0] === "string" && (c[0] as string).includes("/tags/")
+		);
+		const tagUrls = tagCalls.map((c) => c[0] as string);
+		expect(tagUrls).toContainEqual(expect.stringContaining("/tags/19804769/subscribers"));
+	});
+
+	it("should apply source-footer tag for footer source", async () => {
+		await subscribeToNewsletter({ email: "tag-test@example.com", source: "footer" });
+
+		const tagCalls = mockFetchLocal.mock.calls.filter(
+			(c) => typeof c[0] === "string" && (c[0] as string).includes("/tags/")
+		);
+		const tagUrls = tagCalls.map((c) => c[0] as string);
+		expect(tagUrls).toContainEqual(expect.stringContaining("/tags/19804767/subscribers"));
+	});
+});
+
+describe("Turnstile exemption for server-action callers", () => {
+	it("should NOT require Turnstile for stage-fit-quiz-v2 source in production", async () => {
+		const mockFetchTurnstile = vi.fn<typeof globalThis.fetch>();
+		mockFetchTurnstile.mockResolvedValue({
+			ok: true,
+			json: () =>
+				Promise.resolve({
+					subscriber: { id: 1, created_at: "2026-01-01", updated_at: "2026-01-01" },
+				}),
+		} as Response);
+		await __setDependencies({
+			fetch: mockFetchTurnstile,
+			verifyTurnstile: vi.fn().mockResolvedValue(true),
+		});
+
+		mockGetEnv.mockResolvedValueOnce({
+			KIT_API_KEY: "kit-test-key",
+			NODE_ENV: "production",
+			TURNSTILE_SECRET_KEY: "ts-key",
+		});
+
+		const result = await subscribeToNewsletter({
+			email: "test@example.com",
+			source: "stage-fit-quiz-v2",
+			customFields: { stagefit_zone: "over-built" },
+		});
+		expect(result.success).toBe(true);
+
+		await __resetDependencies();
+	});
+
+	it("should still require Turnstile for footer source in production", async () => {
+		await __setDependencies({
+			fetch: vi.fn<typeof globalThis.fetch>(),
+			verifyTurnstile: vi.fn().mockResolvedValue(true),
+		});
+
+		mockGetEnv.mockResolvedValueOnce({
+			KIT_API_KEY: "kit-test-key",
+			NODE_ENV: "production",
+			TURNSTILE_SECRET_KEY: "ts-key",
+		});
+
+		const result = await subscribeToNewsletter({ email: "test@example.com", source: "footer" });
+		expect(result.success).toBe(false);
+		expect(result.error).toContain("Bot check");
+
+		await __resetDependencies();
 	});
 });
