@@ -73,10 +73,10 @@ test.describe("Accessibility - Contact Form", () => {
 	test("contact form inputs should have proper labels", async ({ page }) => {
 		await page.goto("/contact");
 
-		// Scope to the contact form (has textarea), not the footer newsletter form
-		// Wait for form to fully render before running axe analysis
 		const contactForm = page.locator("form", { has: page.locator('textarea[name="message"]') });
 		await expect(contactForm).toBeVisible();
+
+		await contactForm.locator('button:has-text("Tell me more")').click();
 		await expect(contactForm.locator('input[name="name"]')).toBeVisible();
 
 		// Verify form has accessible labels via axe — scope to contact form only
