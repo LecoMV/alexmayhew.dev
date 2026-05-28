@@ -230,6 +230,14 @@ describe("subscribeToNewsletter", () => {
 			expect(tagCalls[0][0]).toContain("/subscribers");
 		});
 
+		it("should include welcome sequence enrollment in subscriber create", async () => {
+			await subscribeToNewsletter({ email: "seq@example.com", source: "footer" });
+
+			const [, options] = mockFetch.mock.calls[0] as [string, RequestInit];
+			const body = JSON.parse(options.body as string) as Record<string, unknown>;
+			expect(body.sequence_ids).toEqual([2770667]);
+		});
+
 		it("should include AbortSignal with 8-second timeout", async () => {
 			await subscribeToNewsletter({ email: "timeout@example.com", source: "website" });
 

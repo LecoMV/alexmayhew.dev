@@ -42,6 +42,8 @@ const SOURCE_TAG_MAP: Record<string, string> = {
 
 const TURNSTILE_EXEMPT_SOURCES = new Set(["stage-fit-quiz-v2"]);
 
+const WELCOME_SEQUENCE_ID = 2770667;
+
 const newsletterSchema = z.object({
 	email: z.string().email("Please enter a valid email address"),
 	source: z.string().optional().default("website"),
@@ -140,6 +142,7 @@ export async function subscribeToNewsletter(data: unknown): Promise<NewsletterFo
 			},
 			body: JSON.stringify({
 				email_address: email,
+				sequence_ids: [WELCOME_SEQUENCE_ID],
 				...(customFields && { fields: customFields }),
 			}),
 			signal: AbortSignal.timeout(8_000),
