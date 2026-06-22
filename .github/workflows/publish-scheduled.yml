@@ -25,7 +25,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           # DEPLOY_PAT is required so the auto-commit in the final step triggers
           # the Deploy workflow (GITHUB_TOKEN pushes don't fire push events).

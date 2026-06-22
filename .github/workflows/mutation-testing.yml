@@ -24,7 +24,7 @@ jobs:
     # is a ceiling, not a target — if a run approaches this, investigate.
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
