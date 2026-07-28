@@ -22,6 +22,32 @@ const config = {
 	reactStrictMode: true,
 	poweredByHeader: false,
 
+	// Force blocking (in-<head>) metadata for every user agent.
+	//
+	// Next 15.2+ streams metadata for any UA not matching `htmlLimitedBots`,
+	// emitting <title>, <meta name="description">, og:*, twitter:* and
+	// rel=canonical late in <body> rather than in <head>. Next's default regex
+	// matches neither Googlebot nor any AI crawler (verified against
+	// node_modules/next/dist/shared/lib/router/utils/html-bots.js). Measured on
+	// production 2026-07-28: </head> closed at byte 10270 while <title> appeared
+	// at byte 55562 for Googlebot, OAI-SearchBot, PerplexityBot, ClaudeBot and
+	// ordinary browsers; only facebookexternalhit received a correct <head>.
+	//
+	// The tags did exist, so this was not a "titleless page" — Googlebot renders
+	// JS and Next documents that it interprets streamed metadata. The defensible
+	// problem is portability: body-placed metadata cannot be relied on for
+	// HTML-limited crawlers that parse without executing JavaScript, and the
+	// AI-answer-engine crawlers this site depends on are undocumented in that
+	// respect. Head placement is the safe default.
+	//
+	// Matching everything disables streaming wholesale rather than allowlisting
+	// UAs, because an allowlist silently rots as new crawlers ship. Cost is a
+	// possible TTFB/LCP increase: Next streams the shell before generateMetadata
+	// resolves. Acceptable here because every generateMetadata only awaits params
+	// and reads local imported data. Revisit if any route's metadata ever needs a
+	// database or network call, which would become a global TTFB dependency.
+	htmlLimitedBots: /.*/,
+
 	// Environment variables for footer
 	env: {
 		NEXT_PUBLIC_SITE_VERSION: process.env.npm_package_version || "0.1.0",
