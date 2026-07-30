@@ -41,6 +41,7 @@ const SOURCE_TAG_MAP: Record<string, string> = {
 };
 
 const TURNSTILE_EXEMPT_SOURCES = new Set(["stage-fit-quiz-v2"]);
+const WELCOME_SEQUENCE_ID = 2770667;
 
 const newsletterSchema = z.object({
 	email: z.string().email("Please enter a valid email address"),
@@ -154,8 +155,8 @@ export async function subscribeToNewsletter(data: unknown): Promise<NewsletterFo
 			if (sourceTag && TAG_IDS[sourceTag]) tagIdsToApply.push(TAG_IDS[sourceTag]);
 			if (customFields?.stagefit_zone) tagIdsToApply.push(TAG_IDS["stagefit-lead"]);
 
-			await Promise.all(
-				tagIdsToApply.map((tagId) =>
+			const postSubscribeCalls = [
+				...tagIdsToApply.map((tagId) =>
 					dependencies
 						.fetch(`https://api.kit.com/v4/tags/${tagId}/subscribers`, {
 							method: "POST",
@@ -163,8 +164,17 @@ export async function subscribeToNewsletter(data: unknown): Promise<NewsletterFo
 							body: JSON.stringify({ email_address: email }),
 						})
 						.catch(() => {})
-				)
-			);
+				),
+				dependencies
+					.fetch(`https://api.kit.com/v4/sequences/${WELCOME_SEQUENCE_ID}/subscribers`, {
+						method: "POST",
+						headers: { "X-Kit-Api-Key": apiKey, "Content-Type": "application/json" },
+						body: JSON.stringify({ email_address: email }),
+					})
+					.catch(() => {}),
+			];
+
+			await Promise.all(postSubscribeCalls);
 
 			return { success: true, existingSubscriber: isExisting };
 		}

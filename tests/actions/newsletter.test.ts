@@ -230,6 +230,21 @@ describe("subscribeToNewsletter", () => {
 			expect(tagCalls[0][0]).toContain("/subscribers");
 		});
 
+		it("should enroll subscriber in welcome sequence via separate API call", async () => {
+			await subscribeToNewsletter({ email: "seq@example.com", source: "footer" });
+
+			const seqCalls = mockFetch.mock.calls.filter(
+				(c) => typeof c[0] === "string" && (c[0] as string).includes("/sequences/")
+			);
+			expect(seqCalls.length).toBe(1);
+			expect(seqCalls[0][0]).toContain("/sequences/2770667/subscribers");
+			const seqBody = JSON.parse((seqCalls[0][1] as RequestInit).body as string) as Record<
+				string,
+				unknown
+			>;
+			expect(seqBody.email_address).toBe("seq@example.com");
+		});
+
 		it("should include AbortSignal with 8-second timeout", async () => {
 			await subscribeToNewsletter({ email: "timeout@example.com", source: "website" });
 
