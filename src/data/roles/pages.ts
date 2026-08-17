@@ -83,16 +83,16 @@ export const rolePages: RolePage[] = [
 		idealTiers: [TIER_ADVISORY_RETAINER, "strategic-implementation", TIER_TECHNICAL_AUDIT],
 
 		proofMetrics: [
-			"0 critical incidents in 18 months at a fintech processing $50M/month",
-			"Focused on shipping working software without unnecessary platform rewrites",
-			"3 successful Series A technical due diligence processes",
-			"Reduced P0 incident rate by 85% through observability improvements",
-			"Hired 12 senior engineers with 100% retention at 18 months",
+			"Nine years as the sole technical owner of a company's systems, from design to deployment to support",
+			"Built a custom lead-capture and CRM-integration system end to end (React, Node, PostgreSQL, Docker)",
+			"Delivered a production data platform for a private investment firm, with a written engineering handoff",
+			"337x processing speedup shipped in a GPU vectorization pipeline (TraceForge)",
+			"70+ published technical articles on architecture, performance, and SEO",
 		],
 
 		positioning: `As a CTO, you don't need another consultant who speaks in abstractions. You need someone who has been in the trenches... who has made the 2 AM decision about whether to roll back or push forward, who has explained technical debt to a board that just wants to know why features are slow.
 
-I've been the technical leader at companies from seed to Series C. I've inherited codebases that made me question every architectural decision ever made, and I've built systems that scaled to millions of users without breaking. That experience is what I bring to every engagement.
+I've been the only technical person in the room for nine years: the one who inherited the codebase, made the 2 AM roll-back call, and owned the outcome. I've built and shipped production systems solo, and I bring that hands-on, no-abstraction experience to every conversation.
 
 My role isn't to replace your judgment... it's to augment it. When you're evaluating a major architecture change, I'm the person who asks the questions your team might not think to ask. When you're hiring a VP of Engineering, I'm the one who can calibrate your interview process against what high-performing teams actually need. When an incident happens, I'm the advisor who helps you conduct a blameless post-mortem that actually improves the system.
 
@@ -215,11 +215,11 @@ Communication happens through your preferred channels... Slack, email, or a dedi
 		idealTiers: [TIER_ADVISORY_RETAINER, "project-based", "fractional-cto"],
 
 		proofMetrics: [
-			"MVP shipped in 8 weeks that secured $1.2M seed round",
-			"Scaled prototype to handle 50K concurrent users for Product Hunt launch",
-			"Helped 7 technical founders close their first senior engineering hire",
-			"Architecture that grew from 0 to $2M ARR without major rewrites",
-			"73% infrastructure cost reduction through optimization audit",
+			"Shipped multiple production SaaS products solo, from first commit to billing and deploys",
+			"73% GPU-cost reduction engineered into an AI image-restoration platform (PhotoKeep)",
+			"Built and sell a commercial FastAPI + Next.js SaaS starter kit (The Unsexy Stack)",
+			"Self-hosted LLM, RAG, and automation infrastructure running on a single workstation",
+			"Self-taught since age 14; I build the whole stack, not just slides",
 		],
 
 		positioning: `As a technical founder, you're used to being the smartest technical person in the room. Your co-founder defers to you on architecture decisions. Your early hires look to you for direction. But that can be isolating when you're facing decisions with 5-year consequences and no one to pressure-test your thinking.
@@ -254,7 +254,7 @@ I'm responsive to urgent questions (within hours during business hours) because 
 			{
 				question: "What stage founders do you work with?",
 				answer:
-					"Most of my technical founder work is with companies from pre-seed through Series A. At this stage, technical decisions have the highest leverage... and the least margin for error. Post-Series A, I typically transition to CTO-level engagements as the role becomes more about leading teams than making architecture decisions.",
+					"Early-stage technical decisions have the highest leverage and the least margin for error, so that is where hands-on help matters most: choosing a stack you will not have to rip out, shipping an MVP that can grow, and knowing which decisions are reversible and which are not.",
 			},
 			{
 				question: "Can you help with fundraising technical due diligence?",
@@ -342,11 +342,11 @@ I'm responsive to urgent questions (within hours during business hours) because 
 		idealTiers: ["fractional-cto", TIER_ADVISORY_RETAINER, TIER_TECHNICAL_AUDIT],
 
 		proofMetrics: [
-			"73% infrastructure cost savings through architecture optimization",
-			"Technical oversight for 12 seed-stage companies through first funding rounds",
-			"Investor-ready codebase that closed $2.5M seed at 15% above initial valuation",
-			"Identified and resolved critical security issues before public launch",
-			"Helped 8 non-technical founders hire their first senior engineer",
+			"73% GPU-cost reduction engineered into a production AI platform",
+			"Built complete web products for non-technical small-business owners (in production)",
+			"Ran all technology for a company as its only technical person for nine years",
+			"Security-hardened production Linux servers with documented, reproducible runbooks",
+			"Plain-language technical explanations for people who aren't engineers",
 		],
 
 		positioning: `As a non-technical founder, you're at a disadvantage in conversations about technology... and everyone in the room knows it. Developers, agencies, and vendors can tell you anything, and you have limited ability to evaluate whether their advice serves your interests or theirs.
@@ -473,11 +473,11 @@ The goal is always to build your technical capability, not create dependency. As
 		idealTiers: [TIER_ADVISORY_RETAINER, "strategic-implementation", TIER_TECHNICAL_AUDIT],
 
 		proofMetrics: [
-			"400% faster deployments through CI/CD modernization",
-			"60% productivity increase after team restructuring initiative",
-			"Reduced mean time to recovery from 4 hours to 15 minutes",
-			"Successfully migrated 2M LOC codebase without production incidents",
-			"Designed onboarding program that cut time-to-productivity from 3 months to 4 weeks",
+			"CI/CD pipelines on GitHub Actions and GitLab CI, deploying to Cloudflare and Linode",
+			"Split a production codebase into two independently deployed products under a hard deadline",
+			"Prometheus/Grafana monitoring with unit-tested alert rules and fail-closed backups",
+			"Documented an engineering handoff (production debt, deploy flow, ownership) for an incoming team",
+			"337x processing speedup shipped in a GPU pipeline",
 		],
 
 		positioning: `As VP Engineering, you're often caught between technical reality and business expectations. Your team wants more time for quality; executives want faster delivery. Your engineers have strong opinions about architecture; you need to make decisions that stick. You're accountable for outcomes, but you can't dictate how every technical decision gets made.

@@ -386,8 +386,8 @@ export default function Home() {
 									01 / Boring Wins
 								</p>
 								<p className="text-slate-text text-sm leading-relaxed">
-									I don&apos;t fill a seat on your team. If the problem is capacity, you need a
-									recruiter. If it&apos;s judgment under uncertainty, we should talk.
+									WordPress where WordPress fits. Postgres before anything exotic. The unsexy stack
+									ships, and whoever maintains it at 2 AM will thank you.
 								</p>
 							</div>
 							<div>
@@ -395,8 +395,9 @@ export default function Home() {
 									02 / Automate The Repeats
 								</p>
 								<p className="text-slate-text text-sm leading-relaxed">
-									The third full rewrite in four years isn&apos;t a technology problem. It&apos;s a
-									decision-making problem... and no architect can fix that from the code layer.
+									If a task happens weekly, it&apos;s a workflow. I&apos;ve automated intake forms,
+									permit paperwork, content pipelines, and my own deployments... the payoff
+									compounds.
 								</p>
 							</div>
 							<div>
@@ -404,8 +405,8 @@ export default function Home() {
 									03 / AI Is A Tool
 								</p>
 								<p className="text-slate-text text-sm leading-relaxed">
-									Microservices because a conference talk said so. Rust because your CTO reads
-									Hacker News. I optimize for your constraints, not industry fashion.
+									I run local models, build agent workflows, and use AI assistants daily. They
+									amplify judgment; they don&apos;t replace it. Measure the output, keep the human.
 								</p>
 							</div>
 						</div>

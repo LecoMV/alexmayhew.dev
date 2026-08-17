@@ -55,16 +55,14 @@ const config = {
 	},
 
 	// Permanent redirects.
-	// `/tools/voice-cloner` was a duplicate marketing page for the VoiceKeep
-	// product, which lives at voicekeep.io. 301 carries any residual link
-	// equity to the canonical product URL; the UTM tag distinguishes this
-	// placement from the hub-card / case-study outbound paths in GA4.
+	// `/tools/voice-cloner` was a duplicate marketing page for VoiceKeep. The
+	// hosted product (voicekeep.io) has been retired, so this now points at the
+	// internal case study, which keeps the URL alive and the link equity on-site.
 	async redirects() {
 		return [
 			{
 				source: "/tools/voice-cloner",
-				destination:
-					"https://voicekeep.io/?utm_source=alexmayhew.dev&utm_medium=referral&utm_campaign=voicekeep_crosspromo&utm_content=tools-redirect",
+				destination: "/work/voice-cloner",
 				permanent: true,
 			},
 		];

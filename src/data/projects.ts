@@ -484,9 +484,8 @@ export const projects: Project[] = [
 			"Stripe",
 			"Cloudflare",
 		],
-		year: "2025",
-		status: "Production",
-		link: "https://voicekeep.io",
+		year: "2025-2026",
+		status: "Archived",
 		featured: true,
 		relatedServices: [
 			{
@@ -505,7 +504,7 @@ export const projects: Project[] = [
 		caseStudy: {
 			published: true,
 			subtitle:
-				"VoiceKeep (voicekeep.io): production voice platform from a Voice Cloner prototype ... TTS, conversations, and full audiobook production on a dedicated RTX PRO 6000 Blackwell GPU server",
+				"VoiceKeep: an AI voice platform (TTS, multi-speaker conversations, and full audiobook production) built on a dedicated GPU server. The hosted service has since been retired; this is a worked example of production TTS engineering.",
 			context: {
 				duration: "8 weeks",
 				industry: "AI/ML SaaS",
@@ -516,7 +515,7 @@ export const projects: Project[] = [
 			approach:
 				"Chose Qwen3-TTS 1.7B after benchmarking against XTTS, Bark, and Tortoise ... best quality-to-VRAM ratio for zero-shot cloning from 10-30 second reference samples. Built the inference pipeline on FastAPI with a 4-tier Redis priority queue (admin > enterprise > pro > free). The critical architectural decision was making each audiobook chapter a Conversation record internally, reusing the entire existing TTS pipeline, per-line effects engine, takes system, and timeline editor with zero code duplication. The Audiobook Studio layer adds manuscript parsing (DOCX via python-docx, PDF via PyMuPDF, TXT via regex), chapter management, character-to-voice casting that propagates across all chapters, and a pronunciation dictionary that applies regex substitutions before TTS generation. Implemented proactive worker recycling every 500 generations to combat PyTorch VRAM fragmentation.",
 			solution:
-				"Voice Cloner runs three production modes through a unified FastAPI backend: (1) Single-voice TTS for quick generation, (2) Multi-speaker Conversations with drag-and-drop line ordering, per-line effects (speed/volume/gap), stage directions, multiple takes per line, ambient audio layers, and a waveform timeline editor, (3) Audiobook Studio that parses manuscripts into chapters, detects dialogue and character names, assigns AI voices to each character, applies book-wide pronunciation dictionaries, and exports as M4B with chapter markers or MP3/WAV zip with LUFS mastering. The frontend is Next.js 15 on Cloudflare Workers with wavesurfer.js visualization. 41+ curated voices plus custom uploads with SNR quality gating. Stripe handles tiered billing, Clerk manages auth, Sentry + Amplitude provide observability. Running at 99.95% uptime with 0.03% error rate on a single server.",
+				"Voice Cloner runs three production modes through a unified FastAPI backend: (1) Single-voice TTS for quick generation, (2) Multi-speaker Conversations with drag-and-drop line ordering, per-line effects (speed/volume/gap), stage directions, multiple takes per line, ambient audio layers, and a waveform timeline editor, (3) Audiobook Studio that parses manuscripts into chapters, detects dialogue and character names, assigns AI voices to each character, applies book-wide pronunciation dictionaries, and exports as M4B with chapter markers or MP3/WAV zip with LUFS mastering. The frontend is Next.js 15 on Cloudflare Workers with wavesurfer.js visualization. 41+ curated voices plus custom uploads with SNR quality gating. Stripe handled tiered billing, Clerk managed auth, Sentry and Amplitude provided observability. It ran on a single dedicated GPU server before the hosted service was retired.",
 			metrics: [
 				{
 					label: "P50 Latency",

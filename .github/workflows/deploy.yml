@@ -319,7 +319,7 @@ jobs:
           # Prove /resume is reachable to user-triggered AI fetchers (Cloudflare
           # "Agent" class): a recruiter pasting the URL into ChatGPT/Claude. Assert
           # real HTML with the resume marker, not a challenge/block page.
-          for ua in "ChatGPT-User" "Claude-User" "PerplexityBot"; do
+          for ua in "ChatGPT-User" "Claude-User" "Perplexity-User"; do
             echo "Testing /resume as $ua"
             body=$(curl -s -A "$ua" "https://alexmayhew.dev/resume")
             ctype=$(curl -s -o /dev/null -w "%{content_type}" -A "$ua" "https://alexmayhew.dev/resume")

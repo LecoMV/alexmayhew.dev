@@ -63,6 +63,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		},
 		// Standard content pages at 0.7
 		{
+			url: `${siteUrl}/resume`,
+			lastModified: siteLastUpdated,
+			changeFrequency: "monthly",
+			priority: 0.9,
+		},
+		{
 			url: `${siteUrl}/about`,
 			lastModified: siteLastUpdated,
 			changeFrequency: "monthly",
