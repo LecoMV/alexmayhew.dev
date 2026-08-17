@@ -33,20 +33,23 @@ interface ToolItem {
 	badgeColor: "lime" | "blue";
 }
 
+// Evidence-first ordering: work, writing, and the resume lead; the
+// services/advisory surfaces stay reachable via footer and mobile menu.
 const navItems: NavItem[] = [
-	{ href: "/services", label: "Services", code: "01" },
-	{ href: "/for", label: "Advisory", code: "02" },
-	{ href: "/work", label: "Work", code: "03" },
-	{ href: "/tools", label: "Tools", code: "04", hasDropdown: true },
-	{ href: "/blog", label: "Blog", code: "05" },
-	{ href: "/about", label: "About", code: "06" },
+	{ href: "/work", label: "Work", code: "01" },
+	{ href: "/blog", label: "Blog", code: "02" },
+	{ href: "/tools", label: "Tools", code: "03", hasDropdown: true },
+	{ href: "/resume", label: "Resume", code: "04" },
+	{ href: "/about", label: "About", code: "05" },
 ];
 
 const mobileOnlyItems: NavItem[] = [
 	{ href: "/", label: "Home", code: "00" },
-	{ href: "/technologies", label: "Technologies", code: "07" },
-	{ href: "/newsletter", label: "Newsletter", code: "08" },
-	{ href: "/contact", label: "Contact", code: "09" },
+	{ href: "/services", label: "Services", code: "06" },
+	{ href: "/for", label: "Advisory", code: "07" },
+	{ href: "/technologies", label: "Technologies", code: "08" },
+	{ href: "/newsletter", label: "Newsletter", code: "09" },
+	{ href: "/contact", label: "Contact", code: "10" },
 ];
 
 const toolsDropdown: ToolItem[] = [

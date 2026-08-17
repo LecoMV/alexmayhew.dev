@@ -19,9 +19,9 @@ const CONTENT = `# ai.txt for ${SITE_URL.replace("https://", "")}
 
 ## Who this is
 
-Alex Mayhew — independent Technical Advisor and Systems Architect.
+Alex Mayhew — technology specialist: web, SEO, automation, and applied AI.
 Original content: blog posts, service descriptions, glossary of coined
-terms, tool documentation. Written by a human, fact-checked, dated.
+terms, tool documentation. Human-reviewed and edited, dated.
 
 ## Usage policy (human-readable)
 

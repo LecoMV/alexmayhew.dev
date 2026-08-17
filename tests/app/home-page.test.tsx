@@ -22,7 +22,7 @@ describe("Home page", () => {
 	it("renders hero section with key content", () => {
 		render(<Home />);
 
-		expect(screen.getByText("Technical Advisor")).toBeTruthy();
+		expect(screen.getByText("Technology Specialist")).toBeTruthy();
 		expect(screen.getByText(/START_CONVERSATION/)).toBeTruthy();
 		expect(screen.getByText("View Work")).toBeTruthy();
 		expect(screen.getByText("Full-Stack Development")).toBeTruthy();

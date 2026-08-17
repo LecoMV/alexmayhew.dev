@@ -2974,7 +2974,7 @@ export const pseoPages: PseoPage[] = [
 		seo: {
 			title: "Fractional CTO | Investor-Ready Strategy",
 			description:
-				"Strategic CTO expertise on your timeline. Due diligence prep, technical hiring, architecture decisions. Helped close $15M+ in funding. Free strategy session.",
+				"Hands-on technical help on your timeline. Due diligence prep, technical hiring input, and architecture decisions ... working directly with you, not a junior analyst.",
 			keywords: [
 				"fractional cto",
 				"startup technical advisor",
@@ -3124,7 +3124,7 @@ export const pseoPages: PseoPage[] = [
 		seo: {
 			title: "Technical Due Diligence | M&A Risk Assessment",
 			description:
-				"De-risk your acquisition with independent tech due diligence. Code audits, architecture review, team assessment. Saved investors $5M+ in avoided deals. 48hr turnaround.",
+				"De-risk your acquisition with independent tech due diligence. Code audits, architecture review, and team assessment, with plain-language findings you can act on.",
 			keywords: [
 				"technical due diligence",
 				"m&a tech advisor",

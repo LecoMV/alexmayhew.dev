@@ -34,7 +34,14 @@ describe("projects data", () => {
 		});
 
 		it("each project should have valid status", () => {
-			const validStatuses = ["Production", "Development", "Concept"];
+			const validStatuses = [
+				"Production",
+				"Development",
+				"Concept",
+				"Open Source",
+				"Archived",
+				"Research",
+			];
 			projects.forEach((project) => {
 				expect(validStatuses).toContain(project.status);
 			});

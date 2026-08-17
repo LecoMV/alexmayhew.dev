@@ -55,7 +55,7 @@ export function getPlatformDownloadUrl(
 	platform: Platform,
 	version: string = "0.2.0-alpha.1"
 ): string {
-	const baseUrl = `https://github.com/alexmayhew/claude-pilot/releases/download/v${version}`;
+	const baseUrl = `https://github.com/LecoMV/claude-pilot/releases/download/v${version}`;
 
 	switch (platform) {
 		case "macos":
@@ -65,6 +65,6 @@ export function getPlatformDownloadUrl(
 		case "linux":
 			return `${baseUrl}/Claude-Pilot-${version}.AppImage`;
 		default:
-			return `https://github.com/alexmayhew/claude-pilot/releases/latest`;
+			return `https://github.com/LecoMV/claude-pilot/releases/latest`;
 	}
 }

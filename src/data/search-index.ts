@@ -98,7 +98,7 @@ export function buildSearchIndex(): SearchItem[] {
 	const staticPages: SearchItem[] = [
 		{
 			title: "Home",
-			description: "Technical Advisor & Systems Architect",
+			description: "Technology Specialist ... web, SEO, automation, and applied AI",
 			href: "/",
 			category: "Page",
 		},

@@ -55,14 +55,14 @@ const mockPages = [
 describe("ServicesPage", () => {
 	it("renders the service tiers", () => {
 		render(<ServicesPage pages={mockPages as never[]} />);
-		expect(screen.getByText("Advisory Retainer")).toBeTruthy();
-		expect(screen.getByText("Strategic Implementation")).toBeTruthy();
+		expect(screen.getByText("Web Development & Maintenance")).toBeTruthy();
+		expect(screen.getByText("Automation & Integrations")).toBeTruthy();
 		expect(screen.getByText("Technical Due Diligence")).toBeTruthy();
 	});
 
 	it("renders trust metrics", () => {
 		render(<ServicesPage pages={mockPages as never[]} />);
-		expect(screen.getByText("400%")).toBeTruthy();
+		expect(screen.getByText("~200")).toBeTruthy();
 		expect(screen.getByText("337x")).toBeTruthy();
 	});
 

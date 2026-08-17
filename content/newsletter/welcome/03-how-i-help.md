@@ -10,7 +10,7 @@ Subject: How I help CTOs make better architecture decisions
 
 Hey {first_name},
 
-Last email I shared the most common architecture mistake I see in early-stage SaaS. Today I want to briefly explain how I work with companies on these decisions ... because the newsletter is a distilled version of what I do as a Technical Advisor.
+Last email I shared the most common architecture mistake I see in early-stage SaaS. Today I want to briefly explain how I work with companies on these decisions ... because the newsletter is a distilled version of the technical work I do.
 
 ---
 

@@ -122,27 +122,27 @@ describe("getPlatformDownloadUrl", () => {
 	it("returns macOS .dmg URL", () => {
 		const url = getPlatformDownloadUrl("macos", "1.0.0");
 		expect(url).toBe(
-			"https://github.com/alexmayhew/claude-pilot/releases/download/v1.0.0/Claude-Pilot-1.0.0.dmg"
+			"https://github.com/LecoMV/claude-pilot/releases/download/v1.0.0/Claude-Pilot-1.0.0.dmg"
 		);
 	});
 
 	it("returns Windows .exe URL", () => {
 		const url = getPlatformDownloadUrl("windows", "1.0.0");
 		expect(url).toBe(
-			"https://github.com/alexmayhew/claude-pilot/releases/download/v1.0.0/Claude-Pilot-Setup-1.0.0.exe"
+			"https://github.com/LecoMV/claude-pilot/releases/download/v1.0.0/Claude-Pilot-Setup-1.0.0.exe"
 		);
 	});
 
 	it("returns Linux .AppImage URL", () => {
 		const url = getPlatformDownloadUrl("linux", "1.0.0");
 		expect(url).toBe(
-			"https://github.com/alexmayhew/claude-pilot/releases/download/v1.0.0/Claude-Pilot-1.0.0.AppImage"
+			"https://github.com/LecoMV/claude-pilot/releases/download/v1.0.0/Claude-Pilot-1.0.0.AppImage"
 		);
 	});
 
 	it("returns latest releases URL for unknown platform", () => {
 		const url = getPlatformDownloadUrl("unknown");
-		expect(url).toBe("https://github.com/alexmayhew/claude-pilot/releases/latest");
+		expect(url).toBe("https://github.com/LecoMV/claude-pilot/releases/latest");
 	});
 
 	it("uses default version when not specified", () => {

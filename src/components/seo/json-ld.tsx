@@ -2,7 +2,7 @@ const SCHEMA_CONTEXT = "https://schema.org";
 const SITE_URL = "https://alexmayhew.dev";
 const PERSON_ID = "https://alexmayhew.dev/#person";
 const ORGANIZATION_ID = "https://alexmayhew.dev/#organization";
-const OG_IMAGE_URL = "https://alexmayhew.dev/og-image.png";
+const OG_IMAGE_URL = "https://alexmayhew.dev/og-image-2026.png";
 const TECHNICAL_DUE_DILIGENCE_LABEL = "Technical Due Diligence";
 const SOCIAL_PROFILES = [
 	"https://github.com/LecoMV",
@@ -21,29 +21,41 @@ export function JsonLd() {
 		url: SITE_URL,
 		image: OG_IMAGE_URL,
 		sameAs: SOCIAL_PROFILES,
-		jobTitle: "Technical Advisor & Systems Architect",
+		jobTitle: "Technology Specialist",
 		worksFor: { "@id": ORGANIZATION_ID },
 		description:
-			"Technical advisor with 15+ years experience in software engineering leadership, helping founders and CTOs make architectural decisions that compound into competitive advantage. Specializing in system architecture, performance engineering, and strategic technology selection.",
+			"Technology specialist working across web development, SEO, workflow automation, applied AI, and solar PV design. Nine years as the one-person tech department for a Massachusetts solar company; now building products at Mayhew Technology LLC and available for remote work.",
 		knowsLanguage: ["en"],
-		hasCredential: [
+		// Career history, machine-readable. Dates must mirror /resume and LinkedIn;
+		// the Role wrapper is the schema.org pattern for dated occupations.
+		hasOccupation: [
 			{
-				"@type": "EducationalOccupationalCredential",
-				credentialCategory: "Professional Experience",
-				name: "15+ Years Software Engineering Leadership",
+				"@type": "Role",
+				startDate: "2026-01",
 				description:
-					"Principal-level engineering experience across fintech, healthcare, e-commerce, and B2B SaaS. 30+ startups advised.",
+					"Self-employed: web, automation, and AI services. Operating as Mayhew Technology LLC since 2026-03-30.",
+				hasOccupation: {
+					"@type": "Occupation",
+					name: "Technology Specialist (Self-Employed)",
+					occupationLocation: { "@type": "Country", name: "United States" },
+				},
 			},
 			{
-				"@type": "EducationalOccupationalCredential",
-				credentialCategory: "Specialization",
-				name: "Systems Architecture & Performance Engineering",
+				"@type": "Role",
+				startDate: "2016-03",
+				endDate: "2025-12",
 				description:
-					"Technical due diligence, multi-tenant SaaS architecture, edge computing, and AI/ML integration.",
+					"Harvest Sun Solar, Martha's Vineyard and Cape Cod, MA (company closed 2025). Solar design, permitting, internal software, marketing, and IT.",
+				hasOccupation: {
+					"@type": "Occupation",
+					name: "Solar Designer & Technology Specialist",
+					occupationLocation: { "@type": "State", name: "Massachusetts" },
+				},
 			},
 		],
 		knowsAbout: [
-			// Core Technologies
+			// Web
+			"WordPress",
 			"Next.js",
 			"React",
 			"TypeScript",
@@ -51,35 +63,22 @@ export function JsonLd() {
 			"Python",
 			"PostgreSQL",
 			"Redis",
-			"GraphQL",
 			"REST APIs",
 			// Infrastructure
 			"AWS",
 			"Cloudflare Workers",
 			"Docker",
-			"Kubernetes",
-			"Edge Computing",
-			"Serverless Architecture",
-			// Specializations
+			"Linux Server Administration",
+			// Practice areas
+			"Technical SEO",
+			"Workflow Automation",
+			"Web Scraping",
+			"AI/ML Integration",
+			"Self-hosted LLMs",
 			"System Architecture",
 			"Performance Optimization",
-			"Legacy Migration",
-			"AI/ML Integration",
-			"Core Web Vitals",
 			"SaaS Development",
-			"Multi-tenant Architecture",
-			// Domains
-			"Fintech Development",
-			"Healthcare Technology",
-			"E-commerce Platforms",
-			"B2B SaaS",
-			TECHNICAL_DUE_DILIGENCE_LABEL,
-		],
-		award: [
-			"337x performance improvement - TraceForge vectorization engine",
-			"73% cost reduction - PhotoKeep Pro AI restoration",
-			"400% revenue increase - e-commerce platform architecture overhaul",
-			"$2M+ infrastructure savings - strategic cloud optimization",
+			"Solar PV Design",
 		],
 	};
 
@@ -87,7 +86,7 @@ export function JsonLd() {
 		"@context": SCHEMA_CONTEXT,
 		"@type": "Organization",
 		"@id": ORGANIZATION_ID,
-		name: "Alex Mayhew",
+		name: "Mayhew Technology LLC",
 		url: SITE_URL,
 		logo: {
 			"@type": "ImageObject",
@@ -96,24 +95,19 @@ export function JsonLd() {
 			height: 630,
 		},
 		founder: { "@id": PERSON_ID },
-		sameAs: SOCIAL_PROFILES,
 		description:
-			"Boutique technical advisory practice run by Alex Mayhew, serving founders and CTOs in SaaS, fintech, healthcare, and high-growth B2B. Architecture reviews, strategic implementation, and technical due diligence.",
-		foundingDate: "2011",
+			"Independent product and web studio of Alex Mayhew: web applications, automations, and AI tools, plus selected client work.",
+		foundingDate: "2026-03-30",
 		areaServed: [
 			{ "@type": "Country", name: "United States" },
-			{ "@type": "Country", name: "United Kingdom" },
-			{ "@type": "Country", name: "Canada" },
-			{ "@type": "Country", name: "Australia" },
 			{ "@type": "Place", name: "Remote / Worldwide" },
 		],
 		knowsAbout: [
-			"Software Architecture",
-			"SaaS Development",
-			"Performance Engineering",
-			"Cloud Architecture",
+			"Web Development",
+			"Workflow Automation",
 			"AI/ML Integration",
-			TECHNICAL_DUE_DILIGENCE_LABEL,
+			"SaaS Development",
+			"Technical SEO",
 		],
 	};
 
@@ -124,7 +118,7 @@ export function JsonLd() {
 		name: "Alex Mayhew",
 		alternateName: "alexmayhew.dev",
 		url: SITE_URL,
-		description: "Portfolio and blog of Alex Mayhew - Technical Advisor & Systems Architect",
+		description: "Portfolio and blog of Alex Mayhew - Technology Specialist",
 		author: { "@id": PERSON_ID },
 		publisher: { "@id": ORGANIZATION_ID },
 		// SearchAction unlocks the sitelinks searchbox in Google SERP. Target
@@ -138,111 +132,6 @@ export function JsonLd() {
 			},
 			"query-input": "required name=search_term_string",
 		},
-	};
-
-	// Single unified business entity ... combines consulting service + local business signals
-	const professionalServiceSchema = {
-		"@context": SCHEMA_CONTEXT,
-		"@type": "ProfessionalService",
-		"@id": "https://alexmayhew.dev/#business",
-		name: "Alex Mayhew - Technical Advisory Services",
-		alternateName: "Alex Mayhew Consulting",
-		url: SITE_URL,
-		logo: "https://alexmayhew.dev/favicon.svg",
-		image: OG_IMAGE_URL,
-		founder: { "@id": PERSON_ID },
-		description:
-			"Strategic technical guidance for founders and CTOs. Architecture decisions that compound into competitive advantage. Specializing in SaaS, Fintech, Healthcare, and high-growth startups.",
-		// priceRange removed 2026-04-17: non-enum values like "$$$$" are ignored
-		// by Google. Actual pricing lives in hasOfferCatalog.priceSpecification below.
-		currenciesAccepted: "USD",
-		paymentAccepted: "Bank Transfer, Credit Card",
-		address: {
-			"@type": "PostalAddress",
-			addressLocality: "East Falmouth",
-			addressRegion: "MA",
-			addressCountry: "US",
-		},
-		email: "alex@alexmayhew.dev",
-		contactPoint: {
-			"@type": "ContactPoint",
-			contactType: "customer service",
-			email: "alex@alexmayhew.dev",
-			url: "https://alexmayhew.dev/contact",
-			availableLanguage: ["English"],
-		},
-		knowsAbout: [
-			"Software Architecture",
-			"SaaS Development",
-			"Next.js",
-			"React",
-			"TypeScript",
-			"Node.js",
-			"Python",
-			"PostgreSQL",
-			"AI/ML Integration",
-			"Performance Engineering",
-			"Cloud Architecture",
-			TECHNICAL_DUE_DILIGENCE_LABEL,
-		],
-		areaServed: [
-			{ "@type": "State", name: "Massachusetts" },
-			{ "@type": "Country", name: "United States" },
-			{ "@type": "Country", name: "United Kingdom" },
-			{ "@type": "Country", name: "Canada" },
-			{ "@type": "Country", name: "Australia" },
-			{ "@type": "Place", name: "Remote / Worldwide" },
-		],
-		hasOfferCatalog: {
-			"@type": "OfferCatalog",
-			name: "Technical Advisory Services",
-			itemListElement: [
-				{
-					"@type": "Offer",
-					name: "Advisory Retainer",
-					itemOffered: {
-						"@type": "Service",
-						name: "Advisory Retainer",
-						description:
-							"Ongoing strategic guidance: architecture reviews, hiring support, vendor evaluation, and due diligence preparation. 10-20 hours monthly.",
-					},
-					priceSpecification: {
-						"@type": "PriceSpecification",
-						priceCurrency: "USD",
-						minPrice: 2000,
-						maxPrice: 8000,
-						unitText: "MONTH",
-					},
-				},
-				{
-					"@type": "Offer",
-					name: "Strategic Implementation",
-					itemOffered: {
-						"@type": "Service",
-						name: "Strategic Implementation",
-						description:
-							"Hands-on architectural work for critical projects. MVP development, infrastructure setup, performance optimization, security hardening.",
-					},
-					priceSpecification: {
-						"@type": "PriceSpecification",
-						priceCurrency: "USD",
-						minPrice: 15000,
-						maxPrice: 200000,
-					},
-				},
-				{
-					"@type": "Offer",
-					name: TECHNICAL_DUE_DILIGENCE_LABEL,
-					itemOffered: {
-						"@type": "Service",
-						name: TECHNICAL_DUE_DILIGENCE_LABEL,
-						description:
-							"Comprehensive technical assessment for investors and acquirers. Codebase audit, architecture review, team evaluation, risk identification.",
-					},
-				},
-			],
-		},
-		sameAs: SOCIAL_PROFILES,
 	};
 
 	return (
@@ -259,10 +148,95 @@ export function JsonLd() {
 				type="application/ld+json"
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
 			/>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(professionalServiceSchema) }}
-			/>
 		</>
+	);
+}
+
+// Rendered ONLY on /services: business/commerce signals stay scoped to the
+// route that sells instead of shipping on every page of a personal site.
+export function ServicesJsonLd() {
+	const professionalServiceSchema = {
+		"@context": SCHEMA_CONTEXT,
+		"@type": "ProfessionalService",
+		"@id": "https://alexmayhew.dev/#business",
+		name: "Mayhew Technology LLC",
+		url: `${SITE_URL}/services`,
+		logo: "https://alexmayhew.dev/favicon.svg",
+		image: OG_IMAGE_URL,
+		founder: { "@id": PERSON_ID },
+		description:
+			"Web development, workflow automation, and applied-AI services by Alex Mayhew. Available for contract and fractional engagements.",
+		address: {
+			"@type": "PostalAddress",
+			addressLocality: "East Falmouth",
+			addressRegion: "MA",
+			addressCountry: "US",
+		},
+		email: "alex@alexmayhew.dev",
+		contactPoint: {
+			"@type": "ContactPoint",
+			contactType: "customer service",
+			email: "alex@alexmayhew.dev",
+			url: "https://alexmayhew.dev/contact",
+			availableLanguage: ["English"],
+		},
+		knowsAbout: [
+			"Web Development",
+			"WordPress",
+			"Next.js",
+			"Workflow Automation",
+			"AI/ML Integration",
+			"Technical SEO",
+			"Web Scraping",
+			TECHNICAL_DUE_DILIGENCE_LABEL,
+		],
+		areaServed: [
+			{ "@type": "State", name: "Massachusetts" },
+			{ "@type": "Country", name: "United States" },
+			{ "@type": "Place", name: "Remote / Worldwide" },
+		],
+		hasOfferCatalog: {
+			"@type": "OfferCatalog",
+			name: "Services",
+			itemListElement: [
+				{
+					"@type": "Offer",
+					name: "Web Development & Maintenance",
+					itemOffered: {
+						"@type": "Service",
+						name: "Web Development & Maintenance",
+						description:
+							"Sites and small web applications: WordPress, Next.js, and Python. Builds, migrations, hosting, and ongoing support.",
+					},
+				},
+				{
+					"@type": "Offer",
+					name: "Automation & Integrations",
+					itemOffered: {
+						"@type": "Service",
+						name: "Automation & Integrations",
+						description:
+							"Workflow automation and systems integration: n8n, REST APIs, data extraction, and AI-assisted pipelines.",
+					},
+				},
+				{
+					"@type": "Offer",
+					name: TECHNICAL_DUE_DILIGENCE_LABEL,
+					itemOffered: {
+						"@type": "Service",
+						name: TECHNICAL_DUE_DILIGENCE_LABEL,
+						description:
+							"Technical assessment of codebases and infrastructure: audit, architecture review, and risk identification.",
+					},
+				},
+			],
+		},
+	};
+
+	return (
+		<script
+			type="application/ld+json"
+			dangerouslySetInnerHTML={{ __html: JSON.stringify(professionalServiceSchema) }}
+		/>
 	);
 }

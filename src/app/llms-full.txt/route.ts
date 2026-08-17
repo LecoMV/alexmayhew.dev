@@ -19,7 +19,7 @@ function getSlug(path: string): string {
 
 const SITE_URL = "https://alexmayhew.dev";
 
-const ABOUT_INLINE = `Alex Mayhew is an independent Technical Advisor and Systems Architect with 15+ years of experience shipping production software, advising 30+ startups, and leading engineering teams from seed stage through Series C. The practice is focused on the technical decisions that compound into competitive advantage... or, made badly, into a $500K bill two years later.
+const ABOUT_INLINE = `Alex Mayhew is a technology specialist working across web development, SEO, workflow automation, applied AI, and solar PV design. He spent nine years (2016 to 2025) as the one-person tech department for a Martha's Vineyard solar company, and is now self-employed at Mayhew Technology LLC: building products, delivering selected client work, and available for remote roles. He is self-taught, writes about what he builds, and favors boring technology that ships.
 
 Typical engagements fall into three shapes. First: fractional CTO for seed and Series A founders who need senior architectural judgment on part-time hours, not a $400K hire. Second: technical advisor for growth-stage companies hitting the scaling decisions... multi-tenancy, database sharding, microservices, edge rendering... that are expensive to reverse. Third: architecture review and due diligence for VCs, acquirers, and boards evaluating an engineering organization before a funding event or acquisition.
 

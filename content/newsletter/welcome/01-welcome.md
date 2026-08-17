@@ -16,7 +16,7 @@ Here's what you signed up for:
 
 - **One email every Tuesday.** A single architectural decision, broken down with specific numbers, business context, and a clear framework for when to apply it.
 - **No fluff.** Every issue is 500-700 words. You'll read it in under 5 minutes. If I don't have something worth saying, I don't send.
-- **Real advisory experience.** I work with startups and scale-ups as a Technical Advisor. The patterns I share come from actual engagements ... not blog post aggregation.
+- **Real hands-on experience.** The patterns I share come from actually building, shipping, and maintaining production systems ... not blog post aggregation.
 
 ---
 

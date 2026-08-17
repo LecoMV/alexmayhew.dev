@@ -54,7 +54,7 @@ export default function ClaudePilotPage() {
 				url="/tools/pilot"
 				applicationCategory="DeveloperApplication"
 				operatingSystem="macOS, Windows, Linux"
-				downloadUrl="https://github.com/alexmayhew/claude-pilot/releases"
+				downloadUrl="https://github.com/LecoMV/claude-pilot/releases"
 				featureList={[
 					"Session monitoring dashboard",
 					"Memory system browser",
@@ -157,7 +157,7 @@ export default function ClaudePilotPage() {
 							</div>
 							<div className="flex items-center gap-4">
 								<a
-									href="https://github.com/alexmayhew/claude-pilot"
+									href="https://github.com/LecoMV/claude-pilot"
 									target="_blank"
 									rel="noopener noreferrer"
 									className="text-slate-text hover:text-mist-white flex items-center gap-2 border border-white/10 px-4 py-2 font-mono text-xs transition-colors hover:border-white/30"
@@ -167,7 +167,7 @@ export default function ClaudePilotPage() {
 									<ExternalLink className="h-3 w-3" strokeWidth={1.5} />
 								</a>
 								<a
-									href="https://github.com/alexmayhew/claude-pilot/releases"
+									href="https://github.com/LecoMV/claude-pilot/releases"
 									target="_blank"
 									rel="noopener noreferrer"
 									className="text-slate-text hover:text-mist-white flex items-center gap-2 border border-white/10 px-4 py-2 font-mono text-xs transition-colors hover:border-white/30"

@@ -84,7 +84,7 @@ export const rolePages: RolePage[] = [
 
 		proofMetrics: [
 			"0 critical incidents in 18 months at a fintech processing $50M/month",
-			"400% revenue growth during engagement without platform rewrites",
+			"Focused on shipping working software without unnecessary platform rewrites",
 			"3 successful Series A technical due diligence processes",
 			"Reduced P0 incident rate by 85% through observability improvements",
 			"Hired 12 senior engineers with 100% retention at 18 months",
@@ -116,7 +116,7 @@ Communication happens through your preferred channels... Slack, email, or a dedi
 			{
 				question: "How is this different from hiring a consulting firm?",
 				answer:
-					"Consulting firms send junior analysts who follow playbooks. I bring 15+ years of hands-on technical leadership experience. When I review your architecture, I'm drawing on patterns I've seen succeed and fail across dozens of high-growth companies. There's no bait-and-switch... you work directly with me, every engagement.",
+					"Consulting firms send junior analysts who follow playbooks. You work directly with me, every engagement ... someone who has actually built, shipped, and maintained production systems solo. When I review your architecture, I'm drawing on what I've seen work and fail in real projects, not a slide deck.",
 			},
 			{
 				question: "What if I need hands-on implementation, not just advice?",

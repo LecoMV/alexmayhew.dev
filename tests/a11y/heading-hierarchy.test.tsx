@@ -106,7 +106,7 @@ describe("Heading hierarchy — AboutPage", () => {
 		expect(h1Elements).toHaveLength(1);
 
 		// The h1 should be the main heading, not the small label "About"
-		expect(h1Elements[0].textContent).toContain("The difference between");
+		expect(h1Elements[0].textContent).toContain("The only technical person");
 	});
 });
 

@@ -7,6 +7,6 @@ describe("Homepage content expansion", () => {
 	it("homepage should have an About snippet with link to /about", () => {
 		const content = readFileSync(join(process.cwd(), "src/app/home-page.tsx"), "utf-8");
 		expect(content).toContain('href="/about"');
-		expect(content).toMatch(/15\+?\s*years/i);
+		expect(content).toMatch(/nine years/i);
 	});
 });

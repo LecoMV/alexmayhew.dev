@@ -306,7 +306,7 @@ jobs:
           echo "Running smoke tests..."
 
           # Test critical pages
-          for page in "/" "/services" "/for" "/contact" "/work"; do
+          for page in "/" "/services" "/for" "/contact" "/work" "/resume"; do
             echo "Testing https://alexmayhew.dev$page"
             status=$(curl -s -o /dev/null -w "%{http_code}" "https://alexmayhew.dev$page")
             if [ "$status" != "200" ]; then
@@ -314,6 +314,24 @@ jobs:
               exit 1
             fi
             echo "OK: $page"
+          done
+
+          # Prove /resume is reachable to user-triggered AI fetchers (Cloudflare
+          # "Agent" class): a recruiter pasting the URL into ChatGPT/Claude. Assert
+          # real HTML with the resume marker, not a challenge/block page.
+          for ua in "ChatGPT-User" "Claude-User" "PerplexityBot"; do
+            echo "Testing /resume as $ua"
+            body=$(curl -s -A "$ua" "https://alexmayhew.dev/resume")
+            ctype=$(curl -s -o /dev/null -w "%{content_type}" -A "$ua" "https://alexmayhew.dev/resume")
+            case "$ctype" in
+              text/html*) : ;;
+              *) echo "FAILED: /resume as $ua returned content-type '$ctype'"; exit 1 ;;
+            esac
+            if ! printf '%s' "$body" | grep -q "Harvest Sun Solar"; then
+              echo "FAILED: /resume as $ua missing resume marker (possible challenge/block page)"
+              exit 1
+            fi
+            echo "OK: /resume reachable as $ua"
           done
 
           echo "All smoke tests passed!"
