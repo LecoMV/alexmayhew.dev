@@ -140,7 +140,7 @@ export function buildSearchIndex(): SearchItem[] {
 		},
 		{
 			title: "VoiceKeep",
-			description: "AI voice platform — case study (archived)",
+			description: "AI voice platform, case study (archived)",
 			href: "/work/voice-cloner",
 			category: "Work",
 		},

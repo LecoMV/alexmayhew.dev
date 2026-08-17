@@ -41,7 +41,7 @@ function ResumeProfileJsonLd() {
 		"@type": "ProfilePage",
 		"@id": `${SITE_URL}/resume`,
 		url: `${SITE_URL}/resume`,
-		name: "Alex Mayhew — Resume",
+		name: "Alex Mayhew Resume",
 		description: PAGE_DESCRIPTION,
 		mainEntity: PERSON_REF,
 		dateModified: modified,
@@ -104,7 +104,7 @@ export default function Page() {
 										{role.org} · {role.location}
 									</p>
 									<p className="text-slate-text mb-3 font-mono text-xs">
-										{role.start} – {role.end}
+										{role.start} to {role.end}
 									</p>
 									<ul className="space-y-2">
 										{role.bullets.map((bullet, index) => (

@@ -118,7 +118,7 @@ ${faqBlock ? `#### Frequently Asked Questions\n\n${faqBlock}` : ""}`.trim();
 	const spokeLines = spokes
 		.map((post) => {
 			const slug = getSlug(post.info.path);
-			return `- [${post.title}](${SITE_URL}/blog/${slug}) — ${post.description}`;
+			return `- [${post.title}](${SITE_URL}/blog/${slug}): ${post.description}`;
 		})
 		.join("\n");
 
@@ -138,7 +138,7 @@ ${ABOUT_INLINE}
 - Performance Engineering: Core Web Vitals, database query optimization, CDN strategy, Node.js memory management
 - AI-Assisted Development: LLM integration architecture, prompt engineering, AI code review, cost optimization
 
-## Comprehensive Guides (Hub Posts — full summaries and FAQs)
+## Comprehensive Guides (Hub Posts: full summaries and FAQs)
 
 ${hubSections}
 
