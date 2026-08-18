@@ -87,7 +87,7 @@ const differentiators = [
 
 const timeline = [
 	{
-		year: "2026",
+		year: "2025",
 		title: "Self-Employed, Mayhew Technology LLC",
 		description:
 			"Sole developer on a production data platform for a private investment firm, delivered with a written engineering handoff. Web apps for local small businesses, data-extraction tools for freelance clients, and my own products.",
@@ -95,7 +95,7 @@ const timeline = [
 	},
 	{
 		year: "2016",
-		title: "Solar Designer & Technology Specialist, Harvest Sun Solar",
+		title: "Senior PV Systems Designer & Technology Specialist, Harvest Sun Solar",
 		description:
 			"Nine years as the one-person tech department for a Martha's Vineyard solar installer (through December 2025, when the company closed). Designed ~200 residential PV systems, handled permitting through historic and conservation boards, built the lead-capture software and the WordPress site, ran the marketing and the IT.",
 	},

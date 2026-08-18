@@ -13,7 +13,7 @@ room, and to explaining technology to people who aren't technical.
 EXPERIENCE
 
 Harvest Sun Solar, Martha's Vineyard & Cape Cod, MA
-Solar Designer & Technology Specialist · March 2016 – December 2025 (company closed)
+Senior PV Systems Designer & Technology Specialist · March 2016 – December 2025 (company closed)
   • Designed ~200 residential PV systems in Aurora Solar (module selection, stringing and component specification,
     fire-setback compliance, and production modeling), building custom 3D layouts from 2D blueprints, plus SketchUp
     models presented to historic-district and conservation-commission boards.
@@ -35,7 +35,7 @@ Solar Designer & Technology Specialist · March 2016 – December 2025 (company 
   • Handled post-install troubleshooting directly with homeowners: remote diagnosis and coordination with equipment
     vendors.
 Self-Employed: Web, Automation & AI Services (Mayhew Technology LLC), Remote
-January 2026 – present
+August 2025 – present
   • Sole developer on a maritime data-intelligence platform for a private investment firm (engagement under NDA).
     Took over a demo-stage build and grew it into a production platform (Next.js + FastAPI + PostgreSQL/
     TimescaleDB, 100+ maritime data sources), split the codebase into two independently deployed products under a

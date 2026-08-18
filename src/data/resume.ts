@@ -35,7 +35,7 @@ export const resumeSummary =
 
 export const resumeRoles: ResumeRole[] = [
 	{
-		title: "Solar Designer & Technology Specialist",
+		title: "Senior PV Systems Designer & Technology Specialist",
 		org: "Harvest Sun Solar",
 		location: "Martha's Vineyard & Cape Cod, MA",
 		start: "March 2016",
@@ -55,7 +55,7 @@ export const resumeRoles: ResumeRole[] = [
 		title: "Self-Employed: Web, Automation & AI Services",
 		org: "Mayhew Technology LLC",
 		location: "Remote",
-		start: "January 2026",
+		start: "August 2025",
 		end: "Present",
 		summary: "Web, automation, and applied-AI work for clients and my own products.",
 		bullets: [

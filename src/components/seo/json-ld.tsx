@@ -31,7 +31,7 @@ export function JsonLd() {
 		hasOccupation: [
 			{
 				"@type": "Role",
-				startDate: "2026-01",
+				startDate: "2025-08",
 				description:
 					"Self-employed: web, automation, and AI services. Operating as Mayhew Technology LLC since 2026-03-30.",
 				hasOccupation: {
@@ -48,7 +48,7 @@ export function JsonLd() {
 					"Harvest Sun Solar, Martha's Vineyard and Cape Cod, MA (company closed 2025). Solar design, permitting, internal software, marketing, and IT.",
 				hasOccupation: {
 					"@type": "Occupation",
-					name: "Solar Designer & Technology Specialist",
+					name: "Senior PV Systems Designer & Technology Specialist",
 					occupationLocation: { "@type": "State", name: "Massachusetts" },
 				},
 			},

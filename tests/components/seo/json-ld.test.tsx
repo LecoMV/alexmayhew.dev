@@ -69,11 +69,11 @@ describe("JsonLd (global Person/Organization/WebSite graph)", () => {
 		const solar = roles.find((r) => r.endDate === "2025-12");
 		expect(solar).toBeDefined();
 		expect(solar?.startDate).toBe("2016-03");
-		expect(solar?.hasOccupation.name).toBe("Solar Designer & Technology Specialist");
+		expect(solar?.hasOccupation.name).toBe("Senior PV Systems Designer & Technology Specialist");
 
 		const current = roles.find((r) => !r.endDate);
 		expect(current).toBeDefined();
-		expect(current?.startDate).toBe("2026-01");
+		expect(current?.startDate).toBe("2025-08");
 	});
 
 	it("Organization is the real legal entity with a truthful founding date", () => {

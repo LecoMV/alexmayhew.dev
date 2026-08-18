@@ -20,11 +20,11 @@ describe("resume data (canonical source for /resume page + PDF)", () => {
 	it("has two roles with resume-matching titles and dates", () => {
 		expect(resumeRoles).toHaveLength(2);
 		const solar = resumeRoles.find((r) => r.org === "Harvest Sun Solar");
-		expect(solar?.title).toBe("Solar Designer & Technology Specialist");
+		expect(solar?.title).toBe("Senior PV Systems Designer & Technology Specialist");
 		expect(solar?.start).toBe("March 2016");
 		expect(solar?.end).toBe("December 2025");
 		const current = resumeRoles.find((r) => r.org === "Mayhew Technology LLC");
-		expect(current?.start).toBe("January 2026");
+		expect(current?.start).toBe("August 2025");
 		expect(current?.end).toBe("Present");
 	});
 
