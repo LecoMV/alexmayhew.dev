@@ -19,12 +19,18 @@ export function JsonLd() {
 		"@id": PERSON_ID,
 		name: "Alex Mayhew",
 		url: SITE_URL,
-		image: OG_IMAGE_URL,
 		sameAs: SOCIAL_PROFILES,
 		jobTitle: "Technology Specialist",
 		worksFor: { "@id": ORGANIZATION_ID },
 		description:
 			"Technology specialist working across web development, SEO, workflow automation, applied AI, and solar PV design. Nine years as the one-person tech department for a Massachusetts solar company; now building products at Mayhew Technology LLC and available for remote work.",
+		// Exact-axis disambiguation for a common name: positive, unique facts
+		// only. "Alex Mayhew" collides with a well-known new-media artist; the
+		// 2026-08 entity research is explicit that NAMING the namesake would
+		// co-occur the two entities in the graph, so we assert identity by
+		// distinct attributes (software focus, the LLC, the MA solar history).
+		disambiguatingDescription:
+			"Software and web technology specialist and founder of Mayhew Technology LLC in Massachusetts. Nine years as the solo technologist for a Martha's Vineyard solar company; works in WordPress, Next.js, Python, workflow automation, and applied AI.",
 		knowsLanguage: ["en"],
 		// Career history, machine-readable. Dates must mirror /resume and LinkedIn;
 		// the Role wrapper is the schema.org pattern for dated occupations.

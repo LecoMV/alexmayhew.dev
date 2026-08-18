@@ -16,10 +16,12 @@ const PAGE_DESCRIPTION =
 	"Resume of Alex Mayhew, technology specialist: web development, SEO, automation, applied AI, and solar PV design. Nine years running technology for a Massachusetts solar company; now building products and available for remote work.";
 
 export const metadata: Metadata = {
-	title: "Resume",
+	// Absolute title (root template appends "| Alex Mayhew"): lead with name +
+	// specialty for the winnable "Alex Mayhew [specialty]" recruiter query.
+	title: { absolute: "Alex Mayhew Resume | Technology Specialist" },
 	description: PAGE_DESCRIPTION,
 	openGraph: {
-		title: "Resume | Alex Mayhew",
+		title: "Alex Mayhew Resume | Technology Specialist",
 		description: PAGE_DESCRIPTION,
 		type: "profile",
 		images: [{ url: "/og-image-2026.png", width: 1200, height: 630, alt: "Alex Mayhew resume" }],

@@ -31,7 +31,7 @@ export const resumeMeta = {
 } as const;
 
 export const resumeSummary =
-	"Technology generalist who spent nine years as the one-person tech department for a Martha's Vineyard solar company: designing ~200 residential PV systems, handling permitting through historic and conservation boards, building and ranking the company website, coding its custom lead-intake system, and running office IT. Now self-employed doing web, automation, and AI-assisted work for clients and my own products. Used to being the only technical person in the room, and to explaining technology to people who aren't technical.";
+	"Technology specialist who spent nine years as the one-person tech department for a Martha's Vineyard solar company: designing ~200 residential PV systems, handling permitting through historic and conservation boards, building and ranking the company website, coding its custom lead-intake system, and running office IT. Now self-employed doing web, automation, and AI-assisted work for clients and my own products. Used to being the only technical person in the room, and to explaining technology to people who aren't technical.";
 
 export const resumeRoles: ResumeRole[] = [
 	{

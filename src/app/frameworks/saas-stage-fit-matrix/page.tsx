@@ -39,7 +39,9 @@ const JSON_LD = {
 		{
 			"@type": "Article",
 			headline: "The SaaS Stage-Fit Matrix",
-			author: { "@type": "Person", name: "Alex Mayhew", url: "https://alexmayhew.dev/about" },
+			// Reference the canonical Person @id instead of an inline Person object,
+			// which would fragment the entity graph (2026-08 entity hygiene).
+			author: { "@id": "https://alexmayhew.dev/#person" },
 			mainEntityOfPage: "https://alexmayhew.dev/frameworks/saas-stage-fit-matrix",
 		},
 		{
