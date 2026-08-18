@@ -38,7 +38,7 @@ Before reaching for AI assistance on any coding task, run it through this filter
 | Compliance/regulatory code          | Low            | Errors have legal consequences AI can't assess    |
 | Business logic invariants           | Low            | AI doesn't understand your domain constraints     |
 
-This isn't a suggestion. In my advisory work with 6 SaaS teams over the past year, every team that skipped this assessment burned 2-4 sprint days on AI-generated code that needed to be rewritten. Every one.
+This isn't a suggestion. In practice, teams that skip this assessment routinely burn 2-4 sprint days on AI-generated code that has to be rewritten.
 
 ---
 
@@ -125,7 +125,7 @@ AI systems optimize locally. They'll generate a perfect implementation of the wr
 
 Ask AI to "design the caching layer for our user service" and you'll get a technically correct Redis implementation. It won't ask whether your user service even needs caching. It won't consider that your database has 50K users and serves 100 requests per minute... a load where caching adds complexity without meaningful benefit.
 
-In my advisory work, I've seen three SaaS teams implement AI-suggested architectures that solved problems they didn't have:
+In practice, SaaS teams routinely implement AI-suggested architectures that solve problems they don't have:
 
 - **Event sourcing** for a CRUD app with 200 users
 - **Microservices** for a team of 3 developers
@@ -261,7 +261,7 @@ AI generates test scaffolding well. Given an existing function, it produces comp
 
 The caveat: AI-generated tests validate that code does what it does, not that it does what it should. A human still needs to verify that the assertions match business requirements. But the mechanical work of setting up test fixtures, mocking dependencies, and writing assertion boilerplate is a genuine timesaver.
 
-In my advisory work, teams report 40-60% time savings on test writing when using AI for the scaffolding while humans define the assertions.
+In practice, teams report 40-60% time savings on test writing when using AI for the scaffolding while humans define the assertions.
 
 ### Documentation
 

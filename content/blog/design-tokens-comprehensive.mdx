@@ -37,7 +37,7 @@ And then they stop.
 
 Meanwhile, the designer specifies "16px padding with 24px gap and a medium shadow." The developer interprets this as... whatever they think "medium" means. The designer reviews and says "that's not quite right." Three rounds later, they've burned two hours on spacing that should have taken two minutes.
 
-I've audited codebases where the same "card" component exists in 14 variations across the app... each with slightly different padding, border-radius, and shadow combinations. Not because anyone wanted 14 variations. Because there was no single source of truth for anything except colors.
+It's common to find codebases where the same "card" component exists in 14 variations across the app... each with slightly different padding, border-radius, and shadow combinations. Not because anyone wanted 14 variations. Because there was no single source of truth for anything except colors.
 
 A complete token system eliminates this drift.
 
@@ -756,7 +756,7 @@ When a token value changes, it affects every consumer. Handle with care:
 - Developer uses `p-inset-md` or `var(--space-inset-md)`
 - Done. 2 minutes.
 
-The 70% time reduction isn't hypothetical... I've measured it across four different projects. The initial token setup takes 2-3 days. The payback period is under two weeks.
+The 70% time reduction isn't hypothetical... it shows up consistently across projects that adopt tokens properly. The initial token setup takes 2-3 days. The payback period is under two weeks.
 
 ---
 

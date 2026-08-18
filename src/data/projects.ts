@@ -92,16 +92,6 @@ export const projects: Project[] = [
 		status: "Production",
 		link: "/tools/traceforge",
 		featured: true,
-		relatedServices: [
-			{
-				label: "Python performance optimization",
-				href: "/services/python-developer-for-healthcare",
-			},
-			{
-				label: "337x performance engineering",
-				href: "/services/performance-optimization-consultant",
-			},
-		],
 		caseStudy: {
 			published: true,
 			subtitle: "337x faster raster-to-SVG conversion with GPU-accelerated dual-engine pipeline",
@@ -197,10 +187,6 @@ export const projects: Project[] = [
 		link: "/tools/pilot",
 		github: "https://github.com/LecoMV/claude-pilot",
 		featured: true,
-		relatedServices: [
-			{ label: "AI-powered SaaS development", href: "/services/ai-integration-developer-for-saas" },
-			{ label: "React enterprise dashboards", href: "/services/react-developer-for-saas" },
-		],
 		caseStudy: {
 			published: true,
 			subtitle: "Native Electron control center managing 3 database systems with type-safe IPC",
@@ -284,20 +270,12 @@ export const projects: Project[] = [
 		id: "photokeep-pro",
 		title: "PhotoKeep Pro",
 		description:
-			"Slashed cloud GPU costs by 73% while boosting restoration quality by 4dB over commercial alternatives. A restoration startup was burning $12k/month on fragmented API calls with inconsistent results. Engineered a unified orchestration layer managing 14+ deep learning models (SUPIR, HAT, CodeFormer) with thread-safe VRAM allocation and LRU eviction across 49GB. Now delivering 28.5dB PSNR quality at 99.95% uptime... outperforming Magnific AI and Topaz on blind tests.",
+			"Cut my photo-restoration platform's GPU costs by ~73% while beating commercial tools on quality. The naive multi-API approach (separate services for upscaling, face restoration, and colorization) was expensive and inconsistent, so I engineered a unified orchestration layer managing 14+ deep learning models (SUPIR, HAT, CodeFormer) with thread-safe VRAM allocation and LRU eviction across 49GB. Delivers 28.5dB PSNR at 99.95% uptime... outperforming Magnific AI and Topaz on blind tests.",
 		category: "AI/ML",
 		tech: ["Python", "FastAPI", "PyTorch", "React", "TypeScript", "Celery", "Redis", "Stripe"],
 		year: "2024",
 		status: "Production",
 		featured: true,
-		relatedServices: [
-			{ label: "AI/ML integration for SaaS", href: "/services/ai-integration-developer-for-saas" },
-			{ label: "Python backend architecture", href: "/services/python-developer-for-healthcare" },
-			{
-				label: "Performance-critical systems",
-				href: "/services/performance-optimization-consultant",
-			},
-		],
 		caseStudy: {
 			published: true,
 			subtitle: "73% GPU cost reduction while outperforming Magnific AI on blind quality tests",
@@ -307,13 +285,13 @@ export const projects: Project[] = [
 				type: "SaaS Product",
 			},
 			challenge:
-				"A photo restoration startup was spending $12,000/month on fragmented cloud GPU API calls... Replicate for upscaling, a separate service for face restoration, another for colorization. Each API had different quality levels, inconsistent processing times, and no coordination between stages. Results varied wildly between runs. Customers receiving professionally restored family photos expected consistency, but the patchwork architecture couldn't deliver it. The core technical challenge: orchestrating 14+ deep learning models with different VRAM requirements, processing characteristics, and failure modes into a single reliable pipeline. Models ranged from 2GB (CodeFormer for faces) to 12GB (SUPIR for general restoration), and naive sequential loading would exhaust even 49GB of GPU memory.",
+				"PhotoKeep Pro started out on fragmented cloud GPU API calls... Replicate for upscaling, a separate service for face restoration, another for colorization. Each API had different quality levels, inconsistent processing times, and no coordination between stages. Results varied wildly between runs, and the monthly cost of chaining paid APIs climbed fast. Customers restoring family photos expected consistency, but the patchwork architecture couldn't deliver it. The core technical challenge: orchestrating 14+ deep learning models with different VRAM requirements, processing characteristics, and failure modes into a single reliable pipeline. Models ranged from 2GB (CodeFormer for faces) to 12GB (SUPIR for general restoration), and naive sequential loading would exhaust even 49GB of GPU memory.",
 			approach:
 				"Rejected the multi-cloud API approach entirely. Instead, consolidated all models onto dedicated GPU infrastructure with a custom orchestration layer. The key insight was treating VRAM like a managed memory pool... building an LRU eviction system that keeps frequently-used models loaded while swapping cold models to CPU memory. This eliminated the 15-30 second model loading penalty for common workflows. Built the orchestration on Celery with Redis for distributed task queuing, allowing horizontal scaling across multiple GPU nodes. Each restoration job gets decomposed into a dependency graph: analyze → denoise → upscale → face restore → colorize (optional). Failed stages retry independently without reprocessing the entire pipeline.",
 			solution:
 				"PhotoKeep Pro runs a unified pipeline managing SUPIR, HAT, Real-ESRGAN, CodeFormer, GFPGAN, and 8 other specialized models through a thread-safe VRAM allocator. The LRU eviction system maintains a working set of 3-4 models in GPU memory while keeping the rest warm in CPU RAM. Average restoration completes in 45 seconds for a 12MP image... down from 3-5 minutes with the previous API-chaining approach. Quality improved to 28.5dB PSNR on our benchmark suite, a 4dB improvement over commercial alternatives. The Stripe-integrated billing system charges per restoration with volume discounts, aligning costs directly with usage. Running at 99.95% uptime with automatic failover between GPU nodes.",
 			metrics: [
-				{ label: "Cost Reduction", value: "73%", context: "$12k/mo to $3.2k/mo GPU costs" },
+				{ label: "Cost Reduction", value: "~73%", context: "vs the fragmented multi-API approach" },
 				{
 					label: "Quality Score",
 					value: "28.5dB PSNR",
@@ -387,13 +365,6 @@ export const projects: Project[] = [
 		year: "2024",
 		status: "Production",
 		featured: true,
-		relatedServices: [
-			{ label: "Custom LLM fine-tuning", href: "/services/ai-integration-developer-for-saas" },
-			{
-				label: "Domain-specific AI systems",
-				href: "/services/ai-integration-developer-for-healthcare",
-			},
-		],
 		caseStudy: {
 			published: true,
 			subtitle:
@@ -487,20 +458,6 @@ export const projects: Project[] = [
 		year: "2025-2026",
 		status: "Archived",
 		featured: true,
-		relatedServices: [
-			{
-				label: "AI inference pipeline architecture",
-				href: "/services/ai-integration-developer-for-saas",
-			},
-			{
-				label: "GPU-optimized Python systems",
-				href: "/services/python-developer-for-healthcare",
-			},
-			{
-				label: "Real-time performance engineering",
-				href: "/services/performance-optimization-consultant",
-			},
-		],
 		caseStudy: {
 			published: true,
 			subtitle:

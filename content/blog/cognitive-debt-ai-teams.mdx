@@ -29,7 +29,7 @@ When those two representations diverge, cognitive debt accumulates. The code sti
 
 This has always existed. Every codebase accumulates some cognitive debt as team members leave, requirements shift, and institutional knowledge erodes. But AI-assisted development accelerates the accumulation by an order of magnitude. When a developer accepts AI-generated code they do not fully understand, the gap between "what the code does" and "what the team knows about why" widens instantly.
 
-In my advisory work with SaaS teams, I have started tracking this metric explicitly. The teams with the worst incident response times are not the ones with the most technical debt. They are the ones where nobody can explain how the system actually works.
+In practice with SaaS teams, I have started tracking this metric explicitly. The teams with the worst incident response times are not the ones with the most technical debt. They are the ones where nobody can explain how the system actually works.
 
 ---
 
@@ -69,7 +69,7 @@ This problem compounds across three dimensions.
 
 When AI-generated code calls other AI-generated code, layers of opacity stack. Module A was generated three months ago by a developer who has since left. Module B was generated last week and depends on Module A's behavior. The developer who wrote Module B tested that it works but does not understand Module A's invariants. Neither module has documentation beyond auto-generated JSDoc.
 
-In my advisory work, I have seen this pattern in teams as small as five engineers. The METR randomized controlled trial... 16 experienced developers across 246 real-world tasks... found that developers were 19% slower when using AI assistance. The researchers attributed part of this to "time spent understanding and verifying AI-generated code." But the METR trial measured individual task performance. It did not measure what happens when an entire team's codebase is built on layers of code nobody fully understands.
+In practice, this pattern shows up in teams as small as five engineers. The METR randomized controlled trial... 16 experienced developers across 246 real-world tasks... found that developers were 19% slower when using AI assistance. The researchers attributed part of this to "time spent understanding and verifying AI-generated code." But the METR trial measured individual task performance. It did not measure what happens when an entire team's codebase is built on layers of code nobody fully understands.
 
 The 19% slowdown is the per-task cost. The systemic cost... debugging across module boundaries where no human holds the full mental model... is far higher.
 

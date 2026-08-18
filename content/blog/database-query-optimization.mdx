@@ -153,7 +153,7 @@ ON orders(tenant_id, created_at DESC)
 WHERE status = 'active';
 ```
 
-This reduced index size by 70% for a client whose orders table was 80% completed/cancelled. Index scans went from 45ms to 8ms.
+This reduces index size by ~70% when an orders table is 80% completed/cancelled. Index scans drop from ~45ms to ~8ms.
 
 ### The Covering Index Optimization
 

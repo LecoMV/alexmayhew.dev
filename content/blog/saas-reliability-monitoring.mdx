@@ -173,7 +173,7 @@ Saturation alerts are predictive. High CPU usage at 2am gives you time to scale 
 
 ## OpenTelemetry Instrumentation
 
-OpenTelemetry is the standard. Vendor-specific SDKs lock you in. I've helped three companies migrate away from proprietary instrumentation... it's painful and expensive.
+OpenTelemetry is the standard. Vendor-specific SDKs lock you in. Migrating away from proprietary instrumentation is painful and expensive... which is exactly why choosing OpenTelemetry up front matters.
 
 ### Node.js/Next.js Setup
 
@@ -272,7 +272,7 @@ activeSubscriptions.addCallback(async (result) => {
 
 ## Alert Design: Avoiding Alert Fatigue
 
-I've audited on-call setups where engineers received 200+ alerts weekly. Actual incidents: 3. That's a 98.5% false positive rate. Those engineers were burned out within 6 months.
+Plenty of on-call setups fire 200+ alerts weekly. Actual incidents: 3. That's a 98.5% false positive rate. Those engineers burn out within 6 months.
 
 ### Symptom-Based vs. Cause-Based Alerts
 

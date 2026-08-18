@@ -1,7 +1,7 @@
 [
 	{
 		"title": "7 REST API Design Mistakes That Will Haunt You at Scale",
-		"description": "I've audited 40+ production APIs. These seven mistakes appear in 90% of them. Fix them now, or pay the price when you have 1000 integrators instead of 10.",
+		"description": "Seven REST API design mistakes that show up in most production APIs. Fix them now, or pay the price when you have 1000 integrators instead of 10.",
 		"slug": "rest-api-design-mistakes",
 		"category": "architecture",
 		"tags": [

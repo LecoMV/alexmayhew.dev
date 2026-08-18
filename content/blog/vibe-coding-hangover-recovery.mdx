@@ -45,11 +45,11 @@ Auth is the canary. If your team doesn't understand auth, they don't understand 
 
 Mean Time to Understand (MTTU) is the time between "we know something is broken" and "we know why it's broken." In a healthy codebase, MTTU for a module your team built is 15-30 minutes. For AI-generated modules that nobody deeply understands, MTTU stretches to 2-4 hours... sometimes days.
 
-The METR randomized controlled trial found experienced developers were 19% slower with AI assistance on complex tasks. Debugging a vibe-coded system is definitionally complex... you're reverse-engineering decisions that were never made by a human. The 19% slowdown is the optimistic scenario. In my advisory work, I've seen incident resolution times 3-5x longer in codebases with heavy unreviewed AI generation.
+The METR randomized controlled trial found experienced developers were 19% slower with AI assistance on complex tasks. Debugging a vibe-coded system is definitionally complex... you're reverse-engineering decisions that were never made by a human. The 19% slowdown is the optimistic scenario. In practice, incident resolution runs 3-5x longer in codebases with heavy unreviewed AI generation.
 
 ### New Hires Take 2x Longer to Onboard
 
-Standard onboarding for a mid-level engineer in a well-documented codebase is 2-4 weeks to first meaningful contribution. In AI-heavy codebases without comprehension infrastructure, I've seen 6-10 weeks. The code runs, but it resists explanation. There are no Architecture Decision Records. Comments describe what the code does (which the engineer can read) instead of why it does it (which is what they need to know).
+Standard onboarding for a mid-level engineer in a well-documented codebase is 2-4 weeks to first meaningful contribution. In AI-heavy codebases without comprehension infrastructure, it can stretch to 6-10 weeks. The code runs, but it resists explanation. There are no Architecture Decision Records. Comments describe what the code does (which the engineer can read) instead of why it does it (which is what they need to know).
 
 ### Refactoring Attempts Introduce More Bugs Than They Fix
 
@@ -323,7 +323,7 @@ When do you fix code vs rewrite it from scratch? This is the most expensive deci
 - The architecture is sound but the implementation has issues
 - Test coverage exists and can be extended
 
-The rewrite threshold in most AI-generated codebases I've audited is ~30% of modules. That's higher than traditional codebases (~10-15%) because AI-generated code tends to be internally consistent but architecturally arbitrary. The patterns work in isolation. They don't compose well.
+The rewrite threshold in most AI-generated codebases is ~30% of modules. That's higher than traditional codebases (~10-15%) because AI-generated code tends to be internally consistent but architecturally arbitrary. The patterns work in isolation. They don't compose well.
 
 ---
 
@@ -426,7 +426,7 @@ Track three metrics: MTTU (should decrease by 40-60% over 3 months), new hire ti
 
 ### Is the vibe coding hangover permanent?
 
-No. Every codebase I've helped remediate recovered within 4-6 months. The comprehension gaps are fillable... they just require intentional effort that most teams don't allocate until the pain becomes acute. The permanent damage isn't to the code. It's to the team's confidence. Engineers who've been burned by incomprehensible AI-generated code become reluctant to use AI at all, which overcorrects in the opposite direction. The governance framework in this post is designed to restore confidence alongside comprehension.
+No. Most codebases in this state recover within 4-6 months of focused work. The comprehension gaps are fillable... they just require intentional effort that most teams don't allocate until the pain becomes acute. The permanent damage isn't to the code. It's to the team's confidence. Engineers who've been burned by incomprehensible AI-generated code become reluctant to use AI at all, which overcorrects in the opposite direction. The governance framework in this post is designed to restore confidence alongside comprehension.
 
 ---
 

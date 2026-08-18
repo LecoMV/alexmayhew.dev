@@ -13,7 +13,7 @@ image: "/images/blog/real-time-performance-monitoring-featured.webp"
 
 ## TL;DR
 
-The median SaaS company monitors uptime and average response time. Both are nearly useless for catching real performance problems. Averages hide the pain... your p50 is 200ms but your p99 is 4 seconds, and the 1% of users hitting that 4-second response are your highest-paying enterprise customers on complex dashboards. The monitoring stack that actually works: percentile-based latency tracking (p50, p95, p99) per endpoint, real user monitoring (RUM) with device and network segmentation, error budget burn rate alerting (not static thresholds), and distributed tracing that follows a request across all services. I helped one team cut their MTTR from 45 minutes to under 8 minutes by switching from average-based monitoring to percentile-based alerting with error budgets.
+The median SaaS company monitors uptime and average response time. Both are nearly useless for catching real performance problems. Averages hide the pain... your p50 is 200ms but your p99 is 4 seconds, and the 1% of users hitting that 4-second response are your highest-paying enterprise customers on complex dashboards. The monitoring stack that actually works: percentile-based latency tracking (p50, p95, p99) per endpoint, real user monitoring (RUM) with device and network segmentation, error budget burn rate alerting (not static thresholds), and distributed tracing that follows a request across all services. Switching from average-based monitoring to percentile-based alerting with error budgets can cut MTTR dramatically... from 45 minutes to under 10 is a realistic before-and-after.
 
 > **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to building systems that stay fast under real-world load.
 
@@ -280,7 +280,7 @@ sum(rate(http_request_duration_seconds_count[1m])) by (route)
 
 ## Reducing MTTR from 45 Minutes to 8 Minutes
 
-Mean Time to Resolution (MTTR) is the metric that matters most for operational excellence. A company I advised had an MTTR of 45 minutes. After implementing the monitoring stack above, MTTR dropped to 8 minutes. Here's what changed:
+Mean Time to Resolution (MTTR) is the metric that matters most for operational excellence. Take a team with an MTTR of 45 minutes. After implementing the monitoring stack above, MTTR can drop to under 10 minutes. Here's what changes:
 
 **Before:** Alert fires → Engineer logs into Grafana → Checks 5 dashboards → Reads 3 log streams → Identifies the problem → Deploys fix → Verifies resolution.
 

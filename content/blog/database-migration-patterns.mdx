@@ -13,7 +13,7 @@ image: "/images/blog/database-migration-patterns-featured.webp"
 
 ## TL;DR
 
-Database migrations are where SaaS teams learn the difference between "works in development" and "works in production." The migration that takes 200ms on your local PostgreSQL instance locks a 50M-row table for 45 minutes in production. I've helped teams recover from migrations that took down production for 4+ hours... every one was preventable. The core principle: never mix schema changes with data changes in the same migration. Use expand-contract for zero-downtime deploys, run `CONCURRENTLY` on every index creation, and always... always... test against a production-sized dataset before deploying. The tooling matters less than the patterns. Alembic, Prisma Migrate, and raw SQL all work if you follow the zero-downtime playbook.
+Database migrations are where SaaS teams learn the difference between "works in development" and "works in production." The migration that takes 200ms on your local PostgreSQL instance locks a 50M-row table for 45 minutes in production. Migrations that take down production for 4+ hours are common... and nearly every one is preventable. The core principle: never mix schema changes with data changes in the same migration. Use expand-contract for zero-downtime deploys, run `CONCURRENTLY` on every index creation, and always... always... test against a production-sized dataset before deploying. The tooling matters less than the patterns. Alembic, Prisma Migrate, and raw SQL all work if you follow the zero-downtime playbook.
 
 > **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to building systems that stay fast under real-world load.
 
