@@ -1,75 +1,41 @@
 ---
 sequence: 5
-title: "The Architecture Review That Saved 6 Months of Engineering"
-subject: "The architecture review that saved a SaaS company 6 months of engineering"
+title: "A Real One: Fitting 14 AI Models on One GPU"
+subject: "A real one: fitting 14 AI models on a single GPU"
 delay: "21 days"
 status: "draft"
 ---
 
-Subject: The architecture review that saved a SaaS company 6 months of engineering
+Subject: A real one: fitting 14 AI models on a single GPU
 
 Hey {first_name},
 
-I want to share a story that captures the kind of technical work I do ... and why architecture decisions at the right stage matter more than most founders realize.
+The last few emails were frameworks. This one is a real problem I hit building one of my own products, because the same decision-at-the-right-stage thinking applies to code, not just org charts.
+
+I built a photo-restoration platform (PhotoKeep Pro) on top of 14+ deep learning models... SUPIR, HAT, Real-ESRGAN, CodeFormer, GFPGAN, and more. The naive version chained paid cloud APIs: one service for upscaling, another for face restoration, another for colorization. It was expensive, slow, and the quality wandered between runs because nothing coordinated the stages.
 
 ---
 
-## The Situation
+## The Actual Constraint
 
-A B2B SaaS company (Series A, $2.1M ARR, 12 engineers) had a problem. Their flagship product was a project management tool for construction firms. They were closing enterprise deals ... but their architecture couldn't support the isolation and compliance requirements their new customers demanded.
+The models range from ~2GB (CodeFormer, for faces) to ~12GB (SUPIR, for general restoration). Load them all naively and you exhaust even a 49GB GPU. Load them one at a time on demand and every job eats a 15-30 second model-loading penalty.
 
-Their CTO had a plan: migrate to a database-per-tenant architecture on Kubernetes, with a custom orchestration layer to manage tenant provisioning. The engineering team estimated 6 months. Leadership approved the project.
+The fix was to stop treating VRAM as "load what you need" and start treating it as a managed memory pool:
 
-Before they started, the CTO asked me to review the plan.
+- An **LRU eviction system** keeps a working set of 3-4 hot models resident in GPU memory and swaps cold models out to CPU RAM.
+- Each restoration job is a **dependency graph** ... analyze, denoise, upscale, face-restore, colorize ... so a failed stage retries independently instead of reprocessing the whole pipeline.
+- **Celery + Redis** for distributed task queuing, so it scales horizontally across GPU nodes.
 
-## The Problem
+## The Result
 
-The proposed architecture solved the isolation requirement ... but at enormous cost:
-
-- **6 months of feature freeze** while 12 engineers rebuilt infrastructure
-- **$8K/month in additional cloud costs** for managing isolated databases
-- **3x operational complexity** ... monitoring, backups, migrations, and provisioning for every tenant
-- **Hiring pressure** ... they'd need a dedicated infrastructure engineer to maintain it
-
-The enterprise contracts they were chasing were worth $180K/year. The migration would cost them $400K+ in engineering time before a single enterprise customer went live.
-
-## The Decision Framework Applied
-
-We mapped the actual requirements against the available options:
-
-| Requirement      | Database-per-Tenant | Shared DB + RLS    | Shared DB + Schema  |
-| ---------------- | ------------------- | ------------------ | ------------------- |
-| Data isolation   | Physical            | Logical (enforced) | Logical (namespace) |
-| Compliance audit | Pass                | Pass with pgAudit  | Pass with pgAudit   |
-| Migration effort | 6 months            | 6 weeks            | 8 weeks             |
-| Ongoing cost     | $8K/mo              | $0 incremental     | $200/mo             |
-| Operational load | High                | Low                | Medium              |
-
-PostgreSQL Row-Level Security with `pgAudit` for compliance logging met every stated requirement. The implementation took 6 weeks instead of 6 months.
-
-## The Outcome
-
-- **5 months of engineering time redirected to product** ... they shipped three enterprise features in the time they would have spent on infrastructure
-- **$96K/year in avoided cloud costs** ... shared database vs. per-tenant instances
-- **First enterprise contract closed 8 weeks after the review** ... instead of 7+ months
-- **Zero data isolation incidents** in the 10 months since ... RLS enforces tenant boundaries at the database level, not application code
-
-The architecture review cost less than one month of the avoided cloud spend.
+A 12MP image now restores in ~45 seconds, down from 3-5 minutes with the API-chaining approach, at ~73% lower GPU cost than the fragmented multi-API setup. Quality landed at 28.5dB PSNR on my benchmark suite, ahead of Magnific AI and Topaz on blind tests, running at 99.95% uptime with automatic failover between nodes.
 
 ---
 
-## Why This Matters
+The lesson is the same one from the architecture emails: the expensive version was the "obvious" one (just call more APIs). The right version came from finding the simplest system that actually met the constraint.
 
-The CTO's instinct wasn't wrong ... database-per-tenant is the right choice in some scenarios. Physical isolation is necessary for certain compliance regimes (HIPAA with specific requirements, FedRAMP, some financial regulations). But for 80% of B2B SaaS companies, logical isolation with RLS and audit logging meets the bar.
-
-The difference between the right architecture at the right stage and the right architecture at the wrong stage is often hundreds of thousands of dollars and months of lost velocity.
-
----
-
-That's what advisory work looks like in practice. Not "move to microservices" or "adopt Kubernetes" ... but finding the simplest architecture that meets your actual requirements at your current stage.
-
-I take on a limited number of advisory engagements each quarter. If your team is facing architectural decisions like this ... scaling strategy, multi-tenancy approach, infrastructure evaluation ... reply to this email. Even if a formal engagement isn't the right fit, I'm happy to point you in the right direction.
+That's the kind of thing I write about here every Tuesday. If you're building something with a gnarly constraint like this, hit reply... I like these problems.
 
 – Alex
 
-P.S. For the technical deep-dive on the RLS approach from this case study, see: [Multi-Tenancy with Prisma and Row-Level Security](https://alexmayhew.dev/blog/multi-tenancy-prisma-rls).
+P.S. The full write-up is on the site: [PhotoKeep Pro case study](https://alexmayhew.dev/work/photokeep-pro).
