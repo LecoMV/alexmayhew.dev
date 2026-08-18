@@ -46,10 +46,8 @@ const navItems: NavItem[] = [
 const mobileOnlyItems: NavItem[] = [
 	{ href: "/", label: "Home", code: "00" },
 	{ href: "/services", label: "Services", code: "06" },
-	{ href: "/for", label: "Advisory", code: "07" },
-	{ href: "/technologies", label: "Technologies", code: "08" },
-	{ href: "/newsletter", label: "Newsletter", code: "09" },
-	{ href: "/contact", label: "Contact", code: "10" },
+	{ href: "/newsletter", label: "Newsletter", code: "07" },
+	{ href: "/contact", label: "Contact", code: "08" },
 ];
 
 const toolsDropdown: ToolItem[] = [

@@ -31,12 +31,6 @@ describe("Navigation", () => {
 		expect(screen.getByText("Resume")).toBeTruthy();
 	});
 
-	it("includes /for advisory link in the mobile menu", () => {
-		render(<Navigation />);
-		fireEvent.click(screen.getByLabelText(/open menu/i));
-		expect(screen.getByText("Advisory")).toBeTruthy();
-	});
-
 	it("renders mobile menu button on small screens", () => {
 		render(<Navigation />);
 		const menuButton = screen.getByLabelText(/open menu/i);
@@ -56,7 +50,7 @@ describe("Navigation", () => {
 		expect(screen.getByText("Home")).toBeTruthy();
 		expect(screen.getAllByText("Contact").length).toBeGreaterThanOrEqual(1);
 		expect(screen.getByText("Newsletter")).toBeTruthy();
-		expect(screen.getByText("Technologies")).toBeTruthy();
+		expect(screen.getByText("Services")).toBeTruthy();
 	});
 
 	it("closes mobile menu when a link is clicked", () => {

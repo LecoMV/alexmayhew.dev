@@ -7,19 +7,11 @@ import { describe, expect, it } from "vitest";
  * These source files contain user-facing string content and must comply.
  */
 const SOURCE_FILES_NO_EM_DASHES = [
-	// Previously cleaned files
-	"src/data/pseo/pages.ts",
-	"src/data/pseo/migrations.ts",
-	"src/data/pseo/comparisons.ts",
-	"src/data/pseo/integrations.ts",
 	"src/data/projects.ts",
 	"src/app/home-page.tsx",
 	"src/components/pages/about-page.tsx",
 	"src/app/services/services-page-content.tsx",
 	"src/components/pages/tools-page.tsx",
-	// Remaining 25 files with em dashes
-	"src/data/pseo/technologies.ts",
-	"src/data/roles/pages.ts",
 	"src/app/blog/[slug]/hub-faqs.ts",
 	"src/components/blog/table-of-contents.tsx",
 	"src/app/api/chat/route.ts",
@@ -39,7 +31,6 @@ const SOURCE_FILES_NO_EM_DASHES = [
 	"src/app/work/[slug]/page.tsx",
 	"src/app/tools/traceforge/page.tsx",
 	"src/app/tools/pilot/page.tsx",
-	"src/app/technologies/technologies-page-content.tsx",
 	"src/app/actions/newsletter.ts",
 	"src/app/actions/contact.ts",
 ];

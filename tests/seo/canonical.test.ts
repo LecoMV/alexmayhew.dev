@@ -46,13 +46,6 @@ describe("Canonical URL Configuration", () => {
 		expect(alternates.canonical).toBe("/work");
 	});
 
-	it("/for should have canonical", async () => {
-		const { metadata } = (await import("@/app/for/page")) as { metadata: Metadata };
-		expect(metadata.alternates).toBeDefined();
-		const alternates = metadata.alternates as { canonical: string };
-		expect(alternates.canonical).toBe("/for");
-	});
-
 	it("/services should have canonical", async () => {
 		const { metadata } = (await import("@/app/services/page")) as { metadata: Metadata };
 		expect(metadata.alternates).toBeDefined();

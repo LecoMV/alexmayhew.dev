@@ -127,45 +127,6 @@ describe("P1-10: Navigation internal links", () => {
 	});
 });
 
-describe("P2-19: Remove deprecated HowTo schema", () => {
-	it("migration pages should not use HowToJsonLd", () => {
-		const source = fs.readFileSync("src/app/services/migrations/[slug]/page.tsx", "utf-8");
-		expect(source).not.toContain("HowToJsonLd");
-	});
-
-	it("integration pages should not use HowToJsonLd", () => {
-		const source = fs.readFileSync("src/app/services/integrations/[slug]/page.tsx", "utf-8");
-		expect(source).not.toContain("HowToJsonLd");
-	});
-});
-
-describe("P2-15: Dynamic OG images on all page types", () => {
-	it("role pages should use dynamic OG images via /og route", () => {
-		const source = fs.readFileSync("src/app/for/[role]/page.tsx", "utf-8");
-		expect(source).toContain("/og?");
-	});
-
-	it("technology pages should use dynamic OG images via /og route", () => {
-		const source = fs.readFileSync("src/app/technologies/[slug]/page.tsx", "utf-8");
-		expect(source).toContain("/og?");
-	});
-
-	it("migration pages should use dynamic OG images via /og route", () => {
-		const source = fs.readFileSync("src/app/services/migrations/[slug]/page.tsx", "utf-8");
-		expect(source).toContain("/og?");
-	});
-
-	it("integration pages should use dynamic OG images via /og route", () => {
-		const source = fs.readFileSync("src/app/services/integrations/[slug]/page.tsx", "utf-8");
-		expect(source).toContain("/og?");
-	});
-
-	it("comparison pages should use dynamic OG images via /og route", () => {
-		const source = fs.readFileSync("src/app/services/comparisons/[slug]/page.tsx", "utf-8");
-		expect(source).toContain("/og?");
-	});
-});
-
 describe("P3-22: Image sitemap for blog posts", () => {
 	it("sitemap should include images for blog posts", () => {
 		const source = fs.readFileSync("src/app/sitemap.ts", "utf-8");
@@ -209,38 +170,8 @@ describe("P2-16: dynamicParams = false on dynamic routes", () => {
 		expect(source).toContain("dynamicParams");
 	});
 
-	it("services/[slug] should export dynamicParams = false", () => {
-		const source = fs.readFileSync("src/app/services/[slug]/page.tsx", "utf-8");
-		expect(source).toContain("dynamicParams");
-	});
-
-	it("for/[role] should export dynamicParams = false", () => {
-		const source = fs.readFileSync("src/app/for/[role]/page.tsx", "utf-8");
-		expect(source).toContain("dynamicParams");
-	});
-
-	it("technologies/[slug] should export dynamicParams = false", () => {
-		const source = fs.readFileSync("src/app/technologies/[slug]/page.tsx", "utf-8");
-		expect(source).toContain("dynamicParams");
-	});
-
 	it("work/[slug] should export dynamicParams = false", () => {
 		const source = fs.readFileSync("src/app/work/[slug]/page.tsx", "utf-8");
-		expect(source).toContain("dynamicParams");
-	});
-
-	it("services/migrations/[slug] should export dynamicParams = false", () => {
-		const source = fs.readFileSync("src/app/services/migrations/[slug]/page.tsx", "utf-8");
-		expect(source).toContain("dynamicParams");
-	});
-
-	it("services/integrations/[slug] should export dynamicParams = false", () => {
-		const source = fs.readFileSync("src/app/services/integrations/[slug]/page.tsx", "utf-8");
-		expect(source).toContain("dynamicParams");
-	});
-
-	it("services/comparisons/[slug] should export dynamicParams = false", () => {
-		const source = fs.readFileSync("src/app/services/comparisons/[slug]/page.tsx", "utf-8");
 		expect(source).toContain("dynamicParams");
 	});
 });

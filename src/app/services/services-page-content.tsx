@@ -1,19 +1,16 @@
 "use client";
 
 import { m } from "framer-motion";
-import { ArrowRight, Building2, CheckCircle2, ChevronRight, Code2 } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
 import { trackCTAClick } from "@/components/analytics";
 import { NewsletterSignup } from "@/components/newsletter/newsletter-signup";
-import { INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
 import { fadeInUp, springTransition, staggerContainer } from "@/lib/motion-constants";
 import { cn } from "@/lib/utils";
 
-import type { PseoPage } from "@/data/pseo";
-
 // Service areas. Pricing is deliberately not published: scope varies too much,
-// and rates are quoted per engagement. Available for contract and fractional work.
+// and rates are quoted per engagement. Available for contract and part-time work.
 const serviceTiers = [
 	{
 		tier: "01",
@@ -62,32 +59,31 @@ const serviceTiers = [
 	},
 ];
 
-// Proof points ... shipped, verifiable work.
+// Proof points ... shipped, verifiable work from real projects.
 const trustMetrics = [
-	{ value: "~200", label: "PV systems designed", context: "Aurora Solar" },
+	{ value: "~200", label: "PV systems designed", context: "Harvest Sun Solar" },
+	{ value: "9 yrs", label: "One-person tech dept", context: "solar company" },
 	{ value: "337x", label: "Processing speedup", context: "TraceForge pipeline" },
-	{ value: "73%", label: "GPU cost reduction", context: "PhotoKeep platform" },
-	{ value: "70+", label: "Articles published", context: "on this site" },
+	{ value: "60+", label: "Articles published", context: "on this site" },
 ];
 
-interface ServicesPageProps {
-	pages: PseoPage[];
-}
+// Honest core stack (mirrors the resume + Person schema knowsAbout).
+const coreTech = [
+	"WordPress",
+	"Next.js 15",
+	"React 19",
+	"TypeScript",
+	"Node.js",
+	"Python",
+	"PostgreSQL",
+	"Redis",
+	"Cloudflare Workers",
+	"Docker",
+	"Linux",
+	"n8n",
+];
 
-export function ServicesPage({ pages }: ServicesPageProps) {
-	// Group pages by industry for display
-	const pagesByIndustry = pages.reduce(
-		(acc, page) => {
-			const industry = page.industry;
-			if (!acc[industry]) {
-				acc[industry] = [];
-			}
-			acc[industry].push(page);
-			return acc;
-		},
-		{} as Record<string, PseoPage[]>
-	);
-
+export function ServicesPage() {
 	return (
 		<section className="page-layout">
 			<div className="max-w-content mx-auto">
@@ -125,8 +121,8 @@ export function ServicesPage({ pages }: ServicesPageProps) {
 					</h1>
 					<p className="text-slate-text max-w-2xl text-lg leading-relaxed">
 						I build and maintain websites, automate the repetitive work, and integrate the tools a
-						business already runs on. Available for contract and fractional engagements. If you need
-						a hand, tell me what needs building.
+						business already runs on. Available for contract and part-time work. If you need a hand,
+						tell me what needs building.
 					</p>
 				</m.div>
 
@@ -217,67 +213,7 @@ export function ServicesPage({ pages }: ServicesPageProps) {
 					</div>
 				</m.section>
 
-				{/* Services by Industry */}
-				<m.section
-					className="mb-24"
-					variants={staggerContainer}
-					initial="hidden"
-					whileInView="visible"
-					viewport={{ once: true, margin: "-100px" }}
-				>
-					<m.h2
-						variants={fadeInUp}
-						className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase"
-					>
-						<span className="mr-2">▸</span>
-						Industry_Expertise
-					</m.h2>
-					<m.p variants={fadeInUp} className="text-slate-text mb-8 max-w-2xl">
-						Deep domain knowledge in regulated industries and high-growth verticals. Each service
-						page contains unique insights, compliance guidance, and technology recommendations.
-					</m.p>
-
-					<div className="space-y-8">
-						{Object.entries(pagesByIndustry).map(([industry, industryPages]) => (
-							<m.div key={industry} variants={fadeInUp}>
-								<h3 className="text-mist-white mb-4 flex items-center gap-2 font-mono text-sm font-medium">
-									<Building2 className="text-cyber-lime h-4 w-4" />
-									{INDUSTRY_LABELS[industry as keyof typeof INDUSTRY_LABELS]}
-								</h3>
-								<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-									{industryPages.map((page) => (
-										<Link
-											key={page.slug}
-											href={`/services/${page.slug}`}
-											className="bg-gunmetal-glass/10 group relative border border-white/10 p-5 transition-all duration-300 hover:border-white/20"
-										>
-											{/* Hover glow */}
-											<div className="bg-cyber-lime/5 absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-											<div className="relative">
-												<div className="mb-2 flex items-center justify-between">
-													<div className="text-cyber-lime flex items-center gap-2 font-mono text-xs">
-														<Code2 className="h-3 w-3" />
-														{TECHNOLOGY_LABELS[page.technology]}
-													</div>
-													<ChevronRight className="text-slate-text h-4 w-4 transition-transform group-hover:translate-x-1" />
-												</div>
-												<h4 className="text-mist-white group-hover:text-cyber-lime mb-2 font-medium transition-colors">
-													{page.seo.title.replace(" | Technical Advisor", "")}
-												</h4>
-												<p className="text-slate-text line-clamp-2 text-sm">
-													{page.seo.description}
-												</p>
-											</div>
-										</Link>
-									))}
-								</div>
-							</m.div>
-						))}
-					</div>
-				</m.section>
-
-				{/* Technology Badges */}
+				{/* Core Technologies */}
 				<m.section
 					className="mb-24"
 					variants={staggerContainer}
@@ -293,22 +229,7 @@ export function ServicesPage({ pages }: ServicesPageProps) {
 						Core_Technologies
 					</m.h2>
 					<m.div variants={fadeInUp} className="flex flex-wrap gap-3">
-						{[
-							"Next.js 15",
-							"React 19",
-							"TypeScript",
-							"Node.js",
-							"Python",
-							"PostgreSQL",
-							"Redis",
-							"Cloudflare",
-							"AWS",
-							"Docker",
-							"Kubernetes",
-							"Prisma",
-							"GraphQL",
-							"Stripe",
-						].map((tech) => (
+						{coreTech.map((tech) => (
 							<span
 								key={tech}
 								className="border border-white/20 px-3 py-1.5 font-mono text-xs text-white/80"
@@ -328,20 +249,18 @@ export function ServicesPage({ pages }: ServicesPageProps) {
 					transition={springTransition}
 				>
 					<h2 className="text-mist-white mb-4 text-2xl font-bold tracking-tight md:text-3xl">
-						Ready to discuss your architecture?
+						Need something built or fixed?
 					</h2>
 					<p className="text-slate-text mx-auto mb-8 max-w-xl">
-						Schedule a consultation to explore how strategic technical decisions can accelerate your
-						product roadmap.
+						Tell me what you are working on and what needs doing. I will tell you honestly whether I
+						am the right person for it.
 					</p>
 					<Link
 						href="/contact"
-						onClick={() =>
-							trackCTAClick("schedule_consultation", { cta_location: "services_bottom_cta" })
-						}
+						onClick={() => trackCTAClick("contact", { cta_location: "services_bottom_cta" })}
 						className="group border-cyber-lime bg-cyber-lime/10 hover:bg-cyber-lime/20 inline-flex items-center gap-2 border px-8 py-4 font-mono text-sm transition-colors"
 					>
-						<span className="text-cyber-lime">Book a working session</span>
+						<span className="text-cyber-lime">Get in touch</span>
 						<ArrowRight className="text-cyber-lime h-4 w-4 transition-transform group-hover:translate-x-1" />
 					</Link>
 

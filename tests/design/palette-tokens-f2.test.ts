@@ -8,9 +8,6 @@ const OFFENDING =
 	/\b(text|bg|border|from|to|via|ring|outline|fill|stroke|decoration|placeholder|caret|accent|shadow|divide|ring-offset)-(amber|blue|green|yellow|purple)-(400|500)\b/;
 
 const ENFORCED_FILES = [
-	"src/app/services/migrations/[slug]/migration-page-content.tsx",
-	"src/app/services/integrations/[slug]/integration-page-content.tsx",
-	"src/app/services/comparisons/[slug]/comparison-page-content.tsx",
 	"src/app/tools/pilot/page.tsx",
 	"src/app/tools/traceforge/page.tsx",
 	"src/components/pages/tools-page.tsx",

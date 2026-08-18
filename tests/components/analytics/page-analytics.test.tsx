@@ -122,31 +122,6 @@ describe("PageAnalytics", () => {
 		);
 	});
 
-	it("categorizes technology pages correctly", () => {
-		mockPathname = "/technologies/react";
-		render(<PageAnalytics />);
-		expect(mockGtag).toHaveBeenCalledWith(
-			"event",
-			"page_view",
-			expect.objectContaining({
-				page_category: "technologies",
-				content_type: "technology_page",
-			})
-		);
-	});
-
-	it("categorizes role pages correctly", () => {
-		mockPathname = "/for/cto";
-		render(<PageAnalytics />);
-		expect(mockGtag).toHaveBeenCalledWith(
-			"event",
-			"page_view",
-			expect.objectContaining({
-				page_category: "roles",
-			})
-		);
-	});
-
 	it("categorizes unknown pages as other", () => {
 		mockPathname = "/random-page";
 		render(<PageAnalytics />);

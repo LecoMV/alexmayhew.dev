@@ -1,0 +1,45 @@
+Ripgrep is not available. Falling back to GrepTool.
+[STARTUP] Phase 'cleanup_ops' was started but never ended. Skipping metrics.
+[STARTUP] Cannot measure phase 'cleanup_ops': start mark 'startup:cleanup_ops:start' not found (likely cleared by reset).
+### 1. WHAT CLAUDE AND CODEX BOTH MISSED (CRITICAL GAPS)
+
+*   **The BTRFS / Swapfile Boot-Loop Risk:** Neither Claude nor Codex verified the underlying filesystem before writing to `/etc/fstab`. Kali Linux increasingly uses BTRFS by default or as a popular advanced installation option. If the root filesystem is BTRFS, adding a standard swapfile directly to `/etc/fstab` without setting the `nocow` attribute, creating a zero-length file first, and calculating correct physical offsets will cause the system to fail to mount the swap, trigger a boot hang, or risk filesystem corruption. Furthermore, if the swapfile was created via `fallocate` instead of `dd` on modern ext4/XFS filesystems, many kernels will reject it during initialization with `Invalid argument`, leaving the user with 0 swap and continued OOM failures.
+*   **`LD_PRELOAD` Collision in Steam Launch Options:** Chaining `gamemoderun mangohud %command%` is a known failure point. Both tools rely on dynamic library preloading. Because of how the `mangohud` wrapper script is written, executing it *after* `gamemoderun` can completely overwrite the `LD_PRELOAD` environment variable instead of appending to it. This silently disables GameMode, meaning the game runs with a HUD but without any of the CPU governor, process niceness, or power state optimizations.
+*   **Chrome Profile Corruption & Electron Collateral:** The gaming script's `pkill -f chrome` is a blunt force instrument. Besides abruptly terminating active Chrome sessions and causing annoying "Restore Session?" profile corruption warnings on the next launch, the broad regular expression will forcefully kill unrelated Electron-based applications (e.g., VS Code, Discord, Obsidian, Spotify) if their process command lines contain the word "chrome".
+
+---
+
+### 2. BOOT-SAFETY: DUAL-BOOT / EFI / NVIDIA-MODESET RISK ASSESSMENT
+
+*   **Is `split_lock_detect=off` safe?** Yes. Codex is correct that this parameter is syntactically sound and completely safe. It interacts strictly with the CPU's Model Specific Registers (MSRs) during the Linux kernel initialization phase. It does not touch UEFI NVRAM, UEFI secure boot variables, GRUB boot stages, or the Windows EFI boot partition.
+*   **Interaction with `ibt=off`:** There is zero conflict between `split_lock_detect=off` and `ibt=off`. `ibt=off` disables Intel CET (Control-flow Enforcement Technology) Indirect Branch Tracking to prevent proprietary NVIDIA drivers from crashing on module load. `split_lock_detect=off` disables hardware-level alignment check exceptions (`#AC`) for split memory locks. Both are stable, safe, and highly recommended together on modern Intel Hybrid architectures (like the i9-12900K).
+
+---
+
+### 3. NVIDIA DRIVER UPGRADE VS. REBOOT SEQUENCING (RISK & MAINTENANCE)
+
+*   **The Kali Rolling Trap:** Codex notes that upgrading to the 610.43.02 driver branch is the "ideal" fix due to a known NVIDIA app-profile bug in the 595 branch. However, Codex severely understates the operational risk of this upgrade on Kali Linux (a Debian Testing-based rolling release). Installing a beta/developer driver manually via NVIDIA's `.run` installer bypasses the system package manager (`apt`). Every subsequent rolling kernel upgrade on Kali (which is highly frequent) will break the compiled dkms driver, dropping the user into a black screen / boot-to-TTY loop on reboot.
+*   **Recommended Sequencing:** **Reboot first.** Disabling split-lock detection via GRUB is overwhelmingly safer and easier to maintain. Disabling split-locks directly addresses the root cause of the CPU thread stalls that starve the GPU command queue (which is what triggers the `Xid 109 CTX SWITCH TIMEOUT`). Only if the crash persists *after* applying the split-lock fix should the user consider the high-maintenance driver upgrade.
+
+---
+
+### 4. SWAP / SYSCTL / SCRIPT RISKS TO FIX BEFORE REBOOT
+
+*   **Verify Filesystem Type:** Before rebooting, run `df -T /` or `mount | grep 'on / '` to ensure the root filesystem is not BTRFS. If BTRFS is present, comment out the `/swapfile` line in `/etc/fstab` immediately to avoid a boot failure, and recreate the swapfile using proper BTRFS subvolumes and parameters.
+*   **Verify Swap Creation Method:** Ensure the swapfile was created via `dd if=/dev/zero of=/swapfile bs=1M count=32768` and has secure permissions set via `chmod 600 /swapfile`.
+*   **Redundant Sysctl:** `kernel.split_lock_mitigate=0` in `/etc/sysctl.d/99-gaming-swappiness.conf` is redundant once `split_lock_detect=off` is set in GRUB, but is otherwise harmless. If the running kernel variant does not expose this sysctl, `sysctl --system` may output a minor, non-blocking warning during boot.
+
+---
+
+### 5. SEVERITY-TAGGED FINDINGS
+
+*   **[HIGH SEVERITY] Filesystem/Swap Crash Risk:** If Kali is installed on BTRFS, the new swapfile fstab entry will break boot mount or fail to initialize. If created with `fallocate` instead of `dd` on ext4/XFS, the kernel may reject the swapfile during boot, leaving the system with 0 swap.
+*   **[MEDIUM SEVERITY] Steam Launch Chaining Failure:** `gamemoderun mangohud %command%` will likely clobber `LD_PRELOAD`, disabling GameMode optimizations.
+*   **[MEDIUM SEVERITY] NVIDIA Driver Beta Maintenance Burden:** Recommending a 610.x upgrade on Kali Rolling is a maintenance trap that will lead to broken GUI environments on subsequent kernel updates.
+*   **[LOW SEVERITY] Chrome & Electron Bruteforce:** `pkill -f chrome` will corrupt Chrome profiles and forcefully kill running Electron apps (VS Code, Discord).
+
+#### ONE Concrete Recommended Next Action:
+Verify that the root filesystem is not BTRFS before rebooting (reverting the fstab entry if it is BTRFS), change the Steam launch options to `mangohud gamemoderun %command%` to preserve both utility features, and proceed with the reboot to apply `split_lock_detect=off` before attempting any high-risk NVIDIA driver upgrades.
+
+#### Verdict:
+**CHANGES-REQUESTED**
