@@ -305,30 +305,47 @@ jobs:
         run: |
           echo "Running smoke tests..."
 
-          # Test critical pages
+          # A freshly-deployed route can lag edge propagation by a few seconds
+          # after the health check goes green, so retry before failing.
+          check_200() {
+            local page="$1"
+            for attempt in 1 2 3 4 5; do
+              status=$(curl -s -o /dev/null -w "%{http_code}" "https://alexmayhew.dev$page")
+              [ "$status" = "200" ] && { echo "OK: $page"; return 0; }
+              echo "  $page returned $status (attempt $attempt/5), retrying..."
+              sleep 6
+            done
+            echo "FAILED: $page returned $status after 5 attempts"
+            return 1
+          }
+
           for page in "/" "/services" "/for" "/contact" "/work" "/resume"; do
             echo "Testing https://alexmayhew.dev$page"
-            status=$(curl -s -o /dev/null -w "%{http_code}" "https://alexmayhew.dev$page")
-            if [ "$status" != "200" ]; then
-              echo "FAILED: $page returned $status"
-              exit 1
-            fi
-            echo "OK: $page"
+            check_200 "$page" || exit 1
           done
 
           # Prove /resume is reachable to user-triggered AI fetchers (Cloudflare
           # "Agent" class): a recruiter pasting the URL into ChatGPT/Claude. Assert
-          # real HTML with the resume marker, not a challenge/block page.
+          # real HTML with the resume marker, not a challenge/block page. Retry to
+          # absorb edge-propagation lag on a newly-deployed route.
           for ua in "ChatGPT-User" "Claude-User" "Perplexity-User"; do
             echo "Testing /resume as $ua"
-            body=$(curl -s -A "$ua" "https://alexmayhew.dev/resume")
-            ctype=$(curl -s -o /dev/null -w "%{content_type}" -A "$ua" "https://alexmayhew.dev/resume")
-            case "$ctype" in
-              text/html*) : ;;
-              *) echo "FAILED: /resume as $ua returned content-type '$ctype'"; exit 1 ;;
-            esac
-            if ! printf '%s' "$body" | grep -q "Harvest Sun Solar"; then
-              echo "FAILED: /resume as $ua missing resume marker (possible challenge/block page)"
+            ok=""
+            for attempt in 1 2 3 4 5; do
+              body=$(curl -s -A "$ua" "https://alexmayhew.dev/resume")
+              ctype=$(curl -s -o /dev/null -w "%{content_type}" -A "$ua" "https://alexmayhew.dev/resume")
+              case "$ctype" in
+                text/html*)
+                  if printf '%s' "$body" | grep -q "Harvest Sun Solar"; then
+                    ok="1"; break
+                  fi
+                  ;;
+              esac
+              echo "  /resume as $ua not ready (attempt $attempt/5, content-type '$ctype'), retrying..."
+              sleep 6
+            done
+            if [ -z "$ok" ]; then
+              echo "FAILED: /resume as $ua not serving HTML with resume marker (possible challenge/block page)"
               exit 1
             fi
             echo "OK: /resume reachable as $ua"
