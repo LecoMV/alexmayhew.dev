@@ -53,6 +53,28 @@ describe("JsonLd (global Person/Organization/WebSite graph)", () => {
 		expect(person.hasCredential).toBeUndefined();
 	});
 
+	it("Person carries a POSITIVE disambiguatingDescription that never names the artist namesake", () => {
+		const { container } = render(<JsonLd />);
+		const schemas = parseAllJsonLd(container);
+		const person = schemas.find((s) => s["@type"] === "Person");
+		// Exact-axis disambiguation for the common name: assert with positive,
+		// unique facts only. Naming the namesake artist would co-occur the two
+		// entities in the graph (anti-pattern per the 2026-08 entity research).
+		expect(typeof person.disambiguatingDescription).toBe("string");
+		expect(person.disambiguatingDescription.length).toBeGreaterThan(20);
+		const disambig = person.disambiguatingDescription.toLowerCase();
+		expect(disambig).not.toContain("artist");
+		expect(disambig).not.toContain("new-media");
+		expect(disambig).not.toContain("not the");
+	});
+
+	it("Person has no image until a real headshot exists (generic OG banner removed)", () => {
+		const { container } = render(<JsonLd />);
+		const schemas = parseAllJsonLd(container);
+		const person = schemas.find((s) => s["@type"] === "Person");
+		expect(person.image).toBeUndefined();
+	});
+
 	it("Person carries a dated hasOccupation history matching the resume", () => {
 		const { container } = render(<JsonLd />);
 		const schemas = parseAllJsonLd(container);

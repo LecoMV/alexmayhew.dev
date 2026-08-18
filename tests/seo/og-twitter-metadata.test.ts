@@ -27,11 +27,7 @@ describe("OG and Twitter metadata completeness", () => {
 
 describe("Canonicals should use relative format", () => {
 	it("no page files should use absolute siteUrl in canonical", () => {
-		const files = [
-			"src/app/blog/[slug]/page.tsx",
-			"src/app/technologies/[slug]/page.tsx",
-			"src/app/technologies/page.tsx",
-		];
+		const files = ["src/app/blog/[slug]/page.tsx"];
 		for (const file of files) {
 			const content = readFileSync(join(process.cwd(), file), "utf-8");
 			expect(content, `${file} uses absolute canonical`).not.toMatch(/canonical:.*siteUrl/);

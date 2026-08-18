@@ -29,7 +29,7 @@ Here's what makes AI debt different from previous "debt bubbles" in software. Tr
 
 AI debt accumulates unconsciously. Every accepted Copilot suggestion, every Claude Code output merged without deep review, every AI-generated module that "works" but nobody can explain... each one adds to the principal without appearing on any ledger. The Harness 2025 developer survey found that a majority of engineers spend more time debugging AI-generated code than they would have spent writing the equivalent manually. The code shipped faster. The total cost was higher.
 
-In my advisory work, I've started calling this "phantom velocity." The sprint velocity chart looks great. PRs are merging faster. Lines of code are up. But the maintenance burden in months 6-18 is 3-4x what the team budgeted for, because nobody factored in the cost of understanding, debugging, and eventually rewriting code that was generated rather than designed.
+In practice, I've started calling this "phantom velocity." The sprint velocity chart looks great. PRs are merging faster. Lines of code are up. But the maintenance burden in months 6-18 is 3-4x what the team budgeted for, because nobody factored in the cost of understanding, debugging, and eventually rewriting code that was generated rather than designed.
 
 ---
 
@@ -64,7 +64,7 @@ Refactored code as a percentage of total code changes declined from ~25% in 2021
 
 Refactoring is how codebases stay healthy. It's the software equivalent of preventive maintenance. When refactoring drops, you aren't saving time... you're deferring costs to future quarters. The code still needs the refactoring. The structural issues still exist. You've just stopped paying interest on the debt, which means the principal is growing unchecked.
 
-In practice, this shows up as modules that nobody wants to touch. In my advisory work, I call them "frozen zones"... sections of the codebase where the team routes around problems rather than fixing them because the cost of understanding the code exceeds the cost of building a workaround. Every AI-heavy codebase I've audited in the past 12 months has at least 3-5 frozen zones that didn't exist 18 months ago.
+In practice, this shows up as modules that nobody wants to touch. I call them "frozen zones"... sections of the codebase where the team routes around problems rather than fixing them because the cost of understanding the code exceeds the cost of building a workaround. Most AI-heavy codebases now carry at least 3-5 frozen zones that didn't exist 18 months ago.
 
 ### Copy-Paste Code Is Surging
 
@@ -125,7 +125,7 @@ code_origin:
   - ai_unreviewed # AI generated, merged without deep review (be honest)
 ```
 
-Most teams resist the "ai_unreviewed" category. Use it anyway. The point isn't blame... it's risk mapping. In my advisory work, I've found that teams underestimate the percentage of AI-generated code they merge without deep review by ~40%. The label forces honesty.
+Most teams resist the "ai_unreviewed" category. Use it anyway. The point isn't blame... it's risk mapping. Teams routinely underestimate the percentage of AI-generated code they merge without deep review by ~40%. The label forces honesty.
 
 ### Step 2: Categorize the Debt
 
@@ -295,10 +295,6 @@ Expect 2-4 quarters of sustained effort at 20% sprint allocation to reduce AI de
 
 **Concerned about the AI debt accumulating in your codebase?** I help CTOs build measurement frameworks and remediation strategies that prevent the Year 2 maintenance spike.
 
-- [AI Integration for SaaS](/services/ai-integration-developer-for-saas) ... Responsible AI implementation
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Engineering governance strategy
-- [AI Integration for Healthcare](/services/ai-integration-developer-for-healthcare) ... Compliant AI systems
-
 ---
 
 ## Continue Reading
@@ -310,6 +306,5 @@ Expect 2-4 quarters of sustained effort at 20% sprint allocation to reduce AI de
 - [AI-Assisted Development Guide](/blog/ai-assisted-development-guide) ... The comprehensive framework
 - [The Generative Debt Crisis](/blog/ai-assisted-development-generative-debt) ... When AI code becomes liability
 - [Cognitive Debt](/blog/cognitive-debt-ai-teams) ... The hidden cost your team isn't measuring
-- [Technical Debt Strategy](/blog/technical-debt-strategy) ... When to accumulate, when to pay down
 
-**Need an AI debt audit for your engineering org?** [Work with me](/services/technical-advisor-for-startups) on building a measurement-driven remediation strategy.
+**Need an AI debt audit for your engineering org?** [Work with me](/contact) on building a measurement-driven remediation strategy.

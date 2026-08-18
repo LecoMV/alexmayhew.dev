@@ -25,7 +25,7 @@ Every AI feature you ship expands your attack surface in ways traditional securi
 
 IBM X-Force's 2026 report documents AI-driven attacks escalating across every sector. Cisco's State of AI Security 2026 survey confirms the gap: enterprise attack surfaces are expanding faster than defenses can adapt. Menlo Security's 2026 analysis puts it bluntly... AI agents with broad permissions are functionally equivalent to insider threats.
 
-In my advisory work, I've seen teams ship AI features through the same security review process they use for CRUD endpoints. That's insufficient. AI systems introduce fundamentally new attack vectors that require dedicated testing.
+In practice, teams routinely ship AI features through the same security review process they use for CRUD endpoints. That's insufficient. AI systems introduce fundamentally new attack vectors that require dedicated testing.
 
 Here are the seven confirmed vectors, with real exploits and concrete countermeasures for each.
 
@@ -579,7 +579,7 @@ Model Context Protocol servers deserve special attention because they bridge AI 
 - [ ] Provenance of each tool is documented
 ```
 
-In my advisory work, I've audited MCP configurations where a "weather lookup" tool had filesystem access, a "calendar integration" tool could send arbitrary HTTP requests, and a "code formatting" tool had database write permissions. The permission model was inherited from the framework defaults... nobody had reviewed it.
+In practice, MCP configurations regularly ship where a "weather lookup" tool has filesystem access, a "calendar integration" tool can send arbitrary HTTP requests, and a "code formatting" tool has database write permissions. The permission model is inherited from the framework defaults... nobody reviews it.
 
 ---
 
@@ -615,7 +615,7 @@ Start with a classifier tuned for high recall (catch everything, accept false po
 
 ### Is it safe to use community MCP tools?
 
-Treat community MCP tools exactly like you'd treat an unknown npm package: with suspicion. Audit the source code, check the maintainer's reputation, pin to a specific version, and review the tool description for hidden instructions. In my advisory work, I recommend maintaining an internal allowlist of approved MCP tools. Any tool not on the list requires a security review before installation. The Barracuda findings on 43 compromised agent components make this non-optional.
+Treat community MCP tools exactly like you'd treat an unknown npm package: with suspicion. Audit the source code, check the maintainer's reputation, pin to a specific version, and review the tool description for hidden instructions. In practice, I recommend maintaining an internal allowlist of approved MCP tools. Any tool not on the list requires a security review before installation. The Barracuda findings on 43 compromised agent components make this non-optional.
 
 ### What compliance frameworks cover AI security?
 
@@ -624,10 +624,6 @@ SOC 2 Trust Services Criteria apply to AI systems that process customer data... 
 ---
 
 **Shipping AI features and need to validate your security posture?** I help teams audit AI integrations, implement red team frameworks, and build security architectures that satisfy both engineering standards and compliance requirements.
-
-- [AI Integration for SaaS](/services/ai-integration-developer-for-saas) ... Responsible AI implementation
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Engineering governance strategy
-- [AI Integration for Healthcare](/services/ai-integration-developer-for-healthcare) ... Compliant AI systems
 
 ---
 
@@ -642,4 +638,4 @@ SOC 2 Trust Services Criteria apply to AI systems that process customer data... 
 - [The Generative Debt Crisis](/blog/ai-assisted-development-generative-debt) ... When AI code becomes liability
 - [Prompt Engineering for Developers](/blog/prompt-engineering-developers) ... Systematic approaches to better results
 
-**Need an AI security audit before shipping?** [Work with me](/services/ai-integration-developer-for-saas) on your AI security architecture.
+**Need an AI security audit before shipping?** [Work with me](/contact) on your AI security architecture.

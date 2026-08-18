@@ -34,7 +34,16 @@ describe("resume PDF ↔ resume.ts parity", () => {
 	});
 
 	it("PDF states no banned identity claim", () => {
-		for (const banned of ["Technical Advisor", "Systems Architect", "15+ years", "30+ startups"]) {
+		for (const banned of [
+			"Technical Advisor",
+			"Systems Architect",
+			"15+ years",
+			"30+ startups",
+			// The occupation noun must be single-valued across every surface.
+			// The reposition standardized on "specialist"; a stray "generalist"
+			// in the downloadable PDF is the exact drift that contradicts the site.
+			"Technology generalist",
+		]) {
 			expect(pdfText).not.toContain(banned);
 		}
 	});

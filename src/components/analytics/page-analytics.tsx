@@ -56,12 +56,10 @@ function getPageCategory(pathname: string): string {
 	if (pathname === "/") return "homepage";
 	if (pathname.startsWith("/blog")) return "content";
 	if (pathname.startsWith("/services")) return "services";
-	if (pathname.startsWith("/technologies")) return "technologies";
 	if (pathname.startsWith("/work")) return "portfolio";
 	if (pathname.startsWith("/about")) return "about";
 	if (pathname.startsWith("/contact")) return "conversion";
 	if (pathname.startsWith("/tools")) return "tools";
-	if (pathname.startsWith("/for")) return "roles";
 	return "other";
 }
 

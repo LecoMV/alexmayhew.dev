@@ -319,9 +319,45 @@ jobs:
             return 1
           }
 
-          for page in "/" "/services" "/for" "/contact" "/work" "/resume"; do
+          for page in "/" "/services" "/contact" "/work" "/resume"; do
             echo "Testing https://alexmayhew.dev$page"
             check_200 "$page" || exit 1
+          done
+
+          # Reposition routing (2026-08): the /for funnel 308s to /services, and
+          # the three disavowed identity /services pages return 410 Gone. Assert
+          # the removal signals so a regression that re-exposes them fails CI.
+          check_status() {
+            local page="$1" expected="$2"
+            for attempt in 1 2 3 4 5; do
+              status=$(curl -s -o /dev/null -w "%{http_code}" "https://alexmayhew.dev$page")
+              [ "$status" = "$expected" ] && { echo "OK: $page -> $status"; return 0; }
+              echo "  $page returned $status, expected $expected (attempt $attempt/5), retrying..."
+              sleep 6
+            done
+            echo "FAILED: $page returned $status, expected $expected"
+            return 1
+          }
+
+          # Next.js `permanent: true` redirects emit 308 (method-preserving),
+          # which Google treats as a permanent redirect equivalent to 301.
+          check_status "/for" 308 || exit 1
+          check_status "/for/cto" 308 || exit 1
+          # Both redirects must land EXACTLY on https://alexmayhew.dev/services
+          # (not merely a path ending in /services, and not another host).
+          for src in "/for" "/for/cto"; do
+            loc=$(curl -s -o /dev/null -w "%{redirect_url}" "https://alexmayhew.dev$src")
+            if [ "$loc" != "https://alexmayhew.dev/services" ]; then
+              echo "FAILED: $src redirect target is '$loc', expected https://alexmayhew.dev/services"
+              exit 1
+            fi
+            echo "OK: $src -> $loc"
+          done
+          for gone in \
+            "/services/fractional-cto-for-startups" \
+            "/services/technical-advisor-for-startups" \
+            "/services/technical-due-diligence-consultant"; do
+            check_status "$gone" 410 || exit 1
           done
 
           # Prove /resume is reachable to user-triggered AI fetchers (Cloudflare

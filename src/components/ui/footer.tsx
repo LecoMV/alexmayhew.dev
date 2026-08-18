@@ -66,7 +66,6 @@ const footerLinks = [
 	{ href: "/work", label: "Work" },
 	{ href: "/resume", label: "Resume" },
 	{ href: "/services", label: "Services" },
-	{ href: "/for", label: "Advisory" },
 	{ href: "/tools", label: "Tools" },
 	{ href: "/blog", label: "Blog" },
 	{ href: "/newsletter", label: "Newsletter" },

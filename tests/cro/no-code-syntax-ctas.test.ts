@@ -97,21 +97,10 @@ describe("No code-syntax CTAs in user-facing copy", () => {
 });
 
 describe("Outcome-specific CTA copy (per-file assertions)", () => {
-	it("services hub bottom CTA reads 'Book a working session'", () => {
+	it("services hub bottom CTA reads 'Get in touch'", () => {
 		const content = readSrc("src/app/services/services-page-content.tsx");
-		expect(content).toContain("Book a working session");
+		expect(content).toContain("Get in touch");
 		expect(content).not.toContain("SCHEDULE_CONSULTATION()");
-	});
-
-	it("service detail hero CTA reads 'Book a working session'", () => {
-		const content = readSrc("src/app/services/[slug]/service-page-content.tsx");
-		expect(content).toContain("Book a working session");
-	});
-
-	it("service detail bottom CTA reads 'Talk through your project'", () => {
-		const content = readSrc("src/app/services/[slug]/service-page-content.tsx");
-		expect(content).toContain("Talk through your project");
-		expect(content).not.toContain("START_CONVERSATION()");
 	});
 
 	it("case study hero links read 'See it running' and 'Read the code'", () => {
@@ -131,43 +120,5 @@ describe("Outcome-specific CTA copy (per-file assertions)", () => {
 	it("case study bottom CTA reads 'Talk through your challenge'", () => {
 		const content = readSrc("src/components/pages/case-study-page.tsx");
 		expect(content).toContain("Talk through your challenge");
-	});
-
-	it("technology detail service-card CTA reads 'See the service'", () => {
-		const content = readSrc("src/app/technologies/[slug]/technology-page-content.tsx");
-		expect(content).toContain("See the service");
-		expect(content).not.toContain("VIEW_SERVICE()");
-	});
-
-	it("technology detail bottom CTA reads 'Talk through your stack'", () => {
-		const content = readSrc("src/app/technologies/[slug]/technology-page-content.tsx");
-		expect(content).toContain("Talk through your stack");
-	});
-
-	it("technologies hub card CTA reads 'Read the playbook'", () => {
-		const content = readSrc("src/app/technologies/technologies-page-content.tsx");
-		expect(content).toContain("Read the playbook");
-		expect(content).not.toContain("EXPLORE()");
-	});
-
-	it("technologies hub bottom CTA reads 'Talk through your stack'", () => {
-		const content = readSrc("src/app/technologies/technologies-page-content.tsx");
-		expect(content).toContain("Talk through your stack");
-	});
-
-	it("for-hub bottom CTA reads 'Start the conversation'", () => {
-		const content = readSrc("src/app/for/for-hub-page.tsx");
-		expect(content).toContain("Start the conversation");
-	});
-
-	it("role page hero CTA reads 'Start the conversation'", () => {
-		const content = readSrc("src/app/for/[role]/role-page-content.tsx");
-		expect(content).toContain("Start the conversation");
-	});
-
-	it("role page bottom CTA reads 'Book a call'", () => {
-		const content = readSrc("src/app/for/[role]/role-page-content.tsx");
-		expect(content).toContain("Book a call");
-		expect(content).not.toContain("SCHEDULE_CALL()");
 	});
 });

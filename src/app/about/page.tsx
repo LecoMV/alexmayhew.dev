@@ -5,11 +5,14 @@ import { publicEnv } from "@/lib/env";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "About",
+	// Absolute title: the root template appends "| Alex Mayhew", so a name in a
+	// normal title would double-name. Lead with name + specialty for the
+	// winnable "Alex Mayhew [specialty]" query.
+	title: { absolute: "About Alex Mayhew | Technology Specialist" },
 	description:
 		"Alex Mayhew, technology specialist: nine years running technology for a Massachusetts solar company, now building products and available for remote work.",
 	openGraph: {
-		title: "About",
+		title: "About Alex Mayhew | Technology Specialist",
 		description:
 			"Technology specialist: web, SEO, automation, and applied AI. Nine years as a one-person tech department; now building products at Mayhew Technology LLC.",
 		type: "profile",

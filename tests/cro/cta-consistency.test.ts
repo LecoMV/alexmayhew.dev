@@ -11,7 +11,7 @@ describe("CTA copy on services hub", () => {
 		);
 		expect(content).not.toContain("SCHEDULE_CONSULTATION()");
 		expect(content).not.toContain("Schedule_Consultation()");
-		expect(content).toContain("Book a working session");
+		expect(content).toContain("Get in touch");
 	});
 });
 

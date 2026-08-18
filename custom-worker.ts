@@ -47,6 +47,21 @@ const FALLBACK_CSP = [
 	"report-to csp-endpoint",
 ].join("; ");
 
+// Permanently removed URLs. These three programmatic "service" pages encoded a
+// consultant identity (fractional CTO / technical advisor / due-diligence) that
+// Alex never held. They are disavowed, not moved, so they return 410 Gone (fast
+// deindex signal) rather than a 301 that would carry the old-brand association
+// onto /services. Kept in the Worker because Next has no native 410 and the page
+// data is unpublished in the same change.
+const GONE_PATHS = new Set<string>([
+	"/services/fractional-cto-for-startups",
+	"/services/technical-advisor-for-startups",
+	"/services/technical-due-diligence-consultant",
+]);
+
+const GONE_BODY =
+	'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><title>Gone</title></head><body><h1>410 Gone</h1><p>This page has been permanently removed. See <a href="/services">/services</a>.</p></body></html>';
+
 const SECURITY_HEADERS: Record<string, string> = {
 	"X-Frame-Options": "DENY",
 	"X-Content-Type-Options": "nosniff",
@@ -68,31 +83,53 @@ export default Sentry.withSentry(
 	}),
 	{
 		async fetch(request: Request, env: CloudflareEnv, ctx: ExecutionContext): Promise<Response> {
+			// Production serves ONLY via alexmayhew.dev (workers_dev off for prod).
+			// noindexed to avoid an indexable duplicate on a name-collision domain.
+			// (The prior guard checked only .pages.dev, which never matched the
+			// OpenNext->Workers mirror, and skipped non-HTML responses entirely.)
+			const host = request.headers.get("host") ?? "";
+			const isMirror = host.endsWith(".workers.dev") || host.endsWith(".pages.dev");
+
+			// Disavowed identity URLs: 410 Gone before the Next handler runs.
+			// Route it through SECURITY_HEADERS so the Worker-level page is covered.
+			const pathname = new URL(request.url).pathname;
+			if (GONE_PATHS.has(pathname)) {
+				const goneHeaders = new Headers({
+					"content-type": "text/html; charset=utf-8",
+					"X-Robots-Tag": "noindex, nofollow",
+				});
+				for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+					goneHeaders.set(name, value);
+				}
+				return new Response(GONE_BODY, { status: 410, headers: goneHeaders });
+			}
+
 			const response = await handler.fetch(request, env, ctx);
 
 			const contentType = response.headers.get("content-type") ?? "";
-			if (!contentType.includes("text/html")) {
+			const isHtml = contentType.includes("text/html");
+
+			// Non-HTML responses only need touching to noindex the mirror host.
+			if (!isHtml && !isMirror) {
 				return response;
 			}
 
 			const newHeaders = new Headers(response.headers);
 
-			// Prevent Google from indexing the .pages.dev mirror (duplicate content)
-			const host = request.headers.get("host") ?? "";
-			if (host.endsWith(".pages.dev")) {
+			if (isMirror) {
 				newHeaders.set("X-Robots-Tag", "noindex, nofollow");
 			}
 
-			for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
-				newHeaders.set(name, value);
-			}
-
-			// Safe-fallback CSP for HTML responses that bypassed middleware
-			// (SSG / static HTML served from ASSETS binding). Do NOT overwrite
-			// an existing CSP — middleware's per-request nonce CSP wins for
-			// dynamic routes.
-			if (!newHeaders.has("Content-Security-Policy")) {
-				newHeaders.set("Content-Security-Policy", FALLBACK_CSP);
+			if (isHtml) {
+				for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+					newHeaders.set(name, value);
+				}
+				// Safe-fallback CSP for HTML that bypassed middleware (SSG / static
+				// HTML from ASSETS). Do NOT overwrite an existing CSP — middleware's
+				// per-request nonce CSP wins for dynamic routes.
+				if (!newHeaders.has("Content-Security-Policy")) {
+					newHeaders.set("Content-Security-Policy", FALLBACK_CSP);
+				}
 			}
 
 			return new Response(response.body, {

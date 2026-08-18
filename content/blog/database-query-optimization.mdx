@@ -153,7 +153,7 @@ ON orders(tenant_id, created_at DESC)
 WHERE status = 'active';
 ```
 
-This reduced index size by 70% for a client whose orders table was 80% completed/cancelled. Index scans went from 45ms to 8ms.
+This reduces index size by ~70% when an orders table is 80% completed/cancelled. Index scans drop from ~45ms to ~8ms.
 
 ### The Covering Index Optimization
 
@@ -565,7 +565,7 @@ If you're building a multi-tenant SaaS, start with [proper tenant isolation usin
 
 ---
 
-_Building a SaaS and hitting database performance walls? I help teams architect systems that scale from MVP to 100k+ users. [Let's talk about your technical challenges](/services/nextjs-developer-for-saas)._
+_Building a SaaS and hitting database performance walls? I help teams architect systems that scale from MVP to 100k+ users. [Let's talk about your technical challenges](/contact)._
 
 ---
 
@@ -575,9 +575,8 @@ _Building a SaaS and hitting database performance walls? I help teams architect 
 
 ### More in This Series
 
-- [The $500K Architecture Mistake](/blog/500k-architecture-mistake) ... Why microservices aren't the answer
 - [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) ... Database isolation patterns
 - [Zero to 10K MRR SaaS Playbook](/blog/zero-to-10k-mrr-saas-playbook) ... Early-stage architecture
 - [Boring Technology Wins](/blog/boring-technology-wins) ... Technology selection philosophy
 
-**Ready to make better architecture decisions?** [Work with me](/services/technical-advisor-for-startups) on your SaaS architecture.
+**Ready to make better architecture decisions?** [Work with me](/contact) on your SaaS architecture.

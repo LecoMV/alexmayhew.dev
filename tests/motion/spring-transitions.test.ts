@@ -50,15 +50,7 @@ describe("duration: 0.2 replacements (microSpring)", () => {
 });
 
 describe("duration: 0.3 replacements (gentleSpring)", () => {
-	const files = [
-		"src/components/pages/contact-page.tsx",
-		"src/app/home-page.tsx",
-		"src/app/for/for-hub-page.tsx",
-		"src/app/for/[role]/role-page-content.tsx",
-		"src/app/technologies/technologies-page-content.tsx",
-		"src/app/technologies/[slug]/technology-page-content.tsx",
-		"src/app/services/[slug]/service-page-content.tsx",
-	];
+	const files = ["src/components/pages/contact-page.tsx", "src/app/home-page.tsx"];
 
 	for (const file of files) {
 		it(`${file} imports gentleSpring and has no duration: 0.3`, () => {

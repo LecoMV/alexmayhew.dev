@@ -1,47 +1,43 @@
 ---
 sequence: 3
-title: "How I Help CTOs Make Better Architecture Decisions"
-subject: "How I help CTOs make better architecture decisions"
+title: "The Multi-Tenancy Decision (and Why Per-Tenant Is Usually Wrong)"
+subject: "The multi-tenancy decision most teams get expensive"
 delay: "7 days"
 status: "draft"
 ---
 
-Subject: How I help CTOs make better architecture decisions
+Subject: The multi-tenancy decision most teams get expensive
 
 Hey {first_name},
 
-Last email I shared the most common architecture mistake I see in early-stage SaaS. Today I want to briefly explain how I work with companies on these decisions ... because the newsletter is a distilled version of the technical work I do.
+Last email covered the monolith-first pattern. Today, a decision that sits right next to it and costs teams the most when they get it wrong: how to isolate tenant data.
+
+The instinct, especially with an enterprise sales motion on the horizon, is database-per-tenant. Physical isolation feels safest. For most B2B SaaS, it's the expensive answer.
 
 ---
 
-## What a Typical Engagement Looks Like
+## The Options, Side by Side
 
-A Series A SaaS company ($1.2M ARR, 8 engineers) reached out last year. They were preparing for a growth phase and their CTO had three decisions to make:
+| Requirement      | Database-per-Tenant | Shared DB + RLS    | Shared DB + Schema  |
+| ---------------- | ------------------- | ------------------ | ------------------- |
+| Data isolation   | Physical            | Logical (enforced) | Logical (namespace) |
+| Compliance audit | Pass                | Pass with pgAudit  | Pass with pgAudit   |
+| Migration effort | ~6 months           | ~6 weeks           | ~8 weeks            |
+| Ongoing cost     | High (per-instance) | ~$0 incremental    | Low                 |
+| Operational load | High                | Low                | Medium              |
 
-1. Whether to extract their billing module into a separate service
-2. How to implement multi-tenancy for an enterprise sales motion
-3. Whether to migrate from Heroku to Kubernetes
+PostgreSQL Row-Level Security with `pgAudit` for compliance logging meets the requirements most teams actually have. The database enforces tenant boundaries, not application code you have to get right on every query.
 
-We spent two weeks on an architecture review. The outcome:
+## When Per-Tenant Is Right
 
-- **Billing extraction: No.** Their billing logic was tightly coupled to their core domain model. Extracting it would require 3-4 months of engineering time with no user-facing benefit. We restructured the module boundaries within the monolith instead ... 2 weeks of work.
+The instinct isn't always wrong. Physical isolation is genuinely necessary for some compliance regimes (certain HIPAA requirements, FedRAMP, some financial regulations) or when a contract mandates it. But for roughly 80% of B2B SaaS, logical isolation with RLS and audit logging clears the bar... at a fraction of the migration time and ongoing cost.
 
-- **Multi-tenancy: Row-Level Security from day one.** I recommended PostgreSQL RLS with a shared database rather than the database-per-tenant approach they were considering. Saved them from managing hundreds of database instances as they scaled. Implementation cost: 3 weeks vs. the 3+ months for database-per-tenant.
-
-- **Kubernetes migration: Deferred.** Their Heroku setup handled their current traffic with room to grow. We identified the actual threshold ($3M ARR, 50K concurrent users) where migration would become necessary and documented the migration path so they could execute it when the time came.
-
-Total advisory cost was a fraction of what they would have spent on even one of the over-engineered alternatives. More importantly, their engineering team spent Q2 shipping features ... not configuring infrastructure.
+The difference between the right architecture at the right stage and the right architecture at the wrong stage is often hundreds of thousands of dollars and months of lost velocity.
 
 ---
 
-## The Advisory Model
-
-I work with a limited number of companies each quarter. Engagements range from focused architecture reviews (2-4 weeks) to ongoing advisory relationships (monthly check-ins, async access for decisions as they come up).
-
-The goal is always the same: make the right technical decision for your current stage, not the decision that looks impressive on a conference slide.
-
-If you're facing a similar decision ... architecture review, scaling strategy, tech stack evaluation ... hit reply. I'm happy to point you in the right direction, even if a formal engagement isn't the right fit.
+If you're weighing this one, hit reply and tell me the constraints you're working under. I'm happy to point you at the tradeoffs even if it's just a quick back-and-forth.
 
 – Alex
 
-P.S. For a deeper look at how I think about the multi-tenancy decision specifically, here's the full guide: [Multi-Tenancy with Prisma and Row-Level Security](https://alexmayhew.dev/blog/multi-tenancy-prisma-rls).
+P.S. The full technical walkthrough of the RLS approach is here: [Multi-Tenancy with Prisma and Row-Level Security](https://alexmayhew.dev/blog/multi-tenancy-prisma-rls).

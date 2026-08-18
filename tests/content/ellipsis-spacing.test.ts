@@ -10,16 +10,9 @@ import { describe, expect, it } from "vitest";
  * Spread operators (...args, ...props) are excluded -- they are code, not content.
  */
 const CONTENT_FILES_WITH_ELLIPSIS = [
-	"src/data/pseo/pages.ts",
-	"src/data/pseo/technologies.ts",
-	"src/data/pseo/migrations.ts",
-	"src/data/pseo/comparisons.ts",
-	"src/data/pseo/integrations.ts",
-	"src/data/roles/pages.ts",
 	"src/data/projects.ts",
 	"src/components/pages/about-page.tsx",
 	"src/app/home-page.tsx",
-	"src/app/technologies/technologies-page-content.tsx",
 	"src/app/services/services-page-content.tsx",
 ];
 

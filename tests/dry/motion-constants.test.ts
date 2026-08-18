@@ -24,16 +24,7 @@ describe("motion-constants", () => {
 	});
 
 	it("consumer files import from motion-constants instead of defining locally", () => {
-		const consumerFiles = [
-			"src/app/home-page.tsx",
-			"src/app/services/services-page-content.tsx",
-			"src/app/services/[slug]/service-page-content.tsx",
-			"src/app/services/migrations/[slug]/migration-page-content.tsx",
-			"src/app/services/integrations/[slug]/integration-page-content.tsx",
-			"src/app/services/comparisons/[slug]/comparison-page-content.tsx",
-			"src/app/for/for-hub-page.tsx",
-			"src/app/for/[role]/role-page-content.tsx",
-		];
+		const consumerFiles = ["src/app/home-page.tsx", "src/app/services/services-page-content.tsx"];
 
 		const root = path.resolve(__dirname, "../..");
 

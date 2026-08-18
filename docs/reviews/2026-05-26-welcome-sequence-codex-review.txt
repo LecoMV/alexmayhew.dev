@@ -1,0 +1,1685 @@
+Reading prompt from stdin...
+OpenAI Codex v0.128.0 (research preview)
+--------
+workdir: /home/deploy/projects/amdev/alexmayhew-dev
+model: gpt-5.5
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 019e6519-ebdc-7f13-bbcf-893cfa026771
+--------
+user
+## Goal
+
+Adversarial review of a 5-email welcome sequence for "The Architect's Brief" newsletter. Find voice violations, false promises, broken links, conversion issues, and pacing problems.
+
+## Context
+
+Alex Mayhew is a Technical Advisor (alexmayhew.dev) targeting CTOs and startup founders. Brand voice: Technical Precision, Direct & Authoritative, Business Context First, Dense Information. Never: emojis, hedging, exclamation marks, "game-changer". Uses ellipsis (...) not em dashes.
+
+The sequence was auto-generated and has never been human-reviewed. These emails are the first impression for every subscriber from the footer, blog sidebar, and Stage-Fit quiz.
+
+## Claude's findings (Brain 1)
+
+1. ISSUE: Email 3 and 5 are both soft-sell for advisory — potential repetition
+2. MINOR: "every Tuesday" promise but zero newsletters sent yet
+3. All blog links verified as existing
+4. Voice and arc are strong overall
+
+## Constraints
+
+- REVIEW ONLY — DO NOT IMPLEMENT
+- Evaluate: voice consistency, CTA effectiveness, value delivery, pacing, false promises
+- Check against the alex-voice rules: no emojis, no hedging, no exclamation points, ellipsis not em dashes
+- Check: would a CTO read all 5 or unsubscribe partway?
+
+## Done when
+
+Return BLOCKER/ISSUE/NIT findings + OVERALL_VERDICT (PUBLISH / REVISE / RETHINK_SHAPE)
+
+## The 5 Emails
+
+---
+### 01-welcome.md
+
+---
+sequence: 1
+title: "Welcome to The Architect's Brief"
+subject: "Welcome to The Architect's Brief (+ what to expect)"
+delay: "immediate"
+status: "draft"
+---
+
+Subject: Welcome to The Architect's Brief (+ what to expect)
+
+Hey {first_name},
+
+Thanks for subscribing. You just joined a group of CTOs, VPs of Engineering, and senior technical leaders who care about making better architecture decisions ... not chasing hype cycles.
+
+Here's what you signed up for:
+
+- **One email every Tuesday.** A single architectural decision, broken down with specific numbers, business context, and a clear framework for when to apply it.
+- **No fluff.** Every issue is 500-700 words. You'll read it in under 5 minutes. If I don't have something worth saying, I don't send.
+- **Real advisory experience.** I work with startups and scale-ups as a Technical Advisor. The patterns I share come from actual engagements ... not blog post aggregation.
+
+---
+
+## Start Here
+
+If you want a sense of how I think about architecture decisions, these three guides are the foundation:
+
+1. **[SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework)** ... Maps every critical architecture choice to revenue milestones, from $0 to $1M+ ARR. This is the guide I wish existed when I built my first multi-tenant platform.
+
+2. **[Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook)** ... Why 100ms of latency costs you 1% in conversions, and the systematic approach to fixing it. Covers Core Web Vitals, database optimization, and caching strategies that compound.
+
+3. **[AI-Assisted Development Guide](https://alexmayhew.dev/blog/ai-assisted-development-guide)** ... Where AI actually accelerates engineering (and where it creates expensive technical debt). The build-vs-buy matrix I use with clients evaluating LLM integration.
+
+---
+
+One quick favor ... add `alex@alexmayhew.dev` to your contacts. It keeps future emails out of spam and promotions tabs.
+
+Hit reply and tell me: what's the biggest technical decision on your plate right now? I read every response, and it helps me write issues that matter to you.
+
+– Alex
+
+P.S. I'm not a blogger ... I'm a Technical Advisor who writes about the patterns I see across engagements. If you're curious about how that works, I'll share more in a few days.
+
+---
+### 02-first-insight.md
+
+---
+sequence: 2
+title: "The Architecture Mistake I See in Every Early-Stage SaaS"
+subject: "The architecture mistake I see in every early-stage SaaS"
+delay: "3 days"
+status: "draft"
+---
+
+Subject: The architecture mistake I see in every early-stage SaaS
+
+Hey {first_name},
+
+Every quarter I talk to 10-15 startups about their architecture. The conversations start differently ... scaling challenges, hiring bottlenecks, cloud costs ... but roughly 70% of them share the same root cause.
+
+They over-engineered their infrastructure before they had product-market fit.
+
+---
+
+## The Pattern
+
+Here's what it looks like in practice. A founding team raises a seed round. They hire 3-5 engineers. The first technical decision is architecture ... and they choose microservices, Kubernetes, and a distributed event bus because "we need to build for scale."
+
+Six months later, they have 200 users and 14 infrastructure services.
+
+The math is brutal. Teams in this position spend 40-60% of their engineering time on infrastructure ... service mesh configuration, inter-service communication debugging, deployment pipeline maintenance. That's time not spent on the product their customers are paying for.
+
+The companies that move fastest at this stage do the opposite. They deploy a well-structured monolith on a single managed service. PostgreSQL, not a polyglot persistence layer. Server-rendered pages, not a decoupled SPA with a separate API gateway.
+
+## The Decision Framework
+
+**If your ARR is under $500K:** Monolith on managed infrastructure. PostgreSQL. One deployment pipeline. Spend 90% of engineering time on product.
+
+**If your ARR is $500K-$2M:** Identify the one component with genuinely different scaling needs (usually async processing or file handling). Extract that. Keep everything else together.
+
+**If your ARR is $2M+:** Now you have the revenue to justify operational complexity. Extract services along domain boundaries ... but only when the monolith actively blocks team velocity.
+
+The threshold isn't technical. It's economic. Microservices are an organizational scaling pattern, not a technical performance pattern. If your team can fit in one room, a monolith is faster to ship, debug, and deploy.
+
+---
+
+I've watched companies burn 6-12 months of runway on infrastructure they didn't need. The ones that ship fastest are the ones that defer complexity until the business demands it.
+
+Next email, I'll share how I actually help companies navigate these decisions ... and what a typical advisory engagement looks like.
+
+– Alex
+
+P.S. If this resonated, the [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework) goes deeper into mapping architecture choices to revenue milestones.
+
+---
+### 03-how-i-help.md
+
+---
+sequence: 3
+title: "How I Help CTOs Make Better Architecture Decisions"
+subject: "How I help CTOs make better architecture decisions"
+delay: "7 days"
+status: "draft"
+---
+
+Subject: How I help CTOs make better architecture decisions
+
+Hey {first_name},
+
+Last email I shared the most common architecture mistake I see in early-stage SaaS. Today I want to briefly explain how I work with companies on these decisions ... because the newsletter is a distilled version of what I do as a Technical Advisor.
+
+---
+
+## What a Typical Engagement Looks Like
+
+A Series A SaaS company ($1.2M ARR, 8 engineers) reached out last year. They were preparing for a growth phase and their CTO had three decisions to make:
+
+1. Whether to extract their billing module into a separate service
+2. How to implement multi-tenancy for an enterprise sales motion
+3. Whether to migrate from Heroku to Kubernetes
+
+We spent two weeks on an architecture review. The outcome:
+
+- **Billing extraction: No.** Their billing logic was tightly coupled to their core domain model. Extracting it would require 3-4 months of engineering time with no user-facing benefit. We restructured the module boundaries within the monolith instead ... 2 weeks of work.
+
+- **Multi-tenancy: Row-Level Security from day one.** I recommended PostgreSQL RLS with a shared database rather than the database-per-tenant approach they were considering. Saved them from managing hundreds of database instances as they scaled. Implementation cost: 3 weeks vs. the 3+ months for database-per-tenant.
+
+- **Kubernetes migration: Deferred.** Their Heroku setup handled their current traffic with room to grow. We identified the actual threshold ($3M ARR, 50K concurrent users) where migration would become necessary and documented the migration path so they could execute it when the time came.
+
+Total advisory cost was a fraction of what they would have spent on even one of the over-engineered alternatives. More importantly, their engineering team spent Q2 shipping features ... not configuring infrastructure.
+
+---
+
+## The Advisory Model
+
+I work with a limited number of companies each quarter. Engagements range from focused architecture reviews (2-4 weeks) to ongoing advisory relationships (monthly check-ins, async access for decisions as they come up).
+
+The goal is always the same: make the right technical decision for your current stage, not the decision that looks impressive on a conference slide.
+
+If you're facing a similar decision ... architecture review, scaling strategy, tech stack evaluation ... hit reply. I'm happy to point you in the right direction, even if a formal engagement isn't the right fit.
+
+– Alex
+
+P.S. For a deeper look at how I think about the multi-tenancy decision specifically, here's the full guide: [Multi-Tenancy with Prisma and Row-Level Security](https://alexmayhew.dev/blog/multi-tenancy-prisma-rls).
+
+---
+### 04-engagement-check.md
+
+---
+sequence: 4
+title: "Quick Question (2 Weeks In)"
+subject: "Quick question (2 weeks in)"
+delay: "14 days"
+status: "draft"
+---
+
+Subject: Quick question (2 weeks in)
+
+Hey {first_name},
+
+You've been reading The Architect's Brief for two weeks now. Before I keep sending you architecture decisions every Tuesday, I want to make sure I'm covering what matters to you.
+
+**Quick question:** Which of these topics is most relevant to your work right now?
+
+- **Architecture decisions** ... monolith vs. microservices, service extraction, system design
+- **Performance engineering** ... Core Web Vitals, database optimization, caching strategies
+- **Scaling teams** ... first hires, IC-to-lead transitions, technical hiring
+- **AI/ML integration** ... when to build vs. buy, LLM architecture, cost optimization
+
+Hit reply with one of those (or something else entirely). It takes 10 seconds and directly shapes what I write about.
+
+---
+
+Here's a quick insight while I have you ... something that came up in a client conversation this week:
+
+**The 80/20 rule of database optimization.** Before you add Redis, before you tune your queries, before you add read replicas ... check your indexes. In 80% of the performance reviews I do, the single highest-impact fix is adding or correcting a missing composite index. The typical improvement: 10-50x query speedup for 10 minutes of work.
+
+That's it. Short email this week.
+
+– Alex
+
+---
+### 05-case-study.md
+
+---
+sequence: 5
+title: "The Architecture Review That Saved 6 Months of Engineering"
+subject: "The architecture review that saved a SaaS company 6 months of engineering"
+delay: "21 days"
+status: "draft"
+---
+
+Subject: The architecture review that saved a SaaS company 6 months of engineering
+
+Hey {first_name},
+
+I want to share a story that captures what I do as a Technical Advisor ... and why architecture decisions at the right stage matter more than most founders realize.
+
+---
+
+## The Situation
+
+A B2B SaaS company (Series A, $2.1M ARR, 12 engineers) had a problem. Their flagship product was a project management tool for construction firms. They were closing enterprise deals ... but their architecture couldn't support the isolation and compliance requirements their new customers demanded.
+
+Their CTO had a plan: migrate to a database-per-tenant architecture on Kubernetes, with a custom orchestration layer to manage tenant provisioning. The engineering team estimated 6 months. Leadership approved the project.
+
+Before they started, the CTO asked me to review the plan.
+
+## The Problem
+
+The proposed architecture solved the isolation requirement ... but at enormous cost:
+
+- **6 months of feature freeze** while 12 engineers rebuilt infrastructure
+- **$8K/month in additional cloud costs** for managing isolated databases
+- **3x operational complexity** ... monitoring, backups, migrations, and provisioning for every tenant
+- **Hiring pressure** ... they'd need a dedicated infrastructure engineer to maintain it
+
+The enterprise contracts they were chasing were worth $180K/year. The migration would cost them $400K+ in engineering time before a single enterprise customer went live.
+
+## The Decision Framework Applied
+
+We mapped the actual requirements against the available options:
+
+| Requirement      | Database-per-Tenant | Shared DB + RLS    | Shared DB + Schema  |
+| ---------------- | ------------------- | ------------------ | ------------------- |
+| Data isolation   | Physical            | Logical (enforced) | Logical (namespace) |
+| Compliance audit | Pass                | Pass with pgAudit  | Pass with pgAudit   |
+| Migration effort | 6 months            | 6 weeks            | 8 weeks             |
+| Ongoing cost     | $8K/mo              | $0 incremental     | $200/mo             |
+| Operational load | High                | Low                | Medium              |
+
+PostgreSQL Row-Level Security with `pgAudit` for compliance logging met every stated requirement. The implementation took 6 weeks instead of 6 months.
+
+## The Outcome
+
+- **5 months of engineering time redirected to product** ... they shipped three enterprise features in the time they would have spent on infrastructure
+- **$96K/year in avoided cloud costs** ... shared database vs. per-tenant instances
+- **First enterprise contract closed 8 weeks after the review** ... instead of 7+ months
+- **Zero data isolation incidents** in the 10 months since ... RLS enforces tenant boundaries at the database level, not application code
+
+The architecture review cost less than one month of the avoided cloud spend.
+
+---
+
+## Why This Matters
+
+The CTO's instinct wasn't wrong ... database-per-tenant is the right choice in some scenarios. Physical isolation is necessary for certain compliance regimes (HIPAA with specific requirements, FedRAMP, some financial regulations). But for 80% of B2B SaaS companies, logical isolation with RLS and audit logging meets the bar.
+
+The difference between the right architecture at the right stage and the right architecture at the wrong stage is often hundreds of thousands of dollars and months of lost velocity.
+
+---
+
+That's what advisory work looks like in practice. Not "move to microservices" or "adopt Kubernetes" ... but finding the simplest architecture that meets your actual requirements at your current stage.
+
+I take on a limited number of advisory engagements each quarter. If your team is facing architectural decisions like this ... scaling strategy, multi-tenancy approach, infrastructure evaluation ... reply to this email. Even if a formal engagement isn't the right fit, I'm happy to point you in the right direction.
+
+– Alex
+
+P.S. For the technical deep-dive on the RLS approach from this case study, see: [Multi-Tenancy with Prisma and Row-Level Security](https://alexmayhew.dev/blog/multi-tenancy-prisma-rls).
+
+
+codex
+I’ll verify the linked slugs against the repo, then review the sequence against the voice and conversion constraints. No edits.
+exec
+/usr/bin/zsh -lc "rg --files | rg '("'^|/)content|blog|posts|mdx?$'"'" in /home/deploy/projects/amdev/alexmayhew-dev
+ succeeded in 0ms:
+AGENTS.md
+CLAUDE.md
+security-audit-traceforge-api.md
+README.md
+MARKETING_PLAN_2026.md
+tests/content/source-em-dashes.test.ts
+tests/content/blog-meta-lengths.test.ts
+tests/content/internal-linking.test.ts
+tests/content/voice-rules.test.ts
+tests/content/ellipsis-spacing.test.ts
+content/blog/ai-assisted-development-generative-debt.mdx
+content/blog/database-migration-patterns.mdx
+content/blog/cdn-caching-strategy.mdx
+content/blog/senior-developer-paradox.mdx
+content/blog/hidden-tax-supporting-both.mdx
+content/blog/database-query-optimization.mdx
+content/blog/typescript-business-case.mdx
+content/blog/cognitive-debt-ai-teams.mdx
+content/blog/fractional-cto-vs-full-time.mdx
+content/blog/500k-architecture-mistake.mdx
+content/blog/code-review-practices-scale.mdx
+content/blog/production-mcp-servers.mdx
+content/blog/ai-technical-debt-bomb.mdx
+content/blog/state-management-2026.mdx
+content/blog/agentic-engineering.mdx
+content/blog/edge-computing-saas.mdx
+content/blog/core-web-vitals-optimization.mdx
+content/blog/ai-security-red-team-playbook.mdx
+content/blog/build-vs-buy.mdx
+content/blog/ai-cost-optimization.mdx
+content/blog/saas-billing-stripe-architecture.mdx
+content/blog/vector-database-selection.mdx
+content/blog/performance-engineering-playbook.mdx
+content/blog/testing-react-server-components.mdx
+content/blog/tech-stack-capital-allocation.mdx
+content/blog/ai-code-review.mdx
+content/blog/optimistic-ui.mdx
+content/blog/lambda-tax-cold-starts.mdx
+content/blog/vibe-coding-hangover-recovery.mdx
+content/blog/accessibility-design-systems.mdx
+content/blog/multi-region-saas-architecture.mdx
+content/blog/ai-assisted-development-reality.mdx
+content/blog/saas-architecture-decision-framework.mdx
+content/blog/prompt-engineering-developers.mdx
+content/blog/ai-assisted-development-guide.mdx
+content/blog/technical-debt-strategy.mdx
+content/blog/metr-paradox-ai-productivity.mdx
+content/blog/component-api-design.mdx
+content/blog/first-engineering-team-playbook.mdx
+content/blog/ai-tdd-non-deterministic-code.mdx
+content/blog/boring-technology-wins.mdx
+content/blog/atmospheric-animations-framer-motion.mdx
+src/app/blog/error.tsx
+content/blog/ic-to-tech-lead.mdx
+content/blog/tailwind-vs-component-libraries.mdx
+content/blog/hiring-ai-engineers.mdx
+src/app/blog/loading.tsx
+content/blog/zero-to-10k-mrr-saas-playbook.mdx
+content/blog/core-web-vitals-2026-audit.mdx
+content/blog/nodejs-memory-leaks.mdx
+content/blog/multi-tenancy-prisma-rls.mdx
+content/blog/claude-code-vs-cursor-cost-analysis.mdx
+content/blog/llm-cost-optimization-scale.mdx
+content/blog/technical-hiring-framework.mdx
+content/blog/modern-frontend-architecture.mdx
+content/blog/incident-response-saas.mdx
+content/blog/rest-api-design-mistakes.mdx
+content/blog/real-time-performance-monitoring.mdx
+content/blog/neo-brutalism-developer-guide.mdx
+content/blog/anatomy-of-high-precision-saas.mdx
+content/blog/engineering-leadership-founder-to-cto.mdx
+content/blog/building-ai-features-users-want.mdx
+content/blog/llm-integration-architecture.mdx
+content/blog/saas-reliability-monitoring.mdx
+content/blog/rag-architecture-saas.mdx
+content/blog/designer-developer-handoff.mdx
+content/blog/soc2-compliance-startup-roadmap.mdx
+content/blog/hiring-first-staff-engineer.mdx
+content/blog/caching-strategies-production.mdx
+content/blog/rsc-edge-death-of-waterfall.mdx
+content/blog/design-tokens-comprehensive.mdx
+content/blog/event-driven-architecture-saas.mdx
+content/blog/when-not-to-use-ai-coding.mdx
+content/blog/enterprise-ai-sdlc-blueprint.mdx
+content/blog/documentation-engineers-read.mdx
+src/app/blog/[slug]/page.tsx
+src/app/blog/[slug]/hub-faqs.ts
+src/app/blog/page.tsx
+src/app/blog/rss.xml/route.ts
+src/app/blog/layout.tsx
+content/newsletter/buttondown-template.css
+tests/app/blog-article-jsonld-wiring.test.ts
+content/newsletter/welcome/02-first-insight.md
+content/newsletter/welcome/01-welcome.md
+content/newsletter/welcome/04-engagement-check.md
+content/newsletter/welcome/05-case-study.md
+content/newsletter/welcome/03-how-i-help.md
+content/newsletter/QUALITY_CHECKLIST.md
+content/newsletter/TEMPLATE.md
+tests/components/blog-article.test.tsx
+content/newsletter/issues/019-hidden-tax.mdx
+content/newsletter/issues/014-performance-monitoring.mdx
+content/newsletter/issues/007-core-web-vitals.mdx
+content/newsletter/issues/032-redux-is-dead.mdx
+content/newsletter/issues/008-vector-databases.mdx
+content/newsletter/issues/018-hiring-staff.mdx
+content/newsletter/issues/022-api-cost-replacement.mdx
+content/newsletter/issues/004-when-not-nextjs.mdx
+content/newsletter/issues/023-technical-debt-cost.mdx
+content/newsletter/issues/033-documentation-halflife.mdx
+content/newsletter/issues/024-code-review-value.mdx
+content/newsletter/issues/001-monolith-first.mdx
+content/newsletter/issues/006-rag-architecture.mdx
+content/newsletter/issues/036-revenue-leakage.mdx
+content/newsletter/issues/013-testing-rscs.mdx
+content/newsletter/issues/017-documentation.mdx
+content/newsletter/issues/027-denormalize-database.mdx
+content/newsletter/issues/029-write-tests-later.mdx
+content/newsletter/issues/005-database-migrations.mdx
+content/newsletter/issues/010-incident-response.mdx
+content/newsletter/issues/020-billing-architecture.mdx
+content/newsletter/issues/035-q3-retrospective.mdx
+content/newsletter/issues/002-microservices-cost.mdx
+content/newsletter/issues/011-caching-strategies.mdx
+content/newsletter/issues/015-code-review.mdx
+content/newsletter/issues/031-automate-reviews.mdx
+content/newsletter/issues/016-state-management.mdx
+content/newsletter/issues/009-edge-computing.mdx
+content/newsletter/issues/028-q2-retrospective.mdx
+content/newsletter/issues/025-hiring-staff-engineer.mdx
+content/newsletter/issues/026-rest-vs-graphql.mdx
+content/newsletter/issues/012-llm-cost-optimization.mdx
+content/newsletter/issues/003-postgresql-rls.mdx
+content/newsletter/issues/021-architecture-regret.mdx
+content/newsletter/issues/030-percentile-monitoring.mdx
+content/newsletter/issues/034-supporting-both-mistake.mdx
+content/docs/index.mdx
+content/docs/meta.json
+content/social/ai-development.md
+content/social/frontend-architecture.md
+content/social/postiz-bulk-insert.sql
+content/social/engineering-leadership.md
+content/social/performance-engineering.md
+content/social/saas-architecture.md
+tests/seo/blog-crawlability.test.ts
+docs/GA4_ANALYTICS_SETUP.md
+docs/Developer Site Innovation for 2026.md
+docs/CROSS_PLATFORM_CONTENT_STRATEGY.md
+docs/LLM_REPURPOSING_PROMPTS.md
+docs/BLOG_ENHANCEMENT_PLAN.md
+docs/CONTENT_IDEAS.md
+docs/Optimizing AI-Generated Code for Clarity.md
+docs/SOCIAL_MEDIA_MARKETING_PLAN.md
+docs/LISTMONK_SETUP.md
+docs/AI_Slop_Removal+Optimizations.md
+docs/CONTENT_STRATEGY_TECHNICAL_ADVISOR.md
+docs/superpowers/specs/2026-04-18-traceforge-gpu-approval-spec.md
+docs/superpowers/specs/2026-03-31-agent-team-design.md
+docs/superpowers/specs/2026-04-05-engineering-hardening-design.md
+docs/superpowers/specs/2026-04-06-code-quality-sprint-design.md
+docs/superpowers/specs/2026-03-14-comprehensive-site-audit-fixes-design.md
+docs/superpowers/specs/2026-03-30-google-indexing-fix-design.md
+docs/superpowers/specs/2026-05-24-saas-readiness-v2-design.md
+tests/components/related-blog-posts.test.tsx
+docs/superpowers/plans/audit-2026-04-17/accessibility.md
+docs/superpowers/plans/audit-2026-04-17/security.md
+docs/superpowers/plans/audit-2026-04-17/analytics.md
+docs/superpowers/plans/audit-2026-04-17/performance.md
+docs/superpowers/plans/audit-2026-04-17/schema.md
+docs/superpowers/plans/audit-2026-04-17/design-system.md
+tests/lib/blog-themes/default-theme.test.ts
+docs/superpowers/plans/audit-2026-04-17/SYNTHESIS.md
+docs/superpowers/plans/audit-2026-04-17/code-quality.md
+docs/superpowers/plans/audit-2026-04-17/seo.md
+docs/superpowers/plans/2026-04-05-plan4-engineering.md
+docs/superpowers/plans/2026-04-05-plan-j-lead-magnet-research.md
+docs/superpowers/plans/2026-05-24-saas-stagefit-v2.md
+docs/superpowers/plans/2026-04-05-plan-f-pseo-chunk.md
+docs/superpowers/plans/2026-03-14-comprehensive-site-audit-fixes.md
+docs/superpowers/plans/2026-04-05-plan-h-tailwind-tokens.md
+docs/superpowers/plans/2026-04-05-plan1-critical-fixes.md
+docs/superpowers/plans/2026-05-24-saas-stagefit-v2-REVISIONS.md
+docs/superpowers/plans/2026-04-05-plan2-seo-schema.md
+docs/superpowers/plans/2026-04-05-plan-b-scroll-motion.md
+docs/superpowers/plans/2026-04-05-plan-a-ellipsis-spacing.md
+docs/superpowers/plans/2026-03-30-google-indexing-fix.md
+docs/superpowers/plans/2026-04-06-code-quality-sprint.md
+docs/superpowers/plans/2026-04-18-batch3-gpu-approval-plan.md
+docs/superpowers/plans/2026-03-14-deferred-audit-items.md
+docs/superpowers/plans/2026-04-05-plan3-cro-content.md
+docs/superpowers/plans/2026-04-05-plan-i-auto-schema-date.md
+docs/superpowers/plans/2026-04-05-plan-e-contact-resilience.md
+docs/superpowers/plans/2026-04-05-plan-g-focus-states.md
+docs/superpowers/plans/2026-04-05-plan-c-test-coverage.md
+docs/superpowers/plans/2026-04-05-plan-d-health-deps.md
+docs/MASTER_MARKETING_PLAN.md
+docs/CONTENT_OPERATIONS.md
+docs/ENTERPRISE_STANDARDS_ROADMAP.md
+docs/CLAUDE_CODE_CONFIG.md
+docs/NEWSLETTER_CONTENT_CALENDAR.md
+docs/HUB_AND_SPOKE_CONTENT_STRATEGY.md
+docs/alexmayhew.dev_Site_Infrastructure-Details.md
+docs/FEBRUARY_2026_CONTENT_CALENDAR.md
+docs/decisions/0002-css-scroll-driven-over-js.md
+docs/decisions/0003-prompt-stuffing-over-vectorize-rag.md
+docs/decisions/0000-template.md
+docs/decisions/0004-sugar-high-over-shiki.md
+docs/decisions/0005-next-view-transitions-over-experimental.md
+docs/decisions/0001-refs-over-state-for-canvas.md
+docs/decisions/0006-react-markdown-no-rehype-raw.md
+docs/EDITORIAL_CALENDAR_2026.md
+docs/CONTENT_STATUS.md
+docs/VOICE_GUIDE.md
+docs/BUTTONDOWN_SETUP.md
+docs/LINKEDIN_REPLY_EXAMPLES.md
+docs/N8N_SETUP_GUIDE.md
+docs/FEATURE_IMPLEMENTATION_PLAN.md
+docs/SELF_HOSTED_LLM_GUIDE.md
+docs/n8n-workflows/content-repurposing-workflow.json
+docs/BLOG_QUALITY_CHECKLIST.md
+docs/AI_CODE_QUALITY_AUDIT_FINDINGS.md
+docs/NEWSLETTER_STRATEGY.md
+docs/SOCIAL_MEDIA_PLAYBOOK.md
+docs/SESSION_CONTEXT_2026-01-26.md
+docs/DEFERRED_AUDIT_ITEMS.md
+docs/X_TWITTER_ENGAGEMENT_GUIDE.md
+docs/CONTENT_CLUSTER_PLAN.md
+docs/IMPLEMENTATION_ROADMAP.md
+docs/PORTFOLIO_PRODUCTS_STRATEGY.md
+docs/BLOG_CONTENT_IDEAS.md
+docs/IMPLEMENTATION_PLAN.md
+docs/SOCIAL_MEDIA_STRATEGY_2026.md
+docs/LINKEDIN_OVERHAUL_GUIDE.md
+docs/Detecting AI Code Quality and Viability.md
+docs/GA4_TESTING_CHECKLIST.md
+docs/AI_CONTENT_PLAN_2026.md
+docs/DEPLOYMENT.md
+docs/research/claude-code-power-user-integrations-2026-04-30.md
+docs/research/sentry-opennext-cloudflare-2026.md
+docs/research/generative-debt-validation-2026-04-28.md
+docs/research/cloudflare-workers-opennext-stack-2026-05-21.md
+docs/research/lead-magnets-gated-content-2026.md
+docs/research/person-schema-eeat-2026.md
+docs/research/blog-pagination-seo-nextjs15-2026.md
+docs/research/google-indexing-gsc-nextjs-cloudflare-2026.md
+docs/research/aeo-analytics-audit-2026-04-19.md
+docs/research/css-scroll-driven-animations-2026.md
+docs/research/nextjs-canonical-url-best-practices-2026.md
+docs/research/ga4-consent-mode-v2-implementation-2026.md
+docs/research/keystatic-security-cloudflare-2026.md
+docs/research/distribution-first-validation-2026-05-01.md
+docs/research/rag-vector-db-embedding-models-2026.md
+docs/research/ai-debt-taxonomy-citation-research-2026-05-01.md
+docs/research/homepage-internal-linking-seo-2026.md
+docs/research/ai-development-keyword-research-2026.md
+src/data/blog-index.json
+docs/research/paid-seo-services-2026.md
+docs/research/enterprise-merge-strategy-2026-05-01.md
+docs/research/canvas-animation-demand-rendering-2026.md
+docs/research/aeo-geo-2026-04-19.md
+docs/research/pseo-thin-content-2026-05-01.md
+docs/research/claude-code-notes-integration-2026-04-30.md
+docs/research/ai-debt-9day-scan-2026-04-28.md
+docs/research/voicekeep-tools-positioning-2026-04-17.md
+docs/research/google-search-console-api-2026.md
+docs/research/sre-to-ai-infrastructure-transition-2026.md
+docs/research/playwright-e2e-flaky-tests-nextjs15-2026.md
+docs/research/cf-workers-docs-2026-05-21/workers-wrangler-configuration.md
+docs/research/cf-workers-docs-2026-05-21/workers-wrangler-migration-update-v3-to-v4.md
+docs/research/cf-workers-docs-2026-05-21/workers-wrangler-api.md
+docs/research/cf-workers-docs-2026-05-21/workers-observability-errors.md
+docs/research/cf-workers-docs-2026-05-21/workers-wrangler-commands.md
+docs/research/cf-workers-docs-2026-05-21/workers-ci-cd-external-cicd-github-actions.md
+docs/research/cf-workers-docs-2026-05-21/workers-static-assets-migration-guides-migrate-from-pages.md
+docs/research/cf-workers-docs-2026-05-21/workers-development-testing-multi-workers.md
+docs/research/cf-workers-docs-2026-05-21/workers-static-assets.md
+docs/research/cf-workers-docs-2026-05-21/workers-framework-guides-web-apps-nextjs.md
+docs/research/sre-to-ai-infrastructure-career-2026.md
+docs/research/gpu-notification-architecture-2026-04-18.md
+docs/research/csp-nextjs15-cloudflare-workers-2026.md
+docs/research/ai-debt-taxonomy-editorial-fit-2026-04-28.md
+docs/research/cuda-gpu-profiling-gemm-providers-2026.md
+docs/research/core-web-vitals-postgresql-migrations-2026.md
+docs/research/stryker-mutation-testing-2026.md
+docs/research/gpu-session-window-2026-04-18.md
+docs/research/cloudflare-www-redirect-pages-2026.md
+docs/research/schema-audit-aeo-2026-04-19.md
+docs/research/generative-debt-site-fit-2026-04-28.md
+docs/research/software-application-schema-2026.md
+Developer Blog Strategy Research.md
+docs/research/ai-debt-taxonomy-redteam-2026-04-28.md
+docs/research/schema-markup-seo-2026.md
+docs/research/nextjs-15-react-19-vitest-testing-2026.md
+docs/research/chat-markdown-rendering-2026.md
+docs/research/ai-debt-schema-competitive-2026-04-28.md
+docs/research/nextjs-15.5-upgrade-2026.md
+docs/research/indie-saas-marketing-channels-2026.md
+docs/research/claude-code-vector-memory-2026-04-30.md
+docs/research/cloudflare-rate-limiting-2026.md
+docs/research/view-transitions-api-nextjs-2026.md
+docs/research/multi-llm-content-workflow-2026-05-01.md
+docs/research/rapise-test-automation-2026.md
+docs/CONTENT_REPURPOSING_SYSTEM.md
+docs/COPY_AUDIT_REPORT.md
+docs/REFACTORING_PLAN_2026.md
+docs/CONTENT_PLATFORM_REFERENCE.md
+docs/AI-Code-Quality_Human-Standards.md
+docs/research/security-tooling-nextjs-cloudflare-2026.md
+docs/research/react-19-error-boundaries-2026.md
+docs/research/nextjs-image-optimization-mdx-cloudflare-2026.md
+docs/research/ai-debt-taxonomy-citations-2026-04-28.md
+docs/research/ai-code-quality-auditing-2026.md
+docs/research/gpu-enable-rate-limit-2026-04-18.md
+docs/research/ai-development-landscape-2026.md
+docs/research/ai-debt-engagement-playbook-2026-04-28.md
+docs/research/kit-vs-beehiiv-comparison-2026.md
+docs/standards/Enhancing AI Code to Enterprise Standards.md
+docs/research/gpu-inference-infrastructure-2026.md
+docs/research/opennext-middleware-headers-cloudflare-2026.md
+docs/research/backlink-tactics-2026-05-01.md
+docs/research/sentry-quota-optimization-2026-04-30.md
+docs/research/fast-check-property-testing-2026.md
+docs/research/structured-logging-cloudflare-workers-2026.md
+scripts/generate-blog-index.ts
+scripts/content-health.sh
+docs/research/ai-debt-taxonomy-url-strategy-2026-04-28.md
+docs/research/cloudflare-pages-dev-noindex-strategy-2026.md
+docs/research/blog-content-audit-2026-03-16.md
+docs/research/claude-code-memoryos-alternatives-2026-04-30.md
+docs/research/cloudflare-vectorize-rag-blog-chat-2026.md
+tests/components/blog-list.test.tsx
+tests/components/service-page-blog-links.test.tsx
+docs/research/article-jsonld-enterprise-best-practices-2026.md
+docs/research/google-indexing-acceleration-2026.md
+docs/research/claude-sonnet-4.6-subagent-strategy-2026.md
+docs/research/aeo-serp-competitive-2026-04-27.md
+docs/research/csp-eval-source-diagnosis-2026-04-30.md
+docs/research/sitemap-best-practices-nextjs15-2026.md
+docs/research/ga4-analytics-portfolio-2026.md
+docs/research/csp-reporting-architecture-2026-04-30.md
+docs/research/agent-research/audit-2026-04-16-a11y.md
+docs/research/agent-research/audit-2026-04-16-performance.md
+docs/research/agent-research/audit-2026-04-16-code.md
+docs/research/agent-research/audit-2026-04-16-devops.md
+docs/research/agent-research/audit-2026-04-16-content.md
+docs/research/agent-research/audit-2026-04-16-geo-aeo.md
+docs/research/agent-research/audit-2026-04-16-seo.md
+docs/research/agent-research/audit-2026-04-16-design.md
+docs/research/agent-research/audit-2026-04-16-schema.md
+docs/research/agent-research/comprehensive-audit-2026-04-16.md
+docs/research/agent-research/06-agent-frameworks-analysis.md
+docs/research/agent-research/audit-2026-04-16-pseo.md
+docs/research/agent-research/audit-2026-04-16-uiux.md
+docs/research/agent-research/audit-2026-04-16-analytics.md
+docs/research/opennext-docs-2026-05-21/get-started.md
+docs/research/cf-extra-2026-05-21/gh-cloudflare-wrangler-action-releases.md
+docs/research/cf-extra-2026-05-21/opennext-cloudflare-howtos-env-vars.md
+docs/research/cf-extra-2026-05-21/opennext-helpers-ts.md
+docs/research/opennext-docs-2026-05-21/caching.md
+docs/research/cf-extra-2026-05-21/gh-opennextjs-opennextjs-cloudflare-releases.md
+docs/research/cf-extra-2026-05-21/cf-changelog-post-2025-06-25-getplatformproxy-support-remote-bindings.md
+docs/research/cf-extra-2026-05-21/cf-workers-development-testing.md
+docs/research/cf-extra-2026-05-21/nextjs-blog-next-16.md
+docs/research/opennext-docs-2026-05-21/howtos-dev-deploy.md
+docs/research/opennext-docs-2026-05-21/howtos-multi-worker.md
+docs/research/opennext-docs-2026-05-21/troubleshooting.md
+docs/research/opennext-docs-2026-05-21/cloudflare.md
+docs/research/opennext-docs-2026-05-21/cli.md
+docs/research/opennext-docs-2026-05-21/bindings.md
+src/lib/blog-themes/context.tsx
+src/lib/blog-themes/types.ts
+src/lib/blog-themes/config.ts
+src/lib/blog-themes/index.ts
+src/lib/blog-themes/utils.ts
+src/lib/blog-themes/themes/default.ts
+src/lib/blog-themes/themes/terminal.ts
+src/lib/blog-themes/themes/classified.ts
+public/images/blog/first-engineering-team-playbook-featured.webp
+public/images/blog/ai-tdd-non-deterministic-code-featured.webp
+public/images/blog/engineering-leadership-founder-to-cto-featured.webp
+public/images/blog/vibe-coding-hangover-recovery-featured.webp
+src/components/blog/table-of-contents.tsx
+src/components/blog/blog-article.tsx
+src/components/blog/layouts/terminal-layout.tsx
+src/components/blog/layouts/cards-layout.tsx
+src/components/blog/layouts/index.ts
+src/components/blog/layouts/dossier-layout.tsx
+src/components/blog/reading-progress.tsx
+src/components/blog/types.ts
+src/components/blog/share-buttons.tsx
+src/components/blog/blog-list.tsx
+public/images/blog/caching-strategies-production-featured.webp
+public/images/blog/technical-hiring-framework-featured.webp
+public/images/blog/claude-code-vs-cursor-cost-analysis-featured.webp
+public/images/blog/neo-brutalism-developer-guide-featured.webp
+public/images/blog/database-migration-patterns-featured.webp
+public/images/blog/multi-tenancy-prisma-rls-featured.webp
+public/images/blog/lambda-tax-cold-starts-featured.webp
+public/images/blog/designer-developer-handoff-featured.webp
+public/images/blog/llm-cost-optimization-scale-featured.webp
+public/images/blog/rag-architecture-saas-featured.webp
+public/images/blog/anatomy-of-high-precision-saas-featured.webp
+public/images/blog/fractional-cto-vs-full-time-featured.webp
+public/images/blog/building-ai-features-users-want-featured.webp
+public/images/blog/ai-cost-optimization-featured.webp
+public/images/blog/typescript-business-case-featured.webp
+public/images/blog/rest-api-design-mistakes-featured.webp
+public/images/blog/incident-response-saas-featured.webp
+public/images/blog/nodejs-memory-leaks-featured.webp
+public/images/blog/hiring-ai-engineers-featured.webp
+public/images/blog/performance-engineering-playbook-featured.webp
+public/images/blog/core-web-vitals-optimization-featured.webp
+public/images/blog/llm-integration-architecture-featured.webp
+public/images/blog/enterprise-ai-sdlc-blueprint-featured.webp
+public/images/blog/when-not-to-use-ai-coding-featured.webp
+public/images/blog/tailwind-vs-component-libraries-featured.webp
+public/images/blog/code-review-practices-scale-featured.webp
+public/images/blog/ic-to-tech-lead-featured.webp
+public/images/blog/cdn-caching-strategy-featured.webp
+public/images/blog/senior-developer-paradox-featured.webp
+public/images/blog/build-vs-buy-featured.webp
+src/components/seo/related-blog-posts.tsx
+public/images/blog/design-tokens-comprehensive-featured.webp
+public/images/blog/saas-billing-stripe-architecture-featured.webp
+public/images/blog/component-api-design-featured.webp
+public/images/blog/soc2-compliance-startup-roadmap-featured.webp
+public/images/blog/rsc-edge-death-of-waterfall-featured.webp
+public/images/blog/documentation-engineers-read-featured.webp
+public/images/blog/event-driven-architecture-saas-featured.webp
+public/images/blog/real-time-performance-monitoring-featured.webp
+public/images/blog/multi-region-saas-architecture-featured.webp
+public/images/blog/database-query-optimization-featured.webp
+public/images/blog/cognitive-debt-ai-teams-featured.webp
+public/images/blog/saas-reliability-monitoring-featured.webp
+public/images/blog/prompt-engineering-developers-featured.webp
+public/images/blog/hidden-tax-supporting-both-featured.webp
+public/images/blog/production-mcp-servers-featured.webp
+public/images/blog/technical-debt-strategy-featured.webp
+public/images/blog/modern-frontend-architecture-featured.webp
+public/images/blog/boring-technology-wins-featured.webp
+public/images/blog/zero-to-10k-mrr-saas-playbook-featured.webp
+public/images/blog/ai-assisted-development-guide-featured.webp
+public/images/blog/state-management-2026-featured.webp
+public/images/blog/ai-technical-debt-bomb-featured.webp
+public/images/blog/500k-architecture-mistake-featured.webp
+public/images/blog/optimistic-ui-featured.webp
+public/images/blog/agentic-engineering-featured.webp
+public/images/blog/ai-security-red-team-playbook-featured.webp
+public/images/blog/accessibility-design-systems-featured.webp
+public/images/blog/saas-architecture-decision-framework-featured.webp
+public/images/blog/core-web-vitals-2026-audit-featured.webp
+public/images/blog/ai-assisted-development-generative-debt-featured.webp
+public/images/blog/tech-stack-capital-allocation-featured.webp
+public/images/blog/testing-react-server-components-featured.webp
+public/images/blog/ai-code-review-featured.webp
+public/images/blog/vector-database-selection-featured.webp
+public/images/blog/ai-assisted-development-reality-featured.webp
+public/images/blog/atmospheric-animations-framer-motion-featured.webp
+public/images/blog/hiring-first-staff-engineer-featured.webp
+public/images/blog/edge-computing-saas-featured.webp
+public/images/blog/hello-world-featured.webp
+public/images/blog/metr-paradox-ai-productivity-featured.webp
+
+exec
+/usr/bin/zsh -lc 'rg -n "saas-architecture-decision-framework|performance-engineering-playbook|ai-assisted-development-guide|multi-tenancy-prisma-rls" .' in /home/deploy/projects/amdev/alexmayhew-dev
+ succeeded in 0ms:
+./scripts/schedule-content.sh:35:    "multi-tenancy-prisma-rls"
+./e2e/seo.spec.ts:29:		await page.goto("/blog/ai-assisted-development-guide");
+./e2e/seo.spec.ts:34:			/alexmayhew\.dev\/blog\/ai-assisted-development-guide/
+./content/blog/ai-assisted-development-generative-debt.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/ai-assisted-development-generative-debt.mdx:487:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/database-migration-patterns.mdx:18:> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to building systems that stay fast under real-world load.
+./content/blog/database-migration-patterns.mdx:300:SaaS applications with tenant-level schema isolation face unique migration challenges. If you're using PostgreSQL schemas per tenant (one of the patterns from [multi-tenancy with Prisma and RLS](/blog/multi-tenancy-prisma-rls)), every migration runs N times... once per tenant.
+./content/blog/database-migration-patterns.mdx:395:**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... covering TTFB optimization, Core Web Vitals, caching strategies, and monitoring at scale.
+./content/blog/database-migration-patterns.mdx:406:- [Multi-Tenancy with Prisma and RLS](/blog/multi-tenancy-prisma-rls) ... Tenant isolation at the database layer
+./content/blog/cdn-caching-strategy.mdx:18:> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... from TTFB to TTI optimization.
+./content/blog/cdn-caching-strategy.mdx:627:**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... covering Core Web Vitals, database optimization, edge computing, and monitoring.
+./content/blog/senior-developer-paradox.mdx:462:- [AI-Assisted Development Guide](/blog/ai-assisted-development-guide) ... AI's impact on developer productivity
+./content/blog/hidden-tax-supporting-both.mdx:18:> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
+./content/blog/hidden-tax-supporting-both.mdx:190:**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering database design, deployment strategy, API patterns, and infrastructure decisions.
+./content/blog/database-query-optimization.mdx:18:> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
+./content/blog/database-query-optimization.mdx:104:If you're building a multi-tenant SaaS with shared tables... which you should be, as I covered in [Multi-Tenancy Done Right: A Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls)... your index strategy needs to account for tenant isolation.
+./content/blog/database-query-optimization.mdx:564:If you're building a multi-tenant SaaS, start with [proper tenant isolation using RLS](/blog/multi-tenancy-prisma-rls). For the full architecture picture... from infrastructure economics to API design... see [The Anatomy of a High-Precision SaaS](/blog/anatomy-of-high-precision-saas). And if serverless cold starts are hurting your database connection patterns, [understand the Lambda tax](/blog/lambda-tax-cold-starts) before it becomes a production incident.
+./content/blog/database-query-optimization.mdx:574:**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+./content/blog/database-query-optimization.mdx:579:- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) ... Database isolation patterns
+./content/blog/cognitive-debt-ai-teams.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/cognitive-debt-ai-teams.mdx:357:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/cognitive-debt-ai-teams.mdx:361:- [AI-Assisted Development Guide](/blog/ai-assisted-development-guide) ... The comprehensive framework
+./content/blog/500k-architecture-mistake.mdx:18:> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
+./content/blog/500k-architecture-mistake.mdx:398:**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+./content/blog/500k-architecture-mistake.mdx:402:- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) ... Database isolation patterns
+./content/blog/production-mcp-servers.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/production-mcp-servers.mdx:635:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/production-mcp-servers.mdx:641:- [AI-Assisted Development Guide](/blog/ai-assisted-development-guide) ... The comprehensive framework
+./content/blog/ai-technical-debt-bomb.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/ai-technical-debt-bomb.mdx:306:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/ai-technical-debt-bomb.mdx:310:- [AI-Assisted Development Guide](/blog/ai-assisted-development-guide) ... The comprehensive framework
+./content/blog/agentic-engineering.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/agentic-engineering.mdx:310:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/agentic-engineering.mdx:314:- [AI-Assisted Development Guide](/blog/ai-assisted-development-guide) ... The comprehensive framework
+./content/blog/anatomy-of-high-precision-saas.mdx:19:> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
+./content/blog/anatomy-of-high-precision-saas.mdx:586:**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+./content/blog/anatomy-of-high-precision-saas.mdx:591:- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) ... Database isolation patterns
+./content/blog/edge-computing-saas.mdx:18:> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to building systems that stay fast under real-world load.
+./content/blog/edge-computing-saas.mdx:299:**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... covering latency optimization, caching strategies, monitoring, and infrastructure patterns.
+./content/blog/building-ai-features-users-want.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/building-ai-features-users-want.mdx:540:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/llm-integration-architecture.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/llm-integration-architecture.mdx:803:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/core-web-vitals-optimization.mdx:18:> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... from TTFB to TTI optimization.
+./content/blog/core-web-vitals-optimization.mdx:705:**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... covering Core Web Vitals, database optimization, edge computing, and monitoring.
+./content/blog/saas-reliability-monitoring.mdx:18:> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
+./content/blog/saas-reliability-monitoring.mdx:672:**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+./content/blog/saas-reliability-monitoring.mdx:677:- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) ... Database isolation patterns
+./content/blog/ai-security-red-team-playbook.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/ai-security-red-team-playbook.mdx:636:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/rag-architecture-saas.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... a comprehensive guide to building AI features that deliver real value.
+./content/blog/rag-architecture-saas.mdx:456:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering AI integration patterns, cost optimization, and building AI features users actually want.
+./content/blog/soc2-compliance-startup-roadmap.mdx:18:> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
+./content/blog/soc2-compliance-startup-roadmap.mdx:176:Access control at the database layer is where most startups get this wrong. The patterns in [multi-tenancy with Prisma and RLS](/blog/multi-tenancy-prisma-rls) satisfy the SOC 2 access-control criteria at the row level... which is what auditors actually test when they sample your data isolation.
+./content/blog/soc2-compliance-startup-roadmap.mdx:502:_This is part of a series on building enterprise-ready SaaS. Related: [Multi-Tenancy Done Right: A Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls) covers database-level security controls that support SOC 2 compliance._
+./src/app/blog/[slug]/hub-faqs.ts:7:	"saas-architecture-decision-framework": [
+./src/app/blog/[slug]/hub-faqs.ts:96:	"performance-engineering-playbook": [
+./src/app/blog/[slug]/hub-faqs.ts:124:	"ai-assisted-development-guide": [
+./src/app/blog/[slug]/hub-faqs.ts:460:	"multi-tenancy-prisma-rls": [
+./content/blog/build-vs-buy.mdx:18:> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
+./content/blog/build-vs-buy.mdx:361:**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+./content/blog/build-vs-buy.mdx:366:- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) ... Database isolation patterns
+./content/blog/caching-strategies-production.mdx:18:> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to building systems that stay fast under real-world load.
+./content/blog/caching-strategies-production.mdx:387:**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... covering database optimization, edge computing, monitoring, and zero-downtime operations.
+./content/blog/nodejs-memory-leaks.mdx:18:> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... from TTFB to TTI optimization.
+./content/blog/nodejs-memory-leaks.mdx:517:**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... covering Core Web Vitals, database optimization, edge computing, and monitoring.
+./content/blog/vibe-coding-hangover-recovery.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/vibe-coding-hangover-recovery.mdx:443:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/multi-tenancy-prisma-rls.mdx:12:image: "/images/blog/multi-tenancy-prisma-rls-featured.webp"
+./content/blog/multi-tenancy-prisma-rls.mdx:19:> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
+./content/blog/multi-tenancy-prisma-rls.mdx:631:**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+./content/blog/rsc-edge-death-of-waterfall.mdx:18:> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... from TTFB to TTI optimization.
+./content/blog/rsc-edge-death-of-waterfall.mdx:425:**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... covering Core Web Vitals, database optimization, edge computing, and monitoring.
+./content/blog/rsc-edge-death-of-waterfall.mdx:436:- [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework) ... Deployment model decisions
+./content/blog/ai-cost-optimization.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/ai-cost-optimization.mdx:687:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/claude-code-vs-cursor-cost-analysis.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/claude-code-vs-cursor-cost-analysis.mdx:370:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/prompt-engineering-developers.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/prompt-engineering-developers.mdx:697:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/llm-cost-optimization-scale.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... a comprehensive guide to building AI features that deliver real value.
+./content/blog/llm-cost-optimization-scale.mdx:384:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering AI integration patterns, RAG architecture, and building features users want.
+./content/blog/saas-billing-stripe-architecture.mdx:18:> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
+./content/blog/saas-billing-stripe-architecture.mdx:461:**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering database design, infrastructure patterns, API strategy, and billing architecture.
+./content/blog/saas-billing-stripe-architecture.mdx:465:- [Multi-Tenancy with Prisma and RLS](/blog/multi-tenancy-prisma-rls) ... Tenant isolation that billing depends on
+./content/blog/event-driven-architecture-saas.mdx:18:> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
+./content/blog/event-driven-architecture-saas.mdx:373:**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering database design, multi-region deployment, API strategy, and infrastructure patterns.
+./content/blog/event-driven-architecture-saas.mdx:386:- [Performance Engineering Playbook](/blog/performance-engineering-playbook) ... From TTFB to TTI optimization
+./content/blog/ai-assisted-development-guide.mdx:13:image: "/images/blog/ai-assisted-development-guide-featured.webp"
+./content/blog/ai-tdd-non-deterministic-code.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/ai-tdd-non-deterministic-code.mdx:628:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/vector-database-selection.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... a comprehensive guide to building AI features that deliver real value.
+./content/blog/vector-database-selection.mdx:299:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering AI integration patterns, cost optimization, and building features users want.
+./content/blog/multi-region-saas-architecture.mdx:18:> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
+./content/blog/multi-region-saas-architecture.mdx:640:If you're not already thinking about multi-tenancy at the database level, see [Multi-Tenancy Done Right: A Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls) for the foundation.
+./content/blog/multi-region-saas-architecture.mdx:737:**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+./content/blog/multi-region-saas-architecture.mdx:742:- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) ... Database isolation patterns
+./content/blog/when-not-to-use-ai-coding.mdx:19:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/when-not-to-use-ai-coding.mdx:379:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/technical-debt-strategy.mdx:460:- [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework) ... Architecture evolution patterns
+./content/blog/performance-engineering-playbook.mdx:13:image: "/images/blog/performance-engineering-playbook-featured.webp"
+./content/blog/performance-engineering-playbook.mdx:147:For multi-tenant applications, the architecture becomes more nuanced. Row-Level Security policies, when combined with connection pooling, require careful session variable management. I covered this extensively in [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls)... the patterns there directly impact query performance.
+./content/blog/performance-engineering-playbook.mdx:556:**Multi-tenancy**: [Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls) ... Row-Level Security patterns that affect query performance.
+./content/blog/metr-paradox-ai-productivity.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/metr-paradox-ai-productivity.mdx:268:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/metr-paradox-ai-productivity.mdx:272:- [AI-Assisted Development Guide](/blog/ai-assisted-development-guide) ... The comprehensive framework
+./content/blog/enterprise-ai-sdlc-blueprint.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/enterprise-ai-sdlc-blueprint.mdx:427:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/enterprise-ai-sdlc-blueprint.mdx:431:- [AI-Assisted Development Guide](/blog/ai-assisted-development-guide) ... The comprehensive framework
+./content/blog/rest-api-design-mistakes.mdx:18:> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
+./content/blog/rest-api-design-mistakes.mdx:644:_This is part of a series on building production systems. Related: [Multi-Tenancy Done Right: A Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls) covers database design that supports API best practices._
+./content/blog/ai-assisted-development-reality.mdx:16:"Vibe coding" is a reductive term that misrepresents how AI-assisted development actually works. The anti-AI camp claims you need a CS degree and 10 years of production experience to ship anything real. The AI evangelists claim their 10,000-agent swarm builds enterprise software overnight. Both are wrong. AI-assisted development is a discipline that amplifies existing competence ... it does not replace it. The differentiator is not the tool. It is the person directing it. The full framework is in the [AI-assisted development guide](/blog/ai-assisted-development-guide).
+./content/blog/documentation-engineers-read.mdx:308:- [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework) ... ADRs for architecture decisions
+./content/blog/boring-technology-wins.mdx:19:> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
+./content/blog/boring-technology-wins.mdx:306:**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+./content/blog/boring-technology-wins.mdx:311:- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) ... Database isolation patterns
+./content/blog/boring-technology-wins.mdx:318:- [Performance Engineering Playbook](/blog/performance-engineering-playbook) ... Known failure modes and optimization
+./content/blog/real-time-performance-monitoring.mdx:18:> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to building systems that stay fast under real-world load.
+./content/blog/real-time-performance-monitoring.mdx:318:**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... covering latency optimization, caching strategies, and zero-downtime operations.
+./content/blog/real-time-performance-monitoring.mdx:330:- [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework) ... Building observable architectures from the start
+./content/blog/tech-stack-capital-allocation.mdx:19:> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
+./content/blog/tech-stack-capital-allocation.mdx:367:**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+./content/blog/tech-stack-capital-allocation.mdx:372:- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) ... Database isolation patterns
+./content/blog/tech-stack-capital-allocation.mdx:379:- [Performance Engineering Playbook](/blog/performance-engineering-playbook) ... When and how to optimize
+./content/blog/lambda-tax-cold-starts.mdx:19:> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to web performance from TTFB to TTI.
+./content/blog/lambda-tax-cold-starts.mdx:494:**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+./content/blog/lambda-tax-cold-starts.mdx:499:- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) ... Database isolation patterns
+./content/blog/hiring-ai-engineers.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/hiring-ai-engineers.mdx:366:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/hiring-ai-engineers.mdx:370:- [AI-Assisted Development Guide](/blog/ai-assisted-development-guide) ... The comprehensive framework
+./content/blog/saas-architecture-decision-framework.mdx:13:image: "/images/blog/saas-architecture-decision-framework-featured.webp"
+./content/blog/saas-architecture-decision-framework.mdx:77:For the complete implementation... including Prisma integration, pgTAP testing, and connection pooling... see [Multi-Tenancy Done Right: A Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls).
+./content/blog/saas-architecture-decision-framework.mdx:312:The complete implementation guide... including Prisma integration, the interactive transaction bug fix, and pgTAP testing... is in [Multi-Tenancy Done Right: A Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls).
+./content/blog/saas-architecture-decision-framework.mdx:506:- [Multi-Tenancy Done Right: A Prisma & RLS Deep Dive](/blog/multi-tenancy-prisma-rls) ... Implementation patterns with code
+./content/blog/zero-to-10k-mrr-saas-playbook.mdx:18:> **Part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... a comprehensive guide to architecture decisions from MVP to scale.
+./content/blog/zero-to-10k-mrr-saas-playbook.mdx:362:**This post is part of the [SaaS Architecture Decision Framework](/blog/saas-architecture-decision-framework)** ... covering multi-tenancy, deployment models, database scaling, and cost optimization from MVP to $1M ARR.
+./content/blog/zero-to-10k-mrr-saas-playbook.mdx:367:- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls) ... Database isolation patterns
+./content/blog/ai-code-review.mdx:18:> **Part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... from code generation to production LLMs.
+./content/blog/ai-code-review.mdx:803:**This post is part of the [AI-Assisted Development Guide](/blog/ai-assisted-development-guide)** ... covering code generation, LLM architecture, prompt engineering, and cost optimization.
+./content/blog/core-web-vitals-2026-audit.mdx:18:> **Part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... a comprehensive guide to building systems that stay fast under real-world load.
+./content/blog/core-web-vitals-2026-audit.mdx:448:**This post is part of the [Performance Engineering Playbook](/blog/performance-engineering-playbook)** ... covering database optimization, caching strategies, monitoring, and zero-downtime operations.
+./content/newsletter/welcome/02-first-insight.md:47:P.S. If this resonated, the [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework) goes deeper into mapping architecture choices to revenue milestones.
+./src/data/blog-index.json:104:		"slug": "ai-assisted-development-guide",
+./src/data/blog-index.json:548:		"slug": "multi-tenancy-prisma-rls",
+./src/data/blog-index.json:588:		"slug": "performance-engineering-playbook",
+./src/data/blog-index.json:671:		"slug": "saas-architecture-decision-framework",
+./content/newsletter/welcome/01-welcome.md:27:1. **[SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework)** ... Maps every critical architecture choice to revenue milestones, from $0 to $1M+ ARR. This is the guide I wish existed when I built my first multi-tenant platform.
+./content/newsletter/welcome/01-welcome.md:29:2. **[Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook)** ... Why 100ms of latency costs you 1% in conversions, and the systematic approach to fixing it. Covers Core Web Vitals, database optimization, and caching strategies that compound.
+./content/newsletter/welcome/01-welcome.md:31:3. **[AI-Assisted Development Guide](https://alexmayhew.dev/blog/ai-assisted-development-guide)** ... Where AI actually accelerates engineering (and where it creates expensive technical debt). The build-vs-buy matrix I use with clients evaluating LLM integration.
+./src/data/glossary.ts:51:			"ai-assisted-development-guide",
+./src/data/glossary.ts:121:			"saas-architecture-decision-framework",
+./docs/BLOG_ENHANCEMENT_PLAN.md:176:/blog/multi-tenancy-prisma-rls  # Spoke page
+./docs/BLOG_ENHANCEMENT_PLAN.md:193:- [Multi-Tenancy with Prisma & RLS](/blog/multi-tenancy-prisma-rls)
+./content/newsletter/welcome/05-case-study.md:75:P.S. For the technical deep-dive on the RLS approach from this case study, see: [Multi-Tenancy with Prisma and Row-Level Security](https://alexmayhew.dev/blog/multi-tenancy-prisma-rls).
+./content/newsletter/welcome/03-how-i-help.md:47:P.S. For a deeper look at how I think about the multi-tenancy decision specifically, here's the full guide: [Multi-Tenancy with Prisma and Row-Level Security](https://alexmayhew.dev/blog/multi-tenancy-prisma-rls).
+./src/data/pseo/comparisons.ts:910:			"multi-tenancy-prisma-rls",
+./src/data/pseo/comparisons.ts:1445:			"multi-tenancy-prisma-rls",
+./content/newsletter/issues/019-hidden-tax.mdx:100:P.S. For the complete architecture decision framework ... including when to consolidate and when flexibility is genuinely worth it: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).
+./src/data/saas-stagefit/recommendations.ts:14:		hubLink: "/blog/saas-architecture-decision-framework",
+./src/data/saas-stagefit/recommendations.ts:20:		hubLink: "/blog/saas-architecture-decision-framework",
+./src/data/saas-stagefit/recommendations.ts:26:		hubLink: "/blog/saas-architecture-decision-framework",
+./src/data/saas-stagefit/recommendations.ts:32:		hubLink: "/blog/performance-engineering-playbook",
+./src/data/saas-stagefit/recommendations.ts:38:		hubLink: "/blog/saas-architecture-decision-framework",
+./src/data/saas-stagefit/recommendations.ts:50:		hubLink: "/blog/performance-engineering-playbook",
+./src/data/saas-stagefit/recommendations.ts:56:		hubLink: "/blog/saas-architecture-decision-framework",
+./content/newsletter/issues/014-performance-monitoring.mdx:100:P.S. For the complete performance engineering playbook ... from monitoring to optimization: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).
+./src/app/home-page.tsx:37:		slug: "saas-architecture-decision-framework",
+./src/app/home-page.tsx:52:		slug: "performance-engineering-playbook",
+./src/app/home-page.tsx:57:		slug: "ai-assisted-development-guide",
+./content/newsletter/issues/007-core-web-vitals.mdx:102:P.S. For the complete performance engineering playbook ... from database optimization to frontend delivery: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).
+./content/newsletter/issues/008-vector-databases.mdx:84:P.S. For the full guide on building AI features into SaaS products ... including RAG architecture and model selection: [AI-Assisted Development Guide](https://alexmayhew.dev/blog/ai-assisted-development-guide).
+./content/newsletter/issues/022-api-cost-replacement.mdx:89:P.S. For the full guide on performance optimization including infrastructure cost reduction: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).
+./src/app/llms-full.txt/route.ts:31:	"saas-architecture-decision-framework": `Architecture decisions compound. A 2-hour choice at $0 MRR becomes a 6-month migration at $1M ARR. This guide maps critical decisions to revenue milestones:
+./src/app/llms-full.txt/route.ts:56:	"performance-engineering-playbook": `Performance is a business metric, not an engineering metric. This guide covers the levers that actually move Core Web Vitals and user retention:
+./src/app/llms-full.txt/route.ts:65:	"ai-assisted-development-guide": `AI-assisted development in 2026 looks nothing like the marketing. This guide covers what actually works and what silently breaks:
+./content/newsletter/issues/023-technical-debt-cost.mdx:90:P.S. For the full framework on when and how to address technical debt within your architecture evolution: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).
+./src/data/pseo/pages.ts:219:			"saas-architecture-decision-framework",
+./src/data/pseo/pages.ts:221:			"multi-tenancy-prisma-rls",
+./src/data/pseo/pages.ts:404:			"performance-engineering-playbook",
+./src/data/pseo/pages.ts:623:			"ai-assisted-development-guide",
+./src/data/pseo/pages.ts:624:			"saas-architecture-decision-framework",
+./src/data/pseo/pages.ts:626:			"multi-tenancy-prisma-rls",
+./src/data/pseo/pages.ts:811:			"saas-architecture-decision-framework",
+./src/data/pseo/pages.ts:963:			"saas-architecture-decision-framework",
+./src/data/pseo/pages.ts:1153:			"performance-engineering-playbook",
+./src/data/pseo/pages.ts:1353:			"saas-architecture-decision-framework",
+./src/data/pseo/pages.ts:1355:			"multi-tenancy-prisma-rls",
+./src/data/pseo/pages.ts:1569:			"performance-engineering-playbook",
+./src/data/pseo/pages.ts:1771:			"saas-architecture-decision-framework",
+./src/data/pseo/pages.ts:1972:			"saas-architecture-decision-framework",
+./src/data/pseo/pages.ts:2173:			"performance-engineering-playbook",
+./src/data/pseo/pages.ts:2174:			"saas-architecture-decision-framework",
+./src/data/pseo/pages.ts:2375:			"performance-engineering-playbook",
+./src/data/pseo/pages.ts:2376:			"saas-architecture-decision-framework",
+./src/data/pseo/pages.ts:2587:			"ai-assisted-development-guide",
+./src/data/pseo/pages.ts:2588:			"saas-architecture-decision-framework",
+./src/data/pseo/pages.ts:2788:			"ai-assisted-development-guide",
+./src/data/pseo/pages.ts:2789:			"saas-architecture-decision-framework",
+./src/data/pseo/pages.ts:2792:			"multi-tenancy-prisma-rls",
+./src/data/pseo/pages.ts:2957:			"saas-architecture-decision-framework",
+./src/data/pseo/pages.ts:2958:			"performance-engineering-playbook",
+./src/data/pseo/pages.ts:2959:			"multi-tenancy-prisma-rls",
+./src/data/pseo/pages.ts:3108:			"saas-architecture-decision-framework",
+./src/data/pseo/pages.ts:3257:			"saas-architecture-decision-framework",
+./src/data/pseo/pages.ts:3404:			"saas-architecture-decision-framework",
+./src/data/pseo/pages.ts:3581:			"performance-engineering-playbook",
+./content/newsletter/issues/001-monolith-first.mdx:85:P.S. If you want the full decision framework mapping architecture choices to revenue milestones, start here: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).
+./content/newsletter/issues/006-rag-architecture.mdx:89:P.S. For the complete guide to building production AI features in SaaS ... from model selection to cost optimization: [AI-Assisted Development Guide](https://alexmayhew.dev/blog/ai-assisted-development-guide).
+./content/newsletter/issues/036-revenue-leakage.mdx:102:P.S. For the complete architecture guide covering billing, infrastructure, and scaling decisions: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).
+./content/newsletter/issues/027-denormalize-database.mdx:102:P.S. For the complete guide on database performance optimization: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).
+./content/newsletter/issues/005-database-migrations.mdx:81:P.S. For the full playbook on database performance at scale ... including query optimization, connection pooling, and indexing strategies: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).
+./content/newsletter/issues/020-billing-architecture.mdx:117:P.S. For the complete SaaS architecture framework ... including billing, multi-tenancy, and infrastructure decisions: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).
+./docs/CONTENT_CLUSTER_PLAN.md:417:/blog/multi-tenancy-prisma-rls/         (Spoke)
+./content/newsletter/issues/002-microservices-cost.mdx:96:P.S. Last week's issue on [why monoliths win at early stage](https://alexmayhew.dev/blog/saas-architecture-decision-framework) pairs well with this one ... the decision framework for when to actually make the switch.
+./content/newsletter/issues/011-caching-strategies.mdx:93:P.S. For the complete performance optimization playbook ... from database tuning to frontend delivery: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).
+./content/newsletter/issues/009-edge-computing.mdx:89:P.S. For the complete guide to performance optimization ... from the database layer up through frontend delivery: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).
+./docs/superpowers/specs/2026-03-30-google-indexing-fix-design.md:16:| **Crawled - currently not indexed** | 2     | `/blog/saas-architecture-decision-framework`, `/technologies/postgresql`                                         |
+./docs/BLOG_CONTENT_IDEAS.md:23:4. **multi-tenancy-prisma-rls** - PostgreSQL Row-Level Security with Prisma
+./docs/BLOG_CONTENT_IDEAS.md:55:| P1       | multi-tenancy-prisma-rls                | High   | Medium | 5+ pages             |
+./docs/BLOG_CONTENT_IDEAS.md:67:- Week 1-2: multi-tenancy-prisma-rls (unblocks many pSEO pages)
+./content/newsletter/issues/026-rest-vs-graphql.mdx:99:P.S. For the complete architecture decision framework covering APIs, databases, and infrastructure: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).
+./content/newsletter/issues/012-llm-cost-optimization.mdx:98:P.S. For the complete guide to building cost-effective AI features in SaaS: [AI-Assisted Development Guide](https://alexmayhew.dev/blog/ai-assisted-development-guide).
+./content/newsletter/issues/003-postgresql-rls.mdx:107:P.S. For the full guide on multi-tenancy patterns with Prisma, including migration strategies and testing approaches: [Multi-Tenancy with Prisma and Row-Level Security](https://alexmayhew.dev/blog/multi-tenancy-prisma-rls). And for how this fits into the broader SaaS architecture picture: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).
+./content/newsletter/issues/021-architecture-regret.mdx:78:P.S. For the complete framework on making infrastructure decisions at each revenue stage: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).
+./docs/superpowers/specs/2026-05-24-saas-readiness-v2-design.md:665:- Hub content: `content/blog/saas-architecture-decision-framework.mdx`, `content/blog/zero-to-10k-mrr-saas-playbook.mdx`, `content/blog/technical-debt-strategy.mdx`
+./content/newsletter/issues/030-percentile-monitoring.mdx:102:P.S. For the complete performance monitoring strategy including percentile-based SLOs: [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook).
+./content/newsletter/issues/034-supporting-both-mistake.mdx:96:P.S. For the complete framework on making architecture consolidation decisions: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework).
+./docs/research/ai-debt-taxonomy-url-strategy-2026-04-28.md:13:1. **It is the only one of the four URLs with any GSC presence.** Live pull confirms the site-fit doc: 37 impressions / 0 clicks / pos 6.16 over 90d, declining to 0.11/d in the last 28d. The other three URLs — including the supposed "authority hub" `/blog/ai-assisted-development-guide` — return **0 impressions, 0 clicks, position 0** in GSC. There is no hub authority to preserve (kills option B's premise). There is exactly one URL in this cluster Google has indexed deeply enough to surface, and it already carries the term "generative-debt" in its slug.
+./docs/research/blog-content-audit-2026-03-16.md:40:| ai-assisted-development-guide        | "GPT-3.5-turbo" deprecated                    | → "GPT-4o-mini"                         |
+./docs/research/blog-content-audit-2026-03-16.md:44:| multi-tenancy-prisma-rls             | "Tri-Color Algorithm" misnomer                | Rename section                          |
+./docs/research/blog-content-audit-2026-03-16.md:77:- performance-engineering-playbook
+./docs/research/aeo-analytics-audit-2026-04-19.md:179:| `/sitemap.xml`   |   200   |       33,647 | application/xml      | 141 URLs. Sample hubs present (`saas-architecture-decision-framework`, `engineering-leadership-founder-to-cto`, `modern-frontend-architecture`, `performance-engineering-playbook`, `ai-assisted-development-guide`). |
+./docs/research/aeo-analytics-audit-2026-04-19.md:181:### Sample hub page: `/blog/saas-architecture-decision-framework`
+./docs/research/aeo-analytics-audit-2026-04-19.md:192:"@id":"https://alexmayhew.dev/blog/saas-architecture-decision-framework"  (TechArticle)
+./docs/research/aeo-analytics-audit-2026-04-19.md:341:curl -s https://alexmayhew.dev/blog/saas-architecture-decision-framework | grep -oE 'application/ld\+json' | wc -l
+./docs/FEBRUARY_2026_CONTENT_CALENDAR.md:126:**Blog:** [Multi-Tenancy Done Right](/blog/multi-tenancy-prisma-rls)
+./docs/research/lead-magnets-gated-content-2026.md:235:- **Day 4: "The Architecture Decisions You Can't Undo"** -- Database, multi-tenancy, and API decisions that compound. (Draws from: `database-migration-patterns`, `multi-tenancy-prisma-rls`, `rest-api-design-mistakes`)
+./docs/research/ai-development-keyword-research-2026.md:12:**alexmayhew.dev already covers:** ai-assisted-development-guide (hub), generative-debt, ai-code-review, ai-cost-optimization, building-ai-features, llm-cost-optimization, llm-integration-architecture, prompt-engineering-developers, rag-architecture-saas, vector-database-selection. Strong AI cluster foundation.
+./docs/research/ai-development-keyword-research-2026.md:204:| ai-assisted-development-guide.mdx (hub)     | AI-assisted development, LLM integration, prompt engineering | Strong hub — needs internal link building                                      |
+./docs/CONTENT_STATUS.md:75:- `saas-architecture-decision-framework` — Issues #1, #2, #3; Welcome #1, #2
+./docs/CONTENT_STATUS.md:76:- `multi-tenancy-prisma-rls` — Issue #3; Welcome #3, #5
+./docs/CONTENT_STATUS.md:77:- `performance-engineering-playbook` — Welcome #1
+./docs/CONTENT_STATUS.md:78:- `ai-assisted-development-guide` — Welcome #1
+./docs/CONTENT_STATUS.md:121:- **Slug:** `saas-architecture-decision-framework`
+./docs/CONTENT_STATUS.md:124:- **Featured Image:** ✅ `saas-architecture-decision-framework-featured.webp`
+./docs/CONTENT_STATUS.md:145:- **Slug:** `performance-engineering-playbook`
+./docs/CONTENT_STATUS.md:148:- **Featured Image:** ✅ `performance-engineering-playbook-featured.webp`
+./docs/CONTENT_STATUS.md:153:- **Slug:** `ai-assisted-development-guide`
+./docs/CONTENT_STATUS.md:156:- **Featured Image:** ✅ `ai-assisted-development-guide-featured.webp`
+./docs/CONTENT_STATUS.md:167:| multi-tenancy-prisma-rls         | ✅ Linked                 |
+./docs/CONTENT_STATUS.md:272:- SaaS services → `saas-architecture-decision-framework`
+./docs/CONTENT_STATUS.md:275:- Performance services → `performance-engineering-playbook`
+./docs/CONTENT_STATUS.md:276:- AI services → `ai-assisted-development-guide`
+./docs/CONTENT_STATUS.md:339:image: "/images/blog/ai-assisted-development-guide-featured.webp"
+./docs/superpowers/plans/2026-03-30-google-indexing-fix.md:291:					slug: "saas-architecture-decision-framework",
+./docs/superpowers/plans/2026-03-30-google-indexing-fix.md:306:					slug: "performance-engineering-playbook",
+./docs/superpowers/plans/2026-03-30-google-indexing-fix.md:311:					slug: "ai-assisted-development-guide",
+./docs/research/agent-research/audit-2026-04-16-schema.md:63:- `content/blog/ai-assisted-development-guide.mdx` (frontmatter `isHub: true`) → key `ai-assisted-development-guide` IS in hub-faqs.ts ✓
+./docs/research/agent-research/audit-2026-04-16-schema.md:66:- `content/blog/performance-engineering-playbook.mdx` → key `performance-engineering-playbook` IS in hub-faqs.ts ✓
+./docs/research/agent-research/audit-2026-04-16-schema.md:67:- `content/blog/saas-architecture-decision-framework.mdx` → key `saas-architecture-decision-framework` IS in hub-faqs.ts ✓
+./docs/research/agent-research/audit-2026-04-16-schema.md:74:**Real gap:** Only ~14 of 65 blog post slugs are in `src/app/blog/[slug]/hub-faqs.ts`. Spoke posts that have natural Q&A structure in prose (boring-technology-wins, build-vs-buy, fractional-cto-vs-full-time, ic-to-tech-lead, multi-tenancy-prisma-rls, event-driven-architecture-saas, incident-response-saas, saas-billing-stripe-architecture, core-web-vitals-optimization, rsc-edge-death-of-waterfall, soc2-compliance-startup-roadmap, and ~35 others) currently emit no FAQPage schema.
+./docs/research/agent-research/audit-2026-04-16-content.md:85:- `saas-architecture-decision-framework.mdx:22` (4 instances in key takeaway block)
+./docs/research/agent-research/audit-2026-04-16-content.md:86:- `performance-engineering-playbook.mdx:22`
+./docs/research/agent-research/audit-2026-04-16-content.md:87:- `ai-assisted-development-guide.mdx`
+./docs/research/agent-research/audit-2026-04-16-content.md:91:- `multi-tenancy-prisma-rls.mdx`
+./docs/research/agent-research/audit-2026-04-16-content.md:101:Representative quote (`saas-architecture-decision-framework.mdx:22`):
+./docs/research/agent-research/audit-2026-04-16-content.md:174:- `content/blog/soc2-compliance-startup-roadmap.mdx` — only **2 internal /blog links**. A compliance post that could easily link to multi-tenancy-prisma-rls, incident-response-saas, and saas-reliability-monitoring.
+./docs/research/agent-research/audit-2026-04-16-content.md:199:▸ Read the SaaS Architecture Framework → /blog/saas-architecture-decision-framework
+./docs/research/agent-research/audit-2026-04-16-geo-aeo.md:111:- **Evidence:** `content/blog/ai-assisted-development-guide.mdx` lines 16-22 — strong TL;DR + Key Takeaways, correct inverted pyramid.
+./docs/research/ai-debt-taxonomy-redteam-2026-04-28.md:58:4. **Update the hub FAQ answer** (`ai-assisted-development-guide.mdx` line 477-479): the current FAQ defines "generative debt" identically to how `cognitive-debt-ai-teams.mdx` defines "cognitive debt" (both = "AI code accepted without understanding"). This must be rewritten to position generative debt as the architectural-violation sub-type, OR the entire taxonomy is internally contradictory on day one.
+./tests/components/seo/article-json-ld.test.tsx:16:		slug: "saas-architecture-decision-framework",
+./tests/components/seo/article-json-ld.test.tsx:90:			"https://alexmayhew.dev/saas-architecture-decision-framework"
+
+codex
+The four linked blog slugs exist in `content/blog`, so I’m treating broken-link risk as cleared at the repo level. The remaining review is about promises, conversion, and whether this earns five touches from a CTO.
+exec
+/usr/bin/zsh -lc "nl -ba content/newsletter/welcome/02-first-insight.md | sed -n '1,140p'" in /home/deploy/projects/amdev/alexmayhew-dev
+ succeeded in 0ms:
+     1	---
+     2	sequence: 2
+     3	title: "The Architecture Mistake I See in Every Early-Stage SaaS"
+     4	subject: "The architecture mistake I see in every early-stage SaaS"
+     5	delay: "3 days"
+     6	status: "draft"
+     7	---
+     8	
+     9	Subject: The architecture mistake I see in every early-stage SaaS
+    10	
+    11	Hey {first_name},
+    12	
+    13	Every quarter I talk to 10-15 startups about their architecture. The conversations start differently ... scaling challenges, hiring bottlenecks, cloud costs ... but roughly 70% of them share the same root cause.
+    14	
+    15	They over-engineered their infrastructure before they had product-market fit.
+    16	
+    17	---
+    18	
+    19	## The Pattern
+    20	
+    21	Here's what it looks like in practice. A founding team raises a seed round. They hire 3-5 engineers. The first technical decision is architecture ... and they choose microservices, Kubernetes, and a distributed event bus because "we need to build for scale."
+    22	
+    23	Six months later, they have 200 users and 14 infrastructure services.
+    24	
+    25	The math is brutal. Teams in this position spend 40-60% of their engineering time on infrastructure ... service mesh configuration, inter-service communication debugging, deployment pipeline maintenance. That's time not spent on the product their customers are paying for.
+    26	
+    27	The companies that move fastest at this stage do the opposite. They deploy a well-structured monolith on a single managed service. PostgreSQL, not a polyglot persistence layer. Server-rendered pages, not a decoupled SPA with a separate API gateway.
+    28	
+    29	## The Decision Framework
+    30	
+    31	**If your ARR is under $500K:** Monolith on managed infrastructure. PostgreSQL. One deployment pipeline. Spend 90% of engineering time on product.
+    32	
+    33	**If your ARR is $500K-$2M:** Identify the one component with genuinely different scaling needs (usually async processing or file handling). Extract that. Keep everything else together.
+    34	
+    35	**If your ARR is $2M+:** Now you have the revenue to justify operational complexity. Extract services along domain boundaries ... but only when the monolith actively blocks team velocity.
+    36	
+    37	The threshold isn't technical. It's economic. Microservices are an organizational scaling pattern, not a technical performance pattern. If your team can fit in one room, a monolith is faster to ship, debug, and deploy.
+    38	
+    39	---
+    40	
+    41	I've watched companies burn 6-12 months of runway on infrastructure they didn't need. The ones that ship fastest are the ones that defer complexity until the business demands it.
+    42	
+    43	Next email, I'll share how I actually help companies navigate these decisions ... and what a typical advisory engagement looks like.
+    44	
+    45	– Alex
+    46	
+    47	P.S. If this resonated, the [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework) goes deeper into mapping architecture choices to revenue milestones.
+
+exec
+/usr/bin/zsh -lc "nl -ba content/newsletter/welcome/01-welcome.md | sed -n '1,120p'" in /home/deploy/projects/amdev/alexmayhew-dev
+ succeeded in 0ms:
+     1	---
+     2	sequence: 1
+     3	title: "Welcome to The Architect's Brief"
+     4	subject: "Welcome to The Architect's Brief (+ what to expect)"
+     5	delay: "immediate"
+     6	status: "draft"
+     7	---
+     8	
+     9	Subject: Welcome to The Architect's Brief (+ what to expect)
+    10	
+    11	Hey {first_name},
+    12	
+    13	Thanks for subscribing. You just joined a group of CTOs, VPs of Engineering, and senior technical leaders who care about making better architecture decisions ... not chasing hype cycles.
+    14	
+    15	Here's what you signed up for:
+    16	
+    17	- **One email every Tuesday.** A single architectural decision, broken down with specific numbers, business context, and a clear framework for when to apply it.
+    18	- **No fluff.** Every issue is 500-700 words. You'll read it in under 5 minutes. If I don't have something worth saying, I don't send.
+    19	- **Real advisory experience.** I work with startups and scale-ups as a Technical Advisor. The patterns I share come from actual engagements ... not blog post aggregation.
+    20	
+    21	---
+    22	
+    23	## Start Here
+    24	
+    25	If you want a sense of how I think about architecture decisions, these three guides are the foundation:
+    26	
+    27	1. **[SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework)** ... Maps every critical architecture choice to revenue milestones, from $0 to $1M+ ARR. This is the guide I wish existed when I built my first multi-tenant platform.
+    28	
+    29	2. **[Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook)** ... Why 100ms of latency costs you 1% in conversions, and the systematic approach to fixing it. Covers Core Web Vitals, database optimization, and caching strategies that compound.
+    30	
+    31	3. **[AI-Assisted Development Guide](https://alexmayhew.dev/blog/ai-assisted-development-guide)** ... Where AI actually accelerates engineering (and where it creates expensive technical debt). The build-vs-buy matrix I use with clients evaluating LLM integration.
+    32	
+    33	---
+    34	
+    35	One quick favor ... add `alex@alexmayhew.dev` to your contacts. It keeps future emails out of spam and promotions tabs.
+    36	
+    37	Hit reply and tell me: what's the biggest technical decision on your plate right now? I read every response, and it helps me write issues that matter to you.
+    38	
+    39	– Alex
+    40	
+    41	P.S. I'm not a blogger ... I'm a Technical Advisor who writes about the patterns I see across engagements. If you're curious about how that works, I'll share more in a few days.
+
+exec
+/usr/bin/zsh -lc "nl -ba content/newsletter/welcome/03-how-i-help.md | sed -n '1,140p'" in /home/deploy/projects/amdev/alexmayhew-dev
+ succeeded in 0ms:
+     1	---
+     2	sequence: 3
+     3	title: "How I Help CTOs Make Better Architecture Decisions"
+     4	subject: "How I help CTOs make better architecture decisions"
+     5	delay: "7 days"
+     6	status: "draft"
+     7	---
+     8	
+     9	Subject: How I help CTOs make better architecture decisions
+    10	
+    11	Hey {first_name},
+    12	
+    13	Last email I shared the most common architecture mistake I see in early-stage SaaS. Today I want to briefly explain how I work with companies on these decisions ... because the newsletter is a distilled version of what I do as a Technical Advisor.
+    14	
+    15	---
+    16	
+    17	## What a Typical Engagement Looks Like
+    18	
+    19	A Series A SaaS company ($1.2M ARR, 8 engineers) reached out last year. They were preparing for a growth phase and their CTO had three decisions to make:
+    20	
+    21	1. Whether to extract their billing module into a separate service
+    22	2. How to implement multi-tenancy for an enterprise sales motion
+    23	3. Whether to migrate from Heroku to Kubernetes
+    24	
+    25	We spent two weeks on an architecture review. The outcome:
+    26	
+    27	- **Billing extraction: No.** Their billing logic was tightly coupled to their core domain model. Extracting it would require 3-4 months of engineering time with no user-facing benefit. We restructured the module boundaries within the monolith instead ... 2 weeks of work.
+    28	
+    29	- **Multi-tenancy: Row-Level Security from day one.** I recommended PostgreSQL RLS with a shared database rather than the database-per-tenant approach they were considering. Saved them from managing hundreds of database instances as they scaled. Implementation cost: 3 weeks vs. the 3+ months for database-per-tenant.
+    30	
+    31	- **Kubernetes migration: Deferred.** Their Heroku setup handled their current traffic with room to grow. We identified the actual threshold ($3M ARR, 50K concurrent users) where migration would become necessary and documented the migration path so they could execute it when the time came.
+    32	
+    33	Total advisory cost was a fraction of what they would have spent on even one of the over-engineered alternatives. More importantly, their engineering team spent Q2 shipping features ... not configuring infrastructure.
+    34	
+    35	---
+    36	
+    37	## The Advisory Model
+    38	
+    39	I work with a limited number of companies each quarter. Engagements range from focused architecture reviews (2-4 weeks) to ongoing advisory relationships (monthly check-ins, async access for decisions as they come up).
+    40	
+    41	The goal is always the same: make the right technical decision for your current stage, not the decision that looks impressive on a conference slide.
+    42	
+    43	If you're facing a similar decision ... architecture review, scaling strategy, tech stack evaluation ... hit reply. I'm happy to point you in the right direction, even if a formal engagement isn't the right fit.
+    44	
+    45	– Alex
+    46	
+    47	P.S. For a deeper look at how I think about the multi-tenancy decision specifically, here's the full guide: [Multi-Tenancy with Prisma and Row-Level Security](https://alexmayhew.dev/blog/multi-tenancy-prisma-rls).
+
+exec
+/usr/bin/zsh -lc "nl -ba content/newsletter/welcome/04-engagement-check.md | sed -n '1,120p'" in /home/deploy/projects/amdev/alexmayhew-dev
+ succeeded in 0ms:
+     1	---
+     2	sequence: 4
+     3	title: "Quick Question (2 Weeks In)"
+     4	subject: "Quick question (2 weeks in)"
+     5	delay: "14 days"
+     6	status: "draft"
+     7	---
+     8	
+     9	Subject: Quick question (2 weeks in)
+    10	
+    11	Hey {first_name},
+    12	
+    13	You've been reading The Architect's Brief for two weeks now. Before I keep sending you architecture decisions every Tuesday, I want to make sure I'm covering what matters to you.
+    14	
+    15	**Quick question:** Which of these topics is most relevant to your work right now?
+    16	
+    17	- **Architecture decisions** ... monolith vs. microservices, service extraction, system design
+    18	- **Performance engineering** ... Core Web Vitals, database optimization, caching strategies
+    19	- **Scaling teams** ... first hires, IC-to-lead transitions, technical hiring
+    20	- **AI/ML integration** ... when to build vs. buy, LLM architecture, cost optimization
+    21	
+    22	Hit reply with one of those (or something else entirely). It takes 10 seconds and directly shapes what I write about.
+    23	
+    24	---
+    25	
+    26	Here's a quick insight while I have you ... something that came up in a client conversation this week:
+    27	
+    28	**The 80/20 rule of database optimization.** Before you add Redis, before you tune your queries, before you add read replicas ... check your indexes. In 80% of the performance reviews I do, the single highest-impact fix is adding or correcting a missing composite index. The typical improvement: 10-50x query speedup for 10 minutes of work.
+    29	
+    30	That's it. Short email this week.
+    31	
+    32	– Alex
+
+exec
+/usr/bin/zsh -lc "nl -ba content/newsletter/welcome/05-case-study.md | sed -n '1,140p'" in /home/deploy/projects/amdev/alexmayhew-dev
+ succeeded in 0ms:
+     1	---
+     2	sequence: 5
+     3	title: "The Architecture Review That Saved 6 Months of Engineering"
+     4	subject: "The architecture review that saved a SaaS company 6 months of engineering"
+     5	delay: "21 days"
+     6	status: "draft"
+     7	---
+     8	
+     9	Subject: The architecture review that saved a SaaS company 6 months of engineering
+    10	
+    11	Hey {first_name},
+    12	
+    13	I want to share a story that captures what I do as a Technical Advisor ... and why architecture decisions at the right stage matter more than most founders realize.
+    14	
+    15	---
+    16	
+    17	## The Situation
+    18	
+    19	A B2B SaaS company (Series A, $2.1M ARR, 12 engineers) had a problem. Their flagship product was a project management tool for construction firms. They were closing enterprise deals ... but their architecture couldn't support the isolation and compliance requirements their new customers demanded.
+    20	
+    21	Their CTO had a plan: migrate to a database-per-tenant architecture on Kubernetes, with a custom orchestration layer to manage tenant provisioning. The engineering team estimated 6 months. Leadership approved the project.
+    22	
+    23	Before they started, the CTO asked me to review the plan.
+    24	
+    25	## The Problem
+    26	
+    27	The proposed architecture solved the isolation requirement ... but at enormous cost:
+    28	
+    29	- **6 months of feature freeze** while 12 engineers rebuilt infrastructure
+    30	- **$8K/month in additional cloud costs** for managing isolated databases
+    31	- **3x operational complexity** ... monitoring, backups, migrations, and provisioning for every tenant
+    32	- **Hiring pressure** ... they'd need a dedicated infrastructure engineer to maintain it
+    33	
+    34	The enterprise contracts they were chasing were worth $180K/year. The migration would cost them $400K+ in engineering time before a single enterprise customer went live.
+    35	
+    36	## The Decision Framework Applied
+    37	
+    38	We mapped the actual requirements against the available options:
+    39	
+    40	| Requirement      | Database-per-Tenant | Shared DB + RLS    | Shared DB + Schema  |
+    41	| ---------------- | ------------------- | ------------------ | ------------------- |
+    42	| Data isolation   | Physical            | Logical (enforced) | Logical (namespace) |
+    43	| Compliance audit | Pass                | Pass with pgAudit  | Pass with pgAudit   |
+    44	| Migration effort | 6 months            | 6 weeks            | 8 weeks             |
+    45	| Ongoing cost     | $8K/mo              | $0 incremental     | $200/mo             |
+    46	| Operational load | High                | Low                | Medium              |
+    47	
+    48	PostgreSQL Row-Level Security with `pgAudit` for compliance logging met every stated requirement. The implementation took 6 weeks instead of 6 months.
+    49	
+    50	## The Outcome
+    51	
+    52	- **5 months of engineering time redirected to product** ... they shipped three enterprise features in the time they would have spent on infrastructure
+    53	- **$96K/year in avoided cloud costs** ... shared database vs. per-tenant instances
+    54	- **First enterprise contract closed 8 weeks after the review** ... instead of 7+ months
+    55	- **Zero data isolation incidents** in the 10 months since ... RLS enforces tenant boundaries at the database level, not application code
+    56	
+    57	The architecture review cost less than one month of the avoided cloud spend.
+    58	
+    59	---
+    60	
+    61	## Why This Matters
+    62	
+    63	The CTO's instinct wasn't wrong ... database-per-tenant is the right choice in some scenarios. Physical isolation is necessary for certain compliance regimes (HIPAA with specific requirements, FedRAMP, some financial regulations). But for 80% of B2B SaaS companies, logical isolation with RLS and audit logging meets the bar.
+    64	
+    65	The difference between the right architecture at the right stage and the right architecture at the wrong stage is often hundreds of thousands of dollars and months of lost velocity.
+    66	
+    67	---
+    68	
+    69	That's what advisory work looks like in practice. Not "move to microservices" or "adopt Kubernetes" ... but finding the simplest architecture that meets your actual requirements at your current stage.
+    70	
+    71	I take on a limited number of advisory engagements each quarter. If your team is facing architectural decisions like this ... scaling strategy, multi-tenancy approach, infrastructure evaluation ... reply to this email. Even if a formal engagement isn't the right fit, I'm happy to point you in the right direction.
+    72	
+    73	– Alex
+    74	
+    75	P.S. For the technical deep-dive on the RLS approach from this case study, see: [Multi-Tenancy with Prisma and Row-Level Security](https://alexmayhew.dev/blog/multi-tenancy-prisma-rls).
+
+codex
+The sequence files match the prompt. I’m checking the narrative arc now, especially the jump from value email to advisory pitch and whether the case-study claims are supportable enough for a first-impression sequence.
+exec
+/usr/bin/zsh -lc "sed -n '1,220p' docs/VOICE_GUIDE.md" in /home/deploy/projects/amdev/alexmayhew-dev
+ succeeded in 0ms:
+# Alex Mayhew Voice Guide
+
+> Reference for all content generation (LLM prompts, social posts, newsletters)
+
+---
+
+## Core Identity
+
+**Role:** Technical Advisor (NOT freelancer, NOT developer for hire)
+**Tagline:** "I help CTOs avoid $500K mistakes"
+**Positioning:** Strategic architecture guidance for ambitious startups
+
+---
+
+## Voice Characteristics
+
+### 1. Technical Precision
+
+Always use specific numbers and metrics. Never vague.
+
+**Yes:**
+
+- "40-60% of year one spent on infrastructure"
+- "100,000+ monthly active users"
+- "The cost of adding this later is 10x the upfront investment"
+
+**No:**
+
+- "a lot of time"
+- "many users"
+- "much more expensive"
+
+### 2. Direct & Authoritative
+
+Take clear positions. No hedging.
+
+**Yes:**
+
+- "App Router, without question."
+- "Security is not where you want to innovate."
+- "This doesn't scale cost-effectively."
+
+**No:**
+
+- "You might want to consider..."
+- "It could potentially be better to..."
+- "Some people think..."
+
+### 3. Business Context First
+
+Every technical decision ties to business outcomes.
+
+**Yes:**
+
+- "The technical architecture should encode your pricing strategy"
+- "retrofitting billing logic into an existing app is painful and error-prone"
+- "When something breaks at 2 AM, you need to know which customer is affected"
+
+**No:**
+
+- Technical details without business justification
+- "Best practices" without explaining why
+
+### 4. Experienced Perspective
+
+Speak from lived experience, not theory.
+
+**Yes:**
+
+- "I've built SaaS platforms serving 100,000+ monthly active users"
+- "I've seen the failure patterns"
+- "In my experience advising startups..."
+
+**No:**
+
+- "Research shows..."
+- "Experts say..."
+- Generic advice anyone could give
+
+### 5. Dense Information
+
+Every sentence carries weight. No filler.
+
+**Yes:**
+
+- "PostgreSQL's row-level security policies, enforced via Prisma middleware, make tenant data segregation automatic and audit-proof."
+
+**No:**
+
+- "PostgreSQL is a really great database that has this cool feature called row-level security which can be helpful for keeping data separate."
+
+### 6. Contrarian When Warranted
+
+Challenge conventional wisdom with evidence.
+
+**Yes:**
+
+- "Your startup doesn't need Kubernetes"
+- "Stop using Redis for everything"
+- "Microservices won't save your startup"
+
+**No:**
+
+- Contrarian for shock value without substance
+- Agreeing with everything
+
+---
+
+## Formatting Rules
+
+### Do Use
+
+- **Ellipsis** (`...`) for parenthetical breaks and pauses...like this. NEVER use em dashes (`—`) or double dashes (`--`)
+- **Specific numbers** (40%, 10x, 100k+)
+- **Technical terms** with context
+- **Code examples** when illustrating a point
+- **Decision frameworks** (if X then Y)
+
+### Don't Use
+
+- ❌ Emojis (never in body text)
+- ❌ Exclamation points (rarely, only for genuine emphasis)
+- ❌ Marketing buzzwords ("game-changer", "revolutionary", "cutting-edge")
+- ❌ Filler phrases ("In today's world", "It goes without saying")
+- ❌ Hedging language ("perhaps", "maybe", "might want to")
+
+---
+
+## Sentence Patterns
+
+### The Pattern Interrupt
+
+Start with a bold claim that challenges assumptions.
+
+> "Your SaaS doesn't need microservices."
+
+### The Experience Proof
+
+Back up claims with specific experience.
+
+> "I've advised 12 startups in the past year. Every single one that started with microservices regretted it by month 6."
+
+### The Cost/Consequence Frame
+
+Show the real cost of wrong decisions.
+
+> "The cost of adding this later is 10x the upfront investment."
+
+### The Decision Framework
+
+Provide clear criteria for when to apply advice.
+
+> "Under 50 engineers = monolith. 50+ = maybe consider extraction."
+
+### The Technical-to-Business Bridge
+
+Connect technical choices to business outcomes.
+
+> "This isn't about technology preference—it's about shipping features vs. managing infrastructure."
+
+---
+
+## Content Structure
+
+### LinkedIn Posts
+
+1. **Hook** (1-2 lines): Bold claim or surprising insight
+2. **Context** (2-3 lines): Why this matters
+3. **Insight** (3-5 bullets): The actual value, with specifics
+4. **CTA** (1 line): Question or invitation to discuss
+
+### Twitter Threads
+
+1. **Tweet 1**: Standalone hook (no "Thread:" prefix)
+2. **Tweets 2-7**: One insight per tweet, concrete
+3. **Tweet 8**: Summary + link
+
+### Newsletter Sections
+
+1. **The Situation**: 2-3 sentences, relatable scenario
+2. **The Insight**: 3-4 sentences with specific numbers
+3. **The Code**: Brief example showing the concept
+4. **When to Apply**: 3 bullet points
+
+---
+
+## Words & Phrases
+
+### Use These
+
+- "architect" (verb) - not "build" or "create"
+- "production systems" - not "apps" or "websites"
+- "enterprise-grade" - when describing quality
+- "from day one" - emphasizing early decisions
+- "painful and error-prone" - describing bad outcomes
+- "audit-proof" / "battle-tested" - describing quality
+
+### Avoid These
+
+- "freelancer" / "for hire"
+- "awesome" / "amazing" / "incredible"
+- "simple" / "easy" (it rarely is)
+- "just" (minimizes complexity)
+- "best practices" (without explaining why)
+- "leverage" / "utilize" (use "use")
+
+---
+
+## Example Transformations
+
+### Before (Generic)
+
+> "Microservices can be complicated and might not be the best choice for smaller teams."
+
+### After (Alex Voice)
+
+> "Microservices require 12+ systems—service mesh, tracing, discovery—before you ship a single feature. For teams under 50 engineers, that's infrastructure tax without infrastructure scale."
+
+---
+
+
+exec
+/usr/bin/zsh -lc 'rg -n "game-changer|perhaps|maybe|simply| just |!|—|–|emoji|fluff|hedg|Technical Precision|Business Context|Direct" docs/VOICE_GUIDE.md content/newsletter/welcome' in /home/deploy/projects/amdev/alexmayhew-dev
+ succeeded in 0ms:
+docs/VOICE_GUIDE.md:17:### 1. Technical Precision
+docs/VOICE_GUIDE.md:33:### 2. Direct & Authoritative
+docs/VOICE_GUIDE.md:35:Take clear positions. No hedging.
+docs/VOICE_GUIDE.md:49:### 3. Business Context First
+docs/VOICE_GUIDE.md:113:- **Ellipsis** (`...`) for parenthetical breaks and pauses...like this. NEVER use em dashes (`—`) or double dashes (`--`)
+docs/VOICE_GUIDE.md:123:- ❌ Marketing buzzwords ("game-changer", "revolutionary", "cutting-edge")
+docs/VOICE_GUIDE.md:125:- ❌ Hedging language ("perhaps", "maybe", "might want to")
+docs/VOICE_GUIDE.md:153:> "Under 50 engineers = monolith. 50+ = maybe consider extraction."
+docs/VOICE_GUIDE.md:159:> "This isn't about technology preference—it's about shipping features vs. managing infrastructure."
+docs/VOICE_GUIDE.md:217:> "Microservices require 12+ systems—service mesh, tracing, discovery—before you ship a single feature. For teams under 50 engineers, that's infrastructure tax without infrastructure scale."
+docs/VOICE_GUIDE.md:227:> "I implement tenant isolation at the database layer from day one—even if you're starting with a single customer. The cost of adding this later is 10x the upfront investment."
+docs/VOICE_GUIDE.md:239:- Direct and authoritative (take clear positions)
+docs/VOICE_GUIDE.md:247:- Marketing buzzwords ("game-changer", "revolutionary")
+docs/VOICE_GUIDE.md:264:| **Tone**    | Direct, authoritative | Hedging, uncertain |
+content/newsletter/welcome/02-first-insight.md:45:– Alex
+content/newsletter/welcome/03-how-i-help.md:45:– Alex
+content/newsletter/welcome/01-welcome.md:13:Thanks for subscribing. You just joined a group of CTOs, VPs of Engineering, and senior technical leaders who care about making better architecture decisions ... not chasing hype cycles.
+content/newsletter/welcome/01-welcome.md:18:- **No fluff.** Every issue is 500-700 words. You'll read it in under 5 minutes. If I don't have something worth saying, I don't send.
+content/newsletter/welcome/01-welcome.md:39:– Alex
+content/newsletter/welcome/05-case-study.md:73:– Alex
+content/newsletter/welcome/04-engagement-check.md:32:– Alex
+
+codex
+I also checked the repo voice guide. The sequence avoids the hard banned terms and exclamation points, but there are still trust and pacing risks that matter more than literal voice-token compliance.
+codex
+One concrete conflict stands out: Email 1 promises a weekly Tuesday cadence, while the welcome sequence sends on immediate, day 3, day 7, day 14, and day 21. I’m doing one more quick check on existing newsletter issue lengths before assigning severity to the “500-700 words” promise.
+exec
+/usr/bin/zsh -lc "wc -w content/newsletter/issues/*.mdx | sort -n | sed -n '1,12p'; wc -w content/newsletter/issues/*.mdx | sort -n | tail -n 12" in /home/deploy/projects/amdev/alexmayhew-dev
+ succeeded in 0ms:
+   627 content/newsletter/issues/021-architecture-regret.mdx
+   632 content/newsletter/issues/001-monolith-first.mdx
+   635 content/newsletter/issues/022-api-cost-replacement.mdx
+   646 content/newsletter/issues/002-microservices-cost.mdx
+   648 content/newsletter/issues/030-percentile-monitoring.mdx
+   655 content/newsletter/issues/006-rag-architecture.mdx
+   663 content/newsletter/issues/005-database-migrations.mdx
+   667 content/newsletter/issues/023-technical-debt-cost.mdx
+   680 content/newsletter/issues/007-core-web-vitals.mdx
+   686 content/newsletter/issues/027-denormalize-database.mdx
+   687 content/newsletter/issues/029-write-tests-later.mdx
+   688 content/newsletter/issues/026-rest-vs-graphql.mdx
+   747 content/newsletter/issues/012-llm-cost-optimization.mdx
+   750 content/newsletter/issues/013-testing-rscs.mdx
+   751 content/newsletter/issues/031-automate-reviews.mdx
+   759 content/newsletter/issues/017-documentation.mdx
+   761 content/newsletter/issues/014-performance-monitoring.mdx
+   774 content/newsletter/issues/015-code-review.mdx
+   780 content/newsletter/issues/035-q3-retrospective.mdx
+   817 content/newsletter/issues/036-revenue-leakage.mdx
+   829 content/newsletter/issues/018-hiring-staff.mdx
+   833 content/newsletter/issues/020-billing-architecture.mdx
+   840 content/newsletter/issues/019-hidden-tax.mdx
+ 25787 total
+
+exec
+/usr/bin/zsh -lc "wc -w content/newsletter/issues/*.mdx | awk '"'$2 != "total" {total++; if ($1 < 500 || $1 > 700) out++} END {print total, out}'"'" in /home/deploy/projects/amdev/alexmayhew-dev
+ succeeded in 0ms:
+36 17
+
+web search: 
+web search: https://alexmayhew.dev/blog/saas-architecture-decision-framework
+codex
+**OVERALL_VERDICT: REVISE**
+
+Not publish-ready. The positioning is strong, links work, and Email 2 is the best asset. But the sequence has trust-risk blockers and a pacing problem that will make non-buyers feel sold to too early.
+
+**BLOCKER**
+
+- [01-welcome.md](/home/deploy/projects/amdev/alexmayhew-dev/content/newsletter/welcome/01-welcome.md:17) promises “One email every Tuesday,” but the welcome sequence itself sends immediate, day 3, day 7, day 14, and day 21. From the subscriber’s view, that is a broken frequency promise unless onboarding is explicitly framed as separate from the Tuesday brief.
+
+- [03-how-i-help.md](/home/deploy/projects/amdev/alexmayhew-dev/content/newsletter/welcome/03-how-i-help.md:19) and [05-case-study.md](/home/deploy/projects/amdev/alexmayhew-dev/content/newsletter/welcome/05-case-study.md:19) present highly specific anonymized client stories: ARR, team size, industry, costs, outcomes, timelines. If these are generated examples rather than documented real engagements, they cannot ship. This is especially sensitive because [01-welcome.md](/home/deploy/projects/amdev/alexmayhew-dev/content/newsletter/welcome/01-welcome.md:19) explicitly promises “actual engagements.”
+
+- [05-case-study.md](/home/deploy/projects/amdev/alexmayhew-dev/content/newsletter/welcome/05-case-study.md:40) overstates compliance certainty. “Pass with pgAudit” and “met every stated requirement” are too categorical for HIPAA/FedRAMP/financial-regulatory adjacency. CTOs will read that as either naive or legally sloppy unless scoped tightly.
+
+**ISSUE**
+
+- Emails 3 and 5 repeat the same advisory proof shape: Series A SaaS, multi-tenancy/RLS, avoided Kubernetes or database-per-tenant, saved months. Claude’s “potential repetition” understates it. It makes the sequence feel like one sales argument stretched across two emails.
+
+- CTA load is too high: Email 1 asks for biggest decision, Email 3 asks for advisory replies, Email 4 asks for topic feedback, Email 5 asks for advisory replies again. For a first-impression sequence, that is a lot of asks before enough value has accrued.
+
+- Value delivery is uneven. Email 2 earns attention. Email 4 has a useful but thin database insight. Emails 3 and 5 mostly prove Alex can advise, rather than giving the CTO a new decision tool they can apply immediately.
+
+- [01-welcome.md](/home/deploy/projects/amdev/alexmayhew-dev/content/newsletter/welcome/01-welcome.md:18) promises every issue is 500-700 words. Local issue files do not consistently match that: 17 of 36 existing newsletter issue files are outside the range by `wc -w`, mostly above 700. Keep “under 5 minutes” if true, but avoid a precise range unless enforced.
+
+- [01-welcome.md](/home/deploy/projects/amdev/alexmayhew-dev/content/newsletter/welcome/01-welcome.md:13) claims the subscriber joined a group of CTOs, VPs Engineering, and senior technical leaders. If list composition is not known, that is manufactured social proof.
+
+**NIT**
+
+- No emojis, exclamation points, “game-changer,” or em dashes found. The signature uses an en dash, not an em dash. Fine under the literal rule, but plain `Alex` is safer in email clients.
+
+- “I’m not a blogger” in [01-welcome.md](/home/deploy/projects/amdev/alexmayhew-dev/content/newsletter/welcome/01-welcome.md:41) sounds defensive. The content already proves the point better than the denial.
+
+- “I’m happy to point you in the right direction” appears in both sales emails. It is friendly, but softer than the brand’s direct advisory posture.
+
+**Broken Links**
+
+Live link check passed for all four linked pages: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework), [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook), [AI-Assisted Development Guide](https://alexmayhew.dev/blog/ai-assisted-development-guide), and [Multi-Tenancy with Prisma and RLS](https://alexmayhew.dev/blog/multi-tenancy-prisma-rls). ([alexmayhew.dev](https://alexmayhew.dev/blog/saas-architecture-decision-framework)) ([alexmayhew.dev](https://alexmayhew.dev/blog/performance-engineering-playbook)) ([alexmayhew.dev](https://alexmayhew.dev/blog/ai-assisted-development-guide)) ([alexmayhew.dev](https://alexmayhew.dev/blog/multi-tenancy-prisma-rls))
+
+**CTO Read-Through Risk**
+
+A CTO likely reads Email 1, respects Email 2, then starts skimming at Email 3 unless actively shopping for advisory help. By Email 5, the sequence risks feeling repetitive and sales-heavy. Keep the arc, but rebalance toward earned insight before the second advisory CTA.
+tokens used
+94,612
+**OVERALL_VERDICT: REVISE**
+
+Not publish-ready. The positioning is strong, links work, and Email 2 is the best asset. But the sequence has trust-risk blockers and a pacing problem that will make non-buyers feel sold to too early.
+
+**BLOCKER**
+
+- [01-welcome.md](/home/deploy/projects/amdev/alexmayhew-dev/content/newsletter/welcome/01-welcome.md:17) promises “One email every Tuesday,” but the welcome sequence itself sends immediate, day 3, day 7, day 14, and day 21. From the subscriber’s view, that is a broken frequency promise unless onboarding is explicitly framed as separate from the Tuesday brief.
+
+- [03-how-i-help.md](/home/deploy/projects/amdev/alexmayhew-dev/content/newsletter/welcome/03-how-i-help.md:19) and [05-case-study.md](/home/deploy/projects/amdev/alexmayhew-dev/content/newsletter/welcome/05-case-study.md:19) present highly specific anonymized client stories: ARR, team size, industry, costs, outcomes, timelines. If these are generated examples rather than documented real engagements, they cannot ship. This is especially sensitive because [01-welcome.md](/home/deploy/projects/amdev/alexmayhew-dev/content/newsletter/welcome/01-welcome.md:19) explicitly promises “actual engagements.”
+
+- [05-case-study.md](/home/deploy/projects/amdev/alexmayhew-dev/content/newsletter/welcome/05-case-study.md:40) overstates compliance certainty. “Pass with pgAudit” and “met every stated requirement” are too categorical for HIPAA/FedRAMP/financial-regulatory adjacency. CTOs will read that as either naive or legally sloppy unless scoped tightly.
+
+**ISSUE**
+
+- Emails 3 and 5 repeat the same advisory proof shape: Series A SaaS, multi-tenancy/RLS, avoided Kubernetes or database-per-tenant, saved months. Claude’s “potential repetition” understates it. It makes the sequence feel like one sales argument stretched across two emails.
+
+- CTA load is too high: Email 1 asks for biggest decision, Email 3 asks for advisory replies, Email 4 asks for topic feedback, Email 5 asks for advisory replies again. For a first-impression sequence, that is a lot of asks before enough value has accrued.
+
+- Value delivery is uneven. Email 2 earns attention. Email 4 has a useful but thin database insight. Emails 3 and 5 mostly prove Alex can advise, rather than giving the CTO a new decision tool they can apply immediately.
+
+- [01-welcome.md](/home/deploy/projects/amdev/alexmayhew-dev/content/newsletter/welcome/01-welcome.md:18) promises every issue is 500-700 words. Local issue files do not consistently match that: 17 of 36 existing newsletter issue files are outside the range by `wc -w`, mostly above 700. Keep “under 5 minutes” if true, but avoid a precise range unless enforced.
+
+- [01-welcome.md](/home/deploy/projects/amdev/alexmayhew-dev/content/newsletter/welcome/01-welcome.md:13) claims the subscriber joined a group of CTOs, VPs Engineering, and senior technical leaders. If list composition is not known, that is manufactured social proof.
+
+**NIT**
+
+- No emojis, exclamation points, “game-changer,” or em dashes found. The signature uses an en dash, not an em dash. Fine under the literal rule, but plain `Alex` is safer in email clients.
+
+- “I’m not a blogger” in [01-welcome.md](/home/deploy/projects/amdev/alexmayhew-dev/content/newsletter/welcome/01-welcome.md:41) sounds defensive. The content already proves the point better than the denial.
+
+- “I’m happy to point you in the right direction” appears in both sales emails. It is friendly, but softer than the brand’s direct advisory posture.
+
+**Broken Links**
+
+Live link check passed for all four linked pages: [SaaS Architecture Decision Framework](https://alexmayhew.dev/blog/saas-architecture-decision-framework), [Performance Engineering Playbook](https://alexmayhew.dev/blog/performance-engineering-playbook), [AI-Assisted Development Guide](https://alexmayhew.dev/blog/ai-assisted-development-guide), and [Multi-Tenancy with Prisma and RLS](https://alexmayhew.dev/blog/multi-tenancy-prisma-rls). ([alexmayhew.dev](https://alexmayhew.dev/blog/saas-architecture-decision-framework)) ([alexmayhew.dev](https://alexmayhew.dev/blog/performance-engineering-playbook)) ([alexmayhew.dev](https://alexmayhew.dev/blog/ai-assisted-development-guide)) ([alexmayhew.dev](https://alexmayhew.dev/blog/multi-tenancy-prisma-rls))
+
+**CTO Read-Through Risk**
+
+A CTO likely reads Email 1, respects Email 2, then starts skimming at Email 3 unless actively shopping for advisory help. By Email 5, the sequence risks feeling repetitive and sales-heavy. Keep the arc, but rebalance toward earned insight before the second advisory CTA.

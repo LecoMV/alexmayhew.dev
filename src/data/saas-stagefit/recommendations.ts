@@ -41,7 +41,7 @@ const RECOMMENDATIONS: Record<TechDimension, Recommendation> = {
 		title: "Team Structure & Ownership",
 		description:
 			"Match your engineering org structure and code ownership model to your current headcount.",
-		hubLink: "/blog/engineering-leadership-founder-to-cto",
+		hubLink: "/blog/saas-architecture-decision-framework",
 	},
 	performance: {
 		title: "Performance & Scale",

@@ -1,0 +1,40 @@
+	});
+}
+
+codex
+**Findings**
+
+- **BLOCKER:** The pending `sequence_ids` payload is not safe. Kit v4 documents `POST /v4/subscribers` as an upsert with body fields like `email_address`, `first_name`, `state`, and `fields`, not `sequence_ids`. Sequence enrollment is a separate `POST /v4/sequences/{sequence_id}/subscribers` call with `email_address`. See Kit docs: create subscriber and add subscriber to sequence by email. The repo’s own research says the same at [docs/research/kit-vs-beehiiv-comparison-2026.md](/home/deploy/projects/amdev/alexmayhew-dev/docs/research/kit-vs-beehiiv-comparison-2026.md:293). Risk: Kit may reject the unknown field and break all signups, or silently ignore it and enroll nobody.
+
+- **ISSUE:** The proposed test would lock in the wrong API contract. Testing for `sequence_ids` in the subscriber-create payload verifies an unsupported shape rather than proving enrollment happened. The test should instead verify a second call to `/v4/sequences/2770667/subscribers` after the subscriber upsert succeeds.
+
+- **ISSUE:** Existing-subscriber behavior needs an explicit product decision. `POST /v4/subscribers` is an upsert, and current `existingSubscriber` detection depends on `created_at !== updated_at` in [src/app/actions/newsletter.ts](/home/deploy/projects/amdev/alexmayhew-dev/src/app/actions/newsletter.ts:149), but Kit’s documented response does not reliably include `updated_at`. Also, Kit sequences are non-repeatable by default, but repeatable sequences can restart when re-added. Verify the sequence setting before assuming dedup behavior is harmless.
+
+- **ISSUE:** Squash merge is the right default for this repo; branch reuse is the problem. Squash keeps `main` PR-level clean and aligns with the branch-hygiene rules. The conflict happened because `stagefit-lead-capture-and-formatting` was reused after #103 and #104 were squash-merged. For #105, use the clean `newsletter-welcome-sequence` branch from `origin/main`, not the reused branch.
+
+- **ISSUE:** `audit-sprint-1-p0-fixes` is stale as a tree. I verified `git diff origin/main..audit-sprint-1-p0-fixes` shows regressions across StageFit/newsletter/E2E files. It may be safe to delete after confirmation, but it is not safe to merge or reuse.
+
+- **NIT:** Hardcoding `WELCOME_SEQUENCE_ID = 2770667` is acceptable here because the code already hardcodes Kit tag IDs in [src/app/actions/newsletter.ts](/home/deploy/projects/amdev/alexmayhew-dev/src/app/actions/newsletter.ts:29). Use an env var only if staging/prod Kit accounts differ.
+
+- **NIT:** Current worktree is recoverable but not clean: `newsletter-welcome-sequence` matches `origin/main`, but `.session_handoff.md` and `docs/reviews/*.txt` are untracked. Keep them out of the PR unless intentionally committing review artifacts.
+
+OVERALL_VERDICT: NEEDS_CORRECTION
+tokens used
+136,705
+**Findings**
+
+- **BLOCKER:** The pending `sequence_ids` payload is not safe. Kit v4 documents `POST /v4/subscribers` as an upsert with body fields like `email_address`, `first_name`, `state`, and `fields`, not `sequence_ids`. Sequence enrollment is a separate `POST /v4/sequences/{sequence_id}/subscribers` call with `email_address`. See Kit docs: create subscriber and add subscriber to sequence by email. The repo’s own research says the same at [docs/research/kit-vs-beehiiv-comparison-2026.md](/home/deploy/projects/amdev/alexmayhew-dev/docs/research/kit-vs-beehiiv-comparison-2026.md:293). Risk: Kit may reject the unknown field and break all signups, or silently ignore it and enroll nobody.
+
+- **ISSUE:** The proposed test would lock in the wrong API contract. Testing for `sequence_ids` in the subscriber-create payload verifies an unsupported shape rather than proving enrollment happened. The test should instead verify a second call to `/v4/sequences/2770667/subscribers` after the subscriber upsert succeeds.
+
+- **ISSUE:** Existing-subscriber behavior needs an explicit product decision. `POST /v4/subscribers` is an upsert, and current `existingSubscriber` detection depends on `created_at !== updated_at` in [src/app/actions/newsletter.ts](/home/deploy/projects/amdev/alexmayhew-dev/src/app/actions/newsletter.ts:149), but Kit’s documented response does not reliably include `updated_at`. Also, Kit sequences are non-repeatable by default, but repeatable sequences can restart when re-added. Verify the sequence setting before assuming dedup behavior is harmless.
+
+- **ISSUE:** Squash merge is the right default for this repo; branch reuse is the problem. Squash keeps `main` PR-level clean and aligns with the branch-hygiene rules. The conflict happened because `stagefit-lead-capture-and-formatting` was reused after #103 and #104 were squash-merged. For #105, use the clean `newsletter-welcome-sequence` branch from `origin/main`, not the reused branch.
+
+- **ISSUE:** `audit-sprint-1-p0-fixes` is stale as a tree. I verified `git diff origin/main..audit-sprint-1-p0-fixes` shows regressions across StageFit/newsletter/E2E files. It may be safe to delete after confirmation, but it is not safe to merge or reuse.
+
+- **NIT:** Hardcoding `WELCOME_SEQUENCE_ID = 2770667` is acceptable here because the code already hardcodes Kit tag IDs in [src/app/actions/newsletter.ts](/home/deploy/projects/amdev/alexmayhew-dev/src/app/actions/newsletter.ts:29). Use an env var only if staging/prod Kit accounts differ.
+
+- **NIT:** Current worktree is recoverable but not clean: `newsletter-welcome-sequence` matches `origin/main`, but `.session_handoff.md` and `docs/reviews/*.txt` are untracked. Keep them out of the PR unless intentionally committing review artifacts.
+
+OVERALL_VERDICT: NEEDS_CORRECTION

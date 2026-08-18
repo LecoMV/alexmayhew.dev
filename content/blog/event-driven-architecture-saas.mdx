@@ -23,7 +23,7 @@ Event-driven architecture solves real problems... decoupling services, handling 
 
 Every SaaS architecture conversation about events follows the same trajectory. At 5 engineers and $500K ARR, someone reads about how LinkedIn processes 1 trillion messages per day through Kafka and decides the team needs event-driven architecture. Six months later, they have a Kafka cluster nobody fully understands, an event schema that breaks every sprint, and debugging sessions that take 3x longer than the synchronous version.
 
-I've advised companies on both sides of this mistake. The ones who adopted EDA too early spent 20-25% of their engineering headcount managing infrastructure instead of shipping features. The ones who waited too long suffered cascading failures that took down production for hours because a single downstream service was slow.
+Companies land on both sides of this mistake. The ones that adopt EDA too early spend 20-25% of their engineering headcount managing infrastructure instead of shipping features. The ones who waited too long suffered cascading failures that took down production for hours because a single downstream service was slow.
 
 The right answer is neither "always events" nor "never events." It's knowing when the pain of synchronous communication exceeds the complexity cost of asynchronous messaging.
 
@@ -361,10 +361,6 @@ Before committing to event-driven architecture, verify these conditions:
 ---
 
 **Building a SaaS that's hitting the synchronous wall?** I help teams plan and execute the migration to event-driven architecture without the 18-month learning curve.
-
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Architecture decisions from MVP to scale
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Production-grade Node.js systems
-- [Technical Due Diligence](/services/technical-due-diligence-consultant) ... Pre-investment architecture assessment
 
 ---
 

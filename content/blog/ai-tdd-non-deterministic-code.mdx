@@ -33,7 +33,7 @@ A Turing/DORA survey found **96% of developers don't fully trust AI-generated co
 
 ### The Validation Speed Problem
 
-In my advisory work, I've started calling this "the AI validation problem." The real constraint isn't how fast AI can generate code. It's how fast your team can validate that the generated code is correct.
+In practice, I've started calling this "the AI validation problem." The real constraint isn't how fast AI can generate code. It's how fast your team can validate that the generated code is correct.
 
 Without TDD, validation means reading every line, tracing every branch, and mentally simulating every edge case. With TDD, validation means running the test suite. One approach scales. The other doesn't.
 
@@ -453,7 +453,7 @@ async function runEvalSuite(promptPath: string, datasetPath: string): Promise<Ev
 }
 ```
 
-In my advisory work, teams that adopt eval suites report ~40% fewer production incidents from prompt changes. The reason is straightforward: you can't ship a prompt regression if CI catches it.
+In practice, teams that adopt eval suites report ~40% fewer production incidents from prompt changes. The reason is straightforward: you can't ship a prompt regression if CI catches it.
 
 The eval suite also gives you a decision framework for model upgrades. When a new model version drops, run your eval suite against it. If accuracy stays above threshold and cost drops, migrate. If accuracy drops on specific categories, investigate before migrating. No guesswork.
 
@@ -595,7 +595,7 @@ The rule of thumb: if the code will be maintained by someone other than its auth
 
 ### Does AI TDD slow down development?
 
-In the short term, writing tests first adds ~20-30% to initial development time. But CodeRabbit's data shows AI-generated code without tests requires 1.7x more bug fixes downstream. A team spending 30% more time upfront to avoid 70% more rework downstream comes out ahead within the first sprint. In my advisory work, teams consistently report faster _net_ delivery after adopting TDD-AI, because the rework cycle shrinks from days to minutes.
+In the short term, writing tests first adds ~20-30% to initial development time. But CodeRabbit's data shows AI-generated code without tests requires 1.7x more bug fixes downstream. A team spending 30% more time upfront to avoid 70% more rework downstream comes out ahead within the first sprint. In practice, teams consistently report faster _net_ delivery after adopting TDD-AI, because the rework cycle shrinks from days to minutes.
 
 ### Can AI write the RED tests too?
 
@@ -617,10 +617,6 @@ For multi-step AI agents, test the overall outcome rather than individual steps.
 
 **Building AI-powered features that need to work reliably in production?** I help teams implement TDD workflows for AI systems... from eval suites to property-based testing to CI integration.
 
-- [AI Integration for SaaS](/services/ai-integration-developer-for-saas) ... Responsible AI implementation
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Engineering governance strategy
-- [AI Integration for Healthcare](/services/ai-integration-developer-for-healthcare) ... Compliant AI systems
-
 ---
 
 ## Continue Reading
@@ -634,4 +630,4 @@ For multi-step AI agents, test the overall outcome rather than individual steps.
 - [Testing React Server Components](/blog/testing-react-server-components) ... Testing architecture for modern React
 - [The Generative Debt Crisis](/blog/ai-assisted-development-generative-debt) ... When AI code becomes liability
 
-**Implementing AI TDD in your engineering workflow?** [Work with me](/services/technical-advisor-for-startups) on your testing and quality strategy.
+**Implementing AI TDD in your engineering workflow?** [Work with me](/contact) on your testing and quality strategy.

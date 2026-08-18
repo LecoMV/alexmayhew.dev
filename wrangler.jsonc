@@ -74,8 +74,13 @@
 			"id": "10d29082bf1741fa9a23ccf331cfb3ef",
 		},
 	],
-	// Keep workers.dev subdomain active until custom domain is set up in dashboard
-	"workers_dev": true,
+	// Production serves ONLY via the custom domain (alexmayhew.dev). The
+	// workers.dev subdomain is disabled so Google can't index a duplicate
+	// whole-site mirror at alexmayhew-dev.<subdomain>.workers.dev — a real
+	// duplicate-content / entity-dilution risk on a name-collision domain.
+	// (Preview keeps workers_dev:true so Dependabot PR previews get a URL;
+	// custom-worker.ts noindexes every *.workers.dev response as a backstop.)
+	"workers_dev": false,
 	/**
 	 * Smart Placement
 	 * Automatically places Worker close to backend services for reduced latency
@@ -97,6 +102,14 @@
 			"assets": {
 				"binding": "ASSETS",
 				"directory": ".open-next/assets",
+				// NOTE: run_worker_first is intentionally NOT set here. OpenNext bakes
+				// this value into the generated Worker at BUILD time from the base
+				// config (false), so setting it true only on the preview env at deploy
+				// time desyncs from the artifact and makes the asset resolver 404
+				// preview assets. Preview HTML still gets the *.workers.dev noindex
+				// (SSR always routes through the Worker); only static assets on the
+				// ephemeral Dependabot preview host are un-noindexed, an accepted
+				// low-severity gap. Production serves no workers.dev host at all.
 			},
 			"images": {
 				"binding": "IMAGES",

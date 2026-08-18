@@ -13,7 +13,7 @@ image: "/images/blog/testing-react-server-components-featured.webp"
 
 ## TL;DR
 
-React Server Components (RSCs) are async, run on the server, and can't be rendered in jsdom... which means React Testing Library's `render()` doesn't work on them. The testing strategy that does work: unit test data fetching and business logic as plain functions (no React at all), integration test RSCs via HTTP request to the Next.js server (test the HTML output), and E2E test critical user flows with Playwright. The biggest shift: stop testing "does this component render correctly?" and start testing "does this route return the correct data?" RSCs push data fetching into the component tree, which means testing the component IS testing the data layer. The teams I've advised that adopted this approach reduced their test suite runtime by 40% while catching more real bugs... because they stopped mocking fetch and started testing actual server behavior.
+React Server Components (RSCs) are async, run on the server, and can't be rendered in jsdom... which means React Testing Library's `render()` doesn't work on them. The testing strategy that does work: unit test data fetching and business logic as plain functions (no React at all), integration test RSCs via HTTP request to the Next.js server (test the HTML output), and E2E test critical user flows with Playwright. The biggest shift: stop testing "does this component render correctly?" and start testing "does this route return the correct data?" RSCs push data fetching into the component tree, which means testing the component IS testing the data layer. Teams that adopt this approach tend to cut test-suite runtime by around 40% while catching more real bugs... because they stop mocking fetch and start testing actual server behavior.
 
 > **Part of the [Modern Frontend Architecture](/blog/modern-frontend-architecture)** ... a comprehensive guide to frontend patterns that scale.
 
@@ -357,10 +357,6 @@ This distribution keeps the test suite fast (under 30 seconds for unit tests, un
 ---
 
 **Migrating your testing strategy to work with Server Components?** I help teams redesign their test architecture to match modern React patterns.
-
-- [Technical Advisor for Startups](/services/technical-advisor-for-startups) ... Frontend architecture decisions
-- [Next.js Development for SaaS](/services/nextjs-developer-for-saas) ... Production-grade React applications
-- [Technical Due Diligence](/services/technical-due-diligence-consultant) ... Code quality and test coverage assessment
 
 ---
 

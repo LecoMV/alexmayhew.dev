@@ -10,7 +10,7 @@ import { describe, expect, it } from "vitest";
  * at the high-traffic segment roots so failures don't bubble to the
  * app-level boundaries.
  */
-const SEGMENTS = ["blog", "services", "technologies", "for", "work"] as const;
+const SEGMENTS = ["blog", "services", "work"] as const;
 
 describe("route segments have streaming + error boundaries", () => {
 	it.each(SEGMENTS)("segment '%s' ships a loading.tsx", (segment) => {

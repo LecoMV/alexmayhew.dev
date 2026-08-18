@@ -2,7 +2,7 @@
 
 import { Command } from "cmdk";
 import { AnimatePresence, m } from "framer-motion";
-import { Briefcase, Cpu, FileText, Globe, Layers } from "lucide-react";
+import { Briefcase, FileText, Globe, Layers } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
@@ -12,21 +12,12 @@ import type { SearchItem } from "@/data/search-index";
 
 const categoryIcons: Record<SearchItem["category"], React.ReactNode> = {
 	Blog: <FileText className="h-4 w-4" strokeWidth={1.5} />,
-	Service: <Briefcase className="h-4 w-4" strokeWidth={1.5} />,
-	Technology: <Cpu className="h-4 w-4" strokeWidth={1.5} />,
 	Tool: <Layers className="h-4 w-4" strokeWidth={1.5} />,
 	Work: <Briefcase className="h-4 w-4" strokeWidth={1.5} />,
 	Page: <Globe className="h-4 w-4" strokeWidth={1.5} />,
 };
 
-const categoryOrder: SearchItem["category"][] = [
-	"Page",
-	"Blog",
-	"Work",
-	"Service",
-	"Technology",
-	"Tool",
-];
+const categoryOrder: SearchItem["category"][] = ["Page", "Blog", "Work", "Tool"];
 
 interface CommandPaletteProps {
 	items: SearchItem[];

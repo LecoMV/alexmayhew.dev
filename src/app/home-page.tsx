@@ -38,11 +38,6 @@ const featuredInsights = [
 		category: "architecture",
 	},
 	{
-		title: "Engineering Leadership: Founder to CTO",
-		slug: "engineering-leadership-founder-to-cto",
-		category: "business",
-	},
-	{
 		title: "Modern Frontend Architecture Guide",
 		slug: "modern-frontend-architecture",
 		category: "frontend",
