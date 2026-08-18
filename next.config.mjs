@@ -65,6 +65,20 @@ const config = {
 				destination: "/work/voice-cloner",
 				permanent: true,
 			},
+			// The /for/[role] funnel marketed fractional-CTO / advisory engagements
+			// Alex never held. Retired in the 2026-08 reposition. 301 the hub and
+			// every role page to /services (the surviving consulting surface) so old
+			// links keep their equity instead of 404ing.
+			{
+				source: "/for",
+				destination: "/services",
+				permanent: true,
+			},
+			{
+				source: "/for/:role*",
+				destination: "/services",
+				permanent: true,
+			},
 		];
 	},
 

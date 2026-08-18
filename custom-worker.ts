@@ -47,6 +47,21 @@ const FALLBACK_CSP = [
 	"report-to csp-endpoint",
 ].join("; ");
 
+// Permanently removed URLs. These three programmatic "service" pages encoded a
+// consultant identity (fractional CTO / technical advisor / due-diligence) that
+// Alex never held. They are disavowed, not moved, so they return 410 Gone (fast
+// deindex signal) rather than a 301 that would carry the old-brand association
+// onto /services. Kept in the Worker because Next has no native 410 and the page
+// data is unpublished in the same change.
+const GONE_PATHS = new Set<string>([
+	"/services/fractional-cto-for-startups",
+	"/services/technical-advisor-for-startups",
+	"/services/technical-due-diligence-consultant",
+]);
+
+const GONE_BODY =
+	'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><title>Gone</title></head><body><h1>410 Gone</h1><p>This page has been permanently removed. See <a href="/services">/services</a>.</p></body></html>';
+
 const SECURITY_HEADERS: Record<string, string> = {
 	"X-Frame-Options": "DENY",
 	"X-Content-Type-Options": "nosniff",
@@ -68,6 +83,18 @@ export default Sentry.withSentry(
 	}),
 	{
 		async fetch(request: Request, env: CloudflareEnv, ctx: ExecutionContext): Promise<Response> {
+			// Disavowed identity URLs: 410 Gone before the Next handler runs.
+			const pathname = new URL(request.url).pathname;
+			if (GONE_PATHS.has(pathname)) {
+				return new Response(GONE_BODY, {
+					status: 410,
+					headers: {
+						"content-type": "text/html; charset=utf-8",
+						"X-Robots-Tag": "noindex, nofollow",
+					},
+				});
+			}
+
 			const response = await handler.fetch(request, env, ctx);
 
 			const contentType = response.headers.get("content-type") ?? "";
@@ -77,9 +104,11 @@ export default Sentry.withSentry(
 
 			const newHeaders = new Headers(response.headers);
 
-			// Prevent Google from indexing the .pages.dev mirror (duplicate content)
+			// Prevent indexing of the workers.dev / pages.dev mirror (duplicate
+			// content). Production serves only via alexmayhew.dev (workers_dev is
+			// noindex every mirror response. The prior guard only checked
 			const host = request.headers.get("host") ?? "";
-			if (host.endsWith(".pages.dev")) {
+			if (host.endsWith(".workers.dev") || host.endsWith(".pages.dev")) {
 				newHeaders.set("X-Robots-Tag", "noindex, nofollow");
 			}
 

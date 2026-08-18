@@ -74,8 +74,13 @@
 			"id": "10d29082bf1741fa9a23ccf331cfb3ef",
 		},
 	],
-	// Keep workers.dev subdomain active until custom domain is set up in dashboard
-	"workers_dev": true,
+	// Production serves ONLY via the custom domain (alexmayhew.dev). The
+	// workers.dev subdomain is disabled so Google can't index a duplicate
+	// whole-site mirror at alexmayhew-dev.<subdomain>.workers.dev — a real
+	// duplicate-content / entity-dilution risk on a name-collision domain.
+	// (Preview keeps workers_dev:true so Dependabot PR previews get a URL;
+	// custom-worker.ts noindexes every *.workers.dev response as a backstop.)
+	"workers_dev": false,
 	/**
 	 * Smart Placement
 	 * Automatically places Worker close to backend services for reduced latency
