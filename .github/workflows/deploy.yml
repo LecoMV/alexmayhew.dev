@@ -324,7 +324,7 @@ jobs:
             check_200 "$page" || exit 1
           done
 
-          # Reposition routing (2026-08): the /for funnel 301s to /services, and
+          # Reposition routing (2026-08): the /for funnel 308s to /services, and
           # the three disavowed identity /services pages return 410 Gone. Assert
           # the removal signals so a regression that re-exposes them fails CI.
           check_status() {
@@ -343,12 +343,16 @@ jobs:
           # which Google treats as a permanent redirect equivalent to 301.
           check_status "/for" 308 || exit 1
           check_status "/for/cto" 308 || exit 1
-          # The 308 must land on /services, not some other path.
-          loc=$(curl -s -o /dev/null -w "%{redirect_url}" "https://alexmayhew.dev/for")
-          case "$loc" in
-            *"/services") echo "OK: /for -> $loc" ;;
-            *) echo "FAILED: /for redirect target is '$loc', expected .../services"; exit 1 ;;
-          esac
+          # Both redirects must land EXACTLY on https://alexmayhew.dev/services
+          # (not merely a path ending in /services, and not another host).
+          for src in "/for" "/for/cto"; do
+            loc=$(curl -s -o /dev/null -w "%{redirect_url}" "https://alexmayhew.dev$src")
+            if [ "$loc" != "https://alexmayhew.dev/services" ]; then
+              echo "FAILED: $src redirect target is '$loc', expected https://alexmayhew.dev/services"
+              exit 1
+            fi
+            echo "OK: $src -> $loc"
+          done
           for gone in \
             "/services/fractional-cto-for-startups" \
             "/services/technical-advisor-for-startups" \
