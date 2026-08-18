@@ -339,8 +339,16 @@ jobs:
             return 1
           }
 
-          check_status "/for" 301 || exit 1
-          check_status "/for/cto" 301 || exit 1
+          # Next.js `permanent: true` redirects emit 308 (method-preserving),
+          # which Google treats as a permanent redirect equivalent to 301.
+          check_status "/for" 308 || exit 1
+          check_status "/for/cto" 308 || exit 1
+          # The 308 must land on /services, not some other path.
+          loc=$(curl -s -o /dev/null -w "%{redirect_url}" "https://alexmayhew.dev/for")
+          case "$loc" in
+            *"/services") echo "OK: /for -> $loc" ;;
+            *) echo "FAILED: /for redirect target is '$loc', expected .../services"; exit 1 ;;
+          esac
           for gone in \
             "/services/fractional-cto-for-startups" \
             "/services/technical-advisor-for-startups" \

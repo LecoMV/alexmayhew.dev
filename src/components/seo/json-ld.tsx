@@ -171,7 +171,7 @@ export function ServicesJsonLd() {
 		image: OG_IMAGE_URL,
 		founder: { "@id": PERSON_ID },
 		description:
-			"Web development, workflow automation, and applied-AI services by Alex Mayhew. Available for contract and fractional engagements.",
+			"Web development, workflow automation, and applied-AI services by Alex Mayhew. Available for contract and part-time work.",
 		address: {
 			"@type": "PostalAddress",
 			addressLocality: "East Falmouth",

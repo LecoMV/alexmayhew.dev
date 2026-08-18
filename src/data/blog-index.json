@@ -153,19 +153,6 @@
 		"series": "frontend-architecture"
 	},
 	{
-		"title": "Beyond the Resume: A Technical Founder's Hiring Framework",
-		"description": "Work samples predict performance 3x better than years of experience. Here's how to hire developers when you can't afford bad hires.",
-		"slug": "technical-hiring-framework",
-		"category": "business",
-		"tags": [
-			"hiring",
-			"engineering-management",
-			"startup",
-			"technical-leadership"
-		],
-		"series": "engineering-leadership"
-	},
-	{
 		"title": "Building AI Features Users Actually Want",
 		"description": "Ship AI features that solve real problems, not AI for AI's sake. User research, build vs buy, measuring success, avoiding the AI feature graveyard.",
 		"slug": "building-ai-features-users-want",
@@ -178,20 +165,6 @@
 			"ux"
 		],
 		"series": "ai-development"
-	},
-	{
-		"title": "Building Your First Engineering Team: The 5-Person Playbook",
-		"description": "The order you hire your first 5 engineers determines startup velocity for 2 years. The sequence that works, based on 15+ startup advisory engagements.",
-		"slug": "first-engineering-team-playbook",
-		"category": "business",
-		"tags": [
-			"hiring",
-			"startups",
-			"engineering-management",
-			"team-building",
-			"leadership"
-		],
-		"series": "engineering-leadership"
 	},
 	{
 		"title": "Caching Strategies That Actually Work",
@@ -235,20 +208,6 @@
 			"cto"
 		],
 		"series": "ai-development"
-	},
-	{
-		"title": "Code Review Practices That Scale",
-		"description": "Code review at 5 engineers is a conversation. At 50, it's a bottleneck. Scale review without sacrificing quality: async protocols and automated gates.",
-		"slug": "code-review-practices-scale",
-		"category": "business",
-		"tags": [
-			"code-review",
-			"engineering-culture",
-			"leadership",
-			"automation",
-			"developer-experience"
-		],
-		"series": "engineering-leadership"
 	},
 	{
 		"title": "Cognitive Debt: The Hidden Cost of AI-Assisted Teams",
@@ -349,19 +308,6 @@
 		"series": "frontend-architecture"
 	},
 	{
-		"title": "Documentation That Engineers Actually Read",
-		"description": "Your team has docs. Nobody reads them. The 4 documentation types engineers actually use, with templates and maintenance that keeps docs accurate.",
-		"slug": "documentation-engineers-read",
-		"category": "business",
-		"tags": [
-			"documentation",
-			"engineering-culture",
-			"developer-experience",
-			"leadership"
-		],
-		"series": "engineering-leadership"
-	},
-	{
 		"title": "Edge Computing: When Worth the Complexity",
 		"description": "Edge computing promises sub-50ms latency worldwide. It also delivers config nightmares and consistency puzzles. The decision framework for real ROI.",
 		"slug": "edge-computing-saas",
@@ -374,20 +320,6 @@
 			"saas"
 		],
 		"series": "performance-engineering"
-	},
-	{
-		"title": "Engineering Leadership: The Founder to CTO Journey",
-		"description": "A guide to engineering leadership from solo founder to CTO leading 50+ engineers. Hiring, team structure, technical debt, and the IC-to-exec transition.",
-		"slug": "engineering-leadership-founder-to-cto",
-		"category": "business",
-		"tags": [
-			"leadership",
-			"cto",
-			"hiring",
-			"engineering-management",
-			"startups"
-		],
-		"series": "engineering-leadership"
 	},
 	{
 		"title": "Event-Driven Architecture for SaaS at Scale",
@@ -404,34 +336,6 @@
 		"series": "saas-architecture"
 	},
 	{
-		"title": "Fractional CTO vs Full-Time CTO: When Each Makes Sense",
-		"description": "A full-time CTO costs $300-500K+ annually. A fractional CTO costs $5-15K/month. The decision isn't about money, it's about what your startup needs now.",
-		"slug": "fractional-cto-vs-full-time",
-		"category": "business",
-		"tags": [
-			"startups",
-			"leadership",
-			"cto",
-			"hiring",
-			"strategy"
-		],
-		"series": "engineering-leadership"
-	},
-	{
-		"title": "From IC to Tech Lead: Leadership Without the Title",
-		"description": "The best tech leads don't wait for the promotion. They lead through architecture decisions, code review, and unblocking the team. How to transition.",
-		"slug": "ic-to-tech-lead",
-		"category": "business",
-		"tags": [
-			"leadership",
-			"career",
-			"engineering-management",
-			"tech-lead",
-			"growth"
-		],
-		"series": "engineering-leadership"
-	},
-	{
 		"title": "Hiring AI Engineers: Competence vs Resume Fluff",
 		"description": "AI engineer salaries hit $206K average in 2025, up $50K YoY. 90% of companies created AI roles. What to look for, and what sounds impressive but isn't.",
 		"slug": "hiring-ai-engineers",
@@ -446,20 +350,6 @@
 		"series": "ai-development"
 	},
 	{
-		"title": "Hiring Your First Staff Engineer",
-		"description": "Staff engineer is the most misunderstood role in SaaS. Teams hire too early, wrong skills, or a title without a mandate. When, what, and how to succeed.",
-		"slug": "hiring-first-staff-engineer",
-		"category": "business",
-		"tags": [
-			"hiring",
-			"staff-engineer",
-			"leadership",
-			"engineering-culture",
-			"saas"
-		],
-		"series": "engineering-leadership"
-	},
-	{
 		"title": "Hunting Memory Leaks in Node.js: A Forensic Guide",
 		"description": "Memory leaks are systematic, not mystical. This guide provides the methodology and tools to find and fix them.",
 		"slug": "nodejs-memory-leaks",
@@ -471,20 +361,6 @@
 			"devops"
 		],
 		"series": "performance-engineering"
-	},
-	{
-		"title": "Incident Response Playbook for SaaS Teams",
-		"description": "Most SaaS teams don't have an incident response process until they need one at 3 AM during an outage. The playbook to implement before the crisis hits.",
-		"slug": "incident-response-saas",
-		"category": "business",
-		"tags": [
-			"incident-response",
-			"saas",
-			"operations",
-			"on-call",
-			"leadership"
-		],
-		"series": "engineering-leadership"
 	},
 	{
 		"title": "LLM Cost Optimization at Scale",
@@ -708,19 +584,6 @@
 		"series": "saas-architecture"
 	},
 	{
-		"title": "Senior Developer Paradox: Expensive Talent Saves Money",
-		"description": "A $200/hr senior often costs less than a $30/hr junior when you factor in code quality, bug rates, and the exponential cost of fixing production defects.",
-		"slug": "senior-developer-paradox",
-		"category": "business",
-		"tags": [
-			"hiring",
-			"engineering-management",
-			"technical-leadership",
-			"economics"
-		],
-		"series": "engineering-leadership"
-	},
-	{
 		"title": "SOC 2 Compliance for Seed-Stage Startups: The 90-Day Roadmap",
 		"description": "Most startups think SOC 2 is a 6-month project. It's not. The engineering-focused roadmap that gets you compliant in 90 days without a compliance team.",
 		"slug": "soc2-compliance-startup-roadmap",
@@ -789,20 +652,6 @@
 		"series": "saas-architecture"
 	},
 	{
-		"title": "Technical Debt: When to Accumulate, When to Pay",
-		"description": "Technical debt isn't bad, it's strategic leverage. The problem: most teams accumulate accidentally and pay down randomly. The framework that works.",
-		"slug": "technical-debt-strategy",
-		"category": "business",
-		"tags": [
-			"technical-debt",
-			"engineering-management",
-			"architecture",
-			"strategy",
-			"startups"
-		],
-		"series": "engineering-leadership"
-	},
-	{
 		"title": "Testing Strategies for React Server Components",
 		"description": "RSC breaks every testing pattern from the past 5 years. No jsdom, render(), or user events. The testing architecture for async, streaming, and hybrid models.",
 		"slug": "testing-react-server-components",
@@ -815,20 +664,6 @@
 			"frontend"
 		],
 		"series": "frontend-architecture"
-	},
-	{
-		"title": "The $500K Architecture Mistake I Helped a Startup Avoid",
-		"description": "A Series A startup was about to migrate to microservices. Here's why I told them to stop, what we did instead, and the six months of engineering time we saved.",
-		"slug": "500k-architecture-mistake",
-		"category": "architecture",
-		"tags": [
-			"architecture",
-			"microservices",
-			"startups",
-			"monolith",
-			"war-stories"
-		],
-		"series": "saas-architecture"
 	},
 	{
 		"title": "The AI Technical Debt Bomb: A CTO's Accounting Framework",

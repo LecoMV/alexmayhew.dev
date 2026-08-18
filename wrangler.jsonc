@@ -102,6 +102,11 @@
 			"assets": {
 				"binding": "ASSETS",
 				"directory": ".open-next/assets",
+				// Run the Worker before serving static assets so the *.workers.dev
+				// mirror noindex (custom-worker.ts) also covers assets (resume
+				// PDF/TXT etc.), which would otherwise be served asset-first and
+				// bypass the Worker on the persistent preview hostname.
+				"run_worker_first": true,
 			},
 			"images": {
 				"binding": "IMAGES",

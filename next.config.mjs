@@ -66,9 +66,10 @@ const config = {
 				permanent: true,
 			},
 			// The /for/[role] funnel marketed fractional-CTO / advisory engagements
-			// Alex never held. Retired in the 2026-08 reposition. 301 the hub and
-			// every role page to /services (the surviving consulting surface) so old
-			// links keep their equity instead of 404ing.
+			// Alex never held. Retired in the 2026-08 reposition. `permanent: true`
+			// emits a 308 (Google treats it as a permanent redirect) from the hub
+			// and every role page to /services, so old links keep their equity
+			// instead of 404ing.
 			{
 				source: "/for",
 				destination: "/services",

@@ -37,34 +37,6 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 		},
 	],
 
-	"engineering-leadership-founder-to-cto": [
-		{
-			question: "When should a startup hire its first CTO?",
-			answer:
-				"Most startups under $5M ARR do not need a full-time CTO. A fractional CTO at 8-20 hours per month ($2,000-$8,000/month) provides strategic guidance without the $315K-595K annual cost of a full-time hire. Hire a full-time CTO when you have 15+ engineers and architectural decisions require daily leadership presence.",
-		},
-		{
-			question: "What is the difference between a fractional CTO and a full-time CTO?",
-			answer:
-				"A fractional CTO provides strategic architecture guidance, technical due diligence, and team mentorship at 8-20 hours per month. A full-time CTO manages daily engineering operations, hiring, team culture, and long-term technical vision. The fractional model works at pre-Series A when you need experience without the overhead. The full-time model becomes necessary when team size and technical complexity require dedicated leadership.",
-		},
-		{
-			question: "How do I transition from individual contributor to tech lead?",
-			answer:
-				"The biggest shift is from personal output to team output. Follow the 30/30/30/10 rule: 30% coding, 30% code review and architecture, 30% mentoring and communication, 10% process improvement. The transition typically takes 12-18 months. The hardest part is measuring success by team velocity rather than personal commits.",
-		},
-		{
-			question: "What makes a senior developer actually senior?",
-			answer:
-				"Senior developers multiply team output rather than just maximizing personal output. They anticipate problems before they become incidents, make decisions that reduce future complexity, and mentor others without being asked. The paradox: the best senior developers often write less code because they spend time preventing unnecessary code from being written.",
-		},
-		{
-			question: "How do I build my first engineering team as a non-technical founder?",
-			answer:
-				"Start with a strong first hire who can be both architect and builder. Your first 5 engineers should be generalists, not specialists. Use work sample tests (correlation with job performance: r=0.54) instead of resume screens (r=0.18). Budget $150K-200K base salary for your first senior engineer in a major market, or hire remote at 60-70% of that.",
-		},
-	],
-
 	"modern-frontend-architecture": [
 		{
 			question: "Should I use React Server Components in production?",
@@ -184,24 +156,6 @@ export const hubFaqs: Record<string, { question: string; answer: string }[]> = {
 			question: "Do React Server Components replace API routes?",
 			answer:
 				"For read operations, yes. Server Components can query databases directly without API endpoints, eliminating client-server waterfalls. For mutations (form submissions, updates), you still need Server Actions or API routes. The net effect is fewer API endpoints, less client-side data fetching code, and simpler architectures for read-heavy applications.",
-		},
-	],
-
-	"technical-debt-strategy": [
-		{
-			question: "How do you measure technical debt?",
-			answer:
-				"Measure technical debt through its impact, not its existence. Track deployment frequency (how often you can ship), change failure rate (what percentage of deployments cause incidents), and time-to-implement for new features versus historical baselines. When a feature that took 2 days a year ago now takes 2 weeks, that delta is the cost of accumulated debt.",
-		},
-		{
-			question: "How much time should engineering teams spend on technical debt?",
-			answer:
-				"Allocate 15-20% of sprint capacity to debt reduction as a baseline. Teams that allocate 0% slow down by approximately 25% per year as debt compounds. The most effective approach is not dedicated 'tech debt sprints' but embedding debt work into feature development ... when you touch a module for a feature, also clean up that module.",
-		},
-		{
-			question: "How do you prioritize which technical debt to pay down first?",
-			answer:
-				"Prioritize by blast radius multiplied by change frequency. Debt in code that changes weekly costs more than debt in code that hasn't been touched in a year. Map your debt items on a 2x2 matrix: high-change-frequency + high-blast-radius items go first. Debt in stable, rarely-modified code can wait indefinitely ... it costs nothing if nobody touches it.",
 		},
 	],
 

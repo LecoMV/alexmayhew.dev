@@ -84,21 +84,6 @@ export const glossary: GlossaryEntry[] = [
 		relatedTerms: [SLUG_COGNITIVE_DEBT, SLUG_VIBE_CODING_HANGOVER],
 	},
 	{
-		term: "The 50% Rule",
-		slug: "the-50-percent-rule",
-		oneLineDefinition:
-			"When an individual contributor is promoted to tech lead, at least 50 percent of their hours must move out of implementation in the first quarter or the transition fails.",
-		fullDefinition:
-			"The 50% Rule is the single most reliable predictor of whether an IC-to-tech-lead transition succeeds. If the new lead is still writing more than half of their pre-promotion code volume three months in, the team will quietly stall. Reviews queue up, architectural decisions get deferred, and the new lead's former peers start routing around them. The 50% Rule forces the reallocation explicitly: hours reclaimed from coding must move into review, mentorship, and technical planning, not into meetings for their own sake. Founders botch this by rewarding the IC who 'still ships' after promotion. That IC is not leading. They are avoiding the harder work of multiplying through others. The rule is calibrated to 50 percent because lower thresholds get ignored and higher thresholds cause panic.",
-		citedInPosts: [
-			"ic-to-tech-lead",
-			"engineering-leadership-founder-to-cto",
-			"first-engineering-team-playbook",
-		],
-		firstUsed: "2026-01-22",
-		relatedTerms: [],
-	},
-	{
 		term: "Lambda Tax",
 		slug: "lambda-tax",
 		oneLineDefinition:
@@ -116,11 +101,7 @@ export const glossary: GlossaryEntry[] = [
 			"The canonical early-stage architectural error... premature microservices, wrong database, schema-per-tenant... that costs roughly $500,000 in engineering time to undo at $1M ARR.",
 		fullDefinition:
 			"The $500K Architecture Mistake is the compounding bill from any irreversible architecture decision made badly on day one. Three show up repeatedly. First: schema-per-tenant multi-tenancy that seemed clean at five customers and becomes a six-month migration at five hundred. Second: premature microservices that solved an organizational problem the team did not yet have, now requiring platform engineering to maintain. Third: document databases selected for relational data, now needing a parallel Postgres deployment and dual-writes. Each of these costs roughly two senior engineers for six months... $500,000 fully loaded, before opportunity cost. The mistake is not the technology choice. The mistake is making an irreversible choice with the information available at pre-PMF. Reversible decisions should be made fast. Irreversible ones should be made slowly, or deferred until they can be made with data.",
-		citedInPosts: [
-			"500k-architecture-mistake",
-			"saas-architecture-decision-framework",
-			"boring-technology-wins",
-		],
+		citedInPosts: ["saas-architecture-decision-framework", "boring-technology-wins"],
 		firstUsed: "2026-03-20",
 		relatedTerms: ["lambda-tax"],
 	},
@@ -131,7 +112,7 @@ export const glossary: GlossaryEntry[] = [
 			"The compounding engineering cost of maintaining two runtimes, two frameworks, or two architectural paradigms in parallel during a migration that was supposed to take one quarter.",
 		fullDefinition:
 			"The Hidden Tax of Supporting Both is what migrations actually cost versus what the original proposal estimated. The proposal said eight weeks to move from the old framework to the new. Twelve months later, half the team is still on the old stack, half on the new, and every shared component exists in two versions. Shared tooling must target both runtimes. Every new feature ships twice or ships behind a feature flag that now has its own maintenance cost. Observability fractures. Hiring splits. The tax compounds because the project was scoped as a migration but is funded as a coexistence. The fix is structural: migrations need a hard cutover date with executive air cover, or they become permanent. A migration that has outlived its original timeline by more than 50 percent is no longer a migration. It is your architecture.",
-		citedInPosts: ["hidden-tax-supporting-both", "technical-debt-strategy", "legacy-modernization"],
+		citedInPosts: ["hidden-tax-supporting-both", "legacy-modernization"],
 		firstUsed: "2026-02-25",
 		relatedTerms: ["the-500k-architecture-mistake"],
 	},
