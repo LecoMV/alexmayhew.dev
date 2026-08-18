@@ -10,7 +10,7 @@ Subject: The architecture review that saved a SaaS company 6 months of engineeri
 
 Hey {first_name},
 
-I want to share a story that captures what I do as a Technical Advisor ... and why architecture decisions at the right stage matter more than most founders realize.
+I want to share a story that captures the kind of technical work I do ... and why architecture decisions at the right stage matter more than most founders realize.
 
 ---
 

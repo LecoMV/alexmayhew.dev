@@ -18,12 +18,11 @@ describe("voice-cloner retirement", () => {
 		expect(() => readFileSync(path, "utf-8")).toThrow();
 	});
 
-	it("declares a permanent redirect to voicekeep.io with UTM tags in next.config.mjs", () => {
+	it("declares a permanent redirect from /tools/voice-cloner to the internal case study", () => {
 		const src = readFileSync(join(process.cwd(), "next.config.mjs"), "utf-8");
 		expect(src).toContain("/tools/voice-cloner");
-		expect(src).toContain("voicekeep.io");
-		expect(src).toContain("utm_campaign=voicekeep_crosspromo");
-		expect(src).toContain("utm_content=tools-redirect");
+		expect(src).toContain('destination: "/work/voice-cloner"');
+		expect(src).toContain("permanent: true");
 	});
 
 	it("removes /tools/voice-cloner from the sitemap (301 URLs trigger GSC warnings)", () => {

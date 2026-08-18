@@ -1,3 +1,4 @@
+import { ServicesJsonLd } from "@/components/seo/json-ld";
 import { PERSON_REF } from "@/components/seo/schema-utils";
 import { INDUSTRY_LABELS, TECHNOLOGY_LABELS } from "@/data/pseo";
 import { getPublishedPages } from "@/data/pseo/pages";
@@ -6,32 +7,31 @@ import { ServicesPage } from "./services-page-content";
 
 import type { Metadata } from "next";
 
-const PAGE_TITLE = "Technical Advisory Services";
-const OG_IMAGE_PATH = "/og-image.png";
+const PAGE_TITLE = "Services";
+const OG_IMAGE_PATH = "/og-image-2026.png";
 
 export const metadata: Metadata = {
 	title: PAGE_TITLE,
 	description:
-		"Strategic technical guidance for founders and CTOs. Architecture decisions that compound into competitive advantage. Next.js, React, TypeScript, and enterprise systems.",
+		"Web development, workflow automation, and applied AI. Available for contract and fractional engagements. WordPress, Next.js, Python, and the systems a business runs on.",
 	openGraph: {
 		title: PAGE_TITLE,
 		description:
-			"Strategic technical guidance for founders and CTOs. Architecture decisions that compound into competitive advantage.",
+			"Web development, workflow automation, and applied AI. Available for contract and fractional engagements.",
 		type: "website",
 		images: [
 			{
 				url: OG_IMAGE_PATH,
 				width: 1200,
 				height: 630,
-				alt: "Alex Mayhew - Technical Advisory Services",
+				alt: "Alex Mayhew - Services",
 			},
 		],
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: PAGE_TITLE,
-		description:
-			"Strategic technical guidance for founders and CTOs. Architecture decisions that compound into competitive advantage.",
+		description: "Web development, workflow automation, and applied AI.",
 		images: [OG_IMAGE_PATH],
 	},
 	alternates: {
@@ -49,8 +49,7 @@ function ServicesHubJsonLd() {
 		"@context": "https://schema.org",
 		"@type": "ItemList",
 		name: PAGE_TITLE,
-		description:
-			"Strategic technical guidance for founders and CTOs building with modern web technologies.",
+		description: "Web development, workflow automation, and applied-AI services.",
 		numberOfItems: pages.length,
 		itemListElement: pages.map((page, index) => ({
 			"@type": "ListItem",
@@ -104,6 +103,7 @@ export default function Page() {
 
 	return (
 		<>
+			<ServicesJsonLd />
 			<ServicesHubJsonLd />
 			<ServicesPage pages={pages} />
 		</>

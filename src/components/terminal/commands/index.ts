@@ -46,9 +46,9 @@ const commands: Record<string, CommandHandler> = {
 ┌─────────────────────────────────────────────────────────────┐
 │ IDENTITY: Alex Mayhew                                       │
 ├─────────────────────────────────────────────────────────────┤
-│ Role:       Technical Advisor & Systems Architect           │
+│ Role:       Technology Specialist                           │
 │ Location:   Remote / Worldwide                              │
-│ Experience: 6+ years                                        │
+│ Experience: 9 yrs solar-company tech dept + products        │
 │ Status:     ● Currently accepting projects                  │
 ├─────────────────────────────────────────────────────────────┤
 │ Philosophy: "Building high-precision digital instruments    │
@@ -165,8 +165,8 @@ Built with atmospheric precision. ◆`,
 │ CONTACT ENDPOINTS                                           │
 ├─────────────────────────────────────────────────────────────┤
 │ Email:    alex@alexmayhew.dev                               │
-│ GitHub:   github.com/alexmayhew                             │
-│ LinkedIn: linkedin.com/in/alexmayhew                        │
+│ GitHub:   github.com/LecoMV                                 │
+│ LinkedIn: linkedin.com/in/alexmmayhew                       │
 │                                                             │
 │ Response time: Within 24 hours                              │
 │ Timezone:      UTC-flexible                                 │

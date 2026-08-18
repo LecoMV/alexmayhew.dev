@@ -77,26 +77,32 @@ export default function Home() {
 								<span className="mr-2 animate-pulse" aria-hidden="true">
 									●
 								</span>
-								Technical Advisor
+								Technology Specialist
 							</p>
 							<h1 className="text-4xl leading-[1.1] font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-								Strategic
+								Build. Ship.
 								<br />
-								<span className="text-slate-text">Architecture.</span>
+								<span className="text-slate-text">Maintain.</span>
 							</h1>
 						</m.div>
 
 						<m.aside
 							className="border-cyber-lime/40 bg-cyber-lime/5 relative border-l-2 py-3 pr-4 pl-4"
 							variants={fadeInUp}
-							aria-label="Signature positioning statement"
+							aria-label="Availability"
 						>
 							<p className="text-cyber-lime mb-1 font-mono text-xs tracking-wider uppercase">
-								The $500K architecture mistake
+								Available for remote work
 							</p>
 							<p className="text-mist-white font-mono text-base leading-snug sm:text-lg">
-								Picking your database before your product... then spending 18 months refactoring
-								around a schema you chose in week two.
+								Part-time, contract, or full-time...{" "}
+								<Link
+									href="/resume"
+									className="decoration-cyber-lime/60 hover:text-cyber-lime underline underline-offset-4"
+								>
+									resume here
+								</Link>
+								.
 							</p>
 						</m.aside>
 
@@ -106,9 +112,9 @@ export default function Home() {
 							className="text-slate-text max-w-xl text-lg leading-relaxed font-normal sm:text-xl"
 							variants={fadeInUp}
 						>
-							I architect production systems that scale from MVP to millions. Strategic guidance for
-							the decisions you&apos;re married to forever... not just code that ships. 15+ years of
-							pattern recognition across fintech, healthcare, and SaaS.
+							I make technology work for real businesses: websites, automation, applied AI, and the
+							unglamorous IT in between. Nine years as the one-person tech department for a solar
+							company... now building products and writing about what I learn.
 						</m.p>
 
 						<m.div className="mt-4 flex items-center gap-6" variants={fadeInUp}>
@@ -202,11 +208,10 @@ export default function Home() {
 							<span className="mr-2 animate-pulse" aria-hidden="true">
 								●
 							</span>
-							Services
+							What I Do
 						</h2>
 						<p className="text-slate-text max-w-2xl text-lg">
-							Architecture, performance, and AI integration for SaaS teams scaling from $0 to $10M
-							ARR.
+							Websites, automation, applied AI, and the systems that keep a business running.
 						</p>
 					</m.div>
 
@@ -269,15 +274,14 @@ export default function Home() {
 								About
 							</h2>
 							<p className="text-mist-white mb-4 text-lg leading-relaxed">
-								15+ years building production systems across fintech, healthcare, SaaS, and
-								e-commerce. I partner with founders and CTOs who need architectural decisions that
-								compound into competitive advantage... not just code that ships.
+								Nine years as the one-person tech department for a Martha&apos;s Vineyard solar
+								company: designing systems, walking permits through historic boards, building the
+								website and the software behind the business, and fixing whatever broke.
 							</p>
 							<p className="text-slate-text mb-6 text-sm leading-relaxed">
-								My clients typically face a specific inflection point: scaling past their first
-								architecture, integrating AI into production workflows, or preparing for technical
-								due diligence. I bring the pattern recognition that comes from seeing dozens of
-								these transitions firsthand.
+								Since then I&apos;ve built and shipped my own products, delivered a production data
+								platform for a client, and kept writing about the work. Self-taught since age 14,
+								and still learning in public.
 							</p>
 							<Link
 								href="/about"
@@ -290,20 +294,20 @@ export default function Home() {
 						<div className="bg-gunmetal-glass/10 border border-white/10 p-8">
 							<div className="grid grid-cols-2 gap-6">
 								<div>
-									<p className="text-cyber-lime font-mono text-2xl font-bold">15+</p>
-									<p className="text-slate-text text-sm">Years in Production Systems</p>
+									<p className="text-cyber-lime font-mono text-2xl font-bold">9</p>
+									<p className="text-slate-text text-sm">Years as a One-Person Tech Dept</p>
 								</div>
 								<div>
-									<p className="text-cyber-lime font-mono text-2xl font-bold">50+</p>
-									<p className="text-slate-text text-sm">Architecture Reviews</p>
+									<p className="text-cyber-lime font-mono text-2xl font-bold">~200</p>
+									<p className="text-slate-text text-sm">Solar PV Systems Designed</p>
+								</div>
+								<div>
+									<p className="text-cyber-lime font-mono text-2xl font-bold">70+</p>
+									<p className="text-slate-text text-sm">Technical Articles Published</p>
 								</div>
 								<div>
 									<p className="text-cyber-lime font-mono text-2xl font-bold">337x</p>
-									<p className="text-slate-text text-sm">Best Performance Gain</p>
-								</div>
-								<div>
-									<p className="text-cyber-lime font-mono text-2xl font-bold">99.95%</p>
-									<p className="text-slate-text text-sm">Uptime Track Record</p>
+									<p className="text-slate-text text-sm">Best Shipped Performance Gain</p>
 								</div>
 							</div>
 						</div>
@@ -326,29 +330,27 @@ export default function Home() {
 								<span className="mr-2 animate-pulse" aria-hidden="true">
 									●
 								</span>
-								Why Partner With Me
+								How I Work
 							</h2>
 							<p className="font-mono text-2xl leading-tight tracking-tight md:text-3xl">
-								The decisions you can&apos;t reverse are the ones worth getting right.
+								Small teams don&apos;t need ten specialists. They need one person who ships.
 							</p>
 						</div>
 						<div className="md:col-span-7">
 							<div className="space-y-5 text-lg leading-relaxed">
 								<p className="text-mist-white">
-									Most founders don&apos;t hire an architect. They hire developers, ship something
-									that works, and discover 18 months later that the database schema they chose in
-									week two is now blocking a $2M enterprise deal.
+									For nine years I was the only technical person in the room: the designer, the
+									developer, the sysadmin, the marketer, and the person who fixed the printer. When
+									something needed building, there was nobody to hand it to.
 								</p>
 								<p className="text-slate-text">
-									I&apos;ve watched that exact scenario play out across fintech migrations,
-									healthcare compliance rewrites, and SaaS platforms outgrowing their initial stack.
-									The cost isn&apos;t measured in refactoring hours. It&apos;s measured in deals
-									lost, runway burned, and teams demoralized by rewrites they warned leadership
-									about years earlier.
+									That constraint teaches a specific discipline. Pick boring technology that works.
+									Automate what repeats. Document what you build, because future-you is the
+									maintenance team. Measure before you optimize.
 								</p>
 								<p className="text-slate-text">
-									I bring the pattern recognition that comes from seeing these transitions
-									firsthand... so you avoid the ones that don&apos;t unwind cleanly.
+									Everything on this site follows that pattern: shipped things, documented honestly,
+									still running or honestly retired.
 								</p>
 							</div>
 						</div>
@@ -373,37 +375,38 @@ export default function Home() {
 							<span className="mr-2 animate-pulse" aria-hidden="true">
 								●
 							</span>
-							What I Refuse To Do
+							What I Believe
 						</h2>
 						<p className="font-mono text-2xl leading-tight tracking-tight md:text-3xl">
-							Most engagements I decline... and why that&apos;s the point.
+							Opinions formed by maintaining what I built... not by conference talks.
 						</p>
 						<div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
 							<div>
 								<p className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase">
-									01 / Staff Augmentation
+									01 / Boring Wins
 								</p>
 								<p className="text-slate-text text-sm leading-relaxed">
-									I don&apos;t fill a seat on your team. If the problem is capacity, you need a
-									recruiter. If it&apos;s judgment under uncertainty, we should talk.
+									WordPress where WordPress fits. Postgres before anything exotic. The unsexy stack
+									ships, and whoever maintains it at 2 AM will thank you.
 								</p>
 							</div>
 							<div>
 								<p className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase">
-									02 / Rewrite Rescues
+									02 / Automate The Repeats
 								</p>
 								<p className="text-slate-text text-sm leading-relaxed">
-									The third full rewrite in four years isn&apos;t a technology problem. It&apos;s a
-									decision-making problem... and no architect can fix that from the code layer.
+									If a task happens weekly, it&apos;s a workflow. I&apos;ve automated intake forms,
+									permit paperwork, content pipelines, and my own deployments... the payoff
+									compounds.
 								</p>
 							</div>
 							<div>
 								<p className="text-cyber-lime mb-2 font-mono text-xs tracking-wider uppercase">
-									03 / Trend Chasing
+									03 / AI Is A Tool
 								</p>
 								<p className="text-slate-text text-sm leading-relaxed">
-									Microservices because a conference talk said so. Rust because your CTO reads
-									Hacker News. I optimize for your constraints, not industry fashion.
+									I run local models, build agent workflows, and use AI assistants daily. They
+									amplify judgment; they don&apos;t replace it. Measure the output, keep the human.
 								</p>
 							</div>
 						</div>

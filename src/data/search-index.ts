@@ -98,7 +98,7 @@ export function buildSearchIndex(): SearchItem[] {
 	const staticPages: SearchItem[] = [
 		{
 			title: "Home",
-			description: "Technical Advisor & Systems Architect",
+			description: "Technology Specialist ... web, SEO, automation, and applied AI",
 			href: "/",
 			category: "Page",
 		},
@@ -140,7 +140,7 @@ export function buildSearchIndex(): SearchItem[] {
 		},
 		{
 			title: "VoiceKeep",
-			description: "AI voice platform — case study (ships at voicekeep.io)",
+			description: "AI voice platform, case study (archived)",
 			href: "/work/voice-cloner",
 			category: "Work",
 		},

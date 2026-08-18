@@ -36,7 +36,7 @@ export function GET() {
 
 	const content = `# alexmayhew.dev
 
-> Alex Mayhew is a Technical Advisor and Systems Architect who helps CTOs and startup founders avoid costly architecture mistakes. 15+ years of experience, 30+ startups advised. Content covers SaaS architecture, engineering leadership, frontend architecture, performance engineering, and AI-assisted development.
+> Alex Mayhew is a technology specialist working across web development, SEO, workflow automation, and applied AI. Nine years as the one-person tech department for a Massachusetts solar company; now building products at Mayhew Technology LLC and available for remote work. Content covers SaaS architecture, engineering leadership, frontend architecture, performance engineering, and AI-assisted development.
 
 ## Glossary
 
@@ -62,7 +62,7 @@ ${spokeLines}
 
 ## Services
 
-- [All Services](https://alexmayhew.dev/services): Full catalog of technical advisory and development services
+- [Services](https://alexmayhew.dev/services): Web development, automation, and applied-AI services (contract and fractional)
 - [Technical Advisory](https://alexmayhew.dev/services/technical-advisor-for-startups): Strategic architecture guidance for startups
 - [Fractional CTO](https://alexmayhew.dev/services/fractional-cto-for-startups): Part-time CTO leadership for early-stage companies
 - [Next.js Development](https://alexmayhew.dev/services/nextjs-developer-for-saas): Production SaaS architecture with Next.js

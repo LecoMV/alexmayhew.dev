@@ -42,9 +42,9 @@ export function GET() {
 	const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Alex Mayhew - Technical Advisory Blog</title>
+    <title>Alex Mayhew - Blog</title>
     <link>${siteUrl}/blog</link>
-    <description>Architecture decisions, engineering leadership, and technical strategy for startup CTOs and founders. Insights from advising 30+ startups.</description>
+    <description>Architecture decisions, engineering leadership, web development, automation, and applied AI. Practical notes from building and maintaining production systems.</description>
     <language>en-us</language>
     <lastBuildDate>${lastBuildDate}</lastBuildDate>
     <atom:link href="${siteUrl}/feed.xml" rel="self" type="application/rss+xml"/>

@@ -51,7 +51,7 @@ export interface Project {
 	category: ProjectCategory;
 	tech: string[];
 	year: string;
-	status: "Production" | "Development" | "Concept";
+	status: "Production" | "Development" | "Concept" | "Open Source" | "Archived" | "Research";
 	link?: string;
 	github?: string;
 	featured?: boolean;
@@ -195,7 +195,7 @@ export const projects: Project[] = [
 		year: "2025",
 		status: "Production",
 		link: "/tools/pilot",
-		github: "https://github.com/alexmayhew/claude-pilot",
+		github: "https://github.com/LecoMV/claude-pilot",
 		featured: true,
 		relatedServices: [
 			{ label: "AI-powered SaaS development", href: "/services/ai-integration-developer-for-saas" },
@@ -381,7 +381,7 @@ export const projects: Project[] = [
 		id: "penqwen",
 		title: "PenQWEN",
 		description:
-			"Reduced security assessment setup time from 4 hours to 12 minutes with zero hallucinated commands. Pentesting teams were wasting senior hours on boilerplate reconnaissance while generic LLMs generated dangerous garbage. Built a domain-adapted Qwen2.5 model through two-stage LoRA training: cybersecurity corpus adaptation, then agentic fine-tuning for tool calling and OPSEC. 3.6GB adapters trained on 12GB curated security data now automate 60% of routine enumeration tasks.",
+			"A cybersecurity LLM project: a 442,000-example instruction dataset and the synthetic-data pipeline behind it (tool-calling traces, ReAct reasoning, OPSEC scenarios, automated quality filtering), plus a two-stage LoRA fine-tuning setup for Qwen2.5-Coder-32B. Stage-one domain adaptation was trained to completion on rented 8x A100 GPUs; the dataset, pipeline, and training configs are the shipped artifacts.",
 		category: "AI/ML",
 		tech: ["Python", "PyTorch", "LoRA", "Qwen2.5", "Transformers", "PEFT", "Cybersecurity"],
 		year: "2024",
@@ -396,7 +396,8 @@ export const projects: Project[] = [
 		],
 		caseStudy: {
 			published: true,
-			subtitle: "Domain-adapted LLM reducing security assessment setup from 4 hours to 12 minutes",
+			subtitle:
+				"A 442K-example dataset, synthetic-data pipeline, and two-stage LoRA setup for a cybersecurity LLM",
 			context: {
 				duration: "10 weeks",
 				industry: "Cybersecurity",
@@ -405,27 +406,27 @@ export const projects: Project[] = [
 			challenge:
 				"Penetration testing teams spend the first 4+ hours of every engagement on boilerplate reconnaissance: port scanning, service enumeration, vulnerability identification, and report scaffolding. Senior pentesters doing $200/hour work were wasting time on tasks that should be automated. General-purpose LLMs (GPT-4, Claude) produce plausible-looking but technically dangerous output... recommending tools that don't exist, generating commands with wrong flags, or suggesting techniques that violate scope agreements. The security domain requires extreme precision: a hallucinated Nmap flag could scan out-of-scope networks, and a fabricated CVE reference wastes hours of investigation time. No existing LLM solution understood OPSEC constraints, tool-specific syntax, or the structured methodology (PTES) that professional assessments follow.",
 			approach:
-				"Built a two-stage fine-tuning pipeline on Qwen2.5-7B. Stage one: cybersecurity corpus adaptation using 12GB of curated data... MITRE ATT&CK techniques, CVE databases, tool documentation (Nmap, Burp Suite, Metasploit, BloodHound), and penetration testing methodology guides. This gives the model domain vocabulary and factual grounding. Stage two: agentic fine-tuning for structured tool calling with OPSEC awareness. Trained on real engagement workflows to output properly formatted commands, respect scope constraints, and flag when a requested action might violate rules of engagement. Used LoRA (Low-Rank Adaptation) to keep adapter size at 3.6GB... practical for deployment on consumer GPUs.",
+				"Aggregated ~18GB of public security data (MITRE ATT&CK, CVE databases, ExploitDB, HackTricks, SecLists, Sigma/YARA rules, tool docs) into a 1.7M-record knowledge base, then distilled it into a 442,000-example instruction dataset: agentic tool-calling traces against a 51-tool schema, ReAct reasoning chains, multi-turn OPSEC scenarios, and domain-knowledge examples, all quality-filtered and validated by an ~8,700-line Python pipeline. Designed a two-stage LoRA curriculum (domain adaptation, then agentic tool-use) for Qwen2.5-Coder-32B using Axolotl with FSDP full-shard across 8 A100 GPUs.",
 			solution:
-				"PenQWEN deploys as a 3.6GB LoRA adapter on top of Qwen2.5-7B, runnable on any GPU with 12GB+ VRAM. The model handles reconnaissance automation, vulnerability prioritization, and report generation following PTES methodology. It generates syntactically correct tool commands with proper flags, understands scope constraints, and refuses to suggest techniques outside the defined engagement rules. The two-stage training approach means the model has both factual knowledge (CVEs, techniques, tool syntax) and procedural understanding (when to use which tool, how to chain findings, OPSEC considerations). Currently automating 60% of routine enumeration tasks with zero hallucinated commands in production use.",
+				"Stage-one domain adaptation ran to completion on a rented 8x A100 pod (346 steps, final loss ~1.25), producing a 3.6GB LoRA adapter. The value that persists on disk is the reusable pipeline: a normalized 1.7M-record security knowledge base with hybrid graph and full-text retrieval, a 442K-example training corpus, the synthetic-data generation and validation scripts, and reproducible training configs and cost model. The design targets reconnaissance automation, vulnerability prioritization, and PTES-methodology report scaffolding with scope-aware, OPSEC-conscious tool calling.",
 			metrics: [
-				{ label: "Setup Time", value: "4h to 12min", context: "Reconnaissance automation" },
-				{ label: "Training Data", value: "12GB", context: "Curated cybersecurity corpus" },
-				{ label: "Adapter Size", value: "3.6GB", context: "LoRA adapters on Qwen2.5-7B" },
-				{ label: "Automation Rate", value: "60%", context: "Routine enumeration tasks" },
+				{ label: "Training Examples", value: "442K", context: "Instruction-tuning dataset" },
+				{ label: "Knowledge Base", value: "1.7M", context: "Records, graph + full-text" },
+				{ label: "Adapter Size", value: "3.6GB", context: "Stage-1 LoRA on Qwen2.5-Coder-32B" },
+				{ label: "Training Hardware", value: "8x A100", context: "Rented pod, FSDP full-shard" },
 			],
 			techDecisions: [
 				{
 					component: "Base Model",
-					technology: "Qwen2.5-7B",
+					technology: "Qwen2.5-Coder-32B",
 					rationale:
-						"Best balance of capability and deployment size for domain-specific tasks. Larger models (70B) offer marginal accuracy gains but require multi-GPU setups. Qwen2.5's strong instruction-following and code generation capabilities provide a solid foundation for tool-calling fine-tuning.",
+						"A code-specialized base gives strong instruction-following and structured-output behavior, which matters for generating syntactically correct tool commands. The 32B size needs multi-GPU training (handled on a rented 8x A100 pod), but LoRA keeps the trained delta to a 3.6GB adapter.",
 				},
 				{
 					component: "Fine-Tuning",
 					technology: "LoRA / PEFT",
 					rationale:
-						"Full fine-tuning a 7B model requires 4x A100s and risks catastrophic forgetting. LoRA trains only 0.1% of parameters, produces a 3.6GB adapter instead of a 14GB full model, and runs on a single RTX 3080. Training completes in 8 hours versus 3+ days for full fine-tuning.",
+						"Full fine-tuning a 32B model is expensive and risks catastrophic forgetting. LoRA trains a small fraction of parameters and produces a compact 3.6GB adapter. Stage-one training completed in about 7.5 hours of wall time on the rented 8x A100 pod.",
 				},
 				{
 					component: "Training Pipeline",
@@ -458,8 +459,8 @@ export const projects: Project[] = [
 				},
 			],
 			takeaways: [
-				"Domain fine-tuning consistently beats prompt engineering for specialized tasks... a 7B fine-tuned model outperforms a 70B general model in its specific domain.",
-				"LoRA makes fine-tuning practical on consumer GPUs, democratizing domain adaptation that previously required cloud compute budgets.",
+				"The reusable assets outlast any single training run: a well-built dataset, a normalized knowledge base, and reproducible configs are worth more than a set of weights on a rented pod.",
+				"Renting 8x A100 capacity for a bounded, well-planned run is cheaper and faster than fighting a 32B model onto local hardware.",
 				"Dataset quality matters more than quantity for domain-specific LLMs...12GB of curated, verified data outperforms 100GB of scraped, unverified content.",
 				"Two-stage curriculum learning (knowledge then behavior) produces more reliable outputs than single-stage training that conflates both objectives.",
 				"In safety-critical domains, hallucination prevention must be an explicit training objective, not an afterthought.",
@@ -470,7 +471,7 @@ export const projects: Project[] = [
 		id: "voice-cloner",
 		title: "VoiceKeep",
 		description:
-			"VoiceKeep (shipped as voicekeep.io) grew out of the Voice Cloner research prototype ... originally developed on an RTX 3080, now running on a dedicated GPU server with RTX PRO 6000 Blackwell ... into a production AI voice platform handling single-voice TTS, multi-speaker conversations, and full audiobook production from manuscript uploads. The platform runs Qwen3-TTS 1.7B with 12-second P50 latency, 41+ curated voices, and zero-shot cloning from short reference audio. The Audiobook Studio parses DOCX/PDF/TXT manuscripts into chapters with dialogue detection, assigns character voices, applies pronunciation dictionaries, and exports distribution-ready M4B with chapter markers. Multi-voice conversations support drag-and-drop line ordering, per-line effects (speed, volume, gap), stage directions, multiple takes, ambient audio, and a waveform timeline editor. 99.95% uptime, 0.03% error rate, Stripe subscription billing.",
+			"VoiceKeep (shipped as voicekeep.io) grew out of the Voice Cloner research prototype ... originally developed on an RTX 3080, now running on a dedicated GPU server with RTX PRO 6000 Blackwell ... into a production AI voice platform handling single-voice TTS, multi-speaker conversations, and full audiobook production from manuscript uploads. The platform runs Qwen3-TTS 1.7B with 12-second P50 latency, 41+ curated voices, and zero-shot cloning from short reference audio. The Audiobook Studio parses DOCX/PDF/TXT manuscripts into chapters with dialogue detection, assigns character voices, applies pronunciation dictionaries, and exports distribution-ready M4B with chapter markers. Multi-voice conversations support drag-and-drop line ordering, per-line effects (speed, volume, gap), stage directions, multiple takes, ambient audio, and a waveform timeline editor. Ran with Stripe subscription billing on a single dedicated GPU server; the hosted service has since been retired, but the platform is a full worked example of production TTS engineering.",
 		category: "AI/ML",
 		tech: [
 			"Python",
@@ -483,9 +484,8 @@ export const projects: Project[] = [
 			"Stripe",
 			"Cloudflare",
 		],
-		year: "2025",
-		status: "Production",
-		link: "https://voicekeep.io",
+		year: "2025-2026",
+		status: "Archived",
 		featured: true,
 		relatedServices: [
 			{
@@ -504,7 +504,7 @@ export const projects: Project[] = [
 		caseStudy: {
 			published: true,
 			subtitle:
-				"VoiceKeep (voicekeep.io): production voice platform from a Voice Cloner prototype ... TTS, conversations, and full audiobook production on a dedicated RTX PRO 6000 Blackwell GPU server",
+				"VoiceKeep: an AI voice platform (TTS, multi-speaker conversations, and full audiobook production) built on a dedicated GPU server. The hosted service has since been retired; this is a worked example of production TTS engineering.",
 			context: {
 				duration: "8 weeks",
 				industry: "AI/ML SaaS",
@@ -515,7 +515,7 @@ export const projects: Project[] = [
 			approach:
 				"Chose Qwen3-TTS 1.7B after benchmarking against XTTS, Bark, and Tortoise ... best quality-to-VRAM ratio for zero-shot cloning from 10-30 second reference samples. Built the inference pipeline on FastAPI with a 4-tier Redis priority queue (admin > enterprise > pro > free). The critical architectural decision was making each audiobook chapter a Conversation record internally, reusing the entire existing TTS pipeline, per-line effects engine, takes system, and timeline editor with zero code duplication. The Audiobook Studio layer adds manuscript parsing (DOCX via python-docx, PDF via PyMuPDF, TXT via regex), chapter management, character-to-voice casting that propagates across all chapters, and a pronunciation dictionary that applies regex substitutions before TTS generation. Implemented proactive worker recycling every 500 generations to combat PyTorch VRAM fragmentation.",
 			solution:
-				"Voice Cloner runs three production modes through a unified FastAPI backend: (1) Single-voice TTS for quick generation, (2) Multi-speaker Conversations with drag-and-drop line ordering, per-line effects (speed/volume/gap), stage directions, multiple takes per line, ambient audio layers, and a waveform timeline editor, (3) Audiobook Studio that parses manuscripts into chapters, detects dialogue and character names, assigns AI voices to each character, applies book-wide pronunciation dictionaries, and exports as M4B with chapter markers or MP3/WAV zip with LUFS mastering. The frontend is Next.js 15 on Cloudflare Workers with wavesurfer.js visualization. 41+ curated voices plus custom uploads with SNR quality gating. Stripe handles tiered billing, Clerk manages auth, Sentry + Amplitude provide observability. Running at 99.95% uptime with 0.03% error rate on a single server.",
+				"Voice Cloner runs three production modes through a unified FastAPI backend: (1) Single-voice TTS for quick generation, (2) Multi-speaker Conversations with drag-and-drop line ordering, per-line effects (speed/volume/gap), stage directions, multiple takes per line, ambient audio layers, and a waveform timeline editor, (3) Audiobook Studio that parses manuscripts into chapters, detects dialogue and character names, assigns AI voices to each character, applies book-wide pronunciation dictionaries, and exports as M4B with chapter markers or MP3/WAV zip with LUFS mastering. The frontend is Next.js 15 on Cloudflare Workers with wavesurfer.js visualization. 41+ curated voices plus custom uploads with SNR quality gating. Stripe handled tiered billing, Clerk managed auth, Sentry and Amplitude provided observability. It ran on a single dedicated GPU server before the hosted service was retired.",
 			metrics: [
 				{
 					label: "P50 Latency",
@@ -606,22 +606,12 @@ export const projects: Project[] = [
 		id: "audiokeep",
 		title: "AudioKeep",
 		description:
-			"Professional AI audio restoration platform for archival preservation and forensics. Orchestrates Resemble Enhance, AudioSR, DeepFilterNet, and Demucs v4 for noise reduction, spectral repair, audio super-resolution (up to 192kHz), and source separation. Credit-based SaaS with forensic analysis tools.",
+			"AI audio-restoration project for archival preservation. Orchestrates Resemble Enhance, AudioSR, DeepFilterNet, and Demucs v4 for noise reduction, spectral repair, audio super-resolution (up to 192kHz), and source separation, behind a FastAPI backend and React frontend.",
 		category: "AI/ML",
 		tech: ["Python", "FastAPI", "PyTorch", "React", "TypeScript", "Celery", "Redis", "Stripe"],
 		year: "2024",
-		status: "Production",
+		status: "Open Source",
 		github: "https://github.com/LecoMV/audiokeep",
-	},
-	{
-		id: "donedays",
-		title: "DoneDays",
-		description:
-			"AI-powered productivity platform with autonomous task orchestration. Multi-agent system with intelligent scheduling and adaptive workflows.",
-		category: "AI/ML",
-		tech: ["TypeScript", "Next.js", "LLM Agents", "PostgreSQL"],
-		year: "2024",
-		status: "Development",
 	},
 	{
 		id: "marksman-pro",

@@ -12,66 +12,62 @@ import { cn } from "@/lib/utils";
 
 import type { PseoPage } from "@/data/pseo";
 
-// Service tiers for the framework section.
-// priceRange values are mid-market Technical Advisor anchors for self-qualification.
-// Adjust to real quoted ranges when contract templates are finalized.
+// Service areas. Pricing is deliberately not published: scope varies too much,
+// and rates are quoted per engagement. Available for contract and fractional work.
 const serviceTiers = [
 	{
-		tier: "Tier 1",
-		name: "Advisory Retainer",
+		tier: "01",
+		name: "Web Development & Maintenance",
 		description:
-			"Ongoing strategic guidance for founders and CTOs. Architecture reviews, hiring support, and decision validation.",
-		commitment: "10-20 hours/month",
-		priceRange: "$3k-8k / month",
-		ideal: "Startups with technical decisions to make",
+			"Sites and small web applications, built and kept running. WordPress, Next.js, and Python.",
+		commitment: "Project or retainer",
+		ideal: "Small businesses and teams that need a site that works",
 		features: [
-			"Weekly architecture reviews",
-			"Async Slack/Loom access",
-			"Hiring interview support",
-			"Vendor evaluation",
-			"Due diligence prep",
+			"Site builds and migrations",
+			"WordPress themes and plugins",
+			"Hosting, DNS, and email setup",
+			"Performance and SEO work",
+			"Ongoing maintenance",
 		],
 	},
 	{
-		tier: "Tier 2",
-		name: "Strategic Implementation",
+		tier: "02",
+		name: "Automation & Integrations",
 		description:
-			"Hands-on architectural work for critical projects. Building foundations that scale.",
-		commitment: "Project-based",
-		priceRange: "$15k-50k / project",
-		ideal: "Teams building MVPs or major features",
+			"Connect the tools you already use and stop doing the same task by hand. Workflows, APIs, and AI-assisted pipelines.",
+		commitment: "Project or retainer",
+		ideal: "Teams drowning in manual, repetitive work",
 		features: [
-			"Architecture design & documentation",
-			"Core infrastructure setup",
-			"Performance optimization",
-			"Security hardening",
-			"Team mentorship",
+			"n8n / Zapier / Make workflows",
+			"REST API integration",
+			"Data extraction and scraping",
+			"CRM and form automation",
+			"AI-assisted content and ops",
 		],
 	},
 	{
-		tier: "Tier 3",
+		tier: "03",
 		name: "Technical Due Diligence",
 		description:
-			"Comprehensive technical assessment for investors, acquirers, or pre-raise founders.",
+			"An honest read on a codebase or infrastructure: what is solid, what is risky, and what it would take to fix.",
 		commitment: "1-2 weeks",
-		priceRange: "$8k-20k / engagement",
-		ideal: "Fundraising or M&A preparation",
+		ideal: "Investors, acquirers, and founders who need the truth",
 		features: [
-			"Codebase audit & report",
+			"Codebase audit and report",
 			"Architecture assessment",
 			"Security review",
-			"Team capability evaluation",
 			"Risk identification",
+			"Plain-language findings",
 		],
 	},
 ];
 
-// Trust metrics
+// Proof points ... shipped, verifiable work.
 const trustMetrics = [
-	{ value: "400%", label: "Revenue increase", context: "e-commerce overhaul" },
-	{ value: "337x", label: "Performance gain", context: "TraceForge engine" },
-	{ value: "$2M+", label: "Infrastructure saved", context: "cloud optimization" },
-	{ value: "0", label: "Critical incidents", context: "18 months production" },
+	{ value: "~200", label: "PV systems designed", context: "Aurora Solar" },
+	{ value: "337x", label: "Processing speedup", context: "TraceForge pipeline" },
+	{ value: "73%", label: "GPU cost reduction", context: "PhotoKeep platform" },
+	{ value: "70+", label: "Articles published", context: "on this site" },
 ];
 
 interface ServicesPageProps {
@@ -120,17 +116,17 @@ export function ServicesPage({ pages }: ServicesPageProps) {
 						<span className="mr-2 animate-pulse" aria-hidden="true">
 							●
 						</span>
-						Technical_Advisory
+						Services
 					</p>
 					<h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
-						Architecture decisions that
+						Web, automation,
 						<br />
-						<span className="text-slate-text">compound into advantage.</span>
+						<span className="text-slate-text">and the systems in between.</span>
 					</h1>
 					<p className="text-slate-text max-w-2xl text-lg leading-relaxed">
-						Every technical choice has a 3-year trajectory. I help founders and CTOs make the
-						decisions that accelerate growth... and avoid the ones that silently accumulate into
-						technical debt.
+						I build and maintain websites, automate the repetitive work, and integrate the tools a
+						business already runs on. Available for contract and fractional engagements. If you need
+						a hand, tell me what needs building.
 					</p>
 				</m.div>
 
@@ -172,10 +168,10 @@ export function ServicesPage({ pages }: ServicesPageProps) {
 						className="text-cyber-lime mb-4 font-mono text-xs tracking-wider uppercase"
 					>
 						<span className="mr-2">▸</span>
-						Engagement_Models
+						What I Do
 					</m.h2>
 					<m.p variants={fadeInUp} className="text-slate-text mb-8 max-w-2xl">
-						Three tiers of engagement, each designed for a specific phase of your technical journey.
+						Three ways I usually help. Scope and pricing are quoted per engagement.
 					</m.p>
 
 					<div className="grid gap-6 md:grid-cols-3">
@@ -201,19 +197,6 @@ export function ServicesPage({ pages }: ServicesPageProps) {
 								<div className="mb-4 border-t border-white/10 pt-4">
 									<div className="text-slate-text mb-1 text-xs uppercase">Commitment</div>
 									<div className="text-mist-white text-sm font-medium">{tier.commitment}</div>
-								</div>
-
-								<div className="mb-4">
-									<div className="text-slate-text mb-1 text-xs uppercase">Investment</div>
-									<div className="font-mono text-sm">
-										<span className="text-cyber-lime font-bold">
-											{tier.priceRange.split(" / ")[0]}
-										</span>
-										<span className="text-slate-text">
-											{" / "}
-											{tier.priceRange.split(" / ")[1]}
-										</span>
-									</div>
 								</div>
 
 								<div className="mb-4">

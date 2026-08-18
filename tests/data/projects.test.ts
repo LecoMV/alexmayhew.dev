@@ -34,7 +34,14 @@ describe("projects data", () => {
 		});
 
 		it("each project should have valid status", () => {
-			const validStatuses = ["Production", "Development", "Concept"];
+			const validStatuses = [
+				"Production",
+				"Development",
+				"Concept",
+				"Open Source",
+				"Archived",
+				"Research",
+			];
 			projects.forEach((project) => {
 				expect(validStatuses).toContain(project.status);
 			});
@@ -54,7 +61,7 @@ describe("projects data", () => {
 		});
 
 		it("each project should have valid year format", () => {
-			const yearRegex = /^\d{4}$/;
+			const yearRegex = /^\d{4}(-\d{4})?$/;
 			projects.forEach((project) => {
 				expect(project.year).toMatch(yearRegex);
 			});

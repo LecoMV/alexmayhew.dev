@@ -43,24 +43,24 @@ const skills = [
 
 const outcomes = [
 	{
-		metric: "400%",
-		label: "Revenue increase",
-		context: "for e-commerce platform after architecture overhaul",
+		metric: "~200",
+		label: "PV systems designed",
+		context: "in Aurora Solar for a Martha's Vineyard installer",
 	},
 	{
-		metric: "2.1s → 0.3s",
-		label: "Load time reduction",
-		context: "for SaaS dashboard serving 100k+ users",
+		metric: "#1",
+		label: "Local search rankings",
+		context: "built and held for the company's core solar searches",
 	},
 	{
-		metric: "$2M+",
-		label: "Infrastructure saved",
-		context: "through strategic cloud architecture decisions",
+		metric: "337x",
+		label: "Processing speedup",
+		context: "TraceForge raster-to-SVG pipeline, 45 min to 8 sec",
 	},
 	{
-		metric: "Zero",
-		label: "Critical incidents",
-		context: "across 18 months of production deployments",
+		metric: "73%",
+		label: "GPU cost reduction",
+		context: "PhotoKeep image-restoration platform",
 	},
 ];
 
@@ -75,7 +75,7 @@ const differentiators = [
 		icon: Shield,
 		title: "Risk Mitigation",
 		description:
-			"I've seen the failure patterns. My advisory includes identifying architectural landmines before they detonate... saving months of rework and millions in opportunity cost.",
+			"I've seen the failure patterns. Part of the job is spotting architectural landmines before they detonate... and saying so plainly, even when it's not what anyone wants to hear.",
 	},
 	{
 		icon: Zap,
@@ -87,29 +87,23 @@ const differentiators = [
 
 const timeline = [
 	{
-		year: "2024",
-		title: "Technical Advisor",
+		year: "2025",
+		title: "Self-Employed, Mayhew Technology LLC",
 		description:
-			"Partnering with select clients to architect high-precision digital instruments. Advisory engagements focused on enterprise-grade systems and strategic technical decisions.",
+			"Sole developer on a production data platform for a private investment firm, delivered with a written engineering handoff. Web apps for local small businesses, data-extraction tools for freelance clients, and my own products.",
 		status: "current",
 	},
 	{
-		year: "2022",
-		title: "Principal Engineer",
+		year: "2016",
+		title: "Senior PV Systems Designer & Technology Specialist, Harvest Sun Solar",
 		description:
-			"Led architecture for enterprise SaaS platforms. Scaled systems from 10k to 500k+ users. Reduced infrastructure costs by 60% while improving performance 8x.",
+			"Nine years as the one-person tech department for a Martha's Vineyard solar installer (through December 2025, when the company closed). Designed ~200 residential PV systems, handled permitting through historic and conservation boards, built the lead-capture software and the WordPress site, ran the marketing and the IT.",
 	},
 	{
-		year: "2020",
-		title: "Senior Full-Stack Engineer",
+		year: "Age 14",
+		title: "Self-taught beginnings",
 		description:
-			"Architected e-commerce solutions processing $50M+ annually. Introduced performance optimization practices that became team standards.",
-	},
-	{
-		year: "2018",
-		title: "Full-Stack Developer",
-		description:
-			"Built the foundation. Learned that exceptional user experience is an engineering discipline, not just design polish.",
+			"Started coding and building for the web at 14. Still how I learn: pick a real problem, build the thing, maintain it long enough to learn what it teaches.",
 	},
 ];
 
@@ -148,9 +142,9 @@ export function AboutPage() {
 						About
 					</p>
 					<h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
-						The difference between
+						The only technical person
 						<br />
-						<span className="text-slate-text">architecture and accidents.</span>
+						<span className="text-slate-text">in the room.</span>
 					</h1>
 				</MotionDiv>
 
@@ -159,20 +153,22 @@ export function AboutPage() {
 					<MotionDiv className="lg:col-span-7" delay={0.1}>
 						<div className="space-y-6 text-lg leading-relaxed">
 							<p className="text-xl leading-relaxed">
-								Every week, founders make technical decisions that will either compound into
-								competitive advantage... or accumulate as crushing technical debt.{" "}
-								<span className="text-cyber-lime">I help them choose wisely.</span>
+								For nine years I was the entire technology department of a Martha&apos;s Vineyard
+								solar company: designer, developer, sysadmin, marketer, and first-line support.{" "}
+								<span className="text-cyber-lime">When it needed building, I built it.</span>
 							</p>
 							<p className="text-slate-text">
-								15+ years of building systems that scale has taught me something counterintuitive:
-								the best architecture isn&apos;t about choosing the right technology. It&apos;s
-								about understanding which decisions can be reversed later, and which ones
-								you&apos;re married to forever.
+								That ended in December 2025 when the company closed. Since then, Mayhew Technology
+								has shifted from client services to building products... an AI voice platform, a
+								commercial SaaS starter kit, developer tools... alongside selected client work,
+								including a production data platform delivered to an investment firm with a full
+								engineering handoff.
 							</p>
 							<p className="text-slate-text">
-								I work with a select number of clients each quarter... founders and technical
-								leaders who understand that a week of strategic advisory can save a year of
-								rebuilding.
+								Right now I&apos;m looking for steady remote work with a team. After a decade as the
+								only technical person in the room, I want to build inside a system bigger than me:
+								code review, senior peers, problems at a scale one person can&apos;t reach. The LLC
+								stays for legal continuity; my focus is the team I join.
 							</p>
 						</div>
 
@@ -184,11 +180,11 @@ export function AboutPage() {
 							</div>
 							<div className="text-slate-text flex items-center gap-2 font-mono text-sm">
 								<Calendar className="text-cyber-lime h-4 w-4" strokeWidth={1.5} />
-								Accepting Select Engagements
+								Open To Remote Work
 							</div>
 							<div className="text-slate-text flex items-center gap-2 font-mono text-sm">
 								<Globe className="text-cyber-lime h-4 w-4" strokeWidth={1.5} />
-								English / Spanish
+								English
 							</div>
 						</div>
 					</MotionDiv>
@@ -343,11 +339,11 @@ export function AboutPage() {
 						<div className="border-cyber-lime absolute bottom-0 left-0 h-4 w-4 border-b border-l" />
 
 						<p className="text-slate-text text-lg leading-relaxed">
-							When I&apos;m not architecting systems, you&apos;ll find me exploring the intersection
-							of technology and craft. I believe the best technical work comes from understanding
-							how things are made... whether that&apos;s coffee, furniture, or distributed systems.
-							This philosophy shapes how I approach every engagement: with curiosity, precision, and
-							respect for the craft.
+							When I&apos;m not building, you&apos;ll find me exploring the intersection of
+							technology and craft. I believe the best technical work comes from understanding how
+							things are made... whether that&apos;s coffee, furniture, or distributed systems. That
+							shapes how I approach every project: with curiosity, precision, and respect for the
+							craft.
 						</p>
 					</div>
 				</MotionSection>
@@ -358,7 +354,7 @@ export function AboutPage() {
 						<span className="mr-2" aria-hidden="true">
 							●
 						</span>
-						What I refuse to do
+						Positions I hold
 					</h2>
 					<div className="grid gap-6 md:grid-cols-2">
 						<div className="bg-gunmetal-glass/20 border border-white/10 p-6">
@@ -436,12 +432,12 @@ export function AboutPage() {
 
 						<div className="max-w-2xl">
 							<h2 className="mb-4 text-2xl font-bold tracking-tight md:text-3xl">
-								Ready to make your next technical decision count?
+								Need a hand, or need a teammate?
 							</h2>
 							<p className="text-slate-text mb-8 text-lg">
-								I take on a limited number of advisory engagements each quarter. If you&apos;re
-								facing an architectural crossroads... scaling challenges, performance bottlenecks,
-								or strategic technical decisions... let&apos;s talk.
+								I&apos;m available for part-time, contract, or full-time remote work... and for
+								project engagements through the LLC. Either way, the first conversation is the same:
+								tell me what needs building.
 							</p>
 
 							<Link

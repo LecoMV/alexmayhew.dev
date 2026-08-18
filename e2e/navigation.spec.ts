@@ -19,7 +19,7 @@ test.describe("Navigation", () => {
 
 		// Verify expected nav links are present and visible
 		// /tools is a dropdown button, not a direct <a> link
-		for (const href of ["/services", "/for", "/work", "/blog", "/about"]) {
+		for (const href of ["/work", "/blog", "/resume", "/about"]) {
 			await expect(desktopNav.locator(`a[href="${href}"]`)).toBeVisible();
 		}
 		// Tools dropdown button is visible

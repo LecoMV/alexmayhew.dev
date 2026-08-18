@@ -117,7 +117,7 @@ export function DownloadButtons() {
 					v{VERSION}
 				</span>
 				<a
-					href="https://github.com/alexmayhew/claude-pilot"
+					href="https://github.com/LecoMV/claude-pilot"
 					target="_blank"
 					rel="noopener noreferrer"
 					className="text-slate-text hover:text-cyber-lime transition-colors"

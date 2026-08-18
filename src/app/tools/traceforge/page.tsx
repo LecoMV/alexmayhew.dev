@@ -185,19 +185,6 @@ function TraceForgePageContent() {
 							</p>
 						</div>
 					</div>
-
-					{/* Source code link */}
-					<div className="mt-8 flex items-center gap-4">
-						<a
-							href="https://github.com/alexmayhew/vectorizer"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="text-slate-text hover:text-cyber-lime flex items-center gap-2 border border-white/10 px-4 py-2 font-mono text-xs transition-colors hover:border-white/30"
-						>
-							<span>View Source on GitHub</span>
-							<span className="text-micro opacity-50">→</span>
-						</a>
-					</div>
 				</section>
 			</div>
 		</section>

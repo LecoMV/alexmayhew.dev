@@ -26,13 +26,14 @@ describe("Navigation", () => {
 
 	it("renders desktop navigation items", () => {
 		render(<Navigation />);
-		expect(screen.getByText("Services")).toBeTruthy();
 		expect(screen.getByText("Work")).toBeTruthy();
 		expect(screen.getByText("Blog")).toBeTruthy();
+		expect(screen.getByText("Resume")).toBeTruthy();
 	});
 
-	it("includes /for advisory link in navigation", () => {
+	it("includes /for advisory link in the mobile menu", () => {
 		render(<Navigation />);
+		fireEvent.click(screen.getByLabelText(/open menu/i));
 		expect(screen.getByText("Advisory")).toBeTruthy();
 	});
 
@@ -88,8 +89,8 @@ describe("Navigation", () => {
 
 	it("desktop nav items container has min-w-0 to allow flex shrinking", () => {
 		render(<Navigation />);
-		const servicesLink = screen.getAllByText("Services")[0];
-		const desktopNavContainer = servicesLink.closest("div[class*='lg\\:flex']") as HTMLElement;
+		const workLink = screen.getAllByText("Work")[0];
+		const desktopNavContainer = workLink.closest("div[class*='lg\\:flex']") as HTMLElement;
 		expect(desktopNavContainer).toBeTruthy();
 		expect(desktopNavContainer.className).toContain("min-w-0");
 	});

@@ -8,4 +8,9 @@ describe("sitemap static pages", () => {
 		const content = readFileSync(join(process.cwd(), "src/app/sitemap.ts"), "utf-8");
 		expect(content).toContain("/tools/saas-readiness");
 	});
+
+	it("includes /resume", () => {
+		const content = readFileSync(join(process.cwd(), "src/app/sitemap.ts"), "utf-8");
+		expect(content).toContain("${siteUrl}/resume`");
+	});
 });

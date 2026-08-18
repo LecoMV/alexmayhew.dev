@@ -16,22 +16,20 @@ describe("JsonLd E-E-A-T enrichments", () => {
 		expect(person.worksFor).toEqual({ "@id": "https://alexmayhew.dev/#organization" });
 	});
 
-	it("Person has hasCredential with at least one EducationalOccupationalCredential", () => {
+	it("Person carries the machine-readable career history via hasOccupation", () => {
 		const { container } = render(<JsonLd />);
 		const schemas = parseAllJsonLd(container);
 		const person = schemas.find((s) => s["@type"] === "Person");
-		expect(Array.isArray(person.hasCredential)).toBe(true);
-		expect(person.hasCredential.length).toBeGreaterThan(0);
-		expect(person.hasCredential[0]["@type"]).toBe("EducationalOccupationalCredential");
+		expect(Array.isArray(person.hasOccupation)).toBe(true);
+		expect(person.hasOccupation.length).toBeGreaterThan(0);
+		expect(person.hasOccupation[0]["@type"]).toBe("Role");
 	});
 
-	it("Organization and ProfessionalService sameAs include Bluesky (matches Person)", () => {
+	it("Person.sameAs includes Bluesky and the correct GitHub handle", () => {
 		const { container } = render(<JsonLd />);
 		const schemas = parseAllJsonLd(container);
-		const org = schemas.find((s) => s["@type"] === "Organization");
-		const service = schemas.find((s) => s["@type"] === "ProfessionalService");
-		const bsky = "https://bsky.app/profile/alexmayhewdev.bsky.social";
-		expect(org.sameAs).toContain(bsky);
-		expect(service.sameAs).toContain(bsky);
+		const person = schemas.find((s) => s["@type"] === "Person");
+		expect(person.sameAs).toContain("https://bsky.app/profile/alexmayhewdev.bsky.social");
+		expect(person.sameAs).toContain("https://github.com/LecoMV");
 	});
 });
